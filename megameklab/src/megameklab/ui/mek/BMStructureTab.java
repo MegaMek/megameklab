@@ -13,6 +13,25 @@
  */
 package megameklab.ui.mek;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import org.apache.logging.log4j.LogManager;
+
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -21,23 +40,20 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.ArmorAllocationView;
+import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.HeatSinkView;
+import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.MVFArmorView;
+import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.PatchworkArmorView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
     private BasicInfoView panBasicInfo;
@@ -184,7 +200,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    @SuppressWarnings("unused") // Used by MekHQ to set the tech faction for custom refits
     public void setTechFaction(int techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
@@ -459,7 +474,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     /**
      * Calculates required engine rating for speed and tonnage and updates engine if
      * possible.
-     * 
+     *
      * @return true if the new engine is legal for rating, space, and tech level
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
