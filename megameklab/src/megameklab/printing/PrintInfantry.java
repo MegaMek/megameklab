@@ -47,9 +47,9 @@ public class PrintInfantry extends PrintEntity {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param infantry The infantry to print
+     * @param infantry  The infantry to print
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintInfantry(Infantry infantry, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -60,7 +60,6 @@ public class PrintInfantry extends PrintEntity {
     protected String getSVGFileName(int pageNumber) {
         return "conventional_infantry_platoon.svg";
     }
-
 
     @Override
     public Entity getEntity() {
@@ -87,7 +86,7 @@ public class PrintInfantry extends PrintEntity {
                 hideElement(SOLDIER + j, true);
                 hideElement(NO_SOLDIER + j, false);
             } else {
-                setTextField(DAMAGE + j, (int)Math.round(infantry.getDamagePerTrooper() * j));
+                setTextField(DAMAGE + j, (int) Math.round(infantry.getDamagePerTrooper() * j));
             }
         }
         InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
@@ -98,7 +97,8 @@ public class PrintInfantry extends PrintEntity {
         boolean scuba = infantry.getMovementMode() == EntityMovementMode.INF_UMU
                 || infantry.getMovementMode() == EntityMovementMode.SUBMARINE;
         hideElement(UW_LABEL, !scuba);
-        InfantryWeapon singleSecondary = (infantry.getSecondaryWeaponsPerSquad() == 1)? infantry.getSecondaryWeapon() : null;
+        InfantryWeapon singleSecondary = (infantry.getSecondaryWeaponsPerSquad() == 1) ? infantry.getSecondaryWeapon()
+                : null;
         for (int j = 0; j <= 21; j++) {
             setTextField(RANGE_MOD + j, rangeMod(j, rangeWeapon, singleSecondary, false));
             if (scuba) {
@@ -108,12 +108,11 @@ public class PrintInfantry extends PrintEntity {
 
         setTextField(TRANSPORT_WT, String.format("%.1f tons", infantry.getWeight()));
 
-        String
-            mode1 = null,
-            mode2 = null,
-            mp1 = null,
-            mp2 = null;
-        switch(infantry.getMovementMode()) {
+        String mode1 = null,
+                mode2 = null,
+                mp1 = null,
+                mp2 = null;
+        switch (infantry.getMovementMode()) {
             case INF_JUMP:
                 mp1 = formatMovement(infantry.getJumpMP());
                 mode1 = "Jump";
@@ -151,7 +150,8 @@ public class PrintInfantry extends PrintEntity {
             case SUBMARINE:
                 mp1 = formatMovement(infantry.getActiveUMUCount());
                 mode1 = "Mechanized SCUBA";
-                // As of writing, the only time Mechanized SCUBA infantry might have nonzero walk mp is if it is beast-mounted.
+                // As of writing, the only time Mechanized SCUBA infantry might have nonzero
+                // walk mp is if it is beast-mounted.
                 if (infantry.getOriginalWalkMP() > 0) {
                     mp2 = formatGroundMP();
                     mode2 = "Ground";
@@ -192,7 +192,8 @@ public class PrintInfantry extends PrintEntity {
             final double height = ((SVGRectElement) rect).getHeight().getBaseVal().getValue();
             float fontSize = FONT_SIZE_MEDIUM;
             // Reduce the font size if necessary to fit the text into the space
-            while ((fontSize > 5.0) && (height < (getFontHeight(fontSize) + 1) * getTextLength(notes, fontSize) / width)) {
+            while ((fontSize > 5.0)
+                    && (height < (getFontHeight(fontSize) + 1) * getTextLength(notes, fontSize) / width)) {
                 fontSize = Math.max(5f, fontSize - 1f);
             }
 
@@ -224,7 +225,7 @@ public class PrintInfantry extends PrintEntity {
         }
         int burst = 0;
         if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST) ||
-               infantry.primaryWeaponDamageCapped()) {
+                infantry.primaryWeaponDamageCapped()) {
             burst = 1;
         }
         if (infantry.getMount() != null) {
@@ -235,7 +236,7 @@ public class PrintInfantry extends PrintEntity {
         }
         if (infantry.getMount() != null) {
             if (infantry.getMount().getVehicleDamage() > 0) {
-                sj.add(String.format("+%d damage vs. vehicles and 'Mechs", infantry.getMount().getVehicleDamage()));
+                sj.add(String.format("+%d damage vs. vehicles and 'Meks", infantry.getMount().getVehicleDamage()));
             }
             if (infantry.getMount().getSize().toHitMod != 0) {
                 sj.add(String.format("%d attacker to-hit", infantry.getMount().getSize().toHitMod));
@@ -246,12 +247,12 @@ public class PrintInfantry extends PrintEntity {
         }
         if (isFlameBased(infantry.getPrimaryWeapon())
                 || ((infantry.getSecondaryWeapon() != null)
-                    && isFlameBased(infantry.getSecondaryWeapon()))) {
+                        && isFlameBased(infantry.getSecondaryWeapon()))) {
             sj.add("Flame-based weapon.");
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
                 || (infantry.getSecondaryWeapon() != null
-                && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
+                        && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
             sj.add("May attack airborne targets that attack their hex.");
         }
         if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
@@ -296,7 +297,7 @@ public class PrintInfantry extends PrintEntity {
 
         StringJoiner enhancements = new StringJoiner(", ");
         var spas = infantry.getCrew().getOptions();
-        for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements(); ) {
+        for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements();) {
             final IOptionGroup optionGroup = e.nextElement();
             if (optionGroup.getKey().equals(EDGE_ADVANTAGES)) {
                 // Don't print Edge abilities, only SPAs and Cybernetics
@@ -306,7 +307,8 @@ public class PrintInfantry extends PrintEntity {
                 for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements();) {
                     IOption option = options.nextElement();
                     if (option != null && option.booleanValue()) {
-                        enhancements.add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
+                        enhancements
+                                .add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
                     }
                 }
             }
@@ -336,10 +338,10 @@ public class PrintInfantry extends PrintEntity {
         for (Mounted<?> m : infantry.getEquipment()) {
             if (m.getLocation() == Infantry.LOC_FIELD_GUNS) {
                 if (m.getType() instanceof WeaponType) {
-                    gun = (WeaponType)m.getType();
+                    gun = (WeaponType) m.getType();
                     numGuns++;
                 } else if (m.getType() instanceof AmmoType) {
-                    numShots += ((AmmoType)m.getType()).getShots();
+                    numShots += ((AmmoType) m.getType()).getShots();
                 }
             }
         }
@@ -349,7 +351,8 @@ public class PrintInfantry extends PrintEntity {
         hideElement(FIELD_GUN_COLUMNS, false);
         setTextField(FIELD_GUN_QTY, numGuns);
         setTextField(FIELD_GUN_TYPE, gun.getName());
-        /* We don't use StringUnits.getEquipmentInfo() to format the damage
+        /*
+         * We don't use StringUnits.getEquipmentInfo() to format the damage
          * string because gauss explosion flags do not apply, and switchable
          * only applies for non-LBX.
          */
@@ -418,7 +421,7 @@ public class PrintInfantry extends PrintEntity {
             }
         }
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()
-                + (infantry.isArmorEncumbering()? "E" : ""));
+                + (infantry.isArmorEncumbering() ? "E" : ""));
         if (infantry.hasDEST()) {
             hideElement(DEST_MODS, false);
             hideElement(SNEAK_IR_MODS, false);
@@ -432,28 +435,33 @@ public class PrintInfantry extends PrintEntity {
     }
 
     private static final int[][] RANGE_MODS = {
-            {0},
-            {-2, 0, 2, 4},
-            {-2, 0, 0, 2, 2, 4, 4},
-            {-2, 0, 0, 0, 2, 2, 2, 4, 4, 4},
-            {-2, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4},
-            {-1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4},
-            {-1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5},
-            {-1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6}
+            { 0 },
+            { -2, 0, 2, 4 },
+            { -2, 0, 0, 2, 2, 4, 4 },
+            { -2, 0, 0, 0, 2, 2, 2, 4, 4, 4 },
+            { -2, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 },
+            { -1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4 },
+            { -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5 },
+            { -1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6 }
     };
 
     /**
      * Calculate range mod as a string value.
-     * @param range - the range to the target.
-     * @param weapon - the primary weapon if there are no more than one secondary, otherwise secondary
-     * @param otherWeapon - secondary weapon if there is exactly one, otherwise null. This is used
-     *                    to account for point-blank or encumbering penalties when the secondary
+     * 
+     * @param range       - the range to the target.
+     * @param weapon      - the primary weapon if there are no more than one
+     *                    secondary, otherwise secondary
+     * @param otherWeapon - secondary weapon if there is exactly one, otherwise
+     *                    null. This is used
+     *                    to account for point-blank or encumbering penalties when
+     *                    the secondary
      *                    weapon is not the basis for range mods.
-     * @param underwater - whether the base range should be halved for underwater use by SCUBA platoons.
+     * @param underwater  - whether the base range should be halved for underwater
+     *                    use by SCUBA platoons.
      * @return - the range mod as a formatted String.
      */
     private String rangeMod(int range, InfantryWeapon weapon, InfantryWeapon otherWeapon,
-                            boolean underwater) {
+            boolean underwater) {
         int[] mods = RANGE_MODS[weapon.getInfantryRange()];
         if (underwater) {
             mods = RANGE_MODS[weapon.getInfantryRange() / 2];

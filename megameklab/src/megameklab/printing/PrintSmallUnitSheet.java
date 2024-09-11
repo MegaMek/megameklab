@@ -36,7 +36,15 @@ import megamek.common.Entity;
 import megamek.common.Infantry;
 import megamek.common.ProtoMek;
 import megamek.common.UnitType;
-import megameklab.printing.reference.*;
+import megameklab.printing.reference.AntiMekAttackTable;
+import megameklab.printing.reference.ClusterHitsTable;
+import megameklab.printing.reference.GroundMovementRecord;
+import megameklab.printing.reference.GroundToHitMods;
+import megameklab.printing.reference.MovementCost;
+import megameklab.printing.reference.ProtoMekSpecialHitLocation;
+import megameklab.printing.reference.ReferenceTable;
+import megameklab.printing.reference.ReferenceTableBase;
+import megameklab.printing.reference.SwarmAttackHitLocation;
 
 /**
  * Lays out a record sheet for infantry, BA, or protoMeks
@@ -48,9 +56,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     /**
      * Create a record sheet for two vehicles, or one vehicle and tables.
      *
-     * @param entities   The units to print
-     * @param startPage  The index of this page in the print job
-     * @param options    Options for printing
+     * @param entities  The units to print
+     * @param startPage The index of this page in the print job
+     * @param options   Options for printing
      */
     public PrintSmallUnitSheet(Collection<? extends Entity> entities, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -58,11 +66,12 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     /**
-     * Create a record sheet for two vehicles, or one vehicle and tables, with default
+     * Create a record sheet for two vehicles, or one vehicle and tables, with
+     * default
      * options
      *
-     * @param entities   The units to print
-     * @param startPage  The index of this page in the print job
+     * @param entities  The units to print
+     * @param startPage The index of this page in the print job
      */
     public PrintSmallUnitSheet(Collection<? extends Entity> entities, int startPage) {
         this(entities, startPage, new RecordSheetOptions());
@@ -121,7 +130,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
                 return "conventional_infantry_default.svg";
             }
         } else if (entities.get(0) instanceof ProtoMek) {
-            return "protomech_default.svg";
+            return "protomek_default.svg";
         }
         return "";
     }
@@ -160,7 +169,6 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         return options.showReferenceCharts();
     }
 
-
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
         List<ReferenceTable> list = new ArrayList<>();
@@ -187,7 +195,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             printBottomTable(clusterTable, pageFormat);
         } else {
             printBottomTable(new GroundMovementRecord(this, false,
-                entities.get(0) instanceof ProtoMek), pageFormat);
+                    entities.get(0) instanceof ProtoMek), pageFormat);
         }
     }
 
@@ -222,9 +230,12 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     /**
-     * Determines if the supplied list of units fills the sheet or if there's room for more
+     * Determines if the supplied list of units fills the sheet or if there's room
+     * for more
+     * 
      * @param entities The list of entities to place on the sheet
-     * @param options The record sheet options, as reference tables can reduce available space
+     * @param options  The record sheet options, as reference tables can reduce
+     *                 available space
      * @return {@code true} if no more entities can be printed on a single sheet
      */
     public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options) {

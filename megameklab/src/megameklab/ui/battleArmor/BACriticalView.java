@@ -43,6 +43,7 @@ import megameklab.ui.util.RefreshListener;
  * The Crit Slots view for a single suit of BattleArmor
  *
  * Original author - jtighe (torren@users.sourceforge.net)
+ * 
  * @author arlith
  * @author Simon (Juliez)
  */
@@ -178,7 +179,7 @@ public class BACriticalView extends IView {
             String[] amTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             String[] apTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
-                amTxt[loc] = "Anti-Mech Weapons: " + numAMWeapons[loc] + "/"
+                amTxt[loc] = "Anti-Mek Weapons: " + numAMWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
                 apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);

@@ -58,9 +58,9 @@ public class PrintMek extends PrintEntity {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param mek The Mek to print
+     * @param mek       The Mek to print
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintMek(Mek mek, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -110,18 +110,18 @@ public class PrintMek extends PrintEntity {
         }
         // mek type
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
-            sb.append("Land-Air 'Mech");
+            sb.append("Land-Air 'Mek");
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             if (mek.isOmni()) {
                 sb.append("Omni");
             }
             sb.append("QuadVee");
         } else if (mek.isIndustrial()) {
-            sb.append("IndustrialMech");
+            sb.append("IndustrialMek");
         } else if (mek.isOmni()) {
-            sb.append("OmniMech");
+            sb.append("OmniMek");
         } else {
-            sb.append("BattleMech");
+            sb.append("BattleMek");
         }
         sb.append(" Record Sheet");
         return sb.toString();
@@ -264,7 +264,7 @@ public class PrintMek extends PrintEntity {
 
     private boolean loadArmorPips(int loc, boolean rear) {
         String locAbbr;
-        switch(loc) {
+        switch (loc) {
             case Mek.LOC_HEAD:
                 locAbbr = "Head";
                 break;
@@ -344,7 +344,8 @@ public class PrintMek extends PrintEntity {
         }
     }
 
-    // Mek armor and structure pips require special handling for rear armor and superheavy head armor/IS
+    // Mek armor and structure pips require special handling for rear armor and
+    // superheavy head armor/IS
     @Override
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
@@ -407,10 +408,10 @@ public class PrintMek extends PrintEntity {
     private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
-        int viewWidth = (int)bbox.getWidth();
-        int viewHeight = (int)bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
+        int viewWidth = (int) bbox.getWidth();
+        int viewHeight = (int) bbox.getHeight();
+        int viewX = (int) bbox.getX();
+        int viewY = (int) bbox.getY();
 
         double critX = viewX + viewWidth * 0.11;
         double critWidth = viewX + viewWidth - critX;
@@ -443,7 +444,8 @@ public class PrintMek extends PrintEntity {
             if (slot == 6) {
                 currY += gap;
             }
-            addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+            addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
+                    SVGConstants.SVG_BOLD_VALUE);
             CriticalSlot crit = mek.getCritical(loc, slot);
             String style = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
@@ -452,11 +454,13 @@ public class PrintMek extends PrintEntity {
                             && (!crit.getMount().getType().isHittable()))) {
                 style = SVGConstants.SVG_NORMAL_VALUE;
                 fill = FILL_GREY;
-                addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize, SVGConstants.SVG_START_VALUE, style, fill);
+                addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
+                        SVGConstants.SVG_START_VALUE, style, fill);
             } else if (crit.isArmored()) {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
                 canvas.appendChild(pip);
-                addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize, SVGConstants.SVG_START_VALUE, style, fill);
+                addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
+                        SVGConstants.SVG_START_VALUE, style, fill);
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
@@ -511,9 +515,9 @@ public class PrintMek extends PrintEntity {
         Element p = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
         p.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
                 "M " + x + " " + y
-                + " h " + (-w)
-                + " v " + h
-                + " h " + w);
+                        + " h " + (-w)
+                        + " v " + h
+                        + " h " + w);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.72");
         p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, SVGConstants.SVG_NONE_VALUE);
@@ -554,8 +558,8 @@ public class PrintMek extends PrintEntity {
         Element canvas = (Element) svgRect.getParentNode();
         int viewWidth = (int) bbox.getWidth();
         int viewHeight = (int) bbox.getHeight();
-        int viewX = (int)bbox.getX();
-        int viewY = (int)bbox.getY();
+        int viewX = (int) bbox.getX();
+        int viewY = (int) bbox.getY();
 
         int si = mek.getOInternal(Mek.LOC_CT);
 
@@ -762,7 +766,8 @@ public class PrintMek extends PrintEntity {
                 critName.insert(0, "2 ").append("s");
             } else if ((cs.getMount2() != null)
                     && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))
-                    && (cs.getMount2().getType() instanceof MiscType) && (cs.getMount2().getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))) {
+                    && (cs.getMount2().getType() instanceof MiscType)
+                    && (cs.getMount2().getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))) {
                 int hs = 2;
                 if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                     hs++;
