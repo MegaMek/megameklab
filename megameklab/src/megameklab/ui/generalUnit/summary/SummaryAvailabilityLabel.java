@@ -23,6 +23,7 @@ import java.awt.*;
 
 public class SummaryAvailabilityLabel extends JLabel {
 
+    /** This internal label is not shown but used to control the size of the actual label. */
     private final JLabel internalSizingLabel = new JLabel(" X/X-X(X*)-X-X ");
 
     /**

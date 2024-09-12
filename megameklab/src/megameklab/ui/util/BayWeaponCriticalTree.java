@@ -664,6 +664,7 @@ public class BayWeaponCriticalTree extends JTree {
     private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
         private EquipmentNode node;
 
+        /** This internal label is not shown but used to control the size of the actual label. */
         private final JLabel internalSizingLabel = new JLabel("X".repeat(28));
 
         @Override

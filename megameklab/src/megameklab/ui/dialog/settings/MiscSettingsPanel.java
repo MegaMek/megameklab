@@ -111,7 +111,6 @@ public class MiscSettingsPanel extends JPanel {
         guiScale.setPaintTicks(true);
         guiScale.setPaintLabels(true);
         guiScale.setValue((int) (GUIPreferences.getInstance().getGUIScale() * 10));
-//        guiScale.setMaximumSize(new Dimension(250, 100));
         guiScale.setToolTipText(Messages.getString("CommonSettingsDialog.guiScaleTT"));
         JLabel guiScaleLabel = new JLabel(Messages.getString("CommonSettingsDialog.guiScale"));
         JPanel scaleLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));

@@ -27,6 +27,7 @@ import java.awt.*;
  */
 public class SummaryWeightLabel extends JLabel {
 
+    /** This internal label is not shown but used to control the size of the actual label. */
     private final JLabel internalSizingLabel = new JLabel("15000 t");
 
     public SummaryWeightLabel(String text) {

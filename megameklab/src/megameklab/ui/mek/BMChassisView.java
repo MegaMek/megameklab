@@ -36,8 +36,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static megamek.common.EquipmentType.T_STRUCTURE_REINFORCED;
-
 /**
  * Construction options and systems for Meks.
  * 
@@ -85,7 +83,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     // Internal structure for non-industrial mechs
     private final static int[] STRUCTURE_TYPES = {
             EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
-            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, T_STRUCTURE_REINFORCED,
+            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
             EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 

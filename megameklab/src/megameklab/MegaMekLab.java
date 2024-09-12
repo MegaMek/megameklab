@@ -100,7 +100,7 @@ public class MegaMekLab {
         // TODO : Individual localizations
         Locale.setDefault(getMMLOptions().getLocale());
 
-        updateGuiScaling();
+        updateGuiScaling(); // also sets the look-and-feel
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {
@@ -141,6 +141,9 @@ public class MegaMekLab {
         updateAfterUiChange();
     }
 
+    /**
+     * Updates all existing windows and frames. Use after a gui scale change or look-and-feel change.
+     */
     public static void updateAfterUiChange() {
         for (Window window : Window.getWindows()) {
             SwingUtilities.updateComponentTreeUI(window);
