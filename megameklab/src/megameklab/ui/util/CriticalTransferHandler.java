@@ -15,22 +15,32 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megameklab.ui.EntitySource;
-import megameklab.ui.PopupMessages;
-import megameklab.ui.mek.BMCriticalView;
-import megameklab.util.ProtoMekUtil;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.TransferHandler;
+
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.Mounted;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
+import megameklab.ui.mek.BMCriticalView;
+import megameklab.util.ProtoMekUtil;
+import megameklab.util.UnitUtil;
+
 public class CriticalTransferHandler extends TransferHandler {
+    private static final MMLogger logger = MMLogger.create(CriticalTransferHandler.class);
+
     private EntitySource eSource;
     private int location;
     private RefreshListener refresh;
@@ -73,7 +83,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
 
             return true;
@@ -96,7 +106,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, location, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
 
             return true;
@@ -117,7 +127,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
             return true;
         }
@@ -137,7 +147,7 @@ public class CriticalTransferHandler extends TransferHandler {
                     .parseInt((String) info.getTransferable().getTransferData(
                             DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

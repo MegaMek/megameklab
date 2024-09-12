@@ -31,13 +31,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.weapons.Weapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
@@ -50,6 +49,8 @@ import megameklab.util.UnitUtil;
  * View that displays unallocated equipment on the build tab.
  */
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
+    private static final MMLogger logger = MMLogger.create(UnallocatedView.class);
+
     private CriticalTableModel equipmentList;
     private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
@@ -135,7 +136,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         // weapons and ammo
         Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
+                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -148,7 +150,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -157,7 +160,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         // structure
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) && masterEquipmentList.get(pos).getType().hasFlag(MiscType.F_ENDO_STEEL)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
+                    && masterEquipmentList.get(pos).getType().hasFlag(MiscType.F_ENDO_STEEL)) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -234,7 +238,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
-            Mounted<?> mount = (Mounted<?>)equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
+                    CriticalTableModel.EQUIPMENT);
 
             String[] locations = getEntity().getLocationNames();
 
@@ -263,7 +268,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         try {
             getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (refresh.get() != null) {

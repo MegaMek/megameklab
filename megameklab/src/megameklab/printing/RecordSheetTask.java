@@ -36,21 +36,27 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
+import megamek.logging.MMLogger;
+
 /**
- * Renders one or more record sheets as a background task. The task is created using
- * {@link #createPrintTask(List, PrinterJob, PrintRequestAttributeSet, PageFormat)} for output
- * to a printer and {@link #createExportTask(List, PageFormat, String)} for export to a PDF file.
+ * Renders one or more record sheets as a background task. The task is created
+ * using
+ * {@link #createPrintTask(List, PrinterJob, PrintRequestAttributeSet, PageFormat)}
+ * for output
+ * to a printer and {@link #createExportTask(List, PageFormat, String)} for
+ * export to a PDF file.
  *
- * Executing the task with {@link #execute(boolean)} allows showing a popup dialog with a progress bar.
+ * Executing the task with {@link #execute(boolean)} allows showing a popup
+ * dialog with a progress bar.
  */
 public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
+    private static final MMLogger logger = MMLogger.create(RecordSheetTask.class);
 
     private final ProgressPopup popup;
     protected final List<PrintRecordSheet> sheets;
@@ -68,34 +74,37 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     /**
      * Creates a task for rendering a list of record sheets as a print job
      *
-     * @param sheets     The sheets to render The contents are removed as each sheet is
+     * @param sheets     The sheets to render The contents are removed as each sheet
+     *                   is
      *                   processed to avoid running out of memory on large jobs.
      * @param job        The print job
      * @param aset       A set of attributes to use for printing
      * @param pageFormat The page format
-     * @return           A {@link SwingWorker} task
+     * @return A {@link SwingWorker} task
      */
     public static RecordSheetTask createPrintTask(List<PrintRecordSheet> sheets, PrinterJob job,
-                                                  PrintRequestAttributeSet aset, PageFormat pageFormat) {
+            PrintRequestAttributeSet aset, PageFormat pageFormat) {
         return new PrintTask(sheets, job, aset, pageFormat);
     }
 
     /**
      * Creates a task for rendering a list of record sheets as a print job.
      *
-     * @param sheets     The sheets to render. The contents are removed as each sheet is
+     * @param sheets     The sheets to render. The contents are removed as each
+     *                   sheet is
      *                   processed to avoid running out of memory on large jobs.
      * @param pageFormat The page format
      * @param pathName   The path to the PDF output file
-     * @return           A {@link SwingWorker} task
+     * @return A {@link SwingWorker} task
      */
     public static RecordSheetTask createExportTask(List<PrintRecordSheet> sheets, PageFormat pageFormat,
-                                                   String pathName) {
+            String pathName) {
         return new ExportTask(sheets, pageFormat, pathName);
     }
 
     /**
      * Begins execution with the option to show a progress bar.
+     *
      * @param showProgressBar Whether to show the progress popup dialog
      */
     public void execute(boolean showProgressBar) {
@@ -119,14 +128,13 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         } catch (ExecutionException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(),
                     "A problem has occurred", JOptionPane.ERROR_MESSAGE);
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
             popup.setVisible(false);
         }
     }
-
 
     private static class ProgressPopup extends JFrame {
         private final JProgressBar progressBar = new JProgressBar();
@@ -150,7 +158,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         private final PrintRequestAttributeSet aset;
 
         public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job, PrintRequestAttributeSet aset,
-                         PageFormat pageFormat) {
+                PageFormat pageFormat) {
             super(sheets);
             this.job = job;
             this.aset = aset;
@@ -229,7 +237,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     }
 
     /**
-     * Implementation of Pageable that removes the record sheet objects as they are processed
+     * Implementation of Pageable that removes the record sheet objects as they are
+     * processed
      * (when the next one is accessed) to conserve memory.
      */
     private static class RSBook implements Pageable {

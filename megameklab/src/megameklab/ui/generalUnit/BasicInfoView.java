@@ -40,8 +40,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.MMConstants;
 import megamek.client.ui.baseComponents.MMComboBox;
 import megamek.common.Entity;
@@ -51,6 +49,7 @@ import megamek.common.Mek;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.UnitRole;
+import megamek.logging.MMLogger;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.FactionComboBox;
@@ -58,12 +57,15 @@ import megameklab.ui.util.IntRangeTextField;
 import megameklab.util.CConfig;
 
 /**
- * A panel for basic information common to all unit types: name, year, tech level and others.
+ * A panel for basic information common to all unit types: name, year, tech
+ * level and others.
  *
  * @author Neoancient
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
-    //region Variable Declarations
+    private static final MMLogger logger = MMLogger.create(BasicInfoView.class);
+
+    // region Variable Declarations
     private static final TechAdvancement TA_MIXED_TECH = Entity.getMixedTechAdvancement();
     private static final int CLAN_START = 2807;
     private static final int IS_MIXED_START = TA_MIXED_TECH.getIntroductionDate(false);
@@ -97,14 +99,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     private int prevYear = 3145;
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
-    //endregion Variable Declarations
+    // endregion Variable Declarations
 
-    //region Constructors
+    // region Constructors
     public BasicInfoView(TechAdvancement baseTA) {
         this.baseTA = baseTA;
         initUI();
     }
-    //endregion Constructors
+    // endregion Constructors
 
     private void initUI() {
         techBaseNames = resourceMap.getString("BasicInfoView.cbTechBase.values").split(",");
@@ -235,11 +237,13 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
         add(cbRole, gbc);
         cbRole.addActionListener(this);
-        // Show the role UNDETERMINED as an empty selection to differentiate it from NONE
+        // Show the role UNDETERMINED as an empty selection to differentiate it from
+        // NONE
         // UNDETERMINED means that no role at all will be saved to the unit
         cbRole.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
                 if (value == UnitRole.UNDETERMINED) {
                     value = " ";
                 }
@@ -270,7 +274,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         setTechBase(en.isClan(), en.isMixedTech());
         cbTechBase.addActionListener(this);
         cbTechLevel.removeActionListener(this);
-        SimpleTechLevel lvl = useTP? en.getSimpleLevel(getGameYear()) : en.getStaticTechLevel();
+        SimpleTechLevel lvl = useTP ? en.getSimpleLevel(getGameYear()) : en.getStaticTechLevel();
         setTechLevel(SimpleTechLevel.max(lvl,
                 SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         cbTechLevel.addActionListener(this);
@@ -424,8 +428,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         Integer prev = (Integer) cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
         cbTechBase.removeAllItems();
-        // IS is available to anything that doesn't require a Clan tech base (e.g. QuadVee, ProtoMek).
-        // Clan is available to anything that doesn't require an IS tech base, is built after the Clans
+        // IS is available to anything that doesn't require a Clan tech base (e.g.
+        // QuadVee, ProtoMek).
+        // Clan is available to anything that doesn't require an IS tech base, is built
+        // after the Clans
         // are formed, and not built by an IS faction before the Clan invasion.
         final boolean clanFaction = (getTechFaction() >= ITechnology.F_CLAN) || (getTechFaction() < 0);
         final boolean sphereAvailable = baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN;
@@ -469,7 +475,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (CConfig.getBooleanParam(CConfig.TECH_PROGRESSION)) {
             baseLevel = baseTA.getSimpleLevel(getGameYear());
             if (useMixedTech()
-                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear()).ordinal())) {
+                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear())
+                            .ordinal())) {
                 baseLevel = Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear());
             }
         } else {
@@ -546,7 +553,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 prevYear = year;
             } catch (Exception ex) {
                 // If text is not a legal integer value, reset to the previous value
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             } finally {
                 setYear(prevYear);
             }
@@ -593,8 +600,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
-     * The MUL button should be shown when the current MUL ID field has a valid MUL (> 0) and the
+     * The MUL button should be shown when the current MUL ID field has a valid MUL
+     * (> 0) and the
      * system seems to support calling a standard browser.
+     *
      * @return true when the "Open MUL in Browser" Button can be used
      */
     private boolean shouldShowMULButton() {
@@ -611,7 +620,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 Desktop.getDesktop().browse(URI.create(MMConstants.MUL_URL_PREFIX + txtMulId.getIntVal()));
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }

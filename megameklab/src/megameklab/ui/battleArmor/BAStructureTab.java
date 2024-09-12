@@ -28,8 +28,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -38,6 +36,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -54,7 +53,10 @@ import megameklab.util.UnitUtil;
 /**
  * @author jtighe (torren@users.sourceforge.net)
  */
-public class BAStructureTab extends ITab implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
+public class BAStructureTab extends ITab
+        implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
+    private static final MMLogger logger = MMLogger.create(BAStructureTab.calss);
+
     private RefreshListener refresh;
 
     Dimension labelSize = new Dimension(110, 25);
@@ -70,8 +72,10 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     private final CustomComboBox<String> leftManipulatorSelect = new CustomComboBox<>(this::manipulatorDisplayName);
     private final CustomComboBox<String> rightManipulatorSelect = new CustomComboBox<>(this::manipulatorDisplayName);
 
-    private final SpinnerNumberModel spnLeftManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE, 0.5);
-    private final SpinnerNumberModel spnRightManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE, 0.5);
+    private final SpinnerNumberModel spnLeftManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
+            0.5);
+    private final SpinnerNumberModel spnRightManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
+            0.5);
     private final JSpinner spnLeftManipulatorSize = new JSpinner(spnLeftManipulatorSizeModel);
     private final JSpinner spnRightManipulatorSize = new JSpinner(spnRightManipulatorSizeModel);
     private final JLabel lblSize = createLabel("Size:", labelSize);
@@ -149,7 +153,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
 
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0,30,0,30);
+        gbc.insets = new Insets(0, 30, 0, 30);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTH;
@@ -158,7 +162,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         gbc.weighty = 0;
         add(leftPanel, gbc);
         gbc.gridx = 1;
-        add(rightPanel,gbc);
+        add(rightPanel, gbc);
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -216,7 +220,9 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     }
 
     /**
-     * Sets values for the size control if the manipulator has a variable size; otherwise hides it.
+     * Sets values for the size control if the manipulator has a variable size;
+     * otherwise hides it.
+     *
      * @param mountLoc The mount location
      * @param spinner  The spinner to show/hide
      * @param model    The spinner's number model
@@ -283,7 +289,8 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
             if (e.getSource().equals(leftManipulatorSelect) || e.getSource().equals(rightManipulatorSelect)) {
                 String name = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
                 setManipulator(BAManipulator.getManipulator(name),
-                        e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM : BattleArmor.MOUNT_LOC_RARM,
+                        e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
+                                : BattleArmor.MOUNT_LOC_RARM,
                         true);
             }
         }
@@ -296,17 +303,18 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
             UnitUtil.removeMounted(getBattleArmor(), current);
         }
         if (manipulator != BAManipulator.NONE) {
-            MiscMounted newMount = new MiscMounted(getBattleArmor(), (MiscType) EquipmentType.get(manipulator.internalName));
+            MiscMounted newMount = new MiscMounted(getBattleArmor(),
+                    (MiscType) EquipmentType.get(manipulator.internalName));
             newMount.setBaMountLoc(mountLoc);
             try {
                 getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
             } catch (LocationFullException ex) {
-                LogManager.getLogger().error("Could not mount " + manipulator, ex);
+                logger.error("Could not mount " + manipulator, ex);
             }
         }
         if (checkPaired) {
-            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LARM) ?
-                    BattleArmor.MOUNT_LOC_RARM : BattleArmor.MOUNT_LOC_LARM;
+            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LARM) ? BattleArmor.MOUNT_LOC_RARM
+                    : BattleArmor.MOUNT_LOC_LARM;
             if (manipulator.pairMounted) {
                 setManipulator(manipulator, otherArm, false);
             } else if ((current != null) && isPairedManipulator(current.getType())) {
@@ -439,8 +447,8 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
         ArmorType armor = panArmor.getArmor();
         // If the current armor is no longer available, switch to the current selection
         if (EquipmentType.getArmorType(armor) != getBattleArmor().getArmorType(BattleArmor.LOC_SQUAD)
-                || (armor.getTechLevel(getBattleArmor().getYear())
-                != getBattleArmor().getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
+                || (armor.getTechLevel(getBattleArmor().getYear()) != getBattleArmor()
+                        .getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
             armorTypeChanged(armor);
         }
         addAllListeners();
@@ -554,7 +562,8 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
     public void squadSizeChanged(int squadSize) {
         if (squadSize != getBattleArmor().getTroopers()) {
             // We need to resize several arrays. This clears out the critical slots, so
-            // we're going to preserve them before refreshing and restore the data afterward.
+            // we're going to preserve them before refreshing and restore the data
+            // afterward.
             CriticalSlot[][] slots = new CriticalSlot[getBattleArmor().locations()][];
             for (int loc = 0; loc < getBattleArmor().locations(); loc++) {
                 slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticals(loc)];
@@ -621,7 +630,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                 }
             } catch (Exception ex) {
                 // Shouldn't happen with BA
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         } else {
             List<Mounted<?>> mounts = getBattleArmor().getMisc().stream()
@@ -659,7 +668,7 @@ public class BAStructureTab extends ITab implements ActionListener, ChangeListen
                 getBattleArmor().addEquipment(Mounted.createMounted(getBattleArmor(), armor),
                         BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         }
         refresh.refreshBuild();

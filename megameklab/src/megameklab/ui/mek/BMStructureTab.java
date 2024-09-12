@@ -30,8 +30,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -39,6 +37,7 @@ import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -56,6 +55,8 @@ import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
+    private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
+
     private BasicInfoView panBasicInfo;
     private BMChassisView panChassis;
     private BMLAMFuelView panLAMFuel;
@@ -412,7 +413,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -466,7 +467,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                         Mounted.createMounted(getMek(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         }
     }
@@ -989,7 +990,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 // prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    LogManager.getLogger().warn("Not enough prototype double heat sinks to switch to single");
+                    logger.warn("Not enough prototype double heat sinks to switch to single");
                 }
                 UnitUtil.removeMounted(getMek(), doubles.get(i));
             }
@@ -1004,7 +1005,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    LogManager.getLogger().warn("Not enough single heat sinks to switch to prototype double");
+                    logger.warn("Not enough single heat sinks to switch to prototype double");
                 }
                 UnitUtil.removeMounted(getMek(), singles.get(i));
             }

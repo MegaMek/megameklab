@@ -32,12 +32,11 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.ui.util.CriticalTableModel;
@@ -46,12 +45,16 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * The base class for Equipment Tabs for all unit types. It shows the equipment database and the
+ * The base class for Equipment Tabs for all unit types. It shows the equipment
+ * database and the
  * current load out list.
- * The load out list is obtained through the abstract method getLoadOut() and may be either the full
- * equipment of the unit or filtered somehow so that equipment controlled in the Structure tab cannot
+ * The load out list is obtained through the abstract method getLoadOut() and
+ * may be either the full
+ * equipment of the unit or filtered somehow so that equipment controlled in the
+ * Structure tab cannot
  * be removed in the Equipment Tab.
- * An EquipmentDatabaseView must be provided through the abstract method getEquipmentDatabaseView.
+ * An EquipmentDatabaseView must be provided through the abstract method
+ * getEquipmentDatabaseView.
  *
  * @author jtighe (torren@users.sourceforge.net)
  * @author arlith
@@ -59,6 +62,7 @@ import megameklab.util.UnitUtil;
  * @author Simon (Juliez)
  */
 public abstract class AbstractEquipmentTab extends ITab {
+    private static final MMLogger logger = MMLogger.create(AbstractEquipmentTab.class);
 
     private RefreshListener refresh;
 
@@ -137,11 +141,15 @@ public abstract class AbstractEquipmentTab extends ITab {
     }
 
     /**
-     * This method is called for all of a unit's equipment to determine if it is to be shown
-     * in the load out view. It may be overridden to hide some equipment in the Equipment Tab's
-     * load out view to prevent it from being removed here. Use to hide equipment that is
+     * This method is called for all of a unit's equipment to determine if it is to
+     * be shown
+     * in the load out view. It may be overridden to hide some equipment in the
+     * Equipment Tab's
+     * load out view to prevent it from being removed here. Use to hide equipment
+     * that is
      * controlled from the Structure Tab.
      * By default, this method returns true.
+     *
      * @param mount the mounted to be checked
      * @return true when the given mounted may be shown in the load out view
      */
@@ -152,7 +160,7 @@ public abstract class AbstractEquipmentTab extends ITab {
     protected abstract AbstractEquipmentDatabaseView getEquipmentDatabaseView();
 
     private void removeHeatSinks() {
-        for (int location = 0; location < loadOutModel.getRowCount(); ) {
+        for (int location = 0; location < loadOutModel.getRowCount();) {
             Mounted<?> mount = (Mounted<?>) loadOutModel.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {
@@ -161,7 +169,7 @@ public abstract class AbstractEquipmentTab extends ITab {
                 } catch (IndexOutOfBoundsException ignored) {
                     return;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                     return;
                 }
             } else {

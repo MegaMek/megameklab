@@ -33,8 +33,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -43,6 +41,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
@@ -53,10 +52,13 @@ import megameklab.util.UnitUtil;
 
 /**
  * This IView shows all the equipment that's not yet been assigned a location
+ *
  * @author beerockxs
  * @author arlith
  */
 public class ASBuildView extends IView implements ActionListener, MouseListener {
+    private static final MMLogger logger = MMLogger.create(ASBuildView.class);
+
     private CriticalTableModel equipmentList;
     private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
@@ -209,7 +211,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         if ((mount.getLocation() == Entity.LOC_NONE)
                 && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)
                 && !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
-                && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+                        && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
             engineHeatSinkCount--;
             return true;
         } else {
@@ -268,7 +270,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     @Override
     public void mousePressed(MouseEvent evt) {
         // On right-click, we want to generate menu items to add to specific
-        //  locations, but only if those locations are make sense
+        // locations, but only if those locations are make sense
         if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
@@ -280,7 +282,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<>();
-            // The number of possible locations, Aero's have LOC_WINGS and LOC_FUSELAGE, which we
+            // The number of possible locations, Aero's have LOC_WINGS and LOC_FUSELAGE,
+            // which we
             // want to ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
@@ -302,7 +305,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                         }
                     }
                 }
-            // If it's not a weapon there are no space requirements
+                // If it's not a weapon there are no space requirements
             } else {
                 for (int loc = 0; loc < numLocs; loc++) {
                     validLocs.add(loc);
@@ -314,7 +317,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             }
 
             // Add a menu item for each potential location
-            for (Integer location: validLocs) {
+            for (Integer location : validLocs) {
                 if (UnitUtil.isValidLocation(getAero(), eq.getType(), location)) {
                     item = new JMenuItem("Add to " + locNames[location]);
 
@@ -347,7 +350,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
         UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 

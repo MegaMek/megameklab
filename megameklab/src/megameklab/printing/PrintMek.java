@@ -27,7 +27,6 @@ import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,6 +37,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.MiscMounted;
+import megamek.logging.MMLogger;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
@@ -49,6 +49,7 @@ import megameklab.util.UnitUtil;
  * @author Neoancient
  */
 public class PrintMek extends PrintEntity {
+    private static final MMLogger logger = MMLogger.create(PrintMek.class);
 
     /**
      * The current Mek being printed.
@@ -157,7 +158,7 @@ public class PrintMek extends PrintEntity {
             if (si instanceof SVGRectElement) {
                 drawSIPips((SVGRectElement) si);
             } else {
-                LogManager.getLogger().error("Region siPips does not exist in template or is not a <rect>");
+                logger.error("Region siPips does not exist in template or is not a <rect>");
             }
         }
 
@@ -332,12 +333,12 @@ public class PrintMek extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         }
 
         if (doc == null) {
-            LogManager.getLogger().error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
         } else {
             return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);

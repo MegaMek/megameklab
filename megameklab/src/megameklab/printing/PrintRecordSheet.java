@@ -57,7 +57,6 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.fop.configuration.Configuration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.svg.PDFTranscoder;
-import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -280,7 +279,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private @Nullable Document loadSVG(String directoryPath, String filename) {
         final File file = new File(directoryPath, filename);
         if (!file.exists()) {
-            LogManager.getLogger()
+            logger
                     .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
             return null;
         }
@@ -291,11 +290,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     XMLResourceDescriptor.getXMLParserClassName());
             document = df.createDocument(file.toURI().toASCIIString(), is);
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (document == null) {
-            LogManager.getLogger()
+            logger
                     .error(String.format("Failed to open SVG file! Path: %s/%s", directoryPath, filename));
             return null;
         }
@@ -417,7 +416,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If an image can't be rendered we'll log it and return an empty document in
             // its place rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
-                LogManager.getLogger().warn("Cannot render image: " + message);
+                logger.warn("Cannot render image: " + message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
@@ -524,7 +523,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                                     SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
                     } catch (NumberFormatException ex) {
-                        LogManager.getLogger().warn("Could not parse fieldWidth: " + fieldWidth);
+                        logger.warn("Could not parse fieldWidth: " + fieldWidth);
                     }
                 }
             }
@@ -905,9 +904,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         try {
             embedImage(ImageIO.read(imageFile), canvas, bbox, center);
         } catch (FileNotFoundException e) {
-            LogManager.getLogger().error("Fluff image file not found: " + imageFile.getPath());
+            logger.error("Fluff image file not found: " + imageFile.getPath());
         } catch (IOException e) {
-            LogManager.getLogger().error("Error reading fluff image file: " + imageFile.getPath());
+            logger.error("Error reading fluff image file: " + imageFile.getPath());
         }
     }
 
@@ -951,7 +950,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (IOException ex) {
-            LogManager.getLogger().error("Error embedding fluff image", ex);
+            logger.error("Error embedding fluff image", ex);
         }
     }
 

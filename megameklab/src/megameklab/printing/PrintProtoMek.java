@@ -15,7 +15,6 @@ package megameklab.printing;
 
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
-import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 
 import megamek.common.Entity;
@@ -24,11 +23,13 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.TechConstants;
+import megamek.logging.MMLogger;
 
 /**
  * Lays out a record sheet block for a single ProtoMek
  */
 public class PrintProtoMek extends PrintEntity {
+    private static final MMLogger logger = MMLogger.create(PrintProtoMek.class);
 
     private final ProtoMek proto;
     private final int unitIndex;
@@ -36,10 +37,10 @@ public class PrintProtoMek extends PrintEntity {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param proto        The protoMek to print
-     * @param startPage    The print job page number for this sheet
-     * @param unitIndex    The index of this unit on the page
-     * @param options      Overrides the global options for which elements are printed
+     * @param proto     The protoMek to print
+     * @param startPage The print job page number for this sheet
+     * @param unitIndex The index of this unit on the page
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintProtoMek(ProtoMek proto, int startPage, int unitIndex, RecordSheetOptions options) {
         super(startPage, options);
@@ -90,7 +91,8 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     /**
-     * Checks whether the unit name is too large to fit into the primary field without kerning.
+     * Checks whether the unit name is too large to fit into the primary field
+     * without kerning.
      * If so, looks for a break point and puts the remainder on a second line.
      */
     private void splitName() {
@@ -100,17 +102,20 @@ public class PrintProtoMek extends PrintEntity {
             if (null != fieldWidth) {
                 try {
                     double width = Double.parseDouble(fieldWidth);
-                    // Clear any kerning that has already been applied so we can measure the full text length
+                    // Clear any kerning that has already been applied so we can measure the full
+                    // text length
                     element.removeAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
                     element.removeAttribute(SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                     build();
                     double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
                     if (textWidth > width) {
                         String name = element.getTextContent();
-                        // The goal is a 2:1 split, but we start back a little to avoid just missing a break point
+                        // The goal is a 2:1 split, but we start back a little to avoid just missing a
+                        // break point
                         int pos = name.indexOf(" ", (int) (name.length() * 0.6));
                         if (pos < 0) {
-                            // If we don't find a break point, give up and assign the text again to reset the kerning
+                            // If we don't find a break point, give up and assign the text again to reset
+                            // the kerning
                             setTextField(TYPE, name);
                         } else {
                             setTextField(TYPE, name.substring(0, pos));
@@ -118,7 +123,7 @@ public class PrintProtoMek extends PrintEntity {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    LogManager.getLogger().warn("Could not parse fieldWidth: " + fieldWidth);
+                    logger.warn("Could not parse fieldWidth: " + fieldWidth);
                 }
             }
         }

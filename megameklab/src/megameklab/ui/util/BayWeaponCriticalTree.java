@@ -13,7 +13,45 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
+import static megameklab.ui.util.AeroBayTransferHandler.EMTPYSLOT;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.ToolTipManager;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.SmallCraft;
+import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.WeaponMounted;
@@ -24,23 +62,10 @@ import megamek.common.weapons.bayweapons.PPCBayWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.tree.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.*;
-
-import static megameklab.ui.util.AeroBayTransferHandler.EMTPYSLOT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons
@@ -52,6 +77,8 @@ import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
  * @author Neoancient
  */
 public class BayWeaponCriticalTree extends JTree {
+    private static final MMLogger logger = MMLogger.create(BayWeaponCriticalTree.class);
+
     // Spheroids show only forward or only aft on the side arcs
     public static final int FORWARD = 0; // No rear-mounting allowed (nose, aft, spheroid forward side arcs
     public static final int BOTH = 1; // Can be mounted forward or rear (aerodyne wing arcs)
@@ -113,7 +140,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Sets whether this arc should show only forward-mounted, rear-mounted, or both
-     * 
+     *
      * @param facing Either FORWARD, AFT, or BOTH
      */
     public void setFacing(int facing) {
@@ -216,7 +243,7 @@ public class BayWeaponCriticalTree extends JTree {
      * Removes the bay node and all subnodes.
      * Removes all equipment in this bay by assigning it to LOC_NONE and deletes the
      * bay itself.
-     * 
+     *
      * @param bayNode The bay node to remove
      */
     private void removeBay(final BayNode bayNode) {
@@ -257,7 +284,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Removes equipment node and assigns its mount to LOC_NONE.
-     * 
+     *
      * @param node
      */
     private void removeEquipment(final EquipmentNode node) {
@@ -415,7 +442,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Removes the node and removes the equipment from the unit entirely.
-     * 
+     *
      * @param node
      */
     private void deleteEquipment(final EquipmentNode node) {
@@ -834,7 +861,7 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Used by the unallocated equipment list to show the name of the location on
      * the popup menu
-     * 
+     *
      * @return The name of the location
      */
     public String getLocationName() {
@@ -866,7 +893,7 @@ public class BayWeaponCriticalTree extends JTree {
      * tree is valid for the aero unit. This filters out aft side arcs for aerodyne
      * small
      * craft and broadsides for non-warships.
-     * 
+     *
      * @param aero The unit to check
      * @return Whether the arc is valid for the unit.
      */
@@ -1035,7 +1062,7 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                LogManager.getLogger().debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
+                logger.debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
                         + "] not found in " + getLocationName());
             }
         }
@@ -1085,7 +1112,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Adds equipment to a location without a bay.
-     * 
+     *
      * @param eq The equipment to add to the location of this tree
      */
     public void addToLocation(Mounted<?> eq) {
@@ -1188,7 +1215,7 @@ public class BayWeaponCriticalTree extends JTree {
 
     /**
      * Moves a bay and all its contents from another location
-     * 
+     *
      * @param bay The bay to move in
      */
     public void addBay(WeaponMounted bay) {
@@ -1226,7 +1253,7 @@ public class BayWeaponCriticalTree extends JTree {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
             // We shouldn't be hitting any limits
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), eq, location,
                 Entity.LOC_NONE, (facing == AFT) || ((facing == BOTH) && eq.isRearMounted()));

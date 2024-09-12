@@ -33,8 +33,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.EquipmentType;
@@ -44,6 +42,7 @@ import megamek.common.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
@@ -62,6 +61,8 @@ import megameklab.util.UnitUtil;
  * @author jtighe (torren@users.sourceforge.net)
  */
 public class BABuildView extends IView implements ActionListener, MouseListener {
+    private static final MMLogger logger = MMLogger.create(BABuildView.class);
+
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
@@ -247,7 +248,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
     @Override
     public void mousePressed(MouseEvent e) {
         // On right-click, we want to generate menu items to add to specific
-        //  locations, but only if those locations are make sense
+        // locations, but only if those locations are make sense
         if (e.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
@@ -269,7 +270,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             if (eq.getLocation() == BattleArmor.LOC_SQUAD
                     && !(eq.getType() instanceof InfantryWeapon)) {
                 // Add a menu item for each potential location
-                for (Integer location: validLocs) {
+                for (Integer location : validLocs) {
                     if (UnitUtil.isValidLocation(getBattleArmor(), eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locNames[location]);
 
@@ -292,8 +293,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         && !(eq.getType() instanceof InfantryWeapon)
                         && !((eq.getType() instanceof WeaponType)
                                 && (eq.getType().hasFlag(WeaponType.F_TASER)
-                                    || ((WeaponType)eq.getType()).getAmmoType()
-                                        == AmmoType.T_NARC))) {
+                                        || ((WeaponType) eq.getType()).getAmmoType() == AmmoType.T_NARC))) {
                     item = new JMenuItem("Make squad weapon");
                     item.addActionListener(evt -> {
                         eq.setLocation(BattleArmor.LOC_SQUAD);
@@ -331,8 +331,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     && !eq.isSquadSupportWeapon()
                     && !eq.getType().hasFlag(WeaponType.F_INFANTRY)
                     && eq.getLocation() == BattleArmor.LOC_SQUAD
-                    && getBattleArmor().getChassisType() !=
-                        BattleArmor.CHASSIS_TYPE_QUAD) {
+                    && getBattleArmor().getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                 item = new JMenuItem("Mount as squad support weapon");
                 item.addActionListener(evt -> {
                     eq.setSquadSupportWeapon(true);
@@ -346,11 +345,10 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                     && !eq.getType().hasFlag(WeaponType.F_MISSILE)
                     && !eq.isSquadSupportWeapon()
                     && eq.getLocation() == BattleArmor.LOC_SQUAD
-                    && getBattleArmor().getChassisType() !=
-                        BattleArmor.CHASSIS_TYPE_QUAD) {
+                    && getBattleArmor().getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                 boolean enabled = false;
                 for (Mounted<?> weapon : getBattleArmor().getWeaponList()) {
-                    WeaponType weaponType = (WeaponType)weapon.getType();
+                    WeaponType weaponType = (WeaponType) weapon.getType();
                     if (weapon.isSquadSupportWeapon() && AmmoType.isAmmoValid(eq, weaponType)) {
                         enabled = true;
                     }
@@ -421,7 +419,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         continue;
                     }
                     // We only want to enable the menu item if the DWP has a
-                    //  mounted weapon and we clicked on a valid ammo type
+                    // mounted weapon and we clicked on a valid ammo type
                     boolean enabled = false;
                     if (m.getLinked() != null) {
                         EquipmentType equipmentType = m.getLinked().getType();
@@ -561,7 +559,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         try {
             eq.setBaMountLoc(location);
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         UnitUtil.changeMountStatus(getBattleArmor(), eq, BattleArmor.LOC_SQUAD, -1, false);

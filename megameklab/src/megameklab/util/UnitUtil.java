@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
@@ -64,9 +62,11 @@ import megamek.common.weapons.ppc.ISPlasmaRifle;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 
 public class UnitUtil {
+    private static final MMLogger logger = MMLogger.create(UnitUtil.class);
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
@@ -1824,7 +1824,7 @@ public class UnitUtil {
         try {
             MekFileParser.postLoadInit(entity);
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
     }
 

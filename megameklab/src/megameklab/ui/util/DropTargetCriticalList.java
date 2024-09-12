@@ -15,14 +15,6 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.annotations.Nullable;
-import megamek.common.loaders.EntityLoadingException;
-import megameklab.ui.EntitySource;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
@@ -30,7 +22,26 @@ import java.awt.event.MouseListener;
 import java.util.Objects;
 import java.util.Vector;
 
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.Mek;
+import megamek.common.MekFileParser;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.Tank;
+import megamek.common.annotations.Nullable;
+import megamek.common.loaders.EntityLoadingException;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.util.UnitUtil;
+
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
+    private static final MMLogger logger = MMLogger.create(DropTargetCriticalList.class);
+
     private EntitySource eSource;
     private RefreshListener refresh;
     private boolean buildView;
@@ -196,7 +207,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
         return null;
     }
@@ -311,7 +322,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         } catch (EntityLoadingException ignored) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
         if (refresh != null) {
             refresh.refreshAll();

@@ -18,9 +18,20 @@
  */
 package megameklab.ui.supportVehicle;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.FuelView;
@@ -31,17 +42,12 @@ import megameklab.ui.listeners.SVBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Structure tab for support vehicle construction
  */
 public class SVStructureTab extends ITab implements SVBuildListener {
+    private static final MMLogger logger = MMLogger.create(SVStructureTab.class);
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
@@ -294,7 +300,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 try {
                     getSV().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    LogManager.getLogger().error("", e);
+                    logger.error("", e);
                 }
             }
             panSummary.refresh();
@@ -448,7 +454,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(mod, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since chassis mods don't occupy slots
-                LogManager.getLogger().error("LocationFullException when adding chassis mod " + mod.getName());
+                logger.error("LocationFullException when adding chassis mod " + mod.getName());
             }
         } else if (!installed && (null != current)) {
             getSV().getMisc().remove(current);
@@ -536,7 +542,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET), Tank.LOC_RIGHT);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                LogManager.getLogger().error("LocationFullException when adding sponson turret");
+                logger.error("LocationFullException when adding sponson turret");
             }
         } else if (!installed) {
             for (Mounted<?> m : getEntity().getEquipment()) {
@@ -567,7 +573,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                LogManager.getLogger().error("LocationFullException when adding sponson turret");
+                logger.error("LocationFullException when adding sponson turret");
             }
         } else if (!installed && (null != current)) {
             for (Mounted<?> m : getEntity().getEquipment()) {
@@ -645,7 +651,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(eq, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since fire control doesn't occupy slots
-                LogManager.getLogger().error("LocationFullException when adding fire control " + eq.getName());
+                logger.error("LocationFullException when adding fire control " + eq.getName());
             }
         }
         panChassis.setFromEntity(getSV());

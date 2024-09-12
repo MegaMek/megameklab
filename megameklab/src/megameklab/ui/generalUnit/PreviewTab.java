@@ -26,8 +26,6 @@ import java.awt.event.ComponentListener;
 
 import javax.swing.JTabbedPane;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.client.ui.panes.ConfigurableMekViewPanel;
 import megamek.client.ui.swing.MekViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
@@ -36,10 +34,12 @@ import megamek.common.Entity;
 import megamek.common.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 
 public class PreviewTab extends ITab {
+    private static final MMLogger logger = MMLogger.create(PreviewTab.class);
 
     private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
     private final MekViewPanel panelTROView = new MekViewPanel();
@@ -66,7 +66,7 @@ public class PreviewTab extends ITab {
         try {
             troView = TROView.createView(selectedUnit, ViewFormatting.HTML);
         } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
@@ -88,7 +88,8 @@ public class PreviewTab extends ITab {
     }
 
     public void refresh() {
-        // This active refresh is needed for the few cases where the unit can be changed when the preview is
+        // This active refresh is needed for the few cases where the unit can be changed
+        // when the preview is
         // active, e.g. setting the fluff image.
         if (isVisible()) {
             update();

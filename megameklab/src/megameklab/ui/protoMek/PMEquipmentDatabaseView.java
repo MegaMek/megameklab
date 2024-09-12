@@ -19,8 +19,6 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -29,6 +27,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
@@ -39,6 +38,7 @@ import megameklab.util.UnitUtil;
  * and is suitable for use in the Equipment Tab.
  */
 class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
+    private static final MMLogger logger = MMLogger.create(PMEquipmentDatabaseView.class);
 
     private final List<Integer> fluffColumns = List.of(
             COL_NAME,
@@ -86,7 +86,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } catch (LocationFullException ex) {
             PopupMessages.showLocationFullError(this, equip.getName());
-            LogManager.getLogger().error("Location full while trying to add " + equip.getName());
+            logger.error("Location full while trying to add " + equip.getName());
         }
     }
 

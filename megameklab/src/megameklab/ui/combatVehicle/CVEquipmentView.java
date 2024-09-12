@@ -31,12 +31,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.EquipmentListCellKeySelectionManager;
@@ -48,6 +47,8 @@ import megameklab.util.TankUtil;
 import megameklab.util.UnitUtil;
 
 public class CVEquipmentView extends IView implements ActionListener {
+    private static final MMLogger logger = MMLogger.create(CVEquipmentView.class);
+
     private RefreshListener refresh;
 
     private JPanel topPanel = new JPanel();
@@ -86,7 +87,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        equipmentTable.setMaximumSize(new Dimension(800,500));
+        equipmentTable.setMaximumSize(new Dimension(800, 500));
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
@@ -169,7 +170,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     return;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             } else {
                 location++;
@@ -224,7 +225,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                 try {
                     mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
             equipmentList.addCrit(mount);

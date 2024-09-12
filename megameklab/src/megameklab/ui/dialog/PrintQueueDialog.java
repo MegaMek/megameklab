@@ -18,25 +18,13 @@
  */
 package megameklab.ui.dialog;
 
-import megamek.client.Client;
-import megamek.client.generator.RandomNameGenerator;
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.ClientGUI;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.*;
-import megamek.common.util.C3Util;
-import megameklab.printing.PageBreak;
-import megameklab.util.UnitPrintManager;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
+import static java.util.stream.Collectors.toList;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -46,7 +34,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.FilenameUtils;
+
+import megamek.client.Client;
+import megamek.client.generator.RandomNameGenerator;
+import megamek.client.ui.baseComponents.MMButton;
+import megamek.client.ui.swing.ClientGUI;
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.BTObject;
+import megamek.common.Configuration;
+import megamek.common.Entity;
+import megamek.common.Game;
+import megamek.common.MekFileParser;
+import megamek.common.Player;
+import megamek.common.util.C3Util;
+import megamek.logging.MMLogger;
+import megameklab.printing.PageBreak;
+import megameklab.util.UnitPrintManager;
 
 /**
  * Allows selecting multiple units and printing their record sheets.
@@ -55,6 +66,8 @@ import static java.util.stream.Collectors.toList;
  * @author Simon (Juliez)
  */
 public class PrintQueueDialog extends AbstractMMLButtonDialog {
+    private static final MMLogger logger = MMLogger.create(PrintQueueDialog.class);
+
     private final boolean printToPdf;
     private final JButton addFromFileButton = new JButton("Add From File");
     private final JButton addFromCacheButton = new JButton("Add From Cache");
@@ -77,7 +90,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private final String mulFileName;
 
-    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul, String mulFileName) {
+    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul,
+            String mulFileName) {
         super(parent, true, "PrintQueueDialog", "PrintQueueDialog.windowName.text");
         this.parent = parent;
         this.printToPdf = printToPdf;
@@ -131,8 +145,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         moveDownButton.setEnabled(false);
 
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        oneUnitPerSheetCheck.setToolTipText("When unchecked, the record sheets for some unit types may be printed on the same page. " +
-                "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+        oneUnitPerSheetCheck.setToolTipText(
+                "When unchecked, the record sheets for some unit types may be printed on the same page. " +
+                        "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
@@ -205,7 +220,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                     if (fromMul && unit instanceof Entity) {
                         var crew = ((Entity) unit).getCrew();
                         if (!crew.getName().startsWith(RandomNameGenerator.UNNAMED)) {
-                            title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(), crew.getPiloting());
+                            title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(),
+                                    crew.getPiloting());
                         }
                     }
                     return title;
@@ -251,7 +267,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             if (mulFileName.isBlank()) {
                 exportFile = UnitPrintManager.getExportFile(parent);
             } else {
-                exportFile = UnitPrintManager.getExportFile(parent, FilenameUtils.removeExtension(mulFileName) + ".pdf");
+                exportFile = UnitPrintManager.getExportFile(parent,
+                        FilenameUtils.removeExtension(mulFileName) + ".pdf");
             }
             if (exportFile != null) {
                 UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
@@ -279,7 +296,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private void selectFromCache() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog, this::entitySelected);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog,
+                this::entitySelected);
         Entity entity = viewer.getChosenEntity();
         viewer.dispose();
 
@@ -290,7 +308,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     /**
-     * This is a callback function given to the Unit Selector Dialog to pass on selected units
+     * This is a callback function given to the Unit Selector Dialog to pass on
+     * selected units
      * without closing the Unit Selector.
      *
      * @param entity the chosen Unit
@@ -322,7 +341,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                 Entity tempEntity = new MekFileParser(entityFile).getEntity();
                 units.add(tempEntity);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         }
         refresh();
@@ -376,7 +395,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         units.addAll(newListTop);
         units.addAll(newListBottom);
         refresh();
-        queuedUnitList.setSelectedIndices(IntStream.range(newListTop.size(), newListTop.size() + newListBottom.size()).toArray());
+        queuedUnitList.setSelectedIndices(
+                IntStream.range(newListTop.size(), newListTop.size() + newListBottom.size()).toArray());
     }
 
     private void moveUp() {

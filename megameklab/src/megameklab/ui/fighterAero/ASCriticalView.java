@@ -22,14 +22,13 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.Aero;
 import megamek.common.CriticalSlot;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestAero;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
@@ -42,11 +41,13 @@ import megameklab.util.UnitUtil;
  * The Crit Slots view for a Fighter (Aerospace and Conventional)
  *
  * Original author - jtighe (torren@users.sourceforge.net)
+ *
  * @author arlith
  * @author neoancient
  * @author Simon (Juliez)
  */
 public class ASCriticalView extends IView {
+    private static final MMLogger logger = MMLogger.create(ASCriticalView.class);
 
     private final BAASBMDropTargetCriticalList<String> noseCrits;
     private final BAASBMDropTargetCriticalList<String> leftWingCrits;
@@ -152,7 +153,7 @@ public class ASCriticalView extends IView {
                     if (mounted == null) {
                         // Critical didn't get removed. Remove it now.
                         getAero().setCritical(location, slot, null);
-                        LogManager.getLogger().warn(getAero().getLocationName(location) +
+                        logger.warn(getAero().getLocationName(location) +
                                 " equipment in slot " + slot + " had not been cleanly removed!");
                         continue;
                     }
@@ -196,7 +197,7 @@ public class ASCriticalView extends IView {
         try {
             return availSpace[location] + "";
         } catch (Exception ex) {
-            LogManager.getLogger().error("Couldn't determine available crit space!", ex);
+            logger.error("Couldn't determine available crit space!", ex);
             return "?";
         }
     }

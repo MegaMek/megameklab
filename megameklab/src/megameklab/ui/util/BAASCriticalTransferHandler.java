@@ -18,20 +18,29 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.PopupMessages;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Objects;
+
+import javax.swing.JComponent;
+import javax.swing.JTable;
+
+import megamek.common.Aero;
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.LocationFullException;
+import megamek.common.Mek;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
+import megameklab.util.UnitUtil;
 
 /**
  * The crit slot Transfer Handler for BA and AS.
@@ -39,6 +48,8 @@ import java.util.Objects;
  * @author jtighe (torren@users.sourceforge.net)
  */
 public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler {
+    private static final MMLogger logger = MMLogger.create(BAASCriticalTransferHandler.class);
+
     private int location = -1;
 
     public BAASCriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
@@ -54,7 +65,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
 
@@ -203,7 +214,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                 PopupMessages.showLocationFullError(null);
                 return false;
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
             return true;
         }
@@ -226,7 +237,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
         } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

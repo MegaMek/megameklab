@@ -34,10 +34,9 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractCriticalTransferHandler;
@@ -53,6 +52,8 @@ import megameklab.util.UnitUtil;
  * @author jtighe (torren@users.sourceforge.net)
  */
 public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
+    private static final MMLogger logger = MMLogger.create(BMCriticalTransferHandler.class);
+
     private int location = -1;
     private final BMCriticalView parentView;
 
@@ -74,7 +75,8 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             }
 
         } else {
-            // Move the slot number upwards if the drop location is too far down for the equipment (PPC in the last slot)
+            // Move the slot number upwards if the drop location is too far down for the
+            // equipment (PPC in the last slot)
             int locationSize = mek.getNumberOfCriticals(location);
             if ((locationSize >= neededCrits) && (slotNumber + neededCrits > locationSize)) {
                 slotNumber = locationSize - neededCrits;
@@ -87,11 +89,13 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 return true;
 
             } else if (MekUtil.canFreeContiguousCrits(mek, location, slotNumber, neededCrits)) {
-                // The equipment can be placed at the drop slot, possibly by removing Endo Steel and the like
+                // The equipment can be placed at the drop slot, possibly by removing Endo Steel
+                // and the like
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
             } else if (MekUtil.findSlotWithContiguousNumOfCrits(mek, location, neededCrits) > -1) {
-                // The equipment can be placed elsewhere in the location by removing Endo Steel and the like
+                // The equipment can be placed elsewhere in the location by removing Endo Steel
+                // and the like
                 slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, neededCrits);
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
@@ -124,7 +128,8 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         }
         int neededTotalSlots = UnitUtil.getCritsUsed(eq);
         int freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, true);
-        // It's obvious that the equipment can't be placed on an occupied slot, so in that case
+        // It's obvious that the equipment can't be placed on an occupied slot, so in
+        // that case
         // a good free slot can be chosen in the location
         if (freePrimarySlots == 0) {
             int maxSpace = MekUtil.getMaxContiguousNumOfCrits(mek, location, true);
@@ -162,8 +167,8 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             }
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
-            secondLocationSet.removeIf(loc ->
-                    MekUtil.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
+            secondLocationSet
+                    .removeIf(loc -> MekUtil.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
 
             List<Integer> secondLocationsList = new ArrayList<>(secondLocationSet);
             if (secondLocationsList.isEmpty()) {
@@ -261,7 +266,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 doRefresh();
                 return false;
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
             return true;
         }
@@ -284,7 +289,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
         } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {

@@ -13,6 +13,23 @@
  */
 package megameklab.ui.util;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
@@ -22,20 +39,16 @@ import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.mek.BMCriticalTransferHandler;
 import megameklab.ui.mek.BMCriticalView;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.Vector;
 
 public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseListener {
+    private static final MMLogger logger = MMLogger.create(BAASBMDropTargetCriticalList.class);
+
     private final EntitySource eSource;
     private RefreshListener refresh;
     private final boolean buildView;
@@ -426,7 +439,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         return null;
@@ -472,7 +485,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (refresh != null) {
@@ -506,7 +519,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         } catch (EntityLoadingException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {

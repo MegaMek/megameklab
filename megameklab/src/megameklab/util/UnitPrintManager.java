@@ -33,15 +33,15 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
+import megamek.logging.MMLogger;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 
 public class UnitPrintManager {
+    private static final MMLogger logger = MMLogger.create(UnitPrintManager.class);
 
     private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu");
 
@@ -78,7 +78,7 @@ public class UnitPrintManager {
             loadedUnits = new MULParser(f.getSelectedFile(), null).getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
 
@@ -111,7 +111,7 @@ public class UnitPrintManager {
     }
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
-                                                       RecordSheetOptions options) {
+            RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
@@ -210,7 +210,7 @@ public class UnitPrintManager {
         if (!unprintable.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
                     + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
-                    .collect(Collectors.joining("\n")));
+                            .collect(Collectors.joining("\n")));
         }
 
         if (null != tank1) {
@@ -258,7 +258,7 @@ public class UnitPrintManager {
      * @param options     The options to use for this print job
      */
     public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
-                                     RecordSheetOptions options) {
+            RecordSheetOptions options) {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);
@@ -268,8 +268,9 @@ public class UnitPrintManager {
             return;
         }
 
-        PageFormat pageFormat  = masterPrintJob.getPageFormat(aset);
-        // If something besides letter and A4 is selected, use the template that's closest to the aspect
+        PageFormat pageFormat = masterPrintJob.getPageFormat(aset);
+        // If something besides letter and A4 is selected, use the template that's
+        // closest to the aspect
         // ratio of the paper size.
         options.setPaperSize(PaperSize.closestToAspect(pageFormat.getWidth(), pageFormat.getHeight()));
         List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options);
@@ -349,7 +350,7 @@ public class UnitPrintManager {
                 printAllUnits(unitList, singleUnit);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
     }
 }

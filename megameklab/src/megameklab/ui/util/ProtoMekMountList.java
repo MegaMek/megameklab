@@ -13,24 +13,39 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.annotations.Nullable;
-import megameklab.ui.EntitySource;
-import megameklab.util.ProtoMekUtil;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
+import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.LocationFullException;
+import megamek.common.Mounted;
+import megamek.common.ProtoMek;
+import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.util.ProtoMekUtil;
+import megameklab.util.UnitUtil;
 
 /**
  * The location crit block for ProtoMeks
@@ -39,6 +54,7 @@ import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
  * @author Simon (Juliez)
  */
 public class ProtoMekMountList extends JList<Mounted<?>> {
+    private static final MMLogger logger = MMLogger.create(ProtoMekMountList.class);
 
     private final EntitySource eSource;
     private final int location;
@@ -126,7 +142,7 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
                     try {
                         ProtoMekUtil.addProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
                     } catch (LocationFullException ex) {
-                        LogManager.getLogger().error("", ex);
+                        logger.error("", ex);
                     }
                     refresh();
                     return;

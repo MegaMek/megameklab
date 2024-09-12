@@ -18,26 +18,32 @@
  */
 package megameklab.ui.supportVehicle;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import megamek.common.Entity;
 import megamek.common.MekFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Build tab for assigning support vehicle equipment locations
  */
 public class SVBuildTab extends ITab implements ActionListener {
+    private static final MMLogger logger = MMLogger.create(SVBuildTab.class);
 
     private RefreshListener refresh = null;
     private SVCriticalView critView;
@@ -108,7 +114,7 @@ public class SVBuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -130,7 +136,7 @@ public class SVBuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         refresh.refreshAll();

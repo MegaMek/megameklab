@@ -37,8 +37,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JOptionPane;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.weapons.c3.ISC3M;
@@ -53,9 +51,11 @@ import megamek.common.weapons.ppc.CLPlasmaCannon;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
+import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 
 public final class MekUtil {
+    private static final MMLogger logger = MMLogger.create(MekUtil.class);
 
     /**
      * Checks for Clan DHS
@@ -154,7 +154,7 @@ public final class MekUtil {
                     UnitUtil.addMounted(unit,
                             Mounted.createMounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -186,7 +186,7 @@ public final class MekUtil {
                 try {
                     unit.addEquipment(Mounted.createMounted(unit, sinkType), Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -207,7 +207,7 @@ public final class MekUtil {
                     unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             } else {
                 int loc = singleCompact.getLocation();
@@ -218,7 +218,7 @@ public final class MekUtil {
                             Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                             loc, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
             restHS -= 1;
@@ -228,7 +228,7 @@ public final class MekUtil {
                 unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         }
     }
@@ -488,7 +488,7 @@ public final class MekUtil {
                             Mounted.createMounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
                             Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
                 jjAmount--;
             }
@@ -712,7 +712,7 @@ public final class MekUtil {
                     }
                 } catch (LocationFullException lfe) {
                     PopupMessages.showLocationFullError(null, mount.getName());
-                    LogManager.getLogger().error(lfe);
+                    logger.error(lfe);
                     unit.getMisc().remove(mount);
                     unit.getEquipment().remove(mount);
                     return null;
@@ -917,7 +917,7 @@ public final class MekUtil {
                     changeMountStatus(mek, mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -971,7 +971,7 @@ public final class MekUtil {
                     UnitUtil.changeMountStatus(mek, mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }

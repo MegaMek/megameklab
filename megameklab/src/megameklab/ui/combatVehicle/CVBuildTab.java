@@ -25,12 +25,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.apache.logging.log4j.LogManager;
-
 import megamek.common.Entity;
 import megamek.common.MekFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
 import megameklab.ui.util.ITab;
@@ -38,6 +37,8 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 public class CVBuildTab extends ITab implements ActionListener {
+    private static final MMLogger logger = MMLogger.create(CVBuildTab.class);
+
     private RefreshListener refresh = null;
     private CVCriticalView critView;
     private UnallocatedView unallocatedView;
@@ -111,7 +112,7 @@ public class CVBuildTab extends ITab implements ActionListener {
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -134,7 +135,7 @@ public class CVBuildTab extends ITab implements ActionListener {
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         refresh.refreshAll();

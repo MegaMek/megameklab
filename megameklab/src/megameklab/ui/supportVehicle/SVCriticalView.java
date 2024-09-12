@@ -17,20 +17,30 @@
  */
 package megameklab.ui.supportVehicle;
 
+import java.awt.Color;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+
 import megamek.client.ui.swing.util.UIUtil.FixedYPanel;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.FixedWingSupport;
+import megamek.common.Mounted;
+import megamek.common.SuperHeavyTank;
+import megamek.common.Tank;
+import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * The Crit Slots view for a Support Vehicle (all motive types)
@@ -39,6 +49,8 @@ import java.util.Vector;
  * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
+    private static final MMLogger logger = MMLogger.create(SVCriticalView.class);
+
     private final JPanel leftPanel = new JPanel();
     private final JPanel rightPanel = new JPanel();
     private final JPanel frontPanel = new JPanel();
@@ -150,7 +162,7 @@ public class SVCriticalView extends IView {
         }
 
         synchronized (getEntity()) {
-            LogManager.getLogger().info(getEntity().locations());
+            logger.info(getEntity().locations());
             for (int location = 0; location < getEntity().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
