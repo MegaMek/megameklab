@@ -1,22 +1,50 @@
+/*
+ * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMek.
+ *
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.loaders.EntityLoadingException;
-import megameklab.testing.util.InitializeTypes;
-import megameklab.ui.EntitySource;
-import megameklab.ui.fighterAero.ASMainUI;
-import megameklab.ui.generalUnit.BasicInfoView;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MekFileParser;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.loaders.EntityLoadingException;
+import megameklab.testing.util.InitializeTypes;
+import megameklab.ui.EntitySource;
+import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.generalUnit.BasicInfoView;
 
 @ExtendWith(value = InitializeTypes.class)
 class EquipmentTableModelTest {

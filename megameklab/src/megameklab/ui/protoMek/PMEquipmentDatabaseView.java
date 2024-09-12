@@ -14,18 +14,25 @@
  */
 package megameklab.ui.protoMek;
 
-import megamek.common.*;
+import static megameklab.ui.util.EquipmentTableModel.*;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.ProtoMek;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import java.util.Collection;
-import java.util.List;
-
-import static megameklab.ui.util.EquipmentTableModel.*;
 
 /**
  * An Equipment Database for ProtoMeks. This table shows many columns
@@ -33,11 +40,29 @@ import static megameklab.ui.util.EquipmentTableModel.*;
  */
 class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
-    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
+    private final List<Integer> fluffColumns = List.of(
+            COL_NAME,
+            COL_TECH,
+            COL_TLEVEL,
+            COL_TRATING,
+            COL_DPROTOTYPE,
+            COL_DPRODUCTION,
+            COL_DCOMMON,
+            COL_DEXTINCT,
+            COL_DREINTRO,
+            COL_COST);
 
-    private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
-            COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);
+    private final List<Integer> statsColumns = List.of(
+            COL_NAME,
+            COL_DAMAGE,
+            COL_HEAT,
+            COL_MRANGE,
+            COL_RANGE,
+            COL_SHOTS,
+            COL_TECH,
+            COL_BV,
+            COL_TON,
+            COL_REF);
 
     public PMEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -52,7 +77,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 getEntity().addEquipment(mount, location, false);
             } else {
                 if (equip instanceof AmmoType) {
-                    addProtomechAmmo(equip, 1);
+                    addProtoMekAmmo(equip, 1);
                     return;
                 }
                 Mounted<?> mount = Mounted.createMounted(eSource.getEntity(), equip);
@@ -65,7 +90,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         }
     }
 
-    private void addProtomechAmmo(EquipmentType ammo, int shots) throws LocationFullException {
+    private void addProtoMekAmmo(EquipmentType ammo, int shots) throws LocationFullException {
         Mounted<?> aMount = getProtoMek().getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {

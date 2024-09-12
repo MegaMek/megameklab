@@ -23,8 +23,12 @@ import megamek.common.EquipmentType;
  */
 public interface ProtoMekBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
+
     void typeChanged(int motiveType);
+
     void mainGunChanged(boolean mainGun);
+
     void setEnhancement(EquipmentType eq, boolean selected);
+
     void setISInterface(boolean selected);
 }

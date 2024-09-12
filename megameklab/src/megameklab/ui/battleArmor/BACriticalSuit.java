@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMek.
+ *
+ * MegaMek is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * MegaMek is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ */
 package megameklab.ui.battleArmor;
 
 import megamek.common.BattleArmor;
@@ -7,16 +25,16 @@ import megamek.common.Mounted;
 
 /**
  * Since BattleArmor is setup in a squad, the standard CriticalSlot system
- * isn't used.  For construction purposes, we keep track of criticals.  In MM,
+ * isn't used. For construction purposes, we keep track of criticals. In MM,
  * for purposes and dealing with hits, the "locations" for BattleArmor must
- * correspond to the troopers in the squad.  This means that the standard
+ * correspond to the troopers in the squad. This means that the standard
  * Mounted.location can't really be used, and it causes problems with the
- * criticals as well.  Since these really only matter for constructions, a
+ * criticals as well. Since these really only matter for constructions, a
  * separate critical system is tracked in MML only for construction purposes.
  **/
 public class BACriticalSuit {
 
-    //store critical slots just like an entity
+    // store critical slots just like an entity
     protected CriticalSlot[][] crits; // [loc][slot]
 
     BattleArmor ba;
@@ -27,26 +45,26 @@ public class BACriticalSuit {
         for (int i = 0; i < locations(); i++) {
             int numSlots;
             switch (i) {
-            case BattleArmor.MOUNT_LOC_BODY:
-                crits[i] = new CriticalSlot[ba.getBodyCrits()];
-                break;
-            case BattleArmor.MOUNT_LOC_RARM:
-                numSlots = ba.getArmCrits();
-                if (ba.getRightManipulator() != null) {
-                    numSlots++;
-                }
-                crits[i] = new CriticalSlot[numSlots];
-                break;
-            case BattleArmor.MOUNT_LOC_LARM:
-                numSlots = ba.getArmCrits();
-                if (ba.getLeftManipulator() != null) {
-                    numSlots++;
-                }
-                crits[i] = new CriticalSlot[numSlots];
-                break;
-            case BattleArmor.MOUNT_LOC_TURRET:
-                crits[i] = new CriticalSlot[ba.getTurretCapacity()];
-                break;
+                case BattleArmor.MOUNT_LOC_BODY:
+                    crits[i] = new CriticalSlot[ba.getBodyCrits()];
+                    break;
+                case BattleArmor.MOUNT_LOC_RARM:
+                    numSlots = ba.getArmCrits();
+                    if (ba.getRightManipulator() != null) {
+                        numSlots++;
+                    }
+                    crits[i] = new CriticalSlot[numSlots];
+                    break;
+                case BattleArmor.MOUNT_LOC_LARM:
+                    numSlots = ba.getArmCrits();
+                    if (ba.getLeftManipulator() != null) {
+                        numSlots++;
+                    }
+                    crits[i] = new CriticalSlot[numSlots];
+                    break;
+                case BattleArmor.MOUNT_LOC_TURRET:
+                    crits[i] = new CriticalSlot[ba.getTurretCapacity()];
+                    break;
             }
 
         }
@@ -91,7 +109,8 @@ public class BACriticalSuit {
             return;
         }
 
-        // Manipulators will always go in the last slot in its location, as they get a special slot
+        // Manipulators will always go in the last slot in its location, as they get a
+        // special slot
         // added for them
         if (m.getType().hasFlag(MiscType.F_BA_MANIPULATOR)) {
             int slot = crits[loc].length - 1;
