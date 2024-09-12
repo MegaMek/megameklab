@@ -39,14 +39,6 @@ public abstract class BuildView extends JPanel {
     protected static final EquipmentType CB_SIZE_EQUIPMENT = EquipmentType.get(EquipmentTypeLookup.JUMP_JET);
     protected static final Insets STANDARD_INSETS = new Insets(0, 2, 1, 2);
 
-    protected final Dimension labelSize = new Dimension(110, 25);
-    protected final Dimension labelSizeLg = new Dimension(180, 25);
-    protected final Dimension controlSize = new Dimension(180, 25);
-    protected final Dimension spinnerSize = new Dimension(55, 25);
-    protected final Dimension spinnerSizeLg = new Dimension(70, 25);
-    protected final Dimension editorSize = new Dimension(40, 25);
-    protected final Dimension editorSizeLg = new Dimension(55, 25);
-
     public JLabel createLabel(ResourceBundle resources, String name, String text) {
         return createLabel(resources, name, text, null);
     }
