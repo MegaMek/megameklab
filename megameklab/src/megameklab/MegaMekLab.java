@@ -16,12 +16,12 @@
  */
 package megameklab;
 
+import java.awt.*;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.util.Locale;
 
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import megamek.client.ui.swing.GUIPreferences;
 import org.apache.logging.log4j.LogManager;
@@ -66,8 +66,6 @@ public class MegaMekLab {
             PopupMessages.showUncaughtException(null, t);
         });
 
-        System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
-        System.setProperty("flatlaf.uiScale", "1.7");
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
@@ -102,7 +100,7 @@ public class MegaMekLab {
         // TODO : Individual localizations
         Locale.setDefault(getMMLOptions().getLocale());
 
-        setLookAndFeel();
+        updateGuiScaling();
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {
@@ -130,9 +128,26 @@ public class MegaMekLab {
         try {
             String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
+            updateAfterUiChange();
         } catch (Exception ex) {
             Sentry.captureException(ex);
             LogManager.getLogger().error("", ex);
+        }
+    }
+
+    public static void updateGuiScaling() {
+        System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
+        setLookAndFeel();
+        updateAfterUiChange();
+    }
+
+    public static void updateAfterUiChange() {
+        for (Window window : Window.getWindows()) {
+            SwingUtilities.updateComponentTreeUI(window);
+            window.pack();
+            window.invalidate();
+            window.validate();
+            window.repaint();
         }
     }
 

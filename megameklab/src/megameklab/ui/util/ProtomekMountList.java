@@ -30,7 +30,7 @@ import java.util.List;
 
 import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
 import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
+//import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
 
 /**
  * The location crit block for ProtoMeks
@@ -55,6 +55,7 @@ public class ProtomekMountList extends JList<Mounted> {
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//        setPrototypeCellValue("Medium Pulse Laser");
     }
     
     public Protomech getProtomech() {
@@ -216,11 +217,11 @@ public class ProtomekMountList extends JList<Mounted> {
             return this;
         }
 
-        @Override
-        public Dimension getPreferredSize() {
-            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-            return new Dimension(CRITCELL_WIDTH, height);
-        }
+//        @Override
+//        public Dimension getPreferredSize() {
+//            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
+//            return new Dimension(CRITCELL_WIDTH, height);
+//        }
     }
 
     /**

@@ -19,7 +19,9 @@
 package megameklab.ui.dialog.settings;
 
 import megamek.client.ui.baseComponents.MMButton;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.preference.PreferenceManager;
+import megameklab.MegaMekLab;
 import megameklab.ui.dialog.AbstractMMLButtonDialog;
 import megameklab.util.CConfig;
 
@@ -72,6 +74,10 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
         miscSettingsPanel.getMiscSettings().forEach(CConfig::setParam);
         CConfig.saveConfig();
         PreferenceManager.getClientPreferences().setUserDir(miscSettingsPanel.getUserDir());
+        if (miscSettingsPanel.guiScale() != GUIPreferences.getInstance().getGUIScale()) {
+            GUIPreferences.getInstance().setValue(GUIPreferences.GUI_SCALE, miscSettingsPanel.guiScale());
+            MegaMekLab.updateGuiScaling();
+        }
     }
 
     @Override

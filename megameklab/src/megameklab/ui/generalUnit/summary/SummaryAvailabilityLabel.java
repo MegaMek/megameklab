@@ -23,7 +23,7 @@ import java.awt.*;
 
 public class SummaryAvailabilityLabel extends JLabel {
 
-    private final JLabel internalSizingLabel = new JLabel("X/X(X*)-X-X-X");
+    private final JLabel internalSizingLabel = new JLabel(" X/X-X(X*)-X-X ");
 
     /**
      * This label is used by the unit summary in the structure tab to display the availability. It is left-aligned

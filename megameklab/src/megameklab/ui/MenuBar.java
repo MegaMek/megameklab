@@ -596,9 +596,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
             final JCheckBoxMenuItem miLookAndFeel = new JCheckBoxMenuItem(laf.getName());
             miLookAndFeel.setName("miLookAndFeel");
-            miLookAndFeel.setSelected(laf.getName().equalsIgnoreCase(UIManager.getLookAndFeel().getName()));
+            miLookAndFeel.setSelected(laf.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()));
             miLookAndFeel.addActionListener(evt -> {
                 owner.changeTheme(laf);
+                CConfig.setParam(CConfig.GUI_PLAF, laf.getClassName());
                 for (int i = 0; i < themesMenu.getItemCount(); i++) {
                     final JMenuItem item = themesMenu.getItem(i);
                     if (item instanceof JCheckBoxMenuItem) {

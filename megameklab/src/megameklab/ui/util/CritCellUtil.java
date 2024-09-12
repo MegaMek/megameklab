@@ -15,13 +15,16 @@ import java.awt.*;
 public final class CritCellUtil {
 
     /** The base width of Crit Cells across units with 3 columns of crit lists */
-    public static final int CRITCELL_WIDTH = 250;
+//    public static final int CRITCELL_WIDTH = 250;
 
-    /** The width of Crit Cells for Meks; their layout has 5 columns */
-    public static final int CRITCELL_MEK_WIDTH = (int) (0.6 * CRITCELL_WIDTH);
+    /**
+     * The width of Crit Cells for Meks; their layout has 5 columns
+     */
+//    public static final int CRITCELL_MEK_WIDTH = (int) (0.6 * CRITCELL_WIDTH);
+    public static final String CRITCELL_WIDTH_STRING = "XXXXXXXXXXXXXXXXXX";
 
     /** The width of Crit Cells for Vehicles; their layout has 4 columns */
-    public static final int CRITCELL_VEH_WIDTH = (int) (0.8 * CRITCELL_WIDTH);
+//    public static final int CRITCELL_VEH_WIDTH = (int) (0.8 * CRITCELL_WIDTH);
 
     /** The height added to the text height of Crit Cells (padding) */
     public static final int CRITCELL_ADD_HEIGHT = 5;

@@ -156,6 +156,7 @@ public class BMCriticalView extends IView {
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
+                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
                     currentCritBlocks.add(criticalSlotList);

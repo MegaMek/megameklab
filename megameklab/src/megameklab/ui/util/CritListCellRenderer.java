@@ -54,11 +54,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             cs = eq != null ? new CriticalSlot(eq) : null;
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (!value.equals(EMPTY_CRITCELL_TEXT)) {
+        } else if (!value.equals(CRITCELL_WIDTH_STRING) && !value.equals(EMPTY_CRITCELL_TEXT)) {
             cs = getCrit(index);
         }
 
-        if (cs != null) {
+        if (value.equals(CRITCELL_WIDTH_STRING)) {
+            setText(CRITCELL_WIDTH_STRING);
+        } else if (cs != null) {
             if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                 if (useColor) {
                     setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_SYSTEMS));
@@ -96,11 +98,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
     @Override
     public Dimension getPreferredSize() {
-        int width = CRITCELL_WIDTH;
-        width = (unit instanceof Mech) ? CRITCELL_MEK_WIDTH : width;
-        width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
-        int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-        return new Dimension(width, height);
+        Dimension superSize = super.getPreferredSize();
+        return new Dimension(superSize.width, superSize.height + CRITCELL_ADD_HEIGHT);
     }
 
     private CriticalSlot getCrit(int slot) {

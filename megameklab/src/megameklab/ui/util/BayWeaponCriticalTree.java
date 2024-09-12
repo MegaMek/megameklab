@@ -694,15 +694,15 @@ public class BayWeaponCriticalTree extends JTree {
             return this;
         }
 
-        @Override
-        public Dimension getPreferredSize() {
-            // Make the Bays wider to prevent the tree from changing size upon opening a bay
-            // Keep a minimum height to avoid empty sections from having no height
-            int width = CritCellUtil.CRITCELL_WIDTH;
-            width += (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 0 : 20;
-            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-            return new Dimension(width, height);
-        }
+//        @Override
+//        public Dimension getPreferredSize() {
+//            // Make the Bays wider to prevent the tree from changing size upon opening a bay
+//            // Keep a minimum height to avoid empty sections from having no height
+//            int width = CritCellUtil.CRITCELL_WIDTH;
+//            width += (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 0 : 20;
+//            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
+//            return new Dimension(width, height);
+//        }
     };
 
     @Override

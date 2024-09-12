@@ -22,6 +22,7 @@ import megamek.MMConstants;
 import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMComboBox;
 import megamek.client.ui.swing.CommonSettingsDialog;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.HelpDialog;
 import megamek.common.preference.PreferenceManager;
 import megameklab.ui.MMLStartUp;
@@ -35,9 +36,7 @@ import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * A panel allowing to change MML's general preferences
@@ -49,6 +48,7 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
+    private final JSlider guiScale = new JSlider();
 
     MiscSettingsPanel(JFrame parent) {
         startUpMMComboBox.setRenderer(startUpRenderer);
@@ -99,13 +99,34 @@ public class MiscSettingsPanel extends JPanel {
         chkSkipSavePrompts.setToolTipText(resources.getString("ConfigurationDialog.chkSkipSavePrompts.tooltip"));
         chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
 
+        guiScale.setMajorTickSpacing(3);
+        guiScale.setMinimum(7);
+        guiScale.setMaximum(24);
+        Hashtable<Integer, JComponent> table = new Hashtable<>();
+        table.put(7, new JLabel("70%"));
+        table.put(10, new JLabel("100%"));
+        table.put(16, new JLabel("160%"));
+        table.put(22, new JLabel("220%"));
+        guiScale.setLabelTable(table);
+        guiScale.setPaintTicks(true);
+        guiScale.setPaintLabels(true);
+        guiScale.setValue((int) (GUIPreferences.getInstance().getGUIScale() * 10));
+//        guiScale.setMaximumSize(new Dimension(250, 100));
+        guiScale.setToolTipText(Messages.getString("CommonSettingsDialog.guiScaleTT"));
+        JLabel guiScaleLabel = new JLabel(Messages.getString("CommonSettingsDialog.guiScale"));
+        JPanel scaleLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        scaleLine.add(guiScaleLabel);
+        scaleLine.add(Box.createHorizontalStrut(5));
+        scaleLine.add(guiScale);
+
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(startUpLine);
         gridPanel.add(userDirLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
+        gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 4, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 5, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -119,12 +140,16 @@ public class MiscSettingsPanel extends JPanel {
                 ? MMLStartUp.SPLASH_SCREEN
                 : startUpMMComboBox.getSelectedItem();
         miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
-        // The user directory is stored in MM's client settings, not in CConfig, therefore not added here
+        // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
         return miscSettings;
     }
 
     String getUserDir() {
         return txtUserDir.getText();
+    }
+
+    float guiScale() {
+        return 0.1f * guiScale.getValue();
     }
 
     DefaultListCellRenderer startUpRenderer = new DefaultListCellRenderer() {
