@@ -55,7 +55,7 @@ import megameklab.util.UnitUtil;
  */
 public class BAStructureTab extends ITab
         implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
-    private static final MMLogger logger = MMLogger.create(BAStructureTab.calss);
+    private static final MMLogger logger = MMLogger.create(BAStructureTab.class);
 
     private RefreshListener refresh;
 
