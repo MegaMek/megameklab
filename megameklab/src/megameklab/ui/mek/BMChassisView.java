@@ -164,7 +164,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = STANDARD_INSETS;
         add(createLabel(resourceMap, "lblTonnage", "MekChassisView.spnTonnage.text",
-                "MekChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "MekChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip"));
@@ -182,7 +182,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(createLabel(resourceMap, "lblBaseType", "MekChassisView.cbBaseType.text",
-                "MekChassisView.cbBaseType.tooltip", labelSize), gbc);
+                "MekChassisView.cbBaseType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
@@ -195,7 +195,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblMotiveType", "MekChassisView.cbMotiveType.text",
-                "MekChassisView.cbMotiveType.tooltip", labelSize), gbc);
+                "MekChassisView.cbMotiveType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -208,7 +208,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 3;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblStructure", "MekChassisView.cbStructure.text",
-                "MekChassisView.cbStructure.tooltip", labelSize), gbc);
+                "MekChassisView.cbStructure.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -221,7 +221,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEngine", "MekChassisView.cbEngine.text",
-                "MekChassisView.cbEngine.tooltip", labelSize), gbc);
+                "MekChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -234,7 +234,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 5;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblGyro", "MekChassisView.cbGyro.text",
-                "MekChassisView.cbGyro.tooltip", labelSize), gbc);
+                "MekChassisView.cbGyro.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
@@ -247,7 +247,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 6;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblCockpit", "MekChassisView.cbCockpit.text",
-                "MekChassisView.cbCockpit.tooltip", labelSize), gbc);
+                "MekChassisView.cbCockpit.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
@@ -260,7 +260,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 7;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEnhancement", "MekChassisView.cbEnhancement.text",
-                "MekChassisView.cbEnhancement.tooltip", labelSize), gbc);
+                "MekChassisView.cbEnhancement.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;

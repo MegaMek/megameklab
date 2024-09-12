@@ -77,7 +77,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final CustomComboBox<Integer> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JCheckBox chkSponson = new JCheckBox();
-    private final JLabel lblPintle = createLabel("lblPintle", "", labelSize);
+    private final JLabel lblPintle = createLabel("lblPintle", "");
     private final JCheckBox chkPintleLeft = new JCheckBox();
     private final JCheckBox chkPintleRight = new JCheckBox();
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
@@ -113,9 +113,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblTonnage", "SVChassisView.spnTonnage.text",
-                "SVChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "SVChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnTonnage, spinnerSizeLg);
         spnTonnage.setToolTipText(resourceMap.getString("SVChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -134,10 +133,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblStructureTechRating", "SVChassisView.cbStructureTechRating.text",
-                "SVChassisView.cbStructureTechRating.tooltip", labelSize), gbc);
+                "SVChassisView.cbStructureTechRating.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
-        setFieldSize(cbStructureTechRating, spinnerSize);
         cbStructureTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbStructureTechRating.tooltip"));
         add(cbStructureTechRating, gbc);
         cbStructureTechRating.setActionCommand(ACTION_STRUCTURE_RATING);
@@ -148,10 +146,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 1;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblType", "SVChassisView.cbType.text",
-                "SVChassisView.cbType.tooltip", labelSize), gbc);
+                "SVChassisView.cbType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(cbType, controlSize);
         cbType.setToolTipText(resourceMap.getString("SVChassisView.cbType.tooltip"));
         add(cbType, gbc);
         cbType.setActionCommand(ACTION_TYPE);
@@ -162,10 +159,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 1;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblEngine", "SVChassisView.cbEngine.text",
-                "SVChassisView.cbEngine.tooltip", labelSize), gbc);
+                "SVChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("SVChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.setActionCommand(ACTION_ENGINE);
@@ -178,10 +174,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblEngineTechRating", "SVChassisView.cbEngineTechRating.text",
-                "SVChassisView.cbEngineTechRating.tooltip", labelSize), gbc);
+                "SVChassisView.cbEngineTechRating.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
-        setFieldSize(cbEngineTechRating, spinnerSize);
         cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip"));
         add(cbEngineTechRating, gbc);
         cbEngineTechRating.setActionCommand(ACTION_ENGINE_RATING);
@@ -191,10 +186,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
-                "CVChassisView.cbTurrets.tooltip", labelSize), gbc);
+                "CVChassisView.cbTurrets.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(cbTurrets, controlSize);
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
         add(cbTurrets, gbc);
         cbTurrets.setActionCommand(ACTION_TURRET_CONFIG);
@@ -231,10 +225,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblFireCon", "SVChassisView.cbFireCon.text",
-                "SVChassisView.cbFireCon.tooltip", labelSize), gbc);
+                "SVChassisView.cbFireCon.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(cbFireControl, controlSize);
         cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip"));
         add(cbFireControl, gbc);
         cbFireControl.setActionCommand(ACTION_FIRE_CONTROL);
@@ -263,10 +256,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblTurret1Wt", "SVChassisView.spnTurret1Wt.text",
-                "CVChassisView.spnTurretWt.tooltip", labelSize), gbc);
+                "CVChassisView.spnTurretWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnChassisTurretWt, spinnerSizeLg);
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
         omniPanel.add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
@@ -275,10 +267,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblTurret2Wt", "SVChassisView.spnTurret2Wt.text",
-                "CVChassisView.spnTurret2Wt.tooltip", labelSize), gbc);
+                "CVChassisView.spnTurret2Wt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnChassisTurret2Wt, spinnerSizeLg);
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip"));
         omniPanel.add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
@@ -287,10 +278,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblSponsonPintleWt", "SVChassisView.spnSponsonPintleWt.text",
-                "SVChassisView.spnSponsonPintleWt.tooltip", labelSize), gbc);
+                "SVChassisView.spnSponsonPintleWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnChassisSponsonPintleWt, spinnerSizeLg);
         spnChassisSponsonPintleWt.setToolTipText(resourceMap.getString("SVChassisView.spnSponsonPintleWt.tooltip"));
         omniPanel.add(spnChassisSponsonPintleWt, gbc);
         spnChassisSponsonPintleWt.addChangeListener(this);
@@ -299,10 +289,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblFireConWt", "SVChassisView.spnFireConWt.text",
-                "SVChassisView.spnFireConWt.tooltip", labelSize), gbc);
+                "SVChassisView.spnFireConWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(spnFireConWt, spinnerSizeLg);
         spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip"));
         omniPanel.add(spnFireConWt, gbc);
         spnFireConWt.addChangeListener(this);

@@ -92,10 +92,9 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblTonnage", "FighterChassisView.spnTonnage.text",
-                "FighterChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "FighterChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        setFieldSize(spnTonnage, spinnerSize);
         spnTonnage.setToolTipText(resourceMap.getString("FighterChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -113,8 +112,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblSI", "FighterChassisView.txtSI.text",
-                "FighterChassisView.txtSI.tooltip", labelSize), gbc);
-        setFieldSize(txtSI, editorSize);
+                "FighterChassisView.txtSI.tooltip"), gbc);
         txtSI.setToolTipText(resourceMap.getString("FighterChassisView.txtSI.tooltip"));
         txtSI.setEditable(false);
         
@@ -132,11 +130,10 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblFighterType", "FighterChassisView.cbFighterType.text",
-                "FighterChassisView.cbFighterType.tooltip", labelSize), gbc);
+                "FighterChassisView.cbFighterType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        setFieldSize(cbFighterType, controlSize);
         cbFighterType.setToolTipText(resourceMap.getString("FighterChassisView.cbFighterType.tooltip"));
         add(cbFighterType, gbc);
         cbFighterType.addActionListener(this);
@@ -145,11 +142,10 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 3;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEngine", "FighterChassisView.cbEngine.text",
-                "FighterChassisView.cbEngine.tooltip", labelSize), gbc);
+                "FighterChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("FighterChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
@@ -159,11 +155,10 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblCockpit", "FighterChassisView.cbCockpit.text",
-                "FighterChassisView.cbCockpit.tooltip", labelSize), gbc);
+                "FighterChassisView.cbCockpit.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        setFieldSize(cbCockpit, controlSize);
         cbCockpit.setToolTipText(resourceMap.getString("FighterChassisView.cbCockpit.tooltip"));
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
@@ -171,7 +166,6 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
-        setFieldSize(btnResetChassis, controlSize);
         btnResetChassis.setToolTipText(resourceMap.getString("FighterChassisView.btnResetChassis.tooltip"));
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);

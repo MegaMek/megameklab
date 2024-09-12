@@ -71,23 +71,21 @@ public class CVTransportView extends BuildView implements ChangeListener {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap, "lblFixed", "CVTransportView.lblFixed.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblFixed", "CVTransportView.lblFixed.text"), gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
-        add(createLabel(resourceMap, "lblPod", "CVTransportView.lblPod.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblPod", "CVTransportView.lblPod.text"), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text", labelSizeLg), gbc);
+        add(createLabel(resourceMap, "lblTroopSpace", "CVTransportView.lblTroopSpace.text"), gbc);
 
         gbc.gridx = 1;
-        setFieldSize(spnFixedTroop, editorSize);
         add(spnFixedTroop, gbc);
         spnFixedTroop.addChangeListener(this);
         
         gbc.gridx = 2;
-        setFieldSize(spnPodTroop, editorSize);
         add(spnPodTroop, gbc);
         spnPodTroop.addChangeListener(this);
         
@@ -99,7 +97,7 @@ public class CVTransportView extends BuildView implements ChangeListener {
                     1 / bayType.getWeight());
             gbc.gridx = 0;
             gbc.gridy++;
-            final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName(), labelSizeLg);
+            final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName());
             lblBayType.setToolTipText(tooltip);
             add(lblBayType, gbc);
             
@@ -108,7 +106,6 @@ public class CVTransportView extends BuildView implements ChangeListener {
             JSpinner spinner = new JSpinner(model);
             spinner.setToolTipText(tooltip);
             spinner.setName(bayType.toString());
-            setFieldSize(spinner, editorSize);
             fixedSpinnerModels.put(bayType, model);
             fixedSpinners.put(bayType, spinner);
             add(spinner, gbc);
@@ -119,7 +116,6 @@ public class CVTransportView extends BuildView implements ChangeListener {
             spinner = new JSpinner(model);
             spinner.setToolTipText(tooltip);
             spinner.setName(bayType.toString());
-            setFieldSize(spinner, editorSize);
             podSpinnerModels.put(bayType, model);
             podSpinners.put(bayType, spinner);
             add(spinner, gbc);

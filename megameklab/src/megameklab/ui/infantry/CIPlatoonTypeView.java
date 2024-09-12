@@ -113,7 +113,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
-        setFieldSize(cbMotiveType, controlSize);
         cbMotiveType.setToolTipText(resourceMap.getString("PlatoonTypeView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
@@ -132,7 +131,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         add(new JLabel(resourceMap.getString("PlatoonTypeView.spnNumSquads.text")), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(spnNumSquads, spinnerSize);
         spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip"));
         add(spnNumSquads, gbc);
         spnNumSquads.addChangeListener(this);
@@ -143,7 +141,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         add(new JLabel(resourceMap.getString("PlatoonTypeView.spnSquadSize.text")), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(spnSquadSize, spinnerSize);
         spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip"));
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);

@@ -47,31 +47,25 @@ public abstract class BuildView extends JPanel {
     protected final Dimension editorSize = new Dimension(40, 25);
     protected final Dimension editorSizeLg = new Dimension(55, 25);
 
-    public JLabel createLabel(ResourceBundle resources, String name, String text, Dimension maxSize) {
-        return createLabel(resources, name, text, null, maxSize);
+    public JLabel createLabel(ResourceBundle resources, String name, String text) {
+        return createLabel(resources, name, text, null);
     }
 
-    public JLabel createLabel(ResourceBundle resources, String name, String text, @Nullable String toolTipText, Dimension maxSize) {
+    public JLabel createLabel(ResourceBundle resources, String name, String text, @Nullable String toolTipText) {
         return createLabel(name, resources.getString(text),
-                (toolTipText == null) ? null : resources.getString(toolTipText), maxSize);
+                (toolTipText == null) ? null : resources.getString(toolTipText));
     }
 
-    public JLabel createLabel(String name, String text, Dimension maxSize) {
-        return createLabel(name, text, null, maxSize);
+    public JLabel createLabel(String name, String text) {
+        return createLabel(name, text, null);
     }
 
-    public JLabel createLabel(String name, String text, @Nullable String toolTipText, Dimension maxSize) {
+    public JLabel createLabel(String name, String text, @Nullable String toolTipText) {
         JLabel label = new JLabel(text + " ", SwingConstants.RIGHT);
         label.setToolTipText(toolTipText);
         if (!name.isBlank()) {
             label.setName(name);
         }
         return label;
-    }
-
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-//        box.setPreferredSize(maxSize);
-//        box.setMaximumSize(maxSize);
-//        box.setMinimumSize(maxSize);
     }
 }

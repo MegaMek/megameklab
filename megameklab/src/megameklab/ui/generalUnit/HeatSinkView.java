@@ -111,10 +111,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text",
-                "HeatSinkView.cbHSType.tooltip", labelSize), gbc);
+                "HeatSinkView.cbHSType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 4;
-        setFieldSize(cbHSType, controlSize);
         cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip"));
         add(cbHSType, gbc);
         cbHSType.addActionListener(this);
@@ -124,9 +123,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text",
-                "HeatSinkView.spnCount.tooltip", labelSize), gbc);
+                "HeatSinkView.spnCount.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnCount.getEditor(), editorSize);
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));
         add(spnCount, gbc);
         spnCount.addChangeListener(this);
@@ -144,7 +142,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text"));
         add(lblBaseCount, gbc);
         gbc.gridx = 1;
-        setFieldSize(spnBaseCount.getEditor(), editorSize);
         spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip"));
         add(spnBaseCount, gbc);
         spnBaseCount.addChangeListener(this);
@@ -155,7 +152,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblPrototypeCount.setText(resourceMap.getString("HeatSinkView.spnPrototypeCount.text"));
         add(lblPrototypeCount, gbc);
         gbc.gridx = 1;
-        setFieldSize(spnPrototypeCount.getEditor(), editorSize);
         spnPrototypeCount.setToolTipText(resourceMap.getString("HeatSinkView.spnPrototypeCount.tooltip"));
         add(spnPrototypeCount, gbc);
         spnPrototypeCount.addChangeListener(this);

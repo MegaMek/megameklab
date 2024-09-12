@@ -63,17 +63,17 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JTextField txtChassis = new JTextField(5);
     private final JTextField txtClanName = new JTextField(5);
     private final JLabel lblClanName = createLabel(resourceMap, "lblClanName", "BasicInfoView.txtClanName.text",
-            "BasicInfoView.txtClanName.tooltip", labelSize);
+            "BasicInfoView.txtClanName.tooltip");
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
     private final FactionComboBox cbFaction = new FactionComboBox();
-    private final JLabel lblFaction = createLabel("lblFaction", "", labelSize);
+    private final JLabel lblFaction = createLabel("lblFaction", "");
     private final JTextField txtSource = new JTextField(3);
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private final JComboBox<String> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     private final MMComboBox<UnitRole> cbRole = new MMComboBox<>("Role Combo");
-    private final JLabel lblMulId = createLabel("lblMulId", "", labelSize);
+    private final JLabel lblMulId = createLabel("lblMulId", "");
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton("Open MUL in Browser");
 
@@ -100,7 +100,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.anchor = GridBagConstraints.EAST;
         gbc.insets = STANDARD_INSETS;
         add(createLabel(resourceMap, "lblChassis", "BasicInfoView.txtChassis.text",
-                "BasicInfoView.txtChassis.tooltip", labelSize), gbc);
+                "BasicInfoView.txtChassis.tooltip"), gbc);
         gbc.gridx = 1;
         txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip"));
         add(txtChassis, gbc);
@@ -117,7 +117,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblModel", "BasicInfoView.txtModel.text",
-                "BasicInfoView.txtModel.tooltip", labelSize), gbc);
+                "BasicInfoView.txtModel.tooltip"), gbc);
         gbc.gridx = 1;
         txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
         add(txtModel, gbc);
@@ -145,7 +145,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblYear", "BasicInfoView.txtYear.text",
-                "BasicInfoView.txtYear.tooltip", labelSize), gbc);
+                "BasicInfoView.txtYear.tooltip"), gbc);
         gbc.gridx = 1;
         add(txtYear, gbc);
         txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip"));
@@ -165,7 +165,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblSource", "BasicInfoView.txtSource.text",
-                "BasicInfoView.txtSource.tooltip", labelSize), gbc);
+                "BasicInfoView.txtSource.tooltip"), gbc);
         gbc.gridx = 1;
         txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip"));
         add(txtSource, gbc);
@@ -174,7 +174,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTechBase", "BasicInfoView.cbTechBase.text",
-                "BasicInfoView.cbTechBase.tooltip", labelSize), gbc);
+                "BasicInfoView.cbTechBase.tooltip"), gbc);
         gbc.gridx = 1;
         cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip"));
         add(cbTechBase, gbc);
@@ -184,7 +184,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTechLevel", "BasicInfoView.cbTechLevel.text",
-                "BasicInfoView.cbTechLevel.tooltip", labelSize), gbc);
+                "BasicInfoView.cbTechLevel.tooltip"), gbc);
         gbc.gridx = 1;
         cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip"));
         add(cbTechLevel, gbc);
@@ -195,7 +195,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblManualBV", "BasicInfoView.txtManualBV.text",
-                "BasicInfoView.txtManualBV.tooltip", labelSize), gbc);
+                "BasicInfoView.txtManualBV.tooltip"), gbc);
         gbc.gridx = 1;
         txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip"));
         add(txtManualBV, gbc);
@@ -204,7 +204,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblRole", "BasicInfoView.txtRole.text",
-                "BasicInfoView.txtRole.tooltip", labelSize), gbc);
+                "BasicInfoView.txtRole.tooltip"), gbc);
         gbc.gridx = 1;
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
         add(cbRole, gbc);

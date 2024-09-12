@@ -67,7 +67,7 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     private final JSpinner spnEscapePods = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JButton btnAssignQuarters = new JButton();
 
-    private final JLabel lblBAMarines = createLabel("lblBAMarines", "", labelSize);
+    private final JLabel lblBAMarines = createLabel("lblBAMarines", "");
     private final ITechManager techManager;
     private boolean ignoreChangeEvents = false;
     
@@ -84,9 +84,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblBaseCrew", "AerospaceCrewView.spnBaseCrew.text",
-                "AerospaceCrewView.spnBaseCrew.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnBaseCrew.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnBaseCrew, spinnerSize);
         add(spnBaseCrew, gbc);
         spnBaseCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBaseCrew.tooltip"));
         spnBaseCrew.addChangeListener(this);
@@ -94,9 +93,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblGunners", "AerospaceCrewView.spnGunners.text",
-                "AerospaceCrewView.spnGunners.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnGunners.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnGunners, spinnerSize);
         add(spnGunners, gbc);
         spnGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.spnGunners.tooltip"));
         spnGunners.addChangeListener(this);
@@ -104,7 +102,7 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTotalCrew", "AerospaceCrewView.lblTotalCrew.text",
-                "AerospaceCrewView.lblTotalCrew.tooltip", labelSize), gbc);
+                "AerospaceCrewView.lblTotalCrew.tooltip"), gbc);
         gbc.gridx = 1;
         add(lblTotalCrew, gbc);
         lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
@@ -113,9 +111,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblOfficers", "AerospaceCrewView.spnOfficers.text",
-                "AerospaceCrewView.spnOfficers.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnOfficers.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnOfficers, spinnerSize);
         spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
         add(spnOfficers, gbc);
         spnOfficers.addChangeListener(this);
@@ -123,7 +120,7 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblBayPersonnel", "AerospaceCrewView.lblBayPersonnel.text",
-                "AerospaceCrewView.lblBayPersonnel.tooltip", labelSize), gbc);
+                "AerospaceCrewView.lblBayPersonnel.tooltip"), gbc);
         gbc.gridx = 1;
         add(lblBayPersonnel, gbc);
         lblBayPersonnel.setToolTipText(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.tooltip"));
@@ -132,9 +129,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblPassengers", "AerospaceCrewView.spnPassengers.text",
-                "AerospaceCrewView.spnPassengers.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnPassengers.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnPassengers, spinnerSize);
         spnPassengers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnPassengers.tooltip"));
         add(spnPassengers, gbc);
         spnPassengers.addChangeListener(this);
@@ -142,9 +138,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblMarines", "AerospaceCrewView.spnMarines.text",
-                "AerospaceCrewView.spnMarines.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnMarines.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnMarines, spinnerSize);
         spnMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnMarines.tooltip"));
         add(spnMarines, gbc);
         spnMarines.addChangeListener(this);
@@ -154,7 +149,6 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         lblBAMarines.setText(resourceMap.getString("AerospaceCrewView.spnBAMarines.text"));
         add(lblBAMarines, gbc);
         gbc.gridx = 1;
-        setFieldSize(spnBAMarines, spinnerSize);
         spnBAMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBAMarines.tooltip"));
         add(spnBAMarines, gbc);
         spnBAMarines.addChangeListener(this);
@@ -168,9 +162,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblQuartersFirstClass", "AerospaceCrewView.spnQuartersFirstClass.text",
-                "AerospaceCrewView.spnQuartersFirstClass.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnQuartersFirstClass.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnQuartersFirstClass, spinnerSize);
         spnQuartersFirstClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.tooltip"));
         add(spnQuartersFirstClass, gbc);
         spnQuartersFirstClass.addChangeListener(this);
@@ -178,9 +171,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblQuartersStandard", "AerospaceCrewView.spnQuartersStandard.text",
-                "AerospaceCrewView.spnQuartersStandard.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnQuartersStandard.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnQuartersStandard, spinnerSize);
         spnQuartersStandard.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersStandard.tooltip"));
         add(spnQuartersStandard, gbc);
         spnQuartersStandard.addChangeListener(this);
@@ -188,9 +180,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblQuartersSecondClass", "AerospaceCrewView.spnQuartersSecondClass.text",
-                "AerospaceCrewView.spnQuartersSecondClass.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnQuartersSecondClass.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnQuartersSecondClass, spinnerSize);
         spnQuartersSecondClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSecondClass.tooltip"));
         add(spnQuartersSecondClass, gbc);
         spnQuartersSecondClass.addChangeListener(this);
@@ -198,9 +189,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblQuartersSteerage", "AerospaceCrewView.spnQuartersSteerage.text",
-                "AerospaceCrewView.spnQuartersSteerage.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnQuartersSteerage.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnQuartersSteerage, spinnerSize);
         spnQuartersSteerage.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSteerage.tooltip"));
         add(spnQuartersSteerage, gbc);
         spnQuartersSteerage.addChangeListener(this);
@@ -217,9 +207,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblLifeBoats", "AerospaceCrewView.spnLifeBoats.text",
-                "AerospaceCrewView.spnLifeBoats.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnLifeBoats.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnLifeBoats, spinnerSize);
         spnLifeBoats.setToolTipText(resourceMap.getString("AerospaceCrewView.spnLifeBoats.tooltip"));
         add(spnLifeBoats, gbc);
         spnLifeBoats.addChangeListener(this);
@@ -227,9 +216,8 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         gbc.gridx = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblEscapePods", "AerospaceCrewView.spnEscapePods.text",
-                "AerospaceCrewView.spnEscapePods.tooltip", labelSize), gbc);
+                "AerospaceCrewView.spnEscapePods.tooltip"), gbc);
         gbc.gridx = 3;
-        setFieldSize(spnEscapePods, spinnerSize);
         spnEscapePods.setToolTipText(resourceMap.getString("AerospaceCrewView.spnEscapePods.tooltip"));
         add(spnEscapePods, gbc);
         spnEscapePods.addChangeListener(this);
