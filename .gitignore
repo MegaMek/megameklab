@@ -22,9 +22,9 @@
 /megameklab/bin/
 /megameklab/build/
 /megameklab/data/fonts/
-/megameklab/data/mekfiles/units.cache
 /megameklab/logs/
 /megameklab/mmconf/*.preferences
+/megameklab/mmconf/*.properties
 /megameklab/out/
 /megameklab/.classpath
 /megameklab/.project
@@ -33,3 +33,4 @@
 /megameklab/docs/OfficiaulUnitList.txt
 /megameklab/docs/mml-revision.txt
 /megameklab/MegaMekLab.l4j.ini
+units.cache
