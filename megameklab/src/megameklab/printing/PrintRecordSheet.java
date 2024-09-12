@@ -209,7 +209,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
                 doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
 
-        for (Node node = res.iterateNext(); node != null; node = res.iterateNext()) {
+        if (res == null) {
+            return;
+        }
+
+        Node node = res.iterateNext();
+        while (node != null) {
             if (node instanceof Element elem) {
                 // First we want to make sure it's not set in the style attribute, which could
                 // override the change
@@ -221,6 +226,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
                 elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
             }
+
+            node = res.iterateNext();
         }
     }
 
@@ -333,7 +340,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (getSVGDocument() == null) {
             return false;
         }
-        subFonts((SVGDocument) getSVGDocument());
+        // subFonts((SVGDocument) getSVGDocument());
         subColorElements();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
