@@ -39,8 +39,6 @@ import java.util.List;
 import java.util.*;
 
 import static megameklab.ui.util.AeroBayTransferHandler.EMTPYSLOT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons into bays. Also
@@ -666,6 +664,8 @@ public class BayWeaponCriticalTree extends JTree {
     private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
         private EquipmentNode node;
 
+        private final JLabel internalSizingLabel = new JLabel("X".repeat(28));
+
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
@@ -694,15 +694,11 @@ public class BayWeaponCriticalTree extends JTree {
             return this;
         }
 
-//        @Override
-//        public Dimension getPreferredSize() {
-//            // Make the Bays wider to prevent the tree from changing size upon opening a bay
-//            // Keep a minimum height to avoid empty sections from having no height
-//            int width = CritCellUtil.CRITCELL_WIDTH;
-//            width += (!eSource.getEntity().usesWeaponBays() || ((node != null) && node.isLeaf())) ? 0 : 20;
-//            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-//            return new Dimension(width, height);
-//        }
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension superSize = internalSizingLabel.getPreferredSize();
+            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
+        }
     };
 
     @Override

@@ -191,6 +191,7 @@ public class SVCriticalView extends IView {
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
                 if (panelForLocation(location) != null) {
                     panelForLocation(location).add(criticalSlotList);
                 }

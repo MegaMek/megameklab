@@ -15,6 +15,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.WeaponMounted;
 import megameklab.ui.EntitySource;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
@@ -28,10 +29,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
-//import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
-
 /**
  * The location crit block for ProtoMeks
  *
@@ -43,6 +40,8 @@ public class ProtomekMountList extends JList<Mounted> {
     private final EntitySource eSource;
     private final int location;
     private RefreshListener refresh;
+    private static final WeaponType widthWeaponType = new WeaponType();
+    private final WeaponMounted critcellWidthMounted;
     
     public ProtomekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
@@ -55,7 +54,8 @@ public class ProtomekMountList extends JList<Mounted> {
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//        setPrototypeCellValue("Medium Pulse Laser");
+        critcellWidthMounted = new WeaponMounted(eSource.getEntity(), widthWeaponType);
+        setPrototypeCellValue(critcellWidthMounted);
     }
     
     public Protomech getProtomech() {
@@ -210,18 +210,24 @@ public class ProtomekMountList extends JList<Mounted> {
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
             final ProtomekMountList lstMount = (ProtomekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
-            CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
-            if ((index > 0) && (index < list.getModel().getSize())) {
+            if ((value instanceof Mounted<?> mounted) && (mounted.getType() == widthWeaponType)) {
+                // For the "prototype" cell value, use the prototype text to set the correct width of the list
+                setText(CritCellUtil.CRITCELL_WIDTH_STRING);
                 setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+            } else {
+                CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
+                if ((index > 0) && (index < list.getModel().getSize())) {
+                    setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+                }
             }
             return this;
         }
 
-//        @Override
-//        public Dimension getPreferredSize() {
-//            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-//            return new Dimension(CRITCELL_WIDTH, height);
-//        }
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension superSize = super.getPreferredSize();
+            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
+        }
     }
 
     /**

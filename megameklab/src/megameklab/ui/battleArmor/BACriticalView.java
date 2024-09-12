@@ -149,7 +149,7 @@ public class BACriticalView extends IView {
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + ":" + trooper);
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
-                
+                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
                 switch (location) {
                     case BattleArmor.MOUNT_LOC_LARM:
                         leftArmPanel.add(criticalSlotList);
