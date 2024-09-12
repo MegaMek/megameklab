@@ -70,6 +70,7 @@ import org.w3c.dom.xpath.XPathResult;
 import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
 import megamek.common.util.ImageUtil;
+import megamek.logging.MMLogger;
 import megameklab.printing.reference.ReferenceTable;
 import megameklab.util.CConfig;
 
@@ -80,6 +81,7 @@ import megameklab.util.CConfig;
  * @author Neoancient
  */
 public abstract class PrintRecordSheet implements Printable, IdConstants {
+    private static final MMLogger logger = MMLogger.create(PrintRecordSheet.class);
 
     public static final String DEFAULT_TYPEFACE = "Eurostile";
     public static final float DEFAULT_PIP_SIZE = 0.38f;
@@ -209,25 +211,25 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
                 doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
 
-        if (res == null) {
-            return;
-        }
+        try {
+            Node node = res.iterateNext();
+            while (node != null) {
+                if (node instanceof Element elem) {
+                    // First we want to make sure it's not set in the style attribute, which could
+                    // override the change
+                    if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
+                        elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                                elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
+                                        .replaceAll("font-family:.*?;", ""));
+                    }
 
-        Node node = res.iterateNext();
-        while (node != null) {
-            if (node instanceof Element elem) {
-                // First we want to make sure it's not set in the style attribute, which could
-                // override the change
-                if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
-                    elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                            elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
-                                    .replaceAll("font-family:.*?;", ""));
+                    elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
                 }
 
-                elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                node = res.iterateNext();
             }
-
-            node = res.iterateNext();
+        } catch (NullPointerException ex) {
+            logger.error(ex, "Generally due to faulty document");
         }
     }
 
@@ -340,7 +342,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (getSVGDocument() == null) {
             return false;
         }
-        // subFonts((SVGDocument) getSVGDocument());
+        subFonts((SVGDocument) getSVGDocument());
         subColorElements();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
