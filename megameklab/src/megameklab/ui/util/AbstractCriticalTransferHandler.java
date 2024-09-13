@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,13 @@
  */
 package megameklab.ui.util;
 
+import javax.swing.JComponent;
+import javax.swing.TransferHandler;
+
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
 
 public class AbstractCriticalTransferHandler extends TransferHandler {
 

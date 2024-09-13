@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,10 @@
 package megameklab.ui.util;
 
 /**
- * This interface may implemented by all windows that exit the application. They may override the
- * exit() method to provide exit handling such as saving global preferences or window settings or
+ * This interface may implemented by all windows that exit the application. They
+ * may override the
+ * exit() method to provide exit handling such as saving global preferences or
+ * window settings or
  * show a safety dialog before exiting.
  *
  * @author Simon (Juliez)
@@ -28,7 +30,8 @@ package megameklab.ui.util;
 public interface AppCloser {
 
     /**
-     * Override to provide specific exit handling. Return false to prevent exiting the application,
+     * Override to provide specific exit handling. Return false to prevent exiting
+     * the application,
      * true to confirm it. By default, this method does nothing and returns true.
      *
      * @return False to prevent exiting, true to confirm

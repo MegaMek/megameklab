@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019, 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ import megameklab.ui.supportVehicle.SVMainUI;
 import megameklab.util.UnitUtil;
 
 /**
- * This class prepares a new editing UI for either a given Entity or an Entity type (new unit). While
+ * This class prepares a new editing UI for either a given Entity or an Entity
+ * type (new unit). While
  * preparation runs, a splash screen is shown.
  *
  * @author Taharqa
@@ -58,8 +59,7 @@ public class UiLoader {
     private static final TreeMap<Integer, String> LOAD_SCREEN_IMAGES = new TreeMap<>(Map.of(
             0, Configuration.miscImagesDir() + "/mml_load_spooky_hd.jpg",
             1441, Configuration.miscImagesDir() + "/mml_load_spooky_fhd.jpg",
-            1921, Configuration.miscImagesDir() + "/mml_load_spooky_uhd.jpg"
-    ));
+            1921, Configuration.miscImagesDir() + "/mml_load_spooky_uhd.jpg"));
 
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final JDialog splashImage;
@@ -99,11 +99,14 @@ public class UiLoader {
     }
 
     /**
-     * @param type       - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     * @param type       - the unit type to load the mainUI from, based on the types
+     *                   in StartupGUI.java
      * @param primitive  - is unit primitive
      * @param industrial - is unit industrial
-     * @param newUnit    - a specific <code>Entity</code> to load in rather than default
-     * @param fileName   - the file name of the new unit; empty String if the unit has no file
+     * @param newUnit    - a specific <code>Entity</code> to load in rather than
+     *                   default
+     * @param fileName   - the file name of the new unit; empty String if the unit
+     *                   has no file
      */
     private UiLoader(long type, boolean primitive, boolean industrial, Entity newUnit, String fileName) {
         this.type = type;
@@ -119,7 +122,10 @@ public class UiLoader {
         splashImage.setLocationRelativeTo(null);
     }
 
-    /** Shows the splash image, hides the calling frame and starts loading the new unit's UI. */
+    /**
+     * Shows the splash image, hides the calling frame and starts loading the new
+     * unit's UI.
+     */
     public void show() {
         splashImage.setVisible(true);
         SwingUtilities.invokeLater(this::loadNewUi);
@@ -138,7 +144,10 @@ public class UiLoader {
         splashImage.dispose();
     }
 
-    /** @return The correct MainUI for an Entity of the given type (ETYPE_xxx), primitive and industrial flag. */
+    /**
+     * @return The correct MainUI for an Entity of the given type (ETYPE_xxx),
+     *         primitive and industrial flag.
+     */
     public static MegaMekLabMainUI getUI(long type, boolean primitive, boolean industrial) {
         if (type == Entity.ETYPE_TANK) {
             return new CVMainUI();

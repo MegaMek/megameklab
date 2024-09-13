@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,13 @@
  */
 package megameklab.util;
 
-import megamek.common.*;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.StopSwarmAttack;

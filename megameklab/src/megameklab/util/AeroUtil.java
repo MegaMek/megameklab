@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.ab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,10 @@
  */
 package megameklab.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import megamek.common.*;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestSmallCraft;
@@ -30,10 +34,6 @@ import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public final class AeroUtil {
 

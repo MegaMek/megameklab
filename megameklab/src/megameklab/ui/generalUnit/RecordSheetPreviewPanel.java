@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,11 +48,10 @@ import megameklab.printing.PrintSmallUnitSheet;
 import megameklab.printing.RecordSheetOptions;
 import megameklab.util.UnitPrintManager;
 
-
 /**
  * @author pavelbraginskiy
  *
- * Simply fills itself with the record sheet for the given unit.
+ *         Simply fills itself with the record sheet for the given unit.
  */
 public class RecordSheetPreviewPanel extends JPanel {
     private class RightClickListener extends MouseAdapter {
@@ -68,7 +67,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
                     @Override
                     public DataFlavor[] getTransferDataFlavors() {
-                        return new DataFlavor[] {DataFlavor.imageFlavor};
+                        return new DataFlavor[] { DataFlavor.imageFlavor };
                     }
 
                     @Override
@@ -119,23 +118,21 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, width, height);
 
-
         if (entity != null) {
             RecordSheetOptions options = new RecordSheetOptions();
             PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options).get(0);
 
             // 5-pixel margin around rs
-            // Except for SmallUnitSheets which have weird clipping issues with nonstandard margin
+            // Except for SmallUnitSheets which have weird clipping issues with nonstandard
+            // margin
             PageFormat pf = new PageFormat();
             if (sheet instanceof PrintSmallUnitSheet) {
                 pf.setPaper(options.getPaperSize().createPaper());
                 sheet.createDocument(0, pf, false);
-            }
-            else {
+            } else {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
                 sheet.createDocument(0, pf, true);
             }
-
 
             GraphicsNode gn = sheet.build();
 

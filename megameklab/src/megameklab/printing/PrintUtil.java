@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ public final class PrintUtil {
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
      *
-     * @param eq The equipment to test     The equipment
+     * @param eq     The equipment to test The equipment
      * @param entity The Entity it's mounted on
-     * @return       Whether the equipment should be shown on the record sheet
+     * @return Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
         if (eq instanceof AmmoType) {
@@ -59,9 +59,9 @@ public final class PrintUtil {
      * simple method to let us know if eq should be printed on the weapons and
      * equipment section of the Record sheet.
      *
-     * @param eq The equipment to test     The equipment
+     * @param eq    The equipment to test The equipment
      * @param isMek Whether the equipment is mounted on a Mek
-     * @return       Whether the equipment should be shown on the record sheet
+     * @return Whether the equipment should be shown on the record sheet
      */
     public static boolean isPrintableEquipment(EquipmentType eq, boolean isMek) {
         if (UnitUtil.isArmorOrStructure(eq)) {
@@ -92,9 +92,9 @@ public final class PrintUtil {
                         || eq.hasFlag(MiscType.F_MASS)
                         || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
                         || eq.hasFlag(MiscType.F_SPONSON_TURRET))
-                        || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
-                        || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
-                        || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)) {
+                || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
+                || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)) {
             return false;
         }
 
@@ -105,7 +105,8 @@ public final class PrintUtil {
         return true;
     }
 
-    private PrintUtil() { }
+    private PrintUtil() {
+    }
 
     /**
      * simple method to let us know if eq should be printed on the weapons and

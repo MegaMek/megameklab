@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.ab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,13 @@
  */
 package megameklab.util;
 
-import megamek.common.*;
+import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Tank;
+import megamek.common.VTOL;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestTank;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3MBS;
@@ -49,9 +55,11 @@ public final class TankUtil {
     }
 
     /**
-     * Tests whether equipment should be shown on the equipment tab for the unit. This is
+     * Tests whether equipment should be shown on the equipment tab for the unit.
+     * This is
      * used for both combat vehicles and non-aerospace support vehicles.
-     * @param eq The equipment to show
+     *
+     * @param eq   The equipment to show
      * @param tank The tank
      * @return Whether the equipment should show on the table
      */
@@ -60,9 +68,12 @@ public final class TankUtil {
     }
 
     /**
-     * Tests whether equipment should be shown on the equipment tab for the unit as non-weapon
-     * equipment. This is used for both combat vehicles and non-aerospace support vehicles.
-     * @param eq The equipment to show
+     * Tests whether equipment should be shown on the equipment tab for the unit as
+     * non-weapon
+     * equipment. This is used for both combat vehicles and non-aerospace support
+     * vehicles.
+     *
+     * @param eq   The equipment to show
      * @param tank The tank
      * @return Whether the equipment should show on the table
      */
@@ -94,7 +105,7 @@ public final class TankUtil {
             // External fuel tanks are only allowed on ICE and fuel cell engines
             if (eq.hasFlag(MiscType.F_FUEL) && (!tank.hasEngine()
                     || (tank.getEngine().getEngineType() != Engine.COMBUSTION_ENGINE
-                        && tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
+                            && tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
                 return false;
             }
             if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {
@@ -109,5 +120,6 @@ public final class TankUtil {
         return false;
     }
 
-    private TankUtil() { }
+    private TankUtil() {
+    }
 }

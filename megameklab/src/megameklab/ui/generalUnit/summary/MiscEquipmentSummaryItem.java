@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@ import megamek.common.Mounted;
 import megameklab.util.UnitUtil;
 
 /**
- * This Summary Item sums up all misctype equipment not handled elsewhere (it excludes JJ, UMU, heat sinks,
+ * This Summary Item sums up all misctype equipment not handled elsewhere (it
+ * excludes JJ, UMU, heat sinks,
  * TSM) and without weapons and ammo.
  */
 public class MiscEquipmentSummaryItem extends AbstractSummaryItem {

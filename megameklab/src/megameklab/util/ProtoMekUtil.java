@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,12 @@
  */
 package megameklab.util;
 
-import megamek.common.*;
+import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.ProtoMek;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestProtoMek;
 
 public final class ProtoMekUtil {
@@ -47,7 +52,10 @@ public final class ProtoMekUtil {
         return true;
     }
 
-    /** Adds the given number of shots to the already present given ammo on the given ProtoMek. */
+    /**
+     * Adds the given number of shots to the already present given ammo on the given
+     * ProtoMek.
+     */
     public static void addProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) throws LocationFullException {
         Mounted<?> aMount = entity.getAmmo().stream()
                 .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
@@ -61,7 +69,8 @@ public final class ProtoMekUtil {
     }
 
     /**
-     * Subtracts the given number of shots from the given ammo on the given ProtoMek.
+     * Subtracts the given number of shots from the given ammo on the given
+     * ProtoMek.
      * May remove the entire Mounted from the ProtoMek.
      */
     public static void reduceProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) {
@@ -77,7 +86,8 @@ public final class ProtoMekUtil {
     }
 
     /**
-     * Checks whether the space has room for the equipment within the slot and weight limits.
+     * Checks whether the space has room for the equipment within the slot and
+     * weight limits.
      *
      * @param location A ProtoMek location
      * @param mount    The equipment to be added to the location
@@ -105,5 +115,6 @@ public final class ProtoMekUtil {
         return true;
     }
 
-    private ProtoMekUtil() { }
+    private ProtoMekUtil() {
+    }
 }
