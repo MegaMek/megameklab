@@ -14,7 +14,21 @@
  */
 package megameklab.ui.mek;
 
-import megamek.common.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+
+import megamek.common.CriticalSlot;
+import megamek.common.Mek;
+import megamek.common.Mounted;
+import megamek.common.TripodMek;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
@@ -22,12 +36,6 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * The Crit Slots view for a Mek (including Quad and Tripod)
@@ -49,9 +57,9 @@ public class BMCriticalView extends IView {
     private final JPanel hdPanel = new JPanel();
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> mekPanels = Map.of(Mech.LOC_HEAD, hdPanel, Mech.LOC_LARM, laPanel,
-            Mech.LOC_RARM, raPanel, Mech.LOC_CT, ctPanel, Mech.LOC_LT, ltPanel, Mech.LOC_RT, rtPanel,
-            Mech.LOC_LLEG, llPanel, Mech.LOC_RLEG, rlPanel, Mech.LOC_CLEG, clPanel);
+    private final Map<Integer, JComponent> mekPanels = Map.of(Mek.LOC_HEAD, hdPanel, Mek.LOC_LARM, laPanel,
+            Mek.LOC_RARM, raPanel, Mek.LOC_CT, ctPanel, Mek.LOC_LT, ltPanel, Mek.LOC_RT, rtPanel,
+            Mek.LOC_LLEG, llPanel, Mek.LOC_RLEG, rlPanel, Mek.LOC_CLEG, clPanel);
 
     private final List<BAASBMDropTargetCriticalList<String>> currentCritBlocks = new ArrayList<>();
 
@@ -74,25 +82,25 @@ public class BMCriticalView extends IView {
 
         laAlignPanel.add(Box.createVerticalStrut(100));
         laAlignPanel.add(laPanel);
-        
+
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(ltPanel);
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(llPanel);
-        
+
         centerAlignPanel.add(hdPanel);
         centerAlignPanel.add(ctPanel);
         centerAlignPanel.add(clPanel);
         centerAlignPanel.add(Box.createVerticalStrut(75));
-        
+
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rtPanel);
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rlPanel);
-        
+
         raAlignPanel.add(Box.createVerticalStrut(100));
         raAlignPanel.add(raPanel);
-        
+
         mainPanel.add(laAlignPanel);
         mainPanel.add(leftAlignPanel);
         mainPanel.add(centerAlignPanel);
@@ -118,31 +126,31 @@ public class BMCriticalView extends IView {
         ctPanel.removeAll();
         hdPanel.removeAll();
 
-        synchronized (getMech()) {
-            clPanel.setVisible(getMech() instanceof TripodMech);
+        synchronized (getMek()) {
+            clPanel.setVisible(getMek() instanceof TripodMek);
             setTitles();
 
-            for (int location = 0; location < getMech().locations(); location++) {
+            for (int location = 0; location < getMek().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
-                for (int slot = 0; slot < getMech().getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = getMech().getCritical(location, slot);
+                for (int slot = 0; slot < getMek().getNumberOfCriticals(location); slot++) {
+                    CriticalSlot cs = getMek().getCritical(location, slot);
                     if (cs == null) {
                         critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(getMech().getSystemName(cs.getIndex()));
+                        critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted m = cs.getMount();
+                        Mounted<?> m = cs.getMount();
                         if (m == null) {
                             // Critical didn't get removed. Remove it now.
-                            getMech().setCritical(location, slot, null);
+                            getMek().setCritical(location, slot, null);
                             critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                         } else {
                             StringBuilder critName = new StringBuilder(m.getName());
                             if (m.isRearMounted()) {
                                 critName.append(" (R)");
                             }
-                            if (m.isMechTurretMounted()) {
+                            if (m.isMekTurretMounted()) {
                                 critName.append(" (T)");
                             }
                             critNames.add(critName.toString());
@@ -161,36 +169,36 @@ public class BMCriticalView extends IView {
                     currentCritBlocks.add(criticalSlotList);
                 }
             }
-            
+
             validate();
         }
     }
 
     private void setTitles() {
-        String title = getMech().getLocationName(Mech.LOC_LARM) + caseSuffix(Mech.LOC_LARM);
+        String title = getMek().getLocationName(Mek.LOC_LARM) + caseSuffix(Mek.LOC_LARM);
         laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_RARM) + caseSuffix(Mech.LOC_RARM);
+        title = getMek().getLocationName(Mek.LOC_RARM) + caseSuffix(Mek.LOC_RARM);
         raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_LLEG) + caseSuffix(Mech.LOC_LLEG);
+        title = getMek().getLocationName(Mek.LOC_LLEG) + caseSuffix(Mek.LOC_LLEG);
         llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_RLEG) + caseSuffix(Mech.LOC_RLEG);
+        title = getMek().getLocationName(Mek.LOC_RLEG) + caseSuffix(Mek.LOC_RLEG);
         rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_CLEG) + caseSuffix(Mech.LOC_CLEG);
+        title = getMek().getLocationName(Mek.LOC_CLEG) + caseSuffix(Mek.LOC_CLEG);
         clPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_LT) + caseSuffix(Mech.LOC_LT);
+        title = getMek().getLocationName(Mek.LOC_LT) + caseSuffix(Mek.LOC_LT);
         ltPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_RT) + caseSuffix(Mech.LOC_RT);
+        title = getMek().getLocationName(Mek.LOC_RT) + caseSuffix(Mek.LOC_RT);
         rtPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_CT) + caseSuffix(Mech.LOC_CT);
+        title = getMek().getLocationName(Mek.LOC_CT) + caseSuffix(Mek.LOC_CT);
         ctPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMech().getLocationName(Mech.LOC_HEAD) + caseSuffix(Mech.LOC_HEAD);
+        title = getMek().getLocationName(Mek.LOC_HEAD) + caseSuffix(Mek.LOC_HEAD);
         hdPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
     }
 
     private String caseSuffix(int location) {
-        if (getMech().hasCASEII(location)) {
+        if (getMek().hasCASEII(location)) {
             return " (CASE II)";
-        } else if (getMech().locationHasCase(location)) {
+        } else if (getMek().locationHasCase(location)) {
             return " (CASE)";
         } else {
             return "";
@@ -200,16 +208,16 @@ public class BMCriticalView extends IView {
     /**
      * Darkens all crit blocks that are unavailable to the given equipment, e.g. all but Torsos for CASE.
      */
-    public void markUnavailableLocations(@Nullable Mounted equipment) {
+    public void markUnavailableLocations(@Nullable Mounted<?> equipment) {
         if (equipment != null) {
             currentCritBlocks.stream()
-                    .filter(b -> !UnitUtil.isValidLocation(getMech(), equipment.getType(), b.getCritLocation()))
+                    .filter(b -> !UnitUtil.isValidLocation(getMek(), equipment.getType(), b.getCritLocation()))
                     .forEach(b -> b.setDarkened(true));
         }
     }
 
     /** Resets all crit blocks to not darkened. */
-    public void unmarkAllLocations() {
+    public void unMarkAllLocations() {
         currentCritBlocks.forEach(b -> b.setDarkened(false));
     }
 

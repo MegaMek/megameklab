@@ -16,14 +16,14 @@ package megameklab.ui;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.client.ui.swing.widget.MegamekButton;
+import megamek.client.ui.swing.widget.MegaMekButton;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.client.ui.swing.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
-import megamek.common.MechSummary;
+import megamek.common.MekSummary;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
@@ -46,7 +46,7 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     JFrame frame;
     MenuBar mmlMenuBar;
-    
+
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
@@ -54,9 +54,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_spooky_fhd.jpg"); // TODO : Remove inline filename
         startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
     }
-    
+
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
-    
+
     public StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
         initComponents();
@@ -91,54 +91,54 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
         JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
         add(splash, BorderLayout.CENTER);
-        
+
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250,15));
         if (!skinSpec.fontColors.isEmpty()) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
 
-        MegamekButton btnLoadUnit = new MegamekButton(resourceMap.getString("btnLoadUnit.text"),
+        MegaMekButton btnLoadUnit = new MegaMekButton(resourceMap.getString("btnLoadUnit.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnLoadUnit.addActionListener(evt -> selectAndLoadUnitFromCache(this));
-        
-        MegamekButton btnNewMek = new MegamekButton(resourceMap.getString("btnNewMek.text"),
+
+        MegaMekButton btnNewMek = new MegaMekButton(resourceMap.getString("btnNewMek.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewMek.addActionListener(evt -> newUnit(Entity.ETYPE_MECH));
-        
-        MegamekButton btnNewVee = new MegamekButton(resourceMap.getString("btnNewVee.text"),
+        btnNewMek.addActionListener(evt -> newUnit(Entity.ETYPE_MEK));
+
+        MegaMekButton btnNewVee = new MegaMekButton(resourceMap.getString("btnNewVee.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(evt -> newUnit(Entity.ETYPE_TANK));
-        
-        MegamekButton btnNewSupportVee = new MegamekButton(resourceMap.getString("btnNewSupportVee.text"),
+
+        MegaMekButton btnNewSupportVee = new MegaMekButton(resourceMap.getString("btnNewSupportVee.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK));
-        
-        MegamekButton btnNewBA = new MegamekButton(resourceMap.getString("btnNewBA.text"),
+
+        MegaMekButton btnNewBA = new MegaMekButton(resourceMap.getString("btnNewBA.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR));
-        
-        MegamekButton btnNewAero = new MegamekButton(resourceMap.getString("btnNewAero.text"),
+
+        MegaMekButton btnNewAero = new MegaMekButton(resourceMap.getString("btnNewAero.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO));
 
-        MegamekButton btnNewDropper = new MegamekButton(resourceMap.getString("btnNewDropper.text"),
+        MegaMekButton btnNewDropper = new MegaMekButton(resourceMap.getString("btnNewDropper.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP));
-        
-        MegamekButton btnNewLargeCraft = new MegamekButton(resourceMap.getString("btnNewLargeCraft.text"),
+
+        MegaMekButton btnNewLargeCraft = new MegaMekButton(resourceMap.getString("btnNewLargeCraft.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP));
-        
-        MegamekButton btnNewProto = new MegamekButton(resourceMap.getString("btnNewProto.text"),
+
+        MegaMekButton btnNewProto = new MegaMekButton(resourceMap.getString("btnNewProto.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewProto.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMECH));
-        
-        MegamekButton btnNewPbi = new MegamekButton(resourceMap.getString("btnNewPbi.text"),
+        btnNewProto.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMEK));
+
+        MegaMekButton btnNewPbi = new MegaMekButton(resourceMap.getString("btnNewPbi.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY));
-        
-        MegamekButton btnQuit = new MegamekButton(resourceMap.getString("btnQuit.text"),
+
+        MegaMekButton btnQuit = new MegaMekButton(resourceMap.getString("btnQuit.text"),
                 UIComponents.MainMenuButton.getComp(), true);
         btnQuit.addActionListener(evt -> System.exit(0));
 
@@ -160,7 +160,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (textDim.getWidth() > minButtonDim.getWidth()) {
             minButtonDim = textDim;
         }
-        
+
         btnLoadUnit.setMinimumSize(minButtonDim);
         btnLoadUnit.setPreferredSize(minButtonDim);
         btnNewMek.setMinimumSize(minButtonDim);
@@ -183,7 +183,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         btnNewProto.setPreferredSize(minButtonDim);
         btnQuit.setMinimumSize(minButtonDim);
         btnQuit.setPreferredSize(minButtonDim);
-        
+
         // layout
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -227,7 +227,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         add(btnNewLargeCraft, c);
         c.gridy++;
         add(btnQuit, c);
-        
+
         frame.setResizable(false);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(this, BorderLayout.CENTER);
@@ -252,15 +252,15 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog);
         Entity newUnit = viewer.getChosenEntity();
-        MechSummary mechSummary = viewer.getSelectedMechSummary();
+        MekSummary mekSummary = viewer.getSelectedMekSummary();
         viewer.dispose();
-        if ((mechSummary == null) || (newUnit == null)) {
+        if ((mekSummary == null) || (newUnit == null)) {
             return;
         }
 
-        String fileName = viewer.getSelectedMechSummary().getSourceFile().toString();
+        String fileName = viewer.getSelectedMekSummary().getSourceFile().toString();
         if (fileName.toLowerCase().endsWith(".zip")) {
-            fileName = viewer.getSelectedMechSummary().getSourceFile().getAbsolutePath();
+            fileName = viewer.getSelectedMekSummary().getSourceFile().getAbsolutePath();
             fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
             fileName = fileName + MenuBar.createUnitFilename(newUnit);
         }

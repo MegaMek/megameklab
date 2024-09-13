@@ -13,21 +13,27 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Compute;
+import megamek.common.Entity;
+import megamek.common.Infantry;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.weapons.missiles.MissileWeapon;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.*;
 
 /**
  * Table showing the relevant columns of the cluster hits table
  */
 public class ClusterHitsTable extends ReferenceTable {
-    private static final Logger log = LogManager.getLogger(ClusterHitsTable.class);
     protected final Set<Integer> clusterSizes = new TreeSet<>();
     protected boolean hasATM;
     protected boolean hasHAG;
@@ -87,7 +93,7 @@ public class ClusterHitsTable extends ReferenceTable {
                 clusterSizes.add(i);
             }
             if (entity instanceof BattleArmor) {
-                for (Mounted mounted : entity.getIndividualWeaponList()) {
+                for (Mounted<?> mounted : entity.getIndividualWeaponList()) {
                     if (mounted.getType() instanceof MissileWeapon) {
                         for (int troopers = 1; troopers <= size; troopers++) {
                             clusterSizes.add(Math.min(40, troopers * ((MissileWeapon) mounted.getType()).getRackSize()));
@@ -97,7 +103,7 @@ public class ClusterHitsTable extends ReferenceTable {
             }
             return;
         }
-        for (Mounted mounted : entity.getIndividualWeaponList()) {
+        for (Mounted<?> mounted : entity.getIndividualWeaponList()) {
             if (mounted.getType() instanceof WeaponType) {
                 final WeaponType weapon = (WeaponType) mounted.getType();
                 switch (weapon.getAmmoType()) {

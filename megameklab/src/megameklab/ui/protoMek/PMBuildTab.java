@@ -13,9 +13,20 @@
  */
 package megameklab.ui.protoMek;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
+
 import megamek.common.Entity;
 import megamek.common.Mounted;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -23,14 +34,9 @@ import megameklab.ui.util.SpringLayoutHelper;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * Tab for assigning equipment to locations
- * 
+ *
  * @author Neoancient
  */
 public class PMBuildTab extends ITab implements ActionListener {
@@ -111,10 +117,10 @@ public class PMBuildTab extends ITab implements ActionListener {
     }
 
     private void autoFillCrits() {
-        for (Mounted mount : buildView.getTableModel().getCrits()) {
-            for (int location = 0; location < getProtomech().locations(); location++) {
-                if (ProtoMekUtil.protomechHasRoom(getProtomech(), location, mount)) {
-                    UnitUtil.changeMountStatus(getProtomech(), mount, location, Entity.LOC_NONE, false);
+        for (Mounted<?> mount : buildView.getTableModel().getCrits()) {
+            for (int location = 0; location < getProtoMek().locations(); location++) {
+                if (ProtoMekUtil.protoMekHasRoom(getProtoMek(), location, mount)) {
+                    UnitUtil.changeMountStatus(getProtoMek(), mount, location, Entity.LOC_NONE, false);
                 }
             }
         }
@@ -122,10 +128,10 @@ public class PMBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getProtomech().getEquipment()) {
+        for (Mounted<?> mount : getProtoMek().getEquipment()) {
             // Fixed shouldn't be removed
-            if (TestProtomech.requiresSlot(mount.getType())) {
-                UnitUtil.changeMountStatus(getProtomech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            if (TestProtoMek.requiresSlot(mount.getType())) {
+                UnitUtil.changeMountStatus(getProtoMek(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
 

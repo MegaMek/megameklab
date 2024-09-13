@@ -13,18 +13,23 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.*;
-import megamek.common.verifier.BayData;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestEntity.Ceil;
-import megamek.common.verifier.TestSupportVehicle.SVType;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -33,15 +38,27 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import megamek.common.Bay;
+import megamek.common.DockingCollar;
+import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
+import megamek.common.InfantryBay;
+import megamek.common.Jumpship;
+import megamek.common.RoundWeight;
+import megamek.common.Transporter;
+import megamek.common.TroopSpace;
+import megamek.common.verifier.BayData;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestEntity.Ceil;
+import megamek.common.verifier.TestSupportVehicle.SVType;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.util.UnitUtil;
 
 /**
  * Tab for adding and modifying aerospace and support vee transport bays.
@@ -49,6 +66,8 @@ import java.util.stream.Collectors;
  * @author Neoancient
  */
 public class TransportTab extends IView implements ActionListener, ChangeListener {
+    private static final MMLogger logger = MMLogger.create(TransportTab.class);
+
     private final JLabel lblDockingHardpoints = new JLabel();
     private final JLabel lblMaxHardpoints = new JLabel();
     private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -304,8 +323,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     /**
-     * Checks whether the current unit type can mount infantry compartments (i.e. {@code Troopspace}.
-     * Infantry compartments cannot be used by DropShips or advanced aerospace vessels (i.e. large craft)
+     * Checks whether the current unit type can mount infantry compartments (i.e.
+     * {@code Troopspace}.
+     * Infantry compartments cannot be used by DropShips or advanced aerospace
+     * vessels (i.e. large craft)
      * or by large naval or airship support vehicles.
      *
      * @return Whether the current unit can mount infantry compartments.
@@ -389,15 +410,17 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     /**
-     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice to let the
-     * user order the bays. Since bay numbers are immutable we have to instantiate a new bay to
+     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice
+     * to let the
+     * user order the bays. Since bay numbers are immutable we have to instantiate a
+     * new bay to
      * alter it.
      */
     private void rebuildBays() {
         int bayNum = 1;
         List<Transporter> fixedList = new ArrayList<>();
         List<Transporter> podList = new ArrayList<>();
-        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
+        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext();) {
             final Bay bay = iter.next();
             if (bay.getBayNumber() == bayNum) {
                 if (getEntity().isPodMountedTransport(bay)) {
@@ -473,7 +496,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 Bay bay;
                 int bayNum = 1;
                 if ((selected >= 0)
-                        && (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
+                        && (modelInstalled
+                                .getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
                     bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                     size += bay.getCapacity();
                     bayNum = bay.getBayNumber();
@@ -537,14 +561,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     private class InstalledBaysModel extends AbstractTableModel {
-        private static final int COL_NAME      = 0;
-        private static final int COL_SIZE      = 1;
-        private static final int COL_DOORS     = 2;
-        private static final int COL_TONNAGE   = 3;
+        private static final int COL_NAME = 0;
+        private static final int COL_SIZE = 1;
+        private static final int COL_DOORS = 2;
+        private static final int COL_TONNAGE = 3;
         private static final int COL_PERSONNEL = 4;
-        private static final int COL_FACING    = 5;
-        private static final int COL_POD       = 6;
-        private static final int NUM_COLS      = 7;
+        private static final int COL_FACING = 5;
+        private static final int COL_POD = 6;
+        private static final int NUM_COLS = 7;
 
         private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
@@ -555,8 +579,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             bayList.clear();
             bayTypeList.clear();
             // Find all the bays and sort them by bay number.
-            // Entity.getTransportBays() iterates through all transports and builds a collection of
-            // Bays so we're going to save ourselves a second list instantiation and iteration by
+            // Entity.getTransportBays() iterates through all transports and builds a
+            // collection of
+            // Bays so we're going to save ourselves a second list instantiation and
+            // iteration by
             // doing it all at once here.
             List<Bay> bays = getEntity().getTransports().stream()
                     .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters())
@@ -572,7 +598,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
             fireTableDataChanged();
 
-            // We need to refresh the docking hardpoint count to ensure that the count is correct
+            // We need to refresh the docking hardpoint count to ensure that the count is
+            // correct
             // following the removal of any naval repair facilities
             refreshDockingHardpoints();
         }
@@ -599,9 +626,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 case COL_DOORS:
                     return resourceMap.getString("TransportTab.colDoors.text");
                 case COL_TONNAGE:
-                    return useKilogramStandard() ?
-                            resourceMap.getString("TransportTab.colKilograms.text") :
-                            resourceMap.getString("TransportTab.colTonnage.text");
+                    return useKilogramStandard() ? resourceMap.getString("TransportTab.colKilograms.text")
+                            : resourceMap.getString("TransportTab.colTonnage.text");
                 case COL_PERSONNEL:
                     return resourceMap.getString("TransportTab.colPersonnel.text");
                 case COL_FACING:
@@ -724,10 +750,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     private class AvailableBaysModel extends AbstractTableModel {
-        private static final int COL_NAME      = 0;
-        private static final int COL_SIZE      = 1;
+        private static final int COL_NAME = 0;
+        private static final int COL_SIZE = 1;
         private static final int COL_PERSONNEL = 2;
-        private static final int NUM_COLS      = 3;
+        private static final int NUM_COLS = 3;
 
         private final List<BayData> bayList = new ArrayList<>();
 
@@ -835,7 +861,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 addBay(newBay, pod);
                 modelInstalled.bayList.set(row, newBay);
 
-                // We need to refresh the docking hardpoint count to ensure that the count is correct
+                // We need to refresh the docking hardpoint count to ensure that the count is
+                // correct
                 // following the size change of any naval repair facilities
                 refreshDockingHardpoints();
 
@@ -906,17 +933,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
 
             try {
-               int rowFrom = Integer.parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
-               if (rowFrom != -1 && rowFrom != index) {
-                  modelInstalled.reorder(rowFrom, index);
-                  if (index > rowFrom) {
-                      index--;
-                  }
-                  target.getSelectionModel().addSelectionInterval(index, index);
-                  return true;
-               }
+                int rowFrom = Integer
+                        .parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
+                if (rowFrom != -1 && rowFrom != index) {
+                    modelInstalled.reorder(rowFrom, index);
+                    if (index > rowFrom) {
+                        index--;
+                    }
+                    target.getSelectionModel().addSelectionInterval(index, index);
+                    return true;
+                }
             } catch (Exception e) {
-               LogManager.getLogger().error("", e);
+                logger.error("", e);
             }
             return false;
         }

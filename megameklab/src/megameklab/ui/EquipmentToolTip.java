@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,24 @@
  */
 package megameklab.ui;
 
-import megamek.common.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 public final class EquipmentToolTip {
 
-    public static String getToolTipInfo(Entity unit, Mounted eq) {
+    public static String getToolTipInfo(Entity unit, Mounted<?> eq) {
         DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
         unusualSymbols.setDecimalSeparator('.');
         unusualSymbols.setGroupingSeparator(',');
@@ -84,7 +89,7 @@ public final class EquipmentToolTip {
         if (eq.isRearMounted()) {
             sb.append("<br>Rear Facing");
         }
-        if (eq.isMechTurretMounted()) {
+        if (eq.isMekTurretMounted()) {
             sb.append("<br>Turret mounted");
         }
         if (eq.isArmored()) {
@@ -92,11 +97,11 @@ public final class EquipmentToolTip {
         }
         if ((unit instanceof BattleArmor)
                 && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
-           sb.append("<br>* Infantry support weapons must be held in an " +
-                "Armored Glove");
+            sb.append("<br>* Infantry support weapons must be held in an " +
+                    "Armored Glove");
         } else if ((unit instanceof BattleArmor)
                 && eq.getType().hasFlag(WeaponType.F_INFANTRY)) {
-           sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
+            sb.append("<br>* Infantry weapons must be mounted in AP Mounts");
         }
 
         sb.append("</html>");
@@ -106,7 +111,7 @@ public final class EquipmentToolTip {
     private static String getWeaponDamageInfo(WeaponType wType) {
         if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
             int perMissile = 1;
-            if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon) ||(wType instanceof MMLWeapon)) {
+            if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon) || (wType instanceof MMLWeapon)) {
                 perMissile = 2;
             }
             return Integer.toString(wType.getRackSize() * perMissile);
@@ -128,5 +133,6 @@ public final class EquipmentToolTip {
         }
     }
 
-    private EquipmentToolTip() { }
+    private EquipmentToolTip() {
+    }
 }

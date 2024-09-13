@@ -18,20 +18,29 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.PopupMessages;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.Objects;
+
+import javax.swing.JComponent;
+import javax.swing.JTable;
+
+import megamek.common.Aero;
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.LocationFullException;
+import megamek.common.Mek;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
+import megameklab.util.UnitUtil;
 
 /**
  * The crit slot Transfer Handler for BA and AS.
@@ -39,6 +48,8 @@ import java.util.Objects;
  * @author jtighe (torren@users.sourceforge.net)
  */
 public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler {
+    private static final MMLogger logger = MMLogger.create(BAASCriticalTransferHandler.class);
+
     private int location = -1;
 
     public BAASCriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
@@ -50,11 +61,11 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         if (data == null) {
             return;
         }
-        Mounted mounted;
+        Mounted<?> mounted;
         try {
             mounted = getUnit().getEquipment(Integer.parseInt((String) data.getTransferData(DataFlavor.stringFlavor)));
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
 
@@ -92,7 +103,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                     getUnit().setCritical(loc, i, null);
                 }
             }
-            Mounted linkedBy = mounted.getLinkedBy();
+            Mounted<?> linkedBy = mounted.getLinkedBy();
             if ((linkedBy != null) && !(getUnit() instanceof BattleArmor)) {
                 UnitUtil.removeCriticals(getUnit(), linkedBy);
                 try {
@@ -107,7 +118,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
     }
 
-    private boolean addEquipmentBA(BattleArmor ba, Mounted newMount, int trooper) {
+    private boolean addEquipmentBA(BattleArmor ba, Mounted<?> newMount, int trooper) {
         if (TestBattleArmor.isMountLegal(ba, newMount, location, trooper)) {
             newMount.setBaMountLoc(location);
             if (newMount.getLocation() == BattleArmor.LOC_SQUAD) {
@@ -121,11 +132,11 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
     }
 
-    private boolean addEquipmentAero(Aero aero, Mounted eq) throws LocationFullException {
+    private boolean addEquipmentAero(Aero aero, Mounted<?> eq) throws LocationFullException {
         if (eq.getType() instanceof WeaponType) {
             int[] availSpace = Objects.requireNonNull(TestAero.availableSpace(aero));
             int[] weapCount = new int[aero.locations() - 1];
-            for (Mounted m : aero.getWeaponList()) {
+            for (Mounted<?> m : aero.getWeaponList()) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     weapCount[m.getLocation()]++;
                 }
@@ -147,7 +158,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
 
     @Override
     public boolean importData(TransferSupport info) {
-        if (!info.isDrop() || !((getUnit() instanceof Mech) || (getUnit() instanceof Aero) ||
+        if (!info.isDrop() || !((getUnit() instanceof Mek) || (getUnit() instanceof Aero) ||
                 (getUnit() instanceof BattleArmor))) {
             return false;
         }
@@ -168,7 +179,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
             Transferable t = info.getTransferable();
 
             try {
-                Mounted eq = getUnit().getEquipment(Integer.parseInt(
+                Mounted<?> eq = getUnit().getEquipment(Integer.parseInt(
                         (String) t.getTransferData(DataFlavor.stringFlavor)));
                 if (getUnit() instanceof BattleArmor) {
                     if ((location == eq.getBaMountLoc())
@@ -193,7 +204,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                     PopupMessages.showInvalidLocationInfo(null, eq.getName(), getUnit().getLocationName(location));
                     return false;
                 }
-                
+
                 if (getUnit() instanceof Aero) {
                     return addEquipmentAero((Aero) getUnit(), eq);
                 } else if (getUnit() instanceof BattleArmor) {
@@ -203,7 +214,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                 PopupMessages.showLocationFullError(null);
                 return false;
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
             return true;
         }
@@ -221,12 +232,12 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
             return false;
         }
         // check if the dragged mounted should be transferrable
-        Mounted mounted = null;
+        Mounted<?> mounted = null;
         try {
             int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
             mounted = getUnit().getEquipment(index);
         } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
         }
         // not actually dragged a Mounted? not transferable
         if (mounted == null) {
@@ -238,7 +249,8 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
         }
         // no transfer in the same location
         if (getUnit() instanceof BattleArmor) {
-            // Infantry weapons cannot be mounted directly, but must instead be mounted in an AP Mount
+            // Infantry weapons cannot be mounted directly, but must instead be mounted in
+            // an AP Mount
             if (mounted.getType() instanceof InfantryWeapon) {
                 return false;
             }
@@ -258,11 +270,12 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
     protected Transferable createTransferable(JComponent c) {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
-            Mounted mount = (Mounted) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
+                    CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
-            Mounted mount = list.getMounted();
+            Mounted<?> mount = list.getMounted();
             if (mount != null) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
             }

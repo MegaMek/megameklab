@@ -13,18 +13,16 @@
  */
 package megameklab.ui.infantry;
 
-import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.*;
-import megamek.common.weapons.artillery.ArrowIV;
-import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
-import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megamek.common.weapons.autocannons.*;
-import megamek.common.weapons.gaussrifles.GaussWeapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.EquipmentTableModel;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-import megameklab.util.InfantryUtil;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -32,11 +30,24 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
+
+import megamek.client.ui.models.XTableColumnModel;
+import megamek.common.AmmoType;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.WeaponType;
+import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.common.weapons.autocannons.ACWeapon;
+import megamek.common.weapons.autocannons.LBXACWeapon;
+import megamek.common.weapons.autocannons.RifleWeapon;
+import megamek.common.weapons.autocannons.UACWeapon;
+import megamek.common.weapons.gaussrifles.GaussWeapon;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.EquipmentTableModel;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.util.InfantryUtil;
 
 /**
  * Shows options for infantry field guns/field artillery

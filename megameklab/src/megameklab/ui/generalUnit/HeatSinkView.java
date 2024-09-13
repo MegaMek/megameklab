@@ -18,16 +18,8 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.*;
-import megamek.common.verifier.TestAero;
-import megameklab.ui.listeners.BuildListener;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -36,29 +28,50 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.Aero;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.ITechManager;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.verifier.TestAero;
+import megameklab.ui.listeners.BuildListener;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.util.UnitUtil;
+
 /**
- * Controls for selecting type and number of heat sinks for mechs and asfs.
- * 
+ * Controls for selecting type and number of heat sinks for Meks and asfs.
+ *
  * @author Neoancient
  */
 public class HeatSinkView extends BuildView implements ActionListener, ChangeListener {
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
-    
-    public static final int TYPE_SINGLE         = 0;
-    public static final int TYPE_DOUBLE_IS      = 1;
-    public static final int TYPE_DOUBLE_CLAN    = 2;
-    public static final int TYPE_COMPACT        = 3;
-    public static final int TYPE_LASER          = 4;
-    public static final int TYPE_PROTOTYPE      = 5;
-    public static final int TYPE_FREEZER        = 6;
+
+    public static final int TYPE_SINGLE = 0;
+    public static final int TYPE_DOUBLE_IS = 1;
+    public static final int TYPE_DOUBLE_CLAN = 2;
+    public static final int TYPE_COMPACT = 3;
+    public static final int TYPE_LASER = 4;
+    public static final int TYPE_PROTOTYPE = 5;
+    public static final int TYPE_FREEZER = 6;
     // ASFs simply use an index and don't distinguish between IS and Clan
-    public static final int TYPE_DOUBLE_AERO    = 1;
+    public static final int TYPE_DOUBLE_AERO = 1;
     public static final int TYPE_PROTOTYPE_AERO = 2;
 
     private static final String[] LOOKUP_NAMES = {
@@ -68,7 +81,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
     };
     private final List<EquipmentType> heatSinks;
-    private String[] mechDisplayNames;
+    private String[] MekDisplayNames;
     private String[] aeroDisplayNames;
 
     private final CustomComboBox<Integer> cbHSType = new CustomComboBox<>(this::getDisplayName);
@@ -81,7 +94,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblCritFreeCount = new JLabel();
     private final JLabel lblWeightFreeText = new JLabel();
     private final JLabel lblWeightFreeCount = new JLabel();
-    
+
     private final SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
     private final SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
     private final SpinnerNumberModel prototypeCountModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -99,12 +112,12 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         }
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-        mechDisplayNames = resourceMap.getString("HeatSinkView.mechNames.values").split(",");
+        MekDisplayNames = resourceMap.getString("HeatSinkView.mekNames.values").split(",");
         aeroDisplayNames = resourceMap.getString("HeatSinkView.aeroNames.values").split(",");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -118,7 +131,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip"));
         add(cbHSType, gbc);
         cbHSType.addActionListener(this);
-        
+
         spnCount.setModel(countModel);
         gbc.gridx = 0;
         gbc.gridy++;
@@ -169,21 +182,22 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         add(lblWeightFreeCount, gbc);
 
     }
-    
+
     private String getDisplayName(int index) {
-        return isAero? aeroDisplayNames[index] : mechDisplayNames[index];
+        return isAero ? aeroDisplayNames[index] : MekDisplayNames[index];
     }
-    
-    public void setFromMech(Mech mech) {
+
+    public void setFromMek(Mek mek) {
         isAero = false;
-        isPrimitive = mech.isPrimitive();
-        hasPrototypeDoubles = mech.hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
+        isPrimitive = mek.isPrimitive();
+        hasPrototypeDoubles = mek.hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
         refresh();
-        // If there are prototype doubles, we want to skip any singles and select that as the base type.
-        Optional<MiscType> hs = mech.getMisc().stream().map(Mounted::getType)
+        // If there are prototype doubles, we want to skip any singles and select that
+        // as the base type.
+        Optional<MiscType> hs = mek.getMisc().stream().map(Mounted::getType)
                 .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
         if (hs.isEmpty()) {
-            hs = mech.getMisc().stream().map(Mounted::getType)
+            hs = mek.getMisc().stream().map(Mounted::getType)
                     .filter(UnitUtil::isHeatSink).findAny();
         }
         if (hs.isPresent()) {
@@ -191,31 +205,31 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             setHeatSinkType(hs.get());
             cbHSType.addActionListener(this);
         }
-        int totalSinks = mech.heatSinks(true);
+        int totalSinks = mek.heatSinks(true);
         spnCount.removeChangeListener(this);
         countModel.setValue(totalSinks);
-        countModel.setMinimum(mech.getEngine().getWeightFreeEngineHeatSinks());
+        countModel.setMinimum(mek.getEngine().getWeightFreeEngineHeatSinks());
         spnCount.addChangeListener(this);
         boolean isCompact = cbHSType.getSelectedItem() != null
-                && ((Integer)cbHSType.getSelectedItem()) == TYPE_COMPACT;
-        int capacity = mech.getEngine().integralHeatSinkCapacity(isCompact);
-        lblBaseCount.setVisible(mech.isOmni());
-        spnBaseCount.setVisible(mech.isOmni());
+                && ((Integer) cbHSType.getSelectedItem()) == TYPE_COMPACT;
+        int capacity = mek.getEngine().integralHeatSinkCapacity(isCompact);
+        lblBaseCount.setVisible(mek.isOmni());
+        spnBaseCount.setVisible(mek.isOmni());
         spnBaseCount.removeChangeListener(this);
         baseCountModel.setMaximum(capacity);
-        baseCountModel.setValue(Math.max(0, mech.getEngine().getBaseChassisHeatSinks(isCompact)));
+        baseCountModel.setValue(Math.max(0, mek.getEngine().getBaseChassisHeatSinks(isCompact)));
         spnBaseCount.addChangeListener(this);
         lblPrototypeCount.setVisible(hasPrototypeDoubles);
         spnPrototypeCount.setVisible(hasPrototypeDoubles);
         spnPrototypeCount.removeChangeListener(this);
-        spnPrototypeCount.setValue(totalSinks - mech.heatSinks(false));
+        spnPrototypeCount.setValue(totalSinks - mek.heatSinks(false));
         prototypeCountModel.setMaximum(totalSinks);
         prototypeCountModel.setMinimum(hasPrototypeDoubles ? 1 : 0);
         spnPrototypeCount.addChangeListener(this);
-        lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mech, isCompact)));
-        lblWeightFreeCount.setText(String.valueOf(mech.getEngine().getWeightFreeEngineHeatSinks()));
+        lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
+        lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
     }
-    
+
     public void setFromAero(Aero aero) {
         isAero = true;
         isPrimitive = aero.isPrimitive();
@@ -225,7 +239,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         if (aero.getHeatType() == Aero.HEAT_DOUBLE
                 && !techManager.isLegal(heatSinks.get(TYPE_DOUBLE_AERO))
                 && (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE))
-                      || techManager.isLegal(heatSinks.get(TYPE_FREEZER)))) {
+                        || techManager.isLegal(heatSinks.get(TYPE_FREEZER)))) {
             setHeatSinkIndex(TYPE_PROTOTYPE_AERO);
         } else {
             setHeatSinkIndex(aero.getHeatType());
@@ -249,9 +263,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblCritFreeText.setVisible(false);
         lblCritFreeCount.setVisible(false);
     }
-    
+
     public void refresh() {
-        Integer prev = (Integer)cbHSType.getSelectedItem();
+        Integer prev = (Integer) cbHSType.getSelectedItem();
         cbHSType.removeActionListener(this);
         cbHSType.removeAllItems();
         if (isAero) {
@@ -278,37 +292,38 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             cbHSType.setSelectedIndex(0);
         }
     }
-    
+
     public int getHeatSinkIndex() {
         if (cbHSType.getSelectedItem() != null) {
             return (Integer) cbHSType.getSelectedItem();
         }
         return 0;
     }
-    
+
     public void setHeatSinkIndex(int index) {
         cbHSType.setSelectedItem(index);
     }
-    
+
     public EquipmentType getHeatSinkType() {
         return heatSinks.get(getHeatSinkIndex());
     }
-    
+
     public void setHeatSinkType(EquipmentType hs) {
         int index = heatSinks.indexOf(hs);
         cbHSType.setSelectedItem(index);
     }
-    
+
     public int getCount() {
         return countModel.getNumber().intValue();
     }
-    
+
     public int getBaseCount() {
         return baseCountModel.getNumber().intValue();
     }
 
     /**
-     * @return The number of heat sinks out of the total that are prototype double heat sinks.
+     * @return The number of heat sinks out of the total that are prototype double
+     *         heat sinks.
      */
     public int getPrototypeCount() {
         if (hasPrototypeDoubles) {
@@ -317,7 +332,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             return 0;
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbHSType) {
@@ -336,7 +351,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.redistributePrototypeHS(getPrototypeCount()));
         }
     }
-    
+
     private void reportChange() {
         if (isAero) {
             listeners.forEach(l -> l.heatSinksChanged(Math.min(TYPE_DOUBLE_AERO, getHeatSinkIndex()), getCount()));
@@ -344,5 +359,5 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.heatSinksChanged(getHeatSinkType(), getCount()));
         }
     }
-    
+
 }

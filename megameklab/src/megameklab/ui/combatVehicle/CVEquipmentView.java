@@ -15,25 +15,40 @@
  */
 package megameklab.ui.combatVehicle;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
-import megameklab.util.StringUtils;
-import megameklab.util.TankUtil;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.CriticalTableModel;
+import megameklab.ui.util.EquipmentListCellKeySelectionManager;
+import megameklab.ui.util.EquipmentListCellRenderer;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.util.StringUtils;
+import megameklab.util.TankUtil;
+import megameklab.util.UnitUtil;
+
 public class CVEquipmentView extends IView implements ActionListener {
+    private static final MMLogger logger = MMLogger.create(CVEquipmentView.class);
+
     private RefreshListener refresh;
 
     private JPanel topPanel = new JPanel();
@@ -72,7 +87,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
-        equipmentTable.setMaximumSize(new Dimension(800,500));
+        equipmentTable.setMaximumSize(new Dimension(800, 500));
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
@@ -122,7 +137,7 @@ public class CVEquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        for (Mounted mount : getTank().getMisc()) {
+        for (Mounted<?> mount : getTank().getMisc()) {
 
             if (UnitUtil.isHeatSink(mount) || UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
@@ -135,7 +150,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     private void loadHeatSinks() {
         int engineHeatSinks = 10;
-        for (Mounted mount : getTank().getMisc()) {
+        for (Mounted<?> mount : getTank().getMisc()) {
             if (UnitUtil.isHeatSink(mount)) {
                 if (engineHeatSinks-- > 0) {
                     continue;
@@ -148,14 +163,14 @@ public class CVEquipmentView extends IView implements ActionListener {
     private void removeHeatSinks() {
         int location = 0;
         for (; location < equipmentList.getRowCount();) {
-            Mounted mount = (Mounted) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if (UnitUtil.isHeatSink(mount)) {
                 try {
                     equipmentList.removeCrit(location);
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                } catch (ArrayIndexOutOfBoundsException ex) {
                     return;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             } else {
                 location++;
@@ -200,7 +215,7 @@ public class CVEquipmentView extends IView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(ADD_COMMAND)) {
             EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
-            Mounted mount = null;
+            Mounted<?> mount = null;
             boolean isMisc = equip instanceof MiscType;
             if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
                 if (!UnitUtil.hasTargComp(getTank())) {
@@ -210,7 +225,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                 try {
                     mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
             equipmentList.addCrit(mount);

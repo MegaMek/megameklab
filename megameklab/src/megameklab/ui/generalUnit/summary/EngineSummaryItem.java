@@ -20,7 +20,7 @@ package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Engine;
 import megamek.common.Entity;
-import megamek.common.Mech;
+import megamek.common.Mek;
 import megamek.common.Tank;
 import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;
@@ -47,7 +47,7 @@ public class EngineSummaryItem extends AbstractSummaryItem {
     }
 
     private int getEngineCrits(Entity entity) {
-        if (entity instanceof Mech) {
+        if (entity instanceof Mek) {
             return getMekEngineCrits(entity);
         } else if (entity instanceof Tank) {
             return getTankEngineCrits(entity);

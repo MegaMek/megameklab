@@ -38,19 +38,23 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+            boolean hasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
-        String[] split = ((String)value).split(":");
+        String[] split = ((String) value).split(":");
         setText(split[0]);
         setToolTipText(null);
 
         CriticalSlot cs = null;
         if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
-            /** safety against logic error where we try to redraw deleted equipment due to poor dupe slot handling **/
-            Mounted eq = unit.getEquipment(eqId);
+            /**
+             * safety against logic error where we try to redraw deleted equipment due to
+             * poor dupe slot handling
+             **/
+            Mounted<?> eq = unit.getEquipment(eqId);
             cs = eq != null ? new CriticalSlot(eq) : null;
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
@@ -97,7 +101,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Dimension getPreferredSize() {
         int width = CRITCELL_WIDTH;
-        width = (unit instanceof Mech) ? CRITCELL_MEK_WIDTH : width;
+        width = (unit instanceof Mek) ? CRITCELL_MEK_WIDTH : width;
         width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
         int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
         return new Dimension(width, height);

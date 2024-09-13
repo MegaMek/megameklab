@@ -23,17 +23,7 @@ import java.util.Enumeration;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import megamek.common.*;
 import megamek.common.options.IOption;
@@ -53,26 +43,26 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     private RefreshListener refresh;
 
     public static final int T_INFANTRY_WEAPONS = 0;
-    public static final int T_FIELD_GUNS       = 1;
-    public static final int T_ARMOR_KIT        = 2;
-    public static final int T_SPECIALIZATION   = 3;
-    public static final int T_MOUNT            = 4;
-    public static final int T_AUGMENTATION     = 5;
+    public static final int T_FIELD_GUNS = 1;
+    public static final int T_ARMOR_KIT = 2;
+    public static final int T_SPECIALIZATION = 3;
+    public static final int T_MOUNT = 4;
+    public static final int T_AUGMENTATION = 5;
     private static final EquipmentType antiMekGear = EquipmentType.get(EquipmentTypeLookup.ANTI_MEK_GEAR);
 
     private BasicInfoView panBasicInfo;
     private CIPlatoonTypeView panPlatoonType;
     private CIWeaponView panWeapons;
     private IconView iconView;
-    
-    private String[] tabNames = {"Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation"};
+
+    private String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation" };
 
     private JTextField txtArmor = new JTextField("None");
     private JTextPane txtSpecializations = new JTextPane();
     private JTextPane txtAugmentations = new JTextPane();
 
     private JTabbedPane equipmentPane;
-    
+
     private CIEquipmentView weaponView;
     private CIFieldGunView fieldGunView;
     private CIArmorView armorView;
@@ -110,7 +100,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         txtSpecializations.setContentType("text/html");
         txtAugmentations.setEditable(false);
         txtAugmentations.setContentType("text/html");
-        
+
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(0, 0, 1, 2);
@@ -121,7 +111,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         advancedPanel.add(createLabel("Armor:", labelSize), gbc);
         gbc.gridx = 1;
         advancedPanel.add(txtArmor, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.NORTH;
@@ -141,7 +131,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         panPlatoonType.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
         panWeapons.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
         advancedPanel.setBorder(BorderFactory.createTitledBorder("Advanced"));
-        
+
         equipmentPane = new JTabbedPane();
         equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
         equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
@@ -171,12 +161,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         gbc.weighty = 1.0;
         add(equipmentPane, gbc);
     }
-    
+
     public ITechManager getTechManager() {
         return panBasicInfo;
     }
 
-    @SuppressWarnings("unused") // used by MekHQ to set the tech faction for custom refits
     public void setTechFaction(int techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
@@ -197,14 +186,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     public void refresh() {
-        
+
         panBasicInfo.setFromEntity(getInfantry());
         panPlatoonType.setFromEntity(getInfantry());
         panWeapons.setFromEntity(getInfantry());
         iconView.setFromEntity(getEntity());
 
         removeAllListeners();
-        
+
         EquipmentType armor = getInfantry().getArmorKit();
         if (null != armor) {
             txtArmor.setText(armor.getName());
@@ -218,8 +207,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         updateSpecializations();
         StringJoiner sj = new StringJoiner("<br/>");
-        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
-                e.hasMoreElements();) {
+        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES); e
+                .hasMoreElements();) {
             final IOption opt = e.nextElement();
             if (getInfantry().getCrew().getOptions().booleanOption(opt.getName())) {
                 sj.add(opt.getDisplayableName());
@@ -237,9 +226,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         specializationView.refresh();
         mountView.refresh();
         augmentationView.refresh();
-        
+
         enableTabs();
-        
+
         addAllListeners();
     }
 
@@ -269,7 +258,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void setAsCustomization() {
         panBasicInfo.setAsCustomization();
     }
-    
+
     private void updateSpecializations() {
         if (getInfantry().getSpecializations() == 0) {
             txtSpecializations.setText("None");
@@ -287,11 +276,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                         || (getInfantry().getSecondaryWeapon() == null)
                         || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
             InfantryUtil.replaceMainWeapon(getInfantry(),
-                    (InfantryWeapon)EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
+                    (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
             getInfantry().setSecondaryWeaponsPerSquad(2);
         }
     }
-    
+
     private void enableTabs() {
         SimpleTechLevel level = panBasicInfo.getTechLevel();
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
@@ -299,12 +288,12 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             txtSpecializations.setEnabled(true);
             equipmentPane.setEnabledAt(T_FIELD_GUNS,
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
-                    || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
-                    || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
+                            || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
+                            || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
             equipmentPane.setEnabledAt(T_MOUNT, getInfantry().getMount() != null);
-            //Experimental level
+            // Experimental level
             txtAugmentations.setEnabled(level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
             equipmentPane.setEnabledAt(T_AUGMENTATION, level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
         } else {
@@ -329,7 +318,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void refreshSummary() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -436,7 +425,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void specializationsChanged() {
         updateSpecializations();
@@ -467,7 +456,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         Optional<WeaponType> fieldGun = getInfantry().getWeaponList()
                 .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
                 .map(Mounted::getType).findAny();
-        InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType)fieldGun.orElse(null),
+        InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) fieldGun.orElse(null),
                 count);
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -502,7 +491,6 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void jumpTypeChanged(EquipmentType jumpJet) {
         // not used by conventional infantry
     }
-
 
     @Override
     public void mulIdChanged(int mulId) {

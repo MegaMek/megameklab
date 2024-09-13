@@ -33,12 +33,12 @@ public class IView extends JPanel {
         return eSource.getEntity();
     }
 
-    public Mech getMech() {
-        return (Mech) eSource.getEntity();
+    public Mek getMek() {
+        return (Mek) eSource.getEntity();
     }
-    
-    public Protomech getProtoMek() {
-        return (Protomech) eSource.getEntity();
+
+    public ProtoMek getProtoMek() {
+        return (ProtoMek) eSource.getEntity();
     }
 
     public Tank getTank() {
@@ -52,11 +52,11 @@ public class IView extends JPanel {
     public Aero getAero() {
         return (Aero) eSource.getEntity();
     }
-    
+
     public SmallCraft getSmallCraft() {
         return (SmallCraft) eSource.getEntity();
     }
-    
+
     public Jumpship getJumpship() {
         return (Jumpship) eSource.getEntity();
     }

@@ -13,6 +13,15 @@
  */
 package megameklab.ui.largeAero;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
@@ -20,13 +29,9 @@ import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * Build tab for Small Craft and Dropships
- * 
+ *
  * @author Neoancient
  */
 public class LABuildTab extends ITab implements ActionListener {
@@ -83,7 +88,7 @@ public class LABuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getAero().getEquipment()) {
+        for (Mounted<?> mount : getAero().getEquipment()) {
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getAero(), mount);
                 UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);

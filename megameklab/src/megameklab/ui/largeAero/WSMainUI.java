@@ -13,23 +13,33 @@
  */
 package megameklab.ui.largeAero;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JDialog;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+
 import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.AbstractEquipmentTab;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.QuirksTab;
+import megameklab.ui.generalUnit.StatusBar;
+import megameklab.ui.generalUnit.TransportTab;
 import megameklab.ui.util.TabScrollPane;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * MainUI for JumpShips, WarShips, and Space Stations
- * 
+ *
  * @author Neoancient
  */
 public class WSMainUI extends MegaMekLabMainUI {
+    private static final MMLogger logger = MMLogger.create(WSMainUI.class);
+
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
@@ -40,7 +50,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
-    
+
     public WSMainUI(boolean primitive) {
         super();
         if (!primitive) {
@@ -49,7 +59,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             createNewUnit(Entity.ETYPE_WARSHIP, true, false);
         }
         finishSetup();
-        MechSummaryCache.getInstance();
+        MekSummaryCache.getInstance();
     }
 
     @Override
@@ -62,7 +72,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
-    
+
     @Override
     public void refreshTransport() {
         transportTab.refresh();
@@ -81,7 +91,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
             setEntity(new SpaceStation());
         } else {
-            LogManager.getLogger().error("Received incorrect entityType!");
+            logger.error("Received incorrect entityType!");
             return;
         }
         getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
@@ -110,7 +120,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             ship.set0SI(1);
         }
         ship.setArmorTechLevel(getEntity().getTechLevel());
-        
+
         ship.setHeatType(Aero.HEAT_SINGLE);
 
         ship.autoSetInternal();
@@ -186,7 +196,8 @@ public class WSMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new LAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this,
+                new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
@@ -204,7 +215,8 @@ public class WSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+    }
 
     @Override
     public void refreshBuild() {
@@ -227,7 +239,8 @@ public class WSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+    }
 
     @Override
     public void refreshPreview() {

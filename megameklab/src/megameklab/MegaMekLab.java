@@ -23,17 +23,17 @@ import java.util.Locale;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
-import org.apache.logging.log4j.LogManager;
-
 import io.sentry.Sentry;
+import megamek.MMLoggingConstants;
 import megamek.MegaMek;
 import megamek.SuiteConstants;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.MechFileParser;
-import megamek.common.MechSummaryCache;
+import megamek.common.MekFileParser;
+import megamek.common.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
+import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
@@ -44,6 +44,7 @@ public class MegaMekLab {
     private static final SuitePreferences mmlPreferences = new SuitePreferences();
     private static final MMLOptions mmlOptions = new MMLOptions();
     private static final SanityInputFilter sanityInputFilter = new SanityInputFilter();
+    private static final MMLogger logger = MMLogger.create(MegaMekLab.class);
 
     public static void main(String... args) {
         ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
@@ -60,9 +61,10 @@ public class MegaMekLab {
 
         // First, create a global default exception handler
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
-            Sentry.captureException(t);
-            LogManager.getLogger().error("Uncaught Exception Detected", t);
-            PopupMessages.showUncaughtException(null, t);
+            final String name = t.getClass().getName();
+            final String message = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION, name);
+            final String title = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, name);
+            logger.error(t, message, title);
         });
 
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
@@ -74,9 +76,7 @@ public class MegaMekLab {
     }
 
     public static void initializeLogging(final String originProject) {
-        if (LogManager.getLogger().isInfoEnabled()) {
-            LogManager.getLogger().info(getUnderlyingInformation(originProject));
-        }
+        logger.info(getUnderlyingInformation(originProject));
     }
 
     /**
@@ -89,7 +89,7 @@ public class MegaMekLab {
 
     private static void startup() {
         EquipmentType.initializeTypes();
-        MechSummaryCache.getInstance();
+        MekSummaryCache.getInstance();
         CConfig.load();
         UnitUtil.loadFonts();
 
@@ -103,11 +103,11 @@ public class MegaMekLab {
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {
-            case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MECH, false, false);
+            case NEW_MEK -> UiLoader.loadUi(Entity.ETYPE_MEK, false, false);
             case NEW_TANK -> UiLoader.loadUi(Entity.ETYPE_TANK, false, false);
             case NEW_FIGHTER -> UiLoader.loadUi(Entity.ETYPE_AERO, false, false);
             case NEW_DROPSHIP -> UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
-            case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMECH, false, false);
+            case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMEK, false, false);
             case NEW_JUMPSHIP -> UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
             case NEW_SUPPORTVEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
             case NEW_BATTLEARMOR -> UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
@@ -128,8 +128,7 @@ public class MegaMekLab {
             String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
         } catch (Exception ex) {
-            Sentry.captureException(ex);
-            LogManager.getLogger().error("", ex);
+            logger.error("setLookAndFeel() Exception {}", ex);
         }
     }
 
@@ -161,7 +160,7 @@ public class MegaMekLab {
         }
 
         try {
-            Entity recentUnit = new MechFileParser(unitFile).getEntity();
+            Entity recentUnit = new MekFileParser(unitFile).getEntity();
             if (recentUnit == null) {
                 return false;
             } else if (!UnitUtil.validateUnit(recentUnit).isBlank()) {
@@ -171,8 +170,9 @@ public class MegaMekLab {
             UiLoader.loadUi(recentUnit, unitFile.toString());
             return true;
         } catch (Exception ex) {
-            Sentry.captureException(ex);
-            PopupMessages.showFileReadError(null, unitFile.toString(), ex.getMessage());
+            final String message = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION, ex.getMessage());
+            final String title = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, unitFile.toString());
+            logger.error(ex, message, title);
             return false;
         }
     }

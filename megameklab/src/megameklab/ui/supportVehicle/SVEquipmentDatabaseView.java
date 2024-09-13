@@ -13,30 +13,59 @@
  */
 package megameklab.ui.supportVehicle;
 
-import megamek.common.*;
-import megamek.common.verifier.TestEntity;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
+import static megameklab.ui.util.EquipmentTableModel.*;
 
-import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
 
-import static megameklab.ui.util.EquipmentTableModel.*;
+import javax.swing.JOptionPane;
+
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.Tank;
+import megamek.common.VTOL;
+import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.util.UnitUtil;
 
 /**
  * An Equipment Database for Support Vehicles. This table shows many columns
  * and is suitable for use in the Equipment Tab.
  */
 class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
+    private static final MMLogger logger = MMLogger.create(SVEquipmentDatabaseView.class);
 
-    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
+    private final List<Integer> fluffColumns = List.of(
+            COL_NAME,
+            COL_TECH,
+            COL_TLEVEL,
+            COL_TRATING,
+            COL_DPROTOTYPE,
+            COL_DPRODUCTION,
+            COL_DCOMMON,
+            COL_DEXTINCT,
+            COL_DREINTRO,
+            COL_COST);
 
-    private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
-            COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_CRIT, COL_REF);
+    private final List<Integer> statsColumns = List.of(
+            COL_NAME,
+            COL_DAMAGE,
+            COL_HEAT,
+            COL_MRANGE,
+            COL_RANGE,
+            COL_SHOTS,
+            COL_TECH,
+            COL_BV,
+            COL_TON,
+            COL_CRIT,
+            COL_REF);
 
     public SVEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -85,7 +114,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 }
             }
         } catch (LocationFullException ex) {
-            LogManager.getLogger().error("Location full while trying to add " + equip.getName());
+            logger.error("Location full while trying to add " + equip.getName());
             JOptionPane.showMessageDialog(
                     this, "Could not add " + equip.getName(),
                     "Location Full", JOptionPane.ERROR_MESSAGE);
@@ -105,6 +134,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     /**
      * Adds ammo to the correct location (body/fuselage) for aerospace and vehicles
+     *
      * @param equip The {@link AmmoType} to add
      * @param count The number of slots of ammo (usually tons)
      * @param loc   The location to add it
@@ -121,6 +151,5 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
         return tableMode ? statsColumns : fluffColumns;
     }
-
 
 }

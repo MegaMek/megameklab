@@ -22,7 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import megamek.common.*;
+import megamek.common.AmmoType;
+import megamek.common.EquipmentType;
+import megamek.common.Jumpship;
+import megamek.common.Mounted;
+import megamek.common.Warship;
+import megamek.common.WeaponType;
 import megamek.common.weapons.AmmoWeapon;
 
 /**
@@ -40,9 +45,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     final Map<WeaponType, Integer> weapons = new HashMap<>();
 
     /**
-     * Track the ammo for each weapontype in the bay.
+     * Track the ammo for each weaponType in the bay.
      */
-    final Map<WeaponType, Mounted> weaponAmmo = new HashMap<>();
+    final Map<WeaponType, Mounted<?>> weaponAmmo = new HashMap<>();
 
     /**
      * Track any linked equipment that affects the AV or heat. By the rules, most of them are either
@@ -75,27 +80,27 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      *
      * @param weapon The weapon to add to the bay
      */
-    public void addBayWeapon(Mounted weapon) {
-        WeaponType wtype = (WeaponType) weapon.getType();
-        if (weapons.containsKey(wtype)) {
-            weapons.put(wtype, weapons.get(wtype) + 1);
+    public void addBayWeapon(Mounted<?> weapon) {
+        WeaponType weaponType = (WeaponType) weapon.getType();
+        if (weapons.containsKey(weaponType)) {
+            weapons.put(weaponType, weapons.get(weaponType) + 1);
         } else {
-            weapons.put(wtype, 1);
-            if ((wtype instanceof AmmoWeapon) && (weapon.getLinked() != null)) {
-                Mounted ammo = weapon.getLinked();
+            weapons.put(weaponType, 1);
+            if ((weaponType instanceof AmmoWeapon) && (weapon.getLinked() != null)) {
+                Mounted<?> ammo = weapon.getLinked();
                 if (ammo.getType() instanceof AmmoType) {
-                    weaponAmmo.put(wtype, ammo);
+                    weaponAmmo.put(weaponType, ammo);
                 }
             }
         }
         if (null != weapon.getLinkedBy()) {
-            augmentations.putIfAbsent(wtype, new HashMap<>());
-            augmentations.get(wtype).merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
+            augmentations.putIfAbsent(weaponType, new HashMap<>());
+            augmentations.get(weaponType).merge(weapon.getLinkedBy().getType(), 1, Integer::sum);
         }
     }
 
     /**
-     * Determines if two WeaponBayTexts are lateraly similar and hence can be
+     * Determines if two WeaponBayTexts are laterally similar and hence can be
      * combined. That is, if there is a weapon bay on the left side that is
      * identical to one on the right side, then those two can be combined in a
      * location like FRS/FLS. This allows weapon lists to be compacted.
@@ -122,8 +127,9 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         boolean rv = (weaponAmmo.size() == other.weaponAmmo.size())
                 && weaponAmmo.keySet().equals(other.weaponAmmo.keySet());
         if (rv) {
-            for (WeaponType wtype : weaponAmmo.keySet()) {
-                rv &= weaponAmmo.get(wtype).getBaseShotsLeft() == other.weaponAmmo.get(wtype).getBaseShotsLeft();
+            for (WeaponType weaponType : weaponAmmo.keySet()) {
+                rv &= weaponAmmo.get(weaponType).getBaseShotsLeft() == other.weaponAmmo.get(
+                        weaponType).getBaseShotsLeft();
             }
         }
         return rv;
@@ -168,23 +174,24 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     public int countAugmentations(BigInteger flag) {
         int count = 0;
-        for (WeaponType wtype : augmentations.keySet()) {
-            count += countAugmentations(wtype, flag);
+        for (WeaponType weaponType : augmentations.keySet()) {
+            count += countAugmentations(weaponType, flag);
         }
         return count;
     }
 
     /**
-     * @param wtype A type of weapon in the bay
-     * @param flag A MiscType flag
-     * @return     The number of weapons of the given type in the bay linked by equipment with the given flag
+     * @param weaponType A type of weapon in the bay
+     * @param flag       A MiscType flag
+     * @return The number of weapons of the given type in the bay linked by
+     *         equipment with the given flag
      */
-    public int countAugmentations(WeaponType wtype, BigInteger flag) {
+    public int countAugmentations(WeaponType weaponType, BigInteger flag) {
         int count = 0;
-        if (augmentations.containsKey(wtype)) {
-            for (EquipmentType etype : augmentations.get(wtype).keySet()) {
-                if (etype.hasFlag(flag)) {
-                    count += augmentations.get(wtype).get(etype);
+        if (augmentations.containsKey(weaponType)) {
+            for (EquipmentType equipmentType : augmentations.get(weaponType).keySet()) {
+                if (equipmentType.hasFlag(flag)) {
+                    count += augmentations.get(weaponType).get(equipmentType);
                 }
             }
         }

@@ -15,24 +15,44 @@
  */
 package megameklab.ui.combatVehicle;
 
-import megamek.common.*;
-import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megameklab.MMLConstants;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
-import megameklab.util.StringUtils;
-import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.*;
+
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.weapons.artillery.ArtilleryWeapon;
+import megamek.logging.MMLogger;
+import megameklab.MMLConstants;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.CriticalTableModel;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.SpringLayoutHelper;
+import megameklab.ui.util.WeaponListCellRenderer;
+import megameklab.util.StringUtils;
+import megameklab.util.UnitUtil;
+
 public class CVWeaponView extends IView implements ActionListener, MouseListener, KeyListener {
+    private static final MMLogger logger = MMLogger.create(CVWeaponView.class);
+
     private RefreshListener refresh;
 
     private JPanel mainPanel = new JPanel();
@@ -97,16 +117,16 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
-    private String LASERWEAPONADD_COMMAND = "ADDLASERWEAPON";
-    private String LASERAMMOADD_COMMAND = "ADDLASERAMMO";
-    private String MISSILEWEAPONADD_COMMAND = "ADDMISSILEWEAPON";
-    private String MISSILEAMMOADD_COMMAND = "ADDMISSILEAMMO";
-    private String BALLISTICWEAPONADD_COMMAND = "ADDBALLISTICWEAPON";
-    private String BALLISTICAMMOADD_COMMAND = "ADDBALLISTICAMMO";
-    private String ARTILLERYWEAPONADD_COMMAND = "ADDARTILLERYWEAPON";
-    private String ARTILLERYAMMOADD_COMMAND = "ADDARTILLERYAMMO";
+    private String LASER_WEAPON_ADD_COMMAND = "ADDLASERWEAPON";
+    private String LASER_AMMO_ADD_COMMAND = "ADDLASERAMMO";
+    private String MISSILE_WEAPON_ADD_COMMAND = "ADDMISSILEWEAPON";
+    private String MISSILE_AMMO_ADD_COMMAND = "ADDMISSILEAMMO";
+    private String BALLISTIC_WEAPON_ADD_COMMAND = "ADDBALLISTICWEAPON";
+    private String BALLISTIC_AMMO_ADD_COMMAND = "ADDBALLISTICAMMO";
+    private String ARTILLERY_WEAPON_ADD_COMMAND = "ADDARTILLERYWEAPON";
+    private String ARTILLERY_AMMO_ADD_COMMAND = "ADDARTILLERYAMMO";
     private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVEALL_COMMAND = "REMOVEALL";
+    private String REMOVE_ALL_COMMAND = "REMOVEALL";
 
     public CVWeaponView(EntitySource eSource) {
         super(eSource);
@@ -261,7 +281,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
 
             if (eq instanceof WeaponType) {
                 WeaponType weapon = (WeaponType) eq;
-                if (weapon.hasFlag(WeaponType.F_ENERGY) || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+                if (weapon.hasFlag(WeaponType.F_ENERGY)
+                        || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
                     masterLaserWeaponList.add(eq);
                 } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
                     masterBallisticWeaponList.add(eq);
@@ -270,8 +291,10 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)) && eq.hasFlag(MiscType.F_TALON)) {
-                if (eq.hasFlag(MiscType.F_CLUB) && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
+            } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))
+                    && eq.hasFlag(MiscType.F_TALON)) {
+                if (eq.hasFlag(MiscType.F_CLUB)
+                        && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);
@@ -343,13 +366,13 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
     }
 
     private void loadWeaponsTable() {
-        for (Mounted mount : getTank().getWeaponList()) {
+        for (Mounted<?> mount : getTank().getWeaponList()) {
             if (UnitUtil.isUnitWeapon(mount.getType(), getTank())) {
                 weaponList.addCrit(mount);
             }
         }
 
-        for (Mounted mount : getTank().getAmmo()) {
+        for (Mounted<?> mount : getTank().getAmmo()) {
             if (mount.getUsableShotsLeft() > 1) {
                 weaponList.addCrit(mount);
             }
@@ -421,51 +444,54 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         removeButton.addActionListener(this);
         removeAllButton.addActionListener(this);
 
-        laserWeaponAddButton.setActionCommand(LASERWEAPONADD_COMMAND);
-        laserAmmoAddButton.setActionCommand(LASERAMMOADD_COMMAND);
-        missileWeaponAddButton.setActionCommand(MISSILEWEAPONADD_COMMAND);
-        missileAmmoAddButton.setActionCommand(MISSILEAMMOADD_COMMAND);
-        ballisticWeaponAddButton.setActionCommand(BALLISTICWEAPONADD_COMMAND);
-        ballisticAmmoAddButton.setActionCommand(BALLISTICAMMOADD_COMMAND);
-        artilleryWeaponAddButton.setActionCommand(ARTILLERYWEAPONADD_COMMAND);
-        artilleryAmmoAddButton.setActionCommand(ARTILLERYAMMOADD_COMMAND);
+        laserWeaponAddButton.setActionCommand(LASER_WEAPON_ADD_COMMAND);
+        laserAmmoAddButton.setActionCommand(LASER_AMMO_ADD_COMMAND);
+        missileWeaponAddButton.setActionCommand(MISSILE_WEAPON_ADD_COMMAND);
+        missileAmmoAddButton.setActionCommand(MISSILE_AMMO_ADD_COMMAND);
+        ballisticWeaponAddButton.setActionCommand(BALLISTIC_WEAPON_ADD_COMMAND);
+        ballisticAmmoAddButton.setActionCommand(BALLISTIC_AMMO_ADD_COMMAND);
+        artilleryWeaponAddButton.setActionCommand(ARTILLERY_WEAPON_ADD_COMMAND);
+        artilleryAmmoAddButton.setActionCommand(ARTILLERY_AMMO_ADD_COMMAND);
 
         removeButton.setActionCommand(REMOVE_COMMAND);
-        removeAllButton.setActionCommand(REMOVEALL_COMMAND);
+        removeAllButton.setActionCommand(REMOVE_ALL_COMMAND);
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(LASERWEAPONADD_COMMAND)) {
+        if (evt.getActionCommand().equals(LASER_WEAPON_ADD_COMMAND)) {
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE,
+                                false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(LASERAMMOADD_COMMAND) && !subLaserAmmoList.isEmpty()) {
+        } else if (evt.getActionCommand().equals(LASER_AMMO_ADD_COMMAND) && !subLaserAmmoList.isEmpty()) {
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE,
+                                false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(MISSILEWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(MISSILE_WEAPON_ADD_COMMAND)) {
             try {
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subMissileWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subMissileWeaponList.elementAt(index),
+                                Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
 
-                        // MegaMek automatically adds a ton of ammo for oneshots
+                        // MegaMek automatically adds a ton of ammo for one shots
                         // for tracking. We do not need this in MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
@@ -474,26 +500,28 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(MISSILEAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(MISSILE_AMMO_ADD_COMMAND)) {
             try {
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE,
+                                false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(BALLISTICWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(BALLISTIC_WEAPON_ADD_COMMAND)) {
             try {
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subBallisticWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subBallisticWeaponList.elementAt(index),
+                                Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
-                        // MegaMek automatically adds a ton of ammo for oneshots
+                        // MegaMek automatically adds a ton of ammo for one shots
                         // for tracking. We do not need this in MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
@@ -502,40 +530,43 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(BALLISTICAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(BALLISTIC_AMMO_ADD_COMMAND)) {
             try {
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subBallisticAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subBallisticAmmoList.elementAt(index),
+                                Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(ARTILLERYWEAPONADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(ARTILLERY_WEAPON_ADD_COMMAND)) {
             try {
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subArtilleryWeaponList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subArtilleryWeaponList.elementAt(index),
+                                Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
-        } else if (evt.getActionCommand().equals(ARTILLERYAMMOADD_COMMAND)) {
+        } else if (evt.getActionCommand().equals(ARTILLERY_AMMO_ADD_COMMAND)) {
             try {
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
-                        Mounted mount = getTank().addEquipment(subArtilleryAmmoList.elementAt(index), Entity.LOC_NONE, false);
+                        Mounted<?> mount = getTank().addEquipment(subArtilleryAmmoList.elementAt(index),
+                                Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         } else if (evt.getActionCommand().equals(REMOVE_COMMAND)) {
             int startRow = equipmentTable.getSelectedRow();
@@ -548,7 +579,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 }
             }
             refresh.refreshAll();
-        } else if (evt.getActionCommand().equals(REMOVEALL_COMMAND)) {
+        } else if (evt.getActionCommand().equals(REMOVE_ALL_COMMAND)) {
             removeAllWeapons();
         } else {
             return;
@@ -624,7 +655,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 Vector<String> equipmentList = new Vector<>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo) && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo)
+                                && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                             subLaserAmmoList.add(ammo);
                             equipmentList.add(ammo.getInternalName());
                         }

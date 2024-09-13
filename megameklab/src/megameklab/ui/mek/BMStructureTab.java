@@ -13,6 +13,23 @@
  */
 package megameklab.ui.mek;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -20,26 +37,26 @@ import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.ArmorAllocationView;
+import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.HeatSinkView;
+import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.MVFArmorView;
+import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.PatchworkArmorView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
+    private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
+
     private BasicInfoView panBasicInfo;
     private BMChassisView panChassis;
     private BMLAMFuelView panLAMFuel;
@@ -61,13 +78,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     private void setUpPanels() {
         setLayout(new GridBagLayout());
-        panBasicInfo = new BasicInfoView(getMech().getConstructionTechAdvancement());
+        panBasicInfo = new BasicInfoView(getMek().getConstructionTechAdvancement());
         panChassis = new BMChassisView(panBasicInfo);
         panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panHeat = new HeatSinkView(panBasicInfo);
         panLAMFuel = new BMLAMFuelView(eSource);
-        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MECH);
+        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MEK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
@@ -76,27 +93,27 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 new EngineSummaryItem(),
                 new GyroSummaryItem(),
                 new CockpitSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ArmorSummaryItem(),
                 new JumpSummaryItem(),
                 new EquipmentSummaryItem(),
                 new MyomerEnhancementSummaryItem(),
                 new OtherSummaryItem());
 
-        if (getMech().hasPatchworkArmor()) {
+        if (getMek().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
             panPatchwork.setVisible(false);
         }
 
-        panBasicInfo.setFromEntity(getMech());
-        panChassis.setFromEntity(getMech());
-        panArmor.setFromEntity(getMech());
-        panMovement.setFromEntity(getMech());
-        panHeat.setFromMech(getMech());
-        panArmorAllocation.setFromEntity(getMech());
-        panPatchwork.setFromEntity(getMech());
-        iconView.setFromEntity(getMech());
+        panBasicInfo.setFromEntity(getMek());
+        panChassis.setFromEntity(getMek());
+        panArmor.setFromEntity(getMek());
+        panMovement.setFromEntity(getMek());
+        panHeat.setFromMek(getMek());
+        panArmorAllocation.setFromEntity(getMek());
+        panPatchwork.setFromEntity(getMek());
+        iconView.setFromEntity(getMek());
 
         JPanel leftPanel = new JPanel();
         JPanel centerPanel = new JPanel();
@@ -153,17 +170,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     public void refresh() {
         removeAllListeners();
-        panBasicInfo.setFromEntity(getMech());
-        panChassis.setFromEntity(getMech());
-        panArmor.setFromEntity(getMech());
-        panHeat.setFromMech(getMech());
-        panMovement.setFromEntity(getMech());
-        panArmorAllocation.setFromEntity(getMech());
-        panPatchwork.setFromEntity(getMech());
-        panLAMFuel.setFromEntity(getMech());
-        panLAMFuel.setVisible(getMech() instanceof LandAirMech);
+        panBasicInfo.setFromEntity(getMek());
+        panChassis.setFromEntity(getMek());
+        panArmor.setFromEntity(getMek());
+        panHeat.setFromMek(getMek());
+        panMovement.setFromEntity(getMek());
+        panArmorAllocation.setFromEntity(getMek());
+        panPatchwork.setFromEntity(getMek());
+        panLAMFuel.setFromEntity(getMek());
+        panLAMFuel.setVisible(getMek() instanceof LandAirMek);
         panSummary.refresh();
-        iconView.setFromEntity(getMech());
+        iconView.setFromEntity(getMek());
         addAllListeners();
     }
 
@@ -184,223 +201,226 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    @SuppressWarnings("unused") // Used by MekHQ to set the tech faction for custom refits
     public void setTechFaction(int techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
     private void resetSystemCrits() {
-        getMech().clearCockpitCrits();
-        getMech().clearGyroCrits();
-        getMech().clearEngineCrits();
-        MekUtil.removeSystemCrits(getMech(), LandAirMech.LAM_LANDING_GEAR, Mech.LOC_CT);
+        getMek().clearCockpitCrits();
+        getMek().clearGyroCrits();
+        getMek().clearEngineCrits();
+        MekUtil.removeSystemCrits(getMek(), LandAirMek.LAM_LANDING_GEAR, Mek.LOC_CT);
 
-        int[] ctEngine = getMech().getEngine().getCenterTorsoCriticalSlots(getMech().getGyroType());
+        int[] ctEngine = getMek().getEngine().getCenterTorsoCriticalSlots(getMek().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
         for (int slot = 0; slot <= lastEngine; slot++) {
-            clearCrit(Mech.LOC_CT, slot);
+            clearCrit(Mek.LOC_CT, slot);
         }
-        for (int slot : getMech().getEngine().getSideTorsoCriticalSlots()) {
-            clearCrit(Mech.LOC_RT, slot);
-            clearCrit(Mech.LOC_LT, slot);
+        for (int slot : getMek().getEngine().getSideTorsoCriticalSlots()) {
+            clearCrit(Mek.LOC_RT, slot);
+            clearCrit(Mek.LOC_LT, slot);
         }
-        getMech().addEngineCrits();
-        switch (getMech().getGyroType()) {
-            case Mech.GYRO_COMPACT:
-                clearCritsForGyro(3,2);
-                getMech().addCompactGyro();
+        getMek().addEngineCrits();
+        switch (getMek().getGyroType()) {
+            case Mek.GYRO_COMPACT:
+                clearCritsForGyro(3, 2);
+                getMek().addCompactGyro();
                 break;
-            case Mech.GYRO_HEAVY_DUTY:
-                clearCritsForGyro(3,4);
-                getMech().addHeavyDutyGyro();
+            case Mek.GYRO_HEAVY_DUTY:
+                clearCritsForGyro(3, 4);
+                getMek().addHeavyDutyGyro();
                 break;
-            case Mech.GYRO_XL:
-                clearCritsForGyro(3,6);
-                getMech().addXLGyro();
+            case Mek.GYRO_XL:
+                clearCritsForGyro(3, 6);
+                getMek().addXLGyro();
                 break;
-            case Mech.GYRO_NONE:
-                UnitUtil.compactCriticals(getMech(), Mech.LOC_CT);
+            case Mek.GYRO_NONE:
+                UnitUtil.compactCriticals(getMek(), Mek.LOC_CT);
                 break;
-            case Mech.GYRO_SUPERHEAVY:
+            case Mek.GYRO_SUPERHEAVY:
                 clearCritsForGyro(lastEngine + 1, 2);
-                getMech().addSuperheavyGyro();
+                getMek().addSuperheavyGyro();
                 break;
             default:
-                clearCritsForGyro(3,4);
-                getMech().addGyro();
+                clearCritsForGyro(3, 4);
+                getMek().addGyro();
         }
 
-        switch (getMech().getCockpitType()) {
-            case Mech.COCKPIT_COMMAND_CONSOLE:
+        switch (getMek().getCockpitType()) {
+            case Mek.COCKPIT_COMMAND_CONSOLE:
                 clearCritsForCockpit(false, true);
-                getMech().addCommandConsole();
+                getMek().addCommandConsole();
                 break;
-            case Mech.COCKPIT_DUAL:
+            case Mek.COCKPIT_DUAL:
                 clearCritsForCockpit(false, true);
-                getMech().addDualCockpit();
+                getMek().addDualCockpit();
                 break;
-            case Mech.COCKPIT_SMALL:
+            case Mek.COCKPIT_SMALL:
                 clearCritsForCockpit(true, false);
-                getMech().addSmallCockpit();
+                getMek().addSmallCockpit();
                 break;
-            case Mech.COCKPIT_INTERFACE:
+            case Mek.COCKPIT_INTERFACE:
                 clearCritsForCockpit(false, true);
-                getMech().addInterfaceCockpit();
+                getMek().addInterfaceCockpit();
                 break;
-            case Mech.COCKPIT_TORSO_MOUNTED:
-            case Mech.COCKPIT_VRRP:
-                if (lastEngine + 2 < getMech().getNumberOfCriticals(Mech.LOC_CT)) {
-                    clearCrit(Mech.LOC_CT, lastEngine + 1);
-                    clearCrit(Mech.LOC_CT, lastEngine + 2);
+            case Mek.COCKPIT_TORSO_MOUNTED:
+            case Mek.COCKPIT_VRRP:
+                if (lastEngine + 2 < getMek().getNumberOfCriticals(Mek.LOC_CT)) {
+                    clearCrit(Mek.LOC_CT, lastEngine + 1);
+                    clearCrit(Mek.LOC_CT, lastEngine + 2);
                 }
-                clearCrit(Mech.LOC_HEAD, 0);
-                clearCrit(Mech.LOC_HEAD, 1);
-                if (getMech().getEmptyCriticals(Mech.LOC_LT) < 1) {
-                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_LT); i++) {
-                        if (getMech().getCritical(Mech.LOC_LT, i) != null
-                                && getMech().getCritical(Mech.LOC_LT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                            clearCrit(Mech.LOC_LT, i);
+                clearCrit(Mek.LOC_HEAD, 0);
+                clearCrit(Mek.LOC_HEAD, 1);
+                if (getMek().getEmptyCriticals(Mek.LOC_LT) < 1) {
+                    for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_LT); i++) {
+                        if (getMek().getCritical(Mek.LOC_LT, i) != null
+                                && getMek().getCritical(Mek.LOC_LT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mek.LOC_LT, i);
                             break;
                         }
                     }
                 }
-                if (getMech().getEmptyCriticals(Mech.LOC_RT) < 1) {
-                    for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_RT); i++) {
-                        if (getMech().getCritical(Mech.LOC_RT, i) != null
-                                && getMech().getCritical(Mech.LOC_RT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                            clearCrit(Mech.LOC_RT, i);
+                if (getMek().getEmptyCriticals(Mek.LOC_RT) < 1) {
+                    for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_RT); i++) {
+                        if (getMek().getCritical(Mek.LOC_RT, i) != null
+                                && getMek().getCritical(Mek.LOC_RT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mek.LOC_RT, i);
                             break;
                         }
                     }
                 }
-                getMech().addTorsoMountedCockpit(getMech().getCockpitType() == Mech.COCKPIT_VRRP);
+                getMek().addTorsoMountedCockpit(getMek().getCockpitType() == Mek.COCKPIT_VRRP);
                 break;
-            case Mech.COCKPIT_INDUSTRIAL:
+            case Mek.COCKPIT_INDUSTRIAL:
                 clearCritsForCockpit(false, false);
-                getMech().addIndustrialCockpit();
-                getMech().setArmorType(
+                getMek().addIndustrialCockpit();
+                getMek().setArmorType(
                         EquipmentType.T_ARMOR_INDUSTRIAL);
                 break;
-            case Mech.COCKPIT_PRIMITIVE:
+            case Mek.COCKPIT_PRIMITIVE:
                 clearCritsForCockpit(false, false);
-                getMech().addPrimitiveCockpit();
-                getMech().setArmorType(
+                getMek().addPrimitiveCockpit();
+                getMek().setArmorType(
                         EquipmentType.T_ARMOR_PRIMITIVE);
                 break;
-            case Mech.COCKPIT_PRIMITIVE_INDUSTRIAL:
+            case Mek.COCKPIT_PRIMITIVE_INDUSTRIAL:
                 clearCritsForCockpit(false, false);
-                getMech().addIndustrialPrimitiveCockpit();
-                getMech().setArmorType(
+                getMek().addIndustrialPrimitiveCockpit();
+                getMek().setArmorType(
                         EquipmentType.T_ARMOR_COMMERCIAL);
                 break;
-            case Mech.COCKPIT_QUADVEE:
+            case Mek.COCKPIT_QUADVEE:
                 clearCritsForCockpit(false, true);
-                getMech().addQuadVeeCockpit();
+                getMek().addQuadVeeCockpit();
                 break;
-            case Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL:
+            case Mek.COCKPIT_SUPERHEAVY_INDUSTRIAL:
                 clearCritsForCockpit(false, false);
-                getMech().addSuperheavyIndustrialCockpit();
-                getMech().setArmorType(
+                getMek().addSuperheavyIndustrialCockpit();
+                getMek().setArmorType(
                         EquipmentType.T_ARMOR_INDUSTRIAL);
                 break;
-            case Mech.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE:
+            case Mek.COCKPIT_SUPERHEAVY_COMMAND_CONSOLE:
                 clearCritsForCockpit(false, true);
-                getMech().addSuperheavyCommandConsole();
+                getMek().addSuperheavyCommandConsole();
                 break;
-            case Mech.COCKPIT_SMALL_COMMAND_CONSOLE:
+            case Mek.COCKPIT_SMALL_COMMAND_CONSOLE:
                 clearCritsForCockpit(true, true);
-                getMech().addSmallCommandConsole();
+                getMek().addSmallCommandConsole();
                 break;
             default:
                 clearCritsForCockpit(false, false);
-                int cockpitType = getMech().getCockpitType();
-                getMech().addCockpit();
+                int cockpitType = getMek().getCockpitType();
+                getMek().addCockpit();
                 // addCockpit sets the criticals but also sets the type to the default.
-                getMech().setCockpitType(cockpitType);
+                getMek().setCockpitType(cockpitType);
         }
 
-        // For LAMs we want to put the landing gear in the first available slot after the engine and gyro.
-        if (getMech().hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+        // For LAMs we want to put the landing gear in the first available slot after
+        // the engine and gyro.
+        if (getMek().hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             int lgSlot = 10;
-            for (int i = 0; i < getMech().getNumberOfCriticals(Mech.LOC_CT); i++) {
-                final CriticalSlot slot = getMech().getCritical(Mech.LOC_CT, i);
+            for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_CT); i++) {
+                final CriticalSlot slot = getMek().getCritical(Mek.LOC_CT, i);
                 if ((null == slot) || (slot.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                        || ((slot.getIndex() != Mech.SYSTEM_ENGINE) && (slot.getIndex() != Mech.SYSTEM_GYRO))) {
+                        || ((slot.getIndex() != Mek.SYSTEM_ENGINE) && (slot.getIndex() != Mek.SYSTEM_GYRO))) {
                     lgSlot = i;
                     break;
                 }
             }
             CriticalSlot crit = new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
-                    LandAirMech.LAM_LANDING_GEAR);
-            getMech().removeCriticals(Mech.LOC_CT, crit);
-            clearCrit(Mech.LOC_CT, lgSlot);
-            getMech().setCritical(Mech.LOC_CT, lgSlot, crit);
+                    LandAirMek.LAM_LANDING_GEAR);
+            getMek().removeCriticals(Mek.LOC_CT, crit);
+            clearCrit(Mek.LOC_CT, lgSlot);
+            getMek().setCritical(Mek.LOC_CT, lgSlot, crit);
         }
         // Replace any fixed spreadable equipment
-        List<Mounted> toRemove = getMech().getMisc().stream()
-                .filter(m -> (m.getLocation() == Entity.LOC_NONE) && UnitUtil.isFixedLocationSpreadEquipment(m.getType()))
+        List<Mounted<?>> toRemove = getMek().getMisc().stream()
+                .filter(m -> (m.getLocation() == Entity.LOC_NONE)
+                        && UnitUtil.isFixedLocationSpreadEquipment(m.getType()))
                 .collect(Collectors.toList());
-        for (Mounted mounted : toRemove) {
-            UnitUtil.removeMounted(getMech(), mounted);
-            MekUtil.createSpreadMounts(getMech(), mounted.getType());
+        for (Mounted<?> mounted : toRemove) {
+            UnitUtil.removeMounted(getMek(), mounted);
+            MekUtil.createSpreadMounts(getMek(), mounted.getType());
         }
         refresh.refreshBuild();
     }
 
     /**
-     * Removes equipment placed in head locations that are needed for a cockpit. For most cockpit
+     * Removes equipment placed in head locations that are needed for a cockpit. For
+     * most cockpit
      * types, this is all but the fourth slot.
-     * 
+     *
      * @param small If true, only clears the first four slots.
      * @param dual  If true, removes all equipment mounted in the head.
      */
     private void clearCritsForCockpit(boolean small, boolean dual) {
-        for (int slot = 0; slot < (small?4:6); slot++) {
+        for (int slot = 0; slot < (small ? 4 : 6); slot++) {
             if ((slot == 3) && !dual) {
                 continue;
             }
-            clearCrit(Mech.LOC_HEAD, slot);
+            clearCrit(Mek.LOC_HEAD, slot);
         }
     }
-    
+
     private void clearCritsForGyro(int first, int numSlots) {
         for (int i = first; i < first + numSlots; i++) {
-            clearCrit(Mech.LOC_CT, i);
-            getMech().setCritical(Mech.LOC_CT, i, null);
+            clearCrit(Mek.LOC_CT, i);
+            getMek().setCritical(Mek.LOC_CT, i, null);
         }
     }
 
     /**
-     * Removes equipment placed in the given critical slot to clear the space for a system critical
+     * Removes equipment placed in the given critical slot to clear the space for a
+     * system critical
      */
     private void clearCrit(int loc, int slotNum) {
-        final CriticalSlot crit = getMech().getCritical(loc, slotNum);
-        Mounted mounted = null;
+        final CriticalSlot crit = getMek().getCritical(loc, slotNum);
+        Mounted<?> mounted = null;
         if (crit != null && crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
             mounted = crit.getMount();
         }
         if (mounted == null) {
             return;
         }
-        UnitUtil.removeCriticals(getMech(), mounted);
+        UnitUtil.removeCriticals(getMek(), mounted);
         if (crit.getMount2() != null) {
-            UnitUtil.removeCriticals(getMech(), crit.getMount2());
+            UnitUtil.removeCriticals(getMek(), crit.getMount2());
         }
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getMech());
+            MekFileParser.postLoadInit(getMek());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-            UnitUtil.changeMountStatus(getMech(), mounted, Entity.LOC_NONE, Entity.LOC_NONE,
+            UnitUtil.changeMountStatus(getMek(), mounted, Entity.LOC_NONE, Entity.LOC_NONE,
                     false);
             if (crit.getMount2() != null) {
-                UnitUtil.changeMountStatus(getMech(), crit.getMount2(), Entity.LOC_NONE, Entity.LOC_NONE,
+                UnitUtil.changeMountStatus(getMek(), crit.getMount2(), Entity.LOC_NONE, Entity.LOC_NONE,
                         false);
             }
         }
@@ -434,34 +454,36 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     private void createISMounts(EquipmentType structure) {
         int isCount;
-        getMech().setStructureType(EquipmentType.getStructureType(structure));
-        getMech().setStructureTechLevel(structure.getStaticTechLevel().getCompoundTechLevel(structure.isClan()));
+        getMek().setStructureType(EquipmentType.getStructureType(structure));
+        getMek().setStructureTechLevel(structure.getStaticTechLevel().getCompoundTechLevel(structure.isClan()));
 
-        isCount = structure.getCriticals(getMech());
+        isCount = structure.getCriticals(getMek());
         if (isCount < 1) {
             return;
         }
         for (; isCount > 0; isCount--) {
             try {
-                getMech().addEquipment(
-                        Mounted.createMounted(getMech(), structure),
+                getMek().addEquipment(
+                        Mounted.createMounted(getMek(), structure),
                         Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         }
     }
 
     /**
-     * Calculates required engine rating for speed and tonnage and updates engine if possible.
+     * Calculates required engine rating for speed and tonnage and updates engine if
+     * possible.
+     *
      * @return true if the new engine is legal for rating, space, and tech level
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
         int rating = walkMP * (int) tonnage;
-        if (getMech().isPrimitive()) {
+        if (getMek().isPrimitive()) {
             rating = (int) Math.ceil((rating * 1.2) / 5.0) * 5;
         }
-        int oldRating = getMech().getEngine().getRating();
+        int oldRating = getMek().getEngine().getRating();
         if (oldRating != rating) {
             panChassis.setEngineRating(rating);
             Engine engine = panChassis.getEngine();
@@ -472,17 +494,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 panChassis.setEngineRating(oldRating);
                 return false;
             } else if ((tonnage <= 100)
-                    && !hasCTSpace(engine, getMech().getGyroType(), getMech().getCockpitType())) {
+                    && !hasCTSpace(engine, getMek().getGyroType(), getMek().getCockpitType())) {
                 JOptionPane.showMessageDialog(
                         this, "There is not enough space in the center torso for the required engine.",
                         "Bad Engine", JOptionPane.ERROR_MESSAGE);
                 panChassis.setEngineRating(oldRating);
                 return false;
             } else {
-                engine.setBaseChassisHeatSinks(getMech().getEngine()
-                        .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-                getMech().setEngine(engine);
-                MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+                engine.setBaseChassisHeatSinks(getMek().getEngine()
+                        .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
+                getMek().setEngine(engine);
+                MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
                 resetSystemCrits();
             }
         }
@@ -490,7 +512,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     private boolean hasCTSpace(Engine engine, int gyroType, int cockpitType) {
-        if (getMech().isSuperHeavy()) {
+        if (getMek().isSuperHeavy()) {
             return true;
         }
         int crits = 10;
@@ -499,45 +521,45 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (engine.hasFlag(Engine.LARGE_ENGINE)) {
             crits += 2;
         }
-        if (gyroType == Mech.GYRO_COMPACT) {
+        if (gyroType == Mek.GYRO_COMPACT) {
             crits -= 2;
-        } else if (gyroType == Mech.GYRO_XL) {
+        } else if (gyroType == Mek.GYRO_XL) {
             crits += 2;
         }
-        if ((cockpitType == Mech.COCKPIT_TORSO_MOUNTED) || (cockpitType == Mech.COCKPIT_VRRP)) {
+        if ((cockpitType == Mek.COCKPIT_TORSO_MOUNTED) || (cockpitType == Mek.COCKPIT_VRRP)) {
             crits += 2;
         }
         return crits <= 12;
     }
 
     private void createArmorMountsAndSetArmorType(int at, int aTechLevel) {
-        getMech().setArmorTechLevel(aTechLevel);
-        getMech().setArmorType(at);
+        getMek().setArmorTechLevel(aTechLevel);
+        getMek().setArmorType(at);
         final EquipmentType armor = ArmorType.of(at, TechConstants.isClan(aTechLevel));
-        int armorCount = armor.getCriticals(getMech());
+        int armorCount = armor.getCriticals(getMek());
 
         if (armorCount < 1) {
             return;
         }
         // auto-place stealth crits
-        if (getMech().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
-            Mounted mount = MekUtil.createSpreadMounts(
-                    getMech(),
+        if (getMek().getArmorType(0) == EquipmentType.T_ARMOR_STEALTH) {
+            Mounted<?> mount = MekUtil.createSpreadMounts(
+                    getMek(),
                     EquipmentType.get(EquipmentType.getArmorTypeName(
-                            getMech().getArmorType(0), false)));
+                            getMek().getArmorType(0), false)));
             if (mount == null) {
                 JOptionPane.showMessageDialog(null,
                         "Stealth Armor does not fit in location.",
                         "Resetting to Standard Armor",
                         JOptionPane.INFORMATION_MESSAGE);
-                getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                getMech().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-                panArmor.setFromEntity(getMech());
+                getMek().setArmorType(EquipmentType.T_ARMOR_STANDARD);
+                getMek().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                panArmor.setFromEntity(getMek());
             }
         } else {
             for (; armorCount > 0; armorCount--) {
                 try {
-                    getMech().addEquipment(Mounted.createMounted(getMech(), armor), Entity.LOC_NONE, false);
+                    getMek().addEquipment(Mounted.createMounted(getMek(), armor), Entity.LOC_NONE, false);
                 } catch (Exception ignored) {
                 }
             }
@@ -556,7 +578,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void chassisChanged(String chassis) {
-        getMech().setChassis(chassis);
+        getMek().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
@@ -564,7 +586,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void clanNameChanged(String clanName) {
-        getMech().setClanChassisName(clanName);
+        getMek().setClanChassisName(clanName);
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
@@ -572,7 +594,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void modelChanged(String model) {
-        getMech().setModel(model);
+        getMek().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
@@ -580,24 +602,24 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void yearChanged(int year) {
-        getMech().setYear(year);
+        getMek().setYear(year);
         updateTechLevel();
     }
 
     @Override
     public void sourceChanged(String source) {
-        getMech().setSource(source);
+        getMek().setSource(source);
     }
 
     @Override
     public void mulIdChanged(int mulId) {
-        getMech().setMulId(mulId);
+        getMek().setMulId(mulId);
     }
 
     @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
-        if ((clan != getMech().isClan()) || (mixed != getMech().isMixedTech())) {
-            getMech().setMixedTech(mixed);
+        if ((clan != getMek().isClan()) || (mixed != getMek().isMixedTech())) {
+            getMek().setMixedTech(mixed);
             updateTechLevel();
         }
     }
@@ -615,39 +637,40 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getMech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        getMek().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
             panArmor.setPatchwork(false);
             armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
         }
-        if (getMech().hasPatchworkArmor()) {
-            for (int loc = 0; loc < getMech().locations(); loc++) {
+        if (getMek().hasPatchworkArmor()) {
+            for (int loc = 0; loc < getMek().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
-                    getMech().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
-                    UnitUtil.resetArmor(getMech(), loc);
+                    getMek().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    UnitUtil.resetArmor(getMek(), loc);
                 }
             }
         } else if (!getTechManager().isLegal(panArmor.getArmor())) {
-            UnitUtil.removeISorArmorMounts(getMech(), false);
+            UnitUtil.removeISorArmorMounts(getMek(), false);
         }
-        // If we have a large engine, a drop in tech level may make it unavailable and we will need
+        // If we have a large engine, a drop in tech level may make it unavailable and
+        // we will need
         // to reduce speed to a legal value.
-        if (getMech().getEngine().hasFlag(Engine.LARGE_ENGINE)
+        if (getMek().getEngine().hasFlag(Engine.LARGE_ENGINE)
                 && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
-            if (getMech().isPrimitive()) {
-                walk = 400 / (int)(getMech().getWeight() * 1.2);
+            if (getMek().isPrimitive()) {
+                walk = 400 / (int) (getMek().getWeight() * 1.2);
             } else {
-                walk = 400 / (int)getMech().getWeight();
+                walk = 400 / (int) getMek().getWeight();
             }
-            recalculateEngineRating(walk, getMech().getWeight());
-            getMech().setOriginalWalkMP(walk);
-            panMovement.setFromEntity(getMech());
+            recalculateEngineRating(walk, getMek().getWeight());
+            getMek().setOriginalWalkMP(walk);
+            panMovement.setFromEntity(getMek());
             JOptionPane.showMessageDialog(
                     this, String.format("Large engine not available at this tech level. Reducing MP to %d.", walk),
                     "Bad Engine", JOptionPane.ERROR_MESSAGE);
         }
-        if (UnitUtil.checkEquipmentByTechLevel(getMech(), panBasicInfo)) {
+        if (UnitUtil.checkEquipmentByTechLevel(getMek(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
             refresh.refreshEquipmentTable();
@@ -655,8 +678,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panChassis.refresh();
         panHeat.refresh();
         panArmor.refresh();
-        panArmorAllocation.setFromEntity(getMech());
-        panPatchwork.setFromEntity(getMech());
+        panArmorAllocation.setFromEntity(getMek());
+        panPatchwork.setFromEntity(getMek());
         refresh.refreshBuild();
         addAllListeners();
         panMovement.refresh();
@@ -672,55 +695,55 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void tonnageChanged(double tonnage) {
         if (!recalculateEngineRating(panMovement.getWalk(), tonnage)) {
-            panChassis.setFromEntity(getMech());
+            panChassis.setFromEntity(getMek());
             return;
         }
-        boolean changedSuperHeavyStatus = getMech().isSuperHeavy() != tonnage > 100;
+        boolean changedSuperHeavyStatus = getMek().isSuperHeavy() != tonnage > 100;
 
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy, remove crits
-            for (Mounted mount : getMech().getEquipment()) {
+            for (Mounted<?> mount : getMek().getEquipment()) {
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                    UnitUtil.removeCriticals(getMech(), mount);
-                    UnitUtil.changeMountStatus(getMech(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    UnitUtil.removeCriticals(getMek(), mount);
+                    UnitUtil.changeMountStatus(getMek(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
             }
             if (tonnage > 100) {
-                getMech().setGyroType(Mech.GYRO_SUPERHEAVY);
-                if (getMech().isTripodMek()) {
-                    cockpitChanged(getMech().hasAdvancedFireControl() ?
-                            Mech.COCKPIT_SUPERHEAVY_TRIPOD : Mech.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL);
+                getMek().setGyroType(Mek.GYRO_SUPERHEAVY);
+                if (getMek().isTripodMek()) {
+                    cockpitChanged(getMek().hasAdvancedFireControl() ? Mek.COCKPIT_SUPERHEAVY_TRIPOD
+                            : Mek.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL);
                 } else {
-                    cockpitChanged(getMech().hasAdvancedFireControl() ?
-                            Mech.COCKPIT_SUPERHEAVY : Mech.COCKPIT_SUPERHEAVY_INDUSTRIAL);
+                    cockpitChanged(getMek().hasAdvancedFireControl() ? Mek.COCKPIT_SUPERHEAVY
+                            : Mek.COCKPIT_SUPERHEAVY_INDUSTRIAL);
                 }
             } else {
-                getMech().setGyroType(Mech.GYRO_STANDARD);
-                if (getMech().isTripodMek()) {
-                    cockpitChanged(getMech().hasAdvancedFireControl() ?
-                            Mech.COCKPIT_TRIPOD : Mech.COCKPIT_TRIPOD_INDUSTRIAL);
+                getMek().setGyroType(Mek.GYRO_STANDARD);
+                if (getMek().isTripodMek()) {
+                    cockpitChanged(
+                            getMek().hasAdvancedFireControl() ? Mek.COCKPIT_TRIPOD : Mek.COCKPIT_TRIPOD_INDUSTRIAL);
                 } else {
-                    cockpitChanged(getMech().hasAdvancedFireControl() ?
-                            Mech.COCKPIT_STANDARD : Mech.COCKPIT_INDUSTRIAL);
+                    cockpitChanged(getMek().hasAdvancedFireControl() ? Mek.COCKPIT_STANDARD : Mek.COCKPIT_INDUSTRIAL);
                 }
             }
         }
-        getMech().setWeight(tonnage);
-        // Force recalculation of walk MP. Set from chassis panel in case superheavy flag changed
+        getMek().setWeight(tonnage);
+        // Force recalculation of walk MP. Set from chassis panel in case superheavy
+        // flag changed
         final Engine engine = panChassis.getEngine();
-        engine.setBaseChassisHeatSinks(getMech().getEngine()
-                .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-        getMech().setEngine(engine);
-        getMech().autoSetInternal();
-        if (getMech().isSuperHeavy()) {
-            getMech().setOriginalJumpMP(0);
+        engine.setBaseChassisHeatSinks(getMek().getEngine()
+                .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
+        getMek().setEngine(engine);
+        getMek().autoSetInternal();
+        if (getMek().isSuperHeavy()) {
+            getMek().setOriginalJumpMP(0);
         }
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
-            UnitUtil.removeISorArmorMounts(getMech(), true);
+            UnitUtil.removeISorArmorMounts(getMek(), true);
             createISMounts(panChassis.getStructure());
             resetSystemCrits();
-            panMovement.setFromEntity(getMech());
+            panMovement.setFromEntity(getMek());
         }
         refresh();
         refresh.refreshBuild();
@@ -730,10 +753,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void omniChanged(boolean omni) {
-        getMech().setOmni(omni);
-        getMech().getEngine().setBaseChassisHeatSinks(omni? Math.max(0, panHeat.getBaseCount()) : -1);
-        panHeat.setFromMech(getMech());
-        MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
+        getMek().setOmni(omni);
+        getMek().getEngine().setBaseChassisHeatSinks(omni ? Math.max(0, panHeat.getBaseCount()) : -1);
+        panHeat.setFromMek(getMek());
+        MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
         refresh.refreshPreview();
     }
 
@@ -743,56 +766,56 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         switch (baseType) {
             case BMChassisView.BASE_TYPE_INDUSTRIAL:
                 industrial = true;
-                //fall through
+                // fall through
             case BMChassisView.BASE_TYPE_STANDARD:
-                boolean primitive = getMech().isPrimitive();
+                boolean primitive = getMek().isPrimitive();
                 if (motiveType == BMChassisView.MOTIVE_TYPE_BIPED) {
-                    if  (((getMech().getEntityType() & Entity.ETYPE_BIPED_MECH) == 0)
-                            || ((getMech().getEntityType() & Entity.ETYPE_LAND_AIR_MECH) != 0)) {
-                        eSource.createNewUnit(Entity.ETYPE_BIPED_MECH, primitive, industrial, getMech());
+                    if (((getMek().getEntityType() & Entity.ETYPE_BIPED_MEK) == 0)
+                            || ((getMek().getEntityType() & Entity.ETYPE_LAND_AIR_MEK) != 0)) {
+                        eSource.createNewUnit(Entity.ETYPE_BIPED_MEK, primitive, industrial, getMek());
                     }
                 } else if (motiveType == BMChassisView.MOTIVE_TYPE_QUAD) {
-                    if  (((getMech().getEntityType() & Entity.ETYPE_QUAD_MECH) == 0)
-                            || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) != 0)) {
-                        eSource.createNewUnit(Entity.ETYPE_QUAD_MECH, primitive, industrial, getMech());
+                    if (((getMek().getEntityType() & Entity.ETYPE_QUAD_MEK) == 0)
+                            || ((getMek().getEntityType() & Entity.ETYPE_QUADVEE) != 0)) {
+                        eSource.createNewUnit(Entity.ETYPE_QUAD_MEK, primitive, industrial, getMek());
                     }
-                } else if ((getMech().getEntityType() & Entity.ETYPE_TRIPOD_MECH) == 0) {
-                    eSource.createNewUnit(Entity.ETYPE_TRIPOD_MECH, primitive, industrial, getMech());
+                } else if ((getMek().getEntityType() & Entity.ETYPE_TRIPOD_MEK) == 0) {
+                    eSource.createNewUnit(Entity.ETYPE_TRIPOD_MEK, primitive, industrial, getMek());
                 }
                 break;
             case BMChassisView.BASE_TYPE_LAM:
-                if (getMech() instanceof LandAirMech) {
-                    ((LandAirMech)getMech()).setLAMType(motiveType);
+                if (getMek() instanceof LandAirMek) {
+                    ((LandAirMek) getMek()).setLAMType(motiveType);
                 } else {
-                    eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MECH, getMech());
+                    eSource.createNewUnit(Entity.ETYPE_LAND_AIR_MEK, getMek());
                 }
                 break;
             case BMChassisView.BASE_TYPE_QUADVEE:
-                if (getMech() instanceof QuadVee) {
-                    if (motiveType != ((QuadVee)getMech()).getMotiveType()) {
-                        Optional<MiscMounted> mount = getMech().getMisc().stream()
+                if (getMek() instanceof QuadVee) {
+                    if (motiveType != ((QuadVee) getMek()).getMotiveType()) {
+                        Optional<MiscMounted> mount = getMek().getMisc().stream()
                                 .filter(m -> m.getType().hasFlag(MiscType.F_TRACKS))
                                 .findAny();
-                        mount.ifPresent(mounted -> UnitUtil.removeMounted(getMech(), mounted));
+                        mount.ifPresent(mounted -> UnitUtil.removeMounted(getMek(), mounted));
 
                         if (motiveType == QuadVee.MOTIVE_WHEEL) {
-                            ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_WHEEL);
-                            MekUtil.createSpreadMounts(getMech(),
+                            ((QuadVee) getMek()).setMotiveType(QuadVee.MOTIVE_WHEEL);
+                            MekUtil.createSpreadMounts(getMek(),
                                     EquipmentType.get(EquipmentTypeLookup.QUADVEE_WHEELS));
                         } else {
-                            ((QuadVee)getMech()).setMotiveType(QuadVee.MOTIVE_TRACK);
-                            MekUtil.createSpreadMounts(getMech(),
-                                    EquipmentType.get(EquipmentTypeLookup.MECH_TRACKS));
+                            ((QuadVee) getMek()).setMotiveType(QuadVee.MOTIVE_TRACK);
+                            MekUtil.createSpreadMounts(getMek(),
+                                    EquipmentType.get(EquipmentTypeLookup.MEK_TRACKS));
                         }
                     }
                 } else {
-                    eSource.createNewUnit(Entity.ETYPE_QUADVEE, getMech());
+                    eSource.createNewUnit(Entity.ETYPE_QUADVEE, getMek());
                 }
                 break;
         }
-        if (getMech().isIndustrial() != industrial) {
-            getMech().setStructureType(industrial ?
-                    EquipmentType.T_STRUCTURE_INDUSTRIAL : EquipmentType.T_STRUCTURE_STANDARD);
+        if (getMek().isIndustrial() != industrial) {
+            getMek().setStructureType(
+                    industrial ? EquipmentType.T_STRUCTURE_INDUSTRIAL : EquipmentType.T_STRUCTURE_STANDARD);
         }
 
         refresh();
@@ -804,7 +827,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void structureChanged(EquipmentType structure) {
-        UnitUtil.removeISorArmorMounts(getMech(), true);
+        UnitUtil.removeISorArmorMounts(getMek(), true);
         createISMounts(structure);
         refreshSummary();
         refresh.refreshBuild();
@@ -819,23 +842,24 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     this, "There is not enough space in the center torso for this engine.",
                     "Bad Engine", JOptionPane.ERROR_MESSAGE);
             panChassis.removeListener(this);
-            panChassis.setEngine(getMech().getEngine());
+            panChassis.setEngine(getMek().getEngine());
             panChassis.addListener(this);
         } else {
             // Make sure we keep same number of base heat sinks for omnis
-            engine.setBaseChassisHeatSinks(getMech().getEngine()
-                    .getBaseChassisHeatSinks(getMech().hasCompactHeatSinks()));
-            getMech().setEngine(engine);
+            engine.setBaseChassisHeatSinks(getMek().getEngine()
+                    .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
+            getMek().setEngine(engine);
             resetSystemCrits();
-            // If the new engine has more weight-free heat sinks than are currently installed, add the extras.
-            int newHS = engine.getWeightFreeEngineHeatSinks() - getMech().heatSinks();
+            // If the new engine has more weight-free heat sinks than are currently
+            // installed, add the extras.
+            int newHS = engine.getWeightFreeEngineHeatSinks() - getMek().heatSinks();
             if (newHS > 0) {
-                MekUtil.addHeatSinkMounts(getMech(), newHS, panHeat.getHeatSinkType());
+                MekUtil.addHeatSinkMounts(getMek(), newHS, panHeat.getHeatSinkType());
             }
-            MekUtil.updateAutoSinks(getMech(), getMech().hasCompactHeatSinks());
-            getMech().resetSinks();
-            panMovement.setFromEntity(getMech());
-            panHeat.setFromMech(getMech());
+            MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
+            getMek().resetSinks();
+            panMovement.setFromEntity(getMek());
+            panHeat.setFromMek(getMek());
             refreshSummary();
             refresh.refreshEquipment();
             refresh.refreshPreview();
@@ -850,10 +874,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     this, "There is not enough space in the center torso for this gyro.",
                     "Bad Gyro", JOptionPane.ERROR_MESSAGE);
             panChassis.removeListener(this);
-            panChassis.setGyroType(getMech().getGyroType());
+            panChassis.setGyroType(getMek().getGyroType());
             panChassis.addListener(this);
         } else {
-            getMech().setGyroType(gyroType);
+            getMek().setGyroType(gyroType);
             resetSystemCrits();
         }
         refreshSummary();
@@ -868,13 +892,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     this, "There is not enough space in the center torso for this cockpit.",
                     "Bad Gyro", JOptionPane.ERROR_MESSAGE);
             panChassis.removeListener(this);
-            panChassis.setCockpitType(getMech().getCockpitType());
+            panChassis.setCockpitType(getMek().getCockpitType());
             panChassis.addListener(this);
         } else {
-            getMech().setCockpitType(cockpitType);
-            if ((cockpitType != Mech.COCKPIT_INTERFACE)
-                    && (getMech().getGyroType() == Mech.GYRO_NONE)) {
-                gyroChanged(Mech.GYRO_STANDARD);
+            getMek().setCockpitType(cockpitType);
+            if ((cockpitType != Mek.COCKPIT_INTERFACE)
+                    && (getMek().getGyroType() == Mek.GYRO_NONE)) {
+                gyroChanged(Mek.GYRO_STANDARD);
             }
             panChassis.refresh(); // Changing from interface may require adding a gyro
             resetSystemCrits();
@@ -886,17 +910,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void enhancementChanged(EquipmentType enhancement) {
-        MekUtil.removeEnhancements(getMech());
+        MekUtil.removeEnhancements(getMek());
         if (null != enhancement) {
             if (enhancement.hasFlag(MiscType.F_MASC)) {
-                Mounted mount = Mounted.createMounted(getMech(), enhancement);
+                Mounted<?> mount = Mounted.createMounted(getMek(), enhancement);
                 try {
-                    getMech().addEquipment(mount, Entity.LOC_NONE, false);
+                    getMek().addEquipment(mount, Entity.LOC_NONE, false);
                 } catch (LocationFullException lfe) {
                     // this can't happen, we add to Entity.LOC_NONE
                 }
             } else {
-                MekUtil.createSpreadMounts(getMech(), enhancement);
+                MekUtil.createSpreadMounts(getMek(), enhancement);
             }
         }
         refresh.refreshBuild();
@@ -907,36 +931,38 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void fullHeadEjectChanged(boolean eject) {
-        getMech().setFullHeadEject(eject);
+        getMek().setFullHeadEject(eject);
     }
 
     @Override
     public void resetChassis() {
-        UnitUtil.resetBaseChassis(getMech());
+        UnitUtil.resetBaseChassis(getMek());
         refresh.refreshAll();
     }
 
     @Override
     public void heatSinksChanged(EquipmentType hsType, int count) {
-        // if we have the same type of heat sink, then we should not remove the existing heat sinks
-        int currentSinks = MekUtil.countActualHeatSinks(getMech());
-        if (getMech().hasWorkingMisc(hsType.getInternalName())) {
+        // if we have the same type of heat sink, then we should not remove the existing
+        // heat sinks
+        int currentSinks = MekUtil.countActualHeatSinks(getMek());
+        if (getMek().hasWorkingMisc(hsType.getInternalName())) {
             if (count < currentSinks) {
-                MekUtil.removeHeatSinks(getMech(), currentSinks - count);
+                MekUtil.removeHeatSinks(getMek(), currentSinks - count);
             } else if (count > currentSinks) {
-                MekUtil.addHeatSinkMounts(getMech(), count - currentSinks, hsType);
+                MekUtil.addHeatSinkMounts(getMek(), count - currentSinks, hsType);
             }
         } else {
-            MekUtil.removeHeatSinks(getMech(), count);
-            MekUtil.addHeatSinkMounts(getMech(), count, hsType);
-            // If we're switching to prototype doubles, start with the assumption that the integrated sinks are singles,
+            MekUtil.removeHeatSinks(getMek(), count);
+            MekUtil.addHeatSinkMounts(getMek(), count, hsType);
+            // If we're switching to prototype doubles, start with the assumption that the
+            // integrated sinks are singles,
             // with a minimum of one double
             if (hsType.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
-                redistributePrototypeHS(Math.max(1, count - UnitUtil.getCriticalFreeHeatSinks(getMech(), false)));
+                redistributePrototypeHS(Math.max(1, count - UnitUtil.getCriticalFreeHeatSinks(getMek(), false)));
             }
         }
-        getMech().resetSinks();
-        panHeat.setFromMech(getMech());
+        getMek().resetSinks();
+        panHeat.setFromMek(getMek());
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -945,8 +971,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void heatSinkBaseCountChanged(int count) {
-        getMech().getEngine().setBaseChassisHeatSinks(Math.max(0, count));
-        MekUtil.updateAutoSinks(getMech(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
+        getMek().getEngine().setBaseChassisHeatSinks(Math.max(0, count));
+        MekUtil.updateAutoSinks(getMek(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -954,36 +980,38 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void redistributePrototypeHS(int prototype) {
-        int netChange = prototype - getMech().countWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
+        int netChange = prototype - getMek().countWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
         if (netChange < 0) {
-            List<Mounted> doubles = getMech().getMisc().stream()
+            List<Mounted<?>> doubles = getMek().getMisc().stream()
                     .filter(m -> m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
                     .collect(Collectors.toList());
             for (int i = 0; i < -netChange; i++) {
-                // Since we're not changing the total count, there should always be enough prototype
+                // Since we're not changing the total count, there should always be enough
+                // prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    LogManager.getLogger().warn("Not enough prototype double heat sinks to switch to single");
+                    logger.warn("Not enough prototype double heat sinks to switch to single");
                 }
-                UnitUtil.removeMounted(getMech(), doubles.get(i));
+                UnitUtil.removeMounted(getMek(), doubles.get(i));
             }
-            MekUtil.addHeatSinkMounts(getMech(), -netChange, EquipmentType.get(EquipmentTypeLookup.SINGLE_HS));
+            MekUtil.addHeatSinkMounts(getMek(), -netChange, EquipmentType.get(EquipmentTypeLookup.SINGLE_HS));
         } else if (netChange > 0) {
-            // Find all the single heat sinks, and prioritize the ones that are already assigned critical slots
-            List<Mounted> singles = getMech().getMisc().stream()
+            // Find all the single heat sinks, and prioritize the ones that are already
+            // assigned critical slots
+            List<Mounted<?>> singles = getMek().getMisc().stream()
                     .filter(m -> UnitUtil.isHeatSink(m.getType())
                             && !m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
-                    .sorted(Comparator.comparingInt(m -> m.getLocation() == Mech.LOC_NONE ? 1 : 0))
+                    .sorted(Comparator.comparingInt(m -> m.getLocation() == Mek.LOC_NONE ? 1 : 0))
                     .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    LogManager.getLogger().warn("Not enough single heat sinks to switch to prototype double");
+                    logger.warn("Not enough single heat sinks to switch to prototype double");
                 }
-                UnitUtil.removeMounted(getMech(), singles.get(i));
+                UnitUtil.removeMounted(getMek(), singles.get(i));
             }
-            MekUtil.addHeatSinkMounts(getMech(), netChange, panHeat.getHeatSinkType());
+            MekUtil.addHeatSinkMounts(getMek(), netChange, panHeat.getHeatSinkType());
         }
-        MekUtil.updateAutoSinks(getMech(), false);
+        MekUtil.updateAutoSinks(getMek(), false);
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshSummary();
@@ -994,17 +1022,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
-            UnitUtil.removeISorArmorMounts(getMech(), false);
+            UnitUtil.removeISorArmorMounts(getMek(), false);
             createArmorMountsAndSetArmorType(at, aTechLevel);
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
-            panPatchwork.setFromEntity(getMech());
+            panPatchwork.setFromEntity(getMek());
             panArmorAllocation.showPatchwork(true);
             panPatchwork.setVisible(true);
         }
-        panArmor.setFromEntity(getMech(), true);
-        panArmorAllocation.setFromEntity(getMech());
+        panArmor.setFromEntity(getMek(), true);
+        panArmorAllocation.setFromEntity(getMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -1013,8 +1041,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void armorTonnageChanged(double tonnage) {
-        getMech().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
-        panArmorAllocation.setFromEntity(getMech());
+        getMek().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
+        panArmorAllocation.setFromEntity(getMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -1022,13 +1050,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(getMech());
-        getMech().setArmorTonnage(maxArmor);
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(getMek());
+        getMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
-        panArmor.setFromEntity(getMech());
+        panArmor.setFromEntity(getMek());
         panArmor.addListener(this);
 
-        panArmorAllocation.setFromEntity(getMech());
+        panArmorAllocation.setFromEntity(getMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -1036,21 +1064,21 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getMech())
+        double currentTonnage = UnitUtil.getEntityVerifier(getMek())
                 .calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMech());
-        double totalTonnage = getMech().getWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMek());
+        double totalTonnage = getMek().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
 
-        double maxArmor = MathUtility.clamp(getMech().getArmorWeight() + remainingTonnage, 0,
-                UnitUtil.getMaximumArmorTonnage(getMech()));
-        getMech().setArmorTonnage(maxArmor);
+        double maxArmor = MathUtility.clamp(getMek().getArmorWeight() + remainingTonnage, 0,
+                UnitUtil.getMaximumArmorTonnage(getMek()));
+        getMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
-        panArmor.setFromEntity(getMech());
+        panArmor.setFromEntity(getMek());
         panArmor.addListener(this);
 
-        panArmorAllocation.setFromEntity(getMech());
+        panArmorAllocation.setFromEntity(getMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -1059,16 +1087,16 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void walkChanged(int walkMP) {
         if (!recalculateEngineRating(walkMP, panChassis.getTonnage())) {
-            panMovement.setFromEntity(getMech());
+            panMovement.setFromEntity(getMek());
             return;
         }
-        getMech().setOriginalWalkMP(walkMP);
+        getMek().setOriginalWalkMP(walkMP);
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        panMovement.setFromEntity(getMech());
-        panHeat.setFromMech(getMech());
+        panMovement.setFromEntity(getMek());
+        panHeat.setFromMek(getMek());
         panChassis.refresh();
     }
 
@@ -1076,29 +1104,29 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void jumpChanged(int jumpMP, @Nullable EquipmentType jumpJet) {
         // Don't set jumpMP for UMU.
         if (jumpJet == null) {
-            getMech().setOriginalJumpMP(0);
+            getMek().setOriginalJumpMP(0);
             jumpMP = 0;
         } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET) || jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-            getMech().setOriginalJumpMP(jumpMP);
+            getMek().setOriginalJumpMP(jumpMP);
         } else {
-            getMech().setOriginalJumpMP(0);
+            getMek().setOriginalJumpMP(0);
         }
 
         if (jumpJet != null) {
-            List<Mounted> jjs = getMech().getMisc().stream()
+            List<Mounted<?>> jjs = getMek().getMisc().stream()
                     .filter(m -> jumpJet.equals(m.getType()))
                     .collect(Collectors.toList());
             if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                if (!getMech().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    MekUtil.createSpreadMounts(getMech(), jumpJet);
+                if (!getMek().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
+                    MekUtil.createSpreadMounts(getMek(), jumpJet);
                 }
             } else {
                 while (jjs.size() > jumpMP) {
-                    UnitUtil.removeMounted(getMech(), jjs.remove(jjs.size() - 1));
+                    UnitUtil.removeMounted(getMek(), jjs.remove(jjs.size() - 1));
                 }
                 while (jumpMP > jjs.size()) {
                     try {
-                        UnitUtil.addMounted(getMech(), Mounted.createMounted(getMech(), jumpJet), Entity.LOC_NONE, false);
+                        UnitUtil.addMounted(getMek(), Mounted.createMounted(getMek(), jumpJet), Entity.LOC_NONE, false);
                     } catch (LocationFullException ignored) {
                         // Adding to LOC_NONE
                     }
@@ -1111,32 +1139,32 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        panMovement.setFromEntity(getMech());
+        panMovement.setFromEntity(getMek());
     }
 
     @Override
     public void jumpTypeChanged(final EquipmentType jumpJet) {
-        List<Mounted> jjs = getMech().getMisc().stream()
+        List<Mounted<?>> jjs = getMek().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
                         || m.getType().hasFlag(MiscType.F_UMU)
                         || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER))
                 .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
-        jjs.forEach(jj -> UnitUtil.removeMounted(getMech(), jj));
+        jjs.forEach(jj -> UnitUtil.removeMounted(getMek(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
     }
 
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
-        getMech().initializeArmor(front, location);
-        if (getMech().hasRearArmor(location)) {
-            getMech().initializeRearArmor(rear, location);
+        getMek().initializeArmor(front, location);
+        if (getMek().hasRearArmor(location)) {
+            getMek().initializeRearArmor(rear, location);
         }
         if (panArmor.getArmorType() == EquipmentType.T_ARMOR_PATCHWORK) {
-            getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
+            getMek().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMek()));
         }
-        panArmor.setFromEntity(getMech(), true);
-        panArmorAllocation.setFromEntity(getMech());
+        panArmor.setFromEntity(getMek(), true);
+        panArmorAllocation.setFromEntity(getMek());
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -1144,32 +1172,32 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void autoAllocateArmor() {
-        double pointsToAllocate = UnitUtil.getArmorPoints(getMech(), getMech().getLabArmorTonnage());
-        double maxArmor = UnitUtil.getMaximumArmorPoints(getMech());
+        double pointsToAllocate = UnitUtil.getArmorPoints(getMek(), getMek().getLabArmorTonnage());
+        double maxArmor = UnitUtil.getMaximumArmorPoints(getMek());
         if (pointsToAllocate > maxArmor) {
             pointsToAllocate = maxArmor;
         }
         double percent = pointsToAllocate / maxArmor;
         int headMaxArmor = 9;
-        if (getMech().isSuperHeavy()) {
+        if (getMek().isSuperHeavy()) {
             headMaxArmor = 12;
         }
         // put 5 times the percentage of total possible armor into the head
         int headArmor = (int) Math.min(Math.floor(percent * headMaxArmor * 5), headMaxArmor);
-        getMech().initializeArmor(headArmor, Mech.LOC_HEAD);
+        getMek().initializeArmor(headArmor, Mek.LOC_HEAD);
         pointsToAllocate -= headArmor;
         maxArmor -= headMaxArmor;
         // recalculate percentage for remainder
         percent = pointsToAllocate / maxArmor;
-        for (int location = 0; location < getMech().locations(); location++) {
-            double IS = (getMech().getInternal(location) * 2);
+        for (int location = 0; location < getMek().locations(); location++) {
+            double IS = (getMek().getInternal(location) * 2);
             double allocate = Math.min(IS * percent, pointsToAllocate);
             switch (location) {
-                case Mech.LOC_HEAD:
+                case Mek.LOC_HEAD:
                     break;
-                case Mech.LOC_CT:
-                case Mech.LOC_LT:
-                case Mech.LOC_RT:
+                case Mek.LOC_CT:
+                case Mek.LOC_LT:
+                case Mek.LOC_RT:
                     int rear = (int) Math.floor(allocate * .25);
                     int front = (int) Math.ceil(allocate * .75);
                     // Make sure rounding doesn't add an additional point to this location,
@@ -1183,18 +1211,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                     }
                     pointsToAllocate -= rear;
                     pointsToAllocate -= front;
-                    getMech().initializeArmor(front, location);
-                    getMech().initializeRearArmor(rear, location);
+                    getMek().initializeArmor(front, location);
+                    getMek().initializeRearArmor(rear, location);
                     break;
                 default:
-                    getMech().initializeArmor((int) allocate, location);
+                    getMek().initializeArmor((int) allocate, location);
                     pointsToAllocate -= (int) allocate;
                     break;
             }
         }
         allocateLeftoverPoints(pointsToAllocate);
 
-        panArmorAllocation.setFromEntity(getMech());
+        panArmorAllocation.setFromEntity(getMek());
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -1204,124 +1232,124 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
      * allocate any leftover points one-by-one
      *
      * @param points
-     *            the amount of points left over
+     *               the amount of points left over
      */
     private void allocateLeftoverPoints(double points) {
         int headMaxArmor = 9;
-        if (getMech().isSuperHeavy()) {
+        if (getMek().isSuperHeavy()) {
             headMaxArmor = 12;
         }
         while (points >= 1) {
             // if two or more are left, add armor to symmetrical locations,
             // to torso, legs, arms, in that order
             if (points >= 2) {
-                if (((getMech().getOArmor(Mech.LOC_LT) + getMech().getOArmor(Mech.LOC_LT,
-                        true)) < (getMech().getOInternal(Mech.LOC_LT) * 2))
-                        && ((getMech().getOArmor(Mech.LOC_RT) + getMech().getOArmor(
-                                Mech.LOC_RT, true)) < (getMech()
-                                        .getOInternal(Mech.LOC_RT) * 2))) {
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LT) + 1,
-                            Mech.LOC_LT);
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RT) + 1,
-                            Mech.LOC_RT);
+                if (((getMek().getOArmor(Mek.LOC_LT) + getMek().getOArmor(Mek.LOC_LT,
+                        true)) < (getMek().getOInternal(Mek.LOC_LT) * 2))
+                        && ((getMek().getOArmor(Mek.LOC_RT) + getMek().getOArmor(
+                                Mek.LOC_RT, true)) < (getMek()
+                                        .getOInternal(Mek.LOC_RT) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LT) + 1,
+                            Mek.LOC_LT);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RT) + 1,
+                            Mek.LOC_RT);
                     points -= 2;
-                } else if ((getMech().getOArmor(Mech.LOC_LLEG) < (getMech()
-                        .getOInternal(Mech.LOC_LLEG) * 2))
-                        && (getMech().getOArmor(Mech.LOC_RLEG) < (getMech()
-                                .getOInternal(Mech.LOC_RLEG) * 2))) {
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LLEG) + 1,
-                            Mech.LOC_LLEG);
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RLEG) + 1,
-                            Mech.LOC_RLEG);
+                } else if ((getMek().getOArmor(Mek.LOC_LLEG) < (getMek()
+                        .getOInternal(Mek.LOC_LLEG) * 2))
+                        && (getMek().getOArmor(Mek.LOC_RLEG) < (getMek()
+                                .getOInternal(Mek.LOC_RLEG) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LLEG) + 1,
+                            Mek.LOC_LLEG);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RLEG) + 1,
+                            Mek.LOC_RLEG);
                     points -= 2;
-                } else if ((getMech().getOArmor(Mech.LOC_LARM) < (getMech()
-                        .getOInternal(Mech.LOC_LARM) * 2))
-                        && (getMech().getOArmor(Mech.LOC_RARM) < (getMech()
-                                .getOInternal(Mech.LOC_RARM) * 2))) {
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LARM) + 1,
-                            Mech.LOC_LARM);
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RARM) + 1,
-                            Mech.LOC_RARM);
+                } else if ((getMek().getOArmor(Mek.LOC_LARM) < (getMek()
+                        .getOInternal(Mek.LOC_LARM) * 2))
+                        && (getMek().getOArmor(Mek.LOC_RARM) < (getMek()
+                                .getOInternal(Mek.LOC_RARM) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LARM) + 1,
+                            Mek.LOC_LARM);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RARM) + 1,
+                            Mek.LOC_RARM);
                     points -= 2;
                 }
                 // otherwise, first add to the head, and then even out uneven
                 // allocation
-            } else if (getMech().getOArmor(Mech.LOC_HEAD) < headMaxArmor) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_HEAD) + 1,
-                        Mech.LOC_HEAD);
+            } else if (getMek().getOArmor(Mek.LOC_HEAD) < headMaxArmor) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_HEAD) + 1,
+                        Mek.LOC_HEAD);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_LT) < getMech()
-                    .getOArmor(Mech.LOC_RT)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LT) + 1,
-                        Mech.LOC_LT);
+            } else if (getMek().getOArmor(Mek.LOC_LT) < getMek()
+                    .getOArmor(Mek.LOC_RT)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LT) + 1,
+                        Mek.LOC_LT);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_RT) < getMech()
-                    .getOArmor(Mech.LOC_LT)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RT) + 1,
-                        Mech.LOC_RT);
+            } else if (getMek().getOArmor(Mek.LOC_RT) < getMek()
+                    .getOArmor(Mek.LOC_LT)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RT) + 1,
+                        Mek.LOC_RT);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_RARM) < getMech()
-                    .getOArmor(Mech.LOC_LARM)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RARM) + 1,
-                        Mech.LOC_RARM);
+            } else if (getMek().getOArmor(Mek.LOC_RARM) < getMek()
+                    .getOArmor(Mek.LOC_LARM)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RARM) + 1,
+                        Mek.LOC_RARM);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_LARM) < getMech()
-                    .getOArmor(Mech.LOC_RARM)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LARM) + 1,
-                        Mech.LOC_LARM);
+            } else if (getMek().getOArmor(Mek.LOC_LARM) < getMek()
+                    .getOArmor(Mek.LOC_RARM)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LARM) + 1,
+                        Mek.LOC_LARM);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_RLEG) < getMech()
-                    .getArmor(Mech.LOC_LLEG)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_RLEG) + 1,
-                        Mech.LOC_RLEG);
+            } else if (getMek().getOArmor(Mek.LOC_RLEG) < getMek()
+                    .getArmor(Mek.LOC_LLEG)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RLEG) + 1,
+                        Mek.LOC_RLEG);
                 points--;
-            } else if (getMech().getOArmor(Mech.LOC_LLEG) < getMech()
-                    .getOArmor(Mech.LOC_RLEG)) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_LLEG) + 1,
-                        Mech.LOC_LLEG);
+            } else if (getMek().getOArmor(Mek.LOC_LLEG) < getMek()
+                    .getOArmor(Mek.LOC_RLEG)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LLEG) + 1,
+                        Mek.LOC_LLEG);
                 points--;
                 // if nothing is uneven, add to the CT
-            } else if (((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(
-                    Mech.LOC_CT, true)) < (getMech().getOInternal(Mech.LOC_CT) * 2))) {
-                getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) + 1,
-                        Mech.LOC_CT);
+            } else if (((getMek().getOArmor(Mek.LOC_CT) + getMek().getOArmor(
+                    Mek.LOC_CT, true)) < (getMek().getOInternal(Mek.LOC_CT) * 2))) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CT) + 1,
+                        Mek.LOC_CT);
                 points--;
             }
             // if only one is left, and head and CT have max, remove one from CT
             // so symmetric locations can get extra, unless they are already at
             // max
             if (points == 1) {
-                if ((getMech().getOArmor(Mech.LOC_HEAD) == headMaxArmor)
-                        && ((getMech().getOArmor(Mech.LOC_CT) + getMech().getOArmor(Mech.LOC_CT, true))
-                        == (getMech().getOInternal(Mech.LOC_CT) * 2))) {
-                    getMech().initializeArmor(getMech().getOArmor(Mech.LOC_CT) - 1, Mech.LOC_CT);
+                if ((getMek().getOArmor(Mek.LOC_HEAD) == headMaxArmor)
+                        && ((getMek().getOArmor(Mek.LOC_CT)
+                                + getMek().getOArmor(Mek.LOC_CT, true)) == (getMek().getOInternal(Mek.LOC_CT) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CT) - 1, Mek.LOC_CT);
                     points++;
                 }
             }
             // if all locations have max, return
             boolean toReturn = true;
-            for (int location = 0; location < getMech().locations(); location++) {
-                double is = (getMech().getInternal(location) * 2);
+            for (int location = 0; location < getMek().locations(); location++) {
+                double is = (getMek().getInternal(location) * 2);
                 switch (location) {
-                    case Mech.LOC_HEAD:
+                    case Mek.LOC_HEAD:
                         int headPoints = 3;
-                        if (getMech().isSuperHeavy()) {
+                        if (getMek().isSuperHeavy()) {
                             headPoints = 4;
                         }
-                        if ((is + headPoints) > getMech().getOArmor(location)) {
+                        if ((is + headPoints) > getMek().getOArmor(location)) {
                             toReturn = false;
                         }
                         break;
-                    case Mech.LOC_CT:
-                    case Mech.LOC_LT:
-                    case Mech.LOC_RT:
-                        if (is > (getMech().getOArmor(location) + getMech().getOArmor(
+                    case Mek.LOC_CT:
+                    case Mek.LOC_LT:
+                    case Mek.LOC_RT:
+                        if (is > (getMek().getOArmor(location) + getMek().getOArmor(
                                 location, true))) {
                             toReturn = false;
                         }
                         break;
                     default:
-                        if (is > getMech().getOArmor(location)) {
+                        if (is > getMek().getOArmor(location)) {
                             toReturn = false;
                         }
                         break;
@@ -1335,37 +1363,38 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void patchworkChanged(int location, ArmorType armor) {
-        UnitUtil.resetArmor(getMech(), location);
+        UnitUtil.resetArmor(getMek(), location);
 
-        int crits = armor.getPatchworkSlotsMechSV();
-        if (getMech().isSuperHeavy()) {
+        int crits = armor.getPatchworkSlotsMekSV();
+        if (getMek().isSuperHeavy()) {
             crits = (crits + 1) / 2;
         }
-        if (getMech().getEmptyCriticals(location) < crits) {
-            JOptionPane .showMessageDialog(
+        if (getMek().getEmptyCriticals(location) < crits) {
+            JOptionPane.showMessageDialog(
                     null, armor.getName()
-                    + " does not fit in location "
-                    + getMech().getLocationName(location)
-                    + ". Resetting to Standard Armor in this location.",
+                            + " does not fit in location "
+                            + getMek().getLocationName(location)
+                            + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
-            getEntity().setArmorType(getMech().isIndustrial() ?
-                    EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL : EquipmentType.T_ARMOR_STANDARD, location);
+            getEntity().setArmorType(
+                    getMek().isIndustrial() ? EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL : EquipmentType.T_ARMOR_STANDARD,
+                    location);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {
-            getMech().setArmorType(armor.getArmorType(), location);
-            getMech().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            getMek().setArmorType(armor.getArmorType(), location);
+            getMek().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
             for (; crits > 0; crits--) {
                 try {
-                    getMech().addEquipment( Mounted.createMounted(getMech(), armor), location, false);
+                    getMek().addEquipment(Mounted.createMounted(getMek(), armor), location, false);
                 } catch (LocationFullException ignored) {
 
                 }
             }
         }
-        getMech().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMech()));
-        panArmor.setFromEntity(getMech());
-        panArmorAllocation.setFromEntity(getMech());
+        getMek().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMek()));
+        panArmor.setFromEntity(getMek());
+        panArmorAllocation.setFromEntity(getMek());
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshSummary();

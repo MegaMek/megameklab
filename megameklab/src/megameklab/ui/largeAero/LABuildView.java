@@ -13,18 +13,9 @@
  */
 package megameklab.ui.largeAero;
 
-import megamek.common.*;
-import megamek.common.equipment.AmmoMounted;
-import megamek.common.equipment.WeaponMounted;
-import megamek.common.weapons.Weapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
-import megameklab.util.StringUtils;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.TableColumn;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -33,9 +24,36 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.TableColumn;
+
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.WeaponMounted;
+import megamek.common.weapons.Weapon;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.AeroBayTransferHandler;
+import megameklab.ui.util.BayWeaponCriticalTree;
+import megameklab.ui.util.CriticalTableModel;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.util.StringUtils;
+
 /**
  * Shows unallocated equipment and presents menus options for adding equipment to bays.
- * 
+ *
  * @author Neoancient
  */
 public class LABuildView extends IView implements MouseListener {
@@ -45,7 +63,7 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     private CriticalTableModel equipmentList;
-    private Vector<Mounted> masterEquipmentList = new Vector<>(10, 1);
+    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();
 
@@ -79,7 +97,7 @@ public class LABuildView extends IView implements MouseListener {
         setLayout(new GridLayout(1, 1));
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Unallocated Equipment", 
+                BorderFactory.createEmptyBorder(), "Unallocated Equipment",
                 TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
@@ -90,17 +108,17 @@ public class LABuildView extends IView implements MouseListener {
     private void loadEquipmentTable() {
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
-        for (Mounted mount : getAero().getMisc()) {
+        for (Mounted<?> mount : getAero().getMisc()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getAero().getTotalWeaponList()) {
+        for (Mounted<?> mount : getAero().getTotalWeaponList()) {
             if (mount.getLocation() == Entity.LOC_NONE) {
                 masterEquipmentList.add(mount);
             }
         }
-        for (Mounted mount : getAero().getAmmo()) {
+        for (Mounted<?> mount : getAero().getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()) {
                 masterEquipmentList.add(mount);
             }
@@ -109,9 +127,9 @@ public class LABuildView extends IView implements MouseListener {
         masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // weapons and ammo
-        Vector<Mounted> weaponsNAmmoList = new Vector<>(10, 1);
+        Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) || 
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
                     (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
@@ -119,7 +137,7 @@ public class LABuildView extends IView implements MouseListener {
             }
         }
         weaponsNAmmoList.sort(StringUtils.mountedComparator());
-        for (Mounted mount : weaponsNAmmoList) {
+        for (Mounted<?> mount : weaponsNAmmoList) {
             equipmentList.addCrit(mount);
         }
 
@@ -246,7 +264,7 @@ public class LABuildView extends IView implements MouseListener {
                             item = new JMenuItem(l.getLocationName());
                             item.addActionListener(ev -> l.addToLocation(eq));
                             popup.add(item);
-                        }                           
+                        }
                     } else {
                         item = new JMenuItem(l.getLocationName());
                         item.addActionListener(ev -> l.addToLocation(eq));

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-        import megamek.common.Entity;
-        import megamek.common.Jumpship;
-        import megamek.common.verifier.TestAdvancedAerospace;
-        import megameklab.util.UnitUtil;
+import megamek.common.Entity;
+import megamek.common.Jumpship;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megameklab.util.UnitUtil;
 
 public class GravDeckSummaryItem extends AbstractSummaryItem {
 

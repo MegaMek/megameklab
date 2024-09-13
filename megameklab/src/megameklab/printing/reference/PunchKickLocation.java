@@ -13,8 +13,8 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMech;
-import megamek.common.TripodMech;
+import megamek.common.QuadMek;
+import megamek.common.TripodMek;
 import megameklab.printing.PrintEntity;
 
 /**
@@ -32,9 +32,9 @@ public class PunchKickLocation extends ReferenceTable {
                 bundle.getString("kickFrontRear"),
                 bundle.getString("rightSide")
         );
-        if (sheet.getEntity() instanceof TripodMech) {
+        if (sheet.getEntity() instanceof TripodMek) {
             addTripodRows();
-        } else if (sheet.getEntity() instanceof QuadMech) {
+        } else if (sheet.getEntity() instanceof QuadMek) {
             addQuadRows();
         } else {
             addBipedRows();

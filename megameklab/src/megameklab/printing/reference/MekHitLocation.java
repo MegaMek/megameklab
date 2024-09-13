@@ -13,23 +13,23 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMech;
-import megamek.common.TripodMech;
-import megameklab.printing.PrintMech;
+import megamek.common.QuadMek;
+import megamek.common.TripodMek;
+import megameklab.printing.PrintMek;
 
 /**
  * Hit locations table for Meks
  */
 public class MekHitLocation extends ReferenceTable {
 
-    public MekHitLocation(PrintMech sheet) {
+    public MekHitLocation(PrintMek sheet) {
         super(sheet, 0.1, 0.35, 0.6, 0.85);
         setHeaders(bundle.getString("dieRoll2d6"), bundle.getString("leftSide"),
                 bundle.getString("frontRear"), bundle.getString("rightSide"));
-        if (sheet.getEntity() instanceof TripodMech) {
+        if (sheet.getEntity() instanceof TripodMek) {
             addRows(TRIPOD_LOCATIONS);
             addNote(bundle.getString("tripodLegNote"));
-        } else if (sheet.getEntity() instanceof QuadMech) {
+        } else if (sheet.getEntity() instanceof QuadMek) {
             addRows(QUAD_LOCATIONS);
         } else {
             addRows(BIPED_LOCATIONS);

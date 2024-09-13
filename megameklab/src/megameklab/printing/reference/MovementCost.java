@@ -13,15 +13,16 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
-import megameklab.printing.PrintEntity;
-import megameklab.printing.PrintRecordSheet;
-import org.apache.batik.util.SVGConstants;
-
 import java.text.NumberFormat;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.StringJoiner;
+
+import org.apache.batik.util.SVGConstants;
+
+import megamek.common.*;
+import megameklab.printing.PrintEntity;
+import megameklab.printing.PrintRecordSheet;
 
 /**
  * General table for movement costs
@@ -136,10 +137,10 @@ public class MovementCost extends ReferenceTable {
         }
         if (entity.getMovementMode().equals(EntityMovementMode.VTOL)) {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
-        } else if ((entity instanceof Tank) || (entity instanceof Protomech)) {
+        } else if ((entity instanceof Tank) || (entity instanceof ProtoMek)) {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
             addRow("", bundle.getString("1level"), "",
-                    (entity instanceof Protomech) ? "+1" : "+2");
+                    (entity instanceof ProtoMek) ? "+1" : "+2");
             addRow("", bundle.getString("2plusLevels"), "", bundle.getString("prohibited"));
         } else {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
@@ -149,13 +150,13 @@ public class MovementCost extends ReferenceTable {
         }
         addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
         addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
-        if (entity instanceof Mech) {
+        if (entity instanceof Mek) {
             addRow("", bundle.getString("dropToGround"), "", "1");
             addRow("", bundle.getString("standUp"), "", bundle.getString("2perAttempt"));
-            if (entity instanceof LandAirMech) {
+            if (entity instanceof LandAirMek) {
                 addRow("", bundle.getString("liftOffHover"), "", "5");
             }
-        } else if ((entity instanceof Protomech) && ((Protomech) entity).isGlider()) {
+        } else if ((entity instanceof ProtoMek) && ((ProtoMek) entity).isGlider()) {
             addRow("", bundle.getString("liftOffHover"), "", "3");
         } else if (entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("liftOff"), "", "5");
@@ -289,7 +290,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("heavyWoods"), "", "+1", sj.toString());
         } else {
             addRow("", bundle.getString("heavyWoods"), "",
-                    (entity instanceof Protomech) ? "+2" : "+1");
+                    (entity instanceof ProtoMek) ? "+2" : "+1");
         }
         addRow("", bundle.getString("water"), "", "");
         if (hoverCount > 0) {
@@ -323,7 +324,7 @@ public class MovementCost extends ReferenceTable {
         }
         addRow(bundle.getString("levelChangeUpOrDown"));
         if (vtolCount < entities.size()) {
-            addRow("", bundle.getString("1level"), "", (entity instanceof Protomech) ? "+1" : "+2");
+            addRow("", bundle.getString("1level"), "", (entity instanceof ProtoMek) ? "+1" : "+2");
             addRow("", bundle.getString("2plusLevels"), "", bundle.getString("prohibited"));
         }
         if (vtolCount > 0) {
@@ -332,10 +333,10 @@ public class MovementCost extends ReferenceTable {
         if (umuCount > 0) {
             addRow("", bundle.getString("umu"), "", bundle.getString("1perLevel"));
         }
-        if (entity instanceof Protomech) {
+        if (entity instanceof ProtoMek) {
             addRow(bundle.getString("additionalMovementActions"), "", "", "");
             addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
-            if (((Protomech) entity).isGlider()) {
+            if (((ProtoMek) entity).isGlider()) {
                 addRow("", bundle.getString("liftOffHover"), "", "4");
             }
         }
