@@ -343,7 +343,7 @@ public final class MekUtil {
      * outside the engine
      * are paired in a slot with one single if there are an odd number.
      *
-     * @param Mek The Mek to adjust heat sinks for
+     * @param mek The Mek to adjust heat sinks for
      */
     public static void updateCompactHeatSinks(Mek mek) {
         int base = UnitUtil.getCriticalFreeHeatSinks(mek, true);
