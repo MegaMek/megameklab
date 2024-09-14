@@ -26,7 +26,6 @@
 /megameklab/mmconf/*.preferences
 /megameklab/mmconf/*.properties
 /megameklab/mmconf/*.properties.bak
-/megameklab/mmconf/recent_boards.yml
 /megameklab/mmconf/clientsettings.xml
 /megameklab/out/
 /megameklab/.classpath
