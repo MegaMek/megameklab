@@ -77,8 +77,8 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
-        } else if (info.getComponent() instanceof ProtomekMountList) {
-            ProtomekMountList list = (ProtomekMountList) info.getComponent();
+        } else if (info.getComponent() instanceof ProtoMekMountList) {
+            ProtoMekMountList list = (ProtoMekMountList) info.getComponent();
             location = list.getMountLocation();
             Transferable t = info.getTransferable();
             try {
@@ -159,8 +159,8 @@ public class CriticalTransferHandler extends TransferHandler {
                 critView.markUnavailableLocations(mount);
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-        } else if (c instanceof ProtomekMountList) {
-            Mounted mount = ((ProtomekMountList) c).getMounted();
+        } else if (c instanceof ProtoMekMountList) {
+            Mounted mount = ((ProtoMekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                     && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));

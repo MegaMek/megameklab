@@ -19,7 +19,7 @@ import megamek.common.Protomech;
 import megamek.common.verifier.TestProtomech;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
-import megameklab.ui.util.ProtomekMountList;
+import megameklab.ui.util.ProtoMekMountList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 
@@ -40,11 +40,11 @@ public class PMCriticalView extends IView {
     private final Box leftArmPanel = Box.createVerticalBox();
     private final Box rightArmPanel = Box.createVerticalBox();
 
-    private final ProtomekMountList mainGunList;
-    private final ProtomekMountList torsoList;
-    private final ProtomekMountList leftList;
-    private final ProtomekMountList rightList;
-    private final ProtomekMountList bodyList;
+    private final ProtoMekMountList mainGunList;
+    private final ProtoMekMountList torsoList;
+    private final ProtoMekMountList leftList;
+    private final ProtoMekMountList rightList;
+    private final ProtoMekMountList bodyList;
 
     private final JLabel mainGunSpace = new JLabel();
     private final JLabel torsoSpace = new JLabel();
@@ -72,32 +72,32 @@ public class PMCriticalView extends IView {
         rightWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         mainGunPanel.setBorder(CritCellUtil.locationBorder("Main Gun"));
-        mainGunList = new ProtomekMountList(eSource, refresh, Protomech.LOC_MAINGUN);
+        mainGunList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_MAINGUN);
         mainGunPanel.add(mainGunList);
         mainGunPanel.add(mainGunSpace);
         
         leftArmPanel.setBorder(CritCellUtil.locationBorder("Left Arm"));
-        leftList = new ProtomekMountList(eSource, refresh, Protomech.LOC_LARM);
+        leftList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_LARM);
         leftArmPanel.add(leftList);
         leftArmPanel.add(leftSpace);
         leftArmPanel.add(leftWeight);
 
         Box torsoPanel = Box.createVerticalBox();
         torsoPanel.setBorder(CritCellUtil.locationBorder("Torso"));
-        torsoList = new ProtomekMountList(eSource, refresh, Protomech.LOC_TORSO);
+        torsoList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_TORSO);
         torsoPanel.add(torsoList);
         torsoPanel.add(torsoSpace);
         torsoPanel.add(torsoWeight);
 
         rightArmPanel.setBorder(CritCellUtil.locationBorder("Right Arm"));
-        rightList = new ProtomekMountList(eSource, refresh, Protomech.LOC_RARM);
+        rightList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_RARM);
         rightArmPanel.add(rightList);
         rightArmPanel.add(rightSpace);
         rightArmPanel.add(rightWeight);
 
         Box bodyPanel = Box.createVerticalBox();
         bodyPanel.setBorder(CritCellUtil.locationBorder("General"));
-        bodyList = new ProtomekMountList(eSource, refresh, Protomech.LOC_BODY);
+        bodyList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_BODY);
         bodyPanel.add(bodyList);
 
         leftPanel.add(leftArmPanel);

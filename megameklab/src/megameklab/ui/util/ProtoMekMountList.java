@@ -35,7 +35,7 @@ import java.util.List;
  * @author Neoancient
  * @author Simon (Juliez)
  */
-public class ProtomekMountList extends JList<Mounted> {
+public class ProtoMekMountList extends JList<Mounted> {
 
     private final EntitySource eSource;
     private final int location;
@@ -43,7 +43,7 @@ public class ProtomekMountList extends JList<Mounted> {
     private static final WeaponType widthWeaponType = new WeaponType();
     private final WeaponMounted critcellWidthMounted;
     
-    public ProtomekMountList(EntitySource eSource, RefreshListener refresh, int location) {
+    public ProtoMekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
         this.refresh = refresh;
         this.location = location;
@@ -180,7 +180,7 @@ public class ProtomekMountList extends JList<Mounted> {
                 popup.add(menuItem);
             }
 
-            popup.show(ProtomekMountList.this, e.getX(), e.getY());
+            popup.show(ProtoMekMountList.this, e.getX(), e.getY());
         }
     };
 
@@ -208,7 +208,7 @@ public class ProtomekMountList extends JList<Mounted> {
 
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
-            final ProtomekMountList lstMount = (ProtomekMountList) list;
+            final ProtoMekMountList lstMount = (ProtoMekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
             if ((value instanceof Mounted<?> mounted) && (mounted.getType() == widthWeaponType)) {
                 // For the "prototype" cell value, use the prototype text to set the correct width of the list
