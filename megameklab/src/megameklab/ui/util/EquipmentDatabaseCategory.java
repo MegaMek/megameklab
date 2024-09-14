@@ -50,7 +50,7 @@ public enum EquipmentDatabaseCategory {
 
     ARTILLERY ("Artillery",
             (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(F_ARTILLERY),
-            e -> !(e instanceof Protomech)
+            e -> !(e instanceof ProtoMek)
                     && (!(e instanceof Infantry) || (e instanceof BattleArmor))),
 
     CAPITAL ("Capital",
@@ -59,7 +59,7 @@ public enum EquipmentDatabaseCategory {
 
     PHYSICAL ("Physical",
             (eq, en) -> UnitUtil.isPhysicalWeapon(eq) || isIndustrialEquipment(eq),
-            e -> e.hasETypeFlag(Entity.ETYPE_MECH)),
+            e -> e.hasETypeFlag(Entity.ETYPE_MEK)),
 
     INDUSTRIAL ("Industrial",
             (eq, en) -> isIndustrialEquipment(eq),
@@ -74,7 +74,7 @@ public enum EquipmentDatabaseCategory {
                     && !UnitUtil.isPhysicalWeapon(eq)
                     && !UnitUtil.isJumpJet(eq)
                     && !UnitUtil.isHeatSink(eq)
-                    && !(isIndustrialEquipment(eq) && ((en instanceof Tank) || en.isSupportVehicle() || en instanceof Mech))
+                    && !(isIndustrialEquipment(eq) && ((en instanceof Tank) || en.isSupportVehicle() || en instanceof Mek))
                     && !eq.isAnyOf(LAM_FUEL_TANK)
                     && !eq.hasFlag(F_TSM)
                     && !eq.hasFlag(F_INDUSTRIAL_TSM)
@@ -85,8 +85,8 @@ public enum EquipmentDatabaseCategory {
                     && !UnitUtil.isArmorOrStructure(eq)
                     && !(eq.hasFlag(F_CHASSIS_MODIFICATION) && en.isSupportVehicle())
                     && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
-                    && !(eq.hasFlag(F_MAGNETIC_CLAMP) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
-                    && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMECH))
+                    && !(eq.hasFlag(F_MAGNETIC_CLAMP) && en.hasETypeFlag(Entity.ETYPE_PROTOMEK))
+                    && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMEK))
                     && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
                     && !eq.hasFlag(F_PINTLE_TURRET))
                     || eq.is(COOLANT_POD)

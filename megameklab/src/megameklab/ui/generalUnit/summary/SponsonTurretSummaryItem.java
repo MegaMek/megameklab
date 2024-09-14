@@ -38,7 +38,7 @@ public class SponsonTurretSummaryItem extends AbstractSummaryItem {
     }
 
     private double getSponsonTurretWeight(Entity entity) {
-        for (Mounted m : entity.getMisc()) {
+        for (Mounted<?> m : entity.getMisc()) {
             MiscType mt = (MiscType) m.getType();
             if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
                 return m.getTonnage();

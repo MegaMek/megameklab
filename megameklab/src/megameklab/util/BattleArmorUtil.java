@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,13 @@
  */
 package megameklab.util;
 
-import megamek.common.*;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.weapons.LegAttack;
 import megamek.common.weapons.StopSwarmAttack;
@@ -30,15 +36,16 @@ public final class BattleArmorUtil {
     /**
      * @param eq A {@link WeaponType} or {@link MiscType}
      * @param ba The BattleArmor instance
-     * @return   Whether the BA can use the equipment
+     * @return Whether the BA can use the equipment
      */
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
         if (eq instanceof MiscType) {
-                return eq.hasFlag(MiscType.F_BA_EQUIPMENT);
+            return eq.hasFlag(MiscType.F_BA_EQUIPMENT);
         } else if (eq instanceof WeaponType) {
             return isBattleArmorWeapon(eq, ba);
         }
-        // This leaves ammotype, which is filtered according to having a weapon that can use it
+        // This leaves ammotype, which is filtered according to having a weapon that can
+        // use it
         return false;
     }
 
@@ -82,16 +89,15 @@ public final class BattleArmorUtil {
             }
 
             if (weapon.hasFlag(WeaponType.F_ENERGY) && (weapon.hasFlag(WeaponType.F_PLASMA))
-                    && (weapon.hasFlag(WeaponType.F_BA_WEAPON)))  {
+                    && (weapon.hasFlag(WeaponType.F_BA_WEAPON))) {
                 return true;
             }
 
             if (weapon.hasFlag(WeaponType.F_ENERGY)
-                        && weapon.hasFlag(WeaponType.F_PLASMA)
-                        && (weapon.getAmmoType() == AmmoType.T_NA))
-                        {
-                    return false;
-                }
+                    && weapon.hasFlag(WeaponType.F_PLASMA)
+                    && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                return false;
+            }
 
             return true;
         }
@@ -100,7 +106,7 @@ public final class BattleArmorUtil {
     }
 
     public static boolean canSwarm(BattleArmor ba) {
-        for (Mounted eq : ba.getEquipment()) {
+        for (Mounted<?> eq : ba.getEquipment()) {
             if ((eq.getType() instanceof SwarmAttack)
                     || (eq.getType() instanceof StopSwarmAttack)) {
                 return true;
@@ -110,7 +116,7 @@ public final class BattleArmorUtil {
     }
 
     public static boolean canLegAttack(BattleArmor ba) {
-        for (Mounted eq : ba.getEquipment()) {
+        for (Mounted<?> eq : ba.getEquipment()) {
             if (eq.getType() instanceof LegAttack) {
                 return true;
             }
@@ -123,5 +129,6 @@ public final class BattleArmorUtil {
                 && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
     }
 
-    private BattleArmorUtil() { }
+    private BattleArmorUtil() {
+    }
 }

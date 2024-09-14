@@ -38,7 +38,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+            boolean hasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
@@ -56,8 +57,11 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         CriticalSlot cs = null;
         if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
-            /** safety against logic error where we try to redraw deleted equipment due to poor dupe slot handling **/
-            Mounted eq = unit.getEquipment(eqId);
+            /**
+             * safety against logic error where we try to redraw deleted equipment due to
+             * poor dupe slot handling
+             **/
+            Mounted<?> eq = unit.getEquipment(eqId);
             cs = eq != null ? new CriticalSlot(eq) : null;
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));

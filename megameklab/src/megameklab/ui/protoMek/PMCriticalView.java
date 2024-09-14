@@ -15,8 +15,8 @@
 package megameklab.ui.protoMek;
 
 import megamek.common.Mounted;
-import megamek.common.Protomech;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.ProtoMek;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.ProtoMekMountList;
@@ -72,32 +72,32 @@ public class PMCriticalView extends IView {
         rightWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         mainGunPanel.setBorder(CritCellUtil.locationBorder("Main Gun"));
-        mainGunList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_MAINGUN);
+        mainGunList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_MAINGUN);
         mainGunPanel.add(mainGunList);
         mainGunPanel.add(mainGunSpace);
-        
+
         leftArmPanel.setBorder(CritCellUtil.locationBorder("Left Arm"));
-        leftList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_LARM);
+        leftList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_LARM);
         leftArmPanel.add(leftList);
         leftArmPanel.add(leftSpace);
         leftArmPanel.add(leftWeight);
 
         Box torsoPanel = Box.createVerticalBox();
         torsoPanel.setBorder(CritCellUtil.locationBorder("Torso"));
-        torsoList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_TORSO);
+        torsoList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_TORSO);
         torsoPanel.add(torsoList);
         torsoPanel.add(torsoSpace);
         torsoPanel.add(torsoWeight);
 
         rightArmPanel.setBorder(CritCellUtil.locationBorder("Right Arm"));
-        rightList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_RARM);
+        rightList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_RARM);
         rightArmPanel.add(rightList);
         rightArmPanel.add(rightSpace);
         rightArmPanel.add(rightWeight);
 
         Box bodyPanel = Box.createVerticalBox();
         bodyPanel.setBorder(CritCellUtil.locationBorder("General"));
-        bodyList = new ProtoMekMountList(eSource, refresh, Protomech.LOC_BODY);
+        bodyList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_BODY);
         bodyPanel.add(bodyList);
 
         leftPanel.add(leftArmPanel);
@@ -130,15 +130,15 @@ public class PMCriticalView extends IView {
         leftList.refreshContents();
         rightList.refreshContents();
         bodyList.refreshContents();
-        
-        Map<Integer, List<Mounted>> eqByLocation = getProtoMek().getEquipment().stream()
+
+        Map<Integer, List<Mounted<?>>> eqByLocation = getProtoMek().getEquipment().stream()
                 .collect(Collectors.groupingBy(Mounted::getLocation));
         for (int location = 0; location < getProtoMek().locations(); location++) {
             int slotsUsed = 0;
             double weightUsed = 0.0;
             if (eqByLocation.containsKey(location)) {
-                for (Mounted m : eqByLocation.get(location)) {
-                    if (TestProtomech.requiresSlot(m.getType())) {
+                for (Mounted<?> m : eqByLocation.get(location)) {
+                    if (TestProtoMek.requiresSlot(m.getType())) {
                         slotsUsed++;
                     }
                     weightUsed += m.getTonnage();
@@ -146,27 +146,27 @@ public class PMCriticalView extends IView {
             }
 
             switch (location) {
-                case Protomech.LOC_TORSO:
+                case ProtoMek.LOC_TORSO:
                     torsoSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtoMek()));
+                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
                     torsoWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtoMek()) * 1000));
+                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
-                case Protomech.LOC_LARM:
+                case ProtoMek.LOC_LARM:
                     leftSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtoMek()));
+                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
                     leftWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtoMek()) * 1000));
+                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
-                case Protomech.LOC_RARM:
+                case ProtoMek.LOC_RARM:
                     rightSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtoMek()));
+                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
                     rightWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtomech.maxWeightByLocation(location, getProtoMek()) * 1000));
+                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
-                case Protomech.LOC_MAINGUN:
+                case ProtoMek.LOC_MAINGUN:
                     mainGunSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtomech.maxSlotsByLocation(location, getProtoMek()));
+                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
                     break;
             }
         }

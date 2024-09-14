@@ -18,7 +18,7 @@ package megameklab.ui.util;
 
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -376,7 +376,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_TON) {
             final double weight = type.getTonnage(entity);
             if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMECH))) {
+                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMEK))) {
                 return String.format("%.2f kg/shot", atype.getKgPerShot());
             } else if (type.isVariableTonnage()) {
                 return VARIABLE;
@@ -387,15 +387,15 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         } else if (col == COL_CRIT) {
             if (type.isVariableCriticals()
-                    && (entity.isSupportVehicle() || (entity instanceof Mech))) {
-                // Only Mechs and support vehicles require multiple slots for equipment
+                    && (entity.isSupportVehicle() || (entity instanceof Mek))) {
+                // Only Meks and support vehicles require multiple slots for equipment
                 return "variable";
             } else if (entity.isSupportVehicle()) {
                 return type.getSupportVeeSlots(entity);
             } else if (entity instanceof Tank) {
                 return type.getTankSlots(entity);
-            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMECH)) {
-                return TestProtomech.requiresSlot(type)? 1 : 0;
+            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+                return TestProtoMek.requiresSlot(type)? 1 : 0;
             }
             return type.getCriticals(entity);
         } else if (col == COL_TRATING) {

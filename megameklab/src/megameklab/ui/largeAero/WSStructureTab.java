@@ -24,11 +24,25 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.Aero;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.Jumpship;
+import megamek.common.SimpleTechLevel;
+import megamek.common.SpaceStation;
+import megamek.common.UnitRole;
+import megamek.common.Warship;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.ArmorAllocationView;
+import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.FuelView;
+import megameklab.ui.generalUnit.HeatSinkView;
+import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.MVFArmorView;
+import megameklab.ui.generalUnit.MovementView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.AdvancedAeroBuildListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -49,7 +63,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     private FuelView panFuel;
     private HeatSinkView panHeat;
     private LACrewView panCrew;
-    private WSGravDeckView panGravDecks;
+    private WSGravDeckView panGravityDecks;
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private IconView iconView;
@@ -73,7 +87,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panFuel = new FuelView();
         panHeat = new HeatSinkView(panInfo);
         panCrew = new LACrewView(panInfo);
-        panGravDecks = new WSGravDeckView();
+        panGravityDecks = new WSGravDeckView();
         iconView = new IconView();
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource,
@@ -81,7 +95,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
                 new FuelSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ControlsSummaryItem(),
                 new LfBatterySummaryItem(),
                 new KfDriveSummaryItem(),
@@ -116,7 +130,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         midPanel.add(panMovement);
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
         midPanel.add(panFuel);
-        midPanel.add(panGravDecks);
+        midPanel.add(panGravityDecks);
         midPanel.add(panSummary);
         midPanel.add(Box.createHorizontalStrut(300));
 
@@ -143,14 +157,14 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panHeat.setBorder(BorderFactory.createTitledBorder("Heat Sinks"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panCrew.setBorder(BorderFactory.createTitledBorder("Crew and Quarters"));
-        panGravDecks.setBorder(BorderFactory.createTitledBorder("Gravity Decks"));
+        panGravityDecks.setBorder(BorderFactory.createTitledBorder("Gravity Decks"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
     }
-    
+
     public ITechManager getTechManager() {
         return panInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -160,7 +174,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     public void refresh() {
         removeAllListeners();
-        
+
         panInfo.setFromEntity(getJumpship());
         panChassis.setFromEntity(getJumpship());
         panHeat.setFromAero(getJumpship());
@@ -168,10 +182,10 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panMovement.setFromEntity(getJumpship());
         panArmor.setFromEntity(getJumpship());
         panCrew.setFromEntity(getJumpship());
-        panGravDecks.setFromEntity(getJumpship());
+        panGravityDecks.setFromEntity(getJumpship());
         panArmorAllocation.setFromEntity(getJumpship());
         iconView.setFromEntity(getEntity());
-        
+
         panMovement.setVisible(getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP));
         panSummary.refresh();
         addAllListeners();
@@ -186,7 +200,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panMovement.removeListener(this);
         panArmor.removeListener(this);
         panCrew.removeListener(this);
-        panGravDecks.removeListener(this);
+        panGravityDecks.removeListener(this);
         panArmorAllocation.removeListener(this);
     }
 
@@ -198,7 +212,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panMovement.addListener(this);
         panArmor.addListener(this);
         panCrew.addListener(this);
-        panGravDecks.addListener(this);
+        panGravityDecks.addListener(this);
         panArmorAllocation.addListener(this);
     }
 
@@ -264,7 +278,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         getJumpship().setTechLevel(panInfo.getTechLevel().getCompoundTechLevel(panInfo.useClanTechBase()));
@@ -302,7 +316,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void heatSinkBaseCountChanged(int count) {
-        // Only used for omnifighters
+        // Only used for omni-fighters
     }
 
     @Override
@@ -317,7 +331,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getJumpship().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -335,13 +349,13 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panArmor.removeListener(this);
         panArmor.setFromEntity(getJumpship());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getJumpship())
@@ -350,14 +364,14 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         double totalTonnage = getJumpship().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+
         double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getJumpship()));
         getJumpship().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getJumpship());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -478,7 +492,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
-    
+
     @Override
     public void rangeChanged(int range) {
         getJumpship().setJumpRange(range);
@@ -500,7 +514,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = Math.round(tonnage * 2) / 2.0;
@@ -538,43 +552,43 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getJumpship().initializeArmor(0, loc);
         }
-        
+
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
         int bonusPerFacing = (int) Math.floor(UnitUtil.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
         int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage())
                 - bonusPerFacing * 6;
         int nose = (int)Math.floor(points * 0.22);
-        int foresides = (int)Math.floor(points * 0.18);
-        int aftsides = (int) Math.floor(points * 0.16);
+        int foreSides = (int)Math.floor(points * 0.18);
+        int aftSides = (int) Math.floor(points * 0.16);
         int aft = (int)Math.floor(points * 0.10);
-        int remainder = points - nose - foresides * 2 - aftsides * 2 - aft;
-        
+        int remainder = points - nose - foreSides * 2 - aftSides * 2 - aft;
+
         // spread remainder among nose and fore sides
         switch(remainder % 6) {
             case 1:
                 nose++;
                 break;
             case 2:
-                foresides++;
+                foreSides++;
                 break;
             case 3:
                 nose++;
-                foresides++;
+                foreSides++;
                 break;
             case 4:
                 nose += 2;
-                foresides++;
+                foreSides++;
                 break;
             case 5:
                 nose += 3;
-                foresides++;
+                foreSides++;
                 break;
         }
         getJumpship().initializeArmor(nose + bonusPerFacing, Jumpship.LOC_NOSE);
-        getJumpship().initializeArmor(foresides + bonusPerFacing, Jumpship.LOC_FRS);
-        getJumpship().initializeArmor(foresides + bonusPerFacing, Jumpship.LOC_FLS);
-        getJumpship().initializeArmor(aftsides + bonusPerFacing, Jumpship.LOC_ARS);
-        getJumpship().initializeArmor(aftsides + bonusPerFacing, Jumpship.LOC_ALS);
+        getJumpship().initializeArmor(foreSides + bonusPerFacing, Jumpship.LOC_FRS);
+        getJumpship().initializeArmor(foreSides + bonusPerFacing, Jumpship.LOC_FLS);
+        getJumpship().initializeArmor(aftSides + bonusPerFacing, Jumpship.LOC_ARS);
+        getJumpship().initializeArmor(aftSides + bonusPerFacing, Jumpship.LOC_ALS);
         getJumpship().initializeArmor(aft + bonusPerFacing, Jumpship.LOC_AFT);
         getJumpship().autoSetThresh();
 
@@ -632,14 +646,14 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     }
 
     @Override
-    public void quartersChanged(int officer, int standard, int secondclass, int steerage) {
-        AeroUtil.assignQuarters(getJumpship(), officer, standard, secondclass, steerage);
+    public void quartersChanged(int officer, int standard, int secondClass, int steerage) {
+        AeroUtil.assignQuarters(getJumpship(), officer, standard, secondClass, steerage);
         panCrew.setFromEntity(getJumpship());
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void autoAssignQuarters() {
         AeroUtil.autoAssignQuarters(getJumpship());

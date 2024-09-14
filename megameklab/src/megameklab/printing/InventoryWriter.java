@@ -18,19 +18,27 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
-import megamek.common.equipment.WeaponMounted;
-import megameklab.util.UnitUtil;
+import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
+import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
+import static megameklab.printing.PrintRecordSheet.svgNS;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import java.text.NumberFormat;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static megameklab.printing.PrintRecordSheet.*;
+import megamek.common.*;
+import megamek.common.equipment.WeaponMounted;
+import megameklab.util.UnitUtil;
 
 /**
  * Formats text for the record sheet's "Weapons and Equipment Inventory" section. For most units,
@@ -178,7 +186,7 @@ public class InventoryWriter {
                 .collect(Collectors.joining(", "));
         String ammoPrefix = "Ammo: ";
         if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
-                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MECH) == 0)) {
+                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MEK) == 0)) {
             ammoPrefix = "Ammo (CASE): ";
         }
         ammoText = str.isEmpty() ? str : ammoPrefix + str;
@@ -224,7 +232,7 @@ public class InventoryWriter {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
-                } else if ((sheet.getEntity() instanceof Protomech)
+                } else if ((sheet.getEntity() instanceof ProtoMek)
                         && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
                     // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
                     // instead of iATM3
@@ -303,8 +311,8 @@ public class InventoryWriter {
         // Collection info on weapons to print
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
-            for (WeaponMounted weap : bay.getBayWeapons()) {
-                wbt.addBayWeapon(weap);
+            for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
+                wbt.addBayWeapon(weaponMounted);
             }
             // Combine or add
             boolean combined = false;
@@ -380,19 +388,21 @@ public class InventoryWriter {
     }
 
     public void writeEquipment() {
-        double ypos = startingY();
+        double yPosition = startingY();
         if (sheet.getEntity().isAero()) {
-            ypos = printAeroStandardHeader(ypos);
+            yPosition = printAeroStandardHeader(yPosition);
         } else {
-            ypos = printColumnHeaders(ypos);
+            yPosition = printColumnHeaders(yPosition);
         }
-        float[] metrics = scaleText(viewHeight - (ypos - viewY), this::calcLineCount);
-        ypos = printEquipmentTable(equipment, ypos, metrics[0], metrics[1]);
+
+        float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
+        yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
-            printBayInfo(metrics[0], metrics[1], ypos);
+            printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
-            sheet.addTextElement(canvas, viewX + viewWidth * 0.025, ypos, sheet.heatProfileText(),
+            sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
+                    yPosition, sheet.heatProfileText(),
                     FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
         writeFooterBlock(metrics[0], metrics[1]);
@@ -585,40 +595,52 @@ public class InventoryWriter {
     }
 
     /**
-     *  Adds a section to the inventory section. An entry that does not fit into the allocated space
-     *  will wrap to the next line. This is tracked using the repurposed lines local variable. Some
-     *  entries are already given multiple lines (such as missile launchers with Artemis), which
-     *  will be handled in the inner loop. We need to compare the two to make sure we don't add
-     *  extra linefeeds. This algorithm works on the assumption that presplitting values into multiple
-     *  rows ensures that they will fit and not need to wrap.
+     * Adds a section to the inventory section. An entry that does not fit into the
+     * allocated space
+     * will wrap to the next line. This is tracked using the repurposed lines local
+     * variable. Some
+     * entries are already given multiple lines (such as missile launchers with
+     * Artemis), which
+     * will be handled in the inner loop. We need to compare the two to make sure we
+     * don't add
+     * extra line feeds. This algorithm works on the assumption that pre-splitting
+     * values into multiple
+     * rows ensures that they will fit and not need to wrap.
      *
-     * @param list The list of entries for this table
-     * @param fontSize The size of font to use for printing the table
-     * @param ypos The starting y coordinate relative to the parent element
+     * @param list       The list of entries for this table
+     * @param fontSize   The size of font to use for printing the table
+     * @param yPosition  The starting y coordinate relative to the parent element
      * @param lineHeight The amount to add to the y coordinate for each line
      */
     private double printEquipmentTable(List<? extends InventoryEntry> list,
-                                       double ypos, float fontSize, double lineHeight) {
-        return printEquipmentTable(list, ypos, fontSize, lineHeight, columnTypes, colX);
+                                       double yPosition, float fontSize, double lineHeight) {
+        return printEquipmentTable(list, yPosition, fontSize, lineHeight, columnTypes, colX);
     }
 
     /**
-     *  Adds a section to the inventory section. An entry that does not fit into the allocated space
-     *  will wrap to the next line. This is tracked using the repurposed lines local variable. Some
-     *  entries are already given multiple lines (such as missile launchers with Artemis), which
-     *  will be handled in the inner loop. We need to compare the two to make sure we don't add
-     *  extra linefeeds. This algorithm works on the assumption that presplitting values into multiple
-     *  rows ensures that they will fit and not need to wrap.
+     * Adds a section to the inventory section. An entry that does not fit into the
+     * allocated space
+     * will wrap to the next line. This is tracked using the repurposed lines local
+     * variable. Some
+     * entries are already given multiple lines (such as missile launchers with
+     * Artemis), which
+     * will be handled in the inner loop. We need to compare the two to make sure we
+     * don't add
+     * extra line feeds. This algorithm works on the assumption that pre-splitting
+     * values into multiple
+     * rows ensures that they will fit and not need to wrap.
      *
-     * @param list The list of entries for this table
-     * @param fontSize The size of font to use for printing the table
-     * @param ypos The starting y coordinate relative to the parent element
-     * @param lineHeight The amount to add to the y coordinate for each line
-     * @param columnTypes The columns to include in the table. Used for overriding when printing bays.
-     * @param colX The x coordinate of each column, corresponding to the same index in <code>columnTypes</code>
+     * @param list        The list of entries for this table
+     * @param fontSize    The size of font to use for printing the table
+     * @param yPosition   The starting y coordinate relative to the parent element
+     * @param lineHeight  The amount to add to the y coordinate for each line
+     * @param columnTypes The columns to include in the table. Used for overriding
+     *                    when printing bays.
+     * @param colX        The x coordinate of each column, corresponding to the same
+     *                    index in <code>columnTypes</code>
      */
     private double printEquipmentTable(List<? extends InventoryEntry> list,
-                                       double ypos, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
+                                       double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
@@ -626,7 +648,8 @@ public class InventoryWriter {
                     switch (columnTypes[i]) {
                         case QUANTITY:
                             if (row == 0) {
-                                sheet.addTextElement(canvas, colX[i], ypos, line.getQuantityField(row),
+                                sheet.addTextElement(canvas, colX[i],
+                                        yPosition, line.getQuantityField(row),
                                         fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             }
                             break;
@@ -640,63 +663,73 @@ public class InventoryWriter {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                             }
                             if (row == 0) {
-                                lines = sheet.addMultilineTextElement(canvas, colX[i], ypos, width, lineHeight,
+                                lines = sheet.addMultilineTextElement(canvas, colX[i],
+                                        yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
-                                        colX[i] + indent : colX[i], ypos, width, lineHeight,
+                                        colX[i] + indent : colX[i],
+                                        yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             }
                             break;
                         case LOCATION:
                         case LOCATION_NO_HEAT:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getLocationField(row), fontSize,
+                            sheet.addTextElement(canvas, colX[i],
+                                    yPosition, line.getLocationField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case HEAT:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getHeatField(row), fontSize,
+                            sheet.addTextElement(canvas, colX[i],
+                                    yPosition, line.getHeatField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
-                            lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i], ypos,
+                            lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
+                                    yPosition,
                                     colX[i + 1] - colX[i] - fontSize, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
-                            sheet.addTextElement(canvas, colX[i], ypos, line.getMinField(row), fontSize,
+                            sheet.addTextElement(canvas, colX[i],
+                                    yPosition, line.getMinField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case SHORT:
                         case SRV:
-                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i + 1] - colX[i] - 1,
+                            sheet.addTextElementToFit(canvas, colX[i],
+                                    yPosition, colX[i + 1] - colX[i] - 1,
                                     line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case MEDIUM:
                         case MRV:
-                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i + 1] - colX[i] - 1,
+                            sheet.addTextElementToFit(canvas, colX[i],
+                                    yPosition, colX[i + 1] - colX[i] - 1,
                                     line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case LONG:
                         case LRV:
-                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i] - colX[i - 1] - 1,
+                            sheet.addTextElementToFit(canvas, colX[i],
+                                    yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case ERV:
-                            sheet.addTextElementToFit(canvas, colX[i], ypos, colX[i] - colX[i - 1] - 1,
+                            sheet.addTextElementToFit(canvas, colX[i],
+                                    yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getExtremeField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                     }
                 }
-                ypos += lineHeight * lines;
+                yPosition += lineHeight * lines;
             }
         }
-        return ypos;
+        return yPosition;
     }
 
     private double printCapitalHeader(double currY) {
@@ -726,6 +759,8 @@ public class InventoryWriter {
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i] - bayColX[i - 1] - 1,
                             "(41-50)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE);
+                    break;
+                default:
                     break;
             }
         }
@@ -766,6 +801,8 @@ public class InventoryWriter {
                             "(21-25)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE);
                     break;
+                default:
+                    break;
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
@@ -799,6 +836,8 @@ public class InventoryWriter {
                     sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
+                default:
+                    break;
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
@@ -808,29 +847,30 @@ public class InventoryWriter {
    }
 
     /**
-     * Prints the grav deck block
+     * Prints the gravity deck block
      * @param ship The jumpship, warship, or space station
      * @param fontSize The font size to use for the table rows
      * @param lineHeight The height of each table row
      * @param currY The y coordinate of the top of the table
      * @return The y coordinate of the bottom of the table
      */
-    public double printGravDecks(Jumpship ship, float fontSize, double lineHeight, double currY) {
+    public double printGravityDecks(Jumpship ship, float fontSize, double lineHeight, double currY) {
         if (ship.getTotalGravDeck() > 0) {
-            double xpos = bayColX[0];
-            sheet.addTextElement(canvas, xpos, currY, "Grav Decks:",
+            double xPosition = bayColX[0];
+            sheet.addTextElement(canvas,
+                    xPosition, currY, "Grav Decks:",
                     FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
             currY += lineHeight;
-            double ypos = currY;
+            double yPosition = currY;
             int count = 1;
             for (int size : ship.getGravDecks()) {
-                String gravString = "Grav Deck #" + count + ": " + size + "-meters";
-                sheet.addTextElement(canvas, xpos, ypos, gravString, fontSize, "start", "normal");
-                ypos += lineHeight;
+                String gravityString = "Grav Deck #" + count + ": " + size + "-meters";
+                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, "start", "normal");
+                yPosition += lineHeight;
                 if (count == (ship.getGravDecks().size() / 2)) {
-                    ypos = currY;
-                    xpos += viewWidth / 2.0;
+                    yPosition = currY;
+                    xPosition += viewWidth / 2.0;
                 }
                 count++;
             }

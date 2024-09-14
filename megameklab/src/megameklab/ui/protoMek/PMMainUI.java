@@ -14,7 +14,7 @@
 package megameklab.ui.protoMek;
 
 import megamek.common.*;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
@@ -27,8 +27,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Main UI for building protomechs
- * 
+ * Main UI for building protomeks
+ *
  * @author Neoancient
  */
 public class PMMainUI extends MegaMekLabMainUI {
@@ -44,7 +44,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     public PMMainUI() {
         super();
-        createNewUnit(Entity.ETYPE_PROTOMECH);
+        createNewUnit(Entity.ETYPE_PROTOMEK);
         finishSetup();
     }
 
@@ -88,14 +88,14 @@ public class PMMainUI extends MegaMekLabMainUI {
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
 
-        Protomech proto = new Protomech();
+        ProtoMek proto = new ProtoMek();
         setEntity(proto);
 
         getEntity().setWeight(2);
         proto.setMovementMode(EntityMovementMode.BIPED);
         proto.setTechLevel(TechConstants.T_CLAN_TW);
         proto.setOriginalWalkMP(1);
-        proto.setEngine(new Engine(TestProtomech.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        proto.setEngine(new Engine(TestProtoMek.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
         proto.setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
         proto.setArmorTechLevel(getEntity().getTechLevel());
 
@@ -148,7 +148,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshTransport() {
-        // not used for protomechs
+        // not used for protomeks
     }
 
     @Override
@@ -168,12 +168,12 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() { }
-    
+
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
     }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipmentTab.refreshTable();

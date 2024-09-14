@@ -14,22 +14,35 @@
  */
 package megameklab.ui.battleArmor;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
+import megameklab.ui.util.CriticalTableModel;
+import megameklab.ui.util.EquipmentListCellKeySelectionManager;
+import megameklab.ui.util.EquipmentListCellRenderer;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
 import megameklab.util.BattleArmorUtil;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.Vector;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
@@ -131,7 +144,7 @@ public class BAEquipmentView extends IView implements ActionListener {
     }
 
     private void loadEquipmentTable() {
-        for (Mounted mount : getBattleArmor().getMisc()) {
+        for (Mounted<?> mount : getBattleArmor().getMisc()) {
             if (UnitUtil.isArmorOrStructure(mount.getType())) {
                 continue;
             }
@@ -171,7 +184,7 @@ public class BAEquipmentView extends IView implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         if (evt.getActionCommand().equals(ADD_COMMAND)) {
             boolean success = false;
-            Mounted mount = null;
+            Mounted<?> mount = null;
             try {
                 mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
                 success = mount != null;

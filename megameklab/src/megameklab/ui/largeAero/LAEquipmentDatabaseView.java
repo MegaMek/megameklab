@@ -13,16 +13,21 @@
  */
 package megameklab.ui.largeAero;
 
-import megamek.common.*;
-import megamek.common.weapons.bayweapons.BayWeapon;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.util.UnitUtil;
+import static megameklab.ui.util.EquipmentTableModel.*;
 
 import java.util.Collection;
 import java.util.List;
 
-import static megameklab.ui.util.EquipmentTableModel.*;
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.LocationFullException;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.weapons.bayweapons.BayWeapon;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.AbstractEquipmentDatabaseView;
+import megameklab.util.UnitUtil;
 
 /**
  * An Equipment Database for all Large Aerospace units (JumpShips, WarShips, DropShips,
@@ -48,7 +53,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
-        Mounted mount;
+        Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
         if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
             if (!UnitUtil.hasTargComp(getAero())) {
@@ -56,7 +61,7 @@ class LAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } else {
             if (equip instanceof AmmoType) {
-                Mounted aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
+                Mounted<?> aMount = UnitUtil.findUnallocatedAmmo(getAero(), equip);
                 if ((null != aMount) && getAero().usesWeaponBays()) {
                     aMount.setShotsLeft(aMount.getUsableShotsLeft() + ((AmmoType) equip).getShots() * count);
                 } else {

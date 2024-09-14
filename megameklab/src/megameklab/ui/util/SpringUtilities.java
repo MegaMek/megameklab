@@ -30,17 +30,22 @@
  */
 package megameklab.ui.util;
 
-import org.apache.logging.log4j.LogManager;
+import java.awt.Component;
+import java.awt.Container;
 
-import javax.swing.*;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.SpringLayout.Constraints;
-import java.awt.*;
+
+import megamek.logging.MMLogger;
 
 /**
  * A 1.4 file that provides utility methods for
  * creating form- or grid-style layouts with SpringLayout.
  */
 public class SpringUtilities {
+    private static final MMLogger logger = MMLogger.create(SpringUtilities.class);
+
     private static Constraints getConstraintsForCell(int row, int col, Container parent, int cols) {
         SpringLayout layout = (SpringLayout) parent.getLayout();
         Component c = parent.getComponent(row * cols + col);
@@ -55,21 +60,21 @@ public class SpringUtilities {
      * height is similarly determined for each row.
      * The parent is made just big enough to fit them all.
      *
-     * @param parent the parent container to organize
-     * @param rows number of rows
-     * @param cols number of columns
+     * @param parent   the parent container to organize
+     * @param rows     number of rows
+     * @param cols     number of columns
      * @param initialX x location to start the grid at
      * @param initialY y location to start the grid at
-     * @param xPad x padding between cells
-     * @param yPad y padding between cells
+     * @param xPad     x padding between cells
+     * @param yPad     y padding between cells
      */
     public static void makeCompactGrid(Container parent, int rows, int cols, int initialX,
-                                       int initialY, int xPad, int yPad) {
+            int initialY, int xPad, int yPad) {
         SpringLayout layout;
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
 

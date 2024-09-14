@@ -13,19 +13,19 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMech;
-import megameklab.printing.PrintMech;
+import megamek.common.QuadMek;
+import megameklab.printing.PrintMek;
 
 /**
  * Hit location table for punch attacks
  */
 public class PunchLocation extends ReferenceTable {
 
-    public PunchLocation(PrintMech sheet) {
+    public PunchLocation(PrintMek sheet) {
         super(sheet, 0.1, 0.35, 0.6, 0.85);
         setHeaders(bundle.getString("dieRoll1d6"), bundle.getString("leftSide"),
                 bundle.getString("frontRear"), bundle.getString("rightSide"));
-        if (sheet.getEntity() instanceof QuadMech) {
+        if (sheet.getEntity() instanceof QuadMek) {
             addQuadRows();
         } else {
             addBipedRows();

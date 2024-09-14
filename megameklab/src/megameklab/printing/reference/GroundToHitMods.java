@@ -13,12 +13,19 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
+import org.apache.batik.util.SVGConstants;
+
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.Infantry;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.QuadMek;
+import megamek.common.Tank;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
-import org.apache.batik.util.SVGConstants;
 
 /**
  * To-Hit modifiers for all Meks and vehicles
@@ -38,14 +45,14 @@ public class GroundToHitMods extends ReferenceTable {
         this.entity = entity;
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
-        if (entity instanceof Mech) {
+        if (entity instanceof Mek) {
             addMekAttackerMods();
         } else if (entity instanceof Tank) {
             addVeeAttackerMods();
         }
         addTerrainMods();
         addTargetMods();
-        if (entity instanceof Mech) {
+        if (entity instanceof Mek) {
             addDamageMods();
         }
     }
@@ -58,13 +65,13 @@ public class GroundToHitMods extends ReferenceTable {
         if (entity.getOriginalJumpMP() > 0) {
             addRow("", bundle.getString("jumped"), "+3");
         }
-        if (!(entity instanceof QuadMech)) {
+        if (!(entity instanceof QuadMek)) {
             addRow("", bundle.getString("prone"), "+2");
         }
         addRow("", bundle.getString("skidding"), "+1");
-        if (((Mech) entity).getCockpitType() == Mech.COCKPIT_PRIMITIVE_INDUSTRIAL) {
+        if (((Mek) entity).getCockpitType() == Mek.COCKPIT_PRIMITIVE_INDUSTRIAL) {
             addRow("", bundle.getString("noFireCon"), "+2");
-        } else if (!((Mech) entity).hasAdvancedFireControl()) {
+        } else if (!((Mek) entity).hasAdvancedFireControl()) {
             addRow("", bundle.getString("basicFireCon"), "+1");
         }
     }

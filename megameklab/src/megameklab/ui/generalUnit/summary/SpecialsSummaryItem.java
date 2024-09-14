@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;
 
 /**
- * This item only lists the weight of TestEntity.getWeightMisc(). It overlaps with OtherSummaryItem!
+ * This item only lists the weight of TestEntity.getWeightMisc(). It overlaps
+ * with OtherSummaryItem!
  */
 public class SpecialsSummaryItem extends AbstractSummaryItem {
 

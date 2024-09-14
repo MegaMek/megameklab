@@ -16,6 +16,15 @@
 
 package megameklab.ui.fighterAero;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.verifier.TestAero;
@@ -23,11 +32,6 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ASBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
@@ -38,7 +42,7 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     private JButton resetButton = new JButton("Reset");
 
-    private String RESETCOMMAND = "resetbuttoncommand";
+    private String RESET_COMMAND = "resetbuttoncommand";
 
     public ASBuildTab(EntitySource eSource) {
         super(eSource);
@@ -52,7 +56,7 @@ public class ASBuildTab extends ITab implements ActionListener {
         buildView = new ASBuildView(eSource,refresh);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);        
+        resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(resetButton);
 
         gbc.gridx = 0;
@@ -81,14 +85,14 @@ public class ASBuildTab extends ITab implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(RESETCOMMAND)) {
+        if (e.getActionCommand().equals(RESET_COMMAND)) {
             resetCrits();
         }
     }
 
 
     private void resetCrits() {
-        for (Mounted mount : getAero().getEquipment()) {
+        for (Mounted<?> mount : getAero().getEquipment()) {
             if (!mount.isWeaponGroup() && TestAero.eqRequiresLocation(mount.getType(), true)
                     && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 UnitUtil.removeCriticals(getAero(), mount);

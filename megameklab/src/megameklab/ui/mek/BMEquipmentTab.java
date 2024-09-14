@@ -14,14 +14,19 @@
  */
 package megameklab.ui.mek;
 
-import megamek.common.*;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
 
 /**
- * The Equipment Tab for Mek units showing the equipment database and the current loadout list.
+ * The Equipment Tab for Mek units showing the equipment database and the
+ * current loadout list.
  *
  * @author jtighe (torren@users.sourceforge.net)
  * @author Taharqa
@@ -39,7 +44,7 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(UnitUtil.isHeatSink(mount)
@@ -49,8 +54,8 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
                         || etype.hasFlag(MiscType.F_TSM)
                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                         || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
-                        || ((getMech().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
-                        && etype.hasFlag(MiscType.F_TRACKS))
+                        || ((getMek().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
+                                && etype.hasFlag(MiscType.F_TRACKS))
                         || UnitUtil.isArmorOrStructure(etype)
                         || (etype.hasFlag(MiscType.F_CASE) && etype.isClan()));
     }

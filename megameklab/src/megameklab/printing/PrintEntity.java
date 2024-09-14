@@ -13,6 +13,31 @@
  */
 package megameklab.printing;
 
+import static megamek.common.EquipmentType.T_ARMOR_BA_STANDARD;
+import static megamek.common.EquipmentType.T_ARMOR_STANDARD;
+import static megamek.common.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
+import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
+
+import java.awt.Image;
+import java.awt.geom.Rectangle2D;
+import java.awt.print.PageFormat;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringJoiner;
+
+import org.apache.batik.anim.dom.SVGGraphicsElement;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextContentElement;
+
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.codeUtilities.StringUtility;
@@ -26,38 +51,19 @@ import megamek.common.options.PilotOptions;
 import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
-import org.apache.batik.anim.dom.SVGGraphicsElement;
-import org.apache.batik.anim.dom.SVGLocatableSupport;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRect;
-import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.svg.SVGTextContentElement;
-
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.*;
-import java.util.List;
-
-import static megamek.common.EquipmentType.*;
-import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
 
 /**
  * Base class for printing Entity record sheets
- * 
+ *
  * @author Neoancient
  */
 public abstract class PrintEntity extends PrintRecordSheet {
-    
+
     /**
      * Creates an SVG object for the record sheet
-     * 
+     *
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed 
+     * @param options Overrides the global options for which elements are printed
      */
     protected PrintEntity(int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -69,13 +75,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
     public List<String> getBookmarkNames() {
         return Collections.singletonList(entityName());
     }
-    
+
     /**
      * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
      * allows a series of blank record sheets to be generated without including the generated pilot data.
      * If the crew name is "unnamed" then we are printing directly from MML or file/cache and the
      * pilot data should not be filled in.
-     * 
+     *
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
@@ -119,7 +125,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     /**
      * Builds the string to display for the quirks block. Returns an empty string if quirks are
      * disabled (or if the unit has no quirks).
-     * 
+     *
      * @return The text to display for the unit's quirks.
      */
     public String formatQuirks() {
@@ -162,7 +168,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     String formatWeight(double weight) {
         if ((getEntity() instanceof BattleArmor)
-                || (getEntity() instanceof Protomech)
+                || (getEntity() instanceof ProtoMek)
                 || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             return DecimalFormat.getInstance().format(weight * 1000) + " kg";
         } else {
@@ -170,7 +176,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     + ((weight == 1) ? " ton)" : " tons");
         }
     }
-    
+
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
         super.processImage(pageNum, pageFormat);
@@ -189,7 +195,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             addReferenceCharts(pageFormat);
         }
     }
-    
+
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
@@ -216,7 +222,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             setTextField(ROLE, role.toString());
         }
-        
+
         // If we need to fill in names of crew slots we will need to reposition blanks/name fields.
         // This will require building the graphics tree so we measure the elements.
         if (getEntity().getCrew().getCrewType() != CrewType.SINGLE) {
@@ -257,7 +263,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 setTextField(PILOT_NAME + i, getEntity().getCrew().getName(i), true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
-                
+
                 StringJoiner spaList = new StringJoiner(", ");
                 PilotOptions spas = getEntity().getCrew().getOptions();
                 for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
@@ -292,7 +298,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                                 FILL_BLACK, ' ');
                     }
                 }
-    
+
             } else {
                 setTextField(PILOT_NAME + i, null);
                 setTextField(GUNNERY_SKILL + i, null);
@@ -390,7 +396,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected void drawArmorStructurePips() {
         Element element;
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
-            if ((getEntity() instanceof Mech) && getEntity().isSuperHeavy() && (loc == Mech.LOC_HEAD)) {
+            if ((getEntity() instanceof Mek) && getEntity().isSuperHeavy() && (loc == Mek.LOC_HEAD)) {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc) + "_SH");
             } else {
                 element = getSVGDocument().getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
@@ -413,19 +419,19 @@ public abstract class PrintEntity extends PrintRecordSheet {
     String structurePipFill() {
         return FILL_WHITE;
     }
-    
+
     /**
      * Identifies the index of the first location that can be armored. For vehicles this should be 1
      * to skip the body.
-     * 
+     *
      * @return The lowest location index that can be armored.
      */
     protected int firstArmorLocation() {
         return 0;
     }
-    
+
     protected void drawStructure() {
-        
+
     }
 
     /**
@@ -574,11 +580,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected String formatWalk() {
         return formatMovement(getEntity().getWalkMP());
     }
-    
+
     protected String formatRun() {
         return formatMovement(getEntity().getWalkMP() * 1.5);
     }
-    
+
     protected String formatJump() {
         return formatMovement(getEntity().getJumpMP());
     }
@@ -592,7 +598,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             return "Inner Sphere";
         }
     }
-    
+
     protected String formatRulesLevel() {
         SimpleTechLevel level;
         if (options.useEraBaseProgression()) {
@@ -603,7 +609,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         return level.toString().substring(0, 1)
                 + level.toString().substring(1).toLowerCase();
     }
-    
+
     protected String formatCost() {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.getDefault());
         return nf.format(getEntity().getCost(true)) + " C-bills";

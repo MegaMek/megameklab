@@ -13,13 +13,24 @@
  */
 package megameklab.printing;
 
-import megamek.common.*;
+import java.awt.print.PageFormat;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import java.awt.print.PageFormat;
-import java.time.LocalDate;
-import java.util.*;
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.Dropship;
+import megamek.common.Entity;
+import megamek.common.Jumpship;
+import megamek.common.Mounted;
+import megamek.common.Warship;
+import megamek.common.WeaponType;
 
 /**
  * Record sheet layout for Dropships, base class for other large craft
@@ -46,12 +57,12 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_CAPITAL = 0;
     private static final int BLOCK_AR10_AMMO = 1;
     private static final int BLOCK_STANDARD = 2;
-    private static final int BLOCK_GRAV_DECK = 3;
+    private static final int BLOCK_GRAVITY_DECK = 3;
     private static final int BLOCK_BAYS = 4;
     private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAV_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAVITY_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -219,10 +230,10 @@ public class PrintDropship extends PrintAero {
                 .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
-        // Add lines equal to half the grav decks (rounded up) and one each for section
+        // Add lines equal to half the gravity decks (rounded up) and one each for section
         // title and following empty line
         if (ship instanceof Jumpship && !((Jumpship) ship).getGravDecks().isEmpty()) {
-            linesPerBlock[BLOCK_GRAV_DECK] = ((((Jumpship) ship).getGravDecks().size() + 1) / 2) + 2;
+            linesPerBlock[BLOCK_GRAVITY_DECK] = ((((Jumpship) ship).getGravDecks().size() + 1) / 2) + 2;
         }
         // Add lines equal to number of transport bays and one each for section title
         // and following empty line
@@ -247,11 +258,11 @@ public class PrintDropship extends PrintAero {
                 toSwitch++;
             } while ((linesOnFront > PREFERRED_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
             // Another tweak for situations where there are no capital weapons. If only the
-            // grav decks
+            // gravity decks
             // are moved to page two, move bays as well to prevent a second page with only
             // one or two lines
             if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
-                    && blockOnReverse[BLOCK_GRAV_DECK]) {
+                    && blockOnReverse[BLOCK_GRAVITY_DECK]) {
                 blockOnReverse[BLOCK_BAYS] = true;
             }
         }
@@ -285,7 +296,7 @@ public class PrintDropship extends PrintAero {
     }
 
     /**
-     * Prints up to four equipment sections: capital weapons, standard scale, grav
+     * Prints up to four equipment sections: capital weapons, standard scale, gravity
      * decks, and bays. If there is too much to fit on a single page, the standard
      * scale weapons are moved to the second page (which is considered the reverse).
      *
@@ -313,8 +324,8 @@ public class PrintDropship extends PrintAero {
                 currY = inventory.printReverseSideMessage(lineHeight, currY);
             }
         }
-        if ((linesPerBlock[BLOCK_GRAV_DECK] > 0) && (blockOnReverse[BLOCK_GRAV_DECK] == reverse)) {
-            currY = inventory.printGravDecks((Jumpship) ship, fontSize, lineHeight, currY);
+        if ((linesPerBlock[BLOCK_GRAVITY_DECK] > 0) && (blockOnReverse[BLOCK_GRAVITY_DECK] == reverse)) {
+            currY = inventory.printGravityDecks((Jumpship) ship, fontSize, lineHeight, currY);
         }
         if ((linesPerBlock[BLOCK_BAYS] > 0) && (blockOnReverse[BLOCK_BAYS] == reverse)) {
             inventory.printBayInfo(fontSize, lineHeight, currY);
@@ -328,7 +339,7 @@ public class PrintDropship extends PrintAero {
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         Map<String, Integer> eqCount = new HashMap<>();
-        for (Mounted mount : ship.getMisc()) {
+        for (Mounted<?> mount : ship.getMisc()) {
             if (PrintUtil.isPrintableEquipment(mount.getType())) {
                 eqCount.merge(mount.getShortName(), 1, Integer::sum);
             }

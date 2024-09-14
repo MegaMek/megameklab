@@ -1,13 +1,13 @@
 /*
  * MegaMekLab - Copyright (C) 2008
- * 
+ *
  * Original author - jtighe (torren@users.sourceforge.net)
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -15,7 +15,26 @@
  */
 package megameklab.util;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import javax.swing.JDialog;
+
 import megamek.common.Configuration;
+import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.MegaMekLabMainUI;
@@ -29,21 +48,12 @@ import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 /**
  * Class for Client's configuration.
  */
 public final class CConfig {
+    private static final MMLogger logger = MMLogger.create(CConfig.class);
 
     public static final String CONFIG_DIR = "./mmconf";
     public static final String CONFIG_FILE = "./mmconf/megameklab.properties";
@@ -152,18 +162,20 @@ public final class CConfig {
     }
 
     /**
-     * Tries to import settings from the given properties file. When successful, also applies
+     * Tries to import settings from the given properties file. When successful,
+     * also applies
      * some of the settings and shows a popup message.
      *
      * @param menuBarOwner The MenuBar owner frame calling this
-     * @param settingsFile The file (should always be megameklab.properties in another MML install)
+     * @param settingsFile The file (should always be megameklab.properties in
+     *                     another MML install)
      */
     public static void importSettings(MenuBarOwner menuBarOwner, File settingsFile) {
         try (FileInputStream fis = new FileInputStream(settingsFile)) {
             config.load(fis);
         } catch (Exception ex) {
             PopupMessages.showFileReadError(menuBarOwner.getFrame(), settingsFile.toString(), ex.getMessage());
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
         applyImportedSettings(menuBarOwner);
@@ -187,10 +199,10 @@ public final class CConfig {
             try (FileInputStream fis = new FileInputStream(CONFIG_BACKUP_FILE)) {
                 config.load(fis);
             } catch (Exception ex) {
-                LogManager.getLogger().error("", ex);
+                logger.error("", ex);
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
     }
 
@@ -204,25 +216,26 @@ public final class CConfig {
             final File configurationDirectory = new File(CONFIG_DIR);
             if (!configurationDirectory.exists()) {
                 if (!new File(CONFIG_DIR).mkdir()) {
-                    LogManager.getLogger().error("Cannot launch MML: Failed to create Configuration Directory");
+                    logger.error("Cannot launch MML: Failed to create Configuration Directory");
                     System.exit(0);
                 }
             }
 
             try {
                 if (!configurationFile.createNewFile()) {
-                    LogManager.getLogger().error("Cannot launch MML: Failed to create Configuration File");
+                    logger.error("Cannot launch MML: Failed to create Configuration File");
                     System.exit(0);
                 }
             } catch (Exception ex) {
-                LogManager.getLogger().error("Cannot launch MML: Exception while creating Configuration File", ex);
+                logger.error("Cannot launch MML: Exception while creating Configuration File", ex);
                 System.exit(0);
             }
         }
     }
 
     /**
-     * Get a config value, with a default value to be used if the value is not found.
+     * Get a config value, with a default value to be used if the value is not
+     * found.
      *
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
@@ -243,7 +256,8 @@ public final class CConfig {
      * Get a config value.
      *
      * @param param The key
-     * @return The value associated with the key. If not found, an empty String is returned
+     * @return The value associated with the key. If not found, an empty String is
+     *         returned
      */
     public static String getParam(String param) {
         return getParam(param, "");
@@ -260,11 +274,13 @@ public final class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return the provided default value if the
+     * Return the int value of a given config property. Return the provided default
+     * value if the
      * property is a non-number.
      *
      * @param param      The parameter name
-     * @param defaultVal The value to return if the property does not exist or is not a valid string
+     * @param defaultVal The value to return if the property does not exist or is
+     *                   not a valid string
      *                   representation of the integer
      * @return The integer value of the property
      */
@@ -290,7 +306,7 @@ public final class CConfig {
     /**
      * @param param the parameter's name
      * @return the boolean value of a given config property. Return a false if the
-     * property does not exist.
+     *         property does not exist.
      */
     public static boolean getBooleanParam(String param) {
         boolean toReturn;
@@ -307,21 +323,21 @@ public final class CConfig {
      */
     public static void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
-             PrintStream ps = new PrintStream(fos)) {
+                PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
             return;
         }
         try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-             PrintStream ps = new PrintStream(fos)) {
+                PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config");
         } catch (FileNotFoundException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
     }
 
@@ -450,7 +466,6 @@ public final class CConfig {
 
     // Internals ####################
 
-
     private static Optional<Dimension> getWindowSize(String cconfigSetting) {
         try {
             String[] fileChooserSettings = getParam(cconfigSetting).split(";");
@@ -507,5 +522,6 @@ public final class CConfig {
         menuBarOwner.refreshAll();
     }
 
-    private CConfig() { }
+    private CConfig() {
+    }
 }

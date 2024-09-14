@@ -18,26 +18,32 @@
  */
 package megameklab.ui.supportVehicle;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import megamek.common.Entity;
-import megamek.common.MechFileParser;
+import megamek.common.MekFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Build tab for assigning support vehicle equipment locations
  */
 public class SVBuildTab extends ITab implements ActionListener {
+    private static final MMLogger logger = MMLogger.create(SVBuildTab.class);
 
     private RefreshListener refresh = null;
     private SVCriticalView critView;
@@ -101,14 +107,14 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void autoFillCrits() {
-        for (Mounted mount : unallocatedView.getTableModel().getCrits()) {
+        for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
                     getTank().addEquipment(mount, location, false);
                     UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
                     break;
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -116,7 +122,7 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted mount : getTank().getEquipment()) {
+        for (Mounted<?> mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 continue;
@@ -126,11 +132,11 @@ public class SVBuildTab extends ITab implements ActionListener {
         }
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getTank());
+            MekFileParser.postLoadInit(getTank());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         refresh.refreshAll();

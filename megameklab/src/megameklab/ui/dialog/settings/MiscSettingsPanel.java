@@ -18,6 +18,18 @@
  */
 package megameklab.ui.dialog.settings;
 
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import megamek.MMConstants;
 import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMComboBox;
@@ -25,6 +37,7 @@ import megamek.client.ui.swing.CommonSettingsDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.HelpDialog;
 import megamek.common.preference.PreferenceManager;
+import megamek.logging.MMLogger;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -42,6 +55,8 @@ import java.util.*;
  * A panel allowing to change MML's general preferences
  */
 public class MiscSettingsPanel extends JPanel {
+    private static final MMLogger logger = MMLogger.create(MiscSettingsPanel.class);
+
     private static final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
     private final MMComboBox<MMLStartUp> startUpMMComboBox = new MMComboBox<>("StartUp", MMLStartUp.values());
@@ -79,7 +94,7 @@ public class MiscSettingsPanel extends JPanel {
             URL helpFile = new File(MMConstants.USER_DIR_README_FILE).toURI().toURL();
             userDirHelp.addActionListener(e -> new HelpDialog(helpTitle, helpFile, parent).setVisible(true));
         } catch (MalformedURLException e) {
-            LogManager.getLogger().error("Could not find the user data directory readme file at "
+            logger.error("Could not find the user data directory readme file at "
                     + MMConstants.USER_DIR_README_FILE);
         }
         JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -153,7 +168,8 @@ public class MiscSettingsPanel extends JPanel {
 
     DefaultListCellRenderer startUpRenderer = new DefaultListCellRenderer() {
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
             return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
         }
     };

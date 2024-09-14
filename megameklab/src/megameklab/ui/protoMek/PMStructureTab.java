@@ -36,23 +36,23 @@ import megamek.common.*;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.*;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.ArmorAllocationListener;
-import megameklab.ui.listeners.ProtomekBuildListener;
+import megameklab.ui.listeners.ProtoMekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
 /**
- * Structure tab for protomechs
- * 
+ * Structure tab for protomeks
+ *
  * @author Neoancient
  */
-public class PMStructureTab extends ITab implements ProtomekBuildListener, ArmorAllocationListener {
+public class PMStructureTab extends ITab implements ProtoMekBuildListener, ArmorAllocationListener {
     private BasicInfoView panBasicInfo;
     private PMChassisView panChassis;
     private BAProtoArmorView panArmor;
@@ -74,17 +74,17 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     private void setUpPanels() {
         masterPanel = new JPanel(new GridBagLayout());
-        panBasicInfo = new BasicInfoView(getProtomech().getConstructionTechAdvancement());
+        panBasicInfo = new BasicInfoView(getProtoMek().getConstructionTechAdvancement());
         panChassis = new PMChassisView(panBasicInfo);
         panArmor = new BAProtoArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
-        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_PROTOMECH);
+        panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_PROTOMEK);
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
                 new UnitTypeSummaryItem(),
                 new StructureSummaryItem(),
                 new EngineSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ControlsSummaryItem(),
                 new ArmorSummaryItem(),
                 new JumpSummaryItem(),
@@ -95,11 +95,11 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
         GridBagConstraints gbc;
 
-        panBasicInfo.setFromEntity(getProtomech());
-        panChassis.setFromEntity(getProtomech());
-        panArmor.setFromEntity(getProtomech());
-        panMovement.setFromEntity(getProtomech());
-        panArmorAllocation.setFromEntity(getProtomech());
+        panBasicInfo.setFromEntity(getProtoMek());
+        panChassis.setFromEntity(getProtoMek());
+        panArmor.setFromEntity(getProtoMek());
+        panMovement.setFromEntity(getProtoMek());
+        panArmorAllocation.setFromEntity(getProtoMek());
         iconView.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel();
@@ -146,11 +146,11 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     public void refresh() {
         removeAllListeners();
-        panBasicInfo.setFromEntity(getProtomech());
-        panChassis.setFromEntity(getProtomech());
-        panArmor.setFromEntity(getProtomech());
-        panMovement.setFromEntity(getProtomech());
-        panArmorAllocation.setFromEntity(getProtomech());
+        panBasicInfo.setFromEntity(getProtoMek());
+        panChassis.setFromEntity(getProtoMek());
+        panArmor.setFromEntity(getProtoMek());
+        panMovement.setFromEntity(getProtoMek());
+        panArmorAllocation.setFromEntity(getProtoMek());
         iconView.setFromEntity(getEntity());
 
         panSummary.refresh();
@@ -213,37 +213,39 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     }
 
     /**
-     * Calculates required engine rating for speed and tonnage and updates engine if possible.
-     * 
-     * @param walkMP The base walk MP
-     * @param tonnage The design weight
-     * @param quadOrGlider Whether the Protomech is a quad or glider configuration
-     * @return Whether the engine rating changed 
+     * Calculates required engine rating for speed and tonnage and updates engine if
+     * possible.
+     *
+     * @param walkMP       The base walk MP
+     * @param tonnage      The design weight
+     * @param quadOrGlider Whether the ProtoMek is a quad or glider configuration
+     * @return Whether the engine rating changed
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage, boolean quadOrGlider) {
-        int rating = TestProtomech.calcEngineRating(walkMP, tonnage, quadOrGlider);
-        int oldRating = getProtomech().getEngine().getRating();
+        int rating = TestProtoMek.calcEngineRating(walkMP, tonnage, quadOrGlider);
+        int oldRating = getProtoMek().getEngine().getRating();
         if (oldRating != rating) {
             Engine engine = new Engine(rating, Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE);
-            getProtomech().setEngine(engine);
+            getProtoMek().setEngine(engine);
             return true;
         }
         return false;
     }
-    
+
     /**
-     * Creates room for installing fixed equipment in a location by removing as much non-fixed
+     * Creates room for installing fixed equipment in a location by removing as much
+     * non-fixed
      * equipment as necessary (if any) until there are a sufficient number of slots.
-     * 
-     * @param loc    The location to clear
-     * @param count  The number of slots required
-     * @return       Whether enough space was freed up
+     *
+     * @param loc   The location to clear
+     * @param count The number of slots required
+     * @return Whether enough space was freed up
      */
     private boolean freeUpSpace(int loc, int count) {
-        int maxAvail = TestProtomech.maxSlotsByLocation(loc, getProtomech());
-        List<Mounted> optional = new ArrayList<>();
-        for (Mounted m : getProtomech().getEquipment()) {
-            if ((m.getLocation() != loc) || !TestProtomech.requiresSlot(m.getType())) {
+        int maxAvail = TestProtoMek.maxSlotsByLocation(loc, getProtoMek());
+        List<Mounted<?>> optional = new ArrayList<>();
+        for (Mounted<?> m : getProtoMek().getEquipment()) {
+            if ((m.getLocation() != loc) || !TestProtoMek.requiresSlot(m.getType())) {
                 continue;
             }
             if (UnitUtil.isFixedLocationSpreadEquipment(m.getType())) {
@@ -260,7 +262,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             return true;
         }
         for (int i = optional.size() - 1; i >= 0; i--) {
-            UnitUtil.changeMountStatus(getProtomech(), optional.get(i), Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.changeMountStatus(getProtoMek(), optional.get(i), Entity.LOC_NONE, Entity.LOC_NONE, false);
             empty++;
             if (empty >= count) {
                 return true;
@@ -270,21 +272,21 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     }
 
     private void createArmorMountsAndSetArmorType(ArmorType armor) {
-        List<Mounted> armorMounts = getProtomech().getMisc().stream()
+        List<Mounted<?>> armorMounts = getProtoMek().getMisc().stream()
                 .filter(m -> m.getType() instanceof ArmorType)
                 .collect(Collectors.toList());
-        for (Mounted m : armorMounts) {
-            UnitUtil.removeMounted(getProtomech(), m);
+        for (Mounted<?> m : armorMounts) {
+            UnitUtil.removeMounted(getProtoMek(), m);
         }
 
-        getProtomech().setArmorType(armor.getArmorType());
-        getProtomech().setArmorTechLevel(armor.getStaticTechLevel().getCompoundTechLevel(armor.isClan()));
+        getProtoMek().setArmorType(armor.getArmorType());
+        getProtoMek().setArmorTechLevel(armor.getStaticTechLevel().getCompoundTechLevel(armor.isClan()));
 
-        if (armor.getCriticals(getProtomech()) > 0) {
-            if (freeUpSpace(Protomech.LOC_TORSO, armor.getCriticals(getProtomech()))) {
+        if (armor.getCriticals(getProtoMek()) > 0) {
+            if (freeUpSpace(ProtoMek.LOC_TORSO, armor.getCriticals(getProtoMek()))) {
                 try {
-                    Mounted<?> mount = Mounted.createMounted(getProtomech(), armor);
-                    getProtomech().addEquipment(mount, Protomech.LOC_TORSO, false);
+                    Mounted<?> mount = Mounted.createMounted(getProtoMek(), armor);
+                    getProtoMek().addEquipment(mount, ProtoMek.LOC_TORSO, false);
                     return;
                 } catch (LocationFullException ignored) {
                     // fall through
@@ -294,9 +296,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
                     "Requires free torso slot. Resetting to Standard Armor",
                     "Location Full",
                     JOptionPane.INFORMATION_MESSAGE);
-            getProtomech().setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
-            getProtomech().setArmorTechLevel(TechConstants.T_ALL_CLAN);
-            panArmor.setFromEntity(getProtomech());
+            getProtoMek().setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
+            getProtoMek().setArmorTechLevel(TechConstants.T_ALL_CLAN);
+            panArmor.setFromEntity(getProtoMek());
         }
     }
 
@@ -312,7 +314,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void chassisChanged(String chassis) {
-        getProtomech().setChassis(chassis);
+        getProtoMek().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
@@ -320,7 +322,7 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void modelChanged(String model) {
-        getProtomech().setModel(model);
+        getProtoMek().setModel(model);
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
@@ -328,19 +330,19 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void yearChanged(int year) {
-        getProtomech().setYear(year);
+        getProtoMek().setYear(year);
         updateTechLevel();
     }
 
     @Override
     public void sourceChanged(String source) {
-        getProtomech().setSource(source);
+        getProtoMek().setSource(source);
     }
 
     @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
-        if ((clan != getProtomech().isClan()) || (mixed != getProtomech().isMixedTech())) {
-            getProtomech().setMixedTech(mixed);
+        if ((clan != getProtoMek().isClan()) || (mixed != getProtoMek().isMixedTech())) {
+            getProtoMek().setMixedTech(mixed);
             updateTechLevel();
         }
     }
@@ -353,22 +355,22 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     @Override
     public void updateTechLevel() {
         removeAllListeners();
-        getProtomech().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        getProtoMek().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (!getTechManager().isLegal(panArmor.getArmor())) {
-            UnitUtil.removeISorArmorMounts(getProtomech(), false);
+            UnitUtil.removeISorArmorMounts(getProtoMek(), false);
         }
-        if (UnitUtil.checkEquipmentByTechLevel(getProtomech(), panBasicInfo)) {
+        if (UnitUtil.checkEquipmentByTechLevel(getProtoMek(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
             refresh.refreshEquipmentTable();
         }
-        if (!panBasicInfo.isLegal(Protomech.TA_INTERFACE_COCKPIT)) {
-            getProtomech().setInterfaceCockpit(false);
+        if (!panBasicInfo.isLegal(ProtoMek.TA_INTERFACE_COCKPIT)) {
+            getProtoMek().setInterfaceCockpit(false);
         }
-        panChassis.setFromEntity(getProtomech());
-        panMovement.setFromEntity(getProtomech());
+        panChassis.setFromEntity(getProtoMek());
+        panMovement.setFromEntity(getProtoMek());
         panArmor.refresh();
-        panArmorAllocation.setFromEntity(getProtomech());
+        panArmorAllocation.setFromEntity(getProtoMek());
         refresh.refreshBuild();
         addAllListeners();
         refresh.refreshPreview();
@@ -384,11 +386,11 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     public void tonnageChanged(double tonnage) {
         if (!recalculateEngineRating(panMovement.getWalk(), tonnage,
                 panChassis.getMotiveType() != PMChassisView.MOTIVE_TYPE_BIPED)) {
-            panChassis.setFromEntity(getProtomech());
+            panChassis.setFromEntity(getProtoMek());
             return;
         }
-        getProtomech().setWeight(tonnage);
-        getProtomech().autoSetInternal();
+        getProtoMek().setWeight(tonnage);
+        getProtoMek().autoSetInternal();
         refresh();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -397,46 +399,46 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void typeChanged(int motiveType) {
-        boolean wasQuad = getProtomech().isQuad();
+        boolean wasQuad = getProtoMek().isQuad();
         switch (motiveType) {
             case PMChassisView.MOTIVE_TYPE_BIPED:
-                getProtomech().setMovementMode(EntityMovementMode.BIPED);
-                getProtomech().setIsQuad(false);
-                getProtomech().setIsGlider(false);
+                getProtoMek().setMovementMode(EntityMovementMode.BIPED);
+                getProtoMek().setIsQuad(false);
+                getProtoMek().setIsGlider(false);
                 break;
             case PMChassisView.MOTIVE_TYPE_QUAD:
-                getProtomech().setMovementMode(EntityMovementMode.QUAD);
-                getProtomech().setIsQuad(true);
-                getProtomech().setIsGlider(false);
-                getProtomech().getEquipment().stream()
-                    .filter(m -> (m.getLocation() == Protomech.LOC_LARM)
-                            || (m.getLocation() == Protomech.LOC_RARM))
-                    .forEach(m -> m.setLocation(Entity.LOC_NONE));
-                getProtomech().initializeArmor(0, Protomech.LOC_LARM);
-                getProtomech().initializeArmor(0, Protomech.LOC_RARM);
+                getProtoMek().setMovementMode(EntityMovementMode.QUAD);
+                getProtoMek().setIsQuad(true);
+                getProtoMek().setIsGlider(false);
+                getProtoMek().getEquipment().stream()
+                        .filter(m -> (m.getLocation() == ProtoMek.LOC_LARM)
+                                || (m.getLocation() == ProtoMek.LOC_RARM))
+                        .forEach(m -> m.setLocation(Entity.LOC_NONE));
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
                 break;
             case PMChassisView.MOTIVE_TYPE_GLIDER:
-                getProtomech().setMovementMode(EntityMovementMode.WIGE);
-                getProtomech().setIsQuad(false);
-                getProtomech().setIsGlider(true);
+                getProtoMek().setMovementMode(EntityMovementMode.WIGE);
+                getProtoMek().setIsQuad(false);
+                getProtoMek().setIsGlider(true);
                 break;
         }
-        getProtomech().autoSetInternal();
+        getProtoMek().autoSetInternal();
         if (wasQuad) {
-            getProtomech().autoSetInternal();
-            getProtomech().initializeArmor(0, Protomech.LOC_LARM);
-            getProtomech().initializeArmor(0, Protomech.LOC_RARM);
-            Optional<MiscMounted> qms = getProtomech().getMisc().stream().filter(m -> m.getType()
+            getProtoMek().autoSetInternal();
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
+            Optional<MiscMounted> qms = getProtoMek().getMisc().stream().filter(m -> m.getType()
                     .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
-                UnitUtil.removeMounted(getProtomech(), qms.get());
+                UnitUtil.removeMounted(getProtoMek(), qms.get());
             }
         }
-        List<Mounted> toRemove = getProtomech().getMisc().stream()
-                .filter(m -> !ProtoMekUtil.isProtomechEquipment(m.getType(), getProtomech(), true))
+        List<Mounted<?>> toRemove = getProtoMek().getMisc().stream()
+                .filter(m -> !ProtoMekUtil.isProtoMekEquipment(m.getType(), getProtoMek(), true))
                 .collect(Collectors.toList());
-        toRemove.forEach(m -> UnitUtil.removeMounted(getProtomech(), m));
-        panMovement.setFromEntity(getProtomech());
+        toRemove.forEach(m -> UnitUtil.removeMounted(getProtoMek(), m));
+        panMovement.setFromEntity(getProtoMek());
         recalculateEngineRating(panMovement.getWalk(), panChassis.getTonnage(),
                 motiveType != PMChassisView.MOTIVE_TYPE_BIPED);
         refresh();
@@ -447,9 +449,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void armorTypeChanged(ArmorType armor) {
-        UnitUtil.removeISorArmorMounts(getProtomech(), false);
+        UnitUtil.removeISorArmorMounts(getProtoMek(), false);
         createArmorMountsAndSetArmorType(armor);
-        panArmorAllocation.setFromEntity(getProtomech());
+        panArmorAllocation.setFromEntity(getProtoMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -458,9 +460,9 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void armorFactorChanged(int points) {
-        double tonnage = ArmorType.forEntity(getProtomech()).getWeightPerPoint() * points;
-        getProtomech().setArmorTonnage(tonnage);
-        panArmorAllocation.setFromEntity(getProtomech());
+        double tonnage = ArmorType.forEntity(getProtoMek()).getWeightPerPoint() * points;
+        getProtoMek().setArmorTonnage(tonnage);
+        panArmorAllocation.setFromEntity(getProtoMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -468,13 +470,13 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void maximizeArmor() {
-        double maxArmor = UnitUtil.getMaximumArmorTonnage(getProtomech());
-        getProtomech().setArmorTonnage(maxArmor);
+        double maxArmor = UnitUtil.getMaximumArmorTonnage(getProtoMek());
+        getProtoMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
-        panArmor.setFromEntity(getProtomech());
+        panArmor.setFromEntity(getProtoMek());
         panArmor.addListener(this);
 
-        panArmorAllocation.setFromEntity(getProtomech());
+        panArmorAllocation.setFromEntity(getProtoMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -482,23 +484,23 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getProtomech())
+        double currentTonnage = UnitUtil.getEntityVerifier(getProtoMek())
                 .calculateWeight();
-        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtomech());
-        double totalTonnage = getProtomech().getWeight();
+        currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtoMek());
+        double totalTonnage = getProtoMek().getWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
         // We can only use remaining tonnage equal to whole points of armor.
-        remainingTonnage = (int) UnitUtil.getRawArmorPoints(getProtomech(), remainingTonnage)
-                * ArmorType.forEntity(getProtomech()).getWeightPerPoint();
-        double maxArmor = MathUtility.clamp(getProtomech().getLabArmorTonnage() + remainingTonnage, 0,
-                UnitUtil.getMaximumArmorTonnage(getProtomech()));
-        getProtomech().setArmorTonnage(maxArmor);
+        remainingTonnage = (int) UnitUtil.getRawArmorPoints(getProtoMek(), remainingTonnage)
+                * ArmorType.forEntity(getProtoMek()).getWeightPerPoint();
+        double maxArmor = MathUtility.clamp(getProtoMek().getLabArmorTonnage() + remainingTonnage, 0,
+                UnitUtil.getMaximumArmorTonnage(getProtoMek()));
+        getProtoMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
-        panArmor.setFromEntity(getProtomech());
+        panArmor.setFromEntity(getProtoMek());
         panArmor.addListener(this);
 
-        panArmorAllocation.setFromEntity(getProtomech());
+        panArmorAllocation.setFromEntity(getProtoMek());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -508,12 +510,12 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     public void walkChanged(int walkMP) {
         recalculateEngineRating(walkMP, panChassis.getTonnage(),
                 panChassis.getMotiveType() != PMChassisView.MOTIVE_TYPE_BIPED);
-        getProtomech().setOriginalWalkMP(walkMP);
+        getProtoMek().setOriginalWalkMP(walkMP);
         panSummary.refresh();
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        panMovement.setFromEntity(getProtomech());
+        panMovement.setFromEntity(getProtoMek());
         panChassis.refresh();
     }
 
@@ -521,23 +523,23 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
         // Don't set jumpMP for UMU.
         if (null == jumpJet) {
-            getProtomech().setOriginalJumpMP(0);
+            getProtoMek().setOriginalJumpMP(0);
             jumpMP = 0;
         } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
-            getProtomech().setOriginalJumpMP(jumpMP);
+            getProtoMek().setOriginalJumpMP(jumpMP);
         } else {
-            getProtomech().setOriginalJumpMP(0);
+            getProtoMek().setOriginalJumpMP(0);
         }
-        List<Mounted> jjs = getProtomech().getMisc().stream()
+        List<Mounted<?>> jjs = getProtoMek().getMisc().stream()
                 .filter(m -> jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         while (jjs.size() > jumpMP) {
-            UnitUtil.removeMounted(getProtomech(), jjs.remove(jjs.size() - 1));
+            UnitUtil.removeMounted(getProtoMek(), jjs.remove(jjs.size() - 1));
         }
         while (jumpMP > jjs.size()) {
             try {
-                UnitUtil.addMounted(getProtomech(), Mounted.createMounted(getProtomech(), jumpJet),
-                        Protomech.LOC_BODY, false);
+                UnitUtil.addMounted(getProtoMek(), Mounted.createMounted(getProtoMek(), jumpJet),
+                        ProtoMek.LOC_BODY, false);
             } catch (LocationFullException e) {
                 // Shouldn't be able to fill location
             }
@@ -547,24 +549,24 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        panMovement.setFromEntity(getProtomech());
+        panMovement.setFromEntity(getProtoMek());
     }
 
     @Override
     public void jumpTypeChanged(final EquipmentType jumpJet) {
-        List<Mounted> jjs = getProtomech().getMisc().stream()
+        List<Mounted<?>> jjs = getProtoMek().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
                         || m.getType().hasFlag(MiscType.F_UMU))
                 .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
-        jjs.forEach(jj -> UnitUtil.removeMounted(getProtomech(), jj));
+        jjs.forEach(jj -> UnitUtil.removeMounted(getProtoMek(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
     }
 
     @Override
     public void armorPointsChanged(int location, int front, int rear) {
-        getProtomech().initializeArmor(front, location);
-        panArmorAllocation.setFromEntity(getProtomech());
+        getProtoMek().initializeArmor(front, location);
+        panArmorAllocation.setFromEntity(getProtoMek());
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -573,20 +575,21 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
     @Override
     public void autoAllocateArmor() {
         double pointsToAllocate = panArmor.getArmorPoints();
-        double maxArmor = UnitUtil.getMaximumArmorPoints(getProtomech());
+        double maxArmor = UnitUtil.getMaximumArmorPoints(getProtoMek());
         if (pointsToAllocate > maxArmor) {
             pointsToAllocate = maxArmor;
         }
         double percent = pointsToAllocate / maxArmor;
-        final double totalIS = getProtomech().getTotalOInternal();
-        for (int location = getProtomech().firstArmorIndex(); location < getProtomech().locations(); location++) {
-            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtomech(), location) * percent, pointsToAllocate);
-            getProtomech().initializeArmor((int) allocate, location);
+        final double totalIS = getProtoMek().getTotalOInternal();
+        for (int location = getProtoMek().firstArmorIndex(); location < getProtoMek().locations(); location++) {
+            double allocate = Math.min(UnitUtil.getMaximumArmorPoints(getProtoMek(), location) * percent,
+                    pointsToAllocate);
+            getProtoMek().initializeArmor((int) allocate, location);
             pointsToAllocate -= (int) allocate;
         }
         allocateLeftoverPoints(pointsToAllocate);
 
-        panArmorAllocation.setFromEntity(getProtomech());
+        panArmorAllocation.setFromEntity(getProtoMek());
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -596,82 +599,83 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
      * allocate any leftover points one-by-one
      *
      * @param points
-     *            the amount of points left over
+     *               the amount of points left over
      */
     private void allocateLeftoverPoints(double points) {
         while (points >= 1) {
             // Assign with the priority torso, legs, head, arms, main gun (if any)
-            // If there are exactly two points left after the legs, skip the head and assign them
+            // If there are exactly two points left after the legs, skip the head and assign
+            // them
             // symmetrically to the arms
-            if (!getProtomech().isQuad()) {
-                addArmorPoint(Protomech.LOC_TORSO);
+            if (!getProtoMek().isQuad()) {
+                addArmorPoint(ProtoMek.LOC_TORSO);
                 points--;
                 if (points > 0) {
-                    addArmorPoint(Protomech.LOC_LEG);
+                    addArmorPoint(ProtoMek.LOC_LEG);
                     points--;
                 }
                 if ((points > 0) && (points != 2)) {
-                    addArmorPoint(Protomech.LOC_HEAD);
+                    addArmorPoint(ProtoMek.LOC_HEAD);
                     points--;
                 }
                 if (points >= 2) {
-                    addArmorPoint(Protomech.LOC_LARM);
-                    addArmorPoint(Protomech.LOC_RARM);
+                    addArmorPoint(ProtoMek.LOC_LARM);
+                    addArmorPoint(ProtoMek.LOC_RARM);
                     points -= 2;
                 }
-                if ((points > 0) && getProtomech().hasMainGun()) {
-                    addArmorPoint(Protomech.LOC_HEAD);
+                if ((points > 0) && getProtoMek().hasMainGun()) {
+                    addArmorPoint(ProtoMek.LOC_HEAD);
                     points--;
                 }
             } else {
                 // For quads we have no arm armor and we prioritize the legs over the torso.
-                addArmorPoint(Protomech.LOC_LEG);
+                addArmorPoint(ProtoMek.LOC_LEG);
                 points--;
                 if (points > 0) {
-                    addArmorPoint(Protomech.LOC_TORSO);
+                    addArmorPoint(ProtoMek.LOC_TORSO);
                     points--;
                 }
                 if (points > 0) {
-                    addArmorPoint(Protomech.LOC_HEAD);
+                    addArmorPoint(ProtoMek.LOC_HEAD);
                     points--;
                 }
-                if ((points > 0) && getProtomech().hasMainGun()) {
-                    addArmorPoint(Protomech.LOC_HEAD);
+                if ((points > 0) && getProtoMek().hasMainGun()) {
+                    addArmorPoint(ProtoMek.LOC_HEAD);
                     points--;
                 }
             }
         }
     }
-    
+
     /**
      * Convenience method for armor auto-allocation
-     * 
+     *
      * @param location
      */
     private void addArmorPoint(int location) {
-        if (getProtomech().getOArmor(location) < UnitUtil.getMaximumArmorPoints(getProtomech(), location)) {
-            getProtomech().initializeArmor(getProtomech().getOArmor(location) + 1, location);
+        if (getProtoMek().getOArmor(location) < UnitUtil.getMaximumArmorPoints(getProtoMek(), location)) {
+            getProtoMek().initializeArmor(getProtoMek().getOArmor(location) + 1, location);
         }
     }
 
     @Override
     public void mainGunChanged(boolean mainGun) {
-        getProtomech().setHasMainGun(mainGun);
+        getProtoMek().setHasMainGun(mainGun);
         if (!mainGun) {
-            getProtomech().initializeArmor(IArmorState.ARMOR_NA, Protomech.LOC_MAINGUN);
-            getProtomech().getEquipment().forEach(m -> {
-                if (m.getLocation() == Protomech.LOC_MAINGUN) {
+            getProtoMek().initializeArmor(IArmorState.ARMOR_NA, ProtoMek.LOC_MAINGUN);
+            getProtoMek().getEquipment().forEach(m -> {
+                if (m.getLocation() == ProtoMek.LOC_MAINGUN) {
                     m.setLocation(Entity.LOC_NONE);
                 }
             });
         } else {
-            getProtomech().initializeArmor(0, Protomech.LOC_MAINGUN);
-            getProtomech().setArmorType(getProtomech().getArmorType(Protomech.LOC_TORSO));
-            getProtomech().setArmorTechLevel(getProtomech().getArmorTechLevel(Protomech.LOC_TORSO));
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_MAINGUN);
+            getProtoMek().setArmorType(getProtoMek().getArmorType(ProtoMek.LOC_TORSO));
+            getProtoMek().setArmorTechLevel(getProtoMek().getArmorTechLevel(ProtoMek.LOC_TORSO));
         }
-        getProtomech().autoSetInternal();
-        panArmor.setFromEntity(getProtomech());
-        panArmorAllocation.setFromEntity(getProtomech());
+        getProtoMek().autoSetInternal();
+        panArmor.setFromEntity(getProtoMek());
+        panArmorAllocation.setFromEntity(getProtoMek());
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
@@ -682,27 +686,27 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
             return;
         }
         if (selected) {
-            for (Mounted m : getProtomech().getMisc()) {
+            for (Mounted<?> m : getProtoMek().getMisc()) {
                 if (eq.equals(m.getType())) {
                     return;
                 }
             }
-            Mounted m = Mounted.createMounted(getProtomech(), eq);
+            Mounted<?> m = Mounted.createMounted(getProtoMek(), eq);
             try {
-                if (TestProtomech.requiresSlot(eq) && this.freeUpSpace(Protomech.LOC_TORSO, 1)) {
-                        getProtomech().addEquipment(m, Protomech.LOC_TORSO, false);
+                if (TestProtoMek.requiresSlot(eq) && this.freeUpSpace(ProtoMek.LOC_TORSO, 1)) {
+                    getProtoMek().addEquipment(m, ProtoMek.LOC_TORSO, false);
                 } else {
-                    getProtomech().addEquipment(m,  Protomech.LOC_BODY, false);
+                    getProtoMek().addEquipment(m, ProtoMek.LOC_BODY, false);
                 }
             } catch (LocationFullException e) {
                 // We've already checked for enough space where there are limits
             }
         } else {
-            Optional<MiscMounted> mounted = getProtomech().getMisc().stream()
+            Optional<MiscMounted> mounted = getProtoMek().getMisc().stream()
                     .filter(m -> eq.equals(m.getType())).findFirst();
-            mounted.ifPresent(miscMounted -> UnitUtil.removeMounted(getProtomech(), miscMounted));
+            mounted.ifPresent(miscMounted -> UnitUtil.removeMounted(getProtoMek(), miscMounted));
         }
-        panMovement.setFromEntity(getProtomech());
+        panMovement.setFromEntity(getProtoMek());
         panSummary.refresh();
         refresh.refreshPreview();
         refresh.refreshBuild();
@@ -711,13 +715,12 @@ public class PMStructureTab extends ITab implements ProtomekBuildListener, Armor
 
     @Override
     public void setISInterface(boolean selected) {
-        getProtomech().setInterfaceCockpit(selected);
+        getProtoMek().setInterfaceCockpit(selected);
     }
-
 
     @Override
     public void mulIdChanged(int mulId) {
-        getProtomech().setMulId(mulId);
+        getProtoMek().setMulId(mulId);
     }
 
     @Override

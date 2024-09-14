@@ -13,17 +13,18 @@
  */
 package megameklab.printing;
 
-import megamek.common.Jumpship;
-import megamek.common.SpaceStation;
-import megamek.common.UnitType;
-import megamek.common.Warship;
+import java.awt.geom.Rectangle2D;
+
 import org.apache.batik.util.SVGConstants;
-import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
-import java.awt.geom.Rectangle2D;
+import megamek.common.Jumpship;
+import megamek.common.SpaceStation;
+import megamek.common.UnitType;
+import megamek.common.Warship;
+import megamek.logging.MMLogger;
 
 /**
  * Generates a record sheet image for JumpShips, WarShips, and space stations.
@@ -32,6 +33,7 @@ import java.awt.geom.Rectangle2D;
  * @author Neoancient
  */
 public class PrintCapitalShip extends PrintDropship {
+    private static final MMLogger logger = MMLogger.create(PrintCapitalShip.class);
 
     /** Default width for armor pip */
     public static final double ARMOR_PIP_WIDTH = 4.5;
@@ -62,11 +64,11 @@ public class PrintCapitalShip extends PrintDropship {
      * Creates an SVG object for the record sheet
      *
      * @param ship
-     *            The ship to print
+     *                  The ship to print
      * @param startPage
-     *            The print job page number for this sheet
+     *                  The print job page number for this sheet
      * @param options
-     *            Overrides the global options for which elements are printed
+     *                  Overrides the global options for which elements are printed
      */
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
         super(ship, startPage, options);
@@ -77,9 +79,9 @@ public class PrintCapitalShip extends PrintDropship {
      * Creates an SVG object for the record sheet using the global printing options
      *
      * @param ship
-     *            The ship to print
+     *                  The ship to print
      * @param startPage
-     *            The print job page number for this sheet
+     *                  The print job page number for this sheet
      */
     public PrintCapitalShip(Jumpship ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
@@ -173,7 +175,7 @@ public class PrintCapitalShip extends PrintDropship {
             if (element instanceof SVGRectElement) {
                 printArmorRegion((SVGRectElement) element, ship.getOArmor(loc));
             } else {
-                LogManager.getLogger().error("No SVGRectElement found with id " + id);
+                logger.error("No SVGRectElement found with id " + id);
             }
         }
     }
@@ -182,12 +184,13 @@ public class PrintCapitalShip extends PrintDropship {
      * Print pips for some internal structure region.
      *
      * @param rectId
-     *            The id of the rectangle element that describes the outline of the
-     *            region to print pips
+     *                     The id of the rectangle element that describes the
+     *                     outline of the
+     *                     region to print pips
      * @param structure
-     *            The number of structure pips
+     *                     The number of structure pips
      * @param pipsPerBlock
-     *            The maximum number of pips to draw in a single block
+     *                     The maximum number of pips to draw in a single block
      */
     private void printInternalRegion(String rectId, int structure, int pipsPerBlock) {
         Element element = getSVGDocument().getElementById(rectId);
@@ -200,12 +203,13 @@ public class PrintCapitalShip extends PrintDropship {
      * Print pips for some internal structure region.
      *
      * @param svgRect
-     *            The rectangle that describes the outline of the region to print
-     *            pips
+     *                     The rectangle that describes the outline of the region to
+     *                     print
+     *                     pips
      * @param structure
-     *            The number of structure pips
+     *                     The number of structure pips
      * @param pipsPerBlock
-     *            The maximum number of pips to draw in a single block
+     *                     The maximum number of pips to draw in a single block
      */
     private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
         Rectangle2D bbox = getRectBBox(svgRect);
@@ -231,10 +235,11 @@ public class PrintCapitalShip extends PrintDropship {
      * Method to determine rectangle grid for armor or internal pips and draw it.
      *
      * @param svgRect
-     *            A rectangle that outlines the border of the space for the armor
-     *            block.
+     *                A rectangle that outlines the border of the space for the
+     *                armor
+     *                block.
      * @param armor
-     *            The amount of armor in the location
+     *                The amount of armor in the location
      */
     private void printArmorRegion(SVGRectElement svgRect, int armor) {
         Rectangle2D bbox = getRectBBox(svgRect);
@@ -277,7 +282,8 @@ public class PrintCapitalShip extends PrintDropship {
         // Center on edge closest to ship outline
         final double startX = bbox.getX() + ((bbox.getWidth() - (blockWidth * cols - ARMOR_PIP_WIDTH)) / 2.0);
         int leftOver = armor % (MAX_PIP_ROWS * PIPS_PER_ROW);
-        // Partial rows are automatically centered horizontally. But if we have an incomplete block
+        // Partial rows are automatically centered horizontally. But if we have an
+        // incomplete block
         // that is the only one on the row, we should adjust the starting y as well.
         double actualHeight = blockHeight * rows;
         if (leftOver > 0 && (cols == 1 || numBlocks % cols == 1)) {
@@ -310,15 +316,15 @@ public class PrintCapitalShip extends PrintDropship {
      * armor. Any unprinted armor pips are returned.
      *
      * @param startX
-     *            The x coordinate of the top left of the block
+     *                The x coordinate of the top left of the block
      * @param startY
-     *            The y coordinate of the top left of the block
+     *                The y coordinate of the top left of the block
      * @param parent
-     *            The parent node of the bounding rectangle
+     *                The parent node of the bounding rectangle
      * @param numPips
-     *            The number of pips to print
+     *                The number of pips to print
      * @param shadow
-     *            Whether to add a drop shadow
+     *                Whether to add a drop shadow
      * @return The Y location of the end of the block
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,

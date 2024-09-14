@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,27 @@
  */
 package megameklab.util;
 
-import megamek.common.*;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import org.apache.logging.log4j.LogManager;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import megamek.common.AmmoType;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Infantry;
+import megamek.common.LocationFullException;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.logging.MMLogger;
+
 public final class InfantryUtil {
+    private static final MMLogger logger = MMLogger.create(InfantryUtil.class);
 
     public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon, boolean secondary) {
-        Mounted existingInfantryMount = null;
-        for (Mounted m : unit.getWeaponList()) {
+        Mounted<?> existingInfantryMount = null;
+        for (Mounted<?> m : unit.getWeaponList()) {
             if ((m.getType() instanceof InfantryWeapon)
                     && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
@@ -72,7 +79,7 @@ public final class InfantryUtil {
     }
 
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
-        List<Mounted> toRemove = unit.getEquipment().stream()
+        List<Mounted<?>> toRemove = unit.getEquipment().stream()
                 .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
                 .collect(Collectors.toList());
         unit.getEquipment().removeAll(toRemove);
@@ -100,10 +107,10 @@ public final class InfantryUtil {
                     if (ammo.isPresent()) {
                         unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
                     } else {
-                        LogManager.getLogger().error("Could not find ammo for field gun " + fieldGun.getName());
+                        logger.error("Could not find ammo for field gun " + fieldGun.getName());
                     }
                 } catch (Exception ex) {
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -128,5 +135,6 @@ public final class InfantryUtil {
         return eq instanceof InfantryWeapon;
     }
 
-    private InfantryUtil() { }
+    private InfantryUtil() {
+    }
 }

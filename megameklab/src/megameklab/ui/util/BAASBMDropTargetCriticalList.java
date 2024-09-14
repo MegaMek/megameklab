@@ -13,6 +13,23 @@
  */
 package megameklab.ui.util;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.EntityLoadingException;
@@ -22,20 +39,16 @@ import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.mek.BMCriticalTransferHandler;
 import megameklab.ui.mek.BMCriticalView;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
-import java.util.Vector;
 
 public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseListener {
+    private static final MMLogger logger = MMLogger.create(BAASBMDropTargetCriticalList.class);
+
     private final EntitySource eSource;
     private RefreshListener refresh;
     private final boolean buildView;
@@ -43,8 +56,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     private final AbstractCriticalTransferHandler transferHandler;
 
     public BAASBMDropTargetCriticalList(List<E> vector, EntitySource eSource,
-                                        RefreshListener refresh, boolean buildView,
-                                        IView parentView) {
+            RefreshListener refresh, boolean buildView,
+            IView parentView) {
         super(new Vector<>(vector));
         setDragEnabled(true);
         this.eSource = eSource;
@@ -52,7 +65,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         this.buildView = buildView;
         setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
         addMouseListener(this);
-        if (eSource.getEntity() instanceof Mech) {
+        if (eSource.getEntity() instanceof Mek) {
             transferHandler = new BMCriticalTransferHandler(eSource, refresh, (BMCriticalView) parentView);
         } else {
             transferHandler = new BAASCriticalTransferHandler(eSource, refresh);
@@ -68,11 +81,11 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         transferHandler.setRefresh(refresh);
     }
 
-    private void changeMountStatus(Mounted eq, int location, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, boolean rear) {
         changeMountStatus(eq, location, -1, rear);
     }
 
-    private void changeMountStatus(Mounted eq, int location, int secondaryLocation, boolean rear) {
+    private void changeMountStatus(Mounted<?> eq, int location, int secondaryLocation, boolean rear) {
         if (getUnit() instanceof BattleArmor) {
             eq.setBaMountLoc(location);
         } else {
@@ -118,7 +131,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
                 CriticalSlot cs = getCrit();
 
-                final Mounted mount = getMounted();
+                final Mounted<?> mount = getMounted();
                 if ((mount != null) && ((e.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0)) {
                     if (canRearMount(mount)) {
                         changeWeaponFacing(!mount.isRearMounted());
@@ -133,8 +146,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
                 if ((mount != null)
                         && !(((getUnit().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
-                        && (mount.getType() instanceof MiscType)
-                        && mount.getType().hasFlag(MiscType.F_TRACKS))) {
+                                && (mount.getType() instanceof MiscType)
+                                && mount.getType().hasFlag(MiscType.F_TRACKS))) {
                     JMenuItem info;
                     if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                         popup.setAutoscrolls(true);
@@ -154,8 +167,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             && !mount.isSquadSupportWeapon()
                             && mount.getLocation() == BattleArmor.LOC_SQUAD
                             && (getUnit() instanceof BattleArmor)
-                            && ((BattleArmor)getUnit()).getChassisType() !=
-                                BattleArmor.CHASSIS_TYPE_QUAD) {
+                            && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                         info = new JMenuItem("Mount as squad support weapon");
                         info.addActionListener(evt -> {
                             mount.setSquadSupportWeapon(true);
@@ -172,10 +184,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             && !mount.isSquadSupportWeapon()
                             && mount.getLocation() == BattleArmor.LOC_SQUAD
                             && (getUnit() instanceof BattleArmor)
-                            && ((BattleArmor) getUnit()).getChassisType() !=
-                                BattleArmor.CHASSIS_TYPE_QUAD) {
+                            && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                         boolean enabled = false;
-                        for (Mounted weapon : getUnit().getWeaponList()) {
+                        for (Mounted<?> weapon : getUnit().getWeaponList()) {
                             WeaponType wtype = (WeaponType) weapon.getType();
                             if (weapon.isSquadSupportWeapon()
                                     && AmmoType.isAmmoValid(mount, wtype)) {
@@ -201,7 +212,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             mount.setSquadSupportWeapon(false);
                             // Can't have squad support weapon ammo with no
                             // squad support weapon
-                            for (Mounted ammo : getUnit().getAmmo()) {
+                            for (Mounted<?> ammo : getUnit().getAmmo()) {
                                 ammo.setSquadSupportWeapon(false);
                             }
                             if (refresh != null) {
@@ -216,7 +227,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             && (mount.getLinked() != null)) {
                         info = new JMenuItem("Remove attached weapon");
                         info.addActionListener(evt -> {
-                            Mounted attached = mount.getLinked();
+                            Mounted<?> attached = mount.getLinked();
                             attached.setDWPMounted(false);
                             mount.setLinked(null);
                             mount.setLinkedBy(null);
@@ -234,7 +245,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             && (mount.getLinked() != null)) {
                         info = new JMenuItem("Remove attached weapon");
                         info.addActionListener(evt -> {
-                            Mounted attached = mount.getLinked();
+                            Mounted<?> attached = mount.getLinked();
                             attached.setAPMMounted(false);
                             mount.setLinked(null);
                             mount.setLinkedBy(null);
@@ -247,8 +258,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         popup.add(info);
                     }
 
-                    if ((mount.getLocation() != Mech.LOC_LARM)
-                            && (mount.getLocation() != Mech.LOC_RARM)) {
+                    if ((mount.getLocation() != Mek.LOC_LARM)
+                            && (mount.getLocation() != Mek.LOC_RARM)) {
                         if (mount.getType() instanceof WeaponType) {
                             if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1,
                                     mount.getLocation())
@@ -257,9 +268,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                                             mount.getLocation())
                                     || (getUnit().hasWorkingMisc(
                                             MiscType.F_HEAD_TURRET, -1,
-                                            Mech.LOC_CT) && (mount
-                                            .getLocation() == Mech.LOC_HEAD))) {
-                                if (!mount.isMechTurretMounted()) {
+                                            Mek.LOC_CT)
+                                            && (mount
+                                                    .getLocation() == Mek.LOC_HEAD))) {
+                                if (!mount.isMekTurretMounted()) {
                                     info = new JMenuItem("Mount " + mount.getName() + " in Turret");
                                     info.addActionListener(evt -> changeTurretMount(true));
                                     popup.add(info);
@@ -325,8 +337,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
                 }
 
-                if ((getUnit() instanceof BipedMech || getUnit() instanceof TripodMech)
-                        && ((location == Mech.LOC_LARM) || (location == Mech.LOC_RARM))) {
+                if ((getUnit() instanceof BipedMek || getUnit() instanceof TripodMek)
+                        && ((location == Mek.LOC_LARM) || (location == Mek.LOC_RARM))) {
                     boolean canHaveLowerArm = true;
                     if (getUnit().isOmni()) {
                         int numCrits = getUnit().getNumberOfCriticals(location);
@@ -337,7 +349,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                             } else if (crit.getType() == CriticalSlot.TYPE_SYSTEM) {
                                 continue;
                             }
-                            Mounted m = crit.getMount();
+                            Mounted<?> m = crit.getMount();
                             if ((m.getType() instanceof GaussWeapon)
                                     || (m.getType() instanceof ACWeapon)
                                     || (m.getType() instanceof UACWeapon)
@@ -389,7 +401,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
-                    } else if (!((getUnit() instanceof Mech) && getUnit().isSuperHeavy())) {
+                    } else if (!((getUnit() instanceof Mek) && getUnit().isSuperHeavy())) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
@@ -409,7 +421,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
     }
 
-    public @Nullable Mounted getMounted() {
+    public @Nullable Mounted<?> getMounted() {
         // BattleArmor doesn't have a proper critical system like other units
         // so they are handled specially
         if (getUnit() instanceof BattleArmor) {
@@ -427,7 +439,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         return null;
@@ -445,7 +457,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     public void removeMount() {
-        Mounted mounted = getMounted();
+        Mounted<?> mounted = getMounted();
 
         if (mounted == null) {
             return;
@@ -469,11 +481,11 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getUnit());
+            MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if (refresh != null) {
@@ -483,13 +495,14 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
     public void removeCrit() {
         CriticalSlot crit = getCrit();
-        Mounted mounted = getMounted();
+        Mounted<?> mounted = getMounted();
 
         if (mounted == null) {
             return;
         }
 
-        // BattleArmor doesn't use the crit system, so we can just remove the mounted and be done
+        // BattleArmor doesn't use the crit system, so we can just remove the mounted
+        // and be done
         if (getUnit() instanceof BattleArmor) {
             changeMountStatus(mounted, BattleArmor.MOUNT_LOC_NONE, false);
             return;
@@ -502,11 +515,11 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         // Check linkings after you remove everything.
         try {
-            MechFileParser.postLoadInit(getUnit());
+            MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
 
         } catch (Exception ex) {
-            LogManager.getLogger().error("", ex);
+            logger.error("", ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -515,19 +528,19 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void changeWeaponFacing(boolean rear) {
-        Mounted mount = getMounted();
+        Mounted<?> mount = getMounted();
         int location = getCritLocation();
         changeMountStatus(mount, location, rear);
     }
 
-    private boolean canRearMount(Mounted mount) {
+    private boolean canRearMount(Mounted<?> mount) {
         if ((mount.getEntity() instanceof BattleArmor) || mount.getEntity().isFighter()) {
             return false;
         }
         if (mount.getType() instanceof MiscType) {
             if (mount.getType().hasFlag(MiscType.F_MODULAR_ARMOR)) {
-                return (mount.getEntity() instanceof Mech)
-                        && ((Mech) mount.getEntity()).locationIsTorso(mount.getLocation());
+                return (mount.getEntity() instanceof Mek)
+                        && ((Mek) mount.getEntity()).locationIsTorso(mount.getLocation());
             } else {
                 return mount.getType().hasFlag(MiscType.F_LIFTHOIST)
                         || mount.getType().hasFlag(MiscType.F_SPRAYER)
@@ -539,7 +552,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void changeOmniMounting(boolean pod) {
-        Mounted mount = getMounted();
+        Mounted<?> mount = getMounted();
         if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
             mount.setOmniPodMounted(pod);
             if (getCrit().getMount2() != null) {
@@ -552,9 +565,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void changeTurretMount(boolean turret) {
-        getMounted().setMechTurretMounted(turret);
+        getMounted().setMekTurretMounted(turret);
         if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setMechTurretMounted(turret);
+            getMounted().getLinkedBy().setMekTurretMounted(turret);
         }
         if (refresh != null) {
             refresh.scheduleRefresh();
@@ -574,18 +587,18 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         CriticalSlot cs = getUnit().getCritical(location, 3);
 
         if (cs != null) {
-            Mounted mount = cs.getMount();
+            Mounted<?> mount = cs.getMount();
             UnitUtil.removeCriticals(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
         getUnit().setCritical(location, 3, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_HAND));
+                CriticalSlot.TYPE_SYSTEM, Mek.ACTUATOR_HAND));
         addArm(location);
     }
 
     private void removeHand(int location) {
-        if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            MekUtil.removeHand((Mech) getUnit(), location);
+        if (getUnit() instanceof BipedMek || getUnit() instanceof TripodMek) {
+            MekUtil.removeHand((Mek) getUnit(), location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -593,8 +606,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     }
 
     private void removeArm(int location) {
-        if (getUnit() instanceof BipedMech || getUnit() instanceof TripodMech) {
-            MekUtil.removeArm((Mech)getUnit(),location);
+        if (getUnit() instanceof BipedMek || getUnit() instanceof TripodMek) {
+            MekUtil.removeArm((Mek) getUnit(), location);
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -605,13 +618,13 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         CriticalSlot cs = getUnit().getCritical(location, 2);
 
         if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-            Mounted mount = cs.getMount();
+            Mounted<?> mount = cs.getMount();
             UnitUtil.removeCriticals(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
 
         getUnit().setCritical(location, 2, new CriticalSlot(
-                CriticalSlot.TYPE_SYSTEM, Mech.ACTUATOR_LOWER_ARM));
+                CriticalSlot.TYPE_SYSTEM, Mek.ACTUATOR_LOWER_ARM));
         if (refresh != null) {
             refresh.scheduleRefresh();
         }
@@ -622,7 +635,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         if (cs != null) {
             if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted mount = getMounted();
+                Mounted<?> mount = getMounted();
                 mount.setArmored(!cs.isArmored());
                 UnitUtil.updateCritsArmoredStatus(getUnit(), mount);
             } else {

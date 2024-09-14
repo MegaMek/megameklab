@@ -19,28 +19,30 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.client.ui.panes.ConfigurableMechViewPanel;
-import megamek.client.ui.swing.MechViewPanel;
+import java.awt.BorderLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
+import javax.swing.JTabbedPane;
+
+import megamek.client.ui.panes.ConfigurableMekViewPanel;
+import megamek.client.ui.swing.MekViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
 import megamek.common.Entity;
 import megamek.common.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 public class PreviewTab extends ITab {
+    private static final MMLogger logger = MMLogger.create(PreviewTab.class);
 
-    private final ConfigurableMechViewPanel panelMekView = new ConfigurableMechViewPanel();
-    private final MechViewPanel panelTROView = new MechViewPanel();
+    private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
+    private final MekViewPanel panelTROView = new MekViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
 
@@ -64,13 +66,13 @@ public class PreviewTab extends ITab {
         try {
             troView = TROView.createView(selectedUnit, ViewFormatting.HTML);
         } catch (Exception e) {
-            LogManager.getLogger().error("", e);
+            logger.error("", e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields) {
             panelMekView.setEntity(selectedUnit);
-            panelTROView.setMech(selectedUnit, troView);
+            panelTROView.setMek(selectedUnit, troView);
             if (ASConverter.canConvert(selectedUnit)) {
                 cardPanel.setASElement(ASConverter.convertInMML(selectedUnit, new FlexibleCalculationReport()));
             } else {
@@ -86,7 +88,8 @@ public class PreviewTab extends ITab {
     }
 
     public void refresh() {
-        // This active refresh is needed for the few cases where the unit can be changed when the preview is
+        // This active refresh is needed for the few cases where the unit can be changed
+        // when the preview is
         // active, e.g. setting the fluff image.
         if (isVisible()) {
             update();

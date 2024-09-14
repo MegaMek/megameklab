@@ -22,7 +22,8 @@ import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 
 /**
- * The Equipment Tab for ProtoMek units showing the equipment database and the current loadout list.
+ * The Equipment Tab for ProtoMek units showing the equipment database and the
+ * current loadout list.
  *
  * @author Simon (Juliez)
  */
@@ -38,7 +39,7 @@ public class PMEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 !(etype.hasFlag(MiscType.F_JUMP_JET)

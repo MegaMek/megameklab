@@ -27,16 +27,21 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
-import megamek.common.*;
+import megamek.common.Aero;
+import megamek.common.Entity;
+import megamek.common.ITechManager;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Tank;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
-import megameklab.ui.util.TechComboBox;
 import megameklab.ui.listeners.ArmorAllocationListener;
+import megameklab.ui.util.TechComboBox;
 
 /**
  * Displays a list of comboboxes with labels that displays the current armor type per location for
  * patchwork armor and allows it to be changed.
- * 
+ *
  * @author Neoancient
  */
 public class PatchworkArmorView extends BuildView implements ActionListener {
@@ -47,24 +52,24 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
-    
+
     private final static int MAX_LOC = 10;
-    
+
     private final List<JLabel> labels = new ArrayList<>();
     private final List<TechComboBox<ArmorType>> combos = new ArrayList<>();
-    
+
     private final ITechManager techManager;
     private boolean ignoreEvents = false;
-    
+
     public PatchworkArmorView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
-        
+
         setBorder(BorderFactory.createTitledBorder(
                 null, resourceMap.getString("ArmorAllocationView.panPatwork.title"),
                 TitledBorder.TOP,
@@ -91,10 +96,10 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
             gbc.gridy++;
         }
     }
-    
+
     public void setFromEntity(Entity en) {
         List<ArmorType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
-                (en instanceof Mech) && ((Mech)en).isIndustrial(),
+                (en instanceof Mek) && ((Mek)en).isIndustrial(),
                 en.isPrimitive(),
                 en.getMovementMode(), techManager);
         ignoreEvents = true;
@@ -125,15 +130,15 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         }
         ignoreEvents = false;
     }
-    
+
     public ArmorType getArmor(int location) {
         return (ArmorType) combos.get(location).getSelectedItem();
     }
-    
+
     public void setArmorType(ArmorType armor, int location) {
         combos.get(location).setSelectedItem(armor);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!ignoreEvents) {

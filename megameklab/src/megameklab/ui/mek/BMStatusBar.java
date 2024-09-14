@@ -43,13 +43,13 @@ public class BMStatusBar extends StatusBar {
 
     public void refreshSlots() {
         int maxCrits = getTestEntity().totalCritSlotCount();
-        int currentSlots = MekUtil.countUsedCriticals(getMech());
+        int currentSlots = MekUtil.countUsedCriticals(getMek());
         slots.setText(String.format(SLOTS_LABEL, maxCrits - currentSlots, maxCrits));
         slots.setForeground(currentSlots > maxCrits ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
     public void refreshHeat() {
-        int heatCapacity = getMech().getHeatCapacity();
+        int heatCapacity = getMek().getHeatCapacity();
         long totalHeat = estimatedHeatGeneration();
         heat.setText(String.format(HEAT_LABEL, totalHeat, heatCapacity));
         heat.setToolTipText("Estimated Total Heat Generated / Total Heat Dissipated");

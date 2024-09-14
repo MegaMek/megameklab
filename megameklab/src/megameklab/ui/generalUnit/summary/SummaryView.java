@@ -28,6 +28,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import megamek.common.Entity;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.IView;
+
 /**
  * This class represents the unit weight / crit / availability summary table on the structure tab. To construct it,
  * it needs an {@link EntitySource} as well as a list of {@link SummaryItem} that can be directly constructed

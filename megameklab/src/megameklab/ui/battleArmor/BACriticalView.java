@@ -1,12 +1,12 @@
 /*
  * MegaMekLab - Copyright (C) 2008
  * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
@@ -15,25 +15,35 @@
 
 package megameklab.ui.battleArmor;
 
-import megamek.common.*;
+import java.io.File;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
+import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;
-import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.RefreshListener;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.io.File;
-import java.util.Vector;
 
 /**
  * The Crit Slots view for a single suit of BattleArmor
  *
  * Original author - jtighe (torren@users.sourceforge.net)
+ *
  * @author arlith
  * @author Simon (Juliez)
  */
@@ -44,14 +54,14 @@ public class BACriticalView extends IView {
     private final Box bodyPanel = Box.createVerticalBox();
     private final Box turretPanel = Box.createVerticalBox();
     private final JLabel weightLabel = new JLabel();
-    
+
     private RefreshListener refresh;
     private final boolean showEmpty;
     private BACriticalSuit critSuit;
-    
+
     /** The trooper in the squad this CriticalView is for. */
     int trooper;
-    
+
     public BACriticalView(EntitySource eSource, int t, boolean showEmpty, RefreshListener refresh) {
         super(eSource);
         trooper = t;
@@ -98,11 +108,11 @@ public class BACriticalView extends IView {
         rightArmPanel.removeAll();
         bodyPanel.removeAll();
         turretPanel.removeAll();
-        
+
         int[] numAPWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
         int[] numAMWeapons = new int[BattleArmor.MOUNT_NUM_LOCS];
-         
-        for (Mounted m : getBattleArmor().getEquipment()) {
+
+        for (Mounted<?> m : getBattleArmor().getEquipment()) {
             if ((m.getLocation() == BattleArmor.LOC_SQUAD) || (m.getLocation() == trooper)) {
                 critSuit.addMounted(m.getBaMountLoc(), m);
                 // Weapons mounted in a quad turret count against the body limits
@@ -115,10 +125,10 @@ public class BACriticalView extends IView {
                         numAMWeapons[useLoc]++;
                     }
                     if (m.getType().hasFlag(MiscType.F_AP_MOUNT)) {
-                        numAPWeapons[useLoc]++;  
+                        numAPWeapons[useLoc]++;
                     }
                 }
-            }            
+            }
         }
 
         synchronized (getBattleArmor()) {
@@ -131,7 +141,7 @@ public class BACriticalView extends IView {
                             critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                         }
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted m = cs.getMount();
+                        Mounted<?> m = cs.getMount();
                         if (m == null) {
                             if (showEmpty) {
                                 critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
@@ -165,28 +175,28 @@ public class BACriticalView extends IView {
                         break;
                 }
             }
-            
+
             String[] amTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             String[] apTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
-                amTxt[loc] = "Anti-Mech Weapons: " + numAMWeapons[loc] + "/" 
-                        + getBattleArmor().getNumAllowedAntiMechWeapons(loc);
-                apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/" 
+                amTxt[loc] = "Anti-Mek Weapons: " + numAMWeapons[loc] + "/"
+                        + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
+                apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/"
                         + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
-                if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
+                if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] + "</font></html>";
                 }
-                if (numAPWeapons[loc] > getBattleArmor().getNumAllowedAntiMechWeapons(loc)) {
+                if (numAPWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     apTxt[loc] = "<html><font color='C00000'>" + apTxt[loc] + "</font></html>";
                 }
             }
 
             leftArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_LARM]));
             leftArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_LARM]));
-            
+
             rightArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_RARM]));
             rightArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_RARM]));
-            
+
             bodyPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_BODY]));
             bodyPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_BODY]));
 
@@ -195,11 +205,11 @@ public class BACriticalView extends IView {
             leftArmPanel.setVisible(!isQuad);
             rightArmPanel.setVisible(!isQuad);
             turretPanel.setVisible(isQuad && (getBattleArmor().getTurretCapacity() > 0));
-            
+
             EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                    "data/mechfiles/UnitVerifierOptions.xml"));
+                    "data/mekfiles/UnitVerifierOptions.xml"));
             TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
-            
+
             String weightTxt = "Weight: "
                     + String.format("%1$.3f", testBA.calculateWeight(trooper))
                     + "/" + getBattleArmor().getTrooperWeight();
@@ -211,7 +221,7 @@ public class BACriticalView extends IView {
             validate();
         }
     }
-    
+
     private JLabel makeLabel(String text) {
         JLabel label = new JLabel(text);
         label.setAlignmentX(JLabel.CENTER_ALIGNMENT);

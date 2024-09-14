@@ -18,24 +18,33 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.StringJoiner;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestMech;
-import megamek.common.verifier.TestProtomech;
+import megamek.common.verifier.TestMek;
+import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.TechComboBox;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Controls for setting a unit's speed
@@ -172,7 +181,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
 
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mech) && ((Mech) en).isIndustrial();
+        industrial = (en instanceof Mek) && ((Mek) en).isIndustrial();
         refresh();
 
         Optional<MiscType> jj = en.getMisc().stream().map(Mounted::getType)
@@ -190,19 +199,19 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         Integer maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
-        } else if (en instanceof Mech) {
-            maxJump = TestMech.maxJumpMP((Mech)en);
-        } else if (en instanceof Protomech) {
-            maxJump = TestProtomech.maxJumpMP((Protomech) en);
+        } else if (en instanceof Mek) {
+            maxJump = TestMek.maxJumpMP((Mek)en);
+        } else if (en instanceof ProtoMek) {
+            maxJump = TestProtoMek.maxJumpMP((ProtoMek) en);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle() && !en.isTrailer()) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
             minWalk = Math.max(1, (int)(minRating / en.getWeight()));
-        } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MECH)) {
+        } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             minJump = minWalk = 3;
             // If the unit has improved JJs the walk can be 2 and still meet the minimum jump MP requirement of 3.
             int jumpType = en.getJumpType();
-            if ((jumpType == Mech.JUMP_IMPROVED) || (jumpType == Mech.JUMP_PROTOTYPE_IMPROVED)) {
+            if ((jumpType == Mek.JUMP_IMPROVED) || (jumpType == Mek.JUMP_PROTOTYPE_IMPROVED)) {
                 minWalk = 2;
             }
         } else if (en instanceof BattleArmor) {
@@ -220,11 +229,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
             }
             cbJumpType.addActionListener(this);
-        } else if (en instanceof Protomech) {
-            if (((Protomech) en).isGlider()) {
-                minWalk = TestProtomech.GLIDER_MIN_MP;
-            } else if (((Protomech) en).isQuad()) {
-                minWalk = TestProtomech.QUAD_MIN_MP;
+        } else if (en instanceof ProtoMek) {
+            if (((ProtoMek) en).isGlider()) {
+                minWalk = TestProtoMek.GLIDER_MIN_MP;
+            } else if (((ProtoMek) en).isQuad()) {
+                minWalk = TestProtoMek.QUAD_MIN_MP;
             } else {
                 minWalk = 1;
             }
@@ -344,8 +353,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             walkTooltip.add("-1 (Modular armor)");
             jumpTooltip.add("-1 (Modular armor)");
         }
-        if (en instanceof Mech) {
-            if (((Mech) en).hasMPReducingHardenedArmor()) {
+        if (en instanceof Mek) {
+            if (((Mek) en).hasMPReducingHardenedArmor()) {
                 runTooltip.add("-1 (Hardened armor)");
             }
 
@@ -384,8 +393,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 .filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
         if (partialWing.isPresent()) {
             int bonus = 2;
-            if (en instanceof Mech) {
-                bonus = ((Mech) en).getPartialWingJumpBonus(partialWing.get());
+            if (en instanceof Mek) {
+                bonus = ((Mek) en).getPartialWingJumpBonus(partialWing.get());
             } else if (en instanceof BattleArmor) {
                 bonus = 1;
             }

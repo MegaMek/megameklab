@@ -13,7 +13,11 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
@@ -22,7 +26,14 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
@@ -30,25 +41,27 @@ import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EntityFluff;
 import megamek.common.util.ImageUtil;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Panel for editing unit fluff
- * 
+ *
  * @author Neoancient
  */
 public class FluffTab extends ITab implements FocusListener {
+    private static final MMLogger logger = MMLogger.create(FluffTab.class);
+
     private final JTextArea txtCapabilities = new JTextArea(4, 40);
     private final JTextArea txtOverview = new JTextArea(4, 40);
     private final JTextArea txtDeployment = new JTextArea(4, 40);
     private final JTextArea txtHistory = new JTextArea(4, 40);
-    
+
     private final JTextField txtManufacturer = new JTextField(12);
     private final JTextField txtPrimaryFactory = new JTextField(12);
     private final JTextField txtUse = new JTextField(12);
@@ -59,22 +72,22 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextArea txtNotes = new JTextArea(4, 40);
 
     private final JButton btnRemoveFluff = new JButton("Remove Fluff Image");
-    
+
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
-    
+
     private RefreshListener refresh;
-    
+
     public FluffTab(EntitySource esource) {
         super(esource);
         initUi();
     }
-    
+
     // For convenience
     private EntityFluff getFluff() {
         return eSource.getEntity().getFluff();
     }
-    
+
     public void setRefreshedListener(RefreshListener l) {
         refresh = l;
     }
@@ -91,14 +104,14 @@ public class FluffTab extends ITab implements FocusListener {
                 || eSource.getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             add(panRight);
         }
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 5, 5, 5);
-        
+
         panLeft.setLayout(new GridBagLayout());
 
         JButton btnSetFluffImage = new JButton("Set Fluff Image from File");
@@ -125,7 +138,7 @@ public class FluffTab extends ITab implements FocusListener {
         panLeft.add(txtCapabilities, gbc);
         txtCapabilities.addFocusListener(this);
         gbc.gridy++;
-        
+
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtOverview")), gbc);
         gbc.gridy++;
         txtOverview.setLineWrap(true);
@@ -155,7 +168,7 @@ public class FluffTab extends ITab implements FocusListener {
         panLeft.add(txtHistory, gbc);
         txtHistory.addFocusListener(this);
         gbc.gridy++;
-        
+
         panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtNotes")), gbc);
         gbc.gridy++;
         txtNotes.setLineWrap(true);
@@ -165,7 +178,7 @@ public class FluffTab extends ITab implements FocusListener {
         gbc.weighty = 1.0;
         panLeft.add(txtNotes, gbc);
         txtNotes.addFocusListener(this);
-        
+
         panRight.setLayout(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -184,7 +197,7 @@ public class FluffTab extends ITab implements FocusListener {
         panRight.add(txtPrimaryFactory, gbc);
         txtPrimaryFactory.addFocusListener(this);
         gbc.gridy++;
-        
+
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                 || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             gbc.gridx = 0;
@@ -194,7 +207,7 @@ public class FluffTab extends ITab implements FocusListener {
             panRight.add(txtUse, gbc);
             txtUse.addFocusListener(this);
             gbc.gridy++;
-            
+
             gbc.gridx = 0;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.txtLength")), gbc);
             gbc.gridx = 1;
@@ -202,7 +215,7 @@ public class FluffTab extends ITab implements FocusListener {
             gbc.gridx = 2;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbc);
             gbc.gridy++;
-            
+
             gbc.gridx = 0;
             txtLength.setText(getFluff().getLength());
             panRight.add(txtLength, gbc);
@@ -250,7 +263,7 @@ public class FluffTab extends ITab implements FocusListener {
         gbc.gridx = 0;
         gbc.weighty = 1.0;
         panRight.add(new JPanel(), gbc);
-        
+
     }
 
     @Override
@@ -318,7 +331,7 @@ public class FluffTab extends ITab implements FocusListener {
                     getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
                 } catch (Exception ex) {
                     PopupMessages.showFileReadError(getParent(), imageFile.toString(), ex.getMessage());
-                    LogManager.getLogger().error("", ex);
+                    logger.error("", ex);
                 }
             }
         }
@@ -342,7 +355,7 @@ public class FluffTab extends ITab implements FocusListener {
                 eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
             } catch (Exception ex) {
                 PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
-                LogManager.getLogger().error("Fluff could not be copied!", ex);
+                logger.error("Fluff could not be copied!", ex);
             }
         }
         viewer.dispose();

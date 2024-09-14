@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.GunEmplacement;
-import megamek.common.MechSummary;
-import megamek.common.MechSummaryCache;
+import megamek.common.MekSummary;
+import megamek.common.MekSummaryCache;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.util.CConfig;
@@ -47,9 +47,9 @@ public class CGLMassPrinter {
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
-        MechSummaryCache cache = MechSummaryCache.getInstance(true);
+        MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
-        for (MechSummary ms : cache.getAllMechs()) {
+        for (MekSummary ms : cache.getAllMeks()) {
             String message = String.format("Looking at %s", ms.getName());
             logger.info(message);
 

@@ -40,7 +40,7 @@ public class LAEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         return !(mount.getType() instanceof BayWeapon) && !mount.isWeaponGroup();
     }
 }

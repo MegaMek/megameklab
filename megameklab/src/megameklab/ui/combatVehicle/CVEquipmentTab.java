@@ -23,7 +23,7 @@ import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
 
 /**
- * The Equipment Tab for Combat vehicle units showing the equipment database and the current loadout list.
+ * The Equipment Tab for Combat vehicle units showing the equipment database and the current load out list.
  *
  * @author jtighe (torren@users.sourceforge.net)
  * @author Taharqa
@@ -41,7 +41,7 @@ public class CVEquipmentTab extends AbstractEquipmentTab {
     }
 
     @Override
-    protected boolean showInLoadout(Mounted mount) {
+    protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
                 (!etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype));

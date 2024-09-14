@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019, 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,16 @@
  */
 package megameklab.ui.dialog;
 
+import java.awt.BorderLayout;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
@@ -33,15 +43,9 @@ import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
-
 /**
- * This class prepares a new editing UI for either a given Entity or an Entity type (new unit). While
+ * This class prepares a new editing UI for either a given Entity or an Entity
+ * type (new unit). While
  * preparation runs, a splash screen is shown.
  *
  * @author Taharqa
@@ -55,8 +59,7 @@ public class UiLoader {
     private static final TreeMap<Integer, String> LOAD_SCREEN_IMAGES = new TreeMap<>(Map.of(
             0, Configuration.miscImagesDir() + "/mml_load_spooky_hd.jpg",
             1441, Configuration.miscImagesDir() + "/mml_load_spooky_fhd.jpg",
-            1921, Configuration.miscImagesDir() + "/mml_load_spooky_uhd.jpg"
-    ));
+            1921, Configuration.miscImagesDir() + "/mml_load_spooky_uhd.jpg"));
 
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final JDialog splashImage;
@@ -67,8 +70,8 @@ public class UiLoader {
     private final String fileName;
 
     public static void loadUi(Entity newUnit, String fileName) {
-        if ((newUnit == null) || (newUnit instanceof Mech)) {
-            new UiLoader(Entity.ETYPE_MECH, false, false, newUnit, fileName).show();
+        if ((newUnit == null) || (newUnit instanceof Mek)) {
+            new UiLoader(Entity.ETYPE_MEK, false, false, newUnit, fileName).show();
         } else if (newUnit.isSupportVehicle()) {
             new UiLoader(Entity.ETYPE_SUPPORT_TANK, false, false, newUnit, fileName).show();
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
@@ -81,13 +84,13 @@ public class UiLoader {
             new UiLoader(Entity.ETYPE_BATTLEARMOR, false, false, newUnit, fileName).show();
         } else if (newUnit instanceof Infantry) {
             new UiLoader(Entity.ETYPE_INFANTRY, false, false, newUnit, fileName).show();
-        } else if (newUnit instanceof Protomech) {
-            new UiLoader(Entity.ETYPE_PROTOMECH, false, false, newUnit, fileName).show();
+        } else if (newUnit instanceof ProtoMek) {
+            new UiLoader(Entity.ETYPE_PROTOMEK, false, false, newUnit, fileName).show();
         } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
             new UiLoader(Entity.ETYPE_TANK, false, false, newUnit, fileName).show();
         } else {
             PopupMessages.showUiLoadError(null);
-            new UiLoader(Entity.ETYPE_MECH, false, false, null, "").show();
+            new UiLoader(Entity.ETYPE_MEK, false, false, null, "").show();
         }
     }
 
@@ -96,11 +99,14 @@ public class UiLoader {
     }
 
     /**
-     * @param type       - the unit type to load the mainUI from, based on the types in StartupGUI.java
+     * @param type       - the unit type to load the mainUI from, based on the types
+     *                   in StartupGUI.java
      * @param primitive  - is unit primitive
      * @param industrial - is unit industrial
-     * @param newUnit    - a specific <code>Entity</code> to load in rather than default
-     * @param fileName   - the file name of the new unit; empty String if the unit has no file
+     * @param newUnit    - a specific <code>Entity</code> to load in rather than
+     *                   default
+     * @param fileName   - the file name of the new unit; empty String if the unit
+     *                   has no file
      */
     private UiLoader(long type, boolean primitive, boolean industrial, Entity newUnit, String fileName) {
         this.type = type;
@@ -116,7 +122,10 @@ public class UiLoader {
         splashImage.setLocationRelativeTo(null);
     }
 
-    /** Shows the splash image, hides the calling frame and starts loading the new unit's UI. */
+    /**
+     * Shows the splash image, hides the calling frame and starts loading the new
+     * unit's UI.
+     */
     public void show() {
         splashImage.setVisible(true);
         SwingUtilities.invokeLater(this::loadNewUi);
@@ -135,13 +144,16 @@ public class UiLoader {
         splashImage.dispose();
     }
 
-    /** @return The correct MainUI for an Entity of the given type (ETYPE_xxx), primitive and industrial flag. */
+    /**
+     * @return The correct MainUI for an Entity of the given type (ETYPE_xxx),
+     *         primitive and industrial flag.
+     */
     public static MegaMekLabMainUI getUI(long type, boolean primitive, boolean industrial) {
         if (type == Entity.ETYPE_TANK) {
             return new CVMainUI();
         } else if (type == Entity.ETYPE_SUPPORT_TANK) {
             return new SVMainUI();
-        } else if (type == Entity.ETYPE_PROTOMECH) {
+        } else if (type == Entity.ETYPE_PROTOMEK) {
             return new PMMainUI();
         } else if (type == Entity.ETYPE_BATTLEARMOR) {
             return new BAMainUI();

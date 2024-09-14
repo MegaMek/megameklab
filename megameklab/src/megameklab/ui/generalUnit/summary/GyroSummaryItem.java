@@ -19,8 +19,8 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.Entity;
-import megamek.common.Mech;
-import megamek.common.verifier.TestMech;
+import megamek.common.Mek;
+import megamek.common.verifier.TestMek;
 import megameklab.util.UnitUtil;
 
 public class GyroSummaryItem extends AbstractSummaryItem {
@@ -32,11 +32,11 @@ public class GyroSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if ((entity instanceof Mech) && (entity.getGyroType() != Mech.GYRO_NONE)) {
-            Mech mek = (Mech) entity;
+        if ((entity instanceof Mek) && (entity.getGyroType() != Mek.GYRO_NONE)) {
+            Mek mek = (Mek) entity;
             availabilityLabel.setText(mek.getGyroTechAdvancement().getFullRatingName(entity.isClan()));
-            TestMech testMech = (TestMech) UnitUtil.getEntityVerifier(entity);
-            weightLabel.setText(formatWeight(testMech.getWeightGyro(), entity));
+            TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
+            weightLabel.setText(formatWeight(testMek.getWeightGyro(), entity));
             critLabel.setText(formatCrits(getGyroCrits(entity)));
         } else {
             availabilityLabel.setText("");
@@ -47,9 +47,9 @@ public class GyroSummaryItem extends AbstractSummaryItem {
 
     private int getGyroCrits(Entity entity) {
         switch(entity.getGyroType()) {
-            case Mech.GYRO_COMPACT:
+            case Mek.GYRO_COMPACT:
                 return 2;
-            case Mech.GYRO_XL:
+            case Mek.GYRO_XL:
                 return 6;
             default:
                 return 4;

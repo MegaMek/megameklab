@@ -15,7 +15,22 @@
  */
 package megameklab.ui.fighterAero;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+
+import javax.swing.JDialog;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+
+import megamek.common.Aero;
+import megamek.common.AeroSpaceFighter;
+import megamek.common.ConvFighter;
+import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
+import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
@@ -23,12 +38,9 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
-import org.apache.logging.log4j.LogManager;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class ASMainUI extends MegaMekLabMainUI {
+    private static final MMLogger logger = MMLogger.create(ASMainUI.class);
 
     JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
@@ -78,7 +90,8 @@ public class ASMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new ASFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this,
+                new ASFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         refreshHeader();
@@ -95,7 +108,7 @@ public class ASMainUI extends MegaMekLabMainUI {
             setEntity(new ConvFighter());
             getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
-            LogManager.getLogger().error("Received incorrect entityType!");
+            logger.error("Received incorrect entityType!");
             return;
         }
 
@@ -149,7 +162,8 @@ public class ASMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+    }
 
     @Override
     public void refreshBuild() {
@@ -183,7 +197,8 @@ public class ASMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+    }
 
     @Override
     public void refreshSummary() {

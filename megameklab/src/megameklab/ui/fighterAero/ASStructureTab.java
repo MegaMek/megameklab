@@ -88,7 +88,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                 new EngineSummaryItem(),
                 new CockpitSummaryItem(),
                 new FuelSummaryItem(),
-                new HeatsinkSummaryItem(),
+                new HeatSinkSummaryItem(),
                 new ControlsSummaryItem(),
                 new ArmorSummaryItem(),
                 new WeaponsSummaryItem(),
@@ -144,11 +144,11 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
     }
-    
+
     public ITechManager getTechManager() {
         return panInfo;
     }
-    
+
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
@@ -158,7 +158,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     public void refresh() {
         removeAllListeners();
-        
+
         panInfo.setFromEntity(getAero());
         panChassis.setFromEntity(getAero());
         panHeat.setFromAero(getAero());
@@ -168,9 +168,9 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmorAllocation.setFromEntity(getAero());
         panPatchwork.setFromEntity(getAero());
         iconView.setFromEntity(getEntity());
-        
+
         panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
-        
+
         setAeroStructuralIntegrity();
 
         panSummary.refresh();
@@ -210,7 +210,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         }
         return true;
     }
-    
+
     public void removeSystemCrits(int systemType) {
         for (int loc = 0; loc < getAero().locations(); loc++) {
             for (int slot = 0; slot < getAero().getNumberOfCriticals(loc); slot++) {
@@ -313,7 +313,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
     }
-    
+
     @Override
     public void updateTechLevel() {
         removeAllListeners();
@@ -415,7 +415,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshBuild();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void armorTonnageChanged(double tonnage) {
         getAero().setArmorTonnage(Math.round(tonnage * 2) / 2.0);
@@ -432,27 +432,27 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
-    
+
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getAero()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
         double totalTonnage = getAero().getWeight();
         double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
-        
+
         double maxArmor = MathUtility.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
         panArmor.addListener(this);
-        
+
         panArmorAllocation.setFromEntity(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
@@ -519,7 +519,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshStatus();
         refresh.refreshSummary();
     }
-    
+
     @Override
     public void fighterTypeChanged(int type) {
         if ((ASChassisView.TYPE_AEROSPACE == type)
@@ -601,14 +601,14 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         for (int loc = 0; loc < getAero().locations(); loc++) {
             getAero().initializeArmor(0, loc);
         }
-        
+
         // divide armor among positions, with more toward the front
         int points = UnitUtil.getArmorPoints(getAero(), getAero().getLabArmorTonnage());
         int nose = (int)Math.floor(points * 0.3);
         int wing = (int)Math.floor(points * 0.25);
         int aft = (int)Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
-        
+
         // spread remainder among nose and wings
         switch(remainder % 4) {
             case 1:

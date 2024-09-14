@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * This is a specific WindowAdapter that acts on a windowClosing event by calling the given AppCloser's
- * exit() method and exits the application if exit() returned true. Add this to any Frame that
+ * This is a specific WindowAdapter that acts on a windowClosing event by
+ * calling the given AppCloser's
+ * exit() method and exits the application if exit() returned true. Add this to
+ * any Frame that
  * should exit the application by closing its window.
  *
  * @author Simon (Juliez)
@@ -33,10 +35,13 @@ public final class ExitOnWindowClosingListener extends WindowAdapter {
     private final AppCloser frame;
 
     /**
-     * Returns a new window listener for the given frame that will react to windowClosing events by calling
-     * the frame's exit() method and closing the application when exit() returns true.
+     * Returns a new window listener for the given frame that will react to
+     * windowClosing events by calling
+     * the frame's exit() method and closing the application when exit() returns
+     * true.
      *
-     * @param frame The frame (implementing AppCloser) that this window listener is for
+     * @param frame The frame (implementing AppCloser) that this window listener is
+     *              for
      */
     public ExitOnWindowClosingListener(AppCloser frame) {
         this.frame = frame;
