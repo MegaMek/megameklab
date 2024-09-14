@@ -374,7 +374,7 @@ public class PrintMek extends PrintEntity {
 
             if ((null != element) && !frontComplete) {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
-                        PipType.forAT(mech.getArmorType(loc)), alternateMethod);
+                        PipType.forAT(mek.getArmorType(loc)), alternateMethod);
 
             }
             if ((loc > Mek.LOC_HEAD) && !structComplete) {
@@ -391,7 +391,7 @@ public class PrintMek extends PrintEntity {
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
-                            PipType.forAT(mech.getArmorType(loc)), alternateMethod);
+                            PipType.forAT(mek.getArmorType(loc)), alternateMethod);
 
                 }
             }
