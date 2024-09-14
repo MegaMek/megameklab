@@ -1,7 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.01-SNAPSHOT
-+ PR #1608: Respecting Trademarks (Mech to Mek)
++ PR #1608, #1611: Respecting Trademarks (Mech to Mek)
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
