@@ -13,13 +13,11 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.WeaponMounted;
 import megameklab.ui.EntitySource;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
-import org.apache.logging.log4j.LogManager;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,11 +43,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.WeaponType;
-import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
-import megameklab.ui.EntitySource;
-import megameklab.util.ProtoMekUtil;
-import megameklab.util.UnitUtil;
 
 /**
  * The location crit block for ProtoMeks
