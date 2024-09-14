@@ -25,6 +25,8 @@
 /megameklab/logs/
 /megameklab/mmconf/*.preferences
 /megameklab/mmconf/*.properties
+/megameklab/mmconf/*.properties.bak
+/megameklab/mmconf/clientsettings.xml
 /megameklab/out/
 /megameklab/.classpath
 /megameklab/.project
