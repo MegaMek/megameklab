@@ -45,7 +45,7 @@ public class BMBuildTab extends ITab {
     private final BMBuildView buildView;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
-    private final JToggleButton autoFillUnHitTables = new JToggleButton(resources.getString("BuildTab.autoFillUnHitTables.text"));
+    private final JToggleButton autoFillUnHitTables = new JToggleButton(resources.getString("BuildTab.autoFillUnhittables.text"));
     private final JToggleButton autoCompact = new JToggleButton(resources.getString("BuildTab.autoCompact.text"));
     private final JToggleButton autoSort = new JToggleButton(resources.getString("BuildTab.autoSort.text"));
 
@@ -69,7 +69,7 @@ public class BMBuildTab extends ITab {
 
     private JComponent createButtonPanel() {
         autoFillUnHitTables.addActionListener(e -> refresh());
-        autoFillUnHitTables.setToolTipText(resources.getString("BuildTab.autoFillUnHitTables.tooltip"));
+        autoFillUnHitTables.setToolTipText(resources.getString("BuildTab.autoFillUnhittables.tooltip"));
         autoCompact.addActionListener(e -> refresh());
         autoCompact.setToolTipText(resources.getString("BuildTab.autoCompact.tooltip"));
         autoSort.addActionListener(e -> refresh());
