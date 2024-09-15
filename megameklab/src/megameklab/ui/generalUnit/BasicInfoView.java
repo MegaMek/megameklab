@@ -495,9 +495,9 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
         cbTechLevel.addItem(SimpleTechLevel.EXPERIMENTAL.toString());
         cbTechLevel.addItem(SimpleTechLevel.UNOFFICIAL.toString());
-        cbTechLevel.setSelectedItem(prev);
+        cbTechLevel.setSelectedItem(prev.toString());
         cbTechLevel.addActionListener(this);
-        if ((cbTechLevel.getSelectedItem() == null) || (cbTechLevel.getSelectedItem().equals(prev.toString()))) {
+        if ((cbTechLevel.getSelectedItem() == null) || (!cbTechLevel.getSelectedItem().equals(prev.toString()))) {
             cbTechLevel.setSelectedIndex(0);
         }
     }
