@@ -72,6 +72,7 @@ public final class AeroUtil {
             return false;
         }
 
+        // TO:AUE p.216 and https://bg.battletech.com/forums/index.php?topic=72186
         if (weaponType.hasFlag(WeaponType.F_ARTILLERY)) {
             if (unit.isSmallCraft() || unit.isDropShip()) {
                 return true;
