@@ -19,6 +19,7 @@
 package megameklab.ui.dialog;
 
 import static java.util.stream.Collectors.toList;
+import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -28,6 +29,7 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +43,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import megamek.client.ui.Messages;
+import megamek.common.*;
 import org.apache.commons.io.FilenameUtils;
 
 import megamek.client.Client;
@@ -48,16 +52,11 @@ import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.ClientGUI;
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.BTObject;
-import megamek.common.Configuration;
-import megamek.common.Entity;
-import megamek.common.Game;
-import megamek.common.MekFileParser;
-import megamek.common.Player;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
 import megameklab.util.UnitPrintManager;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Allows selecting multiple units and printing their record sheets.
@@ -282,10 +281,34 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void saveUnitList() {
-        // todo: Refactor saveListFile to be a static method of some util class
-        // --Pavel
+        var entities = getEntities();
+        if (entities.isEmpty()) {
+            return;
+        }
+
         linkForce();
-        new ClientGUI(new Client("", "", 0), null).saveListFile(getEntities(), "Units");
+
+        var fileChooser = new JFileChooser(".");
+        fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
+        var filter = new FileNameExtensionFilter(
+            Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+        fileChooser.setFileFilter(filter);
+        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ? mulFileName : entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+
+        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) || fileChooser.getSelectedFile() == null) {
+            return;
+        }
+
+        File file = fileChooser.getSelectedFile();
+        if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
+            file = new File(file + "." + CG_FILEPATHMUL);
+        }
+
+        try {
+            EntityListFile.saveTo(file, entities);
+        } catch (IOException e) {
+            logger.error(e, String.format("Failed to save units to file: %s", e.getMessage()), "Error");
+        }
     }
 
     private void pageBreak() {
