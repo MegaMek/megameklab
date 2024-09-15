@@ -3,7 +3,7 @@ MEGAMEKLAB VERSION HISTORY:
 0.50.01-SNAPSHOT
 + PR #1608, #1611: Respecting Trademarks (Mech to Mek)
 + PR #1597: Code improvement to #1592; also now sets the default filename of the new file to the name of the original file
-+ PR #1610: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
++ PR #1610, #1614: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
