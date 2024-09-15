@@ -87,7 +87,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblTonnage", "DropshipChassisView.spnTonnage.text",
-                "DropshipChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "DropshipChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -117,11 +117,10 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblBaseType", "DropshipChassisView.cbBaseType.text",
-                "DropshipChassisView.cbBaseType.tooltip", labelSize), gbc);
+                "DropshipChassisView.cbBaseType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        setFieldSize(cbBaseType, controlSize);
         cbBaseType.setToolTipText(resourceMap.getString("DropshipChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
@@ -130,11 +129,10 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 3;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblChassisType", "DropshipChassisView.cbChassisType.text",
-                "DropshipChassisView.cbChassisType.tooltip", labelSize), gbc);
+                "DropshipChassisView.cbChassisType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        setFieldSize(cbChassisType, controlSize);
         cbChassisType.setToolTipText(resourceMap.getString("DropshipChassisView.cbChassisType.tooltip"));
         add(cbChassisType, gbc);
         cbChassisType.addActionListener(this);
@@ -143,11 +141,10 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblSI", "DropshipChassisView.spnSI.text",
-                "DropshipChassisView.spnSI.tooltip", labelSize), gbc);
+                "DropshipChassisView.spnSI.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        setFieldSize(spnSI, controlSize);
         spnSI.setToolTipText(resourceMap.getString("DropshipChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);

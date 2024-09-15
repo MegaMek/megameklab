@@ -87,11 +87,10 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
-                "ArmorView.cbArmorType.tooltip", labelSize), gbc);
+                "ArmorView.cbArmorType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        setFieldSize(cbArmorType, controlSize);
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
@@ -100,10 +99,9 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblArmorPoints", "ArmorView.spnArmorPoints.text",
-                "ArmorView.spnArmorPoints.tooltip", labelSize), gbc);
+                "ArmorView.spnArmorPoints.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        setFieldSize(spnArmorPoints.getEditor(), editorSize);
         spnArmorPoints.setToolTipText(resourceMap.getString("ArmorView.spnArmorPoints.tooltip"));
         add(spnArmorPoints, gbc);
         spnArmorPoints.addChangeListener(this);
@@ -113,7 +111,6 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridwidth = 3;
         btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text"));
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
-        setFieldSize(btnMaximize, controlSize);
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
@@ -123,7 +120,6 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         gbc.gridwidth = 3;
         btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text"));
         btnUseRemaining.setActionCommand(CMD_REMAINING);
-        setFieldSize(btnUseRemaining, controlSize);
         btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip"));
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);

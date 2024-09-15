@@ -19,8 +19,12 @@
 package megameklab.ui.generalUnit.summary;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class SummaryAvailabilityLabel extends JLabel {
+
+    /** This internal label is not shown but used to control the size of the actual label. */
+    private final JLabel internalSizingLabel = new JLabel(" X/X-X(X*)-X-X ");
 
     /**
      * This label is used by the unit summary in the structure tab to display the availability. It is left-aligned
@@ -35,7 +39,23 @@ public class SummaryAvailabilityLabel extends JLabel {
         this("");
     }
 
+    @Override
+    public void setFont(Font font) {
+        super.setFont(font);
+        if (internalSizingLabel != null) {
+            internalSizingLabel.setFont(font);
+        }
+    }
+
     private void initialize() {
         setBorder(SummaryItem.labelBorder);
+        if (internalSizingLabel != null) {
+            internalSizingLabel.setBorder(SummaryItem.labelBorder);
+        }
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return internalSizingLabel.getPreferredSize();
     }
 }

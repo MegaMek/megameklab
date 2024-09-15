@@ -43,7 +43,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
-        String[] split = ((String) value).split(":");
+        if (value.equals(CRITCELL_WIDTH_STRING)) {
+            // For the "prototype" cell value, the text must stay unchanged to set the correct width of the list
+            setText(CRITCELL_WIDTH_STRING);
+            setBorder(new EmptyBorder(0, 0, 0, 0));
+            return this;
+        }
+
+        String[] split = ((String)value).split(":");
         setText(split[0]);
         setToolTipText(null);
 
@@ -100,11 +107,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
     @Override
     public Dimension getPreferredSize() {
-        int width = CRITCELL_WIDTH;
-        width = (unit instanceof Mek) ? CRITCELL_MEK_WIDTH : width;
-        width = (unit instanceof Tank) ? CRITCELL_VEH_WIDTH : width;
-        int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-        return new Dimension(width, height);
+        Dimension superSize = super.getPreferredSize();
+        return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
     }
 
     private CriticalSlot getCrit(int slot) {

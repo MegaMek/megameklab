@@ -193,6 +193,7 @@ public final class CVCriticalView extends IView {
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 criticalSlotList.setName(location + "");
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
                 if (isVTOL()) {
                     if (vtolLocations.containsKey(location)) {
                         vtolLocations.get(location).add(criticalSlotList);

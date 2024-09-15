@@ -13,9 +13,11 @@
  */
 package megameklab.ui.util;
 
-import static megameklab.ui.util.CritCellUtil.CRITCELL_ADD_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_MIN_HEIGHT;
-import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH;
+import megamek.common.annotations.Nullable;
+import megamek.common.equipment.WeaponMounted;
+import megameklab.ui.EntitySource;
+import megameklab.util.ProtoMekUtil;
+import megameklab.util.UnitUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -41,11 +43,7 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.WeaponType;
-import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
-import megameklab.ui.EntitySource;
-import megameklab.util.ProtoMekUtil;
-import megameklab.util.UnitUtil;
 
 /**
  * The location crit block for ProtoMeks
@@ -59,6 +57,8 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
     private final EntitySource eSource;
     private final int location;
     private RefreshListener refresh;
+    private static final WeaponType widthWeaponType = new WeaponType();
+    private final WeaponMounted critcellWidthMounted;
 
     public ProtoMekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
@@ -71,6 +71,8 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        critcellWidthMounted = new WeaponMounted(eSource.getEntity(), widthWeaponType);
+        setPrototypeCellValue(critcellWidthMounted);
     }
 
     public ProtoMek getProtoMek() {
@@ -222,21 +224,26 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
             final ProtoMekMountList lstMount = (ProtoMekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
-            CritCellUtil.formatCell(this, (Mounted<?>) value, true, entity, index);
-            if ((index > 0) && (index < list.getModel().getSize())) {
+            if ((value instanceof Mounted<?> mounted) && (mounted.getType() == widthWeaponType)) {
+                // For the "prototype" cell value, use the prototype text to set the correct width of the list
+                setText(CritCellUtil.CRITCELL_WIDTH_STRING);
                 setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+            } else {
+                CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
+                if ((index > 0) && (index < list.getModel().getSize())) {
+                    setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
+                }
             }
             return this;
         }
 
         @Override
         public Dimension getPreferredSize() {
-            int height = Math.max(CRITCELL_MIN_HEIGHT, super.getPreferredSize().height + CRITCELL_ADD_HEIGHT);
-            return new Dimension(CRITCELL_WIDTH, height);
+            Dimension superSize = super.getPreferredSize();
+            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
         }
     }
 

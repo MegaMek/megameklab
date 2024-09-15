@@ -72,10 +72,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final TechComboBox<EquipmentType> cbJumpType =
                 new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]",  ""));
 
-    private final JLabel lblWalk = createLabel("lblWalk", "", labelSize);
-    private final JLabel lblRun = createLabel("lblRun", "", labelSize);
-    private final JLabel lblJump = createLabel("lblJump", "", labelSize);
-    private final JLabel lblJumpType = createLabel("lblJumpType", "", labelSize);
+    private final JLabel lblWalk = createLabel("lblWalk", "");
+    private final JLabel lblRun = createLabel("lblRun", "");
+    private final JLabel lblJump = createLabel("lblJump", "");
+    private final JLabel lblJumpType = createLabel("lblJumpType", "");
 
     private final JTextField txtRunBase = new JTextField();
     private final JTextField txtWalkFinal = new JTextField();
@@ -168,18 +168,13 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip"));
         add(cbJumpType, gbc);
         cbJumpType.addActionListener(this);
+        cbJumpType.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
 
-        setFieldSize(spnWalk.getEditor(), editorSize);
-        setFieldSize(txtWalkFinal, editorSize);
         txtWalkFinal.setEditable(false);
         txtWalkFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-        setFieldSize(txtRunBase, editorSize);
-        setFieldSize(txtRunFinal, editorSize);
         txtRunBase.setEditable(false);
         txtRunFinal.setEditable(false);
         txtRunFinal.setHorizontalAlignment(SwingConstants.RIGHT);
-        setFieldSize(spnJump.getEditor(), editorSize);
-        setFieldSize(txtJumpFinal, editorSize);
         txtJumpFinal.setEditable(false);
         txtJumpFinal.setHorizontalAlignment(SwingConstants.RIGHT);
     }

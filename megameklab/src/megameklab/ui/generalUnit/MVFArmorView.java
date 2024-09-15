@@ -75,7 +75,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final JCheckBox chkPatchwork = new JCheckBox();
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
-    private final JLabel lblArmorTonnage = createLabel("lblArmorTonnage", "", labelSizeLg);
+    private final JLabel lblArmorTonnage = createLabel("lblArmorTonnage", "");
 
     private final ITechManager techManager;
 
@@ -115,10 +115,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
-                "ArmorView.cbArmorType.tooltip", labelSizeLg), gbc);
+                "ArmorView.cbArmorType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        setFieldSize(cbArmorType, controlSize);
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
         add(cbArmorType, gbc);
         cbArmorType.addActionListener(this);
@@ -131,11 +130,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             gbc.gridy++;
             gbc.gridwidth = 1;
             JLabel label = createLabel(resourceMap, "lblSVTechRating", "ArmorView.cbSVTechRating.text",
-                    "ArmorView.cbSVTechRating.tooltip", labelSizeLg);
+                    "ArmorView.cbSVTechRating.tooltip");
             add(label, gbc);
             gbc.gridx = 1;
             gbc.gridwidth = 2;
-            setFieldSize(cbSVTechRating, controlSize);
             cbSVTechRating.setToolTipText(resourceMap.getString("ArmorView.cbSVTechRating.tooltip"));
             add(cbSVTechRating, gbc);
             cbSVTechRating.addActionListener(this);
@@ -147,7 +145,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text"));
         add(lblArmorTonnage, gbc);
         gbc.gridx = 1;
-        setFieldSize(spnTonnage, spinnerSizeLg);
         spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -156,7 +153,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy++;
         gbc.gridwidth = 3;
         chkPatchwork.setText(resourceMap.getString("ArmorView.chkPatchwork.text"));
-        setFieldSize(chkPatchwork, controlSize);
         chkPatchwork.setToolTipText(resourceMap.getString("ArmorView.chkPatchwork.tooltip"));
         add(chkPatchwork, gbc);
         chkPatchwork.addActionListener(this);
@@ -166,7 +162,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridwidth = 3;
         btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text"));
         btnMaximize.setActionCommand(CMD_MAXIMIZE);
-        setFieldSize(btnMaximize, controlSize);
         btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
         btnMaximize.addActionListener(this);
@@ -176,7 +171,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridwidth = 3;
         btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text"));
         btnUseRemaining.setActionCommand(CMD_REMAINING);
-        setFieldSize(btnUseRemaining, controlSize);
         btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip"));
         add(btnUseRemaining, gbc);
         btnUseRemaining.addActionListener(this);

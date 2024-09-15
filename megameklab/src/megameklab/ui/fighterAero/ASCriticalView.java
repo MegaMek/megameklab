@@ -71,14 +71,19 @@ public class ASCriticalView extends IView {
 
         noseCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
+        noseCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
         leftWingCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
+        leftWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
         rightWingCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
+        rightWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
         aftCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
+        aftCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
         fuselageCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
+        fuselageCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
 
         Box mainPanel = Box.createHorizontalBox();
         Box leftPanel = Box.createVerticalBox();

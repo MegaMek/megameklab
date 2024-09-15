@@ -19,6 +19,7 @@
 package megameklab.ui.generalUnit.summary;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * This label is used by the unit summary in the structure tab to display the weight and crits. It is right-aligned
@@ -26,9 +27,20 @@ import javax.swing.*;
  */
 public class SummaryWeightLabel extends JLabel {
 
+    /** This internal label is not shown but used to control the size of the actual label. */
+    private final JLabel internalSizingLabel = new JLabel("15000 t");
+
     public SummaryWeightLabel(String text) {
         super(text, SwingConstants.RIGHT);
         initialize();
+    }
+
+    @Override
+    public void setFont(Font font) {
+        super.setFont(font);
+        if (internalSizingLabel != null) {
+            internalSizingLabel.setFont(font);
+        }
     }
 
     public SummaryWeightLabel() {
@@ -37,5 +49,13 @@ public class SummaryWeightLabel extends JLabel {
 
     private void initialize() {
         setBorder(SummaryItem.labelBorder);
+        if (internalSizingLabel != null) {
+            internalSizingLabel.setBorder(SummaryItem.labelBorder);
+        }
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return internalSizingLabel.getPreferredSize();
     }
 }

@@ -608,9 +608,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
             final JCheckBoxMenuItem miLookAndFeel = new JCheckBoxMenuItem(laf.getName());
             miLookAndFeel.setName("miLookAndFeel");
-            miLookAndFeel.setSelected(laf.getName().equalsIgnoreCase(UIManager.getLookAndFeel().getName()));
+            miLookAndFeel.setSelected(laf.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()));
             miLookAndFeel.addActionListener(evt -> {
                 owner.changeTheme(laf);
+                CConfig.setParam(CConfig.GUI_PLAF, laf.getClassName());
                 for (int i = 0; i < themesMenu.getItemCount(); i++) {
                     final JMenuItem item = themesMenu.getItem(i);
                     if (item instanceof JCheckBoxMenuItem) {
@@ -636,7 +637,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
         }
 
-        String text = "<HTML>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
+        String text = "<HTML><NOBR>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
         final JMenuItem miCConfig = new JMenuItem(text);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));

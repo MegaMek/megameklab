@@ -83,7 +83,6 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         txtPrimary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtPrimary.tooltip"));
-        setFieldSize(txtPrimary, controlSize);
         txtPrimary.setEditable(false);
         add(txtPrimary, gbc);
 
@@ -94,7 +93,6 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
-        setFieldSize(txtSecondary, controlSize);
         txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip"));
         txtSecondary.setEditable(false);
         add(txtSecondary, gbc);
@@ -106,7 +104,6 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
-        setFieldSize(cbNumSecondary, controlSize);
         cbNumSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumSecondary.tooltip"));
         add(cbNumSecondary, gbc);
         cbNumSecondary.addActionListener(this);
@@ -118,7 +115,6 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
-        setFieldSize(txtGuns, controlSize);
         txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip"));
         txtGuns.setEditable(false);
         add(txtGuns, gbc);
@@ -130,7 +126,6 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
-        setFieldSize(cbNumGuns, controlSize);
         cbNumGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.cbNumGuns.tooltip"));
         add(cbNumGuns, gbc);
         cbNumGuns.addActionListener(this);

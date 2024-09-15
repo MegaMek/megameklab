@@ -171,7 +171,7 @@ public class CriticalTransferHandler extends TransferHandler {
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (c instanceof ProtoMekMountList) {
-            Mounted<?> mount = ((ProtoMekMountList) c).getMounted();
+            Mounted mount = ((ProtoMekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                     && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));

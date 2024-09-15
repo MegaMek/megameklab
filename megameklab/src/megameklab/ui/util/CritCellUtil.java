@@ -44,19 +44,11 @@ import megameklab.util.UnitUtil;
 public final class CritCellUtil {
 
     /** The base width of Crit Cells across units with 3 columns of crit lists */
-    public static final int CRITCELL_WIDTH = 250;
-
-    /** The width of Crit Cells for Meks; their layout has 5 columns */
-    public static final int CRITCELL_MEK_WIDTH = (int) (0.6 * CRITCELL_WIDTH);
-
-    /** The width of Crit Cells for Vehicles; their layout has 4 columns */
-    public static final int CRITCELL_VEH_WIDTH = (int) (0.8 * CRITCELL_WIDTH);
+    public static final String CRITCELL_WIDTH_STRING = "X".repeat(22);
 
     /** The height added to the text height of Crit Cells (padding) */
     public static final int CRITCELL_ADD_HEIGHT = 5;
 
-    /** The minimum height of Crit Cells (safeguard for empty blocks) */
-    public static final int CRITCELL_MIN_HEIGHT = 25;
     public static final Color CRITCELL_BORDER_COLOR = Color.BLACK;
     public static final String EMPTY_CRITCELL_TEXT = "- Empty -";
 

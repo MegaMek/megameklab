@@ -18,6 +18,9 @@
  */
 package megameklab.ui.generalUnit;
 
+import megamek.common.Engine;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
 import megamek.common.annotations.Nullable;
 
 import javax.swing.*;
@@ -30,43 +33,31 @@ import java.util.ResourceBundle;
  * @author Neoancient
  */
 public abstract class BuildView extends JPanel {
-    protected final Dimension labelSize = new Dimension(110, 25);
-    protected final Dimension labelSizeLg = new Dimension(180, 25);
-    protected final Dimension controlSize = new Dimension(180, 25);
-    protected final Dimension spinnerSize = new Dimension(55, 25);
-    protected final Dimension spinnerSizeLg = new Dimension(70, 25);
-    protected final Dimension editorSize = new Dimension(40, 25);
-    protected final Dimension editorSizeLg = new Dimension(55, 25);
 
-    public JLabel createLabel(final ResourceBundle resources, final String name, final String text,
-                              final Dimension maxSize) {
-        return createLabel(resources, name, text, null, maxSize);
+    protected static final String CB_SIZE_VALUE = "X".repeat(23);
+    protected static final Engine CB_SIZE_ENGINE = new Engine(100, Engine.NORMAL_ENGINE, 0);
+    protected static final EquipmentType CB_SIZE_EQUIPMENT = EquipmentType.get(EquipmentTypeLookup.JUMP_JET);
+    protected static final Insets STANDARD_INSETS = new Insets(0, 2, 1, 2);
+
+    public JLabel createLabel(ResourceBundle resources, String name, String text) {
+        return createLabel(resources, name, text, null);
     }
 
-    public JLabel createLabel(final ResourceBundle resources, final String name, final String text,
-                              final @Nullable String toolTipText, final Dimension maxSize) {
+    public JLabel createLabel(ResourceBundle resources, String name, String text, @Nullable String toolTipText) {
         return createLabel(name, resources.getString(text),
-                (toolTipText == null) ? null : resources.getString(toolTipText), maxSize);
+                (toolTipText == null) ? null : resources.getString(toolTipText));
     }
 
-    public JLabel createLabel(final String name, final String text, final Dimension maxSize) {
-        return createLabel(name, text, null, maxSize);
+    public JLabel createLabel(String name, String text) {
+        return createLabel(name, text, null);
     }
 
-    public JLabel createLabel(final String name, final String text,
-                              final @Nullable String toolTipText, final Dimension maxSize) {
-        final JLabel label = new JLabel(text, SwingConstants.RIGHT);
+    public JLabel createLabel(String name, String text, @Nullable String toolTipText) {
+        JLabel label = new JLabel(text + " ", SwingConstants.RIGHT);
         label.setToolTipText(toolTipText);
         if (!name.isBlank()) {
             label.setName(name);
         }
-        setFieldSize(label, maxSize);
         return label;
-    }
-
-    public void setFieldSize(final JComponent box, final Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
     }
 }

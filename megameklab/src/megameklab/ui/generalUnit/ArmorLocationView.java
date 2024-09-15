@@ -73,12 +73,10 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        setFieldSize(spnPoints, spinnerSize);
         add(spnPoints, gbc);
         gbc.gridy++;
         add(lblRear, gbc);
         gbc.gridy++;
-        setFieldSize(spnPointsRear, spinnerSize);
         add(spnPointsRear, gbc);
         gbc.gridy++;
         gbc.weighty = 1.0;

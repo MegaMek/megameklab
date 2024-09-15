@@ -139,10 +139,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblTonnage", "CVChassisView.spnTonnage.text",
-                "CVChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "CVChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        setFieldSize(spnTonnage, spinnerSize);
         spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -178,10 +177,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
         add(createLabel(resourceMap, "lblMotiveType", "CVChassisView.cbMotiveType.text",
-                "CVChassisView.cbMotiveType.tooltip", labelSize), gbc);
+                "CVChassisView.cbMotiveType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(cbMotiveType, controlSize);
         cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip"));
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
@@ -190,10 +188,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEngine", "CVChassisView.cbEngine.text",
-                "CVChassisView.cbEngine.tooltip", labelSize), gbc);
+                "CVChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(cbEngine, controlSize);
         cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip"));
         add(cbEngine, gbc);
         cbEngine.addActionListener(this);
@@ -202,10 +199,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblExtraSeats", "CVChassisView.spnExtraSeats.text",
-                "CVChassisView.spnExtraSeats.tooltip", labelSize), gbc);
+                "CVChassisView.spnExtraSeats.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 2;
-        setFieldSize(spnExtraSeats, spinnerSize);
         spnExtraSeats.setToolTipText(resourceMap.getString("CVChassisView.spnExtraSeats.tooltip"));
         add(spnExtraSeats, gbc);
         spnExtraSeats.addChangeListener(this);
@@ -214,10 +210,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
-                "CVChassisView.cbTurrets.tooltip", labelSize), gbc);
+                "CVChassisView.cbTurrets.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(cbTurrets, controlSize);
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
         add(cbTurrets, gbc);
         cbTurrets.addActionListener(this);
@@ -226,10 +221,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         JLabel lbl = createLabel(resourceMap, "lblTurretWt", "CVChassisView.spnTurretWt.text",
-                "CVChassisView.spnTurretWt.tooltip", labelSize);
+                "CVChassisView.spnTurretWt.tooltip");
         add(lbl, gbc);
         gbc.gridx = 3;
-        setFieldSize(spnChassisTurretWt, spinnerSize);
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
         add(spnChassisTurretWt, gbc);
         spnChassisTurretWt.addChangeListener(this);
@@ -240,11 +234,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         lbl = createLabel(resourceMap, "lblTurret2Wt", "CVChassisView.spnTurret2Wt.text",
-                "CVChassisView.spnTurret2Wt.tooltip", labelSize);
+                "CVChassisView.spnTurret2Wt.tooltip");
         add(lbl, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
-        setFieldSize(spnChassisTurret2Wt, spinnerSize);
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip"));
         add(spnChassisTurret2Wt, gbc);
         spnChassisTurret2Wt.addChangeListener(this);
@@ -256,7 +249,6 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         btnResetChassis.setActionCommand(CMD_RESET_CHASSIS);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
-        setFieldSize(btnResetChassis, controlSize);
         btnResetChassis.setToolTipText(resourceMap.getString("CVChassisView.btnResetChassis.tooltip"));
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);

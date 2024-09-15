@@ -105,10 +105,9 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblTonnage", "ProtomekChassisView.spnTonnage.text",
-                "ProtomekChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "ProtomekChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        setFieldSize(spnTonnage, spinnerSize);
         spnTonnage.setToolTipText(resourceMap.getString("ProtomekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
@@ -116,14 +115,13 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblMotiveType", "ProtomekChassisView.cbMotiveType.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblMotiveType", "ProtomekChassisView.cbMotiveType.text"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
         cbMotiveType.addItem(MOTIVE_TYPE_BIPED);
         cbMotiveType.addItem(MOTIVE_TYPE_QUAD);
         cbMotiveType.addItem(MOTIVE_TYPE_GLIDER);
-        setFieldSize(cbMotiveType, controlSize);
         add(cbMotiveType, gbc);
         cbMotiveType.addActionListener(this);
 
@@ -139,7 +137,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap, "lblEnhancements", "ProtomekChassisView.lblEnhancements.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblEnhancements", "ProtomekChassisView.lblEnhancements.text"), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;

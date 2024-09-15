@@ -76,7 +76,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     
     public WSChassisView(ITechManager techManager) {
         this.techManager = techManager;
-        lblRange = createLabel("lblRange", "", labelSize);
+        lblRange = createLabel("lblRange", "");
         initUI();
     }
     
@@ -91,7 +91,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblTonnage", "AdvAeroChassisView.spnTonnage.text",
-                "AdvAeroChassisView.spnTonnage.tooltip", labelSize), gbc);
+                "AdvAeroChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -113,12 +113,11 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblBaseType", "AdvAeroChassisView.cbBaseType.text",
-                "AdvAeroChassisView.cbBaseType.tooltip", labelSize), gbc);
+                "AdvAeroChassisView.cbBaseType.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        setFieldSize(cbBaseType, controlSize);
         cbBaseType.setToolTipText(resourceMap.getString("AdvAeroChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
         cbBaseType.addActionListener(this);
@@ -158,11 +157,10 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblSI", "AdvAeroChassisView.spnSI.text",
-                "AdvAeroChassisView.spnSI.tooltip", labelSize), gbc);
+                "AdvAeroChassisView.spnSI.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
-        setFieldSize(spnSI, controlSize);
         spnSI.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnSI.tooltip"));
         add(spnSI, gbc);
         spnSI.addChangeListener(this);

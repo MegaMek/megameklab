@@ -82,9 +82,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblChassisType", "BAChassisView.cbChassisType.text",
-                "BAChassisView.cbChassisType.tooltip", labelSize), gbc);
+                "BAChassisView.cbChassisType.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(cbChassisType, controlSize);
         cbChassisType.setToolTipText(resourceMap.getString("BAChassisView.cbChassisType.tooltip"));
         add(cbChassisType, gbc);
         cbChassisType.addActionListener(this);
@@ -92,9 +91,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblWeightClass", "BAChassisView.cbWeightClass.text",
-                "BAChassisView.cbWeightClass.tooltip", labelSize), gbc);
+                "BAChassisView.cbWeightClass.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(cbWeightClass, controlSize);
         cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip"));
         add(cbWeightClass, gbc);
         cbWeightClass.addActionListener(this);
@@ -102,9 +100,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblSquadSize", "BAChassisView.spnSquadSize.text",
-                "BAChassisView.spnSquadSize.tooltip", labelSize), gbc);
+                "BAChassisView.spnSquadSize.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnSquadSize, controlSize);
         spnSquadSize.setToolTipText(resourceMap.getString("BAChassisView.spnSquadSize.tooltip"));
         add(spnSquadSize, gbc);
         spnSquadSize.addChangeListener(this);
@@ -112,9 +109,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTurretType", "BAChassisView.cbTurretType.text",
-                "BAChassisView.cbTurretType.tooltip", labelSize), gbc);
+                "BAChassisView.cbTurretType.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(cbTurretType, controlSize);
         cbTurretType.setToolTipText(resourceMap.getString("BAChassisView.cbTurretType.tooltip"));
         add(cbTurretType, gbc);
         cbTurretType.addActionListener(this);
@@ -122,9 +118,8 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblTurretSize", "BAChassisView.spnTurretSize.text",
-                "BAChassisView.spnTurretSize.tooltip", labelSize), gbc);
+                "BAChassisView.spnTurretSize.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnTurretSize, controlSize);
         spnTurretSize.setToolTipText(resourceMap.getString("BAChassisView.spnTurretSize.tooltip"));
         add(spnTurretSize, gbc);
         spnTurretSize.addChangeListener(this);

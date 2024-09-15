@@ -96,16 +96,15 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
-        add(createLabel(resourceMap, "lblMinimumCrew", "SVCrewView.lblMinimumCrew.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblMinimumCrew", "SVCrewView.lblMinimumCrew.text"), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblReqBaseCrew", "SVCrewView.txtReqBaseCrew.text",
-                "SVCrewView.txtReqBaseCrew.tooltip", labelSize), gbc);
+                "SVCrewView.txtReqBaseCrew.tooltip"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
-        setFieldSize(txtReqBaseCrew, spinnerSize);
         add(txtReqBaseCrew, gbc);
         txtReqBaseCrew.setToolTipText(resourceMap.getString("SVCrewView.txtReqBaseCrew.tooltip"));
 
@@ -113,10 +112,9 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblReqGunners", "SVCrewView.txtReqGunners.text",
-                "SVCrewView.txtReqGunners.tooltip", labelSize), gbc);
+                "SVCrewView.txtReqGunners.tooltip"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
-        setFieldSize(txtReqGunners, spinnerSize);
         add(txtReqGunners, gbc);
         txtReqGunners.setToolTipText(resourceMap.getString("SVCrewView.txtReqGunners.tooltip"));
 
@@ -124,10 +122,9 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblReqOther", "SVCrewView.txtReqOther.text",
-                "SVCrewView.txtReqOther.tooltip", labelSize), gbc);
+                "SVCrewView.txtReqOther.tooltip"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
-        setFieldSize(txtReqOther, spinnerSize);
         add(txtReqOther, gbc);
         txtReqOther.setToolTipText(resourceMap.getString("SVCrewView.txtReqOther.tooltip"));
 
@@ -135,52 +132,47 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridy++;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblReqOfficers", "SVCrewView.txtReqOfficers.text",
-                "SVCrewView.txtReqOfficers.tooltip", labelSize), gbc);
+                "SVCrewView.txtReqOfficers.tooltip"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
-        setFieldSize(txtReqOfficers, spinnerSize);
         add(txtReqOfficers, gbc);
         txtReqOfficers.setToolTipText(resourceMap.getString("SVCrewView.txtReqOfficers.tooltip"));
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblTotalMinCrew", "SVCrewView.txtTotalMinCrew.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblTotalMinCrew", "SVCrewView.txtTotalMinCrew.text"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
-        setFieldSize(txtTotalMinCrew, spinnerSize);
         add(txtTotalMinCrew, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblSeatingHeader", "SVCrewView.lblSeatingHeader.extraSeats", labelSizeLg), gbc);
+        add(createLabel(resourceMap, "lblSeatingHeader", "SVCrewView.lblSeatingHeader.extraSeats"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
         lblPodSeating.setText(resourceMap.getString("SVCrewView.lblPodQuarters.text"));
         add(lblPodSeating, gbc);
         gbc.gridx = 3;
-        add(createLabel(resourceMap, "lblSeatingWeight", "SVCrewView.lblSeatingWeight.text", labelSize), gbc);
+        add(createLabel(resourceMap, "lblSeatingWeight", "SVCrewView.lblSeatingWeight.text"), gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblStandardSeats", "SVCrewView.spnStandardSeats.text",
-                "SVCrewView.spnStandardSeats.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnStandardSeats.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnStandardSeats, spinnerSize);
         spnStandardSeats.setToolTipText(resourceMap.getString("SVCrewView.spnStandardSeats.tooltip"));
         add(spnStandardSeats, gbc);
         spnStandardSeats.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnStandardSeatsPod, spinnerSize);
         spnStandardSeatsPod.setToolTipText(resourceMap.getString("SVCrewView.spnStandardSeats.tooltip"));
         add(spnStandardSeatsPod, gbc);
         spnStandardSeatsPod.addChangeListener(this);
         gbc.gridx = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        setFieldSize(txtStdSeatWeight, spinnerSize);
         add(txtStdSeatWeight, gbc);
 
         gbc.gridx = 0;
@@ -188,20 +180,17 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblPillionSeats", "SVCrewView.spnPillionSeats.text",
-                "SVCrewView.spnPillionSeats.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnPillionSeats.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnPillionSeats, spinnerSize);
         spnPillionSeats.setToolTipText(resourceMap.getString("SVCrewView.spnPillionSeats.tooltip"));
         add(spnPillionSeats, gbc);
         spnPillionSeats.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnPillionSeatsPod, spinnerSize);
         spnPillionSeatsPod.setToolTipText(resourceMap.getString("SVCrewView.spnPillionSeats.tooltip"));
         add(spnPillionSeatsPod, gbc);
         spnPillionSeatsPod.addChangeListener(this);
         gbc.gridx = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        setFieldSize(txtPillionWeight, spinnerSize);
         add(txtPillionWeight, gbc);
 
         gbc.gridx = 0;
@@ -209,27 +198,24 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblEjectionSeats", "SVCrewView.spnEjectionSeats.text",
-                "SVCrewView.spnEjectionSeats.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnEjectionSeats.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnEjectionSeats, spinnerSize);
         spnEjectionSeats.setToolTipText(resourceMap.getString("SVCrewView.spnEjectionSeats.tooltip"));
         add(spnEjectionSeats, gbc);
         spnEjectionSeats.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnEjectionSeatsPod, spinnerSize);
         spnEjectionSeatsPod.setToolTipText(resourceMap.getString("SVCrewView.spnEjectionSeats.tooltip"));
         add(spnEjectionSeatsPod, gbc);
         spnEjectionSeatsPod.addChangeListener(this);
         gbc.gridx = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        setFieldSize(txtEjectionWeight, spinnerSize);
         add(txtEjectionWeight, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.WEST;
-        add(createLabel(resourceMap, "lblQuarters", "SVCrewView.lblQuarters.text", labelSizeLg), gbc);
+        add(createLabel(resourceMap, "lblQuarters", "SVCrewView.lblQuarters.text"), gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
         lblPodQuarters.setText(resourceMap.getString("SVCrewView.lblPodQuarters.text"));
@@ -247,23 +233,19 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblFirstClass", "SVCrewView.spnFirstClass.text",
-                "SVCrewView.spnFirstClass.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnFirstClass.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnFirstClass, spinnerSize);
         spnFirstClass.setToolTipText(resourceMap.getString("SVCrewView.spnFirstClass.tooltip"));
         add(spnFirstClass, gbc);
         spnFirstClass.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnFirstClassPod, spinnerSize);
         spnFirstClassPod.setToolTipText(resourceMap.getString("SVCrewView.spnFirstClass.tooltip"));
         add(spnFirstClassPod, gbc);
         spnFirstClassPod.addChangeListener(this);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 3;
-        setFieldSize(txtFirstClassWeight, spinnerSize);
         add(txtFirstClassWeight, gbc);
         gbc.gridx = 4;
-        setFieldSize(txtFirstClassSlots, spinnerSize);
         add(txtFirstClassSlots, gbc);
 
         gbc.gridx = 0;
@@ -271,23 +253,19 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblSecondClass", "SVCrewView.spnSecondClass.text",
-                "SVCrewView.spnSecondClass.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnSecondClass.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnSecondClass, spinnerSize);
         spnSecondClass.setToolTipText(resourceMap.getString("SVCrewView.spnSecondClass.tooltip"));
         add(spnSecondClass, gbc);
         spnSecondClass.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnSecondClassPod, spinnerSize);
         spnSecondClassPod.setToolTipText(resourceMap.getString("SVCrewView.spnSecondClass.tooltip"));
         add(spnSecondClassPod, gbc);
         spnSecondClassPod.addChangeListener(this);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 3;
-        setFieldSize(txtSecondClassWeight, spinnerSize);
         add(txtSecondClassWeight, gbc);
         gbc.gridx = 4;
-        setFieldSize(txtSecondClassSlots, spinnerSize);
         add(txtSecondClassSlots, gbc);
 
         gbc.gridx = 0;
@@ -295,23 +273,19 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblCrewQuarters", "SVCrewView.spnCrewQuarters.text",
-                "SVCrewView.spnCrewQuarters.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnCrewQuarters.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnCrewQuarters, spinnerSize);
         spnCrewQuarters.setToolTipText(resourceMap.getString("SVCrewView.spnCrewQuarters.tooltip"));
         add(spnCrewQuarters, gbc);
         spnCrewQuarters.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnCrewQuartersPod, spinnerSize);
         spnCrewQuartersPod.setToolTipText(resourceMap.getString("SVCrewView.spnCrewQuarters.tooltip"));
         add(spnCrewQuartersPod, gbc);
         spnCrewQuartersPod.addChangeListener(this);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 3;
-        setFieldSize(txtCrewQuartersWeight, spinnerSize);
         add(txtCrewQuartersWeight, gbc);
         gbc.gridx = 4;
-        setFieldSize(txtCrewQuartersSlots, spinnerSize);
         add(txtCrewQuartersSlots, gbc);
 
         gbc.gridx = 0;
@@ -319,23 +293,19 @@ public class SVCrewView extends BuildView implements ChangeListener {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblSteerage", "SVCrewView.spnSteerage.text",
-                "SVCrewView.spnSteerage.tooltip", labelSizeLg), gbc);
+                "SVCrewView.spnSteerage.tooltip"), gbc);
         gbc.gridx = 1;
-        setFieldSize(spnSteerage, spinnerSize);
         spnSteerage.setToolTipText(resourceMap.getString("SVCrewView.spnSteerage.tooltip"));
         add(spnSteerage, gbc);
         spnSteerage.addChangeListener(this);
         gbc.gridx = 2;
-        setFieldSize(spnSteeragePod, spinnerSize);
         spnSteeragePod.setToolTipText(resourceMap.getString("SVCrewView.spnSteerage.tooltip"));
         add(spnSteeragePod, gbc);
         spnSteeragePod.addChangeListener(this);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 3;
-        setFieldSize(txtSteerageWeight, spinnerSize);
         add(txtSteerageWeight, gbc);
         gbc.gridx = 4;
-        setFieldSize(txtSteerageSlots, spinnerSize);
         add(txtSteerageSlots, gbc);
     }
 

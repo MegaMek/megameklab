@@ -16,12 +16,14 @@
  */
 package megameklab;
 
+import java.awt.*;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.util.Locale;
 
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
+import javax.swing.*;
+
+import megamek.client.ui.swing.GUIPreferences;
 
 import io.sentry.Sentry;
 import megamek.MMLoggingConstants;
@@ -99,7 +101,7 @@ public class MegaMekLab {
         // TODO : Individual localizations
         Locale.setDefault(getMMLOptions().getLocale());
 
-        setLookAndFeel();
+        updateGuiScaling(); // also sets the look-and-feel
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {
@@ -127,8 +129,28 @@ public class MegaMekLab {
         try {
             String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
+            updateAfterUiChange();
         } catch (Exception ex) {
             logger.error("setLookAndFeel() Exception {}", ex);
+        }
+    }
+
+    public static void updateGuiScaling() {
+        System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
+        setLookAndFeel();
+        updateAfterUiChange();
+    }
+
+    /**
+     * Updates all existing windows and frames. Use after a gui scale change or look-and-feel change.
+     */
+    public static void updateAfterUiChange() {
+        for (Window window : Window.getWindows()) {
+            SwingUtilities.updateComponentTreeUI(window);
+            window.pack();
+            window.invalidate();
+            window.validate();
+            window.repaint();
         }
     }
 

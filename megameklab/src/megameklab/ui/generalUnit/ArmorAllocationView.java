@@ -138,7 +138,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtUnallocated.setEditable(false);
-        setFieldSize(txtUnallocated, editorSizeLg);
         add(txtUnallocated, gbc);
 
         gbc.gridx = 0;
@@ -146,7 +145,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtAllocated.setEditable(false);
-        setFieldSize(txtAllocated, editorSizeLg);
         add(txtAllocated, gbc);
 
         gbc.gridx = 0;
@@ -154,7 +152,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtTotal.setEditable(false);
-        setFieldSize(txtTotal, editorSizeLg);
         add(txtTotal, gbc);
 
         gbc.gridx = 0;
@@ -162,7 +159,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtMaxPossible.setEditable(false);
-        setFieldSize(txtMaxPossible, editorSizeLg);
         add(txtMaxPossible, gbc);
 
         gbc.gridx = 0;
@@ -170,7 +166,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc);
         gbc.gridx = 1;
         txtWasted.setEditable(false);
-        setFieldSize(txtWasted, editorSizeLg);
         add(txtWasted, gbc);
 
         gbc.gridx = 0;
@@ -179,7 +174,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         add(lblPointsPerTon, gbc);
         gbc.gridx = 1;
         txtPointsPerTon.setEditable(false);
-        setFieldSize(txtPointsPerTon, editorSizeLg);
         txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         add(txtPointsPerTon, gbc);
 
