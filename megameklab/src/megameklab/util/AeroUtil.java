@@ -26,6 +26,7 @@ import megamek.common.*;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestSmallCraft;
 import megamek.common.verifier.TestTank;
+import megamek.common.weapons.artillery.ArrowIV;
 import megamek.common.weapons.capitalweapons.CapitalMissileWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
@@ -38,11 +39,7 @@ import megamek.common.weapons.srms.SRTWeapon;
 public final class AeroUtil {
 
     public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
-        if (!(eq instanceof WeaponType)) {
-            return false;
-
-        }
-        if (eq instanceof InfantryWeapon) {
+        if (!(eq instanceof WeaponType weaponType) || (eq instanceof InfantryWeapon)) {
             return false;
         }
         // Fixed wing, airship, and satellite vehicles use vehicle construction rules.
@@ -51,76 +48,77 @@ public final class AeroUtil {
                     && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
         }
 
-        WeaponType weapon = (WeaponType) eq;
-
-        if (weapon.hasFlag(WeaponType.F_BOMB_WEAPON)) {
+        if (weaponType.hasFlag(WeaponType.F_BOMB_WEAPON)) {
             return false;
         }
 
         // small craft only; lacks aero weapon flag
-        if (weapon.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
+        if (weaponType.getAmmoType() == AmmoType.T_C3_REMOTE_SENSOR) {
             return unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                     && !unit.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         }
 
-        if (weapon.hasFlag(WeaponType.F_ARTILLERY) && !weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
-            return (weapon.getAmmoType() == AmmoType.T_ARROW_IV)
-                    || unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
-        }
-
-        if (weapon.isSubCapital() || (weapon instanceof CapitalMissileWeapon)
-                || (weapon.getAtClass() == WeaponType.CLASS_SCREEN)) {
+        if (weaponType.isSubCapital() || (weaponType instanceof CapitalMissileWeapon)
+                || (weaponType.getAtClass() == WeaponType.CLASS_SCREEN)) {
             return unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)
                     || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
 
-        if (weapon.isCapital()) {
+        if (weaponType.isCapital()) {
             return unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
 
-        if (!weapon.hasFlag(WeaponType.F_AERO_WEAPON)) {
+        if (!weaponType.hasFlag(WeaponType.F_AERO_WEAPON)) {
             return false;
         }
 
-        if (weapon.getTonnage(unit) <= 0) {
+        // TO:AUE p.216 and https://bg.battletech.com/forums/index.php?topic=72186
+        if (weaponType.hasFlag(WeaponType.F_ARTILLERY)) {
+            if (unit.isSmallCraft() || unit.isDropShip()) {
+                return true;
+            } else if (unit.isFighter()) {
+                return weaponType.isAnyOf(EquipmentTypeLookup.THUMPER_ARTY, EquipmentTypeLookup.SNIPER_ARTY)
+                        || (eq instanceof ArrowIV);
+            } else {
+                return false;
+            }
+        }
+
+        if (weaponType.getTonnage(unit) <= 0) {
             return false;
         }
 
-        if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
-                && (weapon.getRackSize() != 5)
-                && (weapon.getRackSize() != 10)
-                && (weapon.getRackSize() != 15)
-                && (weapon.getRackSize() != 20)) {
+        if (((weaponType instanceof LRMWeapon) || (weaponType instanceof LRTWeapon))
+                && (weaponType.getRackSize() != 5)
+                && (weaponType.getRackSize() != 10)
+                && (weaponType.getRackSize() != 15)
+                && (weaponType.getRackSize() != 20)) {
             return false;
         }
-        if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon))
-                && (weapon.getRackSize() != 2)
-                && (weapon.getRackSize() != 4)
-                && (weapon.getRackSize() != 6)) {
+        if (((weaponType instanceof SRMWeapon) || (weaponType instanceof SRTWeapon))
+                && (weaponType.getRackSize() != 2)
+                && (weaponType.getRackSize() != 4)
+                && (weaponType.getRackSize() != 6)) {
             return false;
         }
-        if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
-            return false;
-        }
-
-        if ((weapon instanceof RLWeapon) && (weapon.getRackSize() < 10)) {
+        if ((weaponType instanceof MRMWeapon) && (weaponType.getRackSize() < 10)) {
             return false;
         }
 
-        if (weapon.hasFlag(WeaponType.F_ENERGY)
-                || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                        .getAmmoType() == AmmoType.T_PLASMA))) {
+        if ((weaponType instanceof RLWeapon) && (weaponType.getRackSize() < 10)) {
+            return false;
+        }
 
-            return !weapon.hasFlag(WeaponType.F_ENERGY)
-                    || !weapon.hasFlag(WeaponType.F_PLASMA)
-                    || (weapon.getAmmoType() != AmmoType.T_NA);
+        if (weaponType.hasFlag(WeaponType.F_ENERGY)
+                || (weaponType.hasFlag(WeaponType.F_PLASMA) && (weaponType.getAmmoType() == AmmoType.T_PLASMA))) {
+            return !weaponType.hasFlag(WeaponType.F_ENERGY)
+                    || !weaponType.hasFlag(WeaponType.F_PLASMA)
+                    || (weaponType.getAmmoType() != AmmoType.T_NA);
         }
         return true;
     }
 
     public static boolean isAeroEquipment(EquipmentType eq, Aero unit) {
-
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -164,8 +162,7 @@ public final class AeroUtil {
      *
      * @param aero     The aerospace unit to change crew quarters sizes for
      * @param quarters The type of crew quarters to change
-     * @param size     The number of personnel that can be housed in the designated
-     *                 type of quarters
+     * @param size     The number of personnel that can be housed in the designated type of quarters
      */
     public static void setQuarters(Aero aero, TestAero.Quarters quarters, int size) {
         List<Bay> toRemove = new ArrayList<>();
@@ -208,16 +205,11 @@ public final class AeroUtil {
     }
 
     /**
-     * Adjusts the number of quarters of each to match the crew and passenger needs.
-     * If no quarters
-     * are already assigned, this will put all officers in officer/first class
-     * cabins, enlisted crew
-     * in standard crew quarters, and passengers in second class cabins. If there
-     * are already more
-     * officer/first class cabins assigned than there are officers, the extra will
-     * be used as first
-     * class passenger cabins. Any steerage quarters will be assigned first to
-     * marines, then to passengers,
+     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters
+     * are already assigned, this will put all officers in officer/first class cabins, enlisted crew
+     * in standard crew quarters, and passengers in second class cabins. If there are already more
+     * officer/first class cabins assigned than there are officers, the extra will be used as first
+     * class passenger cabins. Any steerage quarters will be assigned first to marines, then to passengers,
      * then to remaining enlisted.
      *
      * @param aero The vessel to assign quarters for.
@@ -320,6 +312,5 @@ public final class AeroUtil {
         }
     }
 
-    private AeroUtil() {
-    }
+    private AeroUtil() { }
 }
