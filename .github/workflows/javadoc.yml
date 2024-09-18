@@ -1,4 +1,4 @@
-name: MegaMekLab CI with Gradle
+name: JavaDoc Generation
 
 on:
   pull_request:
@@ -58,35 +58,7 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
-
-      - name: Add MMLRevision file
-        run: |
-          echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
 
       - name: Build with Gradle
         working-directory: megameklab
-        run: ./gradlew build --stacktrace --scan
-
-      - name: Upload Test Logs on Failure
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cd-failure-logs
-          path: ./megameklab/megameklab/build/reports/
-
-      - name: CodeCov.io Coverage Report
-        uses: codecov/codecov-action@v4
-        with:
-          directory: ./megameklab/megameklab/build/reports/jacoco/test
-          fail_ci_if_error: false
-          verbose: true
-
-      - name: Upload TarGZ Release
-        uses: actions/upload-artifact@v4
-        with:
-          name: mml-release-tgz-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-          path: ./megameklab/megameklab/build/distributions/*.tar.gz
+        run: ./gradlew javadoc
