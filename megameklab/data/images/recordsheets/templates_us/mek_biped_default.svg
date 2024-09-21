@@ -31,10 +31,10 @@
      inkscape:cy="499.92342"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
-     inkscape:window-x="3832"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g338" />
+     inkscape:current-layer="g299" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -4354,7 +4354,8 @@
            stroke-width="0.92"
            stroke-linejoin="round"
            stroke="#231f20"
-           id="path299" />
+           id="path299"
+           class="frame" />
       </g>
       <g
          transform="matrix(0.933 0 0 0.933 177.596 258.024)"

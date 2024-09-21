@@ -8,8 +8,8 @@
    preserveAspectRatio="xMidYMid meet"
    version="1.0"
    id="svg430"
-   sodipodi:docname="mech_quadvee_default.svg"
-   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   sodipodi:docname="mek_quadvee_default.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="5.1251025"
-     inkscape:cx="375.40713"
-     inkscape:cy="493.45355"
-     inkscape:window-width="1920"
-     inkscape:window-height="1128"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="2.5625513"
+     inkscape:cx="73.754622"
+     inkscape:cy="535.59904"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="3832"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g326" />
+     inkscape:current-layer="g322" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1096,14 +1096,16 @@
            stroke-width="5.2"
            stroke-linejoin="round"
            stroke="#c8c7c7"
-           id="path222" />
+           id="path222"
+           class="frame" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 69.856,0.000 l 5.475,8.214 L 214.555,8.214 l 7.845,7.600 L 222.400,293.143 l -5.475,8.214 L 111.200,301.357 l -5.475,-8.214 L 7.845,293.143 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
            stroke="#231f20"
-           id="path223" />
+           id="path223"
+           class="frame" />
         <g
            transform="translate (2.5,3.0)"
            id="g224">
@@ -1311,7 +1313,8 @@
          stroke-width="1.932"
          stroke-linejoin="round"
          stroke="#000000"
-         id="path235" />
+         id="path235"
+         class="frame" />
       <text
          x="3.000"
          y="87.500"
@@ -1340,7 +1343,8 @@
          stroke-width="1.932"
          stroke-linejoin="round"
          stroke="#000000"
-         id="path236" />
+         id="path236"
+         class="frame" />
       <text
          x="13.845"
          y="287.143"
@@ -1367,7 +1371,8 @@
     </g>
     <g
        id="warriorDataSingle"
-       transform="translate (230.400,69.857)">
+       transform="translate (230.400,69.857)"
+       class="frame">
       <g
          id="g240">
         <path
@@ -1412,7 +1417,8 @@
     </g>
     <g
        id="warriorDataDual"
-       transform="translate (230.400,69.857)">
+       transform="translate (230.400,69.857)"
+       class="frame">
       <g
          id="g243">
         <path
@@ -1457,7 +1463,8 @@
     </g>
     <g
        transform="translate (233.400,87.857)"
-       id="g271">
+       id="g271"
+       class="frame">
       <text
          fill="#231f20"
          x="3.000"
@@ -1846,7 +1853,8 @@
         <path
            fill="#000000"
            d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
-           id="path271" />
+           id="path271"
+           class="frame" />
         <text
            x="41.996"
            y="8.438"
@@ -1855,7 +1863,8 @@
            style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
            textLength="69.539"
            lengthAdjust="spacingAndGlyphs"
-           id="text272">ARMOR DIAGRAM</text>
+           id="text272"
+           class="frame">ARMOR DIAGRAM</text>
         <path
            style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
            d="m -18,13   120,0     3.749, 5.625     -3.749, 5.625   -120,0   -3.749, -5.625, 3.749, -5.625 z"
@@ -3535,14 +3544,16 @@
            stroke-width="5.2"
            stroke-linejoin="round"
            stroke="#c8c7c7"
-           id="path275" />
+           id="path275"
+           class="frame" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 87.057,0.000 l 5.475,8.214 L 368.347,8.214 l 7.845,7.600 L 376.192,355.400 l -7.845,7.600 L 7.845,363.000 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
            stroke="#231f20"
-           id="path276" />
+           id="path276"
+           class="frame" />
         <g
            transform="translate (2.5,3.0)"
            id="g277">
@@ -3759,7 +3770,8 @@
            stroke-width="0.92"
            stroke-linejoin="round"
            stroke="#231f20"
-           id="path292" />
+           id="path292"
+           class="frame" />
       </g>
       <g
          transform="matrix(1.000 0 0 1.000 177.596 257.175)"
@@ -4143,7 +4155,8 @@
          id="text294">Diagram</text>
       <g
          id="cglLogoColor"
-         transform="matrix(1.080 0 0 1.080 121.397 285.365)">
+         transform="matrix(1.080 0 0 1.080 121.397 285.365)"
+         class="frame">
         <g
            id="cglLogo"
            transform="matrix(1,0,0,-1,-162.7947,110.0348)">
@@ -4364,7 +4377,8 @@
       <g
          visibility="hidden"
          id="cglLogoBW"
-         transform="matrix(1.080 0 0 1.080 121.397 285.365)">
+         transform="matrix(1.080 0 0 1.080 121.397 285.365)"
+         class="frame">
         <g
            id="g321"
            transform="matrix(1,0,0,-1,-162.7947,110.0348)">
@@ -4592,7 +4606,8 @@
         <path
            fill="#000000"
            d="M 0,5.625 l 3.749,-5.625 h 140.735 l 3.749,5.625 l -3.749,5.625 h -140.735 Z"
-           id="path322" />
+           id="path322"
+           class="frame" />
         <text
            x="74.117"
            y="8.438"
@@ -4601,7 +4616,8 @@
            style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
            textLength="127.941"
            lengthAdjust="spacingAndGlyphs"
-           id="text322">INTERNAL STRUCTURE DIAGRAM</text>
+           id="text322"
+           class="frame">INTERNAL STRUCTURE DIAGRAM</text>
         <g
            transform="matrix(1 0 0 1 0 1)"
            id="g323">
@@ -5690,14 +5706,16 @@
            stroke-width="5.2"
            stroke-linejoin="round"
            stroke="#c8c7c7"
-           id="path328" />
+           id="path328"
+           class="frame" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 63.500,0.000 l 5.475,8.214 L 156.155,8.214 l 7.845,7.600 L 164.000,172.900 l -7.845,7.600 L 7.845,180.500 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
            stroke="#231f20"
-           id="path329" />
+           id="path329"
+           class="frame" />
         <g
            transform="translate (2.5,3.0)"
            id="g330">
