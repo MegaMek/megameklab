@@ -171,7 +171,7 @@ public class PrintTank extends PrintEntity {
 
     @Override
     protected boolean supportsAlternateArmorGrouping() {
-        if (tank.isSuperHeavy()) {
+        if (tank.isSuperHeavy() && !(tank instanceof VTOL)) {
             return false;
         }
         if (tank.isNaval() && !tank.hasNoDualTurret()) {
