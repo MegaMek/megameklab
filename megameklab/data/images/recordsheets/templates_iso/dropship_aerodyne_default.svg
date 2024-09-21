@@ -934,234 +934,808 @@
                                                                           ></text
                                                                         ></g
                                                                         >
-   <g fill="none" id="armorPips"
-                                                                        >
-    <g id="armorPipsNOS" transform="translate(156.7,47.5)"
-                                                                          >
-      <rect x="-53.8" width="107.6" y="0" height="6.8" id="armorNOSRow00"
-                                                                            />
-      <rect x="-69.3" width="138.6" y="6.8" height="6.8" id="armorNOSRow01"
-                                                                            />
-      <rect x="-71.6" width="143.2" y="15.6" height="6.8" id="armorNOSRow02"
-                                                                            />
-      <rect x="-73" width="146" y="20.4" height="6.8" id="armorNOSRow03"
-                                                                            />
-      <rect x="-73.5" width="147" y="27.2" height="6.8" id="armorNOSRow04"
-                                                                            />
-      <rect x="-74.3" width="148.6" y="34.0" height="6.8" id="armorNOSRow05"
-                                                                            />
-      <rect x="-76.2" width="152.4" y="40.8" height="6.8" id="armorNOSRow06"
-                                                                            />
-      <rect x="-77.3" width="154.6" y="47.6" height="6.8" id="armorNOSRow07"
-                                                                            />
-      <rect x="-78.3" width="156.6" y="54.4" height="6.8" id="armorNOSRow08"
-                                                                            />
-      <rect x="-78.9" width="157.8" y="61.2" height="6.8" id="armorNOSRow09"
-                                                                            />
-      <rect x="-79.5" width="159" y="68.0" height="6.8" id="armorNOSRow10"
-                                                                            />
-      <rect x="-80.3" width="160.6" y="74.8" height="6.8" id="armorNOSRow11"
-                                                                            />
-      <rect x="-82.4" width="164.8" y="81.4" height="6.8" id="armorNOSRow12"
-                                                                            />
-      <rect x="-82.1" width="184.2" y="88.2" height="6.8" id="armorNOSRow13"
-                                                                            />
-      <rect x="-78.8" width="157.6" y="95" height="6.8" id="armorNOSRow14"
-                                                                            />
-      <rect x="-75.6" width="151.2" y="101.8" height="6.8" id="armorNOSRow15"
-                                                                            />
-      <rect x="-72.3" width="144.6" y="108.6" height="6.8" id="armorNOSRow16"
-                                                                            />
-      <rect x="-69" width="138" y="115.6" height="6.8" id="armorNOSRow17"
-                                                                            />
-      <rect x="-65.8" width="131.6" y="122.4" height="6.8" id="armorNOSRow18"
-                                                                            />
-      <rect x="-62.5" width="125" y="129.2" height="6.8" id="armorNOSRow19"
-                                                                            />
-    </g
-                                                                            >
-    <g id="armorPipsRS" transform="translate(205.42,155)"
-                                                                            >
-      <rect x="32.5" width="8.9" y="0" height="6.8" id="armorRSRow00"
-                                                                              />
-      <rect x="28.5" width="12.9" y="6.8" height="6.8" id="armorRSRow01"
-                                                                              />
-      <rect x="24.5" width="16.9" y="15.6" height="6.8" id="armorRSRow02"
-                                                                              />
-      <rect x="20.5" width="20.9" y="20.4" height="6.8" id="armorRSRow03"
-                                                                              />
-      <rect x="16.5" width="24.9" y="27.2" height="6.8" id="armorRSRow04"
-                                                                              />
-      <rect x="12.5" width="28.9" y="34.0" height="6.8" id="armorRSRow05"
-                                                                              />
-      <rect x="10.4" width="31" y="40.8" height="6.8" id="armorRSRow06"
-                                                                              />
-      <rect x="10.4" width="31" y="47.6" height="6.8" id="armorRSRow07"
-                                                                              />
-      <rect x="10.4" width="31" y="54.4" height="6.8" id="armorRSRow08"
-                                                                              />
-      <rect x="10.4" width="31" y="61.2" height="6.8" id="armorRSRow09"
-                                                                              />
-      <rect x="10.4" width="31" y="68" height="6.8" id="armorRSRow10"
-                                                                              />
-      <rect x="10.4" width="31" y="74.8" height="6.8" id="armorRSRow11"
-                                                                              />
-      <rect x="10.4" width="31" y="81.6" height="6.8" id="armorRSRow12"
-                                                                              />
-      <rect x="5.4" width="36" y="88.4" height="6.8" id="armorRSRow13"
-                                                                              />
-      <rect x="0" width="41.4" y="95.2" height="6.8" id="armorRSRow14"
-                                                                              />
-      <rect x="0" width="41.4" y="102" height="6.8" id="armorRSRow15"
-                                                                              />
-      <rect x="0" width="41.4" y="108.8" height="6.8" id="armorRSRow16"
-                                                                              />
-      <rect x="0" width="45.3" y="115.6" height="6.8" id="armorRSRow17"
-                                                                              />
-      <rect x="0" width="49.4" y="122.4" height="6.8" id="armorRSRow18"
-                                                                              />
-      <rect x="0" width="53.5" y="129.2" height="6.8" id="armorRSRow19"
-                                                                              />
-      <rect x="0" width="57.6" y="136" height="6.8" id="armorRSRow20"
-                                                                              />
-      <rect x="0" width="61.6" y="142.8" height="6.8" id="armorRSRow21"
-                                                                              />
-      <rect x="0" width="65.7" y="149.6" height="6.8" id="armorRSRow22"
-                                                                              />
-      <rect x="0" width="69.8" y="156.4" height="6.8" id="armorRSRow23"
-                                                                              />
-      <rect x="0" width="73.9" y="163.2" height="6.8" id="armorRSRow24"
-                                                                              />      
-      <rect x="0" width="75.7" y="170" height="6.8" id="armorRSRow25"
-                                                                              />
-      <rect x="0" width="76.8" y="176.8" height="6.8" id="armorRSRow26"
-                                                                              />
-      <rect x="0" width="77.8" y="183.6" height="6.8" id="armorRSRow27"
-                                                                              />
-      <rect x="0" width="78.9" y="190.4" height="6.8" id="armorRSRow28"
-                                                                              />
-      <rect x="0" width="79.9" y="197.2" height="6.8" id="armorRSRow29"
-                                                                              />
-      <rect x="0" width="81" y="204" height="6.8" id="armorRSRow30"
-                                                                              />
-      <rect x="0" width="82.1" y="210.8" height="6.8" id="armorRSRow31"
-                                                                              />
-      <rect x="0" width="83.1" y="217.6" height="6.8" id="armorRSRow32"
-                                                                              />
-      <rect x="0" width="84.2" y="224.4" height="6.8" id="armorRSRow33"
-                                                                              />
-      <rect x="0" width="85.2" y="231.2" height="6.8" id="armorRSRow34"
-                                                                              />
-      <rect x="0" width="86.3" y="238" height="6.8" id="armorRSRow35"
-                                                                              />
-      <rect x="0" width="87.3" y="244.8" height="6.8" id="armorRSRow36"
-                                                                              />
-      <rect x="0" width="88.3" y="251.6" height="6.8" id="armorRSRow37"
-                                                                              />
-    </g
-                                                                              >
-    <g id="armorPipsLS" transform="matrix(-1,0,0,1,107.98,155)"
-                                                                              >
-      <rect x="32.5" width="8.9" y="0" height="6.8" id="armorLSRow00"
-                                                                                />
-      <rect x="28.5" width="12.9" y="6.8" height="6.8" id="armorLSRow01"
-                                                                                />
-      <rect x="24.5" width="16.9" y="15.6" height="6.8" id="armorLSRow02"
-                                                                                />
-      <rect x="20.5" width="20.9" y="20.4" height="6.8" id="armorLSRow03"
-                                                                                />
-      <rect x="16.5" width="24.9" y="27.2" height="6.8" id="armorLSRow04"
-                                                                                />
-      <rect x="12.5" width="28.9" y="34.0" height="6.8" id="armorLSRow05"
-                                                                                />
-      <rect x="10.4" width="31" y="40.8" height="6.8" id="armorLSRow06"
-                                                                                />
-      <rect x="10.4" width="31" y="47.6" height="6.8" id="armorLSRow07"
-                                                                                />
-      <rect x="10.4" width="31" y="54.4" height="6.8" id="armorLSRow08"
-                                                                                />
-      <rect x="10.4" width="31" y="61.2" height="6.8" id="armorLSRow09"
-                                                                                />
-      <rect x="10.4" width="31" y="68" height="6.8" id="armorLSRow10"
-                                                                                />
-      <rect x="10.4" width="31" y="74.8" height="6.8" id="armorLSRow11"
-                                                                                />
-      <rect x="10.4" width="31" y="81.6" height="6.8" id="armorLSRow12"
-                                                                                />
-      <rect x="5.4" width="36" y="88.4" height="6.8" id="armorLSRow13"
-                                                                                />
-      <rect x="0" width="41.4" y="95.2" height="6.8" id="armorLSRow14"
-                                                                                />
-      <rect x="0" width="41.4" y="102" height="6.8" id="armorLSRow15"
-                                                                                />
-      <rect x="0" width="41.4" y="108.8" height="6.8" id="armorLSRow16"
-                                                                                />
-      <rect x="0" width="45.3" y="115.6" height="6.8" id="armorLSRow17"
-                                                                                />
-      <rect x="0" width="49.4" y="122.4" height="6.8" id="armorLSRow18"
-                                                                                />
-      <rect x="0" width="53.5" y="129.2" height="6.8" id="armorLSRow19"
-                                                                                />
-      <rect x="0" width="57.6" y="136" height="6.8" id="armorLSRow20"
-                                                                                />
-      <rect x="0" width="61.6" y="142.8" height="6.8" id="armorLSRow21"
-                                                                                />
-      <rect x="0" width="65.7" y="149.6" height="6.8" id="armorLSRow22"
-                                                                                />
-      <rect x="0" width="69.8" y="156.4" height="6.8" id="armorLSRow23"
-                                                                                />
-      <rect x="0" width="73.9" y="163.2" height="6.8" id="armorLSRow24"
-                                                                                />      
-      <rect x="0" width="75.7" y="170" height="6.8" id="armorLSRow25"
-                                                                                />
-      <rect x="0" width="76.8" y="176.8" height="6.8" id="armorLSRow26"
-                                                                                />
-      <rect x="0" width="77.8" y="183.6" height="6.8" id="armorLSRow27"
-                                                                                />
-      <rect x="0" width="78.9" y="190.4" height="6.8" id="armorLSRow28"
-                                                                                />
-      <rect x="0" width="79.9" y="197.2" height="6.8" id="armorLSRow29"
-                                                                                />
-      <rect x="0" width="81" y="204" height="6.8" id="armorLSRow30"
-                                                                                />
-      <rect x="0" width="82.1" y="210.8" height="6.8" id="armorLSRow31"
-                                                                                />
-      <rect x="0" width="83.1" y="217.6" height="6.8" id="armorLSRow32"
-                                                                                />
-      <rect x="0" width="84.2" y="224.4" height="6.8" id="armorLSRow33"
-                                                                                />
-      <rect x="0" width="85.2" y="231.2" height="6.8" id="armorLSRow34"
-                                                                                />
-      <rect x="0" width="86.3" y="238" height="6.8" id="armorLSRow35"
-                                                                                />
-      <rect x="0" width="87.3" y="244.8" height="6.8" id="armorLSRow36"
-                                                                                />
-      <rect x="0" width="88.3" y="251.6" height="6.8" id="armorLSRow37"
-                                                                                />
-    </g
-                                                                                >
-    <g id="armorPipsAFT" transform="translate(156.7,250)"
-                                                                                >
-      <rect x="-42" width="84" y="0" height="6.8" id="armorAFTRow00"
-                                                                                  />
-      <rect x="-42" width="84" y="149.6" height="6.8" id="armorAFTRow01"
-                                                                                  />
-    </g
-                                                                                  >
-  </g
-                                                                                  >
-  <g fill="none" id="structurePips"
-                                                                                  >
-    <g id="siPips" transform="translate(156.7,200)"
-                                                                                    >
-      <rect x="-54" width="108" y="0" height="5.6" id="structurePipsFR00"
-                                                                                      />
-      <rect x="-54" width="108" y="33.6" height="5.6" id="structurePipsFR01"
-                                                                                      />
-    </g
-                                                                                      >
-  </g
-                                                                                      >
+    <g
+            fill="none"
+            id="armorPips">
+        <g
+                id="armorPipsNOS"
+                transform="translate(156.7,47.5)">
+            <rect
+                    x="-53.8"
+                    width="107.6"
+                    y="0"
+                    height="6.8"
+                    id="armorNOSRow00" />
+            <rect
+                    x="-69.3"
+                    width="138.6"
+                    y="6.8"
+                    height="6.8"
+                    id="armorNOSRow01" />
+            <rect
+                    x="-71.6"
+                    width="143.2"
+                    y="13.6"
+                    height="6.8"
+                    id="armorNOSRow02" />
+            <rect
+                    x="-73"
+                    width="146"
+                    y="20.4"
+                    height="6.8"
+                    id="armorNOSRow03" />
+            <rect
+                    x="-73.5"
+                    width="147"
+                    y="27.2"
+                    height="6.8"
+                    id="armorNOSRow04" />
+            <rect
+                    x="-74.3"
+                    width="148.6"
+                    y="34.0"
+                    height="6.8"
+                    id="armorNOSRow05" />
+            <rect
+                    x="-76.2"
+                    width="152.4"
+                    y="40.8"
+                    height="6.8"
+                    id="armorNOSRow06" />
+            <rect
+                    x="-77.3"
+                    width="154.6"
+                    y="47.6"
+                    height="6.8"
+                    id="armorNOSRow07" />
+            <rect
+                    x="-78.3"
+                    width="156.6"
+                    y="54.4"
+                    height="6.8"
+                    id="armorNOSRow08" />
+            <rect
+                    x="-78.9"
+                    width="157.8"
+                    y="61.2"
+                    height="6.8"
+                    id="armorNOSRow09" />
+            <rect
+                    x="-79.5"
+                    width="159"
+                    y="68.0"
+                    height="6.8"
+                    id="armorNOSRow10" />
+            <rect
+                    x="-80.3"
+                    width="160.6"
+                    y="74.8"
+                    height="6.8"
+                    id="armorNOSRow11" />
+            <rect
+                    x="-82.4"
+                    width="164.8"
+                    y="81.4"
+                    height="6.8"
+                    id="armorNOSRow12" />
+            <rect
+                    x="-82.1"
+                    width="164.2"
+                    y="88.2"
+                    height="6.8"
+                    id="armorNOSRow13" />
+            <rect
+                    x="-78.8"
+                    width="157.6"
+                    y="95"
+                    height="6.8"
+                    id="armorNOSRow14" />
+            <rect
+                    x="-75.6"
+                    width="151.2"
+                    y="101.8"
+                    height="6.8"
+                    id="armorNOSRow15" />
+            <rect
+                    x="-72.3"
+                    width="144.6"
+                    y="108.6"
+                    height="6.8"
+                    id="armorNOSRow16" />
+            <rect
+                    x="-69"
+                    width="138"
+                    y="115.6"
+                    height="6.8"
+                    id="armorNOSRow17" />
+            <rect
+                    x="-65.8"
+                    width="131.6"
+                    y="122.4"
+                    height="6.8"
+                    id="armorNOSRow18" />
+            <rect
+                    x="-62.5"
+                    width="125"
+                    y="129.2"
+                    height="6.8"
+                    id="armorNOSRow19" />
+        </g>
+        <g
+                id="armorPipsRS"
+                transform="translate(205.42,155)">
+            <rect
+                    x="32.5"
+                    width="12"
+                    y="0"
+                    height="6.8"
+                    id="armorRSRow00" />
+            <rect
+                    x="28.5"
+                    width="16"
+                    y="6.8"
+                    height="6.8"
+                    id="armorRSRow01" />
+            <rect
+                    x="24.5"
+                    width="20"
+                    y="13.6"
+                    height="6.8"
+                    id="armorRSRow02" />
+            <rect
+                    x="20.5"
+                    width="24"
+                    y="20.4"
+                    height="6.8"
+                    id="armorRSRow03" />
+            <rect
+                    x="16.5"
+                    width="28"
+                    y="27.2"
+                    height="6.8"
+                    id="armorRSRow04" />
+            <rect
+                    x="12.5"
+                    width="32"
+                    y="34.0"
+                    height="6.8"
+                    id="armorRSRow05" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="40.8"
+                    height="6.8"
+                    id="armorRSRow06" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="47.6"
+                    height="6.8"
+                    id="armorRSRow07" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="54.4"
+                    height="6.8"
+                    id="armorRSRow08" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="61.2"
+                    height="6.8"
+                    id="armorRSRow09" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="68"
+                    height="6.8"
+                    id="armorRSRow10" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="74.8"
+                    height="6.8"
+                    id="armorRSRow11" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="81.6"
+                    height="6.8"
+                    id="armorRSRow12" />
+            <rect
+                    x="5.4"
+                    width="39"
+                    y="88.4"
+                    height="6.8"
+                    id="armorRSRow13" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="95.2"
+                    height="6.8"
+                    id="armorRSRow14" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="102"
+                    height="6.8"
+                    id="armorRSRow15" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="108.8"
+                    height="6.8"
+                    id="armorRSRow16" />
+            <rect
+                    x="0"
+                    width="45.3"
+                    y="115.6"
+                    height="6.8"
+                    id="armorRSRow17" />
+            <rect
+                    x="0"
+                    width="49.4"
+                    y="122.4"
+                    height="6.8"
+                    id="armorRSRow18" />
+            <rect
+                    x="0"
+                    width="53.5"
+                    y="129.2"
+                    height="6.8"
+                    id="armorRSRow19" />
+            <rect
+                    x="0"
+                    width="57.6"
+                    y="136"
+                    height="6.8"
+                    id="armorRSRow20" />
+            <rect
+                    x="0"
+                    width="61.6"
+                    y="142.8"
+                    height="6.8"
+                    id="armorRSRow21" />
+            <rect
+                    x="0"
+                    width="65.7"
+                    y="149.6"
+                    height="6.8"
+                    id="armorRSRow22" />
+            <rect
+                    x="0"
+                    width="69.8"
+                    y="156.4"
+                    height="6.8"
+                    id="armorRSRow23" />
+            <rect
+                    x="0"
+                    width="73.9"
+                    y="163.2"
+                    height="6.8"
+                    id="armorRSRow24" />
+            <rect
+                    x="0"
+                    width="75.7"
+                    y="170"
+                    height="6.8"
+                    id="armorRSRow25" />
+            <rect
+                    x="0"
+                    width="76.8"
+                    y="176.8"
+                    height="6.8"
+                    id="armorRSRow26" />
+            <rect
+                    x="0"
+                    width="77.8"
+                    y="183.6"
+                    height="6.8"
+                    id="armorRSRow27" />
+            <rect
+                    x="0"
+                    width="78.9"
+                    y="190.4"
+                    height="6.8"
+                    id="armorRSRow28" />
+            <rect
+                    x="0"
+                    width="79.9"
+                    y="197.2"
+                    height="6.8"
+                    id="armorRSRow29" />
+            <rect
+                    x="0"
+                    width="81"
+                    y="204"
+                    height="6.8"
+                    id="armorRSRow30" />
+            <rect
+                    x="0"
+                    width="82.1"
+                    y="210.8"
+                    height="6.8"
+                    id="armorRSRow31" />
+            <rect
+                    x="0"
+                    width="83.1"
+                    y="217.6"
+                    height="6.8"
+                    id="armorRSRow32" />
+            <rect
+                    x="0"
+                    width="84.2"
+                    y="224.4"
+                    height="6.8"
+                    id="armorRSRow33" />
+            <rect
+                    x="0"
+                    width="85.2"
+                    y="231.2"
+                    height="6.8"
+                    id="armorRSRow34" />
+            <rect
+                    x="0"
+                    width="86.3"
+                    y="238"
+                    height="6.8"
+                    id="armorRSRow35" />
+            <rect
+                    x="0"
+                    width="88"
+                    y="244.8"
+                    height="6.8"
+                    id="armorRSRow36" />
+            <rect
+                    x="0"
+                    width="89"
+                    y="251.6"
+                    height="6.8"
+                    id="armorRSRow37" />
+            <rect
+                    x="1"
+                    width="89.3"
+                    y="258.4"
+                    height="6.8"
+                    id="rect388" />
+        </g>
+        <g
+                id="armorPipsLS"
+                transform="matrix(-1,0,0,1,107.98,155)">
+            <rect
+                    x="32.5"
+                    width="12"
+                    y="0"
+                    height="6.8"
+                    id="rect411" />
+            <rect
+                    x="28.5"
+                    width="16"
+                    y="6.8"
+                    height="6.8"
+                    id="rect412" />
+            <rect
+                    x="24.5"
+                    width="20"
+                    y="13.6"
+                    height="6.8"
+                    id="rect413" />
+            <rect
+                    x="20.5"
+                    width="24"
+                    y="20.4"
+                    height="6.8"
+                    id="rect414" />
+            <rect
+                    x="16.5"
+                    width="28"
+                    y="27.2"
+                    height="6.8"
+                    id="rect415" />
+            <rect
+                    x="12.5"
+                    width="32"
+                    y="34.0"
+                    height="6.8"
+                    id="rect416" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="40.8"
+                    height="6.8"
+                    id="rect417" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="47.6"
+                    height="6.8"
+                    id="rect418" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="54.4"
+                    height="6.8"
+                    id="rect419" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="61.2"
+                    height="6.8"
+                    id="rect420" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="68"
+                    height="6.8"
+                    id="rect421" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="74.8"
+                    height="6.8"
+                    id="rect422" />
+            <rect
+                    x="10.4"
+                    width="34"
+                    y="81.6"
+                    height="6.8"
+                    id="rect423" />
+            <rect
+                    x="5.4"
+                    width="39"
+                    y="88.4"
+                    height="6.8"
+                    id="rect424" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="95.2"
+                    height="6.8"
+                    id="rect425" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="102"
+                    height="6.8"
+                    id="rect426" />
+            <rect
+                    x="0"
+                    width="44.5"
+                    y="108.8"
+                    height="6.8"
+                    id="rect427" />
+            <rect
+                    x="0"
+                    width="45.3"
+                    y="115.6"
+                    height="6.8"
+                    id="rect428" />
+            <rect
+                    x="0"
+                    width="49.4"
+                    y="122.4"
+                    height="6.8"
+                    id="rect429" />
+            <rect
+                    x="0"
+                    width="53.5"
+                    y="129.2"
+                    height="6.8"
+                    id="rect430" />
+            <rect
+                    x="0"
+                    width="57.6"
+                    y="136"
+                    height="6.8"
+                    id="rect431" />
+            <rect
+                    x="0"
+                    width="61.6"
+                    y="142.8"
+                    height="6.8"
+                    id="rect432" />
+            <rect
+                    x="0"
+                    width="65.7"
+                    y="149.6"
+                    height="6.8"
+                    id="rect433" />
+            <rect
+                    x="0"
+                    width="69.8"
+                    y="156.4"
+                    height="6.8"
+                    id="rect434" />
+            <rect
+                    x="0"
+                    width="73.9"
+                    y="163.2"
+                    height="6.8"
+                    id="rect435" />
+            <rect
+                    x="0"
+                    width="75.7"
+                    y="170"
+                    height="6.8"
+                    id="rect436" />
+            <rect
+                    x="0"
+                    width="76.8"
+                    y="176.8"
+                    height="6.8"
+                    id="rect437" />
+            <rect
+                    x="0"
+                    width="77.8"
+                    y="183.6"
+                    height="6.8"
+                    id="rect438" />
+            <rect
+                    x="0"
+                    width="78.9"
+                    y="190.4"
+                    height="6.8"
+                    id="rect439" />
+            <rect
+                    x="0"
+                    width="79.9"
+                    y="197.2"
+                    height="6.8"
+                    id="rect440" />
+            <rect
+                    x="0"
+                    width="81"
+                    y="204"
+                    height="6.8"
+                    id="rect441" />
+            <rect
+                    x="0"
+                    width="82.1"
+                    y="210.8"
+                    height="6.8"
+                    id="rect442" />
+            <rect
+                    x="0"
+                    width="83.1"
+                    y="217.6"
+                    height="6.8"
+                    id="rect443" />
+            <rect
+                    x="0"
+                    width="84.2"
+                    y="224.4"
+                    height="6.8"
+                    id="rect444" />
+            <rect
+                    x="0"
+                    width="85.2"
+                    y="231.2"
+                    height="6.8"
+                    id="rect445" />
+            <rect
+                    x="0"
+                    width="86.3"
+                    y="238"
+                    height="6.8"
+                    id="rect446" />
+            <rect
+                    x="0"
+                    width="88"
+                    y="244.8"
+                    height="6.8"
+                    id="rect447" />
+            <rect
+                    x="0"
+                    width="89"
+                    y="251.6"
+                    height="6.8"
+                    id="rect448" />
+            <rect
+                    x="1"
+                    width="89.3"
+                    y="258.4"
+                    height="6.8"
+                    id="rect449" />
+        </g>
+        <g
+                id="armorPipsAFT"
+                transform="translate(156.7,248)">
+            <rect
+                    x="-42"
+                    width="84"
+                    y="0"
+                    height="6.8"
+                    id="armorAFTRow00" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="6.8"
+                    height="6.8"
+                    id="rect389" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="13.6"
+                    height="6.8"
+                    id="rect390" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="20.4"
+                    height="6.8"
+                    id="rect391" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="27.2"
+                    height="6.8"
+                    id="rect392" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="34"
+                    height="6.8"
+                    id="rect393" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="40.8"
+                    height="6.8"
+                    id="rect396" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="47.6"
+                    height="6.8"
+                    id="rect394" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="54.4"
+                    height="6.8"
+                    id="rect395" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="61.2"
+                    height="6.8"
+                    id="rect397" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="68"
+                    height="6.8"
+                    id="rect398" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="74.8"
+                    height="6.8"
+                    id="rect399" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="81.6"
+                    height="6.8"
+                    id="rect400" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="88.4"
+                    height="6.8"
+                    id="rect401" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="95.2"
+                    height="6.8"
+                    id="rect402" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="102"
+                    height="6.8"
+                    id="rect403" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="108.8"
+                    height="6.8"
+                    id="rect404" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="115.6"
+                    height="6.8"
+                    id="rect405" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="122.4"
+                    height="6.8"
+                    id="rect406" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="129.2"
+                    height="6.8"
+                    id="rect407" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="136"
+                    height="6.8"
+                    id="rect408" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="142.8"
+                    height="6.8"
+                    id="rect409" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="149.6"
+                    height="6.8"
+                    id="armorAFTRow01" />
+            <rect
+                    x="-42"
+                    width="84"
+                    y="156.4"
+                    height="6.8"
+                    id="rect410" />
+        </g>
+    </g>
+    <g
+            fill="none"
+            id="structurePips">
+        <g
+                id="siPips"
+                transform="translate(156.7,200)">
+            <rect
+                    x="-54"
+                    width="108"
+                    y="0"
+                    height="5.6"
+                    id="structurePipsFR00" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="5.6"
+                    height="5.6"
+                    id="rect450" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="11.2"
+                    height="5.6"
+                    id="rect451" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="16.8"
+                    height="5.6"
+                    id="rect452" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="22.4"
+                    height="5.6"
+                    id="rect453" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="28"
+                    height="5.6"
+                    id="rect454" />
+            <rect
+                    x="-54"
+                    width="108"
+                    y="33.6"
+                    height="5.6"
+                    id="structurePipsFR01" />
+        </g>
+    </g>
 </g
                                                                                       ><g id="cglLogoColor" transform="matrix(1.015 0 0 1.015 267.279 41.250)"
                                                                                       >
