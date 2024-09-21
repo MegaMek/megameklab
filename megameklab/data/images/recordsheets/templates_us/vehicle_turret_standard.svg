@@ -31,10 +31,10 @@
      inkscape:cy="213.07545"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
-     inkscape:window-x="3832"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="armorPips" />
+     inkscape:current-layer="g300" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -2352,52 +2352,6 @@
                id="armorFRRow08" />
           </g>
           <g
-             id="armorPipsRSgrouped"
-             transform="matrix(0.19, 0.98, -0.98, 0.19, 134, 120)">
-            <rect
-               id="armorRSgroupedRow00"
-               x="-51.5"
-               y="0"
-               width="144"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow01"
-               x="-61"
-               y="-7"
-               width="120"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow02"
-               x="-70"
-               y="-14"
-               width="97"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow03"
-               x="-41"
-               y="7"
-               width="30"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow04"
-               x="-36"
-               y="14"
-               width="25"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow05"
-               x="67"
-               y="7"
-               width="50"
-               height="6.8" />
-            <rect
-               id="armorRSgroupedRow06"
-               x="65"
-               y="14"
-               width="44.4"
-               height="6.8" />
-          </g>
-          <g
              id="armorPipsRS"
              transform="translate(105.55,44.834)">
             <rect
@@ -2568,52 +2522,6 @@
                y="183.6"
                height="6.8"
                id="armorRSRow27" />
-          </g>
-          <g
-             id="armorPipsLSgrouped"
-             transform="matrix(-0.19,0.98,0.98,0.19,33,121)">
-            <rect
-               id="armorLSgroupedRow00"
-               x="-51.5"
-               y="0"
-               width="144"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow01"
-               x="-61"
-               y="-7"
-               width="120"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow02"
-               x="-70"
-               y="-14"
-               width="97"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow03"
-               x="-41"
-               y="7"
-               width="30"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow04"
-               x="-36"
-               y="14"
-               width="25"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow05"
-               x="67"
-               y="7"
-               width="50"
-               height="6.8" />
-            <rect
-               id="armorLSgroupedRow06"
-               x="65"
-               y="14"
-               width="44.4"
-               height="6.8" />
           </g>
           <g
              id="armorPipsLS"
@@ -2857,6 +2765,102 @@
           </g>
         </g>
         <g
+           id="armorPipsGrouped"
+           fill="none">
+          <g
+             id="armorPipsRSgrouped"
+             transform="matrix(0.19, 0.98, -0.98, 0.19, 134, 120)">
+            <rect
+               id="armorRSgroupedRow00"
+               x="-51.5"
+               y="0"
+               width="144"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow01"
+               x="-61"
+               y="-7"
+               width="120"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow02"
+               x="-70"
+               y="-14"
+               width="97"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow03"
+               x="-41"
+               y="7"
+               width="30"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow04"
+               x="-36"
+               y="14"
+               width="25"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow05"
+               x="67"
+               y="7"
+               width="50"
+               height="6.8" />
+            <rect
+               id="armorRSgroupedRow06"
+               x="65"
+               y="14"
+               width="44.4"
+               height="6.8" />
+          </g>
+          <g
+             id="armorPipsLSgrouped"
+             transform="matrix(-0.19,0.98,0.98,0.19,33,121)">
+            <rect
+               id="armorLSgroupedRow00"
+               x="-51.5"
+               y="0"
+               width="144"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow01"
+               x="-61"
+               y="-7"
+               width="120"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow02"
+               x="-70"
+               y="-14"
+               width="97"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow03"
+               x="-41"
+               y="7"
+               width="30"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow04"
+               x="-36"
+               y="14"
+               width="25"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow05"
+               x="67"
+               y="7"
+               width="50"
+               height="6.8" />
+            <rect
+               id="armorLSgroupedRow06"
+               x="65"
+               y="14"
+               width="44.4"
+               height="6.8" />
+          </g>
+        </g>
+        <g
            fill="none"
            id="structurePips">
           <g
@@ -2874,22 +2878,6 @@
                y="6.8"
                height="6.8"
                id="structurePipsFR01" />
-          </g>
-          <g
-             id="structurePipsRSgrouped"
-             transform="matrix(0.199, 0.98, -0.98, 0.199, 122, 112.5)">
-            <rect
-               x="1"
-               width="73"
-               y="0"
-               height="6.8"
-               id="structurePipsRSgrouped00" />
-            <rect
-               x="1"
-               width="73"
-               y="7"
-               height="6.8"
-               id="structurePipsRSgrouped01" />
           </g>
           <g
              id="structurePipsRS"
@@ -2954,22 +2942,6 @@
                y="61.2"
                height="6.8"
                id="rect299" />
-          </g>
-          <g
-             id="structurePipsLSgrouped"
-             transform="matrix(-0.199, 0.98, 0.98, 0.199, 45, 112.5)">
-            <rect
-               x="1"
-               width="73"
-               y="0"
-               height="6.8"
-               id="structurePipsLSgrouped00" />
-            <rect
-               x="1"
-               width="73"
-               y="7"
-               height="6.8"
-               id="structurePipsLSgrouped01" />
           </g>
           <g
              id="structurePipsLS"
@@ -3060,6 +3032,42 @@
                y="6.8"
                height="6.8"
                id="structurePipsTU01" />
+          </g>
+        </g>
+        <g
+           id="structurePipsGrouped"
+           fill="none">
+          <g
+             id="structurePipsRSgrouped"
+             transform="matrix(0.199, 0.98, -0.98, 0.199, 122, 112.5)">
+            <rect
+               x="1"
+               width="73"
+               y="0"
+               height="6.8"
+               id="structurePipsRSgrouped00" />
+            <rect
+               x="1"
+               width="73"
+               y="7"
+               height="6.8"
+               id="structurePipsRSgrouped01" />
+          </g>
+          <g
+             id="structurePipsLSgrouped"
+             transform="matrix(-0.199, 0.98, 0.98, 0.199, 45, 112.5)">
+            <rect
+               x="1"
+               width="73"
+               y="0"
+               height="6.8"
+               id="structurePipsLSgrouped00" />
+            <rect
+               x="1"
+               width="73"
+               y="7"
+               height="6.8"
+               id="structurePipsLSgrouped01" />
           </g>
         </g>
       </g>
