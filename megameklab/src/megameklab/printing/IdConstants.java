@@ -29,6 +29,7 @@ public interface IdConstants {
     String TITLE = "title";
     String UNIT_SCALE = "unitScale";
     String ROW_SHADING = "tableshading";
+    String FRAME = "frame";
 
     String TYPE = "type";
     String TYPE2 = "type2";
