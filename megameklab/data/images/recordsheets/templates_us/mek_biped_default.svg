@@ -34,7 +34,7 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g299" />
+     inkscape:current-layer="g330" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -4989,7 +4989,8 @@
          id="text302">Diagram</text>
       <g
          id="cglLogoColor"
-         transform="matrix(1.080 0 0 1.080 121.397 285.365)">
+         transform="matrix(1.080 0 0 1.080 121.397 285.365)"
+         class="frame">
         <g
            id="cglLogo"
            transform="matrix(1,0,0,-1,-162.7947,110.0348)">
@@ -5210,7 +5211,8 @@
       <g
          visibility="hidden"
          id="cglLogoBW"
-         transform="matrix(1.080 0 0 1.080 121.397 285.365)">
+         transform="matrix(1.080 0 0 1.080 121.397 285.365)"
+         class="frame">
         <g
            id="g329"
            transform="matrix(1,0,0,-1,-162.7947,110.0348)">
