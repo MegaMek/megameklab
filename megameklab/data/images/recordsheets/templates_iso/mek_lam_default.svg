@@ -1348,7 +1348,128 @@
                                                                               /><rect x="7.86" width="21.78" y="31.9632" height="6.15152" id="armorLTRRow06"
                                                                             /></g
                                                                           ></g
-                                                                          ><g style="font-size:5.7954998px" id="armorValues" transform="translate(-391.12064,-19.334069)"
+                                                                          >
+    <g
+            id="armorPipsGrouped"
+            transform="translate(-391.72064,-19.834069)">
+        <g
+                fill="none"
+                id="armorPipsLLgrouped"
+                transform="matrix(0.225, -0.974, -0.974, -0.225, 444, 299)">
+            <rect
+                    x="0"
+                    width="125"
+                    y="0"
+                    height="6"
+                    id="armorLLgroupedRow00"/>
+            <rect
+                    x="-1"
+                    width="125"
+                    y="6.5"
+                    height="6"
+                    id="armorLLgroupedRow01"/>
+            <rect
+                    x="-2"
+                    width="125"
+                    y="13"
+                    height="6"
+                    id="armorLLgroupedRow02"/>
+            <rect
+                    x="-3"
+                    width="125"
+                    y="19.5"
+                    height="6"
+                    id="armorLLgroupedRow03"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRLgrouped"
+                transform="matrix(-0.225, -0.974, 0.974, -0.225, 499, 180)">
+            <rect
+                    x="-122"
+                    width="125"
+                    y="0"
+                    height="6"
+                    id="armorRLgroupedRow00"/>
+            <rect
+                    x="-123"
+                    width="125"
+                    y="6.5"
+                    height="6"
+                    id="armorRLgroupedRow01"/>
+            <rect
+                    x="-124"
+                    width="125"
+                    y="13"
+                    height="6"
+                    id="armorRLgroupedRow02"/>
+            <rect
+                    x="-125"
+                    width="125"
+                    y="19.5"
+                    height="6"
+                    id="armorRLgroupedRow03"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsLAgrouped"
+                transform="matrix(-0.087, 0.996, 0.996, 0.087, 428, 58)">
+            <rect
+                    x="12"
+                    width="100"
+                    y="0"
+                    height="6"
+                    id="rect274"/>
+            <rect
+                    x="12"
+                    width="100"
+                    y="-6"
+                    height="6"
+                    id="rect275"/>
+            <rect
+                    x="22"
+                    width="90"
+                    y="-12"
+                    height="6"
+                    id="rect276"/>
+            <rect
+                    x="26"
+                    width="26"
+                    y="-18"
+                    height="6"
+                    id="rect277"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRAgrouped"
+                transform="matrix(0.087, 0.996, -0.996, 0.087, 543, 58)">
+            <rect
+                    x="12"
+                    width="100"
+                    y="0"
+                    height="6"
+                    id="armorRAgroupedRow00"/>
+            <rect
+                    x="12"
+                    width="100"
+                    y="-6"
+                    height="6"
+                    id="armorRAgroupedRow01"/>
+            <rect
+                    x="22"
+                    width="90"
+                    y="-12"
+                    height="6"
+                    id="armorRAgroupedRow02"/>
+            <rect
+                    x="26"
+                    width="26"
+                    y="-18"
+                    height="6"
+                    id="armorRAgroupedRow03"/>
+        </g>
+    </g>
+    <g style="font-size:5.7954998px" id="armorValues" transform="translate(-391.12064,-19.334069)"
                                                                           >
 <text x="499.63" id="patchworkHD" y="46.27"
                                                                             />
@@ -2035,7 +2156,8 @@
                                                                               >( 0 )</text
                                                                               >
     </g
-                                                                            ><g id="structurePips" transform="translate(-397.7,-386.6)"
+                                                                            >
+    <g id="structurePips" transform="translate(-397.7,-386.6)"
                                                                             ><g id="isPipsHD"
                                                                               ><g id="g1680" transform="translate(476.465,408.5257)"
                                                                                 ><path style="fill:none;stroke:#231f20;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.759 1.76,1.759 0.959,0 1.758,-0.8 1.758,-1.759 C 1.758,0.8 0.959,0 0,0 Z" id="path1682"
@@ -2175,6 +2297,78 @@
                                                                               /></g
                                                                             ></g
                                                                             >
+    <g
+            id="structurePipsGrouped"
+            transform="translate(-397.7,-386.6)">
+        <g
+                fill="none"
+                id="isPipsLLgrouped"
+                transform="matrix(0.208, -0.978, -0.978, -0.208, 442, 555)">
+            <rect
+                    x="0"
+                    width="86"
+                    y="0"
+                    height="6"
+                    id="isLLgroupedRow00" />
+            <rect
+                    x="16"
+                    width="70"
+                    y="6"
+                    height="6"
+                    id="isLLgroupedRow01" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsRLgrouped"
+                transform="matrix(-0.208, -0.978, 0.978, -0.208, 502.5, 555)">
+            <rect
+                    x="0"
+                    width="86"
+                    y="0"
+                    height="6"
+                    id="isRLgroupedRow00" />
+            <rect
+                    x="16"
+                    width="70"
+                    y="6"
+                    height="6"
+                    id="isRLgroupedRow01" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsLAgrouped"
+                transform="matrix(0.087, -0.996, -0.996, -0.087, 427.5, 483)">
+            <rect
+                    x="0"
+                    width="75"
+                    y=".5"
+                    height="5.5"
+                    id="isLAgroupedRow00" />
+            <rect
+                    x="10"
+                    width="65"
+                    y="6"
+                    height="5.5"
+                    id="isLAgroupedRow01" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsRAgrouped"
+                transform="matrix(-0.087, -0.996, 0.996, -0.087, 518, 482.5)">
+            <rect
+                    x="0"
+                    width="75"
+                    y=".5"
+                    height="5.5"
+                    id="isRAgroupedRow00" />
+            <rect
+                    x="10"
+                    width="65"
+                    y="6"
+                    height="5.5"
+                    id="isRAgroupedRow01" />
+        </g>
+    </g>
 </g
                                                                             ><g id="canonStructurePips" transform="matrix (1.041 0 0 1.041 -415.054,-405.211)"
                                                                           /></g
