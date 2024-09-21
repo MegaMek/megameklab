@@ -111,18 +111,18 @@ public class PrintMek extends PrintEntity {
         }
         // mek type
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
-            sb.append("Land-Air 'Mek");
+            sb.append("Land-Air 'Mech");
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             if (mek.isOmni()) {
                 sb.append("Omni");
             }
             sb.append("QuadVee");
         } else if (mek.isIndustrial()) {
-            sb.append("IndustrialMek");
+            sb.append("IndustrialMech");
         } else if (mek.isOmni()) {
-            sb.append("OmniMek");
+            sb.append("OmniMech");
         } else {
-            sb.append("BattleMek");
+            sb.append("BattleMech");
         }
         sb.append(" Record Sheet");
         return sb.toString();
