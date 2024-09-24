@@ -101,7 +101,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected String heatProfileText() {
         int heat = getEntity().getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
-        return "Total Heat (Dissipation): " + heat + " (" + getEntity().getHeatCapacity() + ")";
+        return "Total Heat (Dissipation): " + heat + " (" + getEntity().formatHeat() + ")";
     }
 
     /**
