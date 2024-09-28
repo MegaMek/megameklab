@@ -17,7 +17,7 @@ import megameklab.util.CConfig;
 
 /**
  * A set of options for controlling what is displayed on the record sheet
- * 
+ *
  * @author neoancient
  *
  */
@@ -35,6 +35,8 @@ public class RecordSheetOptions {
     private boolean referenceCharts;
     private boolean condensedReferenceCharts;
     private boolean rowShading;
+    private boolean alternateArmorGrouping;
+    private boolean frameless;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -54,6 +56,8 @@ public class RecordSheetOptions {
         this.referenceCharts = CConfig.getBooleanParam(CConfig.RS_REFERENCE);
         this.condensedReferenceCharts = CConfig.getBooleanParam(CConfig.RS_CONDENSED_REFERENCE);
         this.rowShading = CConfig.getBooleanParam(CConfig.RS_ROW_SHADING);
+        this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
+        this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -69,6 +73,8 @@ public class RecordSheetOptions {
         referenceCharts = options.referenceCharts;
         condensedReferenceCharts = options.condensedReferenceCharts;
         rowShading = options.rowShading;
+        alternateArmorGrouping = options.alternateArmorGrouping;
+        frameless = options.frameless;
     }
 
     public PaperSize getPaperSize() {
@@ -94,11 +100,11 @@ public class RecordSheetOptions {
     public boolean showHeatProfile() {
         return heatProfile;
     }
-    
+
     public void setPilotData(boolean pilotData) {
         this.pilotData = pilotData;
     }
-    
+
     public boolean showEraIcon() {
         return eraIcon;
     }
@@ -123,6 +129,14 @@ public class RecordSheetOptions {
         return rowShading;
     }
 
+    public boolean useAlternateArmorGrouping() {
+        return alternateArmorGrouping;
+    }
+
+    public boolean isFrameless() {
+        return frameless;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -130,7 +144,7 @@ public class RecordSheetOptions {
     public void setColor(boolean color) {
         this.color = color;
     }
-    
+
     public void setEraIcon(boolean eraIcon) {
         this.eraIcon = eraIcon;
     }
@@ -161,5 +175,13 @@ public class RecordSheetOptions {
 
     public void setRowShading(boolean rowShading) {
         this.rowShading = rowShading;
+    }
+
+    public void setAlternateArmorGrouping(boolean alternateArmorGrouping) {
+        this.alternateArmorGrouping = alternateArmorGrouping;
+    }
+
+    public void setFrameless(boolean frameless) {
+        this.frameless = frameless;
     }
 }

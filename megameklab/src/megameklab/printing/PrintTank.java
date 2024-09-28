@@ -170,6 +170,17 @@ public class PrintTank extends PrintEntity {
     }
 
     @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        if (tank.isSuperHeavy() && !(tank instanceof VTOL)) {
+            return false;
+        }
+        if (tank.isNaval() && !tank.hasNoDualTurret()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         List<String> chassisMods = tank.getMisc().stream()

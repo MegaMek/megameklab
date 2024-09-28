@@ -371,4 +371,9 @@ public class PrintCapitalShip extends PrintDropship {
         box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
         return box;
     }
+
+    @Override
+    public boolean supportsAlternateArmorGrouping() {
+        return false;
+    }
 }

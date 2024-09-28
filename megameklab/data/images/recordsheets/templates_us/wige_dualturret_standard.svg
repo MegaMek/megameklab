@@ -1159,6 +1159,26 @@
                                                                                                 />
     </g
                                                                                                 >
+      <g
+              id="structurePipsRSgrouped"
+              transform="matrix(0.254939,0.966957,-0.966957,0.254939,110,124.006)">
+          <rect
+                  x="1"
+                  width="70"
+                  y="1"
+                  height="8"
+                  id="rect320" />
+      </g>
+      <g
+              id="structurePipsLSgrouped"
+              transform="matrix(-0.254939,0.966957,0.966957,0.254939,54,124.006)">
+          <rect
+                  x="1"
+                  width="70"
+                  y="1"
+                  height="8"
+                  id="rect302" />
+      </g>
     <g id="structurePipsRR" transform="translate(81.635,197.28)"
                                                                                                 >
       <rect x="-35.08" width="70.16" y="0" height="5.6" id="structurePipsRR00"

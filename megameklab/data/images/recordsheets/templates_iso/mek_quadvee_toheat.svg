@@ -1752,7 +1752,8 @@
                                                                                   >Torso</tspan
                                                                                 ></text
                                                                                 ><g transform="matrix(1,0,0,-1,0,765)"
-                                                                                ><g id="structurePips"
+                                                                                >
+    <g id="structurePips"
                                                                                   ><g id="isPipsHD"
                                                                                     ><g id="g1462" transform="translate(475.7472,409.4425)"
                                                                                       ><path style="fill:none;stroke:#231f20;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z" id="path1464"
@@ -1881,7 +1882,77 @@
                                                                                       /><rect x="0" width="11.64" y="70.5526" height="5.4313" id="rect1597"
                                                                                     /></g
                                                                                   ></g
-                                                                                  ><g style="font-size:6.76140022px" id="armorValues"
+                                                                                  >
+    <g
+            id="structurePipsGrouped"
+            transform="translate(300,400)"
+            fill="none">
+        <g
+                id="isPipsFRL"
+                transform="matrix(0.104528, 0.994522, -0.994522, 0.104528, 205.5, 65.0)">
+            <rect
+                    id="rect432"
+                    x="0"
+                    y="0"
+                    height="5"
+                    width="82.5" />
+            <rect
+                    id="rect433"
+                    x="-14"
+                    y="-5"
+                    height="5"
+                    width="97" />
+        </g>
+        <g
+                id="isPipsFLL"
+                transform="matrix(-.104528, 0.994522, 0.994522, 0.104528, 137, 65.0)">
+            <rect
+                    id="rect434"
+                    x="0"
+                    y="0"
+                    height="5"
+                    width="82.5" />
+            <rect
+                    id="rect435"
+                    x="-14"
+                    y="-5"
+                    height="5"
+                    width="97" />
+        </g>
+        <g
+                id="isPipsRRL"
+                transform="matrix(0.0174524, 0.999848, -0.999848, 0.0174524, 190.5, 63.5)">
+            <rect
+                    id="rect436"
+                    x="0"
+                    y="0"
+                    height="5"
+                    width="76" />
+            <rect
+                    id="rect437"
+                    x="-3.5"
+                    y="-5"
+                    height="5"
+                    width="80" />
+        </g>
+        <g
+                id="isPipsRLL"
+                transform="matrix(-.0174524, 0.999848, 0.999848, 0.0174524, 152, 63.5)">
+            <rect
+                    id="rect438"
+                    x="0"
+                    y="0"
+                    height="5"
+                    width="76" />
+            <rect
+                    id="rect439"
+                    x="-3.5"
+                    y="-5"
+                    height="5"
+                    width="80" />
+        </g>
+    </g>
+    <g style="font-size:6.76140022px" id="armorValues"
                                                                                   ><text x="471.63" y="508.64" id="textIS_CT" font-weight="bold" text-anchor="middle"
                                                                                     >( 0 )</text
                                                                                     >

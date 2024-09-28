@@ -356,4 +356,9 @@ public class PrintDropship extends PrintAero {
         }
         return sj.toString();
     }
+
+    @Override
+    public boolean supportsAlternateArmorGrouping() {
+        return true;
+    }
 }

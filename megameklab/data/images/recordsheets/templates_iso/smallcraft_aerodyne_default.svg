@@ -1098,14 +1098,124 @@
                                                                                 />
     </g
                                                                                 >
-    <g id="armorPipsAFT" transform="translate(148.105,224.08)"
-                                                                                >
-      <rect x="-33" width="66" y="0" height="6.8" id="armorAFTRow00"
-                                                                                  />
-      <rect x="-33" width="66" y="122.4" height="6.8" id="armorAFTRow01"
-                                                                                  />
-    </g
-                                                                                  >
+       <g
+               id="armorPipsAFT"
+               transform="translate(148.105,224.08)">
+           <rect
+                   x="-33"
+                   width="66"
+                   y="0"
+                   height="6.8"
+                   id="armorAFTRow00" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="6.8"
+                   height="6.8"
+                   id="rect474" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="13.6"
+                   height="6.8"
+                   id="rect475" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="20.4"
+                   height="6.8"
+                   id="rect476" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="27.2"
+                   height="6.8"
+                   id="rect477" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="34"
+                   height="6.8"
+                   id="rect478" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="40.8"
+                   height="6.8"
+                   id="rect479" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="47.6"
+                   height="6.8"
+                   id="rect480" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="54.4"
+                   height="6.8"
+                   id="rect481" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="61.2"
+                   height="6.8"
+                   id="rect482" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="68"
+                   height="6.8"
+                   id="rect483" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="74.8"
+                   height="6.8"
+                   id="rect484" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="81.6"
+                   height="6.8"
+                   id="rect485" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="88.4"
+                   height="6.8"
+                   id="rect486" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="95.2"
+                   height="6.8"
+                   id="rect487" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="102"
+                   height="6.8"
+                   id="rect488" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="108.8"
+                   height="6.8"
+                   id="rect489" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="115.6"
+                   height="6.8"
+                   id="rect490" />
+           <rect
+                   x="-33"
+                   width="66"
+                   y="122.4"
+                   height="6.8"
+                   id="armorAFTRow01" />
+       </g>
   </g
                                                                                   >
   <g fill="none" id="structurePips"

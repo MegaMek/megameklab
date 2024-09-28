@@ -9,7 +9,7 @@
    version="1.0"
    id="svg492"
    sodipodi:docname="submarine_noturret_standard.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="1.5515873"
-     inkscape:cx="287.76982"
-     inkscape:cy="378"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="3832"
-     inkscape:window-y="-8"
+     inkscape:cx="287.44757"
+     inkscape:cy="165.63683"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="armorPips" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -1973,35 +1973,17 @@
                  height="10"
                  id="armorFRRow00" />
               <rect
-                 x="-29.24"
-                 width="58.48"
-                 y="5"
-                 height="10"
-                 id="armorFRRow01" />
-              <rect
                  x="-36.89"
                  width="73.78"
                  y="10"
                  height="10"
                  id="armorFRRow02" />
               <rect
-                 x="-41.4"
-                 width="82.8"
-                 y="15"
-                 height="10"
-                 id="armorFRRow03" />
-              <rect
                  x="-44.19"
                  width="88.38"
                  y="20"
                  height="10"
                  id="armorFRRow04" />
-              <rect
-                 x="-51.03"
-                 width="102.06"
-                 y="25"
-                 height="10"
-                 id="armorFRRow05" />
               <rect
                  x="-54.87"
                  width="109.74"
@@ -3314,6 +3296,30 @@
                  y="54.4"
                  height="6.8"
                  id="structurePipsTU08" />
+            </g>
+          </g>
+          <g
+             fill="none"
+             id="structurePipsGrouped">
+            <g
+               id="structurePipsRSgrouped"
+               transform="matrix(0, 1, -1, 0, 515, 190)">
+              <rect
+                 x="-15"
+                 width="340"
+                 y="0"
+                 height="6.8"
+                 id="rect100" />
+            </g>
+            <g
+               id="structurePipsLSgrouped"
+               transform="matrix(0, 1, 1, 0, 464, 190)">
+              <rect
+                 x="-15"
+                 width="340"
+                 y="0"
+                 height="6.8"
+                 id="rect230" />
             </g>
           </g>
         </g>

@@ -58,6 +58,8 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<MekChassisArrangement> mekChassis =
             new MMComboBox<>("Mek Names", MekChassisArrangement.values());
     private final JCheckBox chkRowShading = new JCheckBox();
+    private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
+    private final JCheckBox chkFrameless = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -102,6 +104,14 @@ class ExportSettingsPanel extends JPanel {
         chkColor.setText(resourceMap.getString("ConfigurationDialog.chkColor.text"));
         chkColor.setToolTipText(resourceMap.getString("ConfigurationDialog.chkColor.tooltip"));
         chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
+
+        chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
+        chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
+        chkAlternateArmorGrouping.setSelected(CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING));
+
+        chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
+        chkFrameless.setToolTipText(resourceMap.getString("ConfigurationDialog.chkFrameless.tooltip"));
+        chkFrameless.setSelected(CConfig.getBooleanParam(CConfig.RS_FRAMELESS));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -183,9 +193,11 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkShowRole);
         gridPanel.add(chkHeatProfile);
         gridPanel.add(chkTacOpsHeat);
+        gridPanel.add(chkAlternateArmorGrouping);
+        gridPanel.add(chkFrameless);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 15, 1, 0, 0, 15, 8);
+        SpringUtilities.makeCompactGrid(gridPanel, 17, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -210,6 +222,8 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
         recordSheetSettings.put(CConfig.RS_MEK_NAMES,
                 Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+        recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
+        recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         return recordSheetSettings;
     }
 

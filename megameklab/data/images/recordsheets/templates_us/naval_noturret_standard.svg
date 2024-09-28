@@ -9,7 +9,7 @@
    version="1.0"
    id="svg465"
    sodipodi:docname="naval_noturret_standard.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.5515873"
-     inkscape:cx="287.76982"
-     inkscape:cy="378"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="3832"
-     inkscape:window-y="-8"
+     inkscape:zoom="2.2371848"
+     inkscape:cx="392.90452"
+     inkscape:cy="353.56937"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="structurePipsGrouped" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -1856,7 +1856,7 @@
        y="264.952" />
     <g
        transform="translate (387.000 3.000)"
-       id="g307">
+       id="ArmorDiagram">
       <g
          transform="matrix(1.027 0 0 1.027 0.000 50.464)"
          id="g278">
@@ -1973,35 +1973,17 @@
                  height="10"
                  id="armorFRRow00" />
               <rect
-                 x="-29.24"
-                 width="58.48"
-                 y="5"
-                 height="10"
-                 id="armorFRRow01" />
-              <rect
                  x="-36.89"
                  width="73.78"
                  y="10"
                  height="10"
                  id="armorFRRow02" />
               <rect
-                 x="-41.4"
-                 width="82.8"
-                 y="15"
-                 height="10"
-                 id="armorFRRow03" />
-              <rect
                  x="-44.19"
                  width="88.38"
                  y="20"
                  height="10"
                  id="armorFRRow04" />
-              <rect
-                 x="-51.03"
-                 width="102.06"
-                 y="25"
-                 height="10"
-                 id="armorFRRow05" />
               <rect
                  x="-54.87"
                  width="109.74"
@@ -3199,121 +3181,30 @@
                  height="6.8"
                  id="rect278" />
             </g>
+          </g>
+          <g
+             fill="none"
+             id="structurePipsGrouped"
+             >
             <g
-               id="structurePipsFT"
-               transform="translate(449.4,288.48)">
+               id="structurePipsRSgrouped"
+               transform="matrix(0, 1, -1, 0, 515, 190)">
               <rect
-                 x="-14"
-                 width="28"
+                 x="-15"
+                 width="340"
                  y="0"
                  height="6.8"
-                 id="structurePipsFT00" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="6.8"
-                 height="6.8"
-                 id="structurePipsFT01" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="13.6"
-                 height="6.8"
-                 id="structurePipsFT02" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="20.4"
-                 height="6.8"
-                 id="structurePipsFT03" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="27.2"
-                 height="6.8"
-                 id="structurePipsFT04" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="34"
-                 height="6.8"
-                 id="structurePipsFT05" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="40.8"
-                 height="6.8"
-                 id="structurePipsFT06" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="47.6"
-                 height="6.8"
-                 id="structurePipsFT07" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="54.4"
-                 height="6.8"
-                 id="structurePipsFT08" />
+                 id="rect100" />
             </g>
             <g
-               id="structurePipsTU"
-               transform="translate(503.8,288.48)">
+               id="structurePipsLSgrouped"
+               transform="matrix(0, 1, 1, 0, 464, 190)">
               <rect
-                 x="-14"
-                 width="28"
+                 x="-15"
+                 width="340"
                  y="0"
                  height="6.8"
-                 id="structurePipsTU00" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="6.8"
-                 height="6.8"
-                 id="structurePipsTU01" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="13.6"
-                 height="6.8"
-                 id="structurePipsTU02" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="20.4"
-                 height="6.8"
-                 id="structurePipsTU03" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="27.2"
-                 height="6.8"
-                 id="structurePipsTU04" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="34"
-                 height="6.8"
-                 id="structurePipsTU05" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="40.8"
-                 height="6.8"
-                 id="structurePipsTU06" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="47.6"
-                 height="6.8"
-                 id="structurePipsTU07" />
-              <rect
-                 x="-14"
-                 width="28"
-                 y="54.4"
-                 height="6.8"
-                 id="structurePipsTU08" />
+                 id="rect230" />
             </g>
           </g>
         </g>

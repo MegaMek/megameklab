@@ -1317,7 +1317,8 @@
                                                                           >
 
 <g transform="matrix(1,0,0,-1,0,765)"
-                                                                          ><g id="armorPips"
+                                                                          >
+    <g id="armorPips"
                                                                             ><g fill="none" id="armorPipsHD" transform="translate(474.192,52.58528)"
                                                                               ><rect x="0" width="18.5" y="0" height="6.15152"
                                                                                 /><rect x="0" width="18.5" y="6.2" height="6.15152" id="rect1671"
@@ -1530,7 +1531,315 @@
                                                                                 /><rect x="0" width="27.77" y="31.9632" height="6.15152" id="rect2032"
                                                                               /></g
                                                                             ></g
-                                                                            ><g style="font-size:5.7954998px" id="armorValues" transform="translate(0,-3.2)"
+                                                                            >
+    <g
+            id="armorPipsGrouped">
+        <g
+                fill="none"
+                id="armorPipsHDgrouped"
+                transform="translate(474.192,52.58528)">
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="1"
+                    height="6"
+                    id="rect451" />
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="8"
+                    height="6"
+                    id="rect452" />
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="15"
+                    height="6"
+                    id="rect453" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsHD_SHgrouped"
+                transform="translate(474.192,52.58528)">
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="1"
+                    height="6"
+                    id="rect454" />
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="8"
+                    height="6"
+                    id="rect455" />
+            <rect
+                    x="-5.5"
+                    width="30"
+                    y="15"
+                    height="6"
+                    id="rect456" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRTgrouped"
+                transform="matrix(0.0174524, -0.999848, 0.999848, 0.0174524, 502.0, 167.5)">
+            <rect
+                    x="0"
+                    width="96"
+                    y="0"
+                    height="6"
+                    id="rect491" />
+            <rect
+                    x="3"
+                    width="98"
+                    y="6"
+                    height="6"
+                    id="rect507" />
+            <rect
+                    x="6"
+                    width="20"
+                    y="12"
+                    height="6"
+                    id="rect508" />
+            <rect
+                    x="50.5"
+                    width="49"
+                    y="12"
+                    height="6"
+                    id="rect509" />
+            <rect
+                    x="53"
+                    width="45"
+                    y="18"
+                    height="6"
+                    id="rect510" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRAgrouped"
+                transform="matrix(0.0871557, -0.996195, 0.996195, 0.0871557, 542, 148)">
+            <rect
+                    x="77"
+                    width="22"
+                    y="-18"
+                    height="6"
+                    id="rect541" />
+            <rect
+                    x="52"
+                    width="46"
+                    y="-12"
+                    height="6"
+                    id="rect540" />
+            <rect
+                    x="43.5"
+                    width="53"
+                    y="-6"
+                    height="6"
+                    id="rect539" />
+            <rect
+                    x="0"
+                    width="92"
+                    y="0"
+                    height="6"
+                    id="rect533" />
+            <rect
+                    x="-1"
+                    width="63"
+                    y="6"
+                    height="6"
+                    id="rect534" />
+            <rect
+                    x="70"
+                    width="15"
+                    y="6.01"
+                    height="6"
+                    id="rect537" />
+            <rect
+                    x="-2"
+                    width="55"
+                    y="12"
+                    height="6"
+                    id="rect535" />
+            <rect
+                    x="68"
+                    width="6.01"
+                    y="12"
+                    height="6"
+                    id="rect538" />
+            <rect
+                    x="7"
+                    width="10"
+                    y="18"
+                    height="6"
+                    id="rect536" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsLAgrouped"
+                transform="matrix(-0.0871557, -0.996195, -0.996195, 0.0871557, 426, 148)">
+            <rect
+                    x="77"
+                    width="22"
+                    y="-18"
+                    height="6"
+                    id="rect542" />
+            <rect
+                    x="52"
+                    width="46"
+                    y="-12"
+                    height="6"
+                    id="rect543" />
+            <rect
+                    x="43.5"
+                    width="53"
+                    y="-6"
+                    height="6"
+                    id="rect544" />
+            <rect
+                    x="0"
+                    width="92"
+                    y="0"
+                    height="6"
+                    id="rect545" />
+            <rect
+                    x="-1"
+                    width="63"
+                    y="6"
+                    height="6"
+                    id="rect546" />
+            <rect
+                    x="70"
+                    width="15"
+                    y="6.01"
+                    height="6"
+                    id="rect547" />
+            <rect
+                    x="-2"
+                    width="55"
+                    y="12"
+                    height="6"
+                    id="rect548" />
+            <rect
+                    x="68"
+                    width="6.01"
+                    y="12"
+                    height="6"
+                    id="rect549" />
+            <rect
+                    x="7"
+                    width="10"
+                    y="18"
+                    height="6"
+                    id="rect550" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsLTgrouped"
+                transform="matrix(-0.0174524, -0.999848, -0.999848, 0.0174524, 466, 167.5)">
+            <rect
+                    x="0"
+                    width="96"
+                    y="0"
+                    height="6"
+                    id="rect511" />
+            <rect
+                    x="3"
+                    width="98"
+                    y="6"
+                    height="6"
+                    id="rect512" />
+            <rect
+                    x="6"
+                    width="20"
+                    y="12"
+                    height="6"
+                    id="rect513" />
+            <rect
+                    x="50.5"
+                    width="49"
+                    y="12"
+                    height="6"
+                    id="rect514" />
+            <rect
+                    x="53"
+                    width="45"
+                    y="18"
+                    height="6"
+                    id="rect515" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRTRgrouped"
+                transform="matrix(0.0871557, -0.996195, 0.996195, 0.0871557, 485, 345)&#10;">
+            <rect
+                    x="-1"
+                    width="38"
+                    y="31"
+                    height="6"
+                    id="rect463" />
+            <rect
+                    x="-2"
+                    width="39"
+                    y="25"
+                    height="6"
+                    id="rect464" />
+            <rect
+                    x="-3"
+                    width="40"
+                    y="19"
+                    height="6"
+                    id="rect465" />
+            <rect
+                    x="-4"
+                    width="42"
+                    y="13"
+                    height="6"
+                    id="rect466" />
+            <rect
+                    x="-5"
+                    width="17"
+                    y="7"
+                    height="6"
+                    id="rect467" />
+        </g>
+        <g
+                fill="none"
+                id="armorPipsLTRgrouped"
+                transform="matrix(-0.0871557, -0.996195, -0.996195, 0.0871557, 471, 345)">
+            <rect
+                    x="-1"
+                    width="38"
+                    y="31"
+                    height="6"
+                    id="rect468" />
+            <rect
+                    x="-2"
+                    width="39"
+                    y="25"
+                    height="6"
+                    id="rect469" />
+            <rect
+                    x="-3"
+                    width="40"
+                    y="19"
+                    height="6"
+                    id="rect470" />
+            <rect
+                    x="-4"
+                    width="42"
+                    y="13"
+                    height="6"
+                    id="rect471" />
+            <rect
+                    x="-5"
+                    width="17"
+                    y="7"
+                    height="6"
+                    id="rect472" />
+        </g>
+    </g>
+    <g style="font-size:5.7954998px" id="armorValues" transform="translate(0,-3.2)"
                                                                             >
 <text x="490.57" y="46.27" id="textArmor_HD" font-weight="bold"
                                                                               >( 0 )</text
@@ -2191,7 +2500,8 @@
                                                                               ></text
                                                                             ></g
                                                                             ><g transform="matrix(1,0,0,-1,0,767.9713)"
-                                                                            ><g id="structurePips" transform="translate(0,2)"
+                                                                            >
+    <g id="structurePips" transform="translate(0,2)"
                                                                               ><g id="isPipsHD"
                                                                                 ><g id="g5600" transform="translate(469.0506,405.3801)"
                                                                                   ><path style="fill:none;stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1" d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z" id="path5602"
@@ -2349,7 +2659,220 @@
                                                                                   /><rect x="5.6633601" width="8.8443" y="92.150002" height="5.431300" id="rect2242"
                                                                                 /></g
                                                                               ></g
-                                                                              ><g style="font-size:5.7954998px" id="armorValues"
+                                                                              >
+    <g
+            id="structurePipsGrouped">
+        <g
+                fill="none"
+                id="isPipsCLgrouped"
+                transform="matrix(0,-1,1,0,462.5,552)">
+            <rect
+                    x="17"
+                    width="40"
+                    y="-5"
+                    height="5"
+                    id="rect567" />
+            <rect
+                    x="0"
+                    width="75"
+                    y="0"
+                    height="5"
+                    id="rect565" />
+            <rect
+                    x="17"
+                    width="40"
+                    y="5"
+                    height="5"
+                    id="rect566" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsRLgrouped"
+                transform="matrix(-0.207912, -0.978148, 0.978148, -0.207912, 505, 552)">
+            <rect
+                    x="74"
+                    width="13"
+                    y="-10"
+                    height="5"
+                    id="rect573" />
+            <rect
+                    x="67"
+                    width="19"
+                    y="-5"
+                    height="5"
+                    id="rect572" />
+            <rect
+                    x="0"
+                    width="78"
+                    y="0"
+                    height="5"
+                    id="rect569" />
+            <rect
+                    x="-2"
+                    width="70"
+                    y="5"
+                    height="5"
+                    id="rect570" />
+            <rect
+                    x="20"
+                    width="10"
+                    y="10"
+                    height="5"
+                    id="rect571" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsLLgrouped"
+                transform="matrix(0.207912, -0.978148, -0.978148, -0.207912, 425, 552)">
+            <rect
+                    x="74"
+                    width="13"
+                    y="-10"
+                    height="5"
+                    id="rect574" />
+            <rect
+                    x="67"
+                    width="19"
+                    y="-5"
+                    height="5"
+                    id="rect575" />
+            <rect
+                    x="0"
+                    width="78"
+                    y="0"
+                    height="5"
+                    id="rect576" />
+            <rect
+                    x="-2"
+                    width="70"
+                    y="5"
+                    height="5"
+                    id="rect577" />
+            <rect
+                    x="20"
+                    width="10"
+                    y="10"
+                    height="5"
+                    id="rect578" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsRAgrouped"
+                transform="matrix(-0.104528, -0.994522, 0.994522, -0.104528, 511, 481)">
+            <rect
+                    x="0"
+                    width="76"
+                    y=".5"
+                    height="4.5"
+                    id="rect581" />
+            <rect
+                    x="15"
+                    width="60.5"
+                    y="5"
+                    height="4.5"
+                    id="rect583" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsLAgrouped"
+                transform="matrix(0.104528, -0.994522, -0.994522, -0.104528, 419, 481)">
+            <rect
+                    x="0"
+                    width="76"
+                    y=".5"
+                    height="4.5"
+                    id="rect584" />
+            <rect
+                    x="15"
+                    width="60.5"
+                    y="5"
+                    height="4.5"
+                    id="rect585" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsRTgrouped"
+                transform="matrix(0.0697565, -0.997564, 0.997564, 0.0697565, 477, 467)">
+            <rect
+                    x="0"
+                    width="60"
+                    y="0"
+                    height="4.5"
+                    id="rect586" />
+            <rect
+                    x="0.5"
+                    width="13"
+                    y="4.5"
+                    height="4.5"
+                    id="rect587" />
+            <rect
+                    x="30.5"
+                    width="30"
+                    y="4.5001"
+                    height="4.5"
+                    id="rect589" />
+            <rect
+                    x="0.5"
+                    width="12"
+                    y="9"
+                    height="4.5"
+                    id="rect588" />
+            <rect
+                    x="31.5"
+                    width="30"
+                    y="9.001"
+                    height="4.5"
+                    id="rect590" />
+            <rect
+                    x="47"
+                    width="10"
+                    y="13.5"
+                    height="4.5"
+                    id="rect591" />
+        </g>
+        <g
+                fill="none"
+                id="isPipsLTgrouped"
+                transform="matrix(-0.0697565, -0.997564, -0.997564, 0.0697565, 453, 467)">
+            <rect
+                    x="0"
+                    width="60"
+                    y="0"
+                    height="4.5"
+                    id="rect592" />
+            <rect
+                    x="0.5"
+                    width="13"
+                    y="4.5"
+                    height="4.5"
+                    id="rect593" />
+            <rect
+                    x="30.5"
+                    width="30"
+                    y="4.5001"
+                    height="4.5"
+                    id="rect594" />
+            <rect
+                    x="0.5"
+                    width="12"
+                    y="9"
+                    height="4.5"
+                    id="rect595" />
+            <rect
+                    x="31.5"
+                    width="30"
+                    y="9.001"
+                    height="4.5"
+                    id="rect596" />
+            <rect
+                    x="47"
+                    width="10"
+                    y="13.5"
+                    height="4.5"
+                    id="rect597" />
+        </g>
+    </g>
+    <g style="font-size:5.7954998px" id="armorValues"
                                                                               >
 <text x="485.21" y="528.32" id="textIS_CT" font-weight="bold" text-anchor="middle"
                                                                                 >( 0 )</text

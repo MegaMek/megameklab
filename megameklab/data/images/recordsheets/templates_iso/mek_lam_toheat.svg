@@ -1348,7 +1348,128 @@
                                                                               /><rect x="7.86" width="21.78" y="31.9632" height="6.15152" id="armorLTRRow06"
                                                                             /></g
                                                                           ></g
-                                                                          ><g style="font-size:5.7954998px" id="armorValues" transform="translate(-391.12064,-19.334069)"
+                                                                          >
+    <g
+            id="armorPipsGrouped"
+            transform="translate(-391.72064,-19.834069)">
+        <g
+                fill="none"
+                id="armorPipsLLgrouped"
+                transform="matrix(0.225, -0.974, -0.974, -0.225, 444, 299)">
+            <rect
+                    x="0"
+                    width="125"
+                    y="0"
+                    height="6"
+                    id="armorLLgroupedRow00"/>
+            <rect
+                    x="-1"
+                    width="125"
+                    y="6.5"
+                    height="6"
+                    id="armorLLgroupedRow01"/>
+            <rect
+                    x="-2"
+                    width="125"
+                    y="13"
+                    height="6"
+                    id="armorLLgroupedRow02"/>
+            <rect
+                    x="-3"
+                    width="125"
+                    y="19.5"
+                    height="6"
+                    id="armorLLgroupedRow03"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRLgrouped"
+                transform="matrix(-0.225, -0.974, 0.974, -0.225, 499, 180)">
+            <rect
+                    x="-122"
+                    width="125"
+                    y="0"
+                    height="6"
+                    id="armorRLgroupedRow00"/>
+            <rect
+                    x="-123"
+                    width="125"
+                    y="6.5"
+                    height="6"
+                    id="armorRLgroupedRow01"/>
+            <rect
+                    x="-124"
+                    width="125"
+                    y="13"
+                    height="6"
+                    id="armorRLgroupedRow02"/>
+            <rect
+                    x="-125"
+                    width="125"
+                    y="19.5"
+                    height="6"
+                    id="armorRLgroupedRow03"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsLAgrouped"
+                transform="matrix(-0.087, 0.996, 0.996, 0.087, 428, 58)">
+            <rect
+                    x="12"
+                    width="100"
+                    y="0"
+                    height="6"
+                    id="rect274"/>
+            <rect
+                    x="12"
+                    width="100"
+                    y="-6"
+                    height="6"
+                    id="rect275"/>
+            <rect
+                    x="22"
+                    width="90"
+                    y="-12"
+                    height="6"
+                    id="rect276"/>
+            <rect
+                    x="26"
+                    width="26"
+                    y="-18"
+                    height="6"
+                    id="rect277"/>
+        </g>
+        <g
+                fill="none"
+                id="armorPipsRAgrouped"
+                transform="matrix(0.087, 0.996, -0.996, 0.087, 543, 58)">
+            <rect
+                    x="12"
+                    width="100"
+                    y="0"
+                    height="6"
+                    id="armorRAgroupedRow00"/>
+            <rect
+                    x="12"
+                    width="100"
+                    y="-6"
+                    height="6"
+                    id="armorRAgroupedRow01"/>
+            <rect
+                    x="22"
+                    width="90"
+                    y="-12"
+                    height="6"
+                    id="armorRAgroupedRow02"/>
+            <rect
+                    x="26"
+                    width="26"
+                    y="-18"
+                    height="6"
+                    id="armorRAgroupedRow03"/>
+        </g>
+    </g>
+    <g style="font-size:5.7954998px" id="armorValues" transform="translate(-391.12064,-19.334069)"
                                                                           >
 <text x="499.63" id="patchworkHD" y="46.27"
                                                                             />

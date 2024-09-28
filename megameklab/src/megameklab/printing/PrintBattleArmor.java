@@ -141,6 +141,11 @@ public class PrintBattleArmor extends PrintEntity {
     }
 
     @Override
+    protected boolean supportsAlternateArmorGrouping() {
+        return false;
+    }
+
+    @Override
     public String formatMiscNotes() {
         final StringJoiner sj = new StringJoiner(" ");
         if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0)

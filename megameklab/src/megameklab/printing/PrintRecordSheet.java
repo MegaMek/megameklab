@@ -31,18 +31,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.anim.dom.SVGOMElement;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgentAdapter;
@@ -270,6 +266,27 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void makeFrameless() {
+        for (Element e : getElementsByClass(FRAME)) {
+            hideElement(e.getAttributes().getNamedItem("id").getNodeValue(), options.isFrameless());
+            if (options.isFrameless()) {
+                // I have no idea with this loop is necessary
+                // Hiding a parent should hide its children
+                // But without it pilot data sneaks onto the sheet
+                for (int i = 0; i < e.getChildNodes().getLength(); i++) {
+                    var c = e.getChildNodes().item(i);
+                    if (!(c instanceof SVGOMElement child)) {
+                        continue;
+                    }
+                    if (child.getId() == null) {
+                        child.setId(UUID.randomUUID().toString());
+                    }
+                    hideElement(child.getId(), true);
+                }
+            }
+        }
+    }
+
     /**
      * Creates a {@link Document} from an svg image file
      *
@@ -367,6 +384,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         processImage(pageIndex - firstPage, pageFormat);
         shadeTableRows();
+        makeFrameless();
         return true;
     }
 
