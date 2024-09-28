@@ -35,10 +35,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.common.*;
+import megamek.common.options.GameOptions;
 import megamek.logging.MMLogger;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
+
+import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
+import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
 
 public class UnitPrintManager {
     private static final MMLogger logger = MMLogger.create(UnitPrintManager.class);
@@ -75,7 +79,11 @@ public class UnitPrintManager {
         }
         Vector<Entity> loadedUnits;
         try {
-            loadedUnits = new MULParser(f.getSelectedFile(), null).getEntities();
+            var options = new GameOptions();
+            options.initialize();
+            options.getOption(RPG_MANEI_DOMINI).setValue(true);
+            options.getOption(RPG_PILOT_ADVANTAGES).setValue(true);
+            loadedUnits = new MULParser(f.getSelectedFile(), options).getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             logger.error("", ex);
