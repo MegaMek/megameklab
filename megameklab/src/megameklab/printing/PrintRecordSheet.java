@@ -268,8 +268,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     private void makeFrameless() {
         for (Element e : getElementsByClass(FRAME)) {
-            hideElement(e.getAttributes().getNamedItem("id").getNodeValue(), options.isFrameless());
             if (options.isFrameless()) {
+                hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
+
                 // I have no idea with this loop is necessary
                 // Hiding a parent should hide its children
                 // But without it pilot data sneaks onto the sheet
@@ -281,7 +282,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     if (child.getId() == null) {
                         child.setId(UUID.randomUUID().toString());
                     }
-                    hideElement(child.getId(), true);
+                    hideElement(child.getId());
                 }
             }
         }
