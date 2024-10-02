@@ -6,6 +6,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1610, #1614: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
 + Fix #1541: On ProtoMeks, armor slots are no longer counted twice during validation
 + FIX #1501: Allow artillery on aeros according to TO:AUE
++ PR #1628: Fix iso weapons inventory
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
