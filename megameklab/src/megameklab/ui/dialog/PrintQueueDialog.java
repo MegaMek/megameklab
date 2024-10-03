@@ -238,6 +238,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         Game g = new Game();
         Player p = new Player(1, "Nobody");
         for (Entity e : getEntities()) {
+            if (e.getId() == -1) {
+                e.setId(g.getNextEntityId());
+            }
             e.setOwner(p);
             g.addEntity(e);
             C3Util.wireC3(g, e);
