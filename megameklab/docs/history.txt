@@ -6,7 +6,11 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1610, #1614: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
 + Fix #1541: On ProtoMeks, armor slots are no longer counted twice during validation
 + FIX #1501: Allow artillery on aeros according to TO:AUE
++ PR #1598: Option to draw armor pips in record sheets with a different layout, grouping pips into groups of 5 for easy counting
++ PR #1621: Display correct heat capacities in heat profile of units with coolant pods or radical heat sink system
 + PR #1628: Fix iso weapons inventory
++ FIX #1625: Re-enable inclusion of SPAs when printing pilot data
++ FIX #1629: Record sheets printed from MUL file generated in MML now print with the correct walking MP
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
