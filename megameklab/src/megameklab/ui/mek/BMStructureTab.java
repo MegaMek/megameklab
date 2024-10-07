@@ -1377,13 +1377,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                             + ". Resetting to Standard Armor in this location.",
                     "Error",
                     JOptionPane.INFORMATION_MESSAGE);
-            getEntity().setArmorType(
-                    getMek().isIndustrial() ? EquipmentType.T_ARMOR_HEAVY_INDUSTRIAL : EquipmentType.T_ARMOR_STANDARD,
-                    location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            UnitUtil.resetArmor(getMek(), location);
         } else {
             getMek().setArmorType(armor.getArmorType(), location);
-            getMek().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
+            getMek().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()), location);
             for (; crits > 0; crits--) {
                 try {
                     getMek().addEquipment(Mounted.createMounted(getMek(), armor), location, false);
