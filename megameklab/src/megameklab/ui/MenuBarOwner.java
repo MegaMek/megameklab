@@ -18,10 +18,9 @@
  */
 package megameklab.ui;
 
-import megamek.MegaMek;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
-import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
 import megameklab.util.CConfig;
@@ -128,7 +127,7 @@ public interface MenuBarOwner extends AppCloser {
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(lookAndFeelInfo);
-                MegaMekLab.updateAfterUiChange();
+                UIUtil.updateAfterUiChange();
             } catch (Exception ex) {
                 PopupMessages.showLookAndFeelError(getFrame(), ex.getMessage());
             }

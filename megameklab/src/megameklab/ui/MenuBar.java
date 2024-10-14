@@ -39,6 +39,7 @@ import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
@@ -625,8 +626,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return themesMenu;
     }
 
-    private @Nullable JMenuItem createCConfigMenuItem(final String recentFileName,
-            final int fileNumber) {
+    private @Nullable JMenuItem createCConfigMenuItem(final String recentFileName, final int fileNumber) {
         File recent = new File(recentFileName);
         String path = recent.getParent();
         String mmlDirectory = System.getProperty("user.dir");
@@ -636,9 +636,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 path = path.substring(0, 40) + "...";
             }
         }
-
-        String text = "<HTML><NOBR>" + fileNumber + ". " + recent.getName() + "<BR><FONT SIZE=\"-2\">" + path;
-        final JMenuItem miCConfig = new JMenuItem(text);
+        String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
+        String style = ".small { font-size:smaller; color:gray; }";
+        String content = "<NOBR>%d. %s<BR>".formatted(fileNumber, recent.getName()) + UIUtil.spanCSS("small", path);
+        final JMenuItem miCConfig = new JMenuItem(html.formatted(style, content));
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
         miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.

@@ -16,7 +16,6 @@
  */
 package megameklab;
 
-import java.awt.*;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.util.Locale;
@@ -30,6 +29,7 @@ import megamek.MMLoggingConstants;
 import megamek.MegaMek;
 import megamek.SuiteConstants;
 import megamek.client.ui.preferences.SuitePreferences;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MekFileParser;
@@ -129,7 +129,7 @@ public class MegaMekLab {
         try {
             String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(plaf);
-            updateAfterUiChange();
+            UIUtil.updateAfterUiChange();
         } catch (Exception ex) {
             logger.error("setLookAndFeel() Exception {}", ex);
         }
@@ -138,20 +138,6 @@ public class MegaMekLab {
     public static void updateGuiScaling() {
         System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
         setLookAndFeel();
-        updateAfterUiChange();
-    }
-
-    /**
-     * Updates all existing windows and frames. Use after a gui scale change or look-and-feel change.
-     */
-    public static void updateAfterUiChange() {
-        for (Window window : Window.getWindows()) {
-            SwingUtilities.updateComponentTreeUI(window);
-            window.pack();
-            window.invalidate();
-            window.validate();
-            window.repaint();
-        }
     }
 
     public static SuitePreferences getMMLPreferences() {
