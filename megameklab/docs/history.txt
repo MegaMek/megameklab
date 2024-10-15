@@ -3,7 +3,7 @@ MEGAMEKLAB VERSION HISTORY:
 0.50.01-SNAPSHOT
 + PR #1608, #1611: Respecting Trademarks (Mech to Mek)
 + PR #1597: Code improvement to #1592; also now sets the default filename of the new file to the name of the original file
-+ PR #1610, #1614: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
++ PR #1610, #1614, #1637: MML's GUI can now be scaled similarly to MM's. It uses MM's scaling setting, so in a combined install MM and MML use the same scaling value.
 + Fix #1541: On ProtoMeks, armor slots are no longer counted twice during validation
 + FIX #1501: Allow artillery on aeros according to TO:AUE
 + PR #1598: Option to draw armor pips in record sheets with a different layout, grouping pips into groups of 5 for easy counting
