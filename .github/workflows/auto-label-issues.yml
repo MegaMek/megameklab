@@ -57,6 +57,9 @@ jobs:
             labels=""
             ;;
         esac
+
+        echo "::debug::Labels to be applied: $labels"
+
         if [[ -n "$labels" ]]; then
           echo "::debug::Applying labels: $labels"
           if gh issue edit ${{ github.event.issue.number }} --add-label "$labels"; then
