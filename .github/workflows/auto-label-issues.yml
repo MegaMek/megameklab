@@ -30,8 +30,15 @@ jobs:
         echo "Checking issue body for severity..."
         issue_body=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")
         echo "::debug::Issue Body: $issue_body"
+        
         # Extract the severity from the dropdown selection
         severity=$(echo "$issue_body" | sed -n 's/.*### Severity \*\s*\n\n\(.*\)/\1/p' | sed 's/^- //')
+        
+        # Log the regex extraction process
+        echo "::debug::Regex pattern used: 's/.*### Severity \*\s*\n\n\(.*\)/\1/p'"
+        echo "::debug::Severity after first sed: $(echo "$issue_body" | sed -n 's/.*### Severity \*\s*\n\n\(.*\)/\1/p')"
+        echo "::debug::Severity after second sed: $severity"
+        
         echo "::debug::Detected Severity: $severity"
         case "$severity" in
           "Critical (Game-breaking/Crash): The game crashes or a core feature (like saving, loading, or network connection) is completely unusable.")
