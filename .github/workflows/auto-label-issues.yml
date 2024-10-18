@@ -1,0 +1,63 @@
+name: Auto-label issues based on severity
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Install GitHub CLI
+      run: |
+        type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && sudo apt update \
+        && sudo apt install gh -y
+
+    - name: Determine severity and apply labels
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "Checking issue body for severity..."
+        issue_body=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")
+        echo "::debug::Issue Body: $issue_body"
+        # Extract the severity from the dropdown selection
+        severity=$(echo "$issue_body" | sed -n 's/.*### Severity \*\s*\n\n\(.*\)/\1/p' | sed 's/^- //')
+        echo "::debug::Detected Severity: $severity"
+        case "$severity" in
+          "Critical (Game-breaking/Crash): The game crashes or a core feature (like saving, loading, or network connection) is completely unusable.")
+            labels="Severity: Critical,blocker"
+            ;;
+          "High (Major Disruption): A major feature is broken or incorrect, but a workaround exists.")
+            labels="Severity: High"
+            ;;
+          "Medium (Gameplay Limitation): Non-core functionality is impaired, providing a suboptimal but playable experience.")
+            labels="Severity: Medium"
+            ;;
+          "Low (Minor/Nuisance): Minor glitches or cosmetic issues that don't affect gameplay and occur rarely.")
+            labels="Severity: Low"
+            ;;
+          *)
+            labels=""
+            ;;
+        esac
+        if [[ -n "$labels" ]]; then
+          echo "::debug::Applying labels: $labels"
+          if gh issue edit ${{ github.event.issue.number }} --add-label "$labels"; then
+            echo "Labels applied successfully"
+          else
+            echo "::error::Failed to apply labels"
+            exit 1
+          fi
+        else
+          echo "::debug::No severity label found or unrecognized severity."
+        fi
