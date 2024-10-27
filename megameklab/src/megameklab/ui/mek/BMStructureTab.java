@@ -675,6 +675,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else {
             refresh.refreshEquipmentTable();
         }
+        if (!getTechManager().isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement())) {
+            getMek().setRiscHeatSinkOverrideKit(false);
+        }
         panChassis.refresh();
         panHeat.refresh();
         panArmor.refresh();
@@ -973,6 +976,14 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void heatSinkBaseCountChanged(int count) {
         getMek().getEngine().setBaseChassisHeatSinks(Math.max(0, count));
         MekUtil.updateAutoSinks(getMek(), panHeat.getHeatSinkType().hasFlag(MiscType.F_COMPACT_HEAT_SINK));
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void riscHeatSinkOverrideKitChanged(boolean hasKit) {
+        getMek().setRiscHeatSinkOverrideKit(hasKit);
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
