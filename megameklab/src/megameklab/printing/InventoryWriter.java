@@ -264,8 +264,7 @@ public class InventoryWriter {
         if (sheet.getEntity() instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
             var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
                 name = "RISC Heat Sink Override Kit";
-                // todo: find out (from CGL?) what a good shortName is
-                shortName = "RISC Heat Sink Override Kit";
+                shortName = "RISC HS Override Kit";
                 internalName = "RISC Heat Sink Override Kit";
             }});
             equipment.add(new StandardInventoryEntry(mounted));
