@@ -122,6 +122,9 @@ public final class CConfig {
     public static final String MEK_AUTOSORT = "mekAutosort";
     public static final String MEK_AUTOCOMPACT = "mekAutocompact";
 
+    public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
+    public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
+
     private static final Properties config = getDefaults();
 
     /**

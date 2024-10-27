@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.Messages;
 import megamek.common.*;
+import megameklab.util.CConfig;
 import org.apache.commons.io.FilenameUtils;
 
 import megamek.client.Client;
@@ -187,9 +188,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
+        oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
         if (fromMul) {
             checkboxPanel.add(adjustedBvCheck);
-            adjustedBvCheck.setSelected(true);
+            adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         }
 
         Box panel = Box.createVerticalBox();
@@ -262,7 +264,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             } else {
                 unlinkForce();
             }
+            CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
+
         }
+        CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
+        CConfig.saveConfig();
 
         if (printToPdf) {
             File exportFile;
