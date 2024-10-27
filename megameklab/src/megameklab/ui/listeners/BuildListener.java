@@ -56,7 +56,7 @@ public interface BuildListener {
      * Notifies of a change of the manually entered BV. When manualBV is 0 or less,
      * the unit
      * should be set to not use a manual BV value and the manual BV set to -1.
-     * 
+     *
      * @param manualBV The entered manual BV; may be invalid (0 or less)
      */
     void manualBVChanged(int manualBV);
@@ -75,7 +75,7 @@ public interface BuildListener {
 
     /**
      * Notifies of a change in heat sink type or count for aerospace units
-     * 
+     *
      * @param index Either
      *              {@link megameklab.ui.generalUnit.HeatSinkView#TYPE_SINGLE} or
      *              {@link megameklab.ui.generalUnit.HeatSinkView#TYPE_DOUBLE_AERO}
@@ -86,7 +86,7 @@ public interface BuildListener {
 
     /**
      * Notifies of a change in heat sink type or count for meks
-     * 
+     *
      * @param hsType The type of heat sink
      * @param count  The total number of heat sinks
      */
@@ -97,7 +97,7 @@ public interface BuildListener {
      * Notifies of a change in the distribution between single and double heat sinks
      * on a unit with
      * prototype double heat sinks.
-     * 
+     *
      * @param prototype The number of prototype double heat sinks
      */
     default void redistributePrototypeHS(int prototype) {
@@ -106,10 +106,17 @@ public interface BuildListener {
     /**
      * Notifies of a change in the number of heat sinks that are part of the base
      * chassis of an omni unit
-     * 
+     *
      * @param count The number of fixed heat sinks
      */
     default void heatSinkBaseCountChanged(int count) {
+    }
+
+    /**
+     * Notifies of a change in the presence of a RISC Heat Sink Override Kit
+     * @param hasKit True if the unit now has the kit
+     */
+    default void riscHeatSinkOverrideKitChanged(boolean hasKit) {
     }
 
     // For aerospace units and support vehicles

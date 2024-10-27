@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.equipment.MiscMounted;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
@@ -259,6 +260,15 @@ public class InventoryWriter {
             } else {
                 same.incrementQty();
             }
+        }
+        if (sheet.getEntity() instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
+            var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
+                name = "RISC Heat Sink Override Kit";
+                shortName = "RISC HS Override Kit";
+                internalName = "RISC Heat Sink Override Kit";
+            }});
+            mounted.setLocation(Mek.LOC_NONE);
+            equipment.add(new StandardInventoryEntry(mounted));
         }
     }
 
@@ -933,12 +943,12 @@ public class InventoryWriter {
                     }
                     bayCapacityString.append(NumberFormat.getInstance().format(capacity));
                     if ((i + 1) < bays.size()) {
-                        bayTypeString.append("/");
-                        bayCapacityString.append("/");
+                        bayTypeString.append('/');
+                        bayCapacityString.append('/');
                     }
                     doors = Math.max(doors, b.getDoors());
                 }
-                bayCapacityString.append(")");
+                bayCapacityString.append(')');
                 String bayString = "Bay " + bayNum + ": " + bayTypeString
                         + bayCapacityString + " (" + doors + (doors == 1 ? " Door)" : " Doors)");
                 sheet.addTextElement(canvas, bayColX[0], currY, bayString, fontSize,

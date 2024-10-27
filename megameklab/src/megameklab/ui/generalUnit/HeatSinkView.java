@@ -28,9 +28,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -94,6 +92,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblCritFreeCount = new JLabel();
     private final JLabel lblWeightFreeText = new JLabel();
     private final JLabel lblWeightFreeCount = new JLabel();
+    private final JLabel lblRiscHeatSinkKit = new JLabel();
+    private final JCheckBox chkRiscHeatSinkKit = new JCheckBox();
+
 
     private final SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
     private final SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
@@ -142,6 +143,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         add(spnCount, gbc);
         spnCount.addChangeListener(this);
 
+        gbc.gridx = 2;
+        add(new JLabel("<html>&nbsp;</html>"), gbc);
         gbc.gridx = 3;
         lblCritFreeText.setText(resourceMap.getString("HeatSinkView.lblCritFree.text"));
         add(lblCritFreeText, gbc);
@@ -177,10 +180,31 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip"));
         add(lblWeightFreeCount, gbc);
 
+
+        lblRiscHeatSinkKit.setText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.text"));
+        lblRiscHeatSinkKit.setToolTipText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
+        chkRiscHeatSinkKit.setToolTipText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
+        lblRiscHeatSinkKit.setVisible(false);
+        chkRiscHeatSinkKit.setVisible(false);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        add(lblRiscHeatSinkKit, gbc);
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        add(chkRiscHeatSinkKit, gbc);
+        chkRiscHeatSinkKit.addActionListener(this);
+
     }
 
     private String getDisplayName(int index) {
         return isAero ? aeroDisplayNames[index] : MekDisplayNames[index];
+    }
+
+    private void showRiscKit(boolean show) {
+        chkRiscHeatSinkKit.setVisible(show);
+        lblRiscHeatSinkKit.setVisible(show);
+        if (!show) {
+            chkRiscHeatSinkKit.setSelected(false);
+        }
     }
 
     public void setFromMek(Mek mek) {
@@ -224,6 +248,11 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
+
+        showRiscKit(techManager.isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement()));
+        if (mek.hasRiscHeatSinkOverrideKit()) {
+            chkRiscHeatSinkKit.setSelected(true);
+        }
     }
 
     public void setFromAero(Aero aero) {
@@ -258,6 +287,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.setVisible(false);
         lblCritFreeText.setVisible(false);
         lblCritFreeCount.setVisible(false);
+
+        showRiscKit(false);
     }
 
     public void refresh() {
@@ -287,6 +318,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         if (cbHSType.getSelectedIndex() < 0) {
             cbHSType.setSelectedIndex(0);
         }
+
+        showRiscKit(techManager.isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement()) && !isAero);
     }
 
     public int getHeatSinkIndex() {
@@ -333,6 +366,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbHSType) {
             reportChange();
+        } else if (e.getSource() == chkRiscHeatSinkKit) {
+            listeners.forEach(l -> l.riscHeatSinkOverrideKitChanged(chkRiscHeatSinkKit.isSelected()));
         }
     }
 
