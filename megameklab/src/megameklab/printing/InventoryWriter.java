@@ -267,6 +267,7 @@ public class InventoryWriter {
                 shortName = "RISC HS Override Kit";
                 internalName = "RISC Heat Sink Override Kit";
             }});
+            mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
         }
     }

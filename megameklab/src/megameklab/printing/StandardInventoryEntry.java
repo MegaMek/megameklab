@@ -323,6 +323,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String formatLocation() {
+        if (mount.getLocation() == Entity.LOC_NONE) {
+            return DASH;
+        }
         if ((mount.getEntity() instanceof Tank)
                 && mount.getLocation() == Tank.LOC_TURRET
                 && !((Tank) mount.getEntity()).hasNoDualTurret()) {
