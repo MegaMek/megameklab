@@ -22,11 +22,7 @@ package megameklab.ui.mek;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -131,7 +127,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         // It's obvious that the equipment can't be placed on an occupied slot, so in
         // that case
         // a good free slot can be chosen in the location
-        if (freePrimarySlots == 0) {
+        if (freePrimarySlots < neededTotalSlots) {
             int maxSpace = MekUtil.getMaxContiguousNumOfCrits(mek, location, true);
             slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, maxSpace);
             freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, true);
@@ -221,16 +217,33 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             }
 
             try {
-                Mounted<?> eq = getUnit().getEquipment(Integer.parseInt(
-                        (String) t.getTransferData(DataFlavor.stringFlavor)));
+                var data = (String) t.getTransferData(DataFlavor.stringFlavor);
+                boolean fixedEquipment = false;
+                int fixedLocation = Entity.LOC_NONE;
+                Mounted<?> eq;
+                if (!data.contains(":")) {
+                    eq = getUnit().getEquipment(Integer.parseInt(data));
+                } else {
+                    fixedEquipment = true;
+                    var parts = Arrays.stream(data.split(":")).mapToInt(Integer::parseInt).toArray();
+                    eq = getUnit().getEquipment(parts[0]);
+                    fixedLocation = parts[1];
+                    if (fixedLocation != location) {
+                        PopupMessages.showInvalidLocationInfo(null, eq.getName(), getUnit().getLocationName(location));
+                        return false;
+                    }
+                }
 
                 // If this equipment is already mounted, clear the criticals it's mounted in
-                if (eq.getLocation() != Entity.LOC_NONE
-                        || eq.getSecondLocation() != Entity.LOC_NONE) {
-                    UnitUtil.removeCriticals(getUnit(), eq);
-                    UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, -1, false);
+                if (!fixedEquipment) {
+                    if (eq.getLocation() != Entity.LOC_NONE || eq.getSecondLocation() != Entity.LOC_NONE) {
+                        UnitUtil.removeCriticals(getUnit(), eq);
+                        UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, -1, false);
+                    } else {
+                        eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
+                    }
                 } else {
-                    eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
+                    UnitUtil.removeCriticals(getUnit(), eq, fixedLocation);
                 }
 
                 StringBuffer errors = new StringBuffer();
@@ -286,7 +299,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted<?> mounted = null;
         try {
-            int index = Integer.parseInt((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor));
+            int index = Integer.parseInt(((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor)).split(":")[0]);
             mounted = getUnit().getEquipment(index);
         } catch (Exception e) {
             logger.error("", e);
@@ -295,23 +308,30 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         if (mounted == null) {
             return false;
         }
-        // stuff that has a fixed location is also not transferable
-        return !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType());
+
+        return true;
     }
 
     @Override
     protected Transferable createTransferable(JComponent c) {
         Mounted<?> mount = null;
+        int location = Entity.LOC_NONE;
         if (c instanceof JTable) {
             JTable table = (JTable) c;
             mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
         } else if (c instanceof BAASBMDropTargetCriticalList) {
             BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
             mount = list.getMounted();
+            location = list.getCritLocation();
         }
         if (mount != null) {
-            parentView.markUnavailableLocations(mount);
-            return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                parentView.markUnavailableLocations(location);
+                return new StringSelection("%d:%d".formatted(getUnit().getEquipmentNum(mount), location));
+            } else {
+                parentView.markUnavailableLocations(mount);
+                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+            }
         } else {
             return null;
         }

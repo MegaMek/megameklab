@@ -390,6 +390,39 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Sets the corresponding critical slots to null for the Mounted object in the given location.
+     *
+     * @param unit The entity
+     * @param eq   The equipment to test
+     * @param loc The location to remove crits from.
+     */
+    public static void removeCriticals(Entity unit, Mounted<?> eq, int loc) {
+        if (eq.getLocation() == Entity.LOC_NONE) {
+            return;
+        }
+        for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+            CriticalSlot cs = unit.getCritical(loc, slot);
+            if ((cs != null)
+                && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                if (cs.getMount().equals(eq)) {
+                    // If there are two pieces of equipment in this slot,
+                    // remove first one, and replace it with the second
+                    if (cs.getMount2() != null) {
+                        cs.setMount(cs.getMount2());
+                        cs.setMount2(null);
+                    } else { // If it's the only Mounted, clear the slot
+                        cs = null;
+                        unit.setCritical(loc, slot, cs);
+                    }
+                } else if ((cs.getMount2() != null)
+                    && cs.getMount2().equals(eq)) {
+                    cs.setMount2(null);
+                }
+            }
+        }
+    }
+
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
             throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);

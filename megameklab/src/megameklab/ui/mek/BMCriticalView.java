@@ -207,6 +207,15 @@ public class BMCriticalView extends IView {
     }
 
     /**
+     * Darkens all crit blocks other than the one for the given location
+     */
+    public void markUnavailableLocations(int location) {
+        currentCritBlocks.stream()
+            .filter(b -> b.getCritLocation() != location)
+            .forEach(b -> b.setDarkened(true));
+    }
+
+    /**
      * Darkens all crit blocks that are unavailable to the given equipment, e.g. all but Torsos for CASE.
      */
     public void markUnavailableLocations(@Nullable Mounted<?> equipment) {
