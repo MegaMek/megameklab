@@ -1150,16 +1150,18 @@ public final class MekUtil {
             return 4;
         } else if (mounted.getType() instanceof AmmoType) {
             return 5;
-        } else if (mounted.getType().isHittable()) {
+        } else if (mounted.getType().isHittable() && !mounted.getType().hasFlag(MiscType.F_SCM)) {
             return 6;
-        } else if (isCASE(mounted)) {
+        } else if(mounted.getType().hasFlag(MiscType.F_SCM)) {
             return 7;
-        } else if (EquipmentType.isStructureType(mounted.getType())) {
+        } else if (isCASE(mounted)) {
             return 8;
-        } else if (EquipmentType.isArmorType(mounted.getType())) {
+        } else if (EquipmentType.isStructureType(mounted.getType())) {
             return 9;
-        } else {
+        } else if (EquipmentType.isArmorType(mounted.getType())) {
             return 10;
+        } else {
+            return 11;
         }
     }
 
