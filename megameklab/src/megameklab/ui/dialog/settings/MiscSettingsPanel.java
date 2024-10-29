@@ -39,16 +39,10 @@ import megamek.client.ui.swing.HelpDialog;
 import megamek.common.preference.PreferenceManager;
 import megamek.logging.MMLogger;
 import megameklab.ui.MMLStartUp;
+import megameklab.ui.MulDndBehaviour;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
-import org.apache.logging.log4j.LogManager;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -64,9 +58,10 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
+    private final MMComboBox<MulDndBehaviour> cbMulDndBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour", MulDndBehaviour.values());
 
     MiscSettingsPanel(JFrame parent) {
-        startUpMMComboBox.setRenderer(startUpRenderer);
+        startUpMMComboBox.setRenderer(miscComboBoxRenderer);
         startUpMMComboBox.setSelectedItem(CConfig.getStartUpType());
         startUpMMComboBox.setToolTipText(resources.getString("ConfigurationDialog.startup.tooltip"));
         JLabel startUpLabel = new JLabel(resources.getString("ConfigurationDialog.startup.text"));
@@ -77,6 +72,17 @@ public class MiscSettingsPanel extends JPanel {
         startUpLine.add(startUpLabel);
         startUpLine.add(Box.createHorizontalStrut(5));
         startUpLine.add(startUpMMComboBox);
+
+        cbMulDndBehaviour.setRenderer(miscComboBoxRenderer);
+        cbMulDndBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulDndBehaviour.tooltip"));
+        cbMulDndBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_DND_BEHAVIOUR) ? MulDndBehaviour.EXPORT : MulDndBehaviour.PRINT);
+        JLabel mulDndLabel = new JLabel(resources.getString("ConfigurationDialog.cbMulDndBehaviour.text"));
+        mulDndLabel.setToolTipText(resources.getString("ConfigurationDialog.cbMulDndBehaviour.tooltip"));
+
+        JPanel mulDndLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        mulDndLine.add(mulDndLabel);
+        mulDndLine.add(Box.createHorizontalStrut(5));
+        mulDndLine.add(cbMulDndBehaviour);
 
         chkSummaryFormatTRO.setText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -136,11 +142,12 @@ public class MiscSettingsPanel extends JPanel {
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(startUpLine);
         gridPanel.add(userDirLine);
+        gridPanel.add(mulDndLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 5, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 6, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -154,6 +161,7 @@ public class MiscSettingsPanel extends JPanel {
                 ? MMLStartUp.SPLASH_SCREEN
                 : startUpMMComboBox.getSelectedItem();
         miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
+        miscSettings.put(CConfig.MISC_MUL_DND_BEHAVIOUR, String.valueOf(cbMulDndBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
         // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
         return miscSettings;
     }
@@ -166,7 +174,7 @@ public class MiscSettingsPanel extends JPanel {
         return 0.1f * guiScale.getValue();
     }
 
-    DefaultListCellRenderer startUpRenderer = new DefaultListCellRenderer() {
+    DefaultListCellRenderer miscComboBoxRenderer = new DefaultListCellRenderer() {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
                 boolean cellHasFocus) {
@@ -175,6 +183,11 @@ public class MiscSettingsPanel extends JPanel {
     };
 
     private String displayName(Object value) {
-        return (value instanceof MMLStartUp) ? ((MMLStartUp) value).getDisplayName() : "";
+        if (value instanceof MMLStartUp su) {
+            return su.getDisplayName();
+        } else if (value instanceof MulDndBehaviour mdb) {
+            return mdb.getDisplayName();
+        }
+        return "";
     }
 }

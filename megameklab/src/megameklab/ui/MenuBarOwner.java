@@ -133,4 +133,6 @@ public interface MenuBarOwner extends AppCloser {
             }
         });
     }
+
+    MenuBar getMMLMenuBar();
 }
