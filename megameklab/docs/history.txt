@@ -12,6 +12,9 @@ MEGAMEKLAB VERSION HISTORY:
 + FIX #1625: Re-enable inclusion of SPAs when printing pilot data
 + FIX #1629: Record sheets printed from MUL file generated in MML now print with the correct walking MP
 + PR #1634: Set techlevel of armor in specific location, not entire mek, when setting patchwork armor
++ PR #1643: Add RISC Heat Sink Override Kit
++ PR #1646: Various Mek crit table improvements
++ Fix #1640: Remove item in head when switching to small cockpit
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
