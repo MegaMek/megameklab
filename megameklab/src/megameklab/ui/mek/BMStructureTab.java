@@ -375,7 +375,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
      */
     private void clearCritsForCockpit(boolean small, boolean dual) {
         for (int slot = 0; slot < (small ? 4 : 6); slot++) {
-            if ((slot == 3) && !dual) {
+            if ((slot == 3) && !dual && !small) {
                 continue;
             }
             clearCrit(Mek.LOC_HEAD, slot);
