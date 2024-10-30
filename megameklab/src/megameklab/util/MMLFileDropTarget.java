@@ -51,11 +51,11 @@ public class MMLFileDropTarget extends DropTarget {
             var file = files.get(0);
             var name = file.getName();
 
-            if (name.endsWith(".mtf") || name.endsWith(".blk")) {
+            if (name.toLowerCase().endsWith(".mtf") || name.toLowerCase().endsWith(".blk")) {
                 owner.getMMLMenuBar().loadFile(file);
                 event.dropComplete(true);
-            } else if (name.endsWith(".mul")) {
-                UnitPrintManager.printMUL(owner.getFrame(), CConfig.getBooleanParam(CConfig.MISC_MUL_DND_BEHAVIOUR), file);
+            } else if (name.toLowerCase().endsWith(".mul")) {
+                UnitPrintManager.printMUL(owner.getFrame(), CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
                 event.dropComplete(true);
             } else {
                 event.dropComplete(false);

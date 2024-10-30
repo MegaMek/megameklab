@@ -58,7 +58,7 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
-    private final MMComboBox<MulDndBehaviour> cbMulDndBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour", MulDndBehaviour.values());
+    private final MMComboBox<MulDndBehaviour> cbMulOpenBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour", MulDndBehaviour.values());
 
     MiscSettingsPanel(JFrame parent) {
         startUpMMComboBox.setRenderer(miscComboBoxRenderer);
@@ -73,16 +73,16 @@ public class MiscSettingsPanel extends JPanel {
         startUpLine.add(Box.createHorizontalStrut(5));
         startUpLine.add(startUpMMComboBox);
 
-        cbMulDndBehaviour.setRenderer(miscComboBoxRenderer);
-        cbMulDndBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulDndBehaviour.tooltip"));
-        cbMulDndBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_DND_BEHAVIOUR) ? MulDndBehaviour.EXPORT : MulDndBehaviour.PRINT);
-        JLabel mulDndLabel = new JLabel(resources.getString("ConfigurationDialog.cbMulDndBehaviour.text"));
-        mulDndLabel.setToolTipText(resources.getString("ConfigurationDialog.cbMulDndBehaviour.tooltip"));
+        cbMulOpenBehaviour.setRenderer(miscComboBoxRenderer);
+        cbMulOpenBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
+        cbMulOpenBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR) ? MulDndBehaviour.EXPORT : MulDndBehaviour.PRINT);
+        JLabel mulOpenLabel = new JLabel(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.text"));
+        mulOpenLabel.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
 
-        JPanel mulDndLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        mulDndLine.add(mulDndLabel);
-        mulDndLine.add(Box.createHorizontalStrut(5));
-        mulDndLine.add(cbMulDndBehaviour);
+        JPanel mulOpenLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        mulOpenLine.add(mulOpenLabel);
+        mulOpenLine.add(Box.createHorizontalStrut(5));
+        mulOpenLine.add(cbMulOpenBehaviour);
 
         chkSummaryFormatTRO.setText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -142,7 +142,7 @@ public class MiscSettingsPanel extends JPanel {
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(startUpLine);
         gridPanel.add(userDirLine);
-        gridPanel.add(mulDndLine);
+        gridPanel.add(mulOpenLine);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
         gridPanel.add(scaleLine);
@@ -161,7 +161,7 @@ public class MiscSettingsPanel extends JPanel {
                 ? MMLStartUp.SPLASH_SCREEN
                 : startUpMMComboBox.getSelectedItem();
         miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
-        miscSettings.put(CConfig.MISC_MUL_DND_BEHAVIOUR, String.valueOf(cbMulDndBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
+        miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR, String.valueOf(cbMulOpenBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
         // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
         return miscSettings;
     }
