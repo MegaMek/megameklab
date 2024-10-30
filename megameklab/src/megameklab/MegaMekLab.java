@@ -117,9 +117,11 @@ public class MegaMekLab {
                     UiLoader.loadUi(e, file.toString());
                     return;
                 } else if (name.toLowerCase().endsWith(".mul")) {
-                    UnitPrintManager.printMUL(new JFrame(),  CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), new File(name));
-                    System.exit(0);
-                    return;
+                    SwingUtilities.invokeLater(() -> {
+                        var frame = new JFrame();
+                        UnitPrintManager.printMUL(frame,  CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), new File(name));
+                        frame.dispose();
+                    });
                 }
             } catch (Exception e) {
                 logger.warn(e);
