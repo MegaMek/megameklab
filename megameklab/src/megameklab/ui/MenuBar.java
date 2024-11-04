@@ -1202,6 +1202,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
         }
 
+        loadFile(unitFile);
+    }
+
+    public void loadFile(File unitFile) {
         try {
             Entity loadedUnit = new MekFileParser(unitFile).getEntity();
 
