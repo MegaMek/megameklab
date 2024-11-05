@@ -13,6 +13,7 @@
  */
 package megameklab.printing.reference;
 
+import megamek.logging.MMLogger;
 import org.apache.batik.util.SVGConstants;
 
 import megamek.common.Entity;
@@ -30,6 +31,8 @@ import megameklab.util.StringUtils;
  * Attack mods and damage for Mek physical attacks
  */
 public class PhysicalAttacks extends ReferenceTable {
+
+    private static final MMLogger logger = MMLogger.create(PhysicalAttacks.class);
 
     public PhysicalAttacks(PrintMek sheet) {
         super(sheet, 0.05, 0.5, 0.8);
@@ -120,10 +123,17 @@ public class PhysicalAttacks extends ReferenceTable {
 
     private void addPhysicalWeapon(Entity entity) {
         for (Mounted<?> mounted : entity.getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_CLUB) || mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
+            if (mounted.getType().hasFlag(MiscType.F_CLUB)) {
                 addRow(mounted.getName(),
                         String.format("%+d", ClubAttackAction.getHitModFor((MiscType) mounted.getType())),
                         StringUtils.getEquipmentInfo(entity, mounted));
+            } else if (mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
+                if (mounted.getType().hasSubType(MiscType.S_CLAW)) {
+                    addRow(mounted.getName(), "+1", StringUtils.getEquipmentInfo(entity, mounted));
+                } else {
+                    logger.error("Unknown hand weapon %s!".formatted(mounted.getName()));
+                    addRow(mounted.getName(), "???", StringUtils.getEquipmentInfo(entity, mounted));
+                }
             }
         }
     }
