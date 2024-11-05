@@ -40,6 +40,7 @@ import megamek.logging.MMLogger;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
+import org.apache.commons.io.FilenameUtils;
 
 import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
 import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
@@ -119,7 +120,14 @@ public class UnitPrintManager {
             // I want a file, y'know!
             return null;
         }
-        return f.getSelectedFile();
+
+        var file = f.getSelectedFile();
+
+        if (FilenameUtils.getExtension(file.getName()).isEmpty()) {
+            file = new File(file.getAbsolutePath() + ".pdf");
+        }
+
+        return file;
     }
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
