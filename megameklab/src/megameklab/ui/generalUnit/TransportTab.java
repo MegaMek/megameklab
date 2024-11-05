@@ -47,7 +47,7 @@ import megamek.common.InfantryBay;
 import megamek.common.Jumpship;
 import megamek.common.RoundWeight;
 import megamek.common.Transporter;
-import megamek.common.TroopSpace;
+import megamek.common.InfantryCompartment;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -542,15 +542,15 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             final double pod = (Double) spnPodTroopSpace.getValue();
 
             List<Transporter> toRemove = getEntity().getTransports().stream()
-                    .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
+                    .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
             toRemove.forEach(t -> getEntity().removeTransporter(t));
             double troopTons = TestEntity.round(fixed, Ceil.HALFTON);
             if (troopTons > 0) {
-                getEntity().addTransporter(new TroopSpace(troopTons), false);
+                getEntity().addTransporter(new InfantryCompartment(troopTons), false);
             }
             troopTons = TestEntity.round(pod, Ceil.HALFTON);
             if (troopTons > 0) {
-                getEntity().addTransporter(new TroopSpace(troopTons), true);
+                getEntity().addTransporter(new InfantryCompartment(troopTons), true);
             }
             if (null != refresh) {
                 refresh.refreshStructure();

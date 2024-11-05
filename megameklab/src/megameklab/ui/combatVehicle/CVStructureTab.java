@@ -680,16 +680,16 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void troopSpaceChanged(double fixed, double pod) {
         List<Transporter> toRemove = getTank().getTransports().stream()
-                .filter(t -> t instanceof TroopSpace).collect(Collectors.toList());
+                .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
         toRemove.forEach(t -> getTank().removeTransporter(t));
         double troopTons = Math
                 .round((fixed) * 2) / 2.0;
         if (troopTons > 0) {
-            getTank().addTransporter(new TroopSpace(troopTons), false);
+            getTank().addTransporter(new InfantryCompartment(troopTons), false);
         }
         troopTons = Math.round(pod * 2) / 2.0;
         if (troopTons > 0) {
-            getTank().addTransporter(new TroopSpace(troopTons), true);
+            getTank().addTransporter(new InfantryCompartment(troopTons), true);
         }
         panSummary.refresh();
         refresh.refreshStatus();

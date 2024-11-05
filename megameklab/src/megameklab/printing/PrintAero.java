@@ -184,7 +184,7 @@ public class PrintAero extends PrintEntity {
         Map<String, Double> transport = new HashMap<>();
         Map<String, Integer> seating = new HashMap<>();
         for (Transporter t : aero.getTransports()) {
-            if (t instanceof TroopSpace) {
+            if (t instanceof InfantryCompartment) {
                 transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
