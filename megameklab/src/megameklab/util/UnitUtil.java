@@ -19,7 +19,10 @@
 package megameklab.util;
 
 import java.awt.Font;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +35,16 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import megamek.client.ui.enums.ValidationState;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.loaders.BLKFile;
+import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.EntitySavingException;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.AmmoWeapon;
@@ -70,6 +77,17 @@ public class UnitUtil {
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
+
+    public enum UnitValidation {
+        VALID,
+        INVALID;
+
+        public static UnitValidation of(boolean valid) {
+            return valid ? VALID : INVALID;
+        }
+    }
+
+    public record Validation(UnitValidation state, String report) { }
 
     /**
      * tells is EquipementType is an equipment that uses crits/mounted and is
@@ -1689,9 +1707,11 @@ public class UnitUtil {
     /**
      * check that the unit is vaild
      *
+     * @deprecated prefer to use the new <strong>verify</strong> method which uses the validation record
      * @param unit The entity
-     * @return
+     * @return report on the errors
      */
+    @Deprecated
     public static String validateUnit(Entity unit) {
         StringBuffer sb = new StringBuffer();
         TestEntity testEntity = getEntityVerifier(unit);
@@ -1701,6 +1721,28 @@ public class UnitUtil {
         }
 
         return sb.toString();
+    }
+
+
+    /**
+     * verify
+     * <p>
+     *     Checks if the unit is valid, returns a record with a state enum saying if it is valid or not, and a report if it failed.
+     * </p>
+     *
+     * @param unit Entity
+     * @return returns a Validation record with the results of the verification, being an enum saying if it succeeded or failed and the
+     *          report if needed
+     */
+    public static Validation verify(Entity unit) {
+        StringBuffer sb = new StringBuffer();
+        TestEntity testEntity = getEntityVerifier(unit);
+
+        var succeeded = testEntity.correctEntity(sb, unit.getTechLevel());
+
+        var validation = new Validation(UnitValidation.of(succeeded), sb.toString());
+
+        return validation;
     }
 
     public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {
@@ -2139,5 +2181,20 @@ public class UnitUtil {
                     && (weapon.getAmmoType() == AmmoType.T_NA);
         }
         return false;
+    }
+
+    public static boolean persistUnit(File outFile, Entity entity) throws EntitySavingException {
+        if (entity instanceof Mek) {
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(outFile))) {
+                out.write(((Mek) entity).getMtf());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+            return true;
+        }
+
+        BLKFile.encode(outFile, entity);
+        return true;
     }
 }
