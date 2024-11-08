@@ -40,6 +40,7 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
+import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLab {
@@ -74,7 +75,7 @@ public class MegaMekLab {
         MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
         ToolTipManager.sharedInstance().setDismissDelay(1000000);
         ToolTipManager.sharedInstance().setReshowDelay(50);
-        startup();
+        startup(args);
     }
 
     public static void initializeLogging(final String originProject) {
@@ -89,7 +90,7 @@ public class MegaMekLab {
         return MegaMek.getUnderlyingInformation(originProject, MMLConstants.PROJECT_NAME);
     }
 
-    private static void startup() {
+    private static void startup(String[] args) {
         EquipmentType.initializeTypes();
         MekSummaryCache.getInstance();
         CConfig.load();
@@ -102,6 +103,30 @@ public class MegaMekLab {
         Locale.setDefault(getMMLOptions().getLocale());
 
         updateGuiScaling(); // also sets the look-and-feel
+
+        if (args.length == 1) {
+            try {
+                var name = args[0];
+                logger.info("Trying to open file {}", name);
+                if (name.toLowerCase().endsWith(".blk") || name.endsWith(".mtf")) {
+                    var file = new File(name);
+                    Entity e = new MekFileParser(file).getEntity();
+                    if (!UnitUtil.validateUnit(e).isBlank()) {
+                        PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
+                    }
+                    UiLoader.loadUi(e, file.toString());
+                    return;
+                } else if (name.toLowerCase().endsWith(".mul")) {
+                    SwingUtilities.invokeLater(() -> {
+                        var frame = new JFrame();
+                        UnitPrintManager.printMUL(frame,  CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), new File(name));
+                        frame.dispose();
+                    });
+                }
+            } catch (Exception e) {
+                logger.warn(e);
+            }
+        }
 
         // Create a startup frame and display it
         switch (CConfig.getStartUpType()) {

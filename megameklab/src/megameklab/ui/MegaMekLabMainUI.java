@@ -24,6 +24,7 @@ import megameklab.MegaMekLab;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
+import megameklab.util.MMLFileDropTarget;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +35,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
-    
+
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new ExitOnWindowClosingListener(this));
@@ -46,8 +47,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         setJMenuBar(mmlMenuBar);
         reloadTabs();
         refreshAll();
+        this.setDropTarget(new MMLFileDropTarget(this));
     }
-    
+
     protected void setSizeAndLocation() {
         pack();
         restrictToScrenSize();
@@ -195,5 +197,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public boolean hasEntityNameChanged() {
         return !MenuBar.createUnitFilename(entity).equals(originalName);
+    }
+
+    @Override
+    public MenuBar getMMLMenuBar() {
+        return mmlMenuBar;
     }
 }
