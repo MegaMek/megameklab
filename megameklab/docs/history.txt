@@ -18,6 +18,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1648: Allow opening unit and MUL files with MML by file association or drag-drop
 + Fix #1565: Add pdf extension to export files selected without an extension
 + Fix #1651: Record sheets no give the correct claw modifier
++ Fix #1656: Add flag to show print-mul dialog without starting the main MML gui
 
 0.50.0 (2024-09-01 2000 UTC) (THIS MARKS THE START OF JAVA 17 AS THE MINIMUM REQUIRED)
 + PR #1544: Windows Related CI Fixes
