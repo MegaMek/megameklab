@@ -104,7 +104,7 @@ public class MegaMekLab {
 
         updateGuiScaling(); // also sets the look-and-feel
 
-        if (args.length == 1) {
+        if (args.length >= 1) {
             try {
                 var name = args[0];
                 logger.info("Trying to open file {}", name);
@@ -117,11 +117,17 @@ public class MegaMekLab {
                     UiLoader.loadUi(e, file.toString());
                     return;
                 } else if (name.toLowerCase().endsWith(".mul")) {
-                    SwingUtilities.invokeLater(() -> {
+                    Runnable printMul = () -> {
                         var frame = new JFrame();
                         UnitPrintManager.printMUL(frame,  CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), new File(name));
                         frame.dispose();
-                    });
+                    };
+                    if (args.length >= 2 && args[1].equals("--no-startup")) {
+                        printMul.run();
+                        return;
+                    } else {
+                        SwingUtilities.invokeLater(printMul);
+                    }
                 }
             } catch (Exception e) {
                 logger.warn(e);
