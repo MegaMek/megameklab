@@ -29,7 +29,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.util.CConfig;
-import megameklab.util.MMLFileDropTarget;
+import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
@@ -237,7 +237,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        this.setDropTarget(new MMLFileDropTarget(this));
+        this.setTransferHandler(new MMLFileDropTransferHandler(this));
     }
 
     /**
