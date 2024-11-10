@@ -24,7 +24,7 @@ import megameklab.MegaMekLab;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
-import megameklab.util.MMLFileDropTarget;
+import megameklab.util.MMLFileDropTransferHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +47,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         setJMenuBar(mmlMenuBar);
         reloadTabs();
         refreshAll();
-        this.setDropTarget(new MMLFileDropTarget(this));
+        this.setTransferHandler(new MMLFileDropTransferHandler(this));
     }
 
     protected void setSizeAndLocation() {
