@@ -33,7 +33,7 @@ import megamek.common.MiscType;
 import megamek.common.StandardSeatCargoBay;
 import megamek.common.Tank;
 import megamek.common.Transporter;
-import megamek.common.TroopSpace;
+import megamek.common.InfantryCompartment;
 import megamek.common.VTOL;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;
@@ -199,7 +199,7 @@ public class PrintTank extends PrintEntity {
         Map<String, Double> transport = new HashMap<>();
         Map<String, Integer> seating = new HashMap<>();
         for (Transporter t : tank.getTransports()) {
-            if (t instanceof TroopSpace) {
+            if (t instanceof InfantryCompartment) {
                 transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
