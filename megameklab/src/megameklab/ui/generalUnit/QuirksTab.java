@@ -74,7 +74,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                 IOption option = j.nextElement();
 
-                if (null == option || !Quirks.isQuirkLegalFor(option, getEntity())) {
+                if (null == option || Quirks.isQuirkIllegalFor(option, getEntity())) {
                     continue;
                 }
 
