@@ -74,7 +74,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                 IOption option = j.nextElement();
 
-                if (null == option || !Quirks.isQuirkLegalFor(option, getEntity())) {
+                if (null == option || Quirks.isQuirkDisallowed(option, getEntity())) {
                     continue;
                 }
 
@@ -93,7 +93,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
                 IOptionGroup group = i.nextElement();
                 for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                     IOption option = j.nextElement();
-                    if (!WeaponQuirks.isQuirkLegalFor(option, getEntity(), m.getType())) {
+                    if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType())) {
                         continue;
                     }
                     addWeaponQuirk(key, option);
