@@ -376,7 +376,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return false;
         }
         BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
-        return (doorsAvailable() > 0) || bayType.isInfantryBay();
+        return (doorsAvailable() >= bayType.getMinDoors());
     }
 
     /**
@@ -867,7 +867,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refreshDockingHardpoints();
 
             } else if (column == InstalledBaysModel.COL_DOORS) {
-                modelInstalled.bayList.get(row).setDoors((Integer) getCellEditorValue());
+                int value = (Integer) getCellEditorValue();
+                modelInstalled.bayList.get(row).setDoors(
+                    Math.max(value, bay.getMinDoors())
+                );
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
@@ -886,7 +889,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             if (column == InstalledBaysModel.COL_DOORS) {
                 int doors = (Integer) modelInstalled.getValueAt(row, column);
                 SpinnerNumberModel model = new SpinnerNumberModel(doors,
-                        (isInfantry) ? 0 : 1,
+                        modelInstalled.bayList.get(row).getMinDoors(),
                         getEntity().isAero() ? doorsAvailable() + doors : Integer.MAX_VALUE, 1);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
