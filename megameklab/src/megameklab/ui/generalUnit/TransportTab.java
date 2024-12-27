@@ -376,7 +376,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             return false;
         }
         BayData bayType = modelAvailable.getBayType(tblAvailable.convertRowIndexToModel(selected));
-        return (doorsAvailable() > 0) || bayType.isInfantryBay();
+        return (doorsAvailable() >= bayType.getMinDoors());
     }
 
     /**
@@ -867,7 +867,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refreshDockingHardpoints();
 
             } else if (column == InstalledBaysModel.COL_DOORS) {
-                modelInstalled.bayList.get(row).setDoors((Integer) getCellEditorValue());
+                int value = (Integer) getCellEditorValue();
+                modelInstalled.bayList.get(row).setDoors(
+                    Math.max(value, bay.getMinDoors())
+                );
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
