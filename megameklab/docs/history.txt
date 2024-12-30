@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.50.03-SNAPSHOT
+
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
 + PR #1665: Inverted function call
