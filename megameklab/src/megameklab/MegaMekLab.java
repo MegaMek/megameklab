@@ -18,6 +18,7 @@ package megameklab;
 
 import java.io.File;
 import java.io.ObjectInputFilter;
+import java.lang.management.ManagementFactory;
 import java.util.Locale;
 
 import javax.swing.*;
@@ -76,6 +77,9 @@ public class MegaMekLab {
         ToolTipManager.sharedInstance().setDismissDelay(1000000);
         ToolTipManager.sharedInstance().setReshowDelay(50);
         startup(args);
+
+        // log jvm parameters
+        logger.info(ManagementFactory.getRuntimeMXBean().getInputArguments());
     }
 
     public static void initializeLogging(final String originProject) {
