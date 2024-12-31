@@ -11,15 +11,17 @@ import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
+import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
+public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
     private List<MegaMekLabMainUI> editors = new ArrayList<>();
 
     private JTabbedPane tabs = new JTabbedPane();
@@ -33,12 +35,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
             throw new IllegalArgumentException("At least one entity must be provided");
         }
 
+        tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
         for (MegaMekLabMainUI e : entities) {
             addTab(e);
 
         }
-        addTab(new BMMainUI(false, false), "+");
-        tabs.addChangeListener(new TabsChangedListener());
+        addNewButton();
+        tabs.addChangeListener(this);
         setContentPane(tabs);
 
         menuBar = new MenuBar(this);
@@ -94,54 +98,61 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
         return menuBar;
     }
 
-    private class TabsChangedListener implements ChangeListener {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (tabs.getSelectedIndex() == editors.size() - 1) {
-                tabs.setTitleAt(tabs.getSelectedIndex(), editors.get(tabs.getSelectedIndex()).getEntity().getDisplayName());
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (tabs.getSelectedIndex() == editors.size() - 1) {
+            tabs.setTabComponentAt(
+                tabs.getSelectedIndex(),
+                new ClosableTab(currentEditor().getEntity().getDisplayName(), currentEditor())
+            );
 
-                addTab(new BMMainUI(false, false), "+");
-            }
+            addNewButton();
         }
     }
 
     public void setTabName(String tabName) {
-        tabs.setTitleAt(tabs.getSelectedIndex(), tabName);
+        tabs.setTabComponentAt(tabs.getSelectedIndex(), new ClosableTab(tabName, currentEditor()) );
     }
 
     private void addTab(MegaMekLabMainUI editor) {
-        addTab(editor, editor.getEntity().getDisplayName());
-    }
-
-    private void addTab(MegaMekLabMainUI editor, String name) {
         editors.add(editor);
         editor.refreshAll();
         editor.setOwner(this);
-        tabs.addTab(name, editor.getContentPane());
+        tabs.addTab(editor.getEntity().getDisplayName(), editor.getContentPane());
+        tabs.setTabComponentAt(tabs.getTabCount() - 1, new ClosableTab(editor.getEntity().getDisplayName(), editor));
+    }
+
+    private void addNewButton() {
+        var editor = new BMMainUI(false, false);
+        editors.add(editor);
+        editor.refreshAll();
+        editor.setOwner(this);
+        tabs.addTab("➕", editor.getContentPane());
+        tabs.setTabComponentAt(tabs.getTabCount() - 1, new NewTabButton());
+    }
+
+    private void newUnit(long type, boolean primitive, boolean industrial) {
+        var oldUi = editors.get(tabs.getSelectedIndex());
+        var newUi = UiLoader.getUI(type, primitive, industrial);
+        editors.set(tabs.getSelectedIndex(), newUi);
+        tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
+        tabs.setTabComponentAt(tabs.getSelectedIndex(), new ClosableTab(newUi.getEntity().getDisplayName(), newUi));
+
+        oldUi.dispose();
     }
 
     @Override
     public void newUnit(long type, boolean primitive) {
-        var oldUi = editors.get(tabs.getSelectedIndex());
-        var newUi = UiLoader.getUI(type, primitive, true);
-        editors.set(tabs.getSelectedIndex(), newUi);
-        tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
-        tabs.setTitleAt(tabs.getSelectedIndex(), newUi.getEntity().getDisplayName());
-
-        oldUi.dispose();
+        newUnit(type, primitive, false);
     }
 
     public void addEditor(Entity entity, String filename) {
-        var newUi = UiLoader.getUI(entity.getUnitType(), entity.isPrimitive(), entity.isIndustrialMek());
-        newUi.setEntity(entity, filename);
-        newUi.reloadTabs();
-        newUi.refreshAll();
-        tabs.setSelectedIndex(tabs.getTabCount() - 1);
-        var oldUi = editors.get(tabs.getSelectedIndex());
-        editors.set(tabs.getSelectedIndex(), newUi);
-        tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
-        tabs.setTitleAt(tabs.getSelectedIndex(), newUi.getEntity().getDisplayName());
-        oldUi.dispose();
+        addNewButton();
+        tabs.setSelectedIndex(tabs.getTabCount() - 2);
+        newUnit(UnitUtil.getEditorTypeForEntity(entity), entity.isPrimitive(), entity.isIndustrialMek());
+        currentEditor().setEntity(entity, filename);
+        currentEditor().reloadTabs();
+        currentEditor().refreshAll();
     }
 
     @Override
@@ -167,5 +178,48 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
         int w = Math.min(getSize().width, scaledMonitorW);
         int h = Math.min(getSize().height, scaledMonitorH);
         setSize(new Dimension(w, h));
+    }
+
+    private static class NewTabButton extends JPanel {
+        public NewTabButton() {
+            setOpaque(false);
+            var label = new JLabel("➕");
+            label.setForeground(Color.GREEN);
+            add(label);
+        }
+    }
+
+    private class ClosableTab extends JPanel {
+        JLabel unitName;
+        JButton closeButton;
+        MegaMekLabMainUI editor;
+
+        public ClosableTab(String name, MegaMekLabMainUI mainUI) {
+            unitName = new JLabel(name);
+            editor = mainUI;
+
+            setOpaque(false);
+
+            closeButton = new JButton("❌");
+            closeButton.setForeground(Color.RED);
+            closeButton.setFocusable(false);
+            closeButton.setBorder(BorderFactory.createEmptyBorder());
+            add(unitName);
+            add(closeButton);
+            closeButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.isShiftDown() || editor.safetyPrompt()) {
+                        tabs.remove(editor.getContentPane());
+                        if (tabs.getSelectedIndex() == tabs.getTabCount() - 1 && tabs.getTabCount() > 1) {
+                            tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
+                        }
+                        editors.remove(editor);
+                        stateChanged(new ChangeEvent(tabs));
+                        editor.dispose();
+                    }
+                }
+            });
+        }
     }
 }

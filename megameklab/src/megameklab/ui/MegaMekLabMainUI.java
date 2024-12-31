@@ -129,6 +129,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public void refreshHeader() {
         String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
         setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
+        if (owner != null) {
+            getEntity().generateDisplayName();
+            owner.setTabName(getEntity().getDisplayName());
+        }
     }
 
     @Override
@@ -207,13 +211,5 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public void setOwner(MegaMekLabTabbedUI owner) {
         this.owner = owner;
-    }
-
-    @Override
-    public void setTitle(String title) {
-        super.setTitle(title);
-        if (owner != null) {
-            owner.setTabName(title);
-        }
     }
 }
