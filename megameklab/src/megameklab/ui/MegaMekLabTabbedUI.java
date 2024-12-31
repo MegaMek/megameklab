@@ -71,7 +71,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
 
         pack();
-        setSize(800, 600); // todo remember window size
         restrictToScrenSize();
         setLocationRelativeTo(null);
 
@@ -83,7 +82,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
     }
 
-    private MegaMekLabMainUI currentEditor() {
+    public MegaMekLabMainUI currentEditor() {
         return editors.get(tabs.getSelectedIndex());
     }
 

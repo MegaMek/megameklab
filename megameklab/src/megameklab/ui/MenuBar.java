@@ -77,14 +77,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     /**
      * Returns the unit main UI, if this menubar is attached to one (instead of the
-     * StartupGUI
-     * aka splash screen), null otherwise.
+     * StartupGUI aka splash screen), null otherwise.
+     * Under the Tabbed UI, returns the main UI for the currently selected tab.
      *
      * @return The unit main UI of this menubar or null
      */
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
         if (owner instanceof MegaMekLabMainUI) {
             return (MegaMekLabMainUI) owner;
+        } else if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            return tabbedUI.currentEditor();
         } else {
             return null;
         }
