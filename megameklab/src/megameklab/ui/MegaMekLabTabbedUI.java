@@ -223,6 +223,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             closeButton.setForeground(Color.RED);
             closeButton.setFocusable(false);
             closeButton.setBorder(BorderFactory.createEmptyBorder());
+            closeButton.setToolTipText("Shift-click to skip the save confirmation dialog");
             add(unitName);
             add(closeButton);
             closeButton.addMouseListener(new MouseAdapter() {
