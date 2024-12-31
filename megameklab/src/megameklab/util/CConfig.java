@@ -36,15 +36,13 @@ import javax.swing.JDialog;
 import megamek.common.Configuration;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
-import megameklab.ui.MMLStartUp;
-import megameklab.ui.MegaMekLabMainUI;
-import megameklab.ui.MenuBarOwner;
-import megameklab.ui.PopupMessages;
+import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.largeAero.DSMainUI;
+import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
@@ -84,6 +82,7 @@ public final class CConfig {
     public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
     public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
     public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
+    public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
     public static final String FILE_RECENT_PREFIX = "Save_File_";
@@ -431,16 +430,16 @@ public final class CConfig {
         writeWindowSettings(FILE_CHOOSER_WINDOW, dialog);
     }
 
-    public static Optional<Dimension> getMainUiWindowSize(MegaMekLabMainUI mainUi) {
+    public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi) {
         return getWindowSize(settingForMainUi(mainUi));
     }
 
-    public static Optional<Point> getMainUiWindowPosition(MegaMekLabMainUI mainUi) {
+    public static Optional<Point> getMainUiWindowPosition(MenuBarOwner mainUi) {
         return getWindowPosition(settingForMainUi(mainUi));
     }
 
-    public static void writeMainUiWindowSettings(MegaMekLabMainUI mainUi) {
-        writeWindowSettings(settingForMainUi(mainUi), mainUi);
+    public static void writeMainUiWindowSettings(MenuBarOwner mainUi) {
+        writeWindowSettings(settingForMainUi(mainUi), (Component) mainUi);
     }
 
     public static String getRecentFile(int recentFileNumber) {
@@ -501,7 +500,7 @@ public final class CConfig {
         saveConfig();
     }
 
-    private static String settingForMainUi(MegaMekLabMainUI ui) {
+    private static String settingForMainUi(MenuBarOwner ui) {
         if (ui instanceof BMMainUI) {
             return GUI_BM_MAINUI_WINDOW;
         } else if (ui instanceof CVMainUI) {
@@ -518,9 +517,12 @@ public final class CConfig {
             return GUI_CI_MAINUI_WINDOW;
         } else if (ui instanceof SVMainUI) {
             return GUI_SV_MAINUI_WINDOW;
-        } else {
+        } else if (ui instanceof WSMainUI) {
             return GUI_WS_MAINUI_WINDOW;
+        } else if (ui instanceof MegaMekLabTabbedUI) {
+            return GUI_TABBED_WINDOW;
         }
+        throw new IllegalArgumentException("Unknown MenuBarOwner: " + ui.getClass().getName());
     }
 
     private static void applyImportedSettings(MenuBarOwner menuBarOwner) {

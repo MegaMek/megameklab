@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
@@ -139,7 +140,8 @@ public class UiLoader {
             newUI.reloadTabs();
             newUI.refreshAll();
         }
-        newUI.setVisible(true);
+        var tabbedUi = new MegaMekLabTabbedUI(newUI);
+        tabbedUi.setVisible(true);
         splashImage.setVisible(false);
         splashImage.dispose();
     }

@@ -35,6 +35,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
+    private MegaMekLabTabbedUI owner = null;
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -202,5 +203,17 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public MenuBar getMMLMenuBar() {
         return mmlMenuBar;
+    }
+
+    public void setOwner(MegaMekLabTabbedUI owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        super.setTitle(title);
+        if (owner != null) {
+            owner.setTabName(title);
+        }
     }
 }

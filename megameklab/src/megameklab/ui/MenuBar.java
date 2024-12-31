@@ -1224,10 +1224,13 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
                 UiLoader.loadUi(loadedUnit, unitFile.toString());
-            } else {
+            } else if (owner instanceof MegaMekLabMainUI ){
                 getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
                 UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
                 reload();
+                refresh();
+            } else if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
+                tabbedUi.addEditor(loadedUnit, unitFile.toString());
                 refresh();
             }
         } catch (Exception ex) {
