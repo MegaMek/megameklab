@@ -305,6 +305,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             setOpaque(false);
             var label = new JLabel("➕");
             label.setForeground(Color.GREEN);
+            label.setFont(Font.getFont("Symbola"));
             add(label);
         }
     }
@@ -327,6 +328,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             setOpaque(false);
 
             closeButton = new JButton("❌");
+            closeButton.setFont(Font.getFont("Symbola"));
             closeButton.setForeground(Color.RED);
             closeButton.setFocusable(false);
             closeButton.setBorder(BorderFactory.createEmptyBorder());
