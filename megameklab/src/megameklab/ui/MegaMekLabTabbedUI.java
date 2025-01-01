@@ -37,7 +37,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -45,11 +45,13 @@ import java.util.List;
  * Holds several {@link MegaMekLabMainUI}s as tabs, allowing many units to be open at once.
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
-    private List<MegaMekLabMainUI> editors = new ArrayList<>();
+    private final List<MegaMekLabMainUI> editors = new ArrayList<>();
 
-    private JTabbedPane tabs = new JTabbedPane();
+    private final ReopenTabStack closedEditors = new ReopenTabStack();
 
-    private MenuBar menuBar;
+    private final JTabbedPane tabs = new JTabbedPane();
+
+    private final MenuBar menuBar;
 
     /**
      * Constructs a new MegaMekLabTabbedUI instance, which serves as the main tabbed UI
@@ -123,15 +125,33 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
      * to the internal editor collection, refreshing it, setting the ownership,
      * and adding the tab to the tabs UI.
      *
+     * If there already exists a New Tab button, the new tab is placed before it.
+     *
      * @param editor The MegaMekLabMainUI instance to be added as a new tab.
      */
     private void addTab(MegaMekLabMainUI editor) {
+        MegaMekLabMainUI newTab = null;
+        NewTabButton newTabButton = null;
+        if (tabs.getTabCount() > 0 && tabs.getTabComponentAt(tabs.getTabCount() - 1) instanceof NewTabButton ntb) {
+            newTabButton = ntb;
+            newTab = editors.get(editors.size() - 1);
+            tabs.removeTabAt(tabs.getTabCount() - 1);
+            editors.remove(editors.size() - 1);
+        }
+
         editors.add(editor);
         editor.refreshAll();
         editor.setOwner(this);
         tabs.addTab(editor.getEntity().getDisplayName(), editor.getContentPane());
         // See ClosableTab later in this file for what's going on here.
         tabs.setTabComponentAt(tabs.getTabCount() - 1, new ClosableTab(editor.getEntity().getDisplayName(), editor));
+
+        if (newTab != null) {
+            tabs.addTab("+", newTab.getContentPane());
+            tabs.setTabComponentAt(tabs.getTabCount() - 1, newTabButton);
+            tabs.setEnabledAt(tabs.getTabCount() - 1, false);
+            editors.add(newTab);
+        }
     }
 
     /**
@@ -255,18 +275,37 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
      * This does not issue the safety prompt, it is up to the caller to do so!
      */
     public void closeCurrentTab() {
+        closeTabAt(tabs.getSelectedIndex());
+    }
+
+    private void closeTabAt(int position) {
         if (tabs.getTabCount() <= 2) {
             MegaMekLabTabbedUI.this.dispatchEvent(new WindowEvent(MegaMekLabTabbedUI.this, WindowEvent.WINDOW_CLOSING));
         }
 
-        var editor = currentEditor();
+        var editor = editors.get(position);
 
         tabs.remove(editor.getContentPane());
         if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
             tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
         }
         editors.remove(editor);
-        editor.dispose();
+        closedEditors.push(editor);
+        // Tell the menu bar to enable the "reopen tab" shortcut
+        refreshMenuBar();
+    }
+
+    public void reopenTab() {
+        var editor = closedEditors.pop();
+        if (editor != null) {
+            addTab(editor);
+            tabs.setSelectedIndex(tabs.getTabCount() - 2);
+            refreshMenuBar();
+        }
+    }
+
+    public boolean hasClosedTabs() {
+        return !closedEditors.isEmpty();
     }
 
     @Override
@@ -352,10 +391,57 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.isShiftDown() || editor.safetyPrompt()) {
-                        closeCurrentTab();
+                        closeTabAt(editors.indexOf(editor));
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * ReopenTabStack is a utility class that manages a fixed-capacity stack of closed
+     * MegaMekLabMainUI editors. It allows for storing references to recently closed
+     * editors and retrieving them in reverse order of their closure, resembling
+     * a "reopen tab" functionality.
+     * <p>
+     * This stack maintains a circular buffer of references with a maximum capacity
+     * defined by the constant STACK_CAPACITY. If the capacity is exceeded, the oldest
+     * editor will be disposed of and removed to make room for new entries.
+     */
+    private static class ReopenTabStack {
+        public static final int STACK_CAPACITY = 20;
+
+        private final MegaMekLabMainUI[] closedEditors = new MegaMekLabMainUI[STACK_CAPACITY];
+        private int size = 0;
+        private int start = 0;
+
+        public void push(MegaMekLabMainUI editor) {
+            int pos = start + size % closedEditors.length;
+            if (size == closedEditors.length) {
+                closedEditors[pos].dispose();
+                start++;
+                start %= closedEditors.length;
+            } else {
+                size++;
+            }
+            closedEditors[pos] = editor;
+        }
+
+        public MegaMekLabMainUI pop() {
+            if (size == 0) {
+                return null;
+            }
+            int pos = start + size - 1 % closedEditors.length;
+            var ret = closedEditors[pos];
+
+            closedEditors[pos] = null;
+            size--;
+
+            return ret;
+        }
+
+        public boolean isEmpty() {
+            return size == 0;
         }
     }
 }

@@ -144,6 +144,13 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 }
             });
             fileMenu.add(miCloseTab);
+
+            final JMenuItem miReopenTab = new JMenuItem(resources.getString("miReopenTab.text"));
+            miReopenTab.setName("miReopenTab");
+            miReopenTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            miReopenTab.addActionListener(e -> tabbedUI.reopenTab());
+            miReopenTab.setEnabled(tabbedUI.hasClosedTabs());
+            fileMenu.add(miReopenTab);
         }
 
         final JMenuItem miResetCurrentUnit = new JMenuItem(resources.getString("miResetCurrentUnit.text"));
