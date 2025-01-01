@@ -53,13 +53,13 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     protected void setSizeAndLocation() {
         pack();
-        restrictToScrenSize();
+        restrictToScreenSize();
         setLocationRelativeTo(null);
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
     }
 
-    private void restrictToScrenSize() {
+    private void restrictToScreenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);

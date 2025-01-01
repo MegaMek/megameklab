@@ -26,6 +26,7 @@ import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
 import megamek.common.preference.PreferenceManager;
+import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.util.UnitUtil;
@@ -41,12 +42,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class TabStateUtil {
+    private final static MMLogger logger = MMLogger.create(TabStateUtil.class);
+
     private final static String TAB_STATE_DIRECTORY = ".mml_tmp";
     private final static String TAB_STATE_CLEAN = "clean";
     private final static String FILENAME_ASSOCIATIONS = "filenames.db";
 
     public static void saveTabState(List<MegaMekLabMainUI> editors) throws IOException {
-        var dir = getTabStateDirectory();
+        var dir = getTabStateDirectory(true);
 
         var clean = new File(dir, TAB_STATE_CLEAN);
         if (clean.exists()) {
@@ -69,14 +72,16 @@ public class TabStateUtil {
                     ) {
                     ps.println(((Mek) editor.getEntity()).getMtf());
                 } catch (Exception e) {
-                    continue;
+                    logger.fatal("Failed to write unit while saving tab state.", e);
+                    return;
                 }
             } else {
                 unitFile = File.createTempFile("mml_unit_", ".blk.tmp", dir);
                 try {
                     BLKFile.encode(unitFile.getPath(), editor.getEntity());
                 } catch (EntitySavingException e) {
-                    continue;
+                    logger.fatal("Failed to write unit while saving tab state.", e);
+                    return;
                 }
             }
 
@@ -98,12 +103,19 @@ public class TabStateUtil {
             }
         }
 
-        clean.createNewFile();
+        if (!clean.createNewFile()) {
+            throw new IOException("Could not create " + clean);
+        }
     }
 
     public static List<MegaMekLabMainUI> loadTabState() throws IOException {
-        var dir = getTabStateDirectory();
+        var dir = getTabStateDirectory(false);
+
         List<MegaMekLabMainUI> editors = new ArrayList<>();
+
+        if (dir == null) {
+            return editors;
+        }
 
         var clean = new File(dir, TAB_STATE_CLEAN);
         if (!clean.exists()) {
@@ -129,22 +141,29 @@ public class TabStateUtil {
 
             try {
                 Entity loadedUnit = new MekFileParser(newFile).getEntity();
-                newFile.delete();
                 var editor = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(loadedUnit), loadedUnit.isPrimitive(), loadedUnit.isIndustrialMek());
                 editor.setEntity(loadedUnit);
                 editor.setFileName(fileName);
                 editor.reloadTabs();
                 editor.refreshAll();
                 editors.add(editor);
-            } catch (EntityLoadingException ignored) {}
+            } catch (EntityLoadingException e) {
+                logger.warn("Could not restore tab for entity file %s:%s".formatted(entityFile, fileName), e);
+            } finally {
+                if (!newFile.delete()) {
+                    logger.warn("Could not delete temporary file %s".formatted(newFile));
+                }
+            }
         }
 
-        clean.delete();
+        if (!clean.delete()) {
+            logger.error("Could not mark tab state as dirty on load!");
+        }
 
         return editors;
     }
 
-    private static File getTabStateDirectory() throws IOException {
+    private static File getTabStateDirectory(boolean create) throws IOException {
         var userDirString = PreferenceManager.getClientPreferences().getUserDir();
         if (userDirString == null || userDirString.isBlank()) {
             userDirString = ".";
@@ -158,6 +177,9 @@ public class TabStateUtil {
 
         var tabStateDir = new File(userDir, TAB_STATE_DIRECTORY);
         if (!tabStateDir.isDirectory()) {
+            if (!create) {
+                return null;
+            }
             if (!tabStateDir.mkdir()) {
                 throw new IOException("Could not create tab state directory: " + tabStateDir);
             } else {

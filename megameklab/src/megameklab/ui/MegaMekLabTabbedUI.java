@@ -34,7 +34,6 @@ import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -85,12 +84,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
 
         // Remember the size and position of the window from last time MML was launched
         pack();
-        restrictToScrenSize();
+        restrictToScreenSize();
         setLocationRelativeTo(null);
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
 
-        // ...and save that size nad position on exit
+        // ...and save that size and position on exit
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new ExitOnWindowClosingListener(this));
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
@@ -231,7 +230,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
         return true;
     }
 
-    private void restrictToScrenSize() {
+    private void restrictToScreenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
@@ -270,7 +269,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
         editor.dispose();
     }
 
-    //<editor-fold desc="MenuBarOwner interface implementation">
     @Override
     public JFrame getFrame() {
         return this;
@@ -300,7 +298,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
     public MenuBar getMMLMenuBar() {
         return menuBar;
     }
-    //</editor-fold>
 
 
     /**
