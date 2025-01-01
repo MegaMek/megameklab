@@ -239,11 +239,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
         MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
 
-        try {
-            TabStateUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
-        } catch (IOException e) {
-            // todo real error handling?
-            throw new RuntimeException(e);
+        if (CConfig.getStartUpType() == MMLStartUp.RESTORE_TABS) {
+            try {
+                TabStateUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return true;
