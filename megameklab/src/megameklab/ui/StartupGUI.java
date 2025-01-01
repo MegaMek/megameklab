@@ -278,7 +278,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         CConfig.setMostRecentFile(fileName);
         if (previousFrame instanceof MegaMekLabTabbedUI tabbedUi) {
-            tabbedUi.addEditor(newUnit, fileName);
+            tabbedUi.addUnit(newUnit, fileName);
         } else if (!(previousFrame instanceof MegaMekLabMainUI)
                 || (newUnit.getEntityType() != previousFrame.getEntity().getEntityType())) {
             previousFrame.getFrame().setVisible(false);
