@@ -19,6 +19,7 @@
 package megameklab.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -33,6 +34,7 @@ import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.PopupMessages;
+import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -42,6 +44,7 @@ import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
+import megameklab.ui.util.TabStateUtil;
 import megameklab.util.UnitUtil;
 
 /**
@@ -69,6 +72,7 @@ public class UiLoader {
     private final boolean industrial;
     private final Entity newUnit;
     private final String fileName;
+    private boolean restore = false;
 
     public static void loadUi(Entity newUnit, String fileName) {
         new UiLoader(UnitUtil.getEditorTypeForEntity(newUnit), newUnit.isPrimitive(), newUnit.isIndustrialMek(), newUnit, fileName).show();
@@ -76,6 +80,10 @@ public class UiLoader {
 
     public static void loadUi(long type, boolean primitive, boolean industrial) {
         new UiLoader(type, primitive, industrial, null, "").show();
+    }
+
+    public static void restoreTabbedUi() {
+        new UiLoader(true).show();
     }
 
     /**
@@ -102,6 +110,16 @@ public class UiLoader {
         splashImage.setLocationRelativeTo(null);
     }
 
+    private UiLoader(boolean restore) {
+        this(0, false, false, null, null);
+
+        if (!restore) {
+            throw new IllegalArgumentException("Impossible!");
+        }
+
+        this.restore = true;
+    }
+
     /**
      * Shows the splash image, hides the calling frame and starts loading the new
      * unit's UI.
@@ -112,17 +130,35 @@ public class UiLoader {
     }
 
     private void loadNewUi() {
-        MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
-        if (newUnit != null) {
-            UnitUtil.updateLoadedUnit(newUnit);
-            newUI.setEntity(newUnit, fileName);
-            newUI.reloadTabs();
-            newUI.refreshAll();
+        try {
+            MegaMekLabTabbedUI tabbedUi;
+            if (!restore) {
+                MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
+                if (newUnit != null) {
+                    UnitUtil.updateLoadedUnit(newUnit);
+                    newUI.setEntity(newUnit, fileName);
+                    newUI.reloadTabs();
+                    newUI.refreshAll();
+                }
+                tabbedUi = new MegaMekLabTabbedUI(newUI);
+                tabbedUi.setVisible(true);
+            } else {
+                try {
+                    var editors = TabStateUtil.loadTabState().toArray(new MegaMekLabMainUI[0]);
+                    if (editors.length == 0) {
+                        throw new IllegalStateException("Could not restore tabs");
+                    }
+                    tabbedUi = new MegaMekLabTabbedUI(editors);
+                    tabbedUi.setVisible(true);
+                } catch (IOException | IllegalStateException e) {
+                    new StartupGUI().setVisible(true);
+                }
+            }
+
+        } finally {
+            splashImage.setVisible(false);
+            splashImage.dispose();
         }
-        var tabbedUi = new MegaMekLabTabbedUI(newUI);
-        tabbedUi.setVisible(true);
-        splashImage.setVisible(false);
-        splashImage.dispose();
     }
 
     /**

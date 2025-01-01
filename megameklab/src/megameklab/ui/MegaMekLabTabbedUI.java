@@ -28,6 +28,7 @@ import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.TabStateUtil;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
@@ -37,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +64,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
-
-        // Create a blank Mek by default
-        if (entities.length == 0) {
-            entities = new MegaMekLabMainUI[] { new BMMainUI(false, false) };
-        }
 
         // If there are more tabs than can fit, show a scroll bar instead of stacking tabs in multiple rows
         // This is a matter of preference, I could be convinced to switch this.
@@ -241,6 +238,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         PreferenceManager.getInstance().save();
         MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
         MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
+
+        try {
+            TabStateUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
+        } catch (IOException e) {
+            // todo real error handling?
+            throw new RuntimeException(e);
+        }
+
         return true;
     }
 

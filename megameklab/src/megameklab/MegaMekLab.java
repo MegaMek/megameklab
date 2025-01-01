@@ -154,6 +154,7 @@ public class MegaMekLab {
                     new StartupGUI().setVisible(true);
                 }
             }
+            case RESTORE_TABS -> UiLoader.restoreTabbedUi();
             default -> {
                 new StartupGUI().setVisible(true);
             }
