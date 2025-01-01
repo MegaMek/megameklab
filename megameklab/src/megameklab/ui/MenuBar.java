@@ -1222,7 +1222,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             warnOnInvalid(loadedUnit);
 
             newRecentUnit(unitFile.toString());
-            if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
+            if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
+                tabbedUi.addUnit(loadedUnit, unitFile.toString());
+                refresh();
+            } else if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
                 UiLoader.loadUi(loadedUnit, unitFile.toString());
@@ -1230,9 +1233,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
                 UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
                 reload();
-                refresh();
-            } else if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
-                tabbedUi.addUnit(loadedUnit, unitFile.toString());
                 refresh();
             }
         } catch (Exception ex) {
