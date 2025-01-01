@@ -240,6 +240,35 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
         setSize(new Dimension(w, h));
     }
 
+    public void newTab() {
+        tabs.setEnabledAt(tabs.getTabCount() - 1, true);
+        tabs.setSelectedIndex(tabs.getTabCount() - 1);
+        tabs.setTabComponentAt(
+            tabs.getTabCount() - 1,
+            new ClosableTab(currentEditor().getEntity().getDisplayName(), currentEditor())
+        );
+
+        addNewTabButton();
+    }
+
+    /**
+     * Deletes the current tab.
+     * This does not issue the safety prompt, it is up to the caller to do so!
+     */
+    public void closeCurrentTab() {
+        if (tabs.getTabCount() <= 2) {
+            MegaMekLabTabbedUI.this.dispatchEvent(new WindowEvent(MegaMekLabTabbedUI.this, WindowEvent.WINDOW_CLOSING));
+        }
+
+        var editor = currentEditor();
+
+        tabs.remove(editor.getContentPane());
+        if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
+            tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
+        }
+        editors.remove(editor);
+        editor.dispose();
+    }
 
     //<editor-fold desc="MenuBarOwner interface implementation">
     @Override
@@ -290,15 +319,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
             button.setBorder(BorderFactory.createEmptyBorder());
 
             button.addActionListener(e -> {
-                tabs.setEnabledAt(tabs.getTabCount() - 1, true);
-                tabs.setSelectedIndex(tabs.getTabCount() - 1);
-                tabs.setTabComponentAt(
-                    tabs.getTabCount() - 1,
-                    new ClosableTab(currentEditor().getEntity().getDisplayName(), currentEditor())
-                );
-
-
-                addNewTabButton();
+                newTab();
             });
 
             add(button);
@@ -334,16 +355,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.isShiftDown() || editor.safetyPrompt()) {
-                        if (tabs.getTabCount() <= 2) {
-                            MegaMekLabTabbedUI.this.dispatchEvent(new WindowEvent(MegaMekLabTabbedUI.this, WindowEvent.WINDOW_CLOSING));
-                        }
-
-                        tabs.remove(editor.getContentPane());
-                        if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
-                            tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
-                        }
-                        editors.remove(editor);
-                        editor.dispose();
+                        closeCurrentTab();
                     }
                 }
             });

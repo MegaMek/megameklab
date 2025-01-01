@@ -126,6 +126,26 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            final JMenuItem miNewTab = new JMenuItem(resources.getString("miNewTab.text"));
+            miNewTab.setName("miNewTab");
+            miNewTab.setMnemonic(KeyEvent.VK_N);
+            miNewTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+            miNewTab.addActionListener(e -> tabbedUI.newTab());
+            fileMenu.add(miNewTab);
+
+            final JMenuItem miCloseTab = new JMenuItem(resources.getString("miCloseTab.text"));
+            miCloseTab.setName("miCloseTab");
+            miCloseTab.setMnemonic(KeyEvent.VK_W);
+            miCloseTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+            miCloseTab.addActionListener(e -> {
+                if (tabbedUI.safetyPrompt()) {
+                    tabbedUI.closeCurrentTab();
+                }
+            });
+            fileMenu.add(miCloseTab);
+        }
+
         final JMenuItem miResetCurrentUnit = new JMenuItem(resources.getString("miResetCurrentUnit.text"));
         miResetCurrentUnit.setName("miResetCurrentUnit");
         miResetCurrentUnit.setMnemonic(KeyEvent.VK_R);
@@ -168,7 +188,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createSwitchUnitTypeMenu() {
         final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
         switchUnitTypeMenu.setName("switchUnitTypeMenu");
-        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_W);
+        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_U);
 
         final Entity entity = owner.getEntity();
 
@@ -654,7 +674,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createUnitValidationMenu() {
         final JMenu unitValidationMenu = new JMenu(resources.getString("unitValidationMenu.text"));
         unitValidationMenu.setName("unitValidationMenu");
-        unitValidationMenu.setMnemonic(KeyEvent.VK_U);
+        unitValidationMenu.setMnemonic(KeyEvent.VK_V);
 
         final JMenuItem miValidateCurrentUnit = new JMenuItem(resources.getString("CurrentUnit.text"));
         miValidateCurrentUnit.setName("miValidateCurrentUnit");
