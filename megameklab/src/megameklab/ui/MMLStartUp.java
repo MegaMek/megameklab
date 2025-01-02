@@ -31,6 +31,7 @@ public enum MMLStartUp {
 
     SPLASH_SCREEN,
     RECENT_UNIT,
+    RESTORE_TABS,
     NEW_MEK,
     NEW_TANK,
     NEW_BATTLEARMOR,

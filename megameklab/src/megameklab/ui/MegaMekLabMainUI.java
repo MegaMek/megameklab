@@ -35,6 +35,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
+    private MegaMekLabTabbedUI owner = null;
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -52,13 +53,13 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     protected void setSizeAndLocation() {
         pack();
-        restrictToScrenSize();
+        restrictToScreenSize();
         setLocationRelativeTo(null);
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
     }
 
-    private void restrictToScrenSize() {
+    private void restrictToScreenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
@@ -128,6 +129,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public void refreshHeader() {
         String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
         setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
+        if (owner != null) {
+            getEntity().generateDisplayName();
+            owner.setTabName(getEntity().getDisplayName());
+        }
     }
 
     @Override
@@ -202,5 +207,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public MenuBar getMMLMenuBar() {
         return mmlMenuBar;
+    }
+
+    public void setOwner(MegaMekLabTabbedUI owner) {
+        this.owner = owner;
     }
 }

@@ -117,6 +117,7 @@ public interface MenuBarOwner extends AppCloser {
         changeTheme(lookAndFeelInfo.getClassName());
     }
 
+
     /**
      * Sets the look and feel for the application and lets Swing update the current
      * components.
