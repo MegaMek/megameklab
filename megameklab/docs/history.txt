@@ -7,6 +7,8 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1665: Inverted function call
 + Fix #1667: incorrect cargo bay minimum doors
 + PR #1671: Log jvm parameters
++ PR #1675: Fixed protomek reference tables
++ PR #1673: Allow opening multiple units in tabs
 
 0.50.01 (2024-11-10 1800 UTC)
 + PR #1608, #1611: Respecting Trademarks (Mech to Mek)

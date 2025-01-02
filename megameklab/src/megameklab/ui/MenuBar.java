@@ -77,14 +77,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     /**
      * Returns the unit main UI, if this menubar is attached to one (instead of the
-     * StartupGUI
-     * aka splash screen), null otherwise.
+     * StartupGUI aka splash screen), null otherwise.
+     * Under the Tabbed UI, returns the main UI for the currently selected tab.
      *
      * @return The unit main UI of this menubar or null
      */
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
         if (owner instanceof MegaMekLabMainUI) {
             return (MegaMekLabMainUI) owner;
+        } else if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            return tabbedUI.currentEditor();
         } else {
             return null;
         }
@@ -123,6 +125,33 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.removeAll();
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            final JMenuItem miNewTab = new JMenuItem(resources.getString("miNewTab.text"));
+            miNewTab.setName("miNewTab");
+            miNewTab.setMnemonic(KeyEvent.VK_N);
+            miNewTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+            miNewTab.addActionListener(e -> tabbedUI.newTab());
+            fileMenu.add(miNewTab);
+
+            final JMenuItem miCloseTab = new JMenuItem(resources.getString("miCloseTab.text"));
+            miCloseTab.setName("miCloseTab");
+            miCloseTab.setMnemonic(KeyEvent.VK_W);
+            miCloseTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+            miCloseTab.addActionListener(e -> {
+                if (tabbedUI.safetyPrompt()) {
+                    tabbedUI.closeCurrentTab();
+                }
+            });
+            fileMenu.add(miCloseTab);
+
+            final JMenuItem miReopenTab = new JMenuItem(resources.getString("miReopenTab.text"));
+            miReopenTab.setName("miReopenTab");
+            miReopenTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            miReopenTab.addActionListener(e -> tabbedUI.reopenTab());
+            miReopenTab.setEnabled(tabbedUI.hasClosedTabs());
+            fileMenu.add(miReopenTab);
+        }
 
         final JMenuItem miResetCurrentUnit = new JMenuItem(resources.getString("miResetCurrentUnit.text"));
         miResetCurrentUnit.setName("miResetCurrentUnit");
@@ -166,7 +195,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createSwitchUnitTypeMenu() {
         final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
         switchUnitTypeMenu.setName("switchUnitTypeMenu");
-        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_W);
+        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_U);
 
         final Entity entity = owner.getEntity();
 
@@ -652,7 +681,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createUnitValidationMenu() {
         final JMenu unitValidationMenu = new JMenu(resources.getString("unitValidationMenu.text"));
         unitValidationMenu.setName("unitValidationMenu");
-        unitValidationMenu.setMnemonic(KeyEvent.VK_U);
+        unitValidationMenu.setMnemonic(KeyEvent.VK_V);
 
         final JMenuItem miValidateCurrentUnit = new JMenuItem(resources.getString("CurrentUnit.text"));
         miValidateCurrentUnit.setName("miValidateCurrentUnit");
@@ -1220,11 +1249,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             warnOnInvalid(loadedUnit);
 
             newRecentUnit(unitFile.toString());
-            if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
+            if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
+                tabbedUi.addUnit(loadedUnit, unitFile.toString());
+                refresh();
+            } else if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
                 UiLoader.loadUi(loadedUnit, unitFile.toString());
-            } else {
+            } else if (owner instanceof MegaMekLabMainUI ){
                 getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
                 UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
                 reload();
