@@ -22,6 +22,7 @@ import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -158,7 +159,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public void setEntity(Entity entity, String currentEntityFilename) {
         this.entity = entity;
-        originalName = MenuBar.createUnitFilename(entity);
+        originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         setFileName(currentEntityFilename);
     }
 
@@ -190,7 +191,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public void setFileName(String fileName) {
         this.fileName = fileName;
         // If the filename is reloaded, restart tracking of the unit name changing.
-        this.originalName = MenuBar.createUnitFilename(entity);
+        this.originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         refreshHeader();
     }
 
@@ -201,7 +202,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     @Override
     public boolean hasEntityNameChanged() {
-        return !MenuBar.createUnitFilename(entity).equals(originalName);
+        return !MegaMekLabFileSaver.createUnitFilename(entity).equals(originalName);
     }
 
     @Override
