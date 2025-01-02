@@ -93,10 +93,10 @@ class BLKFileTest {
     }
 
     public static List<File> allMekfiles() {
-        try (Stream<Path> paths = Files.walk(Paths.get("data/mekfiles/vehicles"))) {
+        try (Stream<Path> paths = Files.walk(Paths.get("data/mekfiles"))) {
             return paths
                 .filter(Files::isRegularFile)
-                .filter(path -> path.toString().endsWith(".blk"))
+//                .filter(path -> path.toString().endsWith(".blk"))
                 .map(Path::toFile)
                 .toList();
         } catch (IOException e) {
@@ -107,6 +107,7 @@ class BLKFileTest {
 
     @BeforeAll
     public static void initializeStuff() {
+        MekFileParser.initCanonUnitNames();
         EquipmentType.initializeTypes();
         AmmoType.initializeTypes();
         ArmorType.initializeTypes();
