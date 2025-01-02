@@ -375,11 +375,17 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return saveMenu;
     }
 
-    public void saveUnitAs() {
+    public boolean saveUnitAs() {
         warnOnInvalid();
         Entity entity = getUnitMainUi().getEntity();
-        fileSaver.saveUnitAs(getUnitMainUi(), entity);
-
+        UnitUtil.compactCriticals(entity);
+        getUnitMainUi().refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnitAs(getUnitMainUi(), entity);
+        if (file == null) {
+            return false;
+        }
+        getUnitMainUi().setFileName(file);
+        return true;
     }
 
     public boolean saveUnit() {
@@ -390,7 +396,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         } else {
             warnOnInvalid();
         }
-        return fileSaver.saveUnit(getUnitMainUi(), entity);
+        UnitUtil.compactCriticals(entity);
+        getUnitMainUi().refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnit(getUnitMainUi().getFrame(), getUnitMainUi(), entity);
+        if (file == null) {
+            return false;
+        }
+        getUnitMainUi().setFileName(file);
+        return true;
     }
 
     /**

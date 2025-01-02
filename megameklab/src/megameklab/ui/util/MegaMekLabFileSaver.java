@@ -5,11 +5,10 @@ import megamek.common.Mek;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.logging.MMLogger;
-import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.FileNameManager;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.util.CConfig;
-import megameklab.util.UnitUtil;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -51,46 +50,42 @@ public class MegaMekLabFileSaver {
      *
      * @return True when the unit was actually saved, false otherwise
      */
-    public boolean saveUnit(MegaMekLabMainUI owner, Entity entity) {
-        UnitUtil.compactCriticals(entity);
-        owner.refreshAll(); // The crits may have moved
-
-        String filePathName = owner.getFileName();
+    public String saveUnit(JFrame ownerFrame, FileNameManager fileNameManager, Entity entity) {
+        String filePathName = fileNameManager.getFileName();
         // For safety, save automatically only to .mtf or .blk files, otherwise ask
         if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk"))
             || !new File(filePathName).exists()
-            || owner.hasEntityNameChanged()) {
-            File selectedFile = chooseSaveFile(owner, entity);
+            || fileNameManager.hasEntityNameChanged()) {
+            File selectedFile = chooseSaveFile(ownerFrame, entity);
             if (selectedFile == null) {
-                return false;
+                return null;
             }
-
             filePathName = selectedFile.getPath();
         }
 
         CConfig.setMostRecentFile(filePathName);
-        return saveUnitTo(owner, new File(filePathName), entity);
+        return saveUnitTo(ownerFrame, new File(filePathName), entity);
     }
 
-    public void saveUnitAs(MegaMekLabMainUI owner, Entity entity) {
-        UnitUtil.compactCriticals(entity);
-        owner.refreshAll(); // The crits may have moved
+    public String saveUnitAs(JFrame ownerFrame, Entity entity) {
 
-        File saveFile = chooseSaveFile(owner, entity);
+        File saveFile = chooseSaveFile(ownerFrame, entity);
         if (saveFile != null) {
             CConfig.setMostRecentFile(saveFile.toString());
-            saveUnitTo(owner, saveFile, entity);
+            return saveUnitTo(ownerFrame, saveFile, entity);
         }
+        return null;
     }
 
-    private @Nullable File chooseSaveFile(MegaMekLabMainUI owner, Entity entity) {
+    // Replace owner class with EntitySource... somehow.
+    private @Nullable File chooseSaveFile(JFrame ownerFrame, Entity entity) {
         if (entity instanceof Mek) {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
         } else {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
         }
-        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(owner.getEntity())));
-        int result = saveUnitFileChooser.showSaveDialog(owner.getFrame());
+        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(entity)));
+        int result = saveUnitFileChooser.showSaveDialog(ownerFrame);
         if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
             return null;
         } else {
@@ -98,26 +93,25 @@ public class MegaMekLabFileSaver {
         }
     }
 
-    private boolean saveUnitTo(MegaMekLabMainUI owner, File file, Entity entity) {
+    private String saveUnitTo(JFrame ownerFrame, File file, Entity entity) {
         if (entity == null) {
-            return false;
+            return null;
         }
         try {
             if (entity instanceof Mek) {
                 try (FileOutputStream fos = new FileOutputStream(file);
                      PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mek) owner.getEntity()).getMtf());
+                    ps.println(((Mek) entity).getMtf());
                 }
             } else {
                 BLKFile.encode(file.getPath(), entity);
             }
-            PopupMessages.showUnitSavedMessage(owner.getFrame(), entity, file);
-            owner.setFileName(file.toString());
-            return true;
+            PopupMessages.showUnitSavedMessage(ownerFrame, entity, file);
+            return file.toString();
         } catch (Exception ex) {
-            PopupMessages.showFileWriteError(owner.getFrame(), ex.getMessage());
+            PopupMessages.showFileWriteError(ownerFrame, ex.getMessage());
             logger.error("", ex);
-            return false;
+            return null;
         }
     }
 }

@@ -30,7 +30,7 @@ import megameklab.util.MMLFileDropTransferHandler;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner {
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
     private Entity entity = null;
     private String fileName = "";
     protected MenuBar mmlMenuBar;
@@ -188,6 +188,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         return fileName;
     }
 
+    @Override
     public void setFileName(String fileName) {
         this.fileName = fileName;
         // If the filename is reloaded, restart tracking of the unit name changing.
