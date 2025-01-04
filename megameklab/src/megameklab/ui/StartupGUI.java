@@ -28,6 +28,7 @@ import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
@@ -264,7 +265,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         if (fileName.toLowerCase().endsWith(".zip")) {
             fileName = viewer.getSelectedMekSummary().getSourceFile().getAbsolutePath();
             fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-            fileName = fileName + MenuBar.createUnitFilename(newUnit);
+            fileName = fileName + MegaMekLabFileSaver.createUnitFilename(newUnit);
         }
 
         if (!previousFrame.safetyPrompt()) {
