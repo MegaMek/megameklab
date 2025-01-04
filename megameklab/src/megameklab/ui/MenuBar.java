@@ -1216,7 +1216,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private void loadUnitFromFile(int fileNumber) {
+    public void loadUnitFromFile(int fileNumber) {
         File unitFile;
         if (fileNumber > 0) {
             String recentFileName = CConfig.getRecentFile(fileNumber);
