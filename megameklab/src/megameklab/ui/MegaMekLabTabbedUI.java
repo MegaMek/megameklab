@@ -348,17 +348,104 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
     private class NewTabButton extends JPanel {
         public NewTabButton() {
             setOpaque(false);
-            var button = new JButton("➕");
-            button.setForeground(Color.GREEN);
-            button.setFont(Font.getFont("Symbola"));
-            button.setFocusable(false);
-            button.setBorder(BorderFactory.createEmptyBorder());
+            var newUnitButton = new JButton("➕");
+            newUnitButton.setForeground(Color.GREEN);
+            newUnitButton.setFont(Font.getFont("Symbola"));
+            newUnitButton.setFocusable(false);
+            newUnitButton.setBorder(BorderFactory.createEmptyBorder());
+            newUnitButton.setToolTipText("<html>New Blank Mek<br>Right Click: Select Unit Type");
 
-            button.addActionListener(e -> {
-                newTab();
+            newUnitButton.addActionListener(e -> newTab());
+            newUnitButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        newUnitPopupMenu().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        newUnitPopupMenu().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
             });
 
-            add(button);
+            add(newUnitButton);
+
+            var loadUnitButton = new JButton("⌸");
+            loadUnitButton.setFont(Font.getFont("Symbola"));
+            loadUnitButton.setForeground(Color.CYAN);
+            loadUnitButton.setFocusable(false);
+            loadUnitButton.setBorder(BorderFactory.createEmptyBorder());
+            loadUnitButton.setToolTipText("<html>Load unit from cache<br>Right Click: Load Unit Menu");
+
+            loadUnitButton.addActionListener(e -> StartupGUI.selectAndLoadUnitFromCache(MegaMekLabTabbedUI.this));
+            loadUnitButton.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        loadUnitMenu().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.isPopupTrigger()) {
+                        loadUnitMenu().show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            });
+
+            add(loadUnitButton);
+        }
+
+        private JPopupMenu newUnitPopupMenu() {
+            var menu = new JPopupMenu();
+            menu.add(newUnitItem("New Mek", Entity.ETYPE_MEK, false));
+            menu.add(newUnitItem("New Fighter", Entity.ETYPE_AERO, false));
+            menu.add(newUnitItem("New DropShip/Small Craft", Entity.ETYPE_DROPSHIP, false));
+            menu.add(newUnitItem("New Advanced Aerospace", Entity.ETYPE_JUMPSHIP, false));
+            menu.add(newUnitItem("New Tank", Entity.ETYPE_TANK, false));
+            menu.add(newUnitItem("New Support Vehicle", Entity.ETYPE_SUPPORT_TANK, false));
+            menu.add(newUnitItem("New Battle Armor", Entity.ETYPE_BATTLEARMOR, false));
+            menu.add(newUnitItem("New Conventional Infantry", Entity.ETYPE_INFANTRY, false));
+            menu.add(newUnitItem("New ProtoMek", Entity.ETYPE_PROTOMEK, false));
+
+            var primitive = new JMenu("New Primitive...");
+            primitive.add(newUnitItem("New Mek", Entity.ETYPE_MEK, true));
+            primitive.add(newUnitItem("New Fighter", Entity.ETYPE_AERO, true));
+            primitive.add(newUnitItem("New DropShip/Small Craft", Entity.ETYPE_DROPSHIP, true));
+            primitive.add(newUnitItem("New JumpShip", Entity.ETYPE_JUMPSHIP, true));
+
+            menu.add(primitive);
+
+            return menu;
+        }
+
+        private JMenuItem newUnitItem(String name, long entityType, boolean primitive) {
+            var item = new JMenuItem(name);
+            item.addActionListener(e -> {
+                newTab();
+                newUnit(entityType, primitive);
+            });
+            return item;
+        }
+
+        private JPopupMenu loadUnitMenu() {
+            var menu = new JPopupMenu();
+
+            var fromCache = new JMenuItem("Load from cache");
+            fromCache.addActionListener(e ->  StartupGUI.selectAndLoadUnitFromCache(MegaMekLabTabbedUI.this));
+            menu.add(fromCache);
+
+            var fromFile = new JMenuItem("Load from file");
+            fromFile.addActionListener(e -> getMMLMenuBar().loadUnitFromFile(-1));
+            menu.add(fromFile);
+
+            return menu;
         }
     }
 
