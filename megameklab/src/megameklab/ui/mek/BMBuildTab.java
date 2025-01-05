@@ -42,6 +42,11 @@ public class BMBuildTab extends ITab {
 
     private RefreshListener refresh = null;
     private final BMCriticalView critView;
+
+    public BMBuildView getBuildView() {
+        return buildView;
+    }
+
     private final BMBuildView buildView;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
 

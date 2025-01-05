@@ -26,6 +26,7 @@ import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Main window for support vehicle construction
@@ -230,5 +231,10 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getUnallocatedView().getEquipment();
     }
 }

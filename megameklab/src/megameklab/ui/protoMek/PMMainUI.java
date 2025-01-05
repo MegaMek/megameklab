@@ -25,6 +25,7 @@ import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Main UI for building protomeks
@@ -187,5 +188,10 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getBuildView().getEquipment();
     }
 }

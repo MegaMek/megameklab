@@ -43,6 +43,11 @@ public class BABuildTab extends ITab {
 
     private RefreshListener refresh = null;
     private final ArrayList<BACriticalView> critViews = new ArrayList<>();
+
+    public BABuildView getBuildView() {
+        return buildView;
+    }
+
     private final BABuildView buildView;
 
     /** Panel for displaying the critical trees for each trooper in the squad. */

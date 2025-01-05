@@ -63,6 +63,11 @@ public class LABuildView extends IView implements MouseListener {
     }
 
     private CriticalTableModel equipmentList;
+
+    public List<Mounted<?>> getEquipment() {
+        return equipmentList.getCrits();
+    }
+
     private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();

@@ -42,6 +42,11 @@ import megameklab.util.UnitUtil;
 public class PMBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh;
     private PMCriticalView critView;
+
+    public PMBuildView getBuildView() {
+        return buildView;
+    }
+
     private PMBuildView buildView;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();

@@ -16,20 +16,13 @@
 package megameklab.ui.fighterAero;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import megamek.common.Aero;
-import megamek.common.AeroSpaceFighter;
-import megamek.common.ConvFighter;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.SimpleTechLevel;
-import megamek.common.TechConstants;
+import megamek.common.*;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
@@ -218,5 +211,10 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getBuildView().getEquipment();
     }
 }

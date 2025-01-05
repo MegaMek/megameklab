@@ -19,12 +19,11 @@
 
 package megameklab.ui.util;
 
-import megamek.common.Entity;
-import megamek.common.Mek;
-import megamek.common.MekFileParser;
+import megamek.common.*;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
+import megamek.common.loaders.MtfFile;
 import megamek.common.preference.PreferenceManager;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
@@ -32,10 +31,7 @@ import megameklab.ui.dialog.UiLoader;
 import megameklab.util.UnitUtil;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -83,6 +79,29 @@ public class TabStateUtil {
                     logger.fatal("Failed to write unit while saving tab state.", e);
                     return;
                 }
+            }
+
+            // Meta File Format:
+            // First line: an integer n
+            // Next n lines: equipment added to the unit but not allocated to a location
+            var metaFile = new File(unitFile.getAbsolutePath().replaceFirst("\\.tmp$", ".meta"));
+            try (
+                var fos = new FileOutputStream(metaFile);
+                var ps = new PrintStream(fos);
+                ) {
+                var unallocatedEquipment = editor.getUnallocatedMounted();
+                ps.println(unallocatedEquipment.size());
+                for (var m : unallocatedEquipment) {
+                    var type = m.getType();
+                    if (type.isVariableSize()) {
+                        ps.printf("%s%s%f\n", type.getInternalName(), MtfFile.SIZE, m.getSize());
+                    } else {
+                        ps.println(type.getInternalName());
+                    }
+                }
+            } catch (Exception e) {
+                logger.fatal("Failed to write unit metadata while saving tab state.", e);
+                return;
             }
 
             var fileName = editor.getFileName();
@@ -141,6 +160,25 @@ public class TabStateUtil {
 
             try {
                 Entity loadedUnit = new MekFileParser(newFile).getEntity();
+
+                var metaFile = new File(entityFile.getAbsolutePath().replaceFirst("\\.tmp$", ".meta"));
+                if (metaFile.exists()) {
+                    try (var sc = new Scanner(metaFile)) {
+                        int unallocatedEquipment = Integer.parseInt(sc.nextLine());
+                        for (int j = 0; j < unallocatedEquipment; j++) {
+                            var line = sc.nextLine().split(Pattern.quote(MtfFile.SIZE));
+                            var type = EquipmentType.get(line[0]);
+                            var mounted = Mounted.createMounted(loadedUnit, type);
+                            if (line.length > 1) {
+                                mounted.setSize(Double.parseDouble(line[1]));
+                            }
+                            loadedUnit.addEquipment(mounted, Entity.LOC_NONE, false);
+                        }
+                    } catch (Exception e) {
+                        logger.warn("Could not read meta file for entity file %s:%s".formatted(entityFile, fileName), e);
+                    }
+                }
+
                 var editor = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(loadedUnit), loadedUnit.isPrimitive(), loadedUnit.isIndustrialMek());
                 editor.setEntity(loadedUnit);
                 editor.setFileName(fileName);

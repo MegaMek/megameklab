@@ -17,6 +17,7 @@
 package megameklab.ui.infantry;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -127,6 +128,11 @@ public class CIMainUI extends MegaMekLabMainUI {
     @Override
     public JDialog getFloatingEquipmentDatabase() {
         return null;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return List.of();
     }
 
     @Override
