@@ -1,6 +1,8 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.03-SNAPSHOT
++ PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
++ PR #1679: Adds Tabbed UI Improvements
 
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
