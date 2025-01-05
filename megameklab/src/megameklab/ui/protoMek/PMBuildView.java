@@ -33,6 +33,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -44,6 +45,11 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     private JPanel mainPanel = new JPanel();
 
     private CriticalTableModel equipmentList;
+
+    public List<Mounted<?>> getEquipment() {
+        return equipmentList.getCrits();
+    }
+
     private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();

@@ -18,6 +18,7 @@ package megameklab.ui;
 import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
+import megamek.common.Mounted;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
@@ -214,4 +215,12 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public void setOwner(MegaMekLabTabbedUI owner) {
         this.owner = owner;
     }
+
+    /**
+     * Retrieves a list of mounted components that are currently not assigned to a location.
+     * Such equipment would be deleted on save and reload.
+     *
+     * @return a List containing unallocated Mounted objects.
+     */
+    public abstract java.util.List<Mounted<?>> getUnallocatedMounted();
 }

@@ -25,6 +25,7 @@ import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class BAMainUI extends MegaMekLabMainUI {
 
@@ -123,7 +124,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     public void refreshEquipment() {
         equipTab.refresh();
     }
-    
+
     @Override
     public void refreshTransport() {
         // not used for ba
@@ -146,10 +147,10 @@ public class BAMainUI extends MegaMekLabMainUI {
     public void refreshPreview() {
         structureTab.refreshPreview();
     }
-    
+
     @Override
     public void refreshSummary() { }
-    
+
     @Override
     public void refreshEquipmentTable() {
         equipTab.refreshTable();
@@ -163,5 +164,10 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getBuildView().getEquipment();
     }
 }

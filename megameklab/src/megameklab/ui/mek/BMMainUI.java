@@ -27,6 +27,7 @@ import megameklab.util.MekUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class BMMainUI extends MegaMekLabMainUI {
 
@@ -231,5 +232,10 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return this.buildTab.getBuildView().getEquipment();
     }
 }

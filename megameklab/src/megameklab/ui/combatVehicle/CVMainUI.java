@@ -28,6 +28,7 @@ import megameklab.ui.util.TabScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class CVMainUI extends MegaMekLabMainUI {
 
@@ -63,7 +64,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
-        
+
         previewTab = new PreviewTab(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
@@ -216,5 +217,10 @@ public class CVMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getUnallocatedView().getEquipment();
     }
 }

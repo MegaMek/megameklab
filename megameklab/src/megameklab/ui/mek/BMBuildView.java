@@ -67,6 +67,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     private int engineHeatSinkCount = 0;
     private final CriticalTransferHandler transferHandler;
     private RefreshListener refresh;
+    private List<Mounted<?>> masterEquipmentList;
 
     public BMBuildView(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
         super(eSource);
@@ -101,7 +102,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     private void loadEquipmentTable() {
-        final List<Mounted<?>> masterEquipmentList = new ArrayList<>();
+        masterEquipmentList = new ArrayList<>();
         equipmentList.removeAllCrits();
         engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMek(), getMek().hasCompactHeatSinks());
         for (Mounted<?> mount : getMek().getMisc()) {
@@ -120,6 +121,10 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
         masterEquipmentList.sort(new MekUtil.MekMountedSorter(getMek()));
         masterEquipmentList.forEach(equipmentList::addCrit);
+    }
+
+    public List<Mounted<?>> getEquipment() {
+        return masterEquipmentList;
     }
 
     private boolean isEngineHeatSink(Mounted<?> mount) {
