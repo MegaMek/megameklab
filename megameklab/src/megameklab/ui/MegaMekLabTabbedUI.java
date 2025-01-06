@@ -34,6 +34,8 @@ import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -44,7 +46,7 @@ import java.util.List;
  * Replaces {@link MegaMekLabMainUI} as the top-level window for MML.
  * Holds several {@link MegaMekLabMainUI}s as tabs, allowing many units to be open at once.
  */
-public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
+public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
     private final List<MegaMekLabMainUI> editors = new ArrayList<>();
 
     private final ReopenTabStack closedEditors = new ReopenTabStack();
@@ -75,6 +77,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
             addTab(e);
         }
         addNewTabButton();
+
+        tabs.addChangeListener(this);
 
         setContentPane(tabs);
 
@@ -336,6 +340,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner {
     @Override
     public MenuBar getMMLMenuBar() {
         return menuBar;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() == tabs) {
+            refreshMenuBar();
+        }
     }
 
 
