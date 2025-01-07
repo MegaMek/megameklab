@@ -44,7 +44,6 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
-import megameklab.EntityChangedUtil;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -1171,7 +1170,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 throw new Exception();
             }
 
-            if (!owner.safetyPrompt()) {
+            // TabbedUi loads a unit into a new tab, no safety prompt needed.
+            if (!(owner instanceof MegaMekLabTabbedUI) || !owner.safetyPrompt()) {
                 return;
             }
 

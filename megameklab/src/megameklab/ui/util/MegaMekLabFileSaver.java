@@ -19,9 +19,11 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.logging.MMLogger;
 import megameklab.ui.FileNameManager;
+import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.util.CConfig;
+import megameklab.util.EntityChangedUtil;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -119,6 +121,12 @@ public class MegaMekLabFileSaver {
             } else {
                 BLKFile.encode(file.getPath(), entity);
             }
+
+            if (ownerFrame instanceof MegaMekLabMainUI mui) {
+                // Since we've saved the entity, update the entity being compared against to determine if the user has unsaved work.
+                EntityChangedUtil.editorSaved(mui);
+            }
+
             PopupMessages.showUnitSavedMessage(ownerFrame, entity, file);
             return file.toString();
         } catch (Exception ex) {

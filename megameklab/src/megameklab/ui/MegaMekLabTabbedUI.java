@@ -23,12 +23,13 @@ import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
-import megameklab.EntityChangedUtil;
+import megameklab.util.EntityChangedUtil;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabStateUtil;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -235,9 +236,36 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(entity.getDisplayName(), currentEditor()));
     }
 
+    private boolean exitPrompt() {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
+            return true;
+        }
+        if (editors.stream().limit(editors.size() - 1).noneMatch(EntityChangedUtil::hasEntityChanged)) {
+            return true;
+        }
+        int savePrompt = JOptionPane.showConfirmDialog(this,
+            "All unsaved changes to open units will be discarded. Save the units first?",
+            "Save Units Before Proceeding?",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        if (savePrompt == JOptionPane.NO_OPTION) {
+            return true;
+        }
+        if (savePrompt == JOptionPane.YES_OPTION) {
+            return editors.stream().limit(editors.size() - 1)
+                .filter(EntityChangedUtil::hasEntityChanged)
+                .noneMatch(editor -> {
+                    tabs.setSelectedComponent(editor.getContentPane());
+                    tabs.paintImmediately(tabs.getBounds());
+                    return !editor.getMMLMenuBar().saveUnit();
+                });
+        }
+        return false;
+    }
+
     @Override
     public boolean exit() {
-        if (!currentEditor().safetyPrompt()) {
+        if (!exitPrompt()) {
             return false;
         }
 
@@ -346,6 +374,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     @Override
     public MenuBar getMMLMenuBar() {
         return menuBar;
+    }
+
+    @Override
+    public boolean safetyPrompt() {
+        return currentEditor().safetyPrompt();
     }
 
     @Override
