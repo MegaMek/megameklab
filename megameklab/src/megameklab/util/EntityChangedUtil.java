@@ -33,17 +33,28 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Helps to determine if a tab should have an "Unsaved Work" indicator and if the "would you like to save" prompt should appear.
+ */
 public class EntityChangedUtil {
     private static final MMLogger logger = MMLogger.create(EntityChangedUtil.class);
 
     private static final Map<String, Entity> cache = new ConcurrentHashMap<>();
 
+    /**
+     * Determines if the editor has unsaved changes.
+     * @param editor The MainUI to check for changes
+     * @return true if saving the unit would produce a different unit than the one saved already, or if there is no existing file for the unit.
+     */
     public static boolean hasEntityChanged(MegaMekLabMainUI editor) {
         var filename = editor.getFileName();
         if (filename == null || filename.isBlank()) {
             return true;
         }
 
+        // The idea behind how this works is to store a copy of the unit based on that unit's current file.
+        // By encoding both the original and current version of the entity to mtf/blk at the same time,
+        // We ensure that identical units will encode to identical mtf/blk strings, which indicates no unsaved work.
 
         if (!cache.containsKey(filename)) {
             var f = new File(filename);
@@ -70,6 +81,10 @@ public class EntityChangedUtil {
         }
     }
 
+    /**
+     *
+     * @param editor The editor containing the unit that was just saved.
+     */
     public static void editorSaved(MegaMekLabMainUI editor) {
         var filename = editor.getFileName();
         if (filename == null || filename.isBlank()) {

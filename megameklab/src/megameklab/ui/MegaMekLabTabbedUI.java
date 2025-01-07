@@ -91,6 +91,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Enable opening unit and mul files by drag-and-drop
         setTransferHandler(new MMLFileDropTransferHandler(this));
 
+        // If you can think of a way to detect when the user makes a change to the entity, let me know.
+        // I can't, so we just poll the entity for changed to set the "unsaved work" indicator periodically
+        // --Pavel Braginskiy (cat /dev/random)
         new Timer(500, e -> checkChanged(tabs.getSelectedIndex())).start();
 
         // Remember the size and position of the window from last time MML was launched
@@ -240,6 +243,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
         }
+        // No editors have changes, no need to prompt for saving
         if (editors.stream().limit(editors.size() - 1).noneMatch(EntityChangedUtil::hasEntityChanged)) {
             return true;
         }
@@ -251,13 +255,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (savePrompt == JOptionPane.NO_OPTION) {
             return true;
         }
+        // For each editor with unsaved changes, switch to that editor and save it.
         if (savePrompt == JOptionPane.YES_OPTION) {
             return editors.stream().limit(editors.size() - 1)
                 .filter(EntityChangedUtil::hasEntityChanged)
                 .noneMatch(editor -> {
                     tabs.setSelectedComponent(editor.getContentPane());
+                    // paintImmediately means that the user can see which unit they're about to pick a file for
+                    // because it updates the UI without waiting for this method to return
                     tabs.paintImmediately(tabs.getBounds());
-                    return !editor.getMMLMenuBar().saveUnit();
+                    return !menuBar.saveUnit();
                 });
         }
         return false;
