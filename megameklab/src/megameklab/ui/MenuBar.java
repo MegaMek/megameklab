@@ -44,6 +44,7 @@ import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
+import megameklab.EntityChangedUtil;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
