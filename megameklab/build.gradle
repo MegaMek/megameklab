@@ -11,6 +11,12 @@ plugins {
     id 'org.ec4j.editorconfig' version '0.1.0'
 }
 
+repositories {
+    mavenCentral()
+    maven { url "https://www.jetbrains.com/intellij-repository/releases" }
+    maven { url "https://jetbrains.bintray.com/intellij-third-party-dependencies" }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -52,6 +58,7 @@ ext {
 }
 
 dependencies {
+    implementation 'com.jetbrains.intellij.java:java-gui-forms-rt:243.22562.242'
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
