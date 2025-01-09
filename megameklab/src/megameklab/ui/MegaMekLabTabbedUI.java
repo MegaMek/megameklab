@@ -50,6 +50,8 @@ import java.util.List;
  * Holds several {@link MegaMekLabMainUI}s as tabs, allowing many units to be open at once.
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
+    private final static Font symbolFont = new Font("Noto Sans Symbols 2", Font.PLAIN, 12);
+
     private final List<MegaMekLabMainUI> editors = new ArrayList<>();
 
     private final ReopenTabStack closedEditors = new ReopenTabStack();
@@ -412,11 +414,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * the tab is replaced with a normal {@link EditorTab}.
      */
     private class NewTabButton extends JPanel {
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public NewTabButton() {
             setOpaque(false);
-            var newUnitButton = new JButton("➕");
+            // ✚
+            var newUnitButton = new JButton("\u271A");
             newUnitButton.setForeground(Color.GREEN);
-            newUnitButton.setFont(Font.getFont("Symbola"));
+            newUnitButton.setFont(symbolFont);
             newUnitButton.setFocusable(false);
             newUnitButton.setBorder(BorderFactory.createEmptyBorder());
             newUnitButton.setToolTipText("<html>New Blank Mek<br>Right Click: Select Unit Type");
@@ -440,8 +444,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
             add(newUnitButton);
 
-            var loadUnitButton = new JButton("⌸");
-            loadUnitButton.setFont(Font.getFont("Symbola"));
+            // Folder symbol
+            var loadUnitButton = new JButton("\uD83D\uDDC1");
+            loadUnitButton.setFont(symbolFont.deriveFont(Font.BOLD));
             loadUnitButton.setForeground(Color.CYAN);
             loadUnitButton.setFocusable(false);
             loadUnitButton.setBorder(BorderFactory.createEmptyBorder());
@@ -529,6 +534,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             changesIndicator.setText(changed ? "*" : "");
         }
 
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public EditorTab(String name, MegaMekLabMainUI mainUI) {
             JLabel unitName = new JLabel(name);
             changesIndicator = new JLabel();
@@ -536,8 +542,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
             setOpaque(false);
 
-            JButton closeButton = new JButton("❌");
-            closeButton.setFont(Font.getFont("Symbola"));
+            // ✖ symbol
+            JButton closeButton = new JButton("\u2716");
+            closeButton.setFont(symbolFont);
             closeButton.setForeground(Color.RED);
             closeButton.setFocusable(false);
             closeButton.setBorder(BorderFactory.createEmptyBorder());
