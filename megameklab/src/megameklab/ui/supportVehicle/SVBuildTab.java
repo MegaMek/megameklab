@@ -47,6 +47,11 @@ public class SVBuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
     private SVCriticalView critView;
+
+    public UnallocatedView getUnallocatedView() {
+        return unallocatedView;
+    }
+
     private UnallocatedView unallocatedView;
 
     private JButton autoFillButton = new JButton("Auto Fill");

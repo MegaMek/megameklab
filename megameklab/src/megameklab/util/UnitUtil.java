@@ -64,6 +64,7 @@ import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
+import megameklab.ui.dialog.UiLoader;
 
 public class UnitUtil {
     private static final MMLogger logger = MMLogger.create(UnitUtil.class);
@@ -2139,5 +2140,29 @@ public class UnitUtil {
                     && (weapon.getAmmoType() == AmmoType.T_NA);
         }
         return false;
+    }
+
+    public static long getEditorTypeForEntity(Entity newUnit) {
+        if ((newUnit == null) || (newUnit instanceof Mek)) {
+            return Entity.ETYPE_MEK;
+        } else if (newUnit.isSupportVehicle()) {
+            return Entity.ETYPE_SUPPORT_TANK;
+        } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
+            return Entity.ETYPE_DROPSHIP;
+        } else if (newUnit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            return Entity.ETYPE_JUMPSHIP;
+        } else if ((newUnit instanceof Aero) && !(newUnit instanceof FixedWingSupport)) {
+            return Entity.ETYPE_AERO;
+        } else if (newUnit instanceof BattleArmor) {
+            return Entity.ETYPE_BATTLEARMOR;
+        } else if (newUnit instanceof Infantry) {
+            return Entity.ETYPE_INFANTRY;
+        } else if (newUnit instanceof ProtoMek) {
+            return Entity.ETYPE_PROTOMEK;
+        } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
+            return Entity.ETYPE_TANK;
+        } else {
+            throw new IllegalArgumentException("Cannot open this entity in an editor");
+        }
     }
 }

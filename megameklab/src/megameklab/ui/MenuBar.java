@@ -42,7 +42,6 @@ import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.loaders.BLKFile;
 import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
 import megameklab.MMLConstants;
@@ -51,6 +50,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
+import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -66,9 +66,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final MenuBarOwner owner;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
-    private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
     public final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
     private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
+
+    private MegaMekLabFileSaver fileSaver;
 
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
@@ -77,14 +78,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     /**
      * Returns the unit main UI, if this menubar is attached to one (instead of the
-     * StartupGUI
-     * aka splash screen), null otherwise.
+     * StartupGUI aka splash screen), null otherwise.
+     * Under the Tabbed UI, returns the main UI for the currently selected tab.
      *
      * @return The unit main UI of this menubar or null
      */
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
         if (owner instanceof MegaMekLabMainUI) {
             return (MegaMekLabMainUI) owner;
+        } else if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            return tabbedUI.currentEditor();
         } else {
             return null;
         }
@@ -116,13 +119,39 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         loadImageFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadImageFileChooser.setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg, .gif)",
                 "png", "jpg", "jpeg", "gif"));
-        saveUnitFileChooser.setDialogTitle(resources.getString("dialog.saveAs.title"));
     }
 
     private JMenu createFileMenu() {
         fileMenu.removeAll();
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            final JMenuItem miNewTab = new JMenuItem(resources.getString("miNewTab.text"));
+            miNewTab.setName("miNewTab");
+            miNewTab.setMnemonic(KeyEvent.VK_N);
+            miNewTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+            miNewTab.addActionListener(e -> tabbedUI.newTab());
+            fileMenu.add(miNewTab);
+
+            final JMenuItem miCloseTab = new JMenuItem(resources.getString("miCloseTab.text"));
+            miCloseTab.setName("miCloseTab");
+            miCloseTab.setMnemonic(KeyEvent.VK_W);
+            miCloseTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
+            miCloseTab.addActionListener(e -> {
+                if (tabbedUI.safetyPrompt()) {
+                    tabbedUI.closeCurrentTab();
+                }
+            });
+            fileMenu.add(miCloseTab);
+
+            final JMenuItem miReopenTab = new JMenuItem(resources.getString("miReopenTab.text"));
+            miReopenTab.setName("miReopenTab");
+            miReopenTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            miReopenTab.addActionListener(e -> tabbedUI.reopenTab());
+            miReopenTab.setEnabled(tabbedUI.hasClosedTabs());
+            fileMenu.add(miReopenTab);
+        }
 
         final JMenuItem miResetCurrentUnit = new JMenuItem(resources.getString("miResetCurrentUnit.text"));
         miResetCurrentUnit.setName("miResetCurrentUnit");
@@ -166,7 +195,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createSwitchUnitTypeMenu() {
         final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
         switchUnitTypeMenu.setName("switchUnitTypeMenu");
-        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_W);
+        switchUnitTypeMenu.setMnemonic(KeyEvent.VK_U);
 
         final Entity entity = owner.getEntity();
 
@@ -322,6 +351,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @return the created Save menu
      */
     private JMenu createSaveMenu() {
+        fileSaver = new MegaMekLabFileSaver(logger, resources.getString("dialog.saveAs.title"));
         final JMenu saveMenu = new JMenu(resources.getString("Save.text"));
         saveMenu.setName("saveMenu");
         saveMenu.setMnemonic(KeyEvent.VK_S);
@@ -343,6 +373,37 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         saveMenu.add(miSaveAs);
 
         return saveMenu;
+    }
+
+    public boolean saveUnitAs() {
+        warnOnInvalid();
+        Entity entity = getUnitMainUi().getEntity();
+        UnitUtil.compactCriticals(entity);
+        getUnitMainUi().refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnitAs(getUnitMainUi(), entity);
+        if (file == null) {
+            return false;
+        }
+        getUnitMainUi().setFileName(file);
+        return true;
+    }
+
+    public boolean saveUnit() {
+        Entity entity = getUnitMainUi().getEntity();
+        if (entity == null) {
+            logger.error("Tried to save null entity.");
+            return false;
+        } else {
+            warnOnInvalid();
+        }
+        UnitUtil.compactCriticals(entity);
+        getUnitMainUi().refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnit(getUnitMainUi().getFrame(), getUnitMainUi(), entity);
+        if (file == null) {
+            return false;
+        }
+        getUnitMainUi().setFileName(file);
+        return true;
     }
 
     /**
@@ -652,7 +713,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private JMenu createUnitValidationMenu() {
         final JMenu unitValidationMenu = new JMenu(resources.getString("unitValidationMenu.text"));
         unitValidationMenu.setName("unitValidationMenu");
-        unitValidationMenu.setMnemonic(KeyEvent.VK_U);
+        unitValidationMenu.setMnemonic(KeyEvent.VK_V);
 
         final JMenuItem miValidateCurrentUnit = new JMenuItem(resources.getString("CurrentUnit.text"));
         miValidateCurrentUnit.setName("miValidateCurrentUnit");
@@ -1051,110 +1112,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         getUnitMainUi().repaint();
     }
 
-    /**
-     * Constructs a file name for the current Entity using the chassis and model
-     * name and the
-     * correct extension for the unit type. Any character that is not legal for a
-     * Windows filename
-     * is replaced by an underscore.
-     *
-     * @param entity The Entity
-     * @return A default filename for the Entity
-     */
-    public static String createUnitFilename(Entity entity) {
-        String fileName = (entity.getChassis() + ' ' + entity.getModel()).trim();
-        fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
-        return fileName + ((entity instanceof Mek) ? ".mtf" : ".blk");
-    }
-
-    /**
-     * Tries to save the unit directly to its file, if it has a filename already. If
-     * it hasn't, it performs a Save As... Returns true when it successfully saves
-     * the
-     * unit, false if not.
-     *
-     * @return True when the unit was actually saved, false otherwise
-     */
-    public boolean saveUnit() {
-        Entity entity = owner.getEntity();
-        if (entity == null) {
-            logger.error("Tried to save null entity.");
-            return false;
-        } else {
-            warnOnInvalid();
-        }
-
-        UnitUtil.compactCriticals(entity);
-        owner.refreshAll(); // The crits may have moved
-
-        String filePathName = owner.getFileName();
-        // For safety, save automatically only to .mtf or .blk files, otherwise ask
-        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk"))
-                || !new File(filePathName).exists()
-                || owner.hasEntityNameChanged()) {
-            File selectedFile = chooseSaveFile();
-            if (selectedFile == null) {
-                return false;
-            }
-
-            filePathName = selectedFile.getPath();
-        }
-
-        CConfig.setMostRecentFile(filePathName);
-        return saveUnitTo(new File(filePathName));
-    }
-
-    private void saveUnitAs() {
-        warnOnInvalid();
-
-        UnitUtil.compactCriticals(owner.getEntity());
-        owner.refreshAll(); // The crits may have moved
-
-        File saveFile = chooseSaveFile();
-        if (saveFile != null) {
-            CConfig.setMostRecentFile(saveFile.toString());
-            saveUnitTo(saveFile);
-        }
-    }
-
-    private @Nullable File chooseSaveFile() {
-        if (getUnitMainUi().getEntity() instanceof Mek) {
-            saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
-        } else {
-            saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
-        }
-        saveUnitFileChooser.setSelectedFile(new File(createUnitFilename(getUnitMainUi().getEntity())));
-        int result = saveUnitFileChooser.showSaveDialog(owner.getFrame());
-        if ((result != JFileChooser.APPROVE_OPTION) || (saveUnitFileChooser.getSelectedFile() == null)) {
-            return null;
-        } else {
-            return saveUnitFileChooser.getSelectedFile();
-        }
-    }
-
-    private boolean saveUnitTo(File file) {
-        if (getUnitMainUi().getEntity() == null) {
-            return false;
-        }
-        try {
-            if (getUnitMainUi().getEntity() instanceof Mek) {
-                try (FileOutputStream fos = new FileOutputStream(file);
-                        PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mek) owner.getEntity()).getMtf());
-                }
-            } else {
-                BLKFile.encode(file.getPath(), getUnitMainUi().getEntity());
-            }
-            PopupMessages.showUnitSavedMessage(owner.getFrame(), getUnitMainUi().getEntity(), file);
-            getUnitMainUi().setFileName(file.toString());
-            return true;
-        } catch (Exception ex) {
-            PopupMessages.showFileWriteError(owner.getFrame(), ex.getMessage());
-            logger.error("", ex);
-            return false;
-        }
-    }
-
     private String entitySummaryText(ViewFormatting formatting) {
         if (CConfig.getBooleanParam(CConfig.MISC_SUMMARY_FORMAT_TRO) && formatting != ViewFormatting.DISCORD) {
             TROView view = TROView.createView(owner.getEntity(), formatting);
@@ -1187,7 +1144,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
     }
 
-    private void loadUnitFromFile(int fileNumber) {
+    public void loadUnitFromFile(int fileNumber) {
         File unitFile;
         if (fileNumber > 0) {
             String recentFileName = CConfig.getRecentFile(fileNumber);
@@ -1220,11 +1177,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             warnOnInvalid(loadedUnit);
 
             newRecentUnit(unitFile.toString());
-            if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
+            if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
+                tabbedUi.addUnit(loadedUnit, unitFile.toString());
+                refresh();
+            } else if (isStartupGui() || (loadedUnit.getEntityType() != owner.getEntity().getEntityType())) {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
                 UiLoader.loadUi(loadedUnit, unitFile.toString());
-            } else {
+            } else if (owner instanceof MegaMekLabMainUI ){
                 getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
                 UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
                 reload();

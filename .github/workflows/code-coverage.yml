@@ -35,7 +35,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
         working-directory: megameklab
@@ -49,7 +49,7 @@ jobs:
           path: ./megameklab/megameklab/build/reports/
 
       - name: CodeCov.io Coverage Report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           directory: ./megameklab/megameklab/build/reports/jacoco/test
           fail_ci_if_error: false

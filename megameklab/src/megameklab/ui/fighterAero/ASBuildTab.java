@@ -36,6 +36,11 @@ import megameklab.util.UnitUtil;
 public class ASBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
     private ASCriticalView critView = null;
+
+    public ASBuildView getBuildView() {
+        return buildView;
+    }
+
     private ASBuildView buildView = null;
     private JPanel buttonPanel = new JPanel();
     private JPanel mainPanel = new JPanel();

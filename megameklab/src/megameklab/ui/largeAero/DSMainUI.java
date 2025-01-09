@@ -14,6 +14,7 @@
 package megameklab.ui.largeAero;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
@@ -232,5 +233,10 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
+    }
+
+    @Override
+    public List<Mounted<?>> getUnallocatedMounted() {
+        return buildTab.getBuildView().getEquipment();
     }
 }

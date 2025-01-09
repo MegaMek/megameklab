@@ -41,6 +41,11 @@ public class CVBuildTab extends ITab implements ActionListener {
 
     private RefreshListener refresh = null;
     private CVCriticalView critView;
+
+    public UnallocatedView getUnallocatedView() {
+        return unallocatedView;
+    }
+
     private UnallocatedView unallocatedView;
 
     private JButton autoFillButton = new JButton("Auto Fill");

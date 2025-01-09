@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -60,6 +61,11 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     private static final MMLogger logger = MMLogger.create(ASBuildView.class);
 
     private CriticalTableModel equipmentList;
+
+    public List<Mounted<?>> getEquipment() {
+        return equipmentList.getCrits();
+    }
+
     private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
     private JTable equipmentTable = new JTable();
     private JScrollPane equipmentScroll = new JScrollPane();

@@ -18,10 +18,12 @@ package megameklab.ui;
 import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
+import megamek.common.Mounted;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -29,12 +31,13 @@ import megameklab.util.MMLFileDropTransferHandler;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner {
+public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
     private Entity entity = null;
     private String fileName = "";
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
+    private MegaMekLabTabbedUI owner = null;
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -52,13 +55,13 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     protected void setSizeAndLocation() {
         pack();
-        restrictToScrenSize();
+        restrictToScreenSize();
         setLocationRelativeTo(null);
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
     }
 
-    private void restrictToScrenSize() {
+    private void restrictToScreenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
@@ -128,6 +131,10 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     public void refreshHeader() {
         String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
         setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
+        if (owner != null) {
+            getEntity().generateDisplayName();
+            owner.setTabName(getEntity().getDisplayName());
+        }
     }
 
     @Override
@@ -153,7 +160,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public void setEntity(Entity entity, String currentEntityFilename) {
         this.entity = entity;
-        originalName = MenuBar.createUnitFilename(entity);
+        originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         setFileName(currentEntityFilename);
     }
 
@@ -182,10 +189,11 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         return fileName;
     }
 
+    @Override
     public void setFileName(String fileName) {
         this.fileName = fileName;
         // If the filename is reloaded, restart tracking of the unit name changing.
-        this.originalName = MenuBar.createUnitFilename(entity);
+        this.originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         refreshHeader();
     }
 
@@ -196,11 +204,23 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     @Override
     public boolean hasEntityNameChanged() {
-        return !MenuBar.createUnitFilename(entity).equals(originalName);
+        return !MegaMekLabFileSaver.createUnitFilename(entity).equals(originalName);
     }
 
     @Override
     public MenuBar getMMLMenuBar() {
         return mmlMenuBar;
     }
+
+    public void setOwner(MegaMekLabTabbedUI owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Retrieves a list of mounted components that are currently not assigned to a location.
+     * Such equipment would be deleted on save and reload.
+     *
+     * @return a List containing unallocated Mounted objects.
+     */
+    public abstract java.util.List<Mounted<?>> getUnallocatedMounted();
 }
