@@ -5,6 +5,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1679: Adds Tabbed UI Improvements
 + PR #1685: Detect unsaved work
 + PR #1688: Fix font rendering of symbols on windows using gradle run
++ Fix #1687: Fix loading of FMU slots
 
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
