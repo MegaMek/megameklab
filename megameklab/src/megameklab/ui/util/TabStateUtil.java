@@ -160,6 +160,7 @@ public class TabStateUtil {
 
             try {
                 Entity loadedUnit = new MekFileParser(newFile).getEntity();
+                UnitUtil.updateLoadedUnit(loadedUnit);
 
                 var metaFile = new File(entityFile.getAbsolutePath().replaceFirst("\\.tmp$", ".meta"));
                 if (metaFile.exists()) {

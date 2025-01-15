@@ -23,20 +23,17 @@ import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
-import megameklab.util.EntityChangedUtil;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.ExitOnWindowClosingListener;
-import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabStateUtil;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -93,11 +90,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Enable opening unit and mul files by drag-and-drop
         setTransferHandler(new MMLFileDropTransferHandler(this));
 
-        // If you can think of a way to detect when the user makes a change to the entity, let me know.
-        // I can't, so we just poll the entity for changed to set the "unsaved work" indicator periodically
-        // --Pavel Braginskiy (cat /dev/random)
-        new Timer(500, e -> checkChanged(tabs.getSelectedIndex())).start();
-
         // Remember the size and position of the window from last time MML was launched
         pack();
         restrictToScreenSize();
@@ -132,7 +124,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // ClosableTab is a label with the unit name, and a close button.
         // If we didn't need that close button, this could be tabs.setTitleAt
         tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(tabName, currentEditor()) );
-        checkChanged(tabs.getSelectedIndex());
     }
 
     /**
@@ -160,7 +151,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.addTab(editor.getEntity().getDisplayName(), editor.getContentPane());
         // See EditorTab later in this file for what's going on here.
         tabs.setTabComponentAt(tabs.getTabCount() - 1, new EditorTab(editor.getEntity().getDisplayName(), editor));
-        checkChanged(tabs.getTabCount() - 1);
 
         if (newTab != null) {
             tabs.addTab("+", newTab.getContentPane());
@@ -245,31 +235,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
         }
-        // No editors have changes, no need to prompt for saving
-        if (editors.stream().limit(editors.size() - 1).noneMatch(EntityChangedUtil::hasEntityChanged)) {
-            return true;
-        }
         int savePrompt = JOptionPane.showConfirmDialog(this,
-            "All unsaved changes to open units will be discarded. Save the units first?",
+            "All unsaved changes to open units will be discarded. Are you sure you would like to exit?",
             "Save Units Before Proceeding?",
-            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE);
-        if (savePrompt == JOptionPane.NO_OPTION) {
-            return true;
-        }
-        // For each editor with unsaved changes, switch to that editor and save it.
-        if (savePrompt == JOptionPane.YES_OPTION) {
-            return editors.stream().limit(editors.size() - 1)
-                .filter(EntityChangedUtil::hasEntityChanged)
-                .noneMatch(editor -> {
-                    tabs.setSelectedComponent(editor.getContentPane());
-                    // paintImmediately means that the user can see which unit they're about to pick a file for
-                    // because it updates the UI without waiting for this method to return
-                    tabs.paintImmediately(tabs.getBounds());
-                    return !menuBar.saveUnit();
-                });
-        }
-        return false;
+        return savePrompt == JOptionPane.YES_OPTION;
     }
 
     @Override
@@ -394,15 +365,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == tabs) {
             refreshMenuBar();
-            checkChanged(checkChangedTab);
-            checkChangedTab = tabs.getSelectedIndex();
-        }
-    }
-
-    private int checkChangedTab = 0;
-    private void checkChanged(int tabIndex) {
-        if (tabs.getTabCount() >= tabIndex + 1 && tabs.getTabComponentAt(tabIndex) instanceof EditorTab et) {
-            et.markChanged(EntityChangedUtil.hasEntityChanged(editors.get(tabIndex)));
         }
     }
 
