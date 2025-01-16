@@ -20,7 +20,6 @@ import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.Mounted;
 import megamek.common.preference.PreferenceManager;
-import megameklab.util.EntityChangedUtil;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.util.ExitOnWindowClosingListener;
@@ -84,7 +83,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     @Override
     public boolean safetyPrompt() {
-        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS) || !EntityChangedUtil.hasEntityChanged(this)) {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
         } else {
             int savePrompt = JOptionPane.showConfirmDialog(this,
