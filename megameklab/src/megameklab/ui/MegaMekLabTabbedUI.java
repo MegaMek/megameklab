@@ -189,10 +189,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     private void newUnit(long type, boolean primitive, boolean industrial) {
         var oldUi = editors.get(tabs.getSelectedIndex());
 
-        if (!oldUi.safetyPrompt()) {
-            return;
-        }
-
         var newUi = UiLoader.getUI(type, primitive, industrial);
         newUi.setOwner(this);
         editors.set(tabs.getSelectedIndex(), newUi);

@@ -192,6 +192,17 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return fileMenu;
     }
 
+    private void switchUnitType(long type) {
+        switchUnitType(type, false);
+    }
+
+    private void switchUnitType(long type, boolean primitive) {
+        if (!isStartupGui() && !getUnitMainUi().safetyPrompt()) {
+            return;
+        }
+        owner.newUnit(type, primitive);
+    }
+
     private JMenu createSwitchUnitTypeMenu() {
         final JMenu switchUnitTypeMenu = new JMenu(resources.getString("switchUnitTypeMenu.text"));
         switchUnitTypeMenu.setName("switchUnitTypeMenu");
@@ -203,7 +214,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MEK));
+            miSwitchToMek.addActionListener(evt -> switchUnitType(Entity.ETYPE_MEK));
             switchUnitTypeMenu.add(miSwitchToMek);
         }
 
@@ -211,7 +222,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToFighter = new JMenuItem(resources.getString("miSwitchToFighter.text"));
             miSwitchToFighter.setName("miSwitchToFighter");
             miSwitchToFighter.setMnemonic(KeyEvent.VK_A);
-            miSwitchToFighter.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AERO));
+            miSwitchToFighter.addActionListener(evt -> switchUnitType(Entity.ETYPE_AERO));
             switchUnitTypeMenu.add(miSwitchToFighter);
         }
 
@@ -219,7 +230,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem item = new JMenuItem(resources.getString("miSwitchToDropShipSmallCraft.text"));
             item.setName("miSwitchToDropShipSmallCraft");
             item.setMnemonic(KeyEvent.VK_D);
-            item.addActionListener(evt -> owner.newUnit(Entity.ETYPE_DROPSHIP));
+            item.addActionListener(evt -> switchUnitType(Entity.ETYPE_DROPSHIP));
             switchUnitTypeMenu.add(item);
         }
 
@@ -227,7 +238,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToAdvancedAero = new JMenuItem(resources.getString("miSwitchToAdvancedAero.text"));
             miSwitchToAdvancedAero.setName("miSwitchToAdvancedAero");
             miSwitchToAdvancedAero.setMnemonic(KeyEvent.VK_J);
-            miSwitchToAdvancedAero.addActionListener(evt -> owner.newUnit(Entity.ETYPE_JUMPSHIP));
+            miSwitchToAdvancedAero.addActionListener(evt -> switchUnitType(Entity.ETYPE_JUMPSHIP));
             switchUnitTypeMenu.add(miSwitchToAdvancedAero);
         }
 
@@ -236,7 +247,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     resources.getString("miSwitchToCombatVehicle.text"));
             miSwitchToCombatVehicle.setName("miSwitchToCombatVehicle");
             miSwitchToCombatVehicle.setMnemonic(KeyEvent.VK_C);
-            miSwitchToCombatVehicle.addActionListener(evt -> owner.newUnit(Entity.ETYPE_TANK));
+            miSwitchToCombatVehicle.addActionListener(evt -> switchUnitType(Entity.ETYPE_TANK));
             switchUnitTypeMenu.add(miSwitchToCombatVehicle);
         }
 
@@ -245,7 +256,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     resources.getString("miSwitchToSupportVehicle.text"));
             miSwitchToSupportVehicle.setName("miSwitchToSupportVehicle");
             miSwitchToSupportVehicle.setMnemonic(KeyEvent.VK_S);
-            miSwitchToSupportVehicle.addActionListener(evt -> owner.newUnit(Entity.ETYPE_SUPPORT_TANK));
+            miSwitchToSupportVehicle.addActionListener(evt -> switchUnitType(Entity.ETYPE_SUPPORT_TANK));
             switchUnitTypeMenu.add(miSwitchToSupportVehicle);
         }
 
@@ -253,7 +264,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToBattleArmor = new JMenuItem(resources.getString("miSwitchToBattleArmor.text"));
             miSwitchToBattleArmor.setName("miSwitchToBattleArmor");
             miSwitchToBattleArmor.setMnemonic(KeyEvent.VK_B);
-            miSwitchToBattleArmor.addActionListener(evt -> owner.newUnit(Entity.ETYPE_BATTLEARMOR));
+            miSwitchToBattleArmor.addActionListener(evt -> switchUnitType(Entity.ETYPE_BATTLEARMOR));
             switchUnitTypeMenu.add(miSwitchToBattleArmor);
         }
 
@@ -261,7 +272,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToInfantry = new JMenuItem(resources.getString("miSwitchToInfantry.text"));
             miSwitchToInfantry.setName("miSwitchToInfantry");
             miSwitchToInfantry.setMnemonic(KeyEvent.VK_I);
-            miSwitchToInfantry.addActionListener(evt -> owner.newUnit(Entity.ETYPE_INFANTRY));
+            miSwitchToInfantry.addActionListener(evt -> switchUnitType(Entity.ETYPE_INFANTRY));
             switchUnitTypeMenu.add(miSwitchToInfantry);
         }
 
@@ -269,7 +280,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToProtoMek = new JMenuItem(resources.getString("miSwitchToProtoMek.text"));
             miSwitchToProtoMek.setName("miSwitchToProtoMek");
             miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
-            miSwitchToProtoMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_PROTOMEK));
+            miSwitchToProtoMek.addActionListener(evt -> switchUnitType(Entity.ETYPE_PROTOMEK));
             switchUnitTypeMenu.add(miSwitchToProtoMek);
         }
 
@@ -290,7 +301,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToMek = new JMenuItem(resources.getString("miSwitchToMek.text"));
             miSwitchToMek.setName("miSwitchToMek");
             miSwitchToMek.setMnemonic(KeyEvent.VK_M);
-            miSwitchToMek.addActionListener(evt -> owner.newUnit(Entity.ETYPE_MEK, true));
+            miSwitchToMek.addActionListener(evt -> switchUnitType(Entity.ETYPE_MEK, true));
             primitiveMenu.add(miSwitchToMek);
         }
 
@@ -298,7 +309,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToAero = new JMenuItem(resources.getString("miSwitchToAero.text"));
             miSwitchToAero.setName("miSwitchToAero");
             miSwitchToAero.setMnemonic(KeyEvent.VK_A);
-            miSwitchToAero.addActionListener(evt -> owner.newUnit(Entity.ETYPE_AERO, true));
+            miSwitchToAero.addActionListener(evt -> switchUnitType(Entity.ETYPE_AERO, true));
             primitiveMenu.add(miSwitchToAero);
         }
 
@@ -307,7 +318,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     resources.getString("miSwitchToDropShipSmallCraft.text"));
             miSwitchToDropShipSmallCraft.setName("miSwitchToDropShipSmallCraft");
             miSwitchToDropShipSmallCraft.setMnemonic(KeyEvent.VK_D);
-            miSwitchToDropShipSmallCraft.addActionListener(evt -> owner.newUnit(Entity.ETYPE_DROPSHIP, true));
+            miSwitchToDropShipSmallCraft.addActionListener(evt -> switchUnitType(Entity.ETYPE_DROPSHIP, true));
             primitiveMenu.add(miSwitchToDropShipSmallCraft);
         }
 
@@ -315,7 +326,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             final JMenuItem miSwitchToJumpShip = new JMenuItem(resources.getString("miSwitchToJumpShip.text"));
             miSwitchToJumpShip.setName("miSwitchToJumpShip");
             miSwitchToJumpShip.setMnemonic(KeyEvent.VK_J);
-            miSwitchToJumpShip.addActionListener(evt -> owner.newUnit(Entity.ETYPE_JUMPSHIP, true));
+            miSwitchToJumpShip.addActionListener(evt -> switchUnitType(Entity.ETYPE_JUMPSHIP, true));
             primitiveMenu.add(miSwitchToJumpShip);
         }
 
