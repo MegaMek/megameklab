@@ -1181,8 +1181,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 throw new Exception();
             }
 
-            // TabbedUi loads a unit into a new tab, no safety prompt needed.
-            if (!(owner instanceof MegaMekLabTabbedUI) || !owner.safetyPrompt()) {
+            // Safety prompt is only needed on MainUI, since other UIs don't close a unit when loading a new one.
+            if ((owner instanceof MegaMekLabMainUI) && !owner.safetyPrompt()) {
                 return;
             }
 
