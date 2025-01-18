@@ -519,6 +519,57 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                     }
                 }
             });
+
+            addMouseListener(new MouseAdapter() {
+                private void forward(MouseEvent e) {
+                    var source = (Component) e.getSource();
+                    var parentEvent = SwingUtilities.convertMouseEvent(source, e, tabs);
+                    tabs.dispatchEvent(parentEvent);
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    forward(e);
+                    if (e.getButton() == MouseEvent.BUTTON2 && editor.safetyPrompt()) {
+                        closeTabAt(editors.indexOf(editor));
+                    }
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    forward(e);
+                }
+            });
         }
     }
 
