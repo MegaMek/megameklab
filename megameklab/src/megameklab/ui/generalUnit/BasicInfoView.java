@@ -409,7 +409,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     @Override
     public SimpleTechLevel getTechLevel() {
         try {
-            return SimpleTechLevel.valueOf(((String) cbTechLevel.getSelectedItem()).toUpperCase());
+            return SimpleTechLevel.parse((String) cbTechLevel.getSelectedItem());
         } catch (Exception e) {
             return SimpleTechLevel.STANDARD;
         }

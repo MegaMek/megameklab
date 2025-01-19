@@ -555,6 +555,9 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
+                // Note: append `&& eSource.getTechManager().getGameYear() >= etype.getProductionDate()`
+                // or `etype.getCommonDate()` in case we wish to change the availability start year from
+                // the prototype/introduction date to something later.
                 return shouldShow(etype);
             }
         };
