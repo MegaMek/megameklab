@@ -7,6 +7,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1687: Fix loading of FMU slots
 + PR #1675: Fixed protomek reference tables
 + PR #1673: Allow opening multiple units in tabs
++ Fix #1696:  Fix for Introductory tech level also showing Standard equipment in non-VTL mode.
 
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
