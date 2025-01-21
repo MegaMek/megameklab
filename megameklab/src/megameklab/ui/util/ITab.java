@@ -49,7 +49,7 @@ public class ITab extends JPanel {
     }
 
     public Aero getAero() {
-        return (AeroSpaceFighter) eSource.getEntity();
+        return (Aero) eSource.getEntity();
     }
 
     public SmallCraft getSmallCraft() {
