@@ -19,6 +19,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.logging.MMLogger;
 import megameklab.ui.FileNameManager;
+import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.util.CConfig;
@@ -119,6 +120,7 @@ public class MegaMekLabFileSaver {
             } else {
                 BLKFile.encode(file.getPath(), entity);
             }
+
             PopupMessages.showUnitSavedMessage(ownerFrame, entity, file);
             return file.toString();
         } catch (Exception ex) {

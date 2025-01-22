@@ -47,6 +47,8 @@ import java.util.List;
  * Holds several {@link MegaMekLabMainUI}s as tabs, allowing many units to be open at once.
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
+    private final static Font symbolFont = new Font("Noto Sans Symbols 2", Font.PLAIN, 12);
+
     private final List<MegaMekLabMainUI> editors = new ArrayList<>();
 
     private final ReopenTabStack closedEditors = new ReopenTabStack();
@@ -121,7 +123,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public void setTabName(String tabName) {
         // ClosableTab is a label with the unit name, and a close button.
         // If we didn't need that close button, this could be tabs.setTitleAt
-        tabs.setTabComponentAt(tabs.getSelectedIndex(), new ClosableTab(tabName, currentEditor()) );
+        tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(tabName, currentEditor()) );
     }
 
     /**
@@ -147,8 +149,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         editor.refreshAll();
         editor.setOwner(this);
         tabs.addTab(editor.getEntity().getDisplayName(), editor.getContentPane());
-        // See ClosableTab later in this file for what's going on here.
-        tabs.setTabComponentAt(tabs.getTabCount() - 1, new ClosableTab(editor.getEntity().getDisplayName(), editor));
+        // See EditorTab later in this file for what's going on here.
+        tabs.setTabComponentAt(tabs.getTabCount() - 1, new EditorTab(editor.getEntity().getDisplayName(), editor));
 
         if (newTab != null) {
             tabs.addTab("+", newTab.getContentPane());
@@ -189,7 +191,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         var newUi = UiLoader.getUI(type, primitive, industrial);
         editors.set(tabs.getSelectedIndex(), newUi);
         tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
-        tabs.setTabComponentAt(tabs.getSelectedIndex(), new ClosableTab(newUi.getEntity().getDisplayName(), newUi));
+        tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(newUi.getEntity().getDisplayName(), newUi));
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
         oldUi.dispose();
     }
@@ -226,12 +228,24 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         currentEditor().reloadTabs();
         currentEditor().refreshAll();
         // Set the tab name
-        tabs.setTabComponentAt(tabs.getSelectedIndex(), new ClosableTab(entity.getDisplayName(), currentEditor()));
+        tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(entity.getDisplayName(), currentEditor()));
+    }
+
+    private boolean exitPrompt() {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
+            return true;
+        }
+        int savePrompt = JOptionPane.showConfirmDialog(this,
+            "All unsaved changes to open units will be discarded. Are you sure you would like to exit?",
+            "Save Units Before Proceeding?",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        return savePrompt == JOptionPane.YES_OPTION;
     }
 
     @Override
     public boolean exit() {
-        if (!currentEditor().safetyPrompt()) {
+        if (!exitPrompt()) {
             return false;
         }
 
@@ -268,7 +282,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
         tabs.setTabComponentAt(
             tabs.getTabCount() - 1,
-            new ClosableTab(currentEditor().getEntity().getDisplayName(), currentEditor())
+            new EditorTab(currentEditor().getEntity().getDisplayName(), currentEditor())
         );
 
         addNewTabButton();
@@ -343,6 +357,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     @Override
+    public boolean safetyPrompt() {
+        return currentEditor().safetyPrompt();
+    }
+
+    @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == tabs) {
             refreshMenuBar();
@@ -354,14 +373,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * Represents a button used for creating new tabs in the MegaMekLabTabbedUI interface.
      * Used to mimic functionality for adding new tabs in a tabbed user interface.
      * Normally this tab should be disabled so it can't be navigated to, then when the + button is clicked
-     * the tab is replaced with a normal {@link ClosableTab}.
+     * the tab is replaced with a normal {@link EditorTab}.
      */
     private class NewTabButton extends JPanel {
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public NewTabButton() {
             setOpaque(false);
-            var newUnitButton = new JButton("➕");
+            // ✚
+            var newUnitButton = new JButton("\u271A");
             newUnitButton.setForeground(Color.GREEN);
-            newUnitButton.setFont(Font.getFont("Symbola"));
+            newUnitButton.setFont(symbolFont);
             newUnitButton.setFocusable(false);
             newUnitButton.setBorder(BorderFactory.createEmptyBorder());
             newUnitButton.setToolTipText("<html>New Blank Mek<br>Right Click: Select Unit Type");
@@ -385,8 +406,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
             add(newUnitButton);
 
-            var loadUnitButton = new JButton("⌸");
-            loadUnitButton.setFont(Font.getFont("Symbola"));
+            // Folder symbol
+            var loadUnitButton = new JButton("\uD83D\uDDC1");
+            loadUnitButton.setFont(symbolFont.deriveFont(Font.BOLD));
             loadUnitButton.setForeground(Color.CYAN);
             loadUnitButton.setFocusable(false);
             loadUnitButton.setBorder(BorderFactory.createEmptyBorder());
@@ -466,24 +488,31 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * The close button can be shift-clicked to skip the editor's safety prompt.
      * This class extends JPanel and is initialized with a unit name and its associated editor instance.
      */
-    private class ClosableTab extends JPanel {
-        JLabel unitName;
-        JButton closeButton;
-        MegaMekLabMainUI editor;
+    private class EditorTab extends JPanel {
+        private final JLabel changesIndicator;
+        private final MegaMekLabMainUI editor;
 
-        public ClosableTab(String name, MegaMekLabMainUI mainUI) {
-            unitName = new JLabel(name);
+        public void markChanged(boolean changed) {
+            changesIndicator.setText(changed ? "*" : "");
+        }
+
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
+        public EditorTab(String name, MegaMekLabMainUI mainUI) {
+            JLabel unitName = new JLabel(name);
+            changesIndicator = new JLabel();
             editor = mainUI;
 
             setOpaque(false);
 
-            closeButton = new JButton("❌");
-            closeButton.setFont(Font.getFont("Symbola"));
+            // ✖ symbol
+            JButton closeButton = new JButton("\u2716");
+            closeButton.setFont(symbolFont);
             closeButton.setForeground(Color.RED);
             closeButton.setFocusable(false);
             closeButton.setBorder(BorderFactory.createEmptyBorder());
             closeButton.setToolTipText("Shift-click to skip the save confirmation dialog");
             add(unitName);
+            add(changesIndicator);
             add(closeButton);
             closeButton.addMouseListener(new MouseAdapter() {
                 @Override

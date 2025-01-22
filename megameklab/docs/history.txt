@@ -3,14 +3,17 @@ MEGAMEKLAB VERSION HISTORY:
 0.50.03-SNAPSHOT
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
 + PR #1679: Adds Tabbed UI Improvements
++ PR #1688: Fix font rendering of symbols on windows using gradle run
++ Fix #1687: Fix loading of FMU slots
++ PR #1675: Fixed protomek reference tables
++ PR #1673: Allow opening multiple units in tabs
++ Fix #1696:  Fix for Introductory tech level also showing Standard equipment in non-VTL mode.
 
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
 + PR #1665: Inverted function call
 + Fix #1667: incorrect cargo bay minimum doors
 + PR #1671: Log jvm parameters
-+ PR #1675: Fixed protomek reference tables
-+ PR #1673: Allow opening multiple units in tabs
 
 0.50.01 (2024-11-10 1800 UTC)
 + PR #1608, #1611: Respecting Trademarks (Mech to Mek)
