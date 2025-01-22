@@ -23,18 +23,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import megamek.common.*;
+import megameklab.util.CConfig;
+import megameklab.util.RSScale;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.Bay;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.MiscType;
-import megamek.common.StandardSeatCargoBay;
-import megamek.common.Tank;
-import megamek.common.Transporter;
-import megamek.common.InfantryCompartment;
-import megamek.common.VTOL;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;
 import megameklab.printing.reference.GroundToHitMods;
@@ -203,7 +197,8 @@ public class PrintTank extends PrintEntity {
                 transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
-            } else if (t instanceof Bay) {
+            // SVs have separate Bay handling similar to Small Craft, with doors. CVs just have bulk cargo space.
+            } else if (t instanceof Bay && !(tank instanceof SupportTank)) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
