@@ -188,7 +188,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     private void newUnit(long type, boolean primitive, boolean industrial) {
         var oldUi = editors.get(tabs.getSelectedIndex());
+
         var newUi = UiLoader.getUI(type, primitive, industrial);
+        newUi.setOwner(this);
         editors.set(tabs.getSelectedIndex(), newUi);
         tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
         tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(newUi.getEntity().getDisplayName(), newUi));
@@ -357,11 +359,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     @Override
-    public boolean safetyPrompt() {
-        return currentEditor().safetyPrompt();
-    }
-
-    @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == tabs) {
             refreshMenuBar();
@@ -520,6 +517,57 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                     if (e.isShiftDown() || editor.safetyPrompt()) {
                         closeTabAt(editors.indexOf(editor));
                     }
+                }
+            });
+
+            addMouseListener(new MouseAdapter() {
+                private void forward(MouseEvent e) {
+                    var source = (Component) e.getSource();
+                    var parentEvent = SwingUtilities.convertMouseEvent(source, e, tabs);
+                    tabs.dispatchEvent(parentEvent);
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    forward(e);
+                    if (e.getButton() == MouseEvent.BUTTON2 && editor.safetyPrompt()) {
+                        closeTabAt(editors.indexOf(editor));
+                    }
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    forward(e);
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    forward(e);
                 }
             });
         }
