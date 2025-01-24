@@ -8,6 +8,9 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1675: Fixed protomek reference tables
 + PR #1673: Allow opening multiple units in tabs
 + Fix #1696:  Fix for Introductory tech level also showing Standard equipment in non-VTL mode.
++ PR #1697: Tabbed UI Polish Pass
++ Fix #1699: Fix "Reset crits" on DropShip/SmallCraft not working
++ PR #1702: Include door count for SV transport bays
 
 0.50.02 (2024-12-30 2130 UTC)
 + PR #1654: Rename TroopSpace to InfantryCompartment
