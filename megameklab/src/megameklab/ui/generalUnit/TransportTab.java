@@ -124,7 +124,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             spnTroopSpace.addChangeListener(this);
             gbc.gridx = 1;
             panTroopspace.add(spnTroopSpace, gbc);
-            if (getEntity().isSupportVehicle()) {
+            if (canMountInfantryCompartment()) {
                 gbc.gridx = 0;
                 gbc.gridy = 1;
                 panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc);
