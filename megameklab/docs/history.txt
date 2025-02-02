@@ -1,6 +1,6 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.03-SNAPSHOT
+0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
 + PR #1679: Adds Tabbed UI Improvements
 + PR #1688: Fix font rendering of symbols on windows using gradle run
