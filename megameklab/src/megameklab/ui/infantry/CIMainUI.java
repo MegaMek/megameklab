@@ -91,6 +91,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         statusbar.refresh();
         structureTab.refresh();
         previewTab.refresh();
+        refreshHeader();
     }
 
     @Override

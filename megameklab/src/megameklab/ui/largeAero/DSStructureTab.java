@@ -434,11 +434,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
             eSource.createNewUnit(Entity.ETYPE_DROPSHIP, getSmallCraft());
         }
         refresh();
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshTransport();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        refresh.refreshAll();
     }
 
 
@@ -453,9 +449,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         }
         panArmor.setFromEntity(getSmallCraft());
         panHeat.setFromAero(getSmallCraft());
-        refresh.refreshBuild();
-        refresh.refreshStatus();
-        refresh.refreshPreview();
+        refresh.refreshAll();
     }
 
     @Override

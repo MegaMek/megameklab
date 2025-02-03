@@ -822,10 +822,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         }
 
         refresh();
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        refresh.refreshAll();
     }
 
     @Override

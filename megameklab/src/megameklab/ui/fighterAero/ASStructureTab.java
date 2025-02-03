@@ -530,10 +530,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             eSource.createNewUnit(Entity.ETYPE_CONV_FIGHTER, getAero());
         }
         refresh();
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        refresh.refreshAll();
     }
 
     @Override

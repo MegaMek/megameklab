@@ -486,11 +486,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
                 break;
         }
         refresh();
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshTransport();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
+        refresh.refreshAll();
     }
 
     @Override
