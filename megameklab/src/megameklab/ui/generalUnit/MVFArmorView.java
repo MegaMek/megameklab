@@ -375,4 +375,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         }
     }
 
+    public void omniLock(boolean unlocked) {
+        cbArmorType.setEnabled(unlocked);
+        spnTonnage.setEnabled(unlocked);
+        chkPatchwork.setEnabled(unlocked);
+        btnMaximize.setEnabled(unlocked);
+        btnUseRemaining.setEnabled(unlocked);
+    }
+
 }

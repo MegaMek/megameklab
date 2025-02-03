@@ -113,4 +113,20 @@ public interface EntitySource {
      *         of tech.
      */
     ITechManager getTechManager();
+
+    /**
+     * Mark the entity provided by this EntitySource a having a read-only chassis, so that the only changes that can be made are to omni pod space.
+     * No enforcement is provided, you should call {@link EntitySource#canModifyBaseChassis} to determine if non-modifications should be allowed.
+     * @param locked {@code true} if the entity's base chassis should be treated as read-only
+     */
+    default void setBaseChassisModifiable(boolean locked) {}
+
+    /**
+     * Determine if you should allow modifications to an omni-unit's base chassis.
+     * This is not enforced, be careful.
+     * @return {@code true} if you can modify the entity's base chassis.
+     */
+    default boolean canModifyBaseChassis() {
+        return true;
+    }
 }

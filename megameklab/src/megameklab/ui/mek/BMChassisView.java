@@ -104,6 +104,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private JCheckBox chkOmni = new JCheckBox("Omni");
+    final private JCheckBox chkOmniLock = new JCheckBox("Lock Chassis");
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbMotiveType = new JComboBox<>();
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
@@ -176,14 +177,21 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-
         add(spnTonnage, gbc);
+
         gbc.gridx = 2;
         gbc.gridy = 0;
         chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text"));
         chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
         chkOmni.addChangeListener(this);
+
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        chkOmniLock.setText(resourceMap.getString("MekChassisView.chkOmniLock.text"));
+        chkOmniLock.setToolTipText(resourceMap.getString("MekChassisView.chkOmniLock.tooltip"));
+        add(chkOmniLock, gbc);
+        chkOmniLock.addChangeListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -356,6 +364,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
         setFullHeadEject(mek.hasFullHeadEject());
         btnResetChassis.setEnabled(mek.isOmni());
+        if (!mek.isOmni()) {
+            chkOmniLock.setSelected(false);
+        }
+        chkOmniLock.setEnabled(mek.isOmni());
     }
 
     public void setAsCustomization() {
@@ -399,6 +411,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 && (getBaseTypeIndex() != BASE_TYPE_LAM)
                 && techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
+
+        chkOmniLock.removeActionListener(this);
+        if (!chkOmni.isSelected()) {
+            chkOmniLock.setSelected(false);
+        }
+        chkOmniLock.setEnabled(chkOmni.isSelected());
+        chkOmniLock.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -791,6 +810,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkOmni) {
             listeners.forEach(l -> l.omniChanged(isOmni()));
+        } else if (e.getSource() == chkOmniLock) {
+            listeners.forEach(l -> l.omniLockChanged(chkOmniLock.isSelected()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
         } else if (e.getSource() == cbStructure) {
@@ -819,5 +840,18 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
         // Change from standard to superheavy or reverse will cause the structure tab to call setEntity()
         // and so cause a refresh
+    }
+
+    public void omniLock(boolean unlocked) {
+        spnTonnage.setEnabled(unlocked);
+        chkOmni.setEnabled(unlocked);
+        cbBaseType.setEnabled(unlocked);
+        cbMotiveType.setEnabled(unlocked);
+        cbStructure.setEnabled(unlocked);
+        cbEngine.setEnabled(unlocked);
+        cbGyro.setEnabled(unlocked);
+        cbCockpit.setEnabled(unlocked);
+        cbEnhancement.setEnabled(unlocked);
+        chkFullHeadEject.setEnabled(unlocked);
     }
 }

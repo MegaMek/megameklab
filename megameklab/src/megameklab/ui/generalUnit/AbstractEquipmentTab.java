@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -30,6 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import megamek.client.ui.swing.util.UIUtil;
@@ -61,8 +64,10 @@ import megameklab.util.UnitUtil;
  * @author neoancient
  * @author Simon (Juliez)
  */
-public abstract class AbstractEquipmentTab extends ITab {
+public abstract class AbstractEquipmentTab extends ITab implements ListSelectionListener {
     private static final MMLogger logger = MMLogger.create(AbstractEquipmentTab.class);
+    private final JButton removeButton;
+    private final JButton removeAllButton;
 
     private RefreshListener refresh;
 
@@ -95,9 +100,9 @@ public abstract class AbstractEquipmentTab extends ITab {
         equipmentScroll.setViewportView(loadOutTable);
         getLoadOut().forEach(loadOutModel::addCrit);
 
-        JButton removeButton = new JButton("Remove");
+        removeButton = new JButton("Remove");
         removeButton.setMnemonic('R');
-        JButton removeAllButton = new JButton("Remove All");
+        removeAllButton = new JButton("Remove All");
         removeAllButton.setMnemonic('l');
         removeButton.addActionListener(this::removeSelectedEquipment);
         removeAllButton.addActionListener(this::removeAllEquipment);
@@ -129,6 +134,8 @@ public abstract class AbstractEquipmentTab extends ITab {
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
+
+        loadOutTable.getSelectionModel().addListSelectionListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -201,6 +208,12 @@ public abstract class AbstractEquipmentTab extends ITab {
         loadOutModel.removeAllCrits();
         getLoadOut().forEach(loadOutModel::addCrit);
         fireTableRefresh();
+
+        if (!eSource.canModifyBaseChassis()) {
+            removeAllButton.setEnabled(
+                loadOutModel.getCrits().stream().allMatch(Mounted::isOmniPodMounted)
+            );
+        }
     }
 
     public void refreshTable() {
@@ -220,6 +233,20 @@ public abstract class AbstractEquipmentTab extends ITab {
             refresh.refreshBuild();
             refresh.refreshPreview();
             refresh.refreshSummary();
+        }
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getSource() == loadOutTable.getSelectionModel()) {
+            if (eSource.canModifyBaseChassis()) {
+                return;
+            }
+
+            var hasFixed = Arrays.stream(loadOutTable.getSelectionModel().getSelectedIndices())
+                .mapToObj(i -> loadOutModel.getCrits().get(i))
+                .anyMatch(m -> !m.isOmniPodMounted());
+            removeButton.setEnabled(!hasFixed);
         }
     }
 }

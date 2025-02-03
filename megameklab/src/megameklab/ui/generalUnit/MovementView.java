@@ -89,6 +89,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private String[] runNames;
     private String[] jumpNames;
 
+    private int baseChassisJets;
+    private int lockedMinJump = 0;
+
     public MovementView(ITechManager techManager) {
         this.techManager = techManager;
         initUI();
@@ -184,12 +187,14 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         industrial = (en instanceof Mek) && ((Mek) en).isIndustrial();
         refresh();
 
-        Optional<MiscType> jj = en.getMisc().stream().map(Mounted::getType)
-                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)
-                        || eq.hasFlag(MiscType.F_JUMP_BOOSTER)).findAny();
-        if (jj.isPresent()) {
+        List<MiscMounted> jets = en.getMisc().stream().filter(m -> {
+            var type = m.getType();
+            return type.hasFlag(MiscType.F_JUMP_JET) || type.hasFlag(MiscType.F_UMU) || type.hasFlag(MiscType.F_JUMP_BOOSTER);
+        }).toList();
+
+        if (!jets.isEmpty()) {
             cbJumpType.removeActionListener(this);
-            cbJumpType.setSelectedItem(jj.get());
+            cbJumpType.setSelectedItem(jets.get(0).getType());
             cbJumpType.addActionListener(this);
         }
         // LAMs have a minimum jump MP of 3, which implies a minimum walk
@@ -289,6 +294,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                 jump = jump0;
             }
         }
+        minJump = Math.max(minJump, lockedMinJump);
         spnJumpModel.setMinimum(minJump);
         spnJumpModel.setMaximum(maxJump);
         spnJump.setValue(Math.max(minJump, jump0));
@@ -316,6 +322,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         } else if (jump0 < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());
         }
+
+        baseChassisJets = (int) jets.stream().filter(m -> !m.isOmniPodMounted()).count();
     }
 
     public void refresh() {
@@ -432,5 +440,18 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         if (e.getSource() == cbJumpType) {
             listeners.forEach(l -> l.jumpTypeChanged(getJumpJet()));
         }
+    }
+
+    public void omniLock(boolean unlocked) {
+        spnWalk.setEnabled(unlocked);
+        if (unlocked) {
+            lockedMinJump = 0;
+            spnJumpModel.setMinimum(0);
+        } else {
+            lockedMinJump = baseChassisJets;
+            spnJumpModel.setMinimum(baseChassisJets);
+        }
+        spnJump.setModel(spnJumpModel);
+        cbJumpType.setEnabled(unlocked || baseChassisJets == 0);
     }
 }

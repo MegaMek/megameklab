@@ -619,4 +619,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void omniLock(boolean unlocked) {
+        // If we allow these to change, they might change to a value where the base chassis is invalid, forcing it to change.
+        // By locking them when the base chassis is locked, we force the user to be careful around these fields.
+        txtYear.setEnabled(unlocked);
+        cbTechBase.setEnabled(unlocked);
+        cbTechLevel.setEnabled(unlocked);
+    }
 }

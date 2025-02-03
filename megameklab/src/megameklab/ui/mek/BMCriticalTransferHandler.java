@@ -84,15 +84,14 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 changeMountStatus(eq, location);
                 return true;
 
-            } else if (MekUtil.canFreeContiguousCrits(mek, location, slotNumber, neededCrits)) {
+            } else if (MekUtil.hasFreeContiguousCrits(mek, location, slotNumber, neededCrits, eSource.canModifyBaseChassis())) {
                 // The equipment can be placed at the drop slot, possibly by removing Endo Steel
                 // and the like
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
-            } else if (MekUtil.findSlotWithContiguousNumOfCrits(mek, location, neededCrits) > -1) {
+            } else if ((slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, neededCrits, eSource.canModifyBaseChassis())) > -1) {
                 // The equipment can be placed elsewhere in the location by removing Endo Steel
                 // and the like
-                slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, neededCrits);
                 return addSingleLocationEquipment(mek, eq, slotNumber);
 
             } else {
@@ -106,7 +105,9 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
     private boolean addSingleLocationEquipment(Mek mek, Mounted<?> eq, int slotNumber)
             throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
-        MekUtil.removeFMU(mek, location, slotNumber, neededCrits);
+        if (eSource.canModifyBaseChassis()) {
+            MekUtil.removeFMU(mek, location, slotNumber, neededCrits);
+        }
         if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
             boolean success = MekUtil.addVGL(mek, eq, location, slotNumber);
             doRefresh();
@@ -123,14 +124,14 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             return false; // TM p.57
         }
         int neededTotalSlots = UnitUtil.getCritsUsed(eq);
-        int freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, true);
+        int freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, eSource.canModifyBaseChassis());
         // It's obvious that the equipment can't be placed on an occupied slot, so in
         // that case
         // a good free slot can be chosen in the location
         if (freePrimarySlots < neededTotalSlots) {
-            int maxSpace = MekUtil.getMaxContiguousNumOfCrits(mek, location, true);
-            slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, maxSpace);
-            freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, true);
+            int maxSpace = MekUtil.getMaxContiguousNumOfCrits(mek, location, eSource.canModifyBaseChassis());
+            slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, location, maxSpace, eSource.canModifyBaseChassis());
+            freePrimarySlots = MekUtil.availableContiguousCrits(mek, location, slotNumber, eSource.canModifyBaseChassis());
             if (freePrimarySlots == 0) {
                 // This location is full
                 return false;
@@ -164,7 +165,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
             secondLocationSet
-                    .removeIf(loc -> MekUtil.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
+                    .removeIf(loc -> MekUtil.getMaxContiguousNumOfCrits(mek, loc, eSource.canModifyBaseChassis()) < neededSecondarySlots);
 
             List<Integer> secondLocationsList = new ArrayList<>(secondLocationSet);
             if (secondLocationsList.isEmpty()) {
@@ -188,12 +189,16 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             }
         }
 
-        MekUtil.removeFMU(mek, location, slotNumber, freePrimarySlots);
+        if (eSource.canModifyBaseChassis()) {
+            MekUtil.removeFMU(mek, location, slotNumber, freePrimarySlots);
+        }
         for (int slot = slotNumber; slot < slotNumber + neededPrimarySlots; slot++) {
             mek.addEquipment(eq, location, false, slot);
         }
-        int secondSlotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, secondLocation, neededSecondarySlots);
-        MekUtil.removeFMU(mek, secondLocation, secondSlotNumber, neededSecondarySlots);
+        int secondSlotNumber = MekUtil.findSlotWithContiguousNumOfCrits(mek, secondLocation, neededSecondarySlots, eSource.canModifyBaseChassis());
+        if (eSource.canModifyBaseChassis()) {
+            MekUtil.removeFMU(mek, secondLocation, secondSlotNumber, neededSecondarySlots);
+        }
         for (int slot = secondSlotNumber; slot < secondSlotNumber + neededSecondarySlots; slot++) {
             mek.addEquipment(eq, secondLocation, false, slot);
         }
@@ -325,6 +330,10 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             location = list.getCritLocation();
         }
         if (mount != null) {
+            if (!eSource.canModifyBaseChassis() && !mount.isOmniPodMounted()) {
+                return null;
+            }
+
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
                 parentView.markUnavailableLocations(location);
                 return new StringSelection("%d:%d".formatted(getUnit().getEquipmentNum(mount), location));

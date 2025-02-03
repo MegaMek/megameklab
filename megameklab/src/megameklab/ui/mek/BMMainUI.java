@@ -239,4 +239,16 @@ public class BMMainUI extends MegaMekLabMainUI {
     public List<Mounted<?>> getUnallocatedMounted() {
         return this.buildTab.getBuildView().getEquipment();
     }
+
+    private boolean omniChassisModifiable = true;
+
+    @Override
+    public boolean canModifyBaseChassis() {
+        return omniChassisModifiable || !getEntity().isOmni();
+    }
+
+    @Override
+    public void setBaseChassisModifiable(boolean locked) {
+        omniChassisModifiable = locked;
+    }
 }

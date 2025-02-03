@@ -427,9 +427,11 @@ public class UnitUtil {
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
             throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
-        mounted.setOmniPodMounted(canPodMount(unit, mounted));
         if (unit instanceof Mek) {
             MekUtil.updateClanCasePlacement((Mek) unit);
+        } else {
+            // This can be removed entirely once all omni-capable units support locking their base chassis
+            mounted.setOmniPodMounted(canPodMount(unit, mounted));
         }
     }
 
