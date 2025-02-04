@@ -119,11 +119,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * Should typically be called when the name of the unit being edited changes.
      *
      * @param tabName The new name to be set for the currently selected tab.
+     * @param editor The editor for which the tab name needs to be set
      */
-    public void setTabName(String tabName) {
+    public void setTabName(String tabName, MegaMekLabMainUI editor) {
         // ClosableTab is a label with the unit name, and a close button.
         // If we didn't need that close button, this could be tabs.setTitleAt
-        tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(tabName, currentEditor()) );
+        tabs.setTabComponentAt(editors.indexOf(editor), new EditorTab(tabName, currentEditor()) );
     }
 
     /**

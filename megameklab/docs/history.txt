@@ -2,6 +2,7 @@ MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.04-SNAPSHOT
 + Fix #1707: Fix transport tab weight inflation on infantry bays
++ Fix #1710: Prevent tab names from being messed up by entity type change
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)

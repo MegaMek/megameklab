@@ -133,7 +133,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
         if (owner != null) {
             getEntity().generateDisplayName();
-            owner.setTabName(getEntity().getDisplayName());
+            owner.setTabName(getEntity().getDisplayName(), this);
         }
     }
 

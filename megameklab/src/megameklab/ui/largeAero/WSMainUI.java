@@ -213,6 +213,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         buildTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
+        refreshHeader();
     }
 
     @Override
