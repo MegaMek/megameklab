@@ -22,12 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import megamek.common.AmmoType;
-import megamek.common.EquipmentType;
-import megamek.common.Jumpship;
-import megamek.common.Mounted;
-import megamek.common.Warship;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.weapons.AmmoWeapon;
 
 /**
@@ -172,7 +167,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @param flag A MiscType flag
      * @return     The number of weapons in the entire bay linked by equipment with the given flag
      */
-    public int countAugmentations(BigInteger flag) {
+    public int countAugmentations(EquipmentFlag flag) {
         int count = 0;
         for (WeaponType weaponType : augmentations.keySet()) {
             count += countAugmentations(weaponType, flag);
@@ -186,7 +181,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @return The number of weapons of the given type in the bay linked by
      *         equipment with the given flag
      */
-    public int countAugmentations(WeaponType weaponType, BigInteger flag) {
+    public int countAugmentations(WeaponType weaponType, EquipmentFlag flag) {
         int count = 0;
         if (augmentations.containsKey(weaponType)) {
             for (EquipmentType equipmentType : augmentations.get(weaponType).keySet()) {
@@ -202,7 +197,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @param flag A MiscType flag
      * @return     Whether all weapons in the bay are linked by equipment with the given flag
      */
-    public boolean allHaveAugmentation(BigInteger flag) {
+    public boolean allHaveAugmentation(EquipmentFlag flag) {
         return countAugmentations(flag) == weapons.values().stream().mapToInt(Integer::intValue).sum();
     }
 
