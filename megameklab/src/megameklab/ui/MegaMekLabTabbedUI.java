@@ -220,6 +220,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param filename The name of the file associated with the unit being added.
      */
     public void addUnit(Entity entity, String filename) {
+        UnitUtil.updateLoadedUnit(entity);
+
         // Create a new "new tab" button, since we're about to replace the existing one
         addNewTabButton();
         // Select the old "new tab" button...
