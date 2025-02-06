@@ -20,7 +20,6 @@ package megameklab.util;
 
 import java.awt.Font;
 import java.io.File;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1704,7 +1703,7 @@ public class UnitUtil {
         return sb.toString();
     }
 
-    public static void removeAllMiscMounteds(Entity unit, BigInteger flag) {
+    public static void removeAllMiscMounteds(Entity unit, EquipmentFlag flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted<?> mount = unit.getEquipment().get(pos);
             if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(flag)) {
