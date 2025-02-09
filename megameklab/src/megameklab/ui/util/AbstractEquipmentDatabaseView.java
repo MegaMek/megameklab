@@ -46,10 +46,7 @@ import megamek.client.ui.WrapLayout;
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.Mek;
+import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -340,7 +337,10 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         buttonPanel.add(showEnergyButton);
         buttonPanel.add(showBallisticButton);
         buttonPanel.add(showMissileButton);
-        buttonPanel.add(showArtilleryButton);
+        if (!(getEntity() instanceof Jumpship)) {
+            // TO:AUE p.96 and p.217: JS/WS/SS cannot mount artillery at all
+            buttonPanel.add(showArtilleryButton);
+        }
         buttonPanel.add(showPhysicalButton);
         buttonPanel.add(showIndustrialButton);
         buttonPanel.add(showCapitalButton);
