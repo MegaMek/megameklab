@@ -34,12 +34,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -387,7 +382,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             // See if we should allow linking this to a DWP
             if (getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
                     && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && !eq.getType().hasFlag(WeaponType.F_MISSILE)
+                    && (!eq.getType().hasFlag(WeaponType.F_MISSILE) || eq.is(EquipmentTypeLookup.IS_BA_TUBE_ARTY))
                     && !(eq.getType() instanceof AmmoType)
                     && !eq.isDWPMounted()) {
                 for (Mounted<?> m : getBattleArmor().getMisc()) {
