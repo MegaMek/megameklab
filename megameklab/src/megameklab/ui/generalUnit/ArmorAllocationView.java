@@ -347,4 +347,12 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     public void armorPointsChanged(int location, int front, int rear) {
         listeners.forEach(l -> l.armorPointsChanged(location, front, rear));
     }
+
+    public void omniLock(boolean unlocked) {
+        for (ArmorLocationView locView : locationViews) {
+            locView.omniLock(unlocked);
+        }
+        btnAutoAllocate.setEnabled(unlocked);
+        panLocations.setEnabled(unlocked);
+    }
 }

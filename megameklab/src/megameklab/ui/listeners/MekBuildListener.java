@@ -18,13 +18,14 @@ import megamek.common.EquipmentType;
 
 /**
  * Listener for views used by Meks.
- * 
+ *
  * @author Neoancient
  *
  */
 public interface MekBuildListener extends BuildListener {
     void tonnageChanged(double tonnage);
     void omniChanged(boolean omni);
+    void omniLockChanged(boolean omniLock);
     void typeChanged(int baseType, int motiveType, long etype);
     void structureChanged(EquipmentType structure);
     void engineChanged(Engine engine);

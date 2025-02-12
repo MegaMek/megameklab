@@ -328,6 +328,9 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         if (mount.isOmniPodMounted()) {
                             info = new JMenuItem("Change to fixed mount");
                             info.addActionListener(ev -> changeOmniMounting(false));
+                            if (!eSource.canModifyBaseChassis()) {
+                                info.setEnabled(false);
+                            }
                             popup.add(info);
                         } else if (UnitUtil.canPodMount(getUnit(), mount)) {
                             info = new JMenuItem("Change to pod mount");
@@ -409,6 +412,14 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
                 }
 
+                if (!eSource.canModifyBaseChassis()) {
+                    if (cs.getMount() == null || !cs.getMount().isOmniPodMounted()) {
+                        for (var component : popup.getComponents()) {
+                            component.setEnabled(false);
+                        }
+                    }
+                }
+
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, e.getX(), e.getY());
                 }
@@ -460,6 +471,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         Mounted<?> mounted = getMounted();
 
         if (mounted == null) {
+            return;
+        }
+
+        if (!eSource.canModifyBaseChassis() && !mounted.isOmniPodMounted()) {
             return;
         }
 
