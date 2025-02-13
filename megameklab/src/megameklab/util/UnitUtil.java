@@ -1347,27 +1347,6 @@ public class UnitUtil {
         return UnitUtil.isArmor(eq) || UnitUtil.isStructure(eq);
     }
 
-    public static boolean isArmorable(@Nullable CriticalSlot cs) {
-        if (cs == null) {
-            return false;
-        } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-            return true;
-        } else {
-            Mounted<?> mount = cs.getMount();
-            return (mount != null) && isArmorable(mount.getType());
-        }
-    }
-
-    public static boolean isArmorable(EquipmentType eq) {
-        if (eq instanceof AmmoType) {
-            // The prohibition against armoring ammo bins presumably only applies to actual
-            // ammo bins and not equipment that we've implemented as ammo because it's
-            // explody and gets used up.
-            return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
-        }
-        return eq.isHittable();
-    }
-
     public static void updateLoadedUnit(Entity unit) {
         // Check for illegal armor tech levels and set to the tech level of the unit.
         for (int loc = 0; loc < unit.locations(); loc++) {

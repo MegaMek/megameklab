@@ -393,8 +393,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
                 }
 
-                if (UnitUtil.isArmorable(cs) && !(getUnit() instanceof BattleArmor)
-                        && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
+                if ((cs != null) && cs.isArmorable() && (getUnit() instanceof Mek)
+                    && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
                     popup.addSeparator();
                     if (cs.isArmored()) {
                         JMenuItem info = new JMenuItem("Remove Armoring");
