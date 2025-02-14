@@ -196,6 +196,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         buildTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
+        refreshHeader();
     }
 
     @Override

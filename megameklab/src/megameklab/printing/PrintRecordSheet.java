@@ -53,10 +53,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.fop.configuration.Configuration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.svg.PDFTranscoder;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.xpath.XPathEvaluator;
@@ -197,34 +194,25 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Finds all text elements in the SVG document and replaces the font-family
-     * attribute.
+     * Finds all text elements in the SVG document and replaces the font-family attribute.
      *
      * @param doc The document to perform replacement in.
      */
     private void subFonts(SVGDocument doc) {
-        final XPathResult res = (XPathResult) ((XPathEvaluator) doc).evaluate(".//*[local-name()=\"text\"]",
-                doc.getRootElement(), null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-
-        try {
-            Node node = res.iterateNext();
-            while (node != null) {
+        NodeList list = doc.getElementsByTagName("text");
+        if (list != null) {
+            for (int i = 0; i < list.getLength(); i++) {
+                Node node = list.item(i);
                 if (node instanceof Element elem) {
-                    // First we want to make sure it's not set in the style attribute, which could
-                    // override the change
+                    // First we want to make sure it's not set in the style attribute, which could override the change
                     if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
                         elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                                elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
-                                        .replaceAll("font-family:.*?;", ""));
+                            elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
+                                .replaceAll("font-family:.*?;", ""));
                     }
-
                     elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
                 }
-
-                node = res.iterateNext();
             }
-        } catch (NullPointerException ex) {
-            logger.error(ex, "Generally due to faulty document");
         }
     }
 

@@ -604,10 +604,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panSummary.refresh();
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshStatus();
-        refresh.refreshPreview();
+        refresh.refreshAll();
     }
 
     @Override

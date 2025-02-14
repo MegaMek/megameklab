@@ -556,7 +556,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         return (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto) ? 1 : 0;
     }
 
-    private boolean hasLinkedEquipment(Mounted<?> eq, BigInteger flag) {
+    private boolean hasLinkedEquipment(Mounted<?> eq, EquipmentFlag flag) {
         return (eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
                 && eq.getLinkedBy().getType().hasFlag(flag);
     }

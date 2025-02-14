@@ -33,12 +33,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.ProtoMek;
+import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestProtoMek;
@@ -162,7 +157,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
 
-        BigInteger flag = BigInteger.valueOf(0);
+        MiscTypeFlag flag = MiscTypeFlag.values()[0];
         if ((etype & Entity.ETYPE_BATTLEARMOR) != 0) {
             flag = MiscType.F_BA_EQUIPMENT;
         } else if ((etype & Entity.ETYPE_PROTOMEK) != 0) {

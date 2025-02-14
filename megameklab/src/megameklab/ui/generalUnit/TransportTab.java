@@ -430,7 +430,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 }
             } else {
                 BayData bayType = BayData.getBayType(bay);
-                Bay newBay = bayType.newBay(bay.getCapacity(), bayNum);
+                Bay newBay = bayType.newBay(bay.getUnusedSlots(), bayNum);
                 newBay.setDoors(bay.getDoors());
                 newBay.setFacing(bay.getFacing());
                 if (getEntity().isPodMountedTransport(bay)) {

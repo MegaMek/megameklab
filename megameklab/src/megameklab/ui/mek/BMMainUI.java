@@ -177,6 +177,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         buildTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
+        refreshHeader();
     }
 
     @Override

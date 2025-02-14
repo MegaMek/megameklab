@@ -154,6 +154,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         transportTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
+        refreshHeader();
     }
 
     @Override
