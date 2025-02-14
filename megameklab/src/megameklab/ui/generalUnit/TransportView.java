@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
- * Panel for combat vehicle & aero cargo and troop space.
+ * Panel for combat vehicle aero cargo and troop space.
  * This includes aero
  *
  * @author Neoancient
