@@ -26,7 +26,10 @@ import megamek.common.*;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.AbstractEquipmentTab;
+import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
 
 public class ASMainUI extends MegaMekLabMainUI {
@@ -38,7 +41,6 @@ public class ASMainUI extends MegaMekLabMainUI {
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private ASBuildTab buildTab;
-    private TransportTab transportTab;
     private FluffTab fluffTab;
     private ASStatusBar statusbar;
     private QuirksTab quirksTab;
@@ -60,20 +62,17 @@ public class ASMainUI extends MegaMekLabMainUI {
         statusbar = new ASStatusBar(this);
         equipmentTab = new ASEquipmentTab(this);
         buildTab = new ASBuildTab(this);
-        transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
         quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
-        transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
-        configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
@@ -151,7 +150,6 @@ public class ASMainUI extends MegaMekLabMainUI {
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
-        transportTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
@@ -173,7 +171,7 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshTransport() {
-        transportTab.refresh();
+        // not used for fighters
     }
 
     @Override
