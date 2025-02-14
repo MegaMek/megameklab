@@ -17,7 +17,6 @@ import megamek.common.verifier.BayData;
 import megameklab.ui.generalUnit.TransportView;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.listeners.BuildListener;
-import megameklab.ui.listeners.CVBuildListener;
 
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
@@ -25,9 +24,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Panel for combat vehicle cargo and troop space.
+ * Panel for aero cargo and troop space.
  *
- * @author Neoancient
  */
 public class ASTransportView extends TransportView {
     List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
