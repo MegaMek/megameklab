@@ -19,6 +19,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,6 +34,7 @@ import javax.swing.SwingConstants;
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -54,6 +57,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     private SummaryView panSummary;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
+    private ASTransportView panTransport;
     private IconView iconView;
 
     RefreshListener refresh = null;
@@ -76,6 +80,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat = new HeatSinkView(panInfo);
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         panPatchwork = new PatchworkArmorView(panInfo);
+        panTransport = new ASTransportView();
         iconView = new IconView();
         if (getAero().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
@@ -119,6 +124,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         midPanel.add(Box.createHorizontalStrut(300));
 
         rightPanel.add(panArmor);
+        rightPanel.add(panTransport);
         rightPanel.add(panArmorAllocation);
         rightPanel.add(panPatchwork);
 
@@ -143,6 +149,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
+        panTransport.setBorder(BorderFactory.createTitledBorder("Transport"));
     }
 
     public ITechManager getTechManager() {
@@ -167,6 +174,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.setFromEntity(getAero());
         panArmorAllocation.setFromEntity(getAero());
         panPatchwork.setFromEntity(getAero());
+        panTransport.setFromEntity(getAero());
         iconView.setFromEntity(getEntity());
 
         panHeat.setVisible(!getAero().hasETypeFlag(Entity.ETYPE_CONV_FIGHTER));
@@ -236,6 +244,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.removeListener(this);
         panArmorAllocation.removeListener(this);
         panPatchwork.removeListener(this);
+        panTransport.removeListener(this);
     }
 
     public void addAllListeners() {
@@ -247,6 +256,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panArmor.addListener(this);
         panArmorAllocation.addListener(this);
         panPatchwork.addListener(this);
+        panTransport.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -509,6 +519,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         getAero().getEngine().setBaseChassisHeatSinks(
                 omni? Math.max(0, panHeat.getBaseCount()) : -1);
         panHeat.setFromAero(getAero());
+        panTransport.setOmni(omni);
         refresh.refreshPreview();
     }
 
@@ -557,7 +568,63 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getAero());
+        panTransport.clearPodSpace();
         refresh.scheduleRefresh();
+    }
+
+    /**
+     * Notify of a change in the size of any infantry compartment
+     *
+     * @param fixed The weight in tons of the infantry compartment
+     * @param pod   The weight in tons of any pod-mounted infantry compartment
+     */
+    @Override
+    public void troopSpaceChanged(double fixed, double pod) {
+        List<Transporter> toRemove = getAero().getTransports().stream()
+            .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
+        toRemove.forEach(t -> getAero().removeTransporter(t));
+        double troopTons = Math
+            .round((fixed) * 2) / 2.0;
+        if (troopTons > 0) {
+            getAero().addTransporter(new InfantryCompartment(troopTons), false);
+        }
+        troopTons = Math.round(pod * 2) / 2.0;
+        if (troopTons > 0) {
+            getAero().addTransporter(new InfantryCompartment(troopTons), true);
+        }
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    /**
+     * Notify of a change in the size of a cargo bay
+     *
+     * @param bayType The type of bay
+     * @param fixed   The size of a fixed bay
+     * @param pod     The size of a pod-mounted bay
+     */
+    @Override
+    public void cargoSpaceChanged(BayData bayType, double fixed, double pod) {
+        List<Transporter> toRemove = getAero().getTransports().stream()
+            .filter(t -> (t instanceof Bay)
+                && (bayType == BayData.getBayType((Bay) t)))
+            .collect(Collectors.toList());
+        toRemove.forEach(t -> getAero().removeTransporter(t));
+        double bayTons = Math
+            .round((fixed) * 2) / 2.0;
+        int lastBay = getAero().getTransportBays().stream().mapToInt(Bay::getBayNumber).max().orElse(0);
+        if (bayTons > 0) {
+            getAero().addTransporter(bayType.newBay(bayTons, lastBay + 1), false);
+            lastBay++;
+        }
+        bayTons = Math.round(pod * 2) / 2.0;
+        if (bayTons > 0) {
+            getAero().addTransporter(bayType.newBay(bayTons, lastBay + 1), true);
+        }
+        panSummary.refresh();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

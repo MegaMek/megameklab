@@ -11,10 +11,11 @@
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
  */
-package megameklab.ui.combatVehicle;
+package megameklab.ui.fighterAero;
 
 import megamek.common.verifier.BayData;
 import megameklab.ui.generalUnit.TransportView;
+import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.CVBuildListener;
 
@@ -28,19 +29,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Neoancient
  */
-public class CVTransportView extends TransportView {
-    List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
+public class ASTransportView extends TransportView {
+    List<AeroBuildListener> listeners = new CopyOnWriteArrayList<>();
 
     @Override
     public void addListener(BuildListener l) {
-        if (l instanceof CVBuildListener listener) {
+        if (l instanceof AeroBuildListener listener) {
             listeners.add(listener);
         }
     }
 
     @Override
     public void removeListener(BuildListener l) {
-        if (l instanceof CVBuildListener listener) {
+        if (l instanceof AeroBuildListener listener) {
             listeners.remove(listener);
         }
     }
@@ -60,7 +61,7 @@ public class CVTransportView extends TransportView {
                 }
             }
             if (null != bayType) {
-                for (CVBuildListener l : listeners) {
+                for (AeroBuildListener l : listeners) {
                     l.cargoSpaceChanged(bayType,
                         fixedSpinnerModels.get(bayType).getNumber().doubleValue(),
                         podSpinnerModels.get(bayType).getNumber().doubleValue());
