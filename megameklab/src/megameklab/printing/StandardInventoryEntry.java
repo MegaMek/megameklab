@@ -599,7 +599,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 name.equals(that.name) &&
                 location.equals(that.location) &&
                 hasInsulator == that.hasInsulator &&
-                hasPulseModule == that.hasPulseModule;
+                hasPulseModule == that.hasPulseModule &&
+                hasCapacitor == that.hasCapacitor;
     }
 
     @Override
