@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import megamek.common.*;
 import megamek.common.equipment.WeaponMounted;
@@ -51,6 +53,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final String[][] ranges;
     private final boolean isMML;
     private final boolean isATM;
+    private final boolean hasInsulator;
+    private final boolean hasPulseModule;
     private final boolean hasArtemis;
     private final boolean hasArtemisProto;
     private final boolean hasArtemisV;
@@ -111,6 +115,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         isSquadSupport = m.isSquadSupportWeapon();
         isMML = m.getType() instanceof MMLWeapon;
         isATM = m.getType() instanceof ATMWeapon || m.getType() instanceof CLIATMWeapon;
+        hasInsulator = hasLinkedEquipment(m, MiscType.F_LASER_INSULATOR);
+        hasPulseModule = hasLinkedEquipment(m, MiscType.F_RISC_LASER_PULSE_MODULE);
         hasArtemis = hasLinkedEquipment(m, MiscType.F_ARTEMIS);
         hasArtemisProto = hasLinkedEquipment(m, MiscType.F_ARTEMIS_PROTO);
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
@@ -400,6 +406,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "w/Apollo";
         } else if (hasCapacitor) {
             return "w/Capacitor";
+        } else if (hasPulseModule) {
+            return "w/RISC Laser Module";
+        } else if (hasInsulator) {
+            return "w/Laser Insulator";
         }
         return "";
     }
@@ -421,10 +431,22 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             } else {
                 return DASH;
             }
+        } else if(row == 1) {
+            if (hasInsulator) {
+                return Integer.toString(mount.getType().getHeat() - 1);
+            } else if (hasPulseModule) {
+                return Integer.toString(mount.getType().getHeat() + 2);
+            } else if (hasCapacitor) {
+                return Integer.toString(mount.getType().getHeat() + 5);
+            } else {
+                return "";
+            }
         } else {
             return "";
         }
     }
+
+    private static final Pattern digits = Pattern.compile("\\d+");
 
     @Override
     public String getDamageField(int row) {
@@ -456,6 +478,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "";
         } else if (row == 0) {
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount);
+        } else if (row == 1 && hasCapacitor) {
+            return StringUtils.getEquipmentInfo(mount.getEntity(), mount, true);
         }
         return "";
     }
@@ -545,7 +569,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return 3 + mmlArtemisRowDelta();
         } else if (isATM) {
             return 4;
-        } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto || hasCapacitor) {
+        } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto || hasCapacitor || hasPulseModule || hasInsulator) {
             return 2;
         }
         return 1;
@@ -573,7 +597,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 isTurret == that.isTurret &&
                 isSquadSupport == that.isSquadSupport &&
                 name.equals(that.name) &&
-                location.equals(that.location);
+                location.equals(that.location) &&
+                hasInsulator == that.hasInsulator &&
+                hasPulseModule == that.hasPulseModule;
     }
 
     @Override
