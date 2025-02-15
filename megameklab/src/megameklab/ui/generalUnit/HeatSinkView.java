@@ -221,6 +221,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
                     .filter(UnitUtil::isHeatSink).findAny();
         }
         if (hs.isPresent()) {
+            if (hs.get().is(EquipmentTypeLookup.COMPACT_HS_2)) {
+                // 2 CHS packed in 1 slot is its own MiscType but doesnt find the right combobox entry; must translate it manually
+                hs = Optional.of((MiscType) EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1));
+            }
             cbHSType.removeActionListener(this);
             setHeatSinkType(hs.get());
             cbHSType.addActionListener(this);
