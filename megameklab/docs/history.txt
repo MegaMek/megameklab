@@ -8,6 +8,8 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1717: Feat: changed flags from big integer to equipment flag
 + PR #1722: Hide Arty equipment filter button on capital craft
 + Fix #1363: Allow BA Tube Arty in DWP
++ Fix #1575: correctly identify compact heat sinks #1724
++ Fix #1536: Unify armorable equipment tests in MM #1726
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
