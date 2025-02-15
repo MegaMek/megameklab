@@ -19,7 +19,6 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Objects;
 import java.util.Vector;
 
 import javax.swing.JList;
@@ -28,7 +27,6 @@ import javax.swing.JPopupMenu;
 
 import megamek.common.CriticalSlot;
 import megamek.common.Entity;
-import megamek.common.Mek;
 import megamek.common.MekFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -172,22 +170,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                     }
                 }
 
-                if ((getUnit() instanceof Mek) && UnitUtil.isArmorable(cs)
-                        && eSource.getTechManager().isLegal(Entity.getArmoredComponentTechAdvancement())) {
-                    popup.addSeparator();
-                    if (cs.isArmored()) {
-                        JMenuItem info = new JMenuItem("Remove Armoring");
-                        info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(evt2 -> changeArmoring());
-                        popup.add(info);
-                    } else {
-                        JMenuItem info = new JMenuItem("Add Armoring");
-                        info.setActionCommand(Integer.toString(location));
-                        info.addActionListener(evt2 -> changeArmoring());
-                        popup.add(info);
-                    }
-                }
-
                 if (popup.getComponentCount() > 0) {
                     popup.show(this, evt.getX(), evt.getY());
                 }
@@ -285,25 +267,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private int getCritLocation() {
         return Integer.parseInt(getName());
-    }
-
-    private void changeArmoring() {
-        CriticalSlot cs = getCrit();
-
-        if (cs != null) {
-            if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                Mounted<?> mount = Objects.requireNonNull(getMounted());
-                mount.setArmored(!cs.isArmored());
-                UnitUtil.updateCritsArmoredStatus(getUnit(), mount);
-            } else {
-                cs.setArmored(!cs.isArmored());
-                UnitUtil.updateCritsArmoredStatus(getUnit(), cs, getCritLocation());
-            }
-        }
-
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
     }
 
     private void removeMount() {
