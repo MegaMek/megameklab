@@ -74,6 +74,10 @@ public class StringUtils {
     }
 
     public static String getEquipmentInfo(Entity unit, Mounted<?> mount) {
+        return getEquipmentInfo(unit, mount, false);
+    }
+
+    public static String getEquipmentInfo(Entity unit, Mounted<?> mount, boolean capacitor) {
         String info = "";
 
         if (mount.getType() instanceof WeaponType) {
@@ -121,7 +125,7 @@ public class StringUtils {
                         || (weapon instanceof PrototypeRLWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
-                    info = "10/8/5 [DE,V]";
+                    info = capacitor ? "15/13/10 [DE,V,X]" : "10/8/5 [DE,V]";
                 } else if (weapon instanceof VariableSpeedPulseLaserWeapon) {
                     info = String.format("%d/%d/%d [P,V]",
                             weapon.getDamage(weapon.getShortRange()),
@@ -168,7 +172,14 @@ public class StringUtils {
                 info = "[AE,OS]";
             } else {
                 if (!UnitUtil.isAMS(weapon)) {
-                    info = Integer.toString(weapon.getDamage());
+                    if (capacitor) {
+                        if (!(weapon instanceof PPCWeapon) || !mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+                            throw new IllegalArgumentException("Don't ask for the statline of a weapon with its capacitor charged if it's not a PPC with a capacitor");
+                        }
+                        info = Integer.toString(weapon.getDamage() + 5);
+                    } else {
+                        info = Integer.toString(weapon.getDamage());
+                    }
                 }
                 info += " [";
 
@@ -214,9 +225,8 @@ public class StringUtils {
                     info += "AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
-                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
-                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount, capacitor) && !(weapon instanceof ACWeapon)
+                ) {
                     info += "X,";
                 }
 
