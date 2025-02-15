@@ -147,4 +147,10 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         }
     }
 
+    public void omniLock(boolean unlocked) {
+        for (var i : combos) {
+            i.setEnabled(unlocked);
+        }
+    }
+
 }
