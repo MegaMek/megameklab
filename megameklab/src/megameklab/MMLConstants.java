@@ -36,4 +36,16 @@ public final class MMLConstants extends SuiteConstants {
 
     // region File Paths
     // endregion File Paths
+
+    public static final SentryAttributes SENTRY_ATTRIBUTES = new SentryAttributes() {
+        @Override
+        public String serverName() {
+            return "MegaMekLabClient";
+        }
+
+        @Override
+        public String dsn() {
+            return "https://6dfac298f9ed6fb0d9a9f7e5669d386b@sentry.tapenvy.us/9";
+        }
+    };
 }

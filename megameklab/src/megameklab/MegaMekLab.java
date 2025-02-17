@@ -52,7 +52,7 @@ public class MegaMekLab {
     private static final MMLogger logger = MMLogger.create(MegaMekLab.class);
 
     public static void main(String... args) {
-        StartupUtil.setupEnvironment(logger);
+        StartupUtil.setupEnvironment(logger, MMLConstants.SENTRY_ATTRIBUTES);
 
 
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
