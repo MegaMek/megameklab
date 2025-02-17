@@ -37,6 +37,7 @@ import megamek.common.MekFileParser;
 import megamek.common.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
 import megamek.logging.MMLogger;
+import megamek.utilities.StartupUtil;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
@@ -51,30 +52,12 @@ public class MegaMekLab {
     private static final MMLogger logger = MMLogger.create(MegaMekLab.class);
 
     public static void main(String... args) {
-        ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
+        StartupUtil.setupEnvironment(logger);
 
-        Sentry.init(options -> {
-            options.setEnableExternalConfiguration(true);
-            options.setDsn("https://6dfac298f9ed6fb0d9a9f7e5669d386b@sentry.tapenvy.us/9");
-            options.setEnvironment("production");
-            options.setTracesSampleRate(0.2);
-            options.setDebug(true);
-            options.setServerName("MegaMekLabClient");
-            options.setRelease(SuiteConstants.VERSION.toString());
-        });
-
-        // First, create a global default exception handler
-        Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
-            final String name = t.getClass().getName();
-            final String message = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION, name);
-            final String title = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, name);
-            logger.error(t, message, title);
-        });
 
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMekLab.initializeLogging(MMLConstants.PROJECT_NAME);
         MegaMek.initializeSuiteGraphicalSetups(MMLConstants.PROJECT_NAME);
-        ToolTipManager.sharedInstance().setDismissDelay(1000000);
         ToolTipManager.sharedInstance().setReshowDelay(50);
         startup(args);
 
