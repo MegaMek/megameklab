@@ -38,3 +38,5 @@
 units.cache
 .mml_tmp
 *.iml
+
+sentry.properties
