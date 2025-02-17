@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (c) 2024-2025 - The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab
  *
@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package megameklab.printing;
 
 import java.io.File;
@@ -36,7 +37,7 @@ import megameklab.util.UnitPrintManager;
 public class CGLMassPrinter {
     private static final MMLogger logger = MMLogger.create(CGLMassPrinter.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         File sheetsDir = new File("sheets");
 
         if (!sheetsDir.exists() || !sheetsDir.isDirectory()) {
@@ -49,66 +50,70 @@ public class CGLMassPrinter {
         CConfig.load();
         MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
-        for (MekSummary ms : cache.getAllMeks()) {
-            String message = String.format("Looking at %s", ms.getName());
-            logger.info(message);
-
-            if (!ms.isCanon()) {
-                continue;
-            }
+        for (MekSummary mekSummary : cache.getAllMeks()) {
+            logger.info("Looking at {}", mekSummary.getName());
 
             /*
-             * if (!ms.isProtoMek() && !ms.isCombatVehicle()) {
+             * if (!mekSummary.isProtoMek() && !mekSummary.isCombatVehicle()) {
              * continue;
              * }
              *
              * // 1 - uncomment this block and cycle all the start characters A-Z (only
              * // uppercase)
-             * if (!ms.getName().toUpperCase().startsWith("C")) {
+             * if (!mekSummary.getName().toUpperCase().startsWith("C")) {
              * continue;
              * }
              *
              * // 2 - uncomment this block, comment the above block, run once more
-             * if (ms.getName().toUpperCase().charAt(0) <= 'Z' &&
-             * ms.getName().toUpperCase().charAt(0) >= 'A') {
+             * if (mekSummary.getName().toUpperCase().charAt(0) <= 'Z' &&
+             * mekSummary.getName().toUpperCase().charAt(0) >= 'A') {
              * continue;
              * }
              *
              */
-            Entity entity = ms.loadEntity();
+            Entity entity = mekSummary.loadEntity();
 
             if (entity != null && !(entity instanceof GunEmplacement)) {
                 File sheetPath = new File("sheets", FluffImageHelper.getFluffPath(entity));
 
-                if (!sheetPath.exists()) {
-                    if (!sheetPath.mkdirs()) {
-                        message = String.format("Couldn't create folder %s", sheetPath);
-                        logger.error(message);
-                        System.exit(1);
-                    }
+                if (!sheetPath.exists() && !sheetPath.mkdirs()) {
+                    logger.error("Couldn't create folder {}", sheetPath);
+                    System.exit(1);
                 }
 
-                File file = new File(sheetPath, ms.getMulId() + "_"
-                        + sanitize(ms.getChassis()) + "_"
-                        + sanitize(ms.getModel()) + ".pdf");
+                File file = normalizePath(sheetPath, mekSummary);
 
                 try {
-                    if (entity.isBattleArmor() || entity.isProtoMek()) {
-                        UnitPrintManager.exportUnits(List.of(entity, entity, entity, entity, entity), file, false);
-                    } else {
-                        UnitPrintManager.exportUnits(List.of(entity), file, true);
-                    }
-
-                    message = String.format("Printed: %s", file);
-                    logger.info(message);
+                    List<Entity> units = printableListOfUnits(entity);
+                    UnitPrintManager.exportUnits(units, file, true);
+                    logger.info("Printed: {}", file);
                 } catch (Exception e) {
                     logger.error(e, "Printing Error");
                 }
+
+                // Added to keep memory usage from ballooning during processing.
+                System.gc();
             }
         }
 
         logger.info("Done.");
         System.exit(0);
+    }
+
+    private static List<Entity> printableListOfUnits(Entity entity) {
+        if (entity.isBattleArmor() || entity.isProtoMek()) {
+            return List.of(entity, entity, entity, entity, entity);
+        } else {
+            return List.of(entity);
+        }
+    }
+
+    private static File normalizePath(File path, MekSummary unit) {
+        String fileName = String.format("%s_%s_%s.pdf",
+                unit.getMulId(),
+                sanitize(unit.getChassis()),
+                sanitize(unit.getModel()));
+        return new File(path, fileName);
     }
 
     private static String sanitize(String original) {
