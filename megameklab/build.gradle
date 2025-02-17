@@ -60,8 +60,6 @@ dependencies {
 
     implementation 'org.apache.pdfbox:pdfbox:2.0.33'
 
-    // There is a bug if we move past this version that needs to be addressed.
-    // Don't recall if in the library or in our code.
     implementation ('org.apache.xmlgraphics:batik-bridge:1.18') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
@@ -79,7 +77,6 @@ dependencies {
 
     implementation 'org.apache.xmlgraphics:batik-rasterizer:1.18'
     implementation 'org.apache.xmlgraphics:batik-svggen:1.18'
-    // End of Batik dependencies
 
     implementation ('org.apache.xmlgraphics:fop:2.10') {
         // We don't need this proprietary module
