@@ -550,8 +550,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         }
 
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) Math.floor(UnitUtil.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
-        int points = UnitUtil.getArmorPoints(getJumpship(), getJumpship().getLabArmorTonnage())
+        int bonusPerFacing = (int) Math.floor(TestEntity.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
+        int points = TestEntity.getArmorPoints(getJumpship())
                 - bonusPerFacing * 6;
         int nose = (int)Math.floor(points * 0.22);
         int foreSides = (int)Math.floor(points * 0.18);

@@ -491,7 +491,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
         // We can only use remaining tonnage equal to whole points of armor.
-        remainingTonnage = (int) UnitUtil.getRawArmorPoints(getProtoMek(), remainingTonnage)
+        remainingTonnage = (int) TestEntity.getRawArmorPoints(getProtoMek(), remainingTonnage)
                 * ArmorType.forEntity(getProtoMek()).getWeightPerPoint();
         double maxArmor = MathUtility.clamp(getProtoMek().getLabArmorTonnage() + remainingTonnage, 0,
                 UnitUtil.getMaximumArmorTonnage(getProtoMek()));

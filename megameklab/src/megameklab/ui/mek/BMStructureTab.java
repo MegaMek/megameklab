@@ -1181,7 +1181,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void autoAllocateArmor() {
-        double pointsToAllocate = UnitUtil.getArmorPoints(getMek(), getMek().getLabArmorTonnage());
+        double pointsToAllocate = TestEntity.getArmorPoints(getMek());
         double maxArmor = UnitUtil.getMaximumArmorPoints(getMek());
         if (pointsToAllocate > maxArmor) {
             pointsToAllocate = maxArmor;

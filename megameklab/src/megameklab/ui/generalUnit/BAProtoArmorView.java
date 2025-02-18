@@ -36,6 +36,7 @@ import javax.swing.event.ChangeListener;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
@@ -133,7 +134,7 @@ public class BAProtoArmorView extends BuildView implements ActionListener, Chang
         } else if (en.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
             final int max = TestProtoMek.maxArmorFactor((ProtoMek) en);
             spnArmorPointsModel.setValue(Math.min(max,
-                    (int) UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())));
+                    (int) TestEntity.getRawArmorPoints(en, en.getLabArmorTonnage())));
             spnArmorPointsModel.setMaximum(max);
         } else {
             spnArmorPointsModel.setValue(en.getTotalOArmor());
