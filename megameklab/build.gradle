@@ -5,7 +5,7 @@ plugins {
     id 'checkstyle'
     id 'com.palantir.git-version' version '3.1.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
-    id "io.sentry.jvm.gradle" version "5.1.0"
+    id "io.sentry.jvm.gradle" version "5.2.0"
     id 'jacoco'
     id 'java'
     id 'org.ec4j.editorconfig' version '0.1.0'
@@ -55,36 +55,44 @@ dependencies {
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.0'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.32'
-    implementation ('org.apache.xmlgraphics:batik-bridge:1.14') {
+
+    implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+
+    implementation 'org.apache.pdfbox:pdfbox:2.0.33'
+
+    implementation ('org.apache.xmlgraphics:batik-bridge:1.18') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
         exclude group: 'xml-apis'
     }
-    implementation ('org.apache.xmlgraphics:batik-codec:1.14') {
+
+    implementation ('org.apache.xmlgraphics:batik-codec:1.18') {
         exclude group: 'xml-apis'
     }
-    implementation ('org.apache.xmlgraphics:batik-dom:1.14') {
+
+    implementation ('org.apache.xmlgraphics:batik-dom:1.18') {
         exclude group: 'xml-apis'
     }
-    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.14'
-    implementation 'org.apache.xmlgraphics:batik-svggen:1.14'
-    implementation ('org.apache.xmlgraphics:fop:2.9') {
+
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.18'
+    implementation 'org.apache.xmlgraphics:batik-svggen:1.18'
+
+    implementation ('org.apache.xmlgraphics:fop:2.10') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
-    testImplementation 'org.mockito:mockito-core:5.13.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+
+    testImplementation 'org.mockito:mockito-core:5.15.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Compatibility.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
 }
 
 application {
@@ -92,9 +100,9 @@ application {
 }
 
 checkstyle {
-    toolVersion '10.18.1'
-    configFile file("config/checkstyle/checkstyle.xml")
-    ignoreFailures false
+    toolVersion = '10.18.1'
+    configFile = file("config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
 }
 
 jar {
@@ -110,11 +118,13 @@ jar {
 }
 
 task generateDynamicFiles() {
+    def jvmOptions = project.ext.mmlJvmOptions.join('\n')
+
     doLast {
         new File("${projectDir}/docs/mml-revision.txt").text = versionDetails().gitHashFull
         new File("${projectDir}/MegaMekLab.l4j.ini").text = """# Launch4j runtime config
 # you can add arguments here that will be processed by the JVM at runtime
-${project.ext.mmlJvmOptions.join('\n')}
+${jvmOptions}
 """
     }
 }
@@ -203,7 +213,7 @@ launch4j {
     internalName = 'MegaMekLab'
     downloadUrl = 'https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium-(Eclipse-Temurin-Open-Source-Java)'
     supportUrl = 'https://megamek.org'
-    copyright = '2024 MegaMek Development Team.'
+    copyright = '2025 MegaMek Development Team.'
     trademarks = 'MechWarrior, BattleMech, `Mech and AeroTech - The The Topps Company, Inc. Catalyst Game Labs - InMediaRes Productions, LLC.'
     companyName = "MegaMek Development Team"
     jvmOptions = project.ext.mmlJvmOptions
