@@ -197,6 +197,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(newUi.getEntity().getDisplayName(), newUi));
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
         oldUi.dispose();
+        refreshMenuBar();
     }
 
     /**
