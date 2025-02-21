@@ -95,6 +95,7 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
+                        || eq.hasFlag(MiscType.F_CHAIN_DRAPE)
                         || (eq.hasFlag(MiscType.F_RAM_PLATE)
                                 || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
                                 || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
@@ -187,6 +188,8 @@ public class UnitUtil {
         final EquipmentType eq = mount.getType();
         if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PARTIAL_WING)) {
             toReturn = eq.isClan() ? 3 : 4;
+        } else if (eq.hasFlag(MiscType.F_CHAIN_DRAPE)) {
+            toReturn = 3;
         } else if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_TALON)
