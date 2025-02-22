@@ -83,7 +83,7 @@ public final class TankUtil {
         }
 
         // Display AMS as equipment (even though it's a weapon)
-        if (eq.hasFlag(WeaponType.F_AMS) && eq.hasFlag(WeaponType.F_TANK_WEAPON)) {
+        if ((eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_AMS) && eq.hasFlag(WeaponType.F_TANK_WEAPON)) {
             return true;
         }
 

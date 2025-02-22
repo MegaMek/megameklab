@@ -27,6 +27,7 @@ import megamek.common.Entity;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
@@ -46,8 +47,8 @@ public final class EquipmentToolTip {
             sb.append(" (").append(eq.getBaseShotsLeft()).append(" shot");
             sb.append((eq.getBaseShotsLeft() == 1) ? ")" : "s)");
         }
-        if ((eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                || eq.getType().hasFlag(MiscType.F_AP_MOUNT))
+        if (eq instanceof MiscMounted && (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
+                                      ||eq.getType().hasFlag(MiscType.F_AP_MOUNT))
                 && (eq.getLinked() != null)) {
             sb.append(" (attached ").append(eq.getLinked().getName()).append(")");
         }
