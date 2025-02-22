@@ -692,7 +692,7 @@ public class BAStructureTab extends ITab
         double totalTonnage = getBattleArmor().getTrooperWeight();
         double remainingTonnage = TestEntity.floor(
                 totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
-        int points = (int) UnitUtil.getRawArmorPoints(getBattleArmor(), remainingTonnage);
+        int points = (int) TestEntity.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
                 points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         armorFactorChanged(maxArmor);

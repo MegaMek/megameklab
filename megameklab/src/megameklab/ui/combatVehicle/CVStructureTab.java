@@ -743,7 +743,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
 
     @Override
     public void autoAllocateArmor() {
-        int pointsToAllocate = UnitUtil.getArmorPoints(getTank(), getTank().getLabArmorTonnage());
+        int pointsToAllocate = TestEntity.getArmorPoints(getTank());
 
         for (int location = 0; location < getTank().locations(); location++) {
             getTank().initializeArmor(0, location);

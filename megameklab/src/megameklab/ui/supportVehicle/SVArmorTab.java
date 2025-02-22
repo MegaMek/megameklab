@@ -263,7 +263,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
             rear = (getEntity() instanceof LargeSupportTank) ? LargeSupportTank.LOC_REAR : Tank.LOC_REAR;
             body = Tank.LOC_BODY;
         }
-        int pointsToAllocate = UnitUtil.getArmorPoints(getEntity(), getEntity().getLabArmorTonnage());
+        int pointsToAllocate = TestEntity.getArmorPoints(getEntity());
 
         for (int location = 0; location < getEntity().locations(); location++) {
             getEntity().initializeArmor(0, location);

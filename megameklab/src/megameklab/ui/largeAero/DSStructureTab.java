@@ -504,8 +504,8 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         }
 
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) UnitUtil.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
-        int points = UnitUtil.getArmorPoints(getSmallCraft(), getSmallCraft().getLabArmorTonnage())
+        int bonusPerFacing = (int) TestEntity.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
+        int points = TestEntity.getArmorPoints(getSmallCraft())
                 - bonusPerFacing * 4;
         int nose = (int)Math.floor(points * 0.3);
         int wing = (int)Math.floor(points * 0.25);
