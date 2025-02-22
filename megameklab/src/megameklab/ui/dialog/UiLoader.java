@@ -38,6 +38,7 @@ import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.largeAero.WSMainUI;
@@ -182,6 +183,8 @@ public class UiLoader {
             return new DSMainUI(primitive);
         } else if (type == Entity.ETYPE_JUMPSHIP) {
             return new WSMainUI(primitive);
+        } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
+            return new HHWMainUI();
         } else {
             return new BMMainUI(primitive, industrial);
         }

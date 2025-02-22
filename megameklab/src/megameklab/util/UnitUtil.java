@@ -1664,6 +1664,8 @@ public class UnitUtil {
             testEntity = new TestBattleArmor((BattleArmor) unit, entityVerifier.baOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
             testEntity = new TestInfantry((Infantry) unit, entityVerifier.infOption, null);
+        } else if (unit.hasETypeFlag(Entity.ETYPE_HANDHELD_WEAPON)) {
+            testEntity = new TestHandheldWeapon((HandheldWeapon) unit, entityVerifier.infOption, null);
         }
         return testEntity;
     }
@@ -2142,6 +2144,8 @@ public class UnitUtil {
             return Entity.ETYPE_PROTOMEK;
         } else if ((newUnit instanceof Tank) && !(newUnit instanceof GunEmplacement)) {
             return Entity.ETYPE_TANK;
+        } else if (newUnit instanceof HandheldWeapon) {
+            return Entity.ETYPE_HANDHELD_WEAPON;
         } else {
             throw new IllegalArgumentException("Cannot open this entity in an editor");
         }
