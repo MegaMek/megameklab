@@ -159,8 +159,7 @@ public class CriticalTableModel extends AbstractTableModel {
                         && (crit.getType() instanceof AmmoType)) {
                     tonnage = ((AmmoType) crit.getType()).getKgPerShot() *
                             crit.getBaseShotsLeft() / 1000;
-                } else if (crit.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        && crit.getLinked() != null) {
+                } else if (crit.is(EquipmentTypeLookup.BA_DWP) && (crit.getLinked() != null)) {
                     tonnage = crit.getLinked().getTonnage() * 0.75;
                 } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                     // Round up to the next half ton

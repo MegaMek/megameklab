@@ -26,11 +26,15 @@ import javax.swing.JPopupMenu;
 
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
 
+/**
+ * This list displays a critical slot block for a location in the "Assign Criticals" tab of CV and SV units.
+ */
 public class DropTargetCriticalList<E> extends JList<E> implements MouseListener {
 
     private static final MMLogger logger = MMLogger.create(DropTargetCriticalList.class);
@@ -104,21 +108,19 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                     popup.setAutoscrolls(true);
                     JMenuItem info;
-                    if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                        && !mount.is(EquipmentTypeLookup.PINTLE_TURRET)) {
+                    if (isRemovable(mount)) {
                         info = new JMenuItem("Remove " + mount.getName());
                         info.addActionListener(ev -> removeCrit());
                         popup.add(info);
                     }
 
-                    if (!UnitUtil.isArmorOrStructure(mount.getType())
-                        && !mount.is(EquipmentTypeLookup.PINTLE_TURRET)) {
+                    if (isDeletable(mount)) {
                         info = new JMenuItem("Delete " + mount.getName());
                         info.addActionListener(ev -> removeMount());
                         popup.add(info);
                     }
 
-                    if (!mount.isTurret() && getUnit().countWorkingMisc(MiscType.F_SPONSON_TURRET, mount.getLocation()) > 0) {
+                    if (!mount.isTurret() && getUnit().hasMisc(EquipmentTypeLookup.SPONSON_TURRET, mount.getLocation())) {
                         if (!mount.isSponsonTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Sponson Turret");
                             info.addActionListener(evt2 -> changeSponsonTurretMount(true));
@@ -130,7 +132,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         }
                     }
 
-                    if (!mount.isTurret() && getUnit().countWorkingMisc(MiscType.F_PINTLE_TURRET, mount.getLocation()) > 0) {
+                    if (!mount.isTurret() && getUnit().hasMisc(EquipmentTypeLookup.PINTLE_TURRET, mount.getLocation())) {
                         if (!mount.isPintleTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
                             info.addActionListener(evt2 -> changePintleTurretMount(true));
@@ -185,19 +187,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void removeCrit() {
-        CriticalSlot crit = getCrit();
         Mounted<?> mounted = getMounted();
-
-        if (mounted == null) {
+        if (!isRemovable(mounted)) {
             return;
         }
 
-        // Cannot remove a mast mount
-        if (mounted.getType().hasFlag(MiscType.F_MAST_MOUNT)) {
-            return;
-        }
-
+        CriticalSlot crit = getCrit();
         UnitUtil.removeCriticals(getUnit(), mounted);
+        mounted.setPintleTurretMounted(false);
+        mounted.setSponsonTurretMounted(false);
+        mounted.setMekTurretMounted(false);
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
@@ -257,7 +256,6 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         }
 
         UnitUtil.removeMounted(getUnit(), mounted);
-
         UnitUtil.compactCriticals(getUnit());
         try {
             // Check linkings after you remove anything
@@ -270,6 +268,17 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         if (refresh != null) {
             refresh.refreshAll();
         }
+    }
+
+    private boolean isRemovable(@Nullable Mounted<?> mounted) {
+        return (mounted != null) && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
+            && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET)
+            && !((mounted instanceof MiscMounted) && mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION));
+    }
+
+    private boolean isDeletable(@Nullable Mounted<?> mounted) {
+        return (mounted != null) && !UnitUtil.isArmorOrStructure(mounted.getType())
+            && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET);
     }
 
     public Entity getUnit() {

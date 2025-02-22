@@ -14,10 +14,7 @@
  */
 package megameklab.ui.supportVehicle;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
@@ -44,19 +41,20 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
     protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
-                !(UnitUtil.isHeatSink(mount)
-                        || etype.hasFlag(MiscType.F_JUMP_JET)
-                        || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || etype.hasFlag(MiscType.F_TSM)
-                        || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                        || (etype.hasFlag(MiscType.F_MASC)
-                                && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                                && !etype.hasSubType(MiscType.S_JETBOOSTER))
-                        || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
-                                && etype.hasFlag(MiscType.F_TRACKS))
-                        || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                        || etype.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
-                        || etype.hasFlag(MiscType.F_BASIC_FIRECONTROL)
-                        || UnitUtil.isArmorOrStructure(etype));
+                   !(UnitUtil.isHeatSink(mount)
+                         || etype.is(EquipmentTypeLookup.PINTLE_TURRET)
+                         || etype.hasFlag(MiscType.F_JUMP_JET)
+                         || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
+                         || etype.hasFlag(MiscType.F_TSM)
+                         || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                         || (etype.hasFlag(MiscType.F_MASC)
+                                 && !etype.hasSubType(MiscType.S_SUPERCHARGER)
+                                 && !etype.hasSubType(MiscType.S_JETBOOSTER))
+                         || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
+                                 && etype.hasFlag(MiscType.F_TRACKS))
+                         || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                         || etype.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
+                         || etype.hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                         || UnitUtil.isArmorOrStructure(etype));
     }
 }
