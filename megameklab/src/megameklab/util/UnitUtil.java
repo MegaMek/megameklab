@@ -95,6 +95,7 @@ public class UnitUtil {
                         || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                         || eq.hasFlag(MiscType.F_MAST_MOUNT)
                         || eq.hasFlag(MiscType.F_SCM)
+                        || eq.hasFlag(MiscType.F_CHAIN_DRAPE)
                         || (eq.hasFlag(MiscType.F_RAM_PLATE)
                                 || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
                                 || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
@@ -187,6 +188,8 @@ public class UnitUtil {
         final EquipmentType eq = mount.getType();
         if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PARTIAL_WING)) {
             toReturn = eq.isClan() ? 3 : 4;
+        } else if (eq.hasFlag(MiscType.F_CHAIN_DRAPE)) {
+            toReturn = 3;
         } else if ((eq instanceof MiscType)
                 && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                         || eq.hasFlag(MiscType.F_TALON)
@@ -938,75 +941,6 @@ public class UnitUtil {
             armorWeight = Math.ceil(armorWeight * 2.0) / 2.0;
         }
         return armorWeight;
-    }
-
-    /**
-     * Computes the total number of armor points available to the unit for a given
-     * tonnage of armor.
-     * This does not round down the calculation or take into account any maximum
-     * number of armor
-     * points or tonnage allowed to the unit.
-     *
-     * NOTE: only use for non-patchwork armor
-     *
-     * @param unit
-     * @param armorTons
-     * @return the number of armor points available for the armor tonnage
-     */
-    public static double getRawArmorPoints(Entity unit, double armorTons) {
-        if (unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
-            return Math.round(armorTons / ArmorType.forEntity(unit).getWeightPerPoint());
-        } else if (unit.isSupportVehicle()) {
-            return Math.floor(armorTons / TestSupportVehicle.armorWeightPerPoint(unit));
-        } else if ((unit instanceof Jumpship)
-                && unit.getArmorType(unit.firstArmorIndex()) == EquipmentType.T_ARMOR_PRIMITIVE_AERO) {
-            // Because primitive JumpShip armor has an extra step of rounding we have to
-            // give it special treatment.
-            // Standard armor value is computed first, rounded down, then the primitive
-            // armor mod is applied.
-            return Math.floor(Math.floor(armorTons * TestAdvancedAerospace.armorPointsPerTon((Jumpship) unit,
-                    EquipmentType.T_ARMOR_AEROSPACE, false)) * 0.66);
-        }
-        return armorTons * UnitUtil.getArmorPointsPerTon(unit);
-    }
-
-    /**
-     * Computes the total number of additional points provided for aerospace vessels
-     * based on
-     * their SI. This is usually a whole number but may be a fractional amount for
-     * primitive
-     * JumpShips.
-     *
-     * @param entity The unit to compute bonus armor for.
-     * @return The number of extra armor points received for SI. This is the total
-     *         number, which
-     *         is usually divided evenly among armor facings.
-     */
-    public static double getSIBonusArmorPoints(Entity entity) {
-        double points = 0.0;
-        if (entity.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            points = ((SmallCraft) entity).getSI() * (entity.locations() - 1);
-        } else if (entity.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            points = Math.round(((Jumpship) entity).getSI() / 10.0) * 6;
-        }
-        if (entity.isPrimitive()) {
-            return points * ArmorType.of(EquipmentType.T_ARMOR_PRIMITIVE_AERO, false).getArmorPointsMultiplier();
-        } else {
-            return points;
-        }
-    }
-
-    /**
-     * NOTE: only use for non-patchwork armor
-     *
-     * @param unit      The entity
-     * @param armorTons
-     * @return
-     */
-    public static int getArmorPoints(Entity unit, double armorTons) {
-        int raw = (int) Math.floor(UnitUtil.getRawArmorPoints(unit, armorTons)
-                + UnitUtil.getSIBonusArmorPoints(unit));
-        return Math.min(raw, UnitUtil.getMaximumArmorPoints(unit));
     }
 
     /**

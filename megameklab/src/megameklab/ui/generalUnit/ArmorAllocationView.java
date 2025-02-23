@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 
 import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -206,7 +207,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                 }
                 if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                         || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                    locView.setMinimum((int) (UnitUtil.getSIBonusArmorPoints(en) / locationViews.size()));
+                    locView.setMinimum((int) (TestEntity.getSIBonusArmorPoints(en) / locationViews.size()));
                 }
                 if (showPatchwork) {
                     double pointsPerTon = UnitUtil.getArmorPointsPerTon(en);
@@ -224,8 +225,8 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             }
         }
         int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
-        int raw = (int) (UnitUtil.getRawArmorPoints(en, en.getLabArmorTonnage())
-                + UnitUtil.getSIBonusArmorPoints(en));
+        int raw = (int) (TestEntity.getRawArmorPoints(en, en.getLabArmorTonnage())
+                + TestEntity.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
         int armorPoints;
         if (showPatchwork) {

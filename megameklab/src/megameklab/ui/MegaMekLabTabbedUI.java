@@ -197,6 +197,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(newUi.getEntity().getDisplayName(), newUi));
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
         oldUi.dispose();
+        refreshMenuBar();
     }
 
     /**
@@ -302,8 +303,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     private void closeTabAt(int position) {
+        // If you try to close the last tab, create a new blank mek tab
+        // Since the UI can't exist in a meaningful state without a tab open
         if (tabs.getTabCount() <= 2) {
-            MegaMekLabTabbedUI.this.dispatchEvent(new WindowEvent(MegaMekLabTabbedUI.this, WindowEvent.WINDOW_CLOSING));
+            newTab();
         }
 
         var editor = editors.get(position);
@@ -314,6 +317,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
         editors.remove(editor);
         closedEditors.push(editor);
+
         // Tell the menu bar to enable the "reopen tab" shortcut
         refreshMenuBar();
     }

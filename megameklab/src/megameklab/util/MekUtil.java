@@ -640,7 +640,7 @@ public final class MekUtil {
                     locations.add(Mek.LOC_CLEG);
                     blocks = 3;
                 }
-            } else if (equip.hasFlag(MiscType.F_PARTIAL_WING)) {
+            } else if (equip.hasFlag(MiscType.F_PARTIAL_WING) || equip.hasFlag(MiscType.F_CHAIN_DRAPE)) {
                 // one block in each side torso
                 locations.add(Mek.LOC_LT);
                 locations.add(Mek.LOC_RT);
@@ -1337,6 +1337,10 @@ public final class MekUtil {
             }
             if ((eq.hasFlag(MiscType.F_QUAD_TURRET) || eq.hasFlag(MiscType.F_RAM_PLATE))
                     && !(unit instanceof QuadMek)) {
+                return false;
+            }
+            if ((eq.hasFlag(MiscType.F_CHAIN_DRAPE_PONCHO) || eq.hasFlag(MiscType.F_CHAIN_DRAPE_APRON))
+                && unit instanceof QuadMek) {
                 return false;
             }
 

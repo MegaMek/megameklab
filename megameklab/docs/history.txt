@@ -12,6 +12,10 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1536: Unify armorable equipment tests in MM #1726
 + PR #1704: Allow bays to be added to aerospace fighters
 + PR #1728: Improve RS display of information for Insulators/Pulse Modules/Capacitors
++ PR #1739: Add Chain Drapes (Construction Only)
++ Fix #1716,#1718: Fixes for tabbed UI
++ PR #1527: Armor validation (see MM #6583)
+
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
