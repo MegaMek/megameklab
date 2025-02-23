@@ -26,7 +26,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
         configPane.removeAll();
         getContentPane().removeAll();
 
-        structureTab = new HHWStructureTab(this);
+        structureTab = new HHWStructureTab(this, this);
         previewTab = new PreviewTab(this);
         structureTab.addRefreshedListener(this);
 
@@ -64,7 +64,9 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipment() {
-
+        structureTab.refresh();
+        previewTab.refresh();
+        statusbar.refresh();
     }
 
     @Override

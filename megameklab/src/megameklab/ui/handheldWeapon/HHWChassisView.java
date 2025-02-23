@@ -4,14 +4,11 @@ import megamek.common.Entity;
 import megamek.common.HandheldWeapon;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.HHWBuildListener;
-import megameklab.ui.listeners.ProtoMekBuildListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,8 +24,10 @@ public class HHWChassisView extends BuildView implements ChangeListener {
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(1, 0.5, 100, 0.5);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
 
-    private final SpinnerNumberModel armorModel = new SpinnerNumberModel(0, 0, 1000, 1);
+    private final SpinnerNumberModel armorModel = new SpinnerNumberModel(0, 0, 1600, 1);
     private final JSpinner spnArmor = new JSpinner(armorModel);
+    private final SpinnerNumberModel armorWeightModel = new SpinnerNumberModel(0, 0, 100, 0.5);
+    private final JSpinner spnArmorWeight = new JSpinner(armorWeightModel);
 
     public HHWChassisView() {
         // todo Use Resource Bundle
@@ -43,18 +42,23 @@ public class HHWChassisView extends BuildView implements ChangeListener {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Armor"), gbc);
+        add(new JLabel("Armor (Tons)"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         add(spnArmor, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        add(spnArmorWeight, gbc);
 
         spnTonnage.addChangeListener(this);
         spnArmor.addChangeListener(this);
+        spnArmorWeight.addChangeListener(this);
     }
 
     public void setFromEntity(Entity hhw) {
         spnTonnage.setValue(hhw.getWeight());
         spnArmor.setValue(hhw.getOArmor(HandheldWeapon.LOC_GUN));
+        spnArmorWeight.setValue(hhw.getArmorWeight());
     }
 
     @Override
@@ -63,6 +67,8 @@ public class HHWChassisView extends BuildView implements ChangeListener {
             listeners.forEach(l -> l.weightChanged(tonnageModel.getNumber().doubleValue()));
         } else if (e.getSource() == spnArmor) {
             listeners.forEach(l -> l.armorChanged(armorModel.getNumber().intValue()));
+        } else if (e.getSource() == spnArmorWeight) {
+            listeners.forEach(l -> l.armorChanged((int) (armorWeightModel.getNumber().doubleValue() * 16)));
         }
     }
 }

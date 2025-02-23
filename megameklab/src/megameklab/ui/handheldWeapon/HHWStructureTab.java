@@ -15,12 +15,14 @@ import java.awt.*;
 public class HHWStructureTab extends ITab implements HHWBuildListener, BuildListener {
     private BasicInfoView panBasicInfo;
     private HHWChassisView panChassisView;
+    private HHWEquipmentView panEquipmentView;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
 
-    public HHWStructureTab(EntitySource eSource) {
+    public HHWStructureTab(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
+        this.refresh = refresh;
         setLayout(new BorderLayout());
         setUpPanels();
         this.add(masterPanel, BorderLayout.CENTER);
@@ -31,14 +33,17 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getEntity().getConstructionTechAdvancement());
         panChassisView = new HHWChassisView();
+        panEquipmentView = new HHWEquipmentView(eSource, refresh);
 
         panBasicInfo.setFromEntity(getEntity());
+        panChassisView.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(panChassisView);
+        leftPanel.add(panEquipmentView);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -51,12 +56,15 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassisView.setBorder(BorderFactory.createTitledBorder("Structure"));
+        panEquipmentView.setBorder(BorderFactory.createTitledBorder("Equipment"));
+        panEquipmentView.refresh();
     }
 
     public void refresh() {
         removeAllListeners();
         panBasicInfo.setFromEntity(getEntity());
         panChassisView.setFromEntity(getEntity());
+        panEquipmentView.refresh();
         addALlListeners();
     }
 
@@ -83,12 +91,15 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         getEntity().setWeight(weight);
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.refreshStructure();
     }
 
     @Override
     public void armorChanged(int armor) {
         getEntity().initializeArmor(armor, HandheldWeapon.LOC_GUN);
         getEntity().setArmorTonnage(getEntity().getArmorWeight());
+        refresh();
+        refresh.refreshArmor();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
