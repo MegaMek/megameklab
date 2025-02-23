@@ -465,7 +465,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getEntity().getEquipment().forEach(m -> m.setOmniPodMounted(false));
                 List<Transporter> podTransports = getEntity().getTransports().stream()
                         .filter(t -> getEntity().isPodMountedTransport(t))
-                        .collect(Collectors.toList());
+                        .toList();
                 podTransports.forEach(t -> {
                     getEntity().removeTransporter(t);
                     getEntity().addTransporter(t, false);
@@ -490,6 +490,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshTransport();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.refreshBuild();
     }
 
     @Override

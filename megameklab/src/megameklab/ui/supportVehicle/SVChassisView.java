@@ -498,12 +498,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnFireConWtModel.setValue(entity.getBaseChassisFireConWeight());
         }
 
-        omniPanel.setVisible(entity.isOmni());
+        omniPanel.setVisible(true);
         spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
                 && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
         spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
                 && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
-        spnChassisSponsonPintleWt.setEnabled(!entity.isAero() && entity.isOmni()
+        spnChassisSponsonPintleWt.setEnabled(!entity.isAero()
             && (chkSponson.isSelected()
             || chkPintleLeft.isSelected() || chkPintleRight.isSelected() || chkPintleFront.isSelected() || chkPintleRear.isSelected()));
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));

@@ -116,7 +116,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
                     if (isDeletable(mount)) {
                         info = new JMenuItem("Delete " + mount.getName());
-                        info.addActionListener(ev -> removeMount());
+                        info.addActionListener(ev -> deleteMount());
                         popup.add(info);
                     }
 
@@ -248,10 +248,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         return Integer.parseInt(getName());
     }
 
-    private void removeMount() {
+    private void deleteMount() {
         Mounted<?> mounted = getMounted();
-
-        if (mounted == null) {
+        if (!isDeletable(mounted)) {
             return;
         }
 
@@ -278,10 +277,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private boolean isDeletable(@Nullable Mounted<?> mounted) {
         return (mounted != null) && !UnitUtil.isArmorOrStructure(mounted.getType())
-            && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET);
+                   && !mounted.is(EquipmentTypeLookup.OMNI_CHASSIS_MOD);
     }
 
-    public Entity getUnit() {
+    private Entity getUnit() {
         return eSource.getEntity();
     }
 }
