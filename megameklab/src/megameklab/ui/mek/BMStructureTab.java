@@ -182,6 +182,15 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panSummary.refresh();
         iconView.setFromEntity(getMek());
         addAllListeners();
+
+        var unlocked = eSource.canModifyBaseChassis();
+        panBasicInfo.omniLock(unlocked);
+        panArmor.omniLock(unlocked);
+        panArmorAllocation.omniLock(unlocked);
+        panPatchwork.omniLock(unlocked);
+        panChassis.omniLock(unlocked);
+        panHeat.omniLock(unlocked);
+        panMovement.omniLock(unlocked);
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -764,6 +773,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void omniLockChanged(boolean omniLock) {
+        eSource.setBaseChassisModifiable(!omniLock);
+        refresh.refreshAll();
+    }
+
+    @Override
     public void typeChanged(int baseType, int motiveType, long etype) {
         boolean industrial = false;
         switch (baseType) {
@@ -1124,6 +1139,17 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (jumpJet != null) {
             List<Mounted<?>> jjs = getMek().getMisc().stream()
                     .filter(m -> jumpJet.equals(m.getType()))
+                    // sort pod-mounted jets after fixed jets, so they get removed first.
+                    .sorted((lhs, rhs) -> {
+                        var ret = 0;
+                        if (lhs.isOmniPodMounted()) {
+                            ret++;
+                        }
+                        if (rhs.isOmniPodMounted()) {
+                            ret--;
+                        }
+                        return ret;
+                    })
                     .collect(Collectors.toList());
             if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
                 if (!getMek().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
@@ -1135,7 +1161,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
                 while (jumpMP > jjs.size()) {
                     try {
-                        UnitUtil.addMounted(getMek(), Mounted.createMounted(getMek(), jumpJet), Entity.LOC_NONE, false);
+                        var m = Mounted.createMounted(getMek(), jumpJet);
+                        if (!eSource.canModifyBaseChassis()) {
+                            m.setOmniPodMounted(true);
+                        }
+                        UnitUtil.addMounted(getMek(), m, Entity.LOC_NONE, false);
                     } catch (LocationFullException ignored) {
                         // Adding to LOC_NONE
                     }

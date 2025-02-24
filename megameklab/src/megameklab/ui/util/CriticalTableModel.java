@@ -151,7 +151,11 @@ public class CriticalTableModel extends AbstractTableModel {
         Mounted<?> crit = crits.get(row);
         switch (col) {
             case NAME:
-                return UnitUtil.getCritName(unit, crit.getType());
+                if (unit.isOmni() && !crit.isOmniPodMounted() && !crit.getType().isOmniFixedOnly()) {
+                    return "%s (Fixed)".formatted(UnitUtil.getCritName(unit, crit.getType()));
+                } else {
+                    return UnitUtil.getCritName(unit, crit.getType());
+                }
             case TONNAGE:
                 double tonnage;
                 if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
