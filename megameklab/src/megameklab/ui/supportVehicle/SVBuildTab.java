@@ -28,9 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.common.Entity;
-import megamek.common.MekFileParser;
-import megamek.common.Mounted;
+import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -129,7 +128,9 @@ public class SVBuildTab extends ITab implements ActionListener {
     private void resetCrits() {
         for (Mounted<?> mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                    || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
+                    || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
                 continue;
             }
             UnitUtil.removeCriticals(getTank(), mount);

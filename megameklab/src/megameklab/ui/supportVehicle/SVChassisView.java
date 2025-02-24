@@ -80,6 +80,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JLabel lblPintle = createLabel("lblPintle", "");
     private final JCheckBox chkPintleLeft = new JCheckBox();
     private final JCheckBox chkPintleRight = new JCheckBox();
+    private final JCheckBox chkPintleFront = new JCheckBox();
+    private final JCheckBox chkPintleRear = new JCheckBox();
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
     private final JSpinner spnChassisSponsonPintleWt = new JSpinner(spnSponsonPintleWtModel);
@@ -220,6 +222,19 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(chkPintleRight, gbc);
         chkPintleRight.setActionCommand(ACTION_PINTLE_RIGHT);
         chkPintleRight.addActionListener(this);
+        gbc.gridy++;
+        gbc.gridx = 1;
+        chkPintleFront.setText(resourceMap.getString("SVChassisView.chkPintleFront.text"));
+        chkPintleFront.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip"));
+        add(chkPintleFront, gbc);
+        chkPintleFront.setActionCommand(ACTION_PINTLE_FRONT);
+        chkPintleFront.addActionListener(this);
+        gbc.gridx = 2;
+        chkPintleRear.setText(resourceMap.getString("SVChassisView.chkPintleRear.text"));
+        chkPintleRear.setToolTipText(resourceMap.getString("SVChassisView.chkPintle.tooltip"));
+        add(chkPintleRear, gbc);
+        chkPintleRear.setActionCommand(ACTION_PINTLE_REAR);
+        chkPintleRear.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -460,8 +475,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             }
             cbTurrets.setEnabled(true);
             chkSponson.setSelected(entity.hasWorkingMisc(MiscType.F_SPONSON_TURRET));
-            chkPintleLeft.setSelected(entity.countWorkingMisc(MiscType.F_PINTLE_TURRET, SupportTank.LOC_LEFT) > 0);
-            chkPintleRight.setSelected(entity.countWorkingMisc(MiscType.F_PINTLE_TURRET, SupportTank.LOC_RIGHT) > 0);
+            chkPintleLeft.setSelected(entity.hasMisc(EquipmentTypeLookup.PINTLE_TURRET, SupportTank.LOC_LEFT));
+            chkPintleRight.setSelected(entity.hasMisc(EquipmentTypeLookup.PINTLE_TURRET, SupportTank.LOC_RIGHT));
+            chkPintleFront.setSelected(entity.hasMisc(EquipmentTypeLookup.PINTLE_TURRET, SupportTank.LOC_FRONT));
+            chkPintleRear.setSelected(entity.hasMisc(EquipmentTypeLookup.PINTLE_TURRET, SupportTank.LOC_REAR));
         } else {
             cbTurrets.setEnabled(false);
         }
@@ -481,13 +498,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnFireConWtModel.setValue(entity.getBaseChassisFireConWeight());
         }
 
-        omniPanel.setVisible(entity.isOmni());
+        omniPanel.setVisible(true);
         spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
                 && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
         spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
                 && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
-        spnChassisSponsonPintleWt.setEnabled(!entity.isAero() && entity.isOmni()
-                && (chkSponson.isSelected() || chkPintleLeft.isSelected() || chkPintleRight.isSelected()));
+        spnChassisSponsonPintleWt.setEnabled(!entity.isAero()
+            && (chkSponson.isSelected()
+            || chkPintleLeft.isSelected() || chkPintleRight.isSelected() || chkPintleFront.isSelected() || chkPintleRear.isSelected()));
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));
     }
 
@@ -565,6 +583,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         lblPintle.setVisible(showPintle);
         chkPintleLeft.setVisible(showPintle);
         chkPintleRight.setVisible(showPintle);
+        chkPintleFront.setVisible(showPintle);
+        chkPintleRear.setVisible(showPintle);
     }
 
     /**
@@ -596,6 +616,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             spnFireConWtModel.setStepSize(0.5);
             chkPintleLeft.setSelected(false);
             chkPintleRight.setSelected(false);
+            chkPintleFront.setSelected(false);
+            chkPintleRear.setSelected(false);
         }
         final double max = ((Number) spnTonnage.getValue()).doubleValue();
         spnTurretWtModel.setMaximum(max);
@@ -603,7 +625,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnSponsonPintleWtModel.setMaximum(max);
         spnFireConWtModel.setMaximum(max);
         spnChassisSponsonPintleWt.setEnabled(chkSponson.isSelected()
-                || chkPintleLeft.isSelected() || chkPintleRight.isSelected());
+            || chkPintleLeft.isSelected() || chkPintleRight.isSelected() || chkPintleFront.isSelected() || chkPintleRear.isSelected());
 
         spnTonnage.addChangeListener(this);
         spnChassisTurretWt.addChangeListener(this);
@@ -633,6 +655,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private static final String ACTION_SPONSON = "sponson";
     private static final String ACTION_PINTLE_LEFT = "pintleLeft";
     private static final String ACTION_PINTLE_RIGHT = "pintleRight";
+    private static final String ACTION_PINTLE_FRONT = "pintleFront";
+    private static final String ACTION_PINTLE_REAR = "pintleRear";
     private static final String ACTION_FIRE_CONTROL = "fireControl";
     private static final String ACTION_RESET_CHASSIS = "resetChassis";
 
@@ -648,6 +672,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 } else {
                     listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_LEFT));
                     listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_RIGHT));
+                    listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_FRONT));
+                    listeners.forEach(l -> l.pintleTurretChanged(false, Tank.LOC_REAR));
                 }
                 break;
             case ACTION_TYPE:
@@ -671,12 +697,16 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 listeners.forEach(l -> l.sponsonTurretChanged(chkSponson.isSelected()));
                 break;
             case ACTION_PINTLE_LEFT:
-                listeners.forEach(l -> l.pintleTurretChanged(chkPintleLeft.isSelected(),
-                        Tank.LOC_LEFT));
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleLeft.isSelected(), Tank.LOC_LEFT));
                 break;
             case ACTION_PINTLE_RIGHT:
-                listeners.forEach(l -> l.pintleTurretChanged(chkPintleRight.isSelected(),
-                        Tank.LOC_RIGHT));
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleRight.isSelected(), Tank.LOC_RIGHT));
+                break;
+            case ACTION_PINTLE_FRONT:
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleFront.isSelected(), Tank.LOC_FRONT));
+                break;
+            case ACTION_PINTLE_REAR:
+                listeners.forEach(l -> l.pintleTurretChanged(chkPintleRear.isSelected(), Tank.LOC_REAR));
                 break;
             case ACTION_FIRE_CONTROL:
                 listeners.forEach(l -> l.fireConChanged(cbFireControl.getSelectedIndex()));

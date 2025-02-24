@@ -162,7 +162,6 @@ public class SVCriticalView extends IView {
         }
 
         synchronized (getEntity()) {
-            logger.info(getEntity().locations());
             for (int location = 0; location < getEntity().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 

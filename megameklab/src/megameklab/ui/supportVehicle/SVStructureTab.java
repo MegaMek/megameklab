@@ -23,12 +23,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.logging.MMLogger;
@@ -463,7 +465,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getEntity().getEquipment().forEach(m -> m.setOmniPodMounted(false));
                 List<Transporter> podTransports = getEntity().getTransports().stream()
                         .filter(t -> getEntity().isPodMountedTransport(t))
-                        .collect(Collectors.toList());
+                        .toList();
                 podTransports.forEach(t -> {
                     getEntity().removeTransporter(t);
                     getEntity().addTransporter(t, false);
@@ -488,6 +490,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshTransport();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.refreshBuild();
     }
 
     @Override
@@ -560,26 +563,27 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void pintleTurretChanged(boolean installed, int loc) {
-        final Mounted<?> current = getSV().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_PINTLE_TURRET) && (m.getLocation() == loc))
-                .findFirst().orElse(null);
-        if (installed && (null == current)) {
+    public void pintleTurretChanged(boolean addPintle, final int loc) {
+        final Optional<MiscMounted> installedPintle = getSV().getMisc().stream()
+            .filter(m -> m.is(EquipmentTypeLookup.PINTLE_TURRET))
+            .filter(m -> m.getLocation() == loc)
+            .findFirst();
+        if (addPintle && installedPintle.isEmpty()) {
             try {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                logger.error("LocationFullException when adding sponson turret");
+                logger.error("LocationFullException when adding pintle turret");
             }
-        } else if (!installed && (null != current)) {
+        } else if (!addPintle && installedPintle.isPresent()) {
             for (Mounted<?> m : getEntity().getEquipment()) {
                 if (m.getLocation() == loc) {
                     m.setPintleTurretMounted(false);
                 }
             }
-            getSV().getMisc().remove(current);
-            getSV().getEquipment().remove(current);
-            UnitUtil.removeCriticals(getSV(), current);
+            getSV().getMisc().remove(installedPintle.get());
+            getSV().getEquipment().remove(installedPintle.get());
+            UnitUtil.removeCriticals(getSV(), installedPintle.get());
         }
         resetSponsonPintleWeight();
 

@@ -33,6 +33,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.MiscMounted;
 import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
@@ -134,8 +135,8 @@ public final class CritCellUtil {
                     cell.setFont(cell.getFont().deriveFont(Font.ITALIC));
                 }
             }
-            if ((mounted.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    || mounted.getType().hasFlag(MiscType.F_AP_MOUNT))
+            if (mounted instanceof MiscMounted
+                && (mounted.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) || mounted.getType().hasFlag(MiscType.F_AP_MOUNT))
                     && mounted.getLinked() != null) {
                 name += " (attached " + mounted.getLinked().getName() + ")";
             }
