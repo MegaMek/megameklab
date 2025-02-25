@@ -17,6 +17,7 @@ package megameklab.ui.handheldWeapon;
 import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
@@ -32,6 +33,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     private HHWChassisView panChassisView;
     private HHWEquipmentView panEquipmentView;
     private SummaryView panSummary;
+    private IconView panIcon;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
@@ -58,17 +60,22 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
             new AmmoSummaryItem(),
             new MiscEquipmentSummaryItem()
         );
+        panIcon = new IconView();
 
 
         panBasicInfo.setFromEntity(getEntity());
         panChassisView.setFromEntity(getEntity());
+        panIcon.setFromEntity(getEntity());
 
-        JPanel leftPanel = new JPanel(), rightPanel = new JPanel();
+        JPanel leftPanel = new JPanel(), centerPanel = new JPanel(),  rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(panChassisView);
+
+        centerPanel.add(panIcon);
 
         rightPanel.add(panEquipmentView);
         rightPanel.add(panSummary);
@@ -83,14 +90,19 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
+        masterPanel.add(centerPanel, gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
         masterPanel.add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassisView.setBorder(BorderFactory.createTitledBorder("Structure"));
         panEquipmentView.setBorder(BorderFactory.createTitledBorder("Equipment"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
+        panIcon.setBorder(BorderFactory.createTitledBorder("Icon"));
         panSummary.refresh();
         panEquipmentView.refresh();
+        panIcon.refresh();
     }
 
     public void refresh() {
@@ -99,6 +111,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panChassisView.setFromEntity(getEntity());
         panEquipmentView.refresh();
         panSummary.refresh();
+        panIcon.refresh();
         addALlListeners();
     }
 
