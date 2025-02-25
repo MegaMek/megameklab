@@ -1,13 +1,25 @@
+/*
+ * MegaMekLab - Copyright (C) 2025 The MegaMek Team
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ */
+
 package megameklab.ui.handheldWeapon;
 
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.AmmoType;
 import megamek.common.MiscType;
-import megamek.common.equipment.WeaponMounted;
 import megameklab.ui.generalUnit.StatusBar;
 
 import javax.swing.*;
-import java.util.Iterator;
 
 public class HHWStatusBar extends StatusBar {
     private static final String SLOTS_LABEL = "Free Slots: %d / %d";
