@@ -10,6 +10,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HHWChassisView extends BuildView implements ChangeListener {
@@ -30,19 +31,23 @@ public class HHWChassisView extends BuildView implements ChangeListener {
     private final JSpinner spnArmorWeight = new JSpinner(armorWeightModel);
 
     public HHWChassisView() {
-        // todo Use Resource Bundle
+        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(new JLabel("Weight"), gbc);
+        var lblWeight = new JLabel(resourceMap.getString("HHWChassisView.lblWeight.text"));
+        lblWeight.setToolTipText(resourceMap.getString("HHWChassisView.lblWeight.tooltip"));
+        add(lblWeight, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         add(spnTonnage, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Armor (Tons)"), gbc);
+        var lblArmor = new JLabel(resourceMap.getString("HHWChassisView.lblArmor.text"));
+        lblArmor.setToolTipText(resourceMap.getString("HHWChassisView.lblArmor.tooltip"));
+        add(lblArmor, gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         add(spnArmor, gbc);

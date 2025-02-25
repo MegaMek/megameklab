@@ -76,6 +76,10 @@ public class StatusBar extends ITab {
         JButton btnValidate = new JButton("Validate Unit");
         btnValidate.addActionListener(validationListener);
 
+        JButton btnRefresh = new JButton("Refresh UI");
+        btnRefresh.setToolTipText("Refresh the UI, possibly repairing it if it is in a broken state.");
+        btnRefresh.addActionListener(evt -> refresh.refreshAll());
+
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
 
@@ -86,6 +90,7 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
+        add(btnRefresh);
         add(tons);
         add(bvLabel);
         add(invalid);

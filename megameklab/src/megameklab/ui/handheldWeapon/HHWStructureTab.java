@@ -3,6 +3,7 @@ package megameklab.ui.handheldWeapon;
 import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
 import megameklab.ui.util.ITab;
@@ -16,6 +17,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     private BasicInfoView panBasicInfo;
     private HHWChassisView panChassisView;
     private HHWEquipmentView panEquipmentView;
+    private SummaryView panSummary;
 
     RefreshListener refresh = null;
     JPanel masterPanel;
@@ -34,16 +36,28 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panBasicInfo = new BasicInfoView(getEntity().getConstructionTechAdvancement());
         panChassisView = new HHWChassisView();
         panEquipmentView = new HHWEquipmentView(eSource, refresh);
+        panSummary = new SummaryView(eSource,
+            new UnitTypeSummaryItem(),
+            new ArmorSummaryItem(),
+            new WeaponsSummaryItem(),
+            new HeatSinkSummaryItem(),
+            new AmmoSummaryItem(),
+            new MiscEquipmentSummaryItem()
+        );
+
 
         panBasicInfo.setFromEntity(getEntity());
         panChassisView.setFromEntity(getEntity());
 
-        JPanel leftPanel = new JPanel();
+        JPanel leftPanel = new JPanel(), rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(panChassisView);
-        leftPanel.add(panEquipmentView);
+
+        rightPanel.add(panEquipmentView);
+        rightPanel.add(panSummary);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -53,10 +67,15 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         masterPanel.add(leftPanel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        masterPanel.add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassisView.setBorder(BorderFactory.createTitledBorder("Structure"));
         panEquipmentView.setBorder(BorderFactory.createTitledBorder("Equipment"));
+        panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
+        panSummary.refresh();
         panEquipmentView.refresh();
     }
 
@@ -65,6 +84,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panBasicInfo.setFromEntity(getEntity());
         panChassisView.setFromEntity(getEntity());
         panEquipmentView.refresh();
+        panSummary.refresh();
         addALlListeners();
     }
 
@@ -106,7 +126,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
 
     @Override
     public void refreshSummary() {
-        // todo panSummary.refresh()
+        panSummary.refresh();
     }
 
     @Override
@@ -131,7 +151,15 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
 
     @Override
     public void updateTechLevel() {
-        // todo implement
+        removeAllListeners();
+        getEntity().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        if (UnitUtil.checkEquipmentByTechLevel(getEntity(), panBasicInfo)) {
+            refresh.refreshEquipment();
+        } else {
+            refresh.refreshEquipmentTable();
+        }
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -166,6 +194,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     @Override
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
+        refresh.refreshPreview();
         refresh.refreshStatus();
     }
 

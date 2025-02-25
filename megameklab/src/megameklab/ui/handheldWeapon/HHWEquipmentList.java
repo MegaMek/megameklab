@@ -35,7 +35,7 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
         Vector<String> critNames = new Vector<>();
         for (var m : hhw.getEquipment()) {
             if (m.getType() instanceof AmmoType) {
-                critNames.add("%s (%d)".formatted(m.getName(), m.getOriginalShots()));
+                critNames.add("%s (%d)".formatted(m.getName(), (int) m.getSize()));
             } else {
                 critNames.add(m.getName());
             }
@@ -52,9 +52,7 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         setSelectedIndex(locationToIndex(e.getPoint()));
-        if (e.getButton() == MouseEvent.BUTTON2) {
-            deleteItem();
-        } else if (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+        if (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
             deleteItem();
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             var popup = new JPopupMenu();
@@ -77,6 +75,7 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
     private void deleteItem() {
         UnitUtil.removeMounted(hhw, hhw.getEquipment().get(getSelectedIndex()));
         refresh.refreshEquipment();
+        refresh.refreshStructure();
     }
 
     private Mounted<?> getMount() {

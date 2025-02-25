@@ -15,6 +15,7 @@
 package megameklab.ui.util;
 
 import megamek.common.*;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -122,7 +123,7 @@ public class CriticalTableModel extends AbstractTableModel {
     public String getColumnName(int col) {
         if ((col == TONNAGE) && kgStandard) {
             return "Kg";
-        } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+        } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT || unit.isHandheldWeapon())) {
             return "Size/Shots";
         } else {
             return (columnNames[col]);
@@ -134,7 +135,8 @@ public class CriticalTableModel extends AbstractTableModel {
         if (col == SIZE) {
             return (row >= 0) && (row < crits.size())
                     && (crits.get(row).getType().isVariableSize()
-                            || (crits.get(row).getType() instanceof InfantryWeapon));
+                            || (crits.get(row).getType() instanceof InfantryWeapon)
+                            || (unit instanceof HandheldWeapon && crits.get(row) instanceof AmmoMounted));
         } else {
             return false;
         }
@@ -205,7 +207,7 @@ public class CriticalTableModel extends AbstractTableModel {
                     return unit.joinLocationAbbr(crit.allLocations(), 2);
                 }
             case SIZE:
-                if (crit.getType().isVariableSize()) {
+                if (crit.getType().isVariableSize() ||  (unit instanceof HandheldWeapon && crit instanceof AmmoMounted)) {
                     return NumberFormat.getInstance().format(crit.getSize());
                 } else if (crit.getType() instanceof InfantryWeapon) {
                     return (int) (crit.getSize() * ((InfantryWeapon) crit.getType()).getShots());
@@ -240,6 +242,15 @@ public class CriticalTableModel extends AbstractTableModel {
                     return;
                 }
                 UnitUtil.resizeMount(crit, newSize);
+                fireTableDataChanged();
+            } else if (unit instanceof HandheldWeapon && crit instanceof AmmoMounted am) {
+                int shots = Integer.parseInt(aValue.toString());
+                if (am.getSize() == shots) {
+                    return;
+                }
+                am.setAmmoCapacity(shots);
+                am.setOriginalShots(shots);
+                am.setShotsLeft(shots);
                 fireTableDataChanged();
             }
         }
@@ -354,6 +365,8 @@ public class CriticalTableModel extends AbstractTableModel {
                 final int clipSize = ((InfantryWeapon) mounted.getType()).getShots();
                 spinner.setModel(new SpinnerNumberModel((int) ((mounted.getSize() * clipSize)),
                         clipSize, null, clipSize));
+            } else if (unit instanceof HandheldWeapon && (mounted instanceof AmmoMounted am)) {
+                spinner.setModel(new SpinnerNumberModel((int) am.getSize(), 0, null, 1));
             } else {
                 spinner.setModel(new SpinnerNumberModel(Double.valueOf(mounted.getSize()),
                         mounted.getType().variableStepSize(), mounted.getType().variableMaxSize(),

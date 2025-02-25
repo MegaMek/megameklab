@@ -12,6 +12,7 @@ import java.util.List;
 public class HHWMainUI extends MegaMekLabMainUI {
     private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private HHWStructureTab structureTab;
+    private HHWEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private HHWStatusBar statusbar;
 
@@ -27,10 +28,13 @@ public class HHWMainUI extends MegaMekLabMainUI {
         getContentPane().removeAll();
 
         structureTab = new HHWStructureTab(this, this);
+        equipmentTab = new HHWEquipmentTab(this);
+        equipmentTab.addRefreshedListener(this);
         previewTab = new PreviewTab(this);
         structureTab.addRefreshedListener(this);
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
+        configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
         configPane.addTab("Preview", new TabScrollPane(previewTab));
 
         statusbar = new HHWStatusBar(this);
@@ -45,28 +49,27 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
-        // todo Refresh everything
         structureTab.refresh();
         previewTab.refresh();
         statusbar.refresh();
+        equipmentTab.refresh();
         refreshHeader();
     }
 
     @Override
     public void refreshArmor() {
-
+        structureTab.refresh();
     }
 
     @Override
     public void refreshBuild() {
-
+        structureTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
         structureTab.refresh();
-        previewTab.refresh();
-        statusbar.refresh();
+        equipmentTab.refresh();
     }
 
     @Override
@@ -84,7 +87,8 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshWeapons() {
-
+        structureTab.refresh();
+        equipmentTab.refresh();
     }
 
     @Override
@@ -94,12 +98,12 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshSummary() {
-
+        structureTab.refresh();
     }
 
     @Override
     public void refreshEquipmentTable() {
-
+        equipmentTab.refresh();
     }
 
     @Override

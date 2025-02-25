@@ -1,15 +1,10 @@
 package megameklab.ui.handheldWeapon;
 
 import megamek.common.AmmoType;
-import megamek.common.Entity;
 import megamek.common.HandheldWeapon;
-import megamek.common.Mounted;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.util.*;
 
-import javax.swing.*;
-import javax.swing.event.ListDataListener;
 import java.util.Vector;
 
 public class HHWEquipmentView extends IView {
@@ -28,7 +23,7 @@ public class HHWEquipmentView extends IView {
         Vector<String> critNames = new Vector<>();
         for (var m : getEntity().getEquipment()) {
             if (m.getType() instanceof AmmoType) {
-                critNames.add("%s (%d)".formatted(m.getName(), m.getOriginalShots()));
+                critNames.add("%s (%d)".formatted(m.getName(), (int) m.getSize()));
             } else {
                 critNames.add(m.getName());
             }
