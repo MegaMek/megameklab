@@ -27,18 +27,25 @@ import megamek.common.loaders.MtfFile;
 import megamek.common.preference.PreferenceManager;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.MegaMekLabTabbedUI;
+import megameklab.ui.MenuBarOwner;
+import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.util.UnitUtil;
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class TabStateUtil {
-    private final static MMLogger logger = MMLogger.create(TabStateUtil.class);
+public class TabUtil {
+    private final static MMLogger logger = MMLogger.create(TabUtil.class);
 
     private final static String TAB_STATE_DIRECTORY = ".mml_tmp";
     private final static String TAB_STATE_CLEAN = "clean";
@@ -229,5 +236,48 @@ public class TabStateUtil {
         return tabStateDir;
     }
 
-    private TabStateUtil() {}
+    public static void loadMany(List<File> files, MenuBarOwner owner) {
+        loadMany(
+            files.stream().map( f -> {
+                try {
+                    return new MekFileParser(f).getEntity();
+                } catch (EntityLoadingException e) {
+                    logger.errorDialog(e, "Failed to load entity.", "Entity load error.");
+                    return null;
+                }
+            }).filter(Objects::nonNull).toList(),
+
+            files.stream().map(String::valueOf).toList(),
+
+            owner
+        );
+    }
+
+    public static void loadMany(List<Entity> entities, List<String> fileNames, MenuBarOwner owner) {
+        assert entities.size() == fileNames.size();
+
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
+            SwingUtilities.invokeLater(() -> insertTabs(0, entities, fileNames, tabbedUI, progress));
+        } else if (owner instanceof StartupGUI) {
+            owner.getFrame().dispose();
+            UiLoader.initializeFromBlankUI((tabbedUI) -> {
+                ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
+                insertTabs(0, entities, fileNames, tabbedUI, progress);
+            });
+        }
+
+    }
+
+    private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI, ProgressMonitor progress) {
+        tabbedUI.addUnit(entities.get(i), fileNames.get(i));
+        progress.setProgress(i + 1);
+        progress.setNote("Loaded %d / %d".formatted(i + 1, entities.size()));
+        if (progress.isCanceled() || i + 1 == entities.size()) {
+            return;
+        }
+        SwingUtilities.invokeLater(() -> insertTabs(i + 1, entities, fileNames, tabbedUI, progress));
+    }
+
+    private TabUtil() {}
 }
