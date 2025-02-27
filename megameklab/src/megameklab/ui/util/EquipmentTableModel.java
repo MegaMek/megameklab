@@ -382,6 +382,8 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return VARIABLE;
             } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
                 return String.format("%.0f kg", type.getTonnage(entity) * 1000);
+            } else if (entity.isHandheldWeapon() && type instanceof AmmoType at) {
+                return new DecimalFormat("#.## kg").format(at.getKgPerShot());
             } else {
                 return formatter.format(weight);
             }

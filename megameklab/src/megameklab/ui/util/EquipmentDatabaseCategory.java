@@ -59,7 +59,7 @@ public enum EquipmentDatabaseCategory {
 
     PHYSICAL ("Physical",
             (eq, en) -> UnitUtil.isPhysicalWeapon(eq) || isIndustrialEquipment(eq),
-            e -> e.hasETypeFlag(Entity.ETYPE_MEK)),
+            e -> e.hasETypeFlag(Entity.ETYPE_MEK) || e.hasETypeFlag(Entity.ETYPE_HANDHELD_WEAPON)),
 
     INDUSTRIAL ("Industrial",
             (eq, en) -> isIndustrialEquipment(eq),

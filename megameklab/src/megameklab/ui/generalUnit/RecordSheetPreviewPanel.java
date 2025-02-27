@@ -120,7 +120,11 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         if (entity != null) {
             RecordSheetOptions options = new RecordSheetOptions();
-            PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options).get(0);
+            PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
+                .stream().findFirst().orElse(null);
+            if (sheet == null) {
+                return;
+            }
 
             // 5-pixel margin around rs
             // Except for SmallUnitSheets which have weird clipping issues with nonstandard

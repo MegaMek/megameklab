@@ -64,7 +64,7 @@ import megameklab.util.UnitUtil;
 public abstract class AbstractEquipmentTab extends ITab {
     private static final MMLogger logger = MMLogger.create(AbstractEquipmentTab.class);
 
-    private RefreshListener refresh;
+    protected RefreshListener refresh;
 
     protected final CriticalTableModel loadOutModel;
     private final JTable loadOutTable = new JTable();
