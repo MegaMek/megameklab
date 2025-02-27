@@ -112,7 +112,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panEquipmentView.refresh();
         panSummary.refresh();
         panIcon.refresh();
-        addALlListeners();
+        addAllListeners();
     }
 
     public void removeAllListeners() {
@@ -120,7 +120,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panChassisView.removeListener(this);
     }
 
-    public void addALlListeners() {
+    public void addAllListeners() {
         panBasicInfo.addListener(this);
         panChassisView.addListener(this);
     }
