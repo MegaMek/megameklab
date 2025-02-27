@@ -16,6 +16,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1716,#1718: Fixes for tabbed UI
 + PR #1527: Armor validation (see MM #6583)
 + PR #1741: Pintle turret and flags
++ PR #1742: Preliminary handheld weapon support
 
 
 0.50.03 (2025-02-02 2030 UTC)
