@@ -18,6 +18,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1741: Pintle turret and flags
 + PR #1742: Preliminary handheld weapon support
 + Fix #1749: Allow loading multiple unit files by drag-and-drop #1749
++ Fix #1750: Rename Size/Shots to Shots for HHW
 
 
 0.50.03 (2025-02-02 2030 UTC)
