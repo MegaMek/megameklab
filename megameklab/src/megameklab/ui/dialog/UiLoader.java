@@ -18,22 +18,11 @@
  */
 package megameklab.ui.dialog;
 
-import java.awt.BorderLayout;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.*;
+import megamek.common.Configuration;
+import megamek.common.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
-import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
@@ -45,8 +34,17 @@ import megameklab.ui.largeAero.WSMainUI;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.protoMek.PMMainUI;
 import megameklab.ui.supportVehicle.SVMainUI;
-import megameklab.ui.util.TabStateUtil;
+import megameklab.ui.util.TabUtil;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
+import java.util.function.Consumer;
 
 /**
  * This class prepares a new editing UI for either a given Entity or an Entity
@@ -104,11 +102,7 @@ public class UiLoader {
         this.newUnit = newUnit;
         this.fileName = Objects.requireNonNullElse(fileName, "");
 
-        splashImage = new JDialog((JFrame) null, "MML Loading Splash");
-        splashImage.setUndecorated(true);
-        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGES, splashImage), BorderLayout.CENTER);
-        splashImage.pack();
-        splashImage.setLocationRelativeTo(null);
+        splashImage = makeSplash();
     }
 
     private UiLoader(boolean restore) {
@@ -119,6 +113,15 @@ public class UiLoader {
         }
 
         this.restore = true;
+    }
+
+    private static JDialog makeSplash() {
+        var splashImage = new JDialog((JFrame) null, "MML Loading Splash");
+        splashImage.setUndecorated(true);
+        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGES, splashImage), BorderLayout.CENTER);
+        splashImage.pack();
+        splashImage.setLocationRelativeTo(null);
+        return splashImage;
     }
 
     /**
@@ -145,7 +148,7 @@ public class UiLoader {
                 tabbedUi.setVisible(true);
             } else {
                 try {
-                    var editors = TabStateUtil.loadTabState().toArray(new MegaMekLabMainUI[0]);
+                    var editors = TabUtil.loadTabState().toArray(new MegaMekLabMainUI[0]);
                     if (editors.length == 0) {
                         throw new IllegalStateException("Could not restore tabs");
                     }
@@ -160,6 +163,21 @@ public class UiLoader {
             splashImage.setVisible(false);
             splashImage.dispose();
         }
+    }
+
+    public static void initializeFromBlankUI(Consumer<MegaMekLabTabbedUI> initializer) {
+        var splash = makeSplash();
+        splash.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                var newUI = new MegaMekLabTabbedUI();
+                initializer.accept(newUI);
+                newUI.setVisible(true);
+            } finally {
+                splash.setVisible(false);
+                splash.dispose();
+            }
+        });
     }
 
     /**

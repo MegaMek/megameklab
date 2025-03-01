@@ -2,6 +2,7 @@ package megameklab.util;
 
 import megamek.logging.MMLogger;
 import megameklab.ui.MenuBarOwner;
+import megameklab.ui.util.TabUtil;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -35,8 +36,8 @@ public class MMLFileDropTransferHandler extends TransferHandler {
         try {
             var files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
             if (files.size() != 1) {
-                logger.error("Cannot open multiple files at a time!", "Import error");
-                return false;
+                TabUtil.loadMany(files, owner);
+                return true;
             }
 
             var file = files.get(0);

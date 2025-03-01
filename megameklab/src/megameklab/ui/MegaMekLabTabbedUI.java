@@ -28,7 +28,7 @@ import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.ExitOnWindowClosingListener;
-import megameklab.ui.util.TabStateUtil;
+import megameklab.ui.util.TabUtil;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
@@ -265,7 +265,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         if (CConfig.getStartUpType() == MMLStartUp.RESTORE_TABS) {
             try {
-                TabStateUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
+                TabUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
