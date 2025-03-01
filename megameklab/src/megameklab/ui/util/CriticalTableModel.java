@@ -123,8 +123,10 @@ public class CriticalTableModel extends AbstractTableModel {
     public String getColumnName(int col) {
         if ((col == TONNAGE) && kgStandard) {
             return "Kg";
-        } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT || unit.isHandheldWeapon())) {
+        } else if ((col == SIZE) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
             return "Size/Shots";
+        } else if (col == SIZE && unit.isHandheldWeapon()) {
+            return "Shots";
         } else {
             return (columnNames[col]);
         }
