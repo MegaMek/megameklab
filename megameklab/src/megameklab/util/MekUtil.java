@@ -1201,9 +1201,9 @@ public final class MekUtil {
      * are either empty of contain freely movable crits such as Endo Steel.
      * Returns -1 if there is no such slot.
      */
-    public static int findSlotWithContiguousNumOfCrits(Entity mek, int location, int length) {
+    public static int findSlotWithContiguousNumOfCrits(Entity mek, int location, int length, boolean ignoreFMU) {
         for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
-            if (canFreeContiguousCrits(mek, location, slot, length)) {
+            if (hasFreeContiguousCrits(mek, location, slot, length, ignoreFMU)) {
                 return slot;
             }
         }
@@ -1214,9 +1214,15 @@ public final class MekUtil {
      * Returns true when numOfSlots contiguous slots starting from startingSlot are
      * either free or
      * can be freed by removing unhittable and movable equipment such as Endo Steel.
+     *
+     * @param mek The mek to check space in
+     * @param location The location to check in
+     * @param startingSlot The slot in that location the contiguous region should start in
+     * @param numOfSlots The size of the contiguous region
+     * @param removeFMU If this is {@code true}, FMU slots are considered empty
      */
-    public static boolean canFreeContiguousCrits(Entity mek, int location, int startingSlot, int numOfSlots) {
-        return availableContiguousCrits(mek, location, startingSlot, true) >= numOfSlots;
+    public static boolean hasFreeContiguousCrits(Entity mek, int location, int startingSlot, int numOfSlots, boolean removeFMU) {
+        return availableContiguousCrits(mek, location, startingSlot, removeFMU) >= numOfSlots;
     }
 
     /**

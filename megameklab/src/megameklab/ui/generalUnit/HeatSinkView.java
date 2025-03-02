@@ -395,4 +395,9 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         }
     }
 
+    public void omniLock(boolean unlocked) {
+        cbHSType.setEnabled(unlocked);
+        spnBaseCount.setEnabled(unlocked);
+    }
+
 }
