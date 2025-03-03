@@ -372,6 +372,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
     }
 
+    public List<Entity> getAllEntities() {
+        return editors.stream().limit(editors.size() - 1).map(MegaMekLabMainUI::getEntity).toList();
+    }
+
 
     /**
      * Represents a button used for creating new tabs in the MegaMekLabTabbedUI interface.
@@ -493,17 +497,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * This class extends JPanel and is initialized with a unit name and its associated editor instance.
      */
     private class EditorTab extends JPanel {
-        private final JLabel changesIndicator;
         private final MegaMekLabMainUI editor;
-
-        public void markChanged(boolean changed) {
-            changesIndicator.setText(changed ? "*" : "");
-        }
 
         @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public EditorTab(String name, MegaMekLabMainUI mainUI) {
             JLabel unitName = new JLabel(name);
-            changesIndicator = new JLabel();
             editor = mainUI;
 
             setOpaque(false);
@@ -516,7 +514,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             closeButton.setBorder(BorderFactory.createEmptyBorder());
             closeButton.setToolTipText("Shift-click to skip the save confirmation dialog");
             add(unitName);
-            add(changesIndicator);
             add(closeButton);
             closeButton.addMouseListener(new MouseAdapter() {
                 @Override
