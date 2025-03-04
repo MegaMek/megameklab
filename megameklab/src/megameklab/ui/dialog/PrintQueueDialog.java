@@ -92,7 +92,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul,
             String mulFileName) {
-        super(parent, true, "PrintQueueDialog", "PrintQueueDialog.windowName.text");
+        super(parent, true, "PrintQueueDialog",
+            printToPdf ? "PrintQueueDialog.windowNameExport.text" : "PrintQueueDialog.windowNamePrint.text");
         this.parent = parent;
         this.printToPdf = printToPdf;
         this.fromMul = fromMul;
@@ -204,8 +205,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     @Override
     protected JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        var printButton = new MMButton("printButton", resources, "PrintQueueDialog.Print.text",
-                "PrintQueueDialog.Print.toolTipText", this::okButtonActionPerformed);
+        var printButton = new MMButton("printButton", resources,
+            printToPdf ? "PrintQueueDialog.Export.text" : "PrintQueueDialog.Print.text",
+            printToPdf ? "PrintQueueDialog.Export.toolTipText" : "PrintQueueDialog.Print.toolTipText",
+            this::okButtonActionPerformed);
         printButton.setMnemonic(KeyEvent.VK_P);
         panel.add(printButton);
         panel.add(new MMButton("cancelButton", resources, "PrintQueueDialog.Cancel.text",

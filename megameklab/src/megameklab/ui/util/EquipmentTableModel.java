@@ -230,6 +230,10 @@ public class EquipmentTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    // The DecimalFormat constructor is *incredibly* slow. We want to call it as little as we possibly can.
+    private static final DecimalFormat defaultDecimalFormatter = new DecimalFormat();
+    private static final DecimalFormat hhwAmmoWeightFormatter = new DecimalFormat("#.## kg");
+
     @Override
     public Object getValueAt(int row, int col) {
         EquipmentType type;
@@ -250,7 +254,6 @@ public class EquipmentTableModel extends AbstractTableModel {
         if (type instanceof MiscType) {
             mtype = (MiscType) type;
         }
-        DecimalFormat formatter = new DecimalFormat();
 
         if (col == COL_NAME) {
             return type.getSortingName();
@@ -383,9 +386,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
                 return String.format("%.0f kg", type.getTonnage(entity) * 1000);
             } else if (entity.isHandheldWeapon() && type instanceof AmmoType at) {
-                return new DecimalFormat("#.## kg").format(at.getKgPerShot());
+                return hhwAmmoWeightFormatter.format(at.getKgPerShot());
             } else {
-                return formatter.format(weight);
+                return defaultDecimalFormatter.format(weight);
             }
         } else if (col == COL_CRIT) {
             if (type.isVariableCriticals()
@@ -406,7 +409,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             if (type.isVariableCost()) {
                 return "variable";
             }
-            return formatter.format(type
+            return defaultDecimalFormatter.format(type
                     .getCost(entity, false, Entity.LOC_NONE));
         } else if (col == COL_BV) {
             if (type.isVariableBV()) {

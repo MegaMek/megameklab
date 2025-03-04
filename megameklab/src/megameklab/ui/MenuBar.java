@@ -453,6 +453,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miExportCurrentUnitToPDF.setEnabled(isUnitGui());
         pdfUnitExportMenu.add(miExportCurrentUnitToPDF);
 
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            final JMenuItem miExportAllUnitsToPDF = new JMenuItem(resources.getString("AllUnits.text"));
+            miExportAllUnitsToPDF.setName("miExportAllUnitsToPDF");
+            miExportAllUnitsToPDF.setMnemonic(KeyEvent.VK_A);
+            miExportAllUnitsToPDF.addActionListener(evt ->
+                new PrintQueueDialog(tabbedUI, true, tabbedUI.getAllEntities(), false, "").setVisible(true));
+            pdfUnitExportMenu.add(miExportAllUnitsToPDF);
+        }
+
         final JMenuItem miExportUnitFromCacheToPDF = new JMenuItem(resources.getString("FromCache.text"));
         miExportUnitFromCacheToPDF.setName("miExportUnitFromCacheToPDF");
         miExportUnitFromCacheToPDF.setMnemonic(KeyEvent.VK_C);
@@ -586,6 +595,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         });
         miPrintCurrentUnit.setEnabled(isUnitGui());
         printMenu.add(miPrintCurrentUnit);
+
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            final JMenuItem miPrintAllUnits = new JMenuItem(resources.getString("AllUnits.text"));
+            miPrintAllUnits.setName("miPrintAllUnits");
+            miPrintAllUnits.setMnemonic(KeyEvent.VK_A);
+            miPrintAllUnits.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+            miPrintAllUnits.addActionListener(evt ->
+                new PrintQueueDialog(tabbedUI, false, tabbedUI.getAllEntities(), false, "").setVisible(true));
+            printMenu.add(miPrintAllUnits);
+        }
 
         final JMenuItem miPrintUnitFromCache = new JMenuItem(resources.getString("FromCache.text"));
         miPrintUnitFromCache.setName("miPrintUnitFromCache");
