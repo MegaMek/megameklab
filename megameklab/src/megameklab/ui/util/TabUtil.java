@@ -29,8 +29,10 @@ import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.MenuBarOwner;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
+import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.commons.io.FileUtils;
 
@@ -254,8 +256,6 @@ public class TabUtil {
     }
 
     public static void loadMany(List<Entity> entities, List<String> fileNames, MenuBarOwner owner) {
-        assert entities.size() == fileNames.size();
-
         if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
             ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
             SwingUtilities.invokeLater(() -> insertTabs(0, entities, fileNames, tabbedUI, progress));
@@ -270,7 +270,19 @@ public class TabUtil {
     }
 
     private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI, ProgressMonitor progress) {
-        tabbedUI.addUnit(entities.get(i), fileNames.get(i));
+        var newUnit = entities.get(i);
+        try {
+            tabbedUI.addUnit(newUnit, fileNames.get(i));
+            String validationResult = UnitUtil.validateUnit(newUnit);
+            if (!validationResult.isBlank()) {
+                PopupMessages.showUnitInvalidWarning(tabbedUI.getFrame(), validationResult);
+            }
+
+            CConfig.setMostRecentFile(fileNames.get(i));
+        } catch (Exception e) {
+            logger.errorDialog(e, "Failed to load the unit %s.", "Entity load error.", newUnit.getDisplayName());
+        }
+
         progress.setProgress(i + 1);
         progress.setNote("Loaded %d / %d".formatted(i + 1, entities.size()));
         if (progress.isCanceled() || i + 1 == entities.size()) {

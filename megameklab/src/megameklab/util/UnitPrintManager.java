@@ -15,7 +15,20 @@
  */
 package megameklab.util;
 
-import java.awt.Frame;
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.*;
+import megamek.common.options.GameOptions;
+import megamek.logging.MMLogger;
+import megameklab.printing.*;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.dialog.PrintQueueDialog;
+import org.apache.commons.io.FilenameUtils;
+
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.DialogTypeSelection;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -25,22 +38,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.stream.Collectors;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.DialogTypeSelection;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.*;
-import megamek.common.options.GameOptions;
-import megamek.logging.MMLogger;
-import megameklab.printing.*;
-import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.ui.dialog.PrintQueueDialog;
-import org.apache.commons.io.FilenameUtils;
 
 import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
 import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
@@ -320,7 +317,7 @@ public class UnitPrintManager {
     public static void printSelectedUnit(JFrame parent, boolean pdf) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog, false);
 
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();

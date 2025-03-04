@@ -23,19 +23,19 @@ import megamek.client.ui.swing.widget.SkinXMLHandler;
 import megamek.client.ui.swing.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
-import megamek.common.MekSummary;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
+import megameklab.ui.util.TabUtil;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
-import megameklab.util.UnitUtil;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -241,6 +241,26 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         this.setTransferHandler(new MMLFileDropTransferHandler(this));
     }
 
+    private static String processFileName(File file, Entity newUnit) {
+        String fileName = file.toString();
+        if (fileName.toLowerCase().endsWith(".zip")) {
+            fileName = file.getAbsolutePath();
+            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
+            fileName = fileName + MegaMekLabFileSaver.createUnitFilename(newUnit);
+        }
+        return fileName;
+    }
+
+    private static void addUnits(MegaMekLabUnitSelectorDialog viewer, MenuBarOwner owner) {
+        var entities = viewer.getChosenEntities();
+        var mekSummaries = viewer.getSelectedMekSummaries();
+        var fileNames = new ArrayList<String>();
+        for (int i = 0; i < entities.size(); i++) {
+            fileNames.add(processFileName(mekSummaries.get(i).getSourceFile(), entities.get(i)));
+        }
+        TabUtil.loadMany(entities, fileNames, owner);
+    }
+
     /**
      * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen
      * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept and updated
@@ -253,47 +273,18 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame.getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog);
-        Entity newUnit = viewer.getChosenEntity();
-        MekSummary mekSummary = viewer.getSelectedMekSummary();
-        viewer.dispose();
-        if ((mekSummary == null) || (newUnit == null)) {
-            return;
-        }
-
-        String fileName = viewer.getSelectedMekSummary().getSourceFile().toString();
-        if (fileName.toLowerCase().endsWith(".zip")) {
-            fileName = viewer.getSelectedMekSummary().getSourceFile().getAbsolutePath();
-            fileName = fileName.substring(0, fileName.lastIndexOf(File.separatorChar) + 1);
-            fileName = fileName + MegaMekLabFileSaver.createUnitFilename(newUnit);
-        }
-
-        if (!previousFrame.safetyPrompt()) {
-            return;
-        }
-
-        String validationResult = UnitUtil.validateUnit(newUnit);
-        if (!validationResult.isBlank()) {
-            PopupMessages.showUnitInvalidWarning(previousFrame.getFrame(), validationResult);
-        }
-
-        CConfig.setMostRecentFile(fileName);
-        if (previousFrame instanceof MegaMekLabTabbedUI tabbedUi) {
-            UnitUtil.updateLoadedUnit(newUnit);
-            tabbedUi.addUnit(newUnit, fileName);
-        } else if (!(previousFrame instanceof MegaMekLabMainUI)
-                || (newUnit.getEntityType() != previousFrame.getEntity().getEntityType())) {
-            previousFrame.getFrame().setVisible(false);
-            previousFrame.getFrame().dispose();
-            UiLoader.loadUi(newUnit, fileName);
+        MegaMekLabUnitSelectorDialog viewer;
+        if (previousFrame instanceof MegaMekLabTabbedUI tabbedUI) {
+            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, dialog -> addUnits(dialog, tabbedUI));
         } else {
-            UnitUtil.updateLoadedUnit(newUnit);
-            previousFrame.refreshMenuBar();
-            MegaMekLabMainUI previousUI = (MegaMekLabMainUI) previousFrame;
-            previousUI.setEntity(newUnit, fileName);
-            previousUI.reloadTabs();
-            previousUI.refreshAll();
+            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, true);
         }
+        viewer.dispose();
+        if (CollectionUtils.isEmpty(viewer.getChosenEntities())) {
+            return;
+        }
+
+        addUnits(viewer, previousFrame);
     }
 
     @Override

@@ -84,6 +84,8 @@ dependencies {
         exclude group: 'xml-apis'
     }
 
+    implementation ('org.apache.commons:commons-collections4:4.5.0-M3')
+
     testImplementation 'org.mockito:mockito-core:5.15.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 

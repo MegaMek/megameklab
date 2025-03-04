@@ -18,14 +18,32 @@
  */
 package megameklab.ui.dialog;
 
-import static java.util.stream.Collectors.toList;
-import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
+import megamek.client.generator.RandomNameGenerator;
+import megamek.client.ui.Messages;
+import megamek.client.ui.baseComponents.MMButton;
+import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.common.BTObject;
+import megamek.common.Configuration;
+import megamek.common.Entity;
+import megamek.common.EntityListFile;
+import megamek.common.Game;
+import megamek.common.MekFileParser;
+import megamek.common.Player;
+import megamek.common.util.C3Util;
+import megamek.logging.MMLogger;
+import megameklab.printing.PageBreak;
+import megameklab.util.CConfig;
+import megameklab.util.UnitPrintManager;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.util.Strings;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -36,28 +54,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import megamek.client.ui.Messages;
-import megamek.common.*;
-import megameklab.util.CConfig;
-import org.apache.commons.io.FilenameUtils;
-
-import megamek.client.Client;
-import megamek.client.generator.RandomNameGenerator;
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.ClientGUI;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.common.util.C3Util;
-import megamek.logging.MMLogger;
-import megameklab.printing.PageBreak;
-import megameklab.util.UnitPrintManager;
-import org.apache.logging.log4j.util.Strings;
+import static java.util.stream.Collectors.toList;
+import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
 
 /**
  * Allows selecting multiple units and printing their record sheets.
@@ -332,28 +330,26 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog,
-                this::entitySelected);
-        Entity entity = viewer.getChosenEntity();
+                dialog -> entitiesSelected(dialog.getChosenEntities()));
+        var entities = viewer.getChosenEntities();
         viewer.dispose();
 
-        if (entity != null) {
-            units.add(entity);
-            refresh();
-        }
+        entitiesSelected(entities);
     }
 
     /**
      * This is a callback function given to the Unit Selector Dialog to pass on
-     * selected units
-     * without closing the Unit Selector.
+     * selected units without closing the Unit Selector.
      *
-     * @param entity the chosen Unit
+     * @param entities the chosen Units
      */
-    public void entitySelected(Entity entity) {
-        if (entity != null) {
-            units.add(entity);
-            refresh();
+    private void entitiesSelected(List<Entity> entities) {
+        for (var entity : entities) {
+            if (entity != null) {
+                units.add(entity);
+            }
         }
+        refresh();
     }
 
     private void selectFromFile() {
