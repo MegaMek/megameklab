@@ -37,9 +37,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,12 +75,15 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // This is a matter of preference, I could be convinced to switch this.
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
+        // The "New Tab" button *always* has to exist before doing anything else
+        // since every other method that cares about the "last tab" actually looks at the second to last open
+        addNewTabButton();
 
-        // Add the given editors as tabs, then add the New Tab Button.
+
         for (MegaMekLabMainUI e : entities) {
             addTab(e);
         }
-        addNewTabButton();
+
 
         tabs.addChangeListener(this);
 
@@ -132,48 +137,29 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * to the internal editor collection, refreshing it, setting the ownership,
      * and adding the tab to the tabs UI.
      *
-     * If there already exists a New Tab button, the new tab is placed before it.
-     *
      * @param editor The MegaMekLabMainUI instance to be added as a new tab.
      */
     private void addTab(MegaMekLabMainUI editor) {
-        MegaMekLabMainUI newTab = null;
-        NewTabButton newTabButton = null;
-        if (tabs.getTabCount() > 0 && tabs.getTabComponentAt(tabs.getTabCount() - 1) instanceof NewTabButton ntb) {
-            newTabButton = ntb;
-            newTab = editors.get(editors.size() - 1);
-            tabs.removeTabAt(tabs.getTabCount() - 1);
-            editors.remove(editors.size() - 1);
-        }
 
         editors.add(editor);
-        editor.refreshAll();
+        tabs.insertTab(editor.getEntity().getDisplayName(), null, editor.getContentPane(), null, tabs.getTabCount() - 1);
+        tabs.setSelectedIndex(tabs.getTabCount() - 2);
+        tabs.setTabComponentAt(tabs.getTabCount() - 2, new EditorTab(editor.getEntity().getDisplayName(), editor));
         editor.setOwner(this);
-        tabs.addTab(editor.getEntity().getDisplayName(), editor.getContentPane());
-        // See EditorTab later in this file for what's going on here.
-        tabs.setTabComponentAt(tabs.getTabCount() - 1, new EditorTab(editor.getEntity().getDisplayName(), editor));
-
-        if (newTab != null) {
-            tabs.addTab("+", newTab.getContentPane());
-            tabs.setTabComponentAt(tabs.getTabCount() - 1, newTabButton);
-            tabs.setEnabledAt(tabs.getTabCount() - 1, false);
-            editors.add(newTab);
-        }
+        editor.refreshAll();
     }
 
+
+    private static final Component blankTab = new JPanel();
     /**
-     * Similar to addTab above, this adds a blank Mek editor, but with the name "➕"
+     * Adds a blank Mek editor, but with the name "➕"
      * so that it looks like a button for creating a new tab.
      * <p>
      * The JTabbedPane doesn't come with any functionality for the user adding/removing tabs out of the box,
      * so this is how we fake it.
      */
     private void addNewTabButton() {
-        var editor = new BMMainUI(false, false);
-        editors.add(editor);
-        editor.refreshAll();
-        editor.setOwner(this);
-        tabs.addTab("➕", editor.getContentPane());
+        tabs.addTab("➕", blankTab);
         tabs.setTabComponentAt(tabs.getTabCount() - 1, new NewTabButton());
         tabs.setEnabledAt(tabs.getTabCount() - 1, false);
     }
@@ -223,18 +209,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public void addUnit(Entity entity, String filename) {
         UnitUtil.updateLoadedUnit(entity);
 
-        // Create a new "new tab" button, since we're about to replace the existing one
-        addNewTabButton();
-        // Select the old "new tab" button...
-        tabs.setSelectedIndex(tabs.getTabCount() - 2);
-        // ...and replace it, since newUnit is actually the Switch Unit Type operation.
-        newUnit(UnitUtil.getEditorTypeForEntity(entity), entity.isPrimitive(), entity.isIndustrialMek());
 
-        currentEditor().setEntity(entity, filename);
-        currentEditor().reloadTabs();
-        currentEditor().refreshAll();
-        // Set the tab name
-        tabs.setTabComponentAt(tabs.getSelectedIndex(), new EditorTab(entity.getDisplayName(), currentEditor()));
+        var ui = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(entity), entity.isPrimitive(), entity.isIndustrialMek());
+        addTab(ui);
+        ui.setOwner(this);
+        ui.setEntity(entity, filename);
+        ui.reloadTabs();
+        ui.refreshAll();
+        refreshMenuBar();
     }
 
     private boolean exitPrompt() {
@@ -265,7 +247,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         if (CConfig.getStartUpType() == MMLStartUp.RESTORE_TABS) {
             try {
-                TabUtil.saveTabState(editors.stream().limit(editors.size() - 1).toList());
+                TabUtil.saveTabState(editors.stream().limit(editors.size()).toList());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -284,14 +266,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     public void newTab() {
-        tabs.setEnabledAt(tabs.getTabCount() - 1, true);
-        tabs.setSelectedIndex(tabs.getTabCount() - 1);
-        tabs.setTabComponentAt(
-            tabs.getTabCount() - 1,
-            new EditorTab(currentEditor().getEntity().getDisplayName(), currentEditor())
-        );
-
-        addNewTabButton();
+        addTab(new BMMainUI(false, false));
+        refreshMenuBar();
     }
 
     /**
@@ -311,7 +287,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         var editor = editors.get(position);
 
-        tabs.remove(editor.getContentPane());
+        tabs.remove(position);
         if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
             tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
         }
@@ -326,9 +302,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         var editor = closedEditors.pop();
         if (editor != null) {
             addTab(editor);
-            tabs.setSelectedIndex(tabs.getTabCount() - 2);
             refreshMenuBar();
         }
+        tabs.revalidate();
+        tabs.repaint();
     }
 
     public boolean hasClosedTabs() {
@@ -342,6 +319,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public Entity getEntity() {
+        if (editors.isEmpty()) {
+            return null;
+        }
         return currentEditor().getEntity();
     }
 
@@ -357,7 +337,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public void refreshMenuBar() {
-        menuBar.refreshMenuBar();
+        if (menuBar != null && tabs.getSelectedIndex() < editors.size()) {
+            menuBar.refreshMenuBar();
+        }
     }
 
     @Override
@@ -367,9 +349,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == tabs) {
+        if (e.getSource() == tabs && !editors.isEmpty()) {
             refreshMenuBar();
         }
+    }
+
+    public List<Entity> getAllEntities() {
+        return editors.stream().map(MegaMekLabMainUI::getEntity).toList();
     }
 
 
@@ -465,8 +451,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         private JMenuItem newUnitItem(String name, long entityType, boolean primitive) {
             var item = new JMenuItem(name);
             item.addActionListener(e -> {
-                newTab();
-                newUnit(entityType, primitive);
+                var newUi = UiLoader.getUI(entityType, primitive, false);
+                newUi.setOwner(MegaMekLabTabbedUI.this);
+                addTab(newUi);
             });
             return item;
         }
@@ -493,17 +480,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * This class extends JPanel and is initialized with a unit name and its associated editor instance.
      */
     private class EditorTab extends JPanel {
-        private final JLabel changesIndicator;
         private final MegaMekLabMainUI editor;
-
-        public void markChanged(boolean changed) {
-            changesIndicator.setText(changed ? "*" : "");
-        }
 
         @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public EditorTab(String name, MegaMekLabMainUI mainUI) {
             JLabel unitName = new JLabel(name);
-            changesIndicator = new JLabel();
             editor = mainUI;
 
             setOpaque(false);
@@ -516,7 +497,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             closeButton.setBorder(BorderFactory.createEmptyBorder());
             closeButton.setToolTipText("Shift-click to skip the save confirmation dialog");
             add(unitName);
-            add(changesIndicator);
             add(closeButton);
             closeButton.addMouseListener(new MouseAdapter() {
                 @Override
