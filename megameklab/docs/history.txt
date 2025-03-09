@@ -20,6 +20,7 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1749: Allow loading multiple unit files by drag-and-drop #1749
 + Fix #1750: Rename Size/Shots to Shots for HHW
 + PR #1754: Print all open units
++ PR #1755: Load multiple units from cache
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
