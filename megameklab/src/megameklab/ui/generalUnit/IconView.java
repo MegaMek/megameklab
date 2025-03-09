@@ -18,18 +18,6 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-
 import megamek.client.ui.panels.EntityImagePanel;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
@@ -42,6 +30,13 @@ import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
 
 /**
  * This view displays the icon that the unit will use in MM and MHQ and allows
@@ -155,7 +150,7 @@ public class IconView extends BuildView {
     private void chooseIconFromUnitCache() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog, false);
 
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {

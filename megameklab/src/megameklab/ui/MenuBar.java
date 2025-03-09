@@ -14,27 +14,6 @@
  */
 package megameklab.ui;
 
-import java.awt.Component;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.html.HTMLEditorKit;
-
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
@@ -55,6 +34,24 @@ import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLEditorKit;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.ResourceBundle;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
@@ -919,7 +916,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitValidationFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog, false);
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {
             UnitUtil.showValidation(chosenEntity, owner.getFrame());
@@ -930,7 +927,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog, false);
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {
             new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
@@ -941,7 +938,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame());
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog, false);
 
         Entity chosenEntity = viewer.getChosenEntity();
         if (chosenEntity != null) {
