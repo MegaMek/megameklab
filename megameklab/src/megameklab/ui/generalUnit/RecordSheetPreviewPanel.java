@@ -307,7 +307,26 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private void resetView() {
         calculateFitToHeightZoom();
-        panOffset.setLocation(0, 0);
+
+        if (cachedImage != null) {
+            // Calculate the scaled size of the image at current zoom
+            double scaledWidth = cachedImage.getWidth() * (zoomFactor / MAX_ZOOM);
+            double scaledHeight = cachedImage.getHeight() * (zoomFactor / MAX_ZOOM);
+
+            // Calculate offsets to center the image
+            double xOffset = (getWidth() - scaledWidth) / 2;
+            double yOffset = (getHeight() - scaledHeight) / 2;
+
+            // Set pan offset to center the image
+            // Use max(0, value) to avoid negative offsets if image is bigger than panel
+            panOffset.setLocation(
+                    Math.max(0, xOffset),
+                    Math.max(0, yOffset));
+        } else {
+            // Default to 0,0 if no image
+            panOffset.setLocation(0, 0);
+        }
+
         repaint();
     }
 
