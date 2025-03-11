@@ -64,6 +64,7 @@
  import megameklab.util.UnitPrintManager;
  
  /**
+  * @author pavelbraginskiy
   * Simply fills itself with the record sheet for the given unit.
   */
  public class RecordSheetPreviewPanel extends JPanel {
