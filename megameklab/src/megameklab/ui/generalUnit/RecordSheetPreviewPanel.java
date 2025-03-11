@@ -453,52 +453,25 @@ public class RecordSheetPreviewPanel extends JPanel {
                 // Store original transform for restoration later
                 AffineTransform originalTransform = g.getTransform();
 
-                // Create transform that includes zoom and pan
-                AffineTransform at = new AffineTransform();
-                at.translate(panOffset.getX(), panOffset.getY());
-                at.scale(zoomFactor / MAX_ZOOM, zoomFactor / MAX_ZOOM);
+                double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
+                double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
+                double srcWidth = cachedImage.getWidth() - srcX;
+                double srcHeight = cachedImage.getHeight() - srcY;
 
-                // Calculate visible region for clipping
-                Rectangle visibleRect = getVisibleRect();
-                Rectangle2D imageRect = new Rectangle2D.Double(
-                        panOffset.getX(),
-                        panOffset.getY(),
-                        cachedImage.getWidth() * (zoomFactor / MAX_ZOOM),
-                        cachedImage.getHeight() * (zoomFactor / MAX_ZOOM));
+                // Destination region (where to draw in the panel)
+                double destX = Math.max(0, panOffset.getX());
+                double destY = Math.max(0, panOffset.getY());
+                double destWidth = srcWidth * (zoomFactor / MAX_ZOOM);
+                double destHeight = srcHeight * (zoomFactor / MAX_ZOOM);
 
-                // Only draw if the image intersects the visible area
-                if (visibleRect.intersects(new Rectangle(
-                        (int) imageRect.getX(),
-                        (int) imageRect.getY(),
-                        (int) imageRect.getWidth(),
-                        (int) imageRect.getHeight()))) {
-
-                    // Calculate source region (what part of the image to draw)
-                    double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
-                    double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
-                    double srcWidth = Math.min(
-                            cachedImage.getWidth(),
-                            visibleRect.getWidth() * (MAX_ZOOM / zoomFactor) + srcX);
-                    double srcHeight = Math.min(
-                            cachedImage.getHeight(),
-                            visibleRect.getHeight() * (MAX_ZOOM / zoomFactor) + srcY);
-
-                    // Destination region (where to draw in the panel)
-                    double destX = Math.max(0, panOffset.getX());
-                    double destY = Math.max(0, panOffset.getY());
-                    double destWidth = srcWidth * (zoomFactor / MAX_ZOOM);
-                    double destHeight = srcHeight * (zoomFactor / MAX_ZOOM);
-
-                    // Draw only the visible part of the image
-
-                    g.drawImage(
-                            cachedImage,
-                            (int) destX, (int) destY,
-                            (int) (destX + destWidth), (int) (destY + destHeight),
-                            (int) srcX, (int) srcY,
-                            (int) (srcX + srcWidth), (int) (srcY + srcHeight),
-                            null);
-                }
+                // Draw the image
+                g.drawImage(
+                        cachedImage,
+                        (int) destX, (int) destY,
+                        (int) (destX + destWidth), (int) (destY + destHeight),
+                        (int) srcX, (int) srcY,
+                        (int) (srcX + srcWidth), (int) (srcY + srcHeight),
+                        null);
 
                 // Restore original transform
                 g.setTransform(originalTransform);

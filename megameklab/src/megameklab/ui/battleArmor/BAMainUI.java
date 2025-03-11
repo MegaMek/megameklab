@@ -103,13 +103,12 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
-        statusbar.refresh();
-        structureTab.refresh();
-        refreshEquipment();
+        refreshStatus();
+        refreshStructure();
+        refreshEquipmentTable();
         refreshBuild();
         refreshPreview();
         refreshHeader();
-        floatingEquipmentDatabase.refresh();
     }
 
     @Override
