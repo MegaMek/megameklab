@@ -30,9 +30,6 @@ import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Window;
-
-import org.apache.logging.log4j.core.config.builder.api.Component;
 
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;

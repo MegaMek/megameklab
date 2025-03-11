@@ -36,8 +36,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.IOException;
@@ -51,7 +49,6 @@ import javax.swing.JPopupMenu;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.fop.svg.GraphicsConfiguration;
 
 import megamek.common.Entity;
 import megameklab.printing.PaperSize;
