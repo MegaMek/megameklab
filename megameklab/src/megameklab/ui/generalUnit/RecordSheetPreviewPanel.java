@@ -40,6 +40,7 @@ import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JMenuItem;
@@ -100,7 +101,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean isPanning = false;
     private boolean isHighQuality = true; // Track rendering quality mode
 
-    // High-resolution cached image for optimized rendering
+    // cached image for optimized rendering
     private BufferedImage cachedImage;
 
     public RecordSheetPreviewPanel() {
@@ -127,7 +128,7 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Creates a complete image of the record sheet and copies it to the clipboard
      */
     private void copyRecordSheetToClipboard() {
-        if (entity == null) {
+        if (entities == null || entities.isEmpty()) {
             return;
         }
 
@@ -135,9 +136,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
         int imgWidth = (int) Math.ceil(pz.pxWidth * CLIPBOARD_ZOOM_SCALE);
+        int fullWidth = imgWidth * entities.size();
         int imgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
 
-        BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(fullWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = GraphicsUtil.createGraphics(img);
 
         // Set high quality rendering
@@ -156,41 +158,41 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         // White background
         g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, imgWidth, imgHeight);
+        g.clearRect(0, 0, fullWidth, imgHeight);
 
         // Render the record sheet directly without zoom/pan
-        PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
-                .stream().findFirst().orElse(null);
+        ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
 
-        if (sheet != null) {
-            PageFormat pf = new PageFormat();
-            if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
-                sheet.createDocument(0, pf, false);
-            } else {
-                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
-                sheet.createDocument(0, pf, true);
+        if (nodes != null && !nodes.isEmpty()) {
+            int k = 0;
+            for (GraphicsNode gn : nodes) {
+                if (gn == null) {
+                    continue;
+                }
+                // Scale to fit the clipboard image
+                var bounds = gn.getBounds();
+                var yscale = (imgHeight - 20) / bounds.getHeight();
+                var xscale = (imgWidth - 20) / bounds.getWidth();
+                var scale = Math.min(yscale, xscale);
+
+                // Calculate position for this sheet (side by side horizontally)
+                double xOffset = k * imgWidth;
+
+                // Center the sheet in the image
+                double centerX = (imgWidth - (bounds.getWidth() * scale)) / 2;
+                double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
+
+                // Apply transform for this sheet - scale and position
+                AffineTransform transform = new AffineTransform();
+                transform.translate(centerX+xOffset, centerY);
+                transform.scale(scale, scale);
+                gn.setTransform(transform);
+
+                // Draw to the clipboard image
+                gn.paint(g);
+                k++;
             }
 
-            GraphicsNode gn = sheet.build();
-
-            // Scale to fit the clipboard image
-            var bounds = gn.getBounds();
-            var yscale = (imgHeight - 20) / bounds.getHeight();
-            var xscale = (imgWidth - 20) / bounds.getWidth();
-            var scale = Math.min(yscale, xscale);
-
-            // Center the sheet in the image
-            double centerX = (imgWidth - (bounds.getWidth() * scale)) / 2;
-            double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
-
-            AffineTransform transform = new AffineTransform();
-            transform.translate(centerX, centerY);
-            transform.scale(scale, scale);
-            gn.setTransform(transform);
-
-            // Draw to the clipboard image
-            gn.paint(g);
         }
 
         g.dispose();
@@ -296,7 +298,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         isHighQuality = true;
         zoomFactor = getMinimumZoom();
         initialZoomFactor = zoomFactor;
-        renderHighResolutionImage();
+        renderCachedImage();
         if (cachedImage != null) {
 
             // Calculate offsets to center the image
@@ -316,15 +318,26 @@ public class RecordSheetPreviewPanel extends JPanel {
         repaint();
     }
 
-    private Entity entity;
-    private GraphicsNode gnSheet;
+    private ArrayList<GraphicsNode> gnSheets;
+    private ArrayList<Entity> entities = new ArrayList<>();
     private boolean needsViewReset = false;
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
-        // Reset view and invalidate cached image when entity changes
+    /**
+     * Sets multiple entities to be displayed side by side horizontally
+     * 
+     * @param entities List of entities to display
+     */
+    public void setEntities(ArrayList<Entity> entities) {
+        if (entities == null) {
+            this.entities.clear();
+        } else {
+            this.entities = entities;
+        }
+
+        // Reset view and invalidate cached image when entities change
+        gnSheets = null;
         cachedImage = null;
-        gnSheet = null;
+
         if (isVisible()) {
             // If visible, update the view immediately
             resetView();
@@ -335,15 +348,61 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
     }
 
-    private void renderHighResolutionImage() {
-        if (entity == null) {
+    /**
+     * Sets a single entity to display (clears any previous multi-entity display)
+     * 
+     * @param entity The entity to display
+     */
+    public void setEntity(Entity entity) {
+        if (this.entities == null) {
+            this.entities = new ArrayList<>();
+        }
+        this.entities.clear();
+        if (entity != null) {
+            this.entities.add(entity);
+        }
+        // Reset view and invalidate cached image when entity changes
+        gnSheets = null;
+        cachedImage = null;
+        if (isVisible()) {
+            // If visible, update the view immediately
+            resetView();
+            needsViewReset = false;
+        } else {
+            // If not visible, mark for update when panel becomes visible
+            needsViewReset = true;
+        }
+    }
+
+    private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
+        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(entities, true, options);
+        ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
+        PageFormat pf = new PageFormat();
+        for (PrintRecordSheet sheet : sheets) {
+            if (sheet instanceof PrintSmallUnitSheet) {
+                pf.setPaper(options.getPaperSize().createPaper());
+            } else {
+                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
+            }
+            sheet.createDocument(0, pf, false);
+            gnSheets.add(sheet.build());
+        }
+        return gnSheets;
+    }
+
+    private void renderCachedImage() {
+        // Check if we have any entity to render
+        if ((entities == null || entities.isEmpty())) {
             cachedImage = null;
             return;
         }
 
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
+
+        int sheetCount = entities.size();
         int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
+        int totalWidth = fullWidth * sheetCount;
         int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
 
         // Try to use hardware-accelerated image if possible
@@ -354,15 +413,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             java.awt.GraphicsConfiguration gc = gs.getDefaultConfiguration();
 
             // Create a compatible image (should work better with hardware)
-            cachedImage = gc.createCompatibleImage(fullWidth, fullHeight, java.awt.Transparency.OPAQUE);
+            cachedImage = gc.createCompatibleImage(totalWidth, fullHeight, java.awt.Transparency.OPAQUE);
         } catch (Exception e) {
             // Fallback to standard image if hardware acceleration fails
-            cachedImage = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
+            cachedImage = new BufferedImage(totalWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
         }
         Graphics2D g = GraphicsUtil.createGraphics(cachedImage);
         g.setComposite(java.awt.AlphaComposite.SrcOver);
 
-        // Set render quality for the high-res image
+        // Set render quality
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -379,42 +438,45 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         // White background
         g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, fullWidth, fullHeight);
+        g.clearRect(0, 0, totalWidth, fullHeight);
 
-        // Render the record sheet to the high-res image
-        if (gnSheet == null) {
-            PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
-            .stream().findFirst().orElse(null);
-            PageFormat pf = new PageFormat();
-            if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
-                sheet.createDocument(0, pf, false);
-            } else {
-                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
-                sheet.createDocument(0, pf, true);
-            }
-            gnSheet = sheet.build();
+        // if (entity != null) {
+        if (gnSheets == null || gnSheets.isEmpty()) {
+            gnSheets = getRecordSheetGraphicsNodes(entities, options);
         }
-        if (gnSheet != null) {
-            AffineTransform originalTransform = gnSheet.getTransform();
-            try {
-                var bounds = gnSheet.getBounds();
-                var yscale = (fullHeight - 20) / bounds.getHeight();
-                var xscale = (fullWidth - 20) / bounds.getWidth();
-                var scale = Math.min(yscale, xscale);
-    
-                double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
-                double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
-    
-                AffineTransform transform = new AffineTransform();
-                transform.translate(centerX, centerY);
-                transform.scale(scale, scale);
-                gnSheet.setTransform(transform);
-    
-                gnSheet.paint(g);
-            } finally {
-                if (originalTransform != null) {
-                    gnSheet.setTransform(originalTransform);
+        if (gnSheets != null && !gnSheets.isEmpty()) {
+            int k = 0;
+            for (int i = 0; i < gnSheets.size(); i++) {
+                GraphicsNode gnSheet = gnSheets.get(i);
+                if (gnSheet == null) {
+                    continue;
+                }
+                AffineTransform originalTransform = gnSheet.getTransform();
+                try {
+                    var bounds = gnSheet.getBounds();
+                    var yscale = (fullHeight - 20) / bounds.getHeight();
+                    var xscale = (fullWidth - 20) / bounds.getWidth();
+                    var scale = Math.min(yscale, xscale);
+                    // Calculate position for this sheet (side by side horizontally)
+                    double xOffset = k * (pz.pxWidth * zoomFactor);
+
+                    // Center the sheet in the image
+                    double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
+                    double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
+
+                    // Apply transform for this sheet - scale and position
+                    AffineTransform transform = new AffineTransform();
+                    transform.translate(centerX+xOffset, centerY);
+                    transform.scale(scale, scale);
+                    gnSheet.setTransform(transform);
+
+                    // Paint this sheet
+                    gnSheet.paint(g);
+                    k++;
+                } finally {
+                    if (originalTransform != null) {
+                        gnSheet.setTransform(originalTransform);
+                    }
                 }
             }
         }
@@ -444,10 +506,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, width, height);
 
-        if (entity != null) {
-            // Generate high-resolution image if needed
+        if (entities != null && !entities.isEmpty()) {
+            // Generate image if needed
             if (cachedImage == null) {
-                renderHighResolutionImage();
+                renderCachedImage();
             }
 
             if (cachedImage != null) {
@@ -492,6 +554,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     resetView();
                 }
             }
+
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
                 // Perform deferred view reset if needed

@@ -19,6 +19,7 @@
 package megameklab.ui.dialog;
 
 import megamek.client.ui.Messages;
+import megamek.client.ui.WrapLayout;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.client.ui.swing.tileset.EntityImage;
@@ -29,6 +30,7 @@ import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
+import megameklab.util.UnitPrintManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,6 +46,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private final boolean allowPickWithoutClose;
     private Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback;
     private RecordSheetPreviewPanel recordSheetPanel;
+    private JPanel recordSheetContainer;
+    private JButton printRecordSheetButton;
+    private JButton exportToPDFRecordSheetButton;
 
     // endregion Variable Declarations
 
@@ -51,9 +56,11 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      * Constructs a Unit Selector Dialog that only allows choosing with closing the
      * dialog.
      *
-     * @param parent The parent window of this dialog
-     * @param unitLoadingDialog A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
-     * @param multiselect Set this to {@code true} to allow multiple units to be selected at once.
+     * @param parent            The parent window of this dialog
+     * @param unitLoadingDialog A {@link UnitLoadingDialog} likely
+     *                          {@code new UnitLoadingDialog(parent)}.
+     * @param multiselect       Set this to {@code true} to allow multiple units to
+     *                          be selected at once.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect) {
         super(parent, unitLoadingDialog, multiselect);
@@ -64,14 +71,8 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
         }
         initialize();
+        setupRecordSheetTab();
         run();
-        // Get the EntityViewPane's tabbed pane
-        if (recordSheetPanel == null) {
-            // First time - create the record sheet panel and add it as a tab
-            recordSheetPanel = new RecordSheetPreviewPanel();
-            panePreview.addTab("Record Sheet", recordSheetPanel);
-        }
-        
         setVisible(true);
     }
 
@@ -81,8 +82,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      * entityPickCallback method will be called when units are selected in this way.
      * Multiselect is always enabled.
      *
-     * @param parent The parent window of this dialog
-     * @param unitLoadingDialog A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
+     * @param parent             The parent window of this dialog
+     * @param unitLoadingDialog  A {@link UnitLoadingDialog} likely
+     *                           {@code new UnitLoadingDialog(parent)}.
      * @param entityPickCallback This will be called when the user presses Select.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog,
@@ -105,15 +107,65 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escape, CLOSE_ACTION);
         rootPane.getInputMap(JComponent.WHEN_FOCUSED).put(escape, CLOSE_ACTION);
         rootPane.getActionMap().put(CLOSE_ACTION, closeAction);
+        setupRecordSheetTab();
         run();
-        // Get the EntityViewPane's tabbed pane
-        if (recordSheetPanel == null) {
-            // First time - create the record sheet panel and add it as a tab
-            recordSheetPanel = new RecordSheetPreviewPanel();
-            panePreview.addTab("Record Sheet", recordSheetPanel);
-        }
         setVisible(true);
-        
+
+    }
+
+    private void setupRecordSheetTab() {
+        if (recordSheetPanel == null) {
+            // Create the record sheet panel
+            recordSheetPanel = new RecordSheetPreviewPanel();
+
+            // Create a toolbar panel with print button
+            JPanel toolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 10));
+            toolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolbarPanel.getPreferredSize().height));
+
+            // Create a print button
+            printRecordSheetButton = new JButton("Print");
+            printRecordSheetButton.setEnabled(false);
+            printRecordSheetButton.addActionListener(e -> {
+                if (multiSelect) {
+                    ArrayList<Entity> entities = getSelectedEntities();
+                    if ((entities != null) && !entities.isEmpty()) {
+                        new PrintQueueDialog(frame, false, entities, false, "").setVisible(true);
+                    }
+                } else {
+                    Entity entity = getSelectedEntity();
+                    if (entity != null) {
+                        UnitPrintManager.printEntity(entity);
+                    }
+                }
+            });
+            toolbarPanel.add(printRecordSheetButton);
+
+            // Create an export to PDF button
+            exportToPDFRecordSheetButton = new JButton("Export to PDF");
+            exportToPDFRecordSheetButton.setEnabled(false);
+            exportToPDFRecordSheetButton.addActionListener(e -> {
+                if (multiSelect) {
+                    ArrayList<Entity> entities = getSelectedEntities();
+                    if ((entities != null) && !entities.isEmpty()) {
+                        new PrintQueueDialog(frame, true, entities, true, "").setVisible(true);
+                    }
+                } else {
+                    Entity entity = getSelectedEntity();
+                    if (entity != null) {
+                        UnitPrintManager.exportEntity(entity, frame);
+                    }
+                }
+            });
+            toolbarPanel.add(exportToPDFRecordSheetButton);
+
+            // Create a container panel for the record sheet and toolbar
+            recordSheetContainer = new JPanel(new BorderLayout());
+            recordSheetContainer.add(toolbarPanel, BorderLayout.NORTH);
+            recordSheetContainer.add(recordSheetPanel);
+
+            // Add the container to the preview tabs
+            panePreview.addTab("Record Sheet", recordSheetContainer);
+        }
     }
 
     // Only necessary to override the default close behavior, see constructor
@@ -197,7 +249,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected Entity refreshUnitView() {
         Entity selectedEntity = super.refreshUnitView();
-        
         // Update the record sheet with the selected entity
         if (selectedEntity != null) {
             // Update unit image first (existing code)
@@ -205,13 +256,19 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
-            
-            // Update the record sheet
-            recordSheetPanel.setEntity(selectedEntity);
+        }
+
+        ArrayList<Entity> selectedEntities = getSelectedEntities();
+        if (selectedEntities.size() > 0) {
+            recordSheetPanel.setEntities(selectedEntities);
+            printRecordSheetButton.setEnabled(true);
+            exportToPDFRecordSheetButton.setEnabled(true);
         } else {
             recordSheetPanel.setEntity(null);
+            printRecordSheetButton.setEnabled(false);
+            exportToPDFRecordSheetButton.setEnabled(false);
         }
-        
+
         return selectedEntity;
     }
 }
