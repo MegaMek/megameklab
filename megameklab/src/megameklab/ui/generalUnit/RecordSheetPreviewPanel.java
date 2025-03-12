@@ -87,12 +87,13 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
-    private final double MIN_ZOOM = 1.0;
+    private final double MIN_ZOOM = 1.2;
     private final double MAX_ZOOM = 4.0;
-    private final double INITIAL_ZOOM = MAX_ZOOM;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
-    private double zoomFactor = INITIAL_ZOOM;
+    private double minZoom = getMinimumZoom();
+    private double zoomFactor = minZoom;
+    private double initialZoomFactor = zoomFactor;
 
     private Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
@@ -116,13 +117,10 @@ public class RecordSheetPreviewPanel extends JPanel {
      * @return The minimum zoom factor
      */
     private double getMinimumZoom() {
-        if (cachedImage == null || getHeight() <= 0) {
-            return MIN_ZOOM;
-        }
-        double imageHeight = cachedImage.getHeight();
-        double availableHeight = getHeight();
-        double rawMinZoom = availableHeight / imageHeight * MAX_ZOOM;
-        return Math.max(MIN_ZOOM, rawMinZoom);
+        RecordSheetOptions options = new RecordSheetOptions();
+        PaperSize pz = options.getPaperSize();
+        double minZoom = getHeight() / (double) pz.pxHeight;
+        return Math.max(MIN_ZOOM, minZoom);
     }
 
     /**
@@ -230,7 +228,6 @@ public class RecordSheetPreviewPanel extends JPanel {
 
                 // Adjust zoom by scroll amount
                 zoomFactor -= e.getPreciseWheelRotation() * ZOOM_STEP;
-                double minZoom = getMinimumZoom();
                 zoomFactor = Math.max(minZoom, Math.min(MAX_ZOOM, zoomFactor));
 
                 if (oldZoom != zoomFactor) {
@@ -240,7 +237,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     panOffset.setLocation(
                             mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
                             mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
-
+                    cachedImage = null; // Invalidate cached image on zoom change
                     repaint();
                 }
             }
@@ -296,16 +293,15 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private void resetView() {
-        calculateFitToHeightZoom();
-
+        isHighQuality = true;
+        zoomFactor = getMinimumZoom();
+        initialZoomFactor = zoomFactor;
+        renderHighResolutionImage();
         if (cachedImage != null) {
-            // Calculate the scaled size of the image at current zoom
-            double scaledWidth = cachedImage.getWidth() * (zoomFactor / MAX_ZOOM);
-            double scaledHeight = cachedImage.getHeight() * (zoomFactor / MAX_ZOOM);
 
             // Calculate offsets to center the image
-            double xOffset = (getWidth() - scaledWidth) / 2;
-            double yOffset = (getHeight() - scaledHeight) / 2;
+            double xOffset = (getWidth() - cachedImage.getWidth()) / 2;
+            double yOffset = (getHeight() - cachedImage.getHeight()) / 2;
 
             // Set pan offset to center the image
             // Use max(0, value) to avoid negative offsets if image is bigger than panel
@@ -320,24 +316,14 @@ public class RecordSheetPreviewPanel extends JPanel {
         repaint();
     }
 
-    private void calculateFitToHeightZoom() {
-        if (cachedImage == null || getHeight() <= 0) {
-            zoomFactor = INITIAL_ZOOM; // Default if we can't calculate
-            return;
-        }
-        double minZoom = getMinimumZoom();
-        zoomFactor = Math.min(MAX_ZOOM, minZoom);
-    }
-
     private Entity entity;
+    private GraphicsNode gnSheet;
 
     public void setEntity(Entity entity) {
         this.entity = entity;
         // Reset view and invalidate cached image when entity changes
         cachedImage = null;
-        if (entity != null) {
-            renderHighResolutionImage();
-        }
+        gnSheet = null;
         resetView();
     }
 
@@ -349,8 +335,8 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
-        int fullWidth = (int) Math.ceil(pz.pxWidth * MAX_ZOOM);
-        int fullHeight = (int) Math.ceil(pz.pxHeight * MAX_ZOOM);
+        int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
+        int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
 
         // Try to use hardware-accelerated image if possible
         try {
@@ -388,10 +374,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.clearRect(0, 0, fullWidth, fullHeight);
 
         // Render the record sheet to the high-res image
-        PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
-                .stream().findFirst().orElse(null);
-
-        if (sheet != null) {
+        if (gnSheet == null) {
+            PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
+            .stream().findFirst().orElse(null);
             PageFormat pf = new PageFormat();
             if (sheet instanceof PrintSmallUnitSheet) {
                 pf.setPaper(options.getPaperSize().createPaper());
@@ -400,26 +385,30 @@ public class RecordSheetPreviewPanel extends JPanel {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
                 sheet.createDocument(0, pf, true);
             }
-
-            GraphicsNode gn = sheet.build();
-
-            // Scale to fit the high-resolution image
-            var bounds = gn.getBounds();
-            var yscale = (fullHeight - 20) / bounds.getHeight();
-            var xscale = (fullWidth - 20) / bounds.getWidth();
-            var scale = Math.min(yscale, xscale);
-
-            // Center the sheet in the image
-            double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
-            double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
-
-            AffineTransform transform = new AffineTransform();
-            transform.translate(centerX, centerY);
-            transform.scale(scale, scale);
-            gn.setTransform(transform);
-
-            // Draw to the high-res image
-            gn.paint(g);
+            gnSheet = sheet.build();
+        }
+        if (gnSheet != null) {
+            AffineTransform originalTransform = gnSheet.getTransform();
+            try {
+                var bounds = gnSheet.getBounds();
+                var yscale = (fullHeight - 20) / bounds.getHeight();
+                var xscale = (fullWidth - 20) / bounds.getWidth();
+                var scale = Math.min(yscale, xscale);
+    
+                double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
+                double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
+    
+                AffineTransform transform = new AffineTransform();
+                transform.translate(centerX, centerY);
+                transform.scale(scale, scale);
+                gnSheet.setTransform(transform);
+    
+                gnSheet.paint(g);
+            } finally {
+                if (originalTransform != null) {
+                    gnSheet.setTransform(originalTransform);
+                }
+            }
         }
 
         g.dispose();
@@ -458,13 +447,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                 AffineTransform originalTransform = g.getTransform();
 
                 // Calculate source region (in image coordinates)
-                double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
-                double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
+                double srcX = Math.max(0, -panOffset.getX());
+                double srcY = Math.max(0, -panOffset.getY());
 
                 // Create a transform that handles positioning and scaling in one step
                 AffineTransform at = new AffineTransform(originalTransform);
                 at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
-                at.scale(zoomFactor / MAX_ZOOM, zoomFactor / MAX_ZOOM);
                 g.setTransform(at);
 
                 // Draw the image
@@ -489,10 +477,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
+                minZoom = getMinimumZoom();
                 // Only auto-fit if we haven't manually zoomed or panned yet
                 // (This prevents resetting user's view when window is resized)
-                if (cachedImage != null && panOffset.getX() == 0.0 && panOffset.getY() == 0.0
-                        && zoomFactor == INITIAL_ZOOM) {
+                if (cachedImage != null && zoomFactor == initialZoomFactor) {
                     resetView();
                 }
             }
