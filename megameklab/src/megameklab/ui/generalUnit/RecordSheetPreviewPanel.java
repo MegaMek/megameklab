@@ -117,16 +117,13 @@ public class RecordSheetPreviewPanel extends JPanel {
      */
     private double getMinimumZoom() {
         if (cachedImage == null || getHeight() <= 0) {
-            return INITIAL_ZOOM; // Default if we can't calculate
+            return MIN_ZOOM;
         }
-
-        // Calculate the zoom factor needed to fit the height of the component
         double imageHeight = cachedImage.getHeight();
         double availableHeight = getHeight();
-
-        // Calculate how much we need to scale the high-res image to fit the height
-        double minZoom = availableHeight / imageHeight * MAX_ZOOM;
-        return Math.max(MIN_ZOOM, minZoom);
+        double rawMinZoom = availableHeight / imageHeight * MAX_ZOOM;
+        double quantizedZoom = Math.ceil(rawMinZoom / ZOOM_STEP) * ZOOM_STEP;
+        return Math.max(MIN_ZOOM, quantizedZoom);
     }
 
     /**
@@ -473,7 +470,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
                 // Draw the image
                 g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
-                
+
                 // Restore original transform
                 g.setTransform(originalTransform);
             }
