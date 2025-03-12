@@ -87,9 +87,9 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
-    private final double INITIAL_ZOOM = 1.0;
-    private final double MIN_ZOOM = 1.0;
+    private final double MIN_ZOOM = 1.4;
     private final double MAX_ZOOM = 4.0;
+    private final double INITIAL_ZOOM = MAX_ZOOM;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
     private double zoomFactor = INITIAL_ZOOM;
@@ -101,18 +101,12 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // High-resolution cached image for optimized rendering
     private BufferedImage cachedImage;
-    private boolean needsRedraw = true;
 
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
         // Enable better rendering
         setDoubleBuffered(true);
-        // Request optimal GPU acceleration
-        System.setProperty("sun.java2d.opengl", "true");
-        System.setProperty("sun.java2d.d3d", "true");
-        System.setProperty("sun.java2d.ddforcevram", "true");
-        System.setProperty("sun.java2d.managedimages", "true");
     }
 
     /**
@@ -266,7 +260,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     isPanning = true;
                     // Switch to low quality during panning for better performance
                     isHighQuality = false;
-                    repaint();
+                    // repaint();
                 }
             }
 
@@ -344,7 +338,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     public void setEntity(Entity entity) {
         this.entity = entity;
         // Reset view and invalidate cached image when entity changes
-        needsRedraw = true;
         cachedImage = null;
         if (entity != null) {
             renderHighResolutionImage();
@@ -434,7 +427,6 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
 
         g.dispose();
-        needsRedraw = false;
     }
 
     private void paintComponent(Graphics2D g, int width, int height) {
@@ -459,9 +451,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, width, height);
 
-        if (entity != null && cachedImage != null) {
+        if (entity != null) {
             // Generate high-resolution image if needed
-            if (needsRedraw) {
+            if (cachedImage == null) {
                 renderHighResolutionImage();
             }
 
@@ -469,26 +461,43 @@ public class RecordSheetPreviewPanel extends JPanel {
                 // Store original transform for restoration later
                 AffineTransform originalTransform = g.getTransform();
 
-                double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
-                double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
-                double srcWidth = cachedImage.getWidth() - srcX;
-                double srcHeight = cachedImage.getHeight() - srcY;
+                if (isHighQuality) {
+                    // HIGH QUALITY APPROACH: Use transformations with rendering hints
+                    // Calculate source region (in image coordinates)
+                    double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
+                    double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
 
-                // Destination region (where to draw in the panel)
-                double destX = Math.max(0, panOffset.getX());
-                double destY = Math.max(0, panOffset.getY());
-                double destWidth = srcWidth * (zoomFactor / MAX_ZOOM);
-                double destHeight = srcHeight * (zoomFactor / MAX_ZOOM);
+                    // Create a transform that handles positioning and scaling in one step
+                    AffineTransform at = new AffineTransform(originalTransform);
+                    at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
+                    at.scale(zoomFactor / MAX_ZOOM, zoomFactor / MAX_ZOOM);
+                    g.setTransform(at);
 
-                // Draw the image
-                g.drawImage(
-                        cachedImage,
-                        (int) destX, (int) destY,
-                        (int) (destX + destWidth), (int) (destY + destHeight),
-                        (int) srcX, (int) srcY,
-                        (int) (srcX + srcWidth), (int) (srcY + srcHeight),
-                        null);
+                    // Draw the image
+                    g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
+                } else {
+                    // LOW QUALITY APPROACH: Draw the image directly with no transformations
+                    double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
+                    double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
+                    double srcWidth = cachedImage.getWidth() - srcX;
+                    double srcHeight = cachedImage.getHeight() - srcY;
 
+                    // Destination region (where to draw in the panel)
+                    double destX = Math.max(0, panOffset.getX());
+                    double destY = Math.max(0, panOffset.getY());
+                    double destWidth = srcWidth * (zoomFactor / MAX_ZOOM);
+                    double destHeight = srcHeight * (zoomFactor / MAX_ZOOM);
+
+                    // Draw the image
+                    g.drawImage(
+                            cachedImage,
+                            (int) destX, (int) destY,
+                            (int) (destX + destWidth), (int) (destY + destHeight),
+                            (int) srcX, (int) srcY,
+                            (int) (srcX + srcWidth), (int) (srcY + srcHeight),
+                            null);
+
+                }
                 // Restore original transform
                 g.setTransform(originalTransform);
             }
