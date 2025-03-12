@@ -318,13 +318,21 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private Entity entity;
     private GraphicsNode gnSheet;
+    private boolean needsViewReset = false;
 
     public void setEntity(Entity entity) {
         this.entity = entity;
         // Reset view and invalidate cached image when entity changes
         cachedImage = null;
         gnSheet = null;
-        resetView();
+        if (isVisible()) {
+            // If visible, update the view immediately
+            resetView();
+            needsViewReset = false;
+        } else {
+            // If not visible, mark for update when panel becomes visible
+            needsViewReset = true;
+        }
     }
 
     private void renderHighResolutionImage() {
@@ -482,6 +490,14 @@ public class RecordSheetPreviewPanel extends JPanel {
                 // (This prevents resetting user's view when window is resized)
                 if (cachedImage != null && zoomFactor == initialZoomFactor) {
                     resetView();
+                }
+            }
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                // Perform deferred view reset if needed
+                if (needsViewReset) {
+                    resetView();
+                    needsViewReset = false;
                 }
             }
         });
