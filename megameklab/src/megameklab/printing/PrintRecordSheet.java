@@ -765,31 +765,35 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
             PipType type, String fill) {
-        Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-        path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
-        path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
 
         // Move to start of pip, at (1, 0)
-        StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
         if (type == PipType.DIAMOND) {
+            // Use diamond shape for hardened armor pips
+            Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+            path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+            path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
+            path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
+            StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
             d.append(String.format(FMT_LINE, -radius, -radius));
             d.append(String.format(FMT_LINE, -radius, radius));
             d.append(String.format(FMT_LINE, radius, radius));
             d.append(String.format(FMT_LINE, radius, -radius));
+            path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
+            return path;
         } else {
-            // c is the length of each control line
-            double c = CONST_C * radius;
-
-            // Draw arcs anticlockwise. The coordinates are relative to the beginning of the
-            // arc.
-            d.append(String.format(FMT_CURVE, 0.0, -c, c - radius, -radius, -radius, -radius));
-            d.append(String.format(FMT_CURVE, -c, 0.0, -radius, radius - c, -radius, radius));
-            d.append(String.format(FMT_CURVE, 0.0, c, radius - c, radius, radius, radius));
-            d.append(String.format(FMT_CURVE, c, 0.0, radius, c - radius, radius, -radius));
+            // Use circle element for normal pips
+            Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
+            double centerX = x + radius;
+            double centerY = y + radius;
+            circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));
+            circle.setAttributeNS(null, SVGConstants.SVG_CY_ATTRIBUTE, Double.toString(centerY));
+            circle.setAttributeNS(null, SVGConstants.SVG_R_ATTRIBUTE, Double.toString(radius));
+            circle.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+            circle.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
+            circle.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
+            return circle;
+        
         }
-        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
-        return path;
     }
 
     /**
