@@ -461,43 +461,19 @@ public class RecordSheetPreviewPanel extends JPanel {
                 // Store original transform for restoration later
                 AffineTransform originalTransform = g.getTransform();
 
-                if (isHighQuality) {
-                    // HIGH QUALITY APPROACH: Use transformations with rendering hints
-                    // Calculate source region (in image coordinates)
-                    double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
-                    double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
+                // Calculate source region (in image coordinates)
+                double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
+                double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
 
-                    // Create a transform that handles positioning and scaling in one step
-                    AffineTransform at = new AffineTransform(originalTransform);
-                    at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
-                    at.scale(zoomFactor / MAX_ZOOM, zoomFactor / MAX_ZOOM);
-                    g.setTransform(at);
+                // Create a transform that handles positioning and scaling in one step
+                AffineTransform at = new AffineTransform(originalTransform);
+                at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
+                at.scale(zoomFactor / MAX_ZOOM, zoomFactor / MAX_ZOOM);
+                g.setTransform(at);
 
-                    // Draw the image
-                    g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
-                } else {
-                    // LOW QUALITY APPROACH: Draw the image directly with no transformations
-                    double srcX = Math.max(0, -panOffset.getX() * (MAX_ZOOM / zoomFactor));
-                    double srcY = Math.max(0, -panOffset.getY() * (MAX_ZOOM / zoomFactor));
-                    double srcWidth = cachedImage.getWidth() - srcX;
-                    double srcHeight = cachedImage.getHeight() - srcY;
-
-                    // Destination region (where to draw in the panel)
-                    double destX = Math.max(0, panOffset.getX());
-                    double destY = Math.max(0, panOffset.getY());
-                    double destWidth = srcWidth * (zoomFactor / MAX_ZOOM);
-                    double destHeight = srcHeight * (zoomFactor / MAX_ZOOM);
-
-                    // Draw the image
-                    g.drawImage(
-                            cachedImage,
-                            (int) destX, (int) destY,
-                            (int) (destX + destWidth), (int) (destY + destHeight),
-                            (int) srcX, (int) srcY,
-                            (int) (srcX + srcWidth), (int) (srcY + srcHeight),
-                            null);
-
-                }
+                // Draw the image
+                g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
+                
                 // Restore original transform
                 g.setTransform(originalTransform);
             }
