@@ -87,7 +87,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
-    private final double MIN_ZOOM = 1.4;
+    private final double MIN_ZOOM = 1.0;
     private final double MAX_ZOOM = 4.0;
     private final double INITIAL_ZOOM = MAX_ZOOM;
     private final double ZOOM_STEP = 0.2;
