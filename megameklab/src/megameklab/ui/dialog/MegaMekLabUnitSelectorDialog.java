@@ -65,6 +65,13 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
         initialize();
         run();
+        // Get the EntityViewPane's tabbed pane
+        if (recordSheetPanel == null) {
+            // First time - create the record sheet panel and add it as a tab
+            recordSheetPanel = new RecordSheetPreviewPanel();
+            panePreview.addTab("Record Sheet", recordSheetPanel);
+        }
+        
         setVisible(true);
     }
 
@@ -99,7 +106,14 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         rootPane.getInputMap(JComponent.WHEN_FOCUSED).put(escape, CLOSE_ACTION);
         rootPane.getActionMap().put(CLOSE_ACTION, closeAction);
         run();
+        // Get the EntityViewPane's tabbed pane
+        if (recordSheetPanel == null) {
+            // First time - create the record sheet panel and add it as a tab
+            recordSheetPanel = new RecordSheetPreviewPanel();
+            panePreview.addTab("Record Sheet", recordSheetPanel);
+        }
         setVisible(true);
+        
     }
 
     // Only necessary to override the default close behavior, see constructor
@@ -183,13 +197,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected Entity refreshUnitView() {
         Entity selectedEntity = super.refreshUnitView();
-        
-        // Get the EntityViewPane's tabbed pane
-        if (recordSheetPanel == null) {
-            // First time - create the record sheet panel and add it as a tab
-            recordSheetPanel = new RecordSheetPreviewPanel();
-            panePreview.addTab("Record Sheet", recordSheetPanel);
-        }
         
         // Update the record sheet with the selected entity
         if (selectedEntity != null) {
