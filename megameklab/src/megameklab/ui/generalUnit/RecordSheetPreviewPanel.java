@@ -122,8 +122,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         double imageHeight = cachedImage.getHeight();
         double availableHeight = getHeight();
         double rawMinZoom = availableHeight / imageHeight * MAX_ZOOM;
-        double quantizedZoom = Math.ceil(rawMinZoom / ZOOM_STEP) * ZOOM_STEP;
-        return Math.max(MIN_ZOOM, quantizedZoom);
+        return Math.max(MIN_ZOOM, rawMinZoom);
     }
 
     /**
