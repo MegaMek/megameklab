@@ -14,12 +14,15 @@
  */
 package megameklab.ui.battleArmor;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,9 +95,6 @@ public class BAStructureTab extends ITab
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-
         previewTab = new PreviewTab(eSource);
         panBasicInfo = new BasicInfoView(getBattleArmor().getConstructionTechAdvancement());
         panChassis = new BAChassisView(panBasicInfo);
@@ -145,23 +145,31 @@ public class BAStructureTab extends ITab
         leftPanel.add(panChassis);
         leftPanel.add(panMovement);
         leftPanel.add(panArmor);
+        leftPanel.add(panEnhancements);
+        leftPanel.add(manipulatorPanel);
+        leftPanel.add(Box.createVerticalGlue());
 
-        rightPanel.add(Box.createVerticalStrut(5));
-        rightPanel.add(previewTab);
-        rightPanel.add(panEnhancements);
-        rightPanel.add(manipulatorPanel);
+        // Right panel setup
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.setPreferredSize(new Dimension(400, 1));
+        rightPanel.add(previewTab, BorderLayout.CENTER);
 
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 30, 0, 30);
+        gbc.insets = new Insets(0, 5, 0, 5);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.fill = java.awt.GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = java.awt.GridBagConstraints.VERTICAL;
         gbc.weightx = 0.0;
-        gbc.weighty = 0;
+        gbc.weighty = 1.0;
         add(leftPanel, gbc);
+
         gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.BOTH;  // Fill both horizontally and vertically
+        gbc.weightx = 1.0;                         // Expand to fill horizontal space
+        gbc.weighty = 1.0;                         // Expand to fill vertical space
         add(rightPanel, gbc);
     }
 
