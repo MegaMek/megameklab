@@ -27,6 +27,7 @@ import megamek.client.ui.swing.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
+import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 
 import javax.swing.*;
@@ -42,6 +43,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private ArrayList<Entity> chosenEntities;
     private final boolean allowPickWithoutClose;
     private Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback;
+    private RecordSheetPreviewPanel recordSheetPanel;
 
     // endregion Variable Declarations
 
@@ -181,12 +183,28 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     @Override
     protected Entity refreshUnitView() {
         Entity selectedEntity = super.refreshUnitView();
+        
+        // Get the EntityViewPane's tabbed pane
+        if (recordSheetPanel == null) {
+            // First time - create the record sheet panel and add it as a tab
+            recordSheetPanel = new RecordSheetPreviewPanel();
+            panePreview.addTab("Record Sheet", recordSheetPanel);
+        }
+        
+        // Update the record sheet with the selected entity
         if (selectedEntity != null) {
+            // Update unit image first (existing code)
             Image base = MMStaticDirectoryManager.getMekTileset().imageFor(selectedEntity);
             EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
+            
+            // Update the record sheet
+            recordSheetPanel.setEntity(selectedEntity);
+        } else {
+            recordSheetPanel.setEntity(null);
         }
+        
         return selectedEntity;
     }
 }
