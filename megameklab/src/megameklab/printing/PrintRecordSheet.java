@@ -743,12 +743,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return lines;
     }
 
-    // Constants used for approximating circles with Bezier curves.
-
-    // Ratio of distance from end point to control point to the radius.
-    private final static double CONST_C = 0.55191502449;
     // Format String for writing a curve to a path definition attribute
-    private final static String FMT_CURVE = " c %f %f,%f %f,%f %f";
     private final static String FMT_LINE = " l %f %f";
 
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
