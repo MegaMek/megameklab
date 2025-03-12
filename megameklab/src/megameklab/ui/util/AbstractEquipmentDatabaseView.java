@@ -589,7 +589,12 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
                 && includedByFilters(equipment)
                 && !hiddenEquipment(equipment)
                 && (eSource.getTechManager().isLegal(equipment) || !hideUnavailButton.isSelected())
-                && allowedByTextFilter(equipment);
+                && allowedByTextFilter(equipment)
+                && omniBaseChassisUnlocked(equipment);
+    }
+
+    private boolean omniBaseChassisUnlocked(EquipmentType equipment) {
+        return eSource.canModifyBaseChassis() || (!equipment.isOmniFixedOnly());
     }
 
     /**
