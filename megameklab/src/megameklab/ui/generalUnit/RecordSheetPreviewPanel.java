@@ -39,6 +39,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +103,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean isHighQuality = true; // Track rendering quality mode
 
     // cached image for optimized rendering
-    private BufferedImage cachedImage;
+    private SoftReference<BufferedImage> cachedImage;
 
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
@@ -304,11 +305,12 @@ public class RecordSheetPreviewPanel extends JPanel {
         zoomFactor = getMinimumZoom();
         initialZoomFactor = zoomFactor;
         renderCachedImage();
-        if (cachedImage != null) {
+        BufferedImage img = cachedImage != null ? cachedImage.get() : null;
+        if (img != null) {
 
             // Calculate offsets to center the image
-            double xOffset = (getWidth() - cachedImage.getWidth()) / 2;
-            double yOffset = (getHeight() - cachedImage.getHeight()) / 2;
+            double xOffset = (getWidth() - img.getWidth()) / 2;
+            double yOffset = (getHeight() - img.getHeight()) / 2;
 
             // Set pan offset to center the image
             // Use max(0, value) to avoid negative offsets if image is bigger than panel
@@ -323,7 +325,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         repaint();
     }
 
-    private ArrayList<GraphicsNode> gnSheets;
+    private SoftReference<ArrayList<GraphicsNode>> gnSheets;
     private ArrayList<Entity> entities = new ArrayList<>();
     private boolean needsViewReset = false;
 
@@ -408,19 +410,23 @@ public class RecordSheetPreviewPanel extends JPanel {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
-        if (gnSheets == null || gnSheets.isEmpty()) {
-            gnSheets = getRecordSheetGraphicsNodes(entities, options);
+        ArrayList<GraphicsNode> sheetNodes = gnSheets != null ? gnSheets.get() : null;
+        if (sheetNodes == null || sheetNodes.isEmpty()) {
+            sheetNodes = getRecordSheetGraphicsNodes(entities, options);
+            // Store in SoftReference
+            gnSheets = new SoftReference<>(sheetNodes);
         }
 
-        if (gnSheets.size() == 0) {
+        if (sheetNodes == null || sheetNodes.size() == 0) {
             cachedImage = null;
             return;
         }
 
         int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
-        int totalWidth = fullWidth * gnSheets.size();
+        int totalWidth = fullWidth * sheetNodes.size();
         int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
 
+        BufferedImage img;
         // Try to use hardware-accelerated image if possible
         try {
             // Get hardware acceleration configuration
@@ -429,12 +435,12 @@ public class RecordSheetPreviewPanel extends JPanel {
             java.awt.GraphicsConfiguration gc = gs.getDefaultConfiguration();
 
             // Create a compatible image (should work better with hardware)
-            cachedImage = gc.createCompatibleImage(totalWidth, fullHeight, java.awt.Transparency.OPAQUE);
+            img = gc.createCompatibleImage(totalWidth, fullHeight, java.awt.Transparency.OPAQUE);
         } catch (Exception e) {
             // Fallback to standard image if hardware acceleration fails
-            cachedImage = new BufferedImage(totalWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
+            img = new BufferedImage(totalWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
         }
-        Graphics2D g = GraphicsUtil.createGraphics(cachedImage);
+        Graphics2D g = GraphicsUtil.createGraphics(img);
         g.setComposite(java.awt.AlphaComposite.SrcOver);
 
         // Set render quality
@@ -449,7 +455,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         rh.put(org.apache.batik.ext.awt.RenderingHintsKeyExt.KEY_TRANSCODING,
                 org.apache.batik.ext.awt.RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
-        rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<BufferedImage>(cachedImage));
+        rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<BufferedImage>(img));
         g.setRenderingHints(rh);
 
         // White background
@@ -457,10 +463,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.clearRect(0, 0, totalWidth, fullHeight);
 
         // if (entity != null) {
-        if (gnSheets != null && !gnSheets.isEmpty()) {
+        if (sheetNodes != null && !sheetNodes.isEmpty()) {
             int k = 0;
-            for (int i = 0; i < gnSheets.size(); i++) {
-                GraphicsNode gnSheet = gnSheets.get(i);
+            for (int i = 0; i < sheetNodes.size(); i++) {
+                GraphicsNode gnSheet = sheetNodes.get(i);
                 if (gnSheet == null) {
                     continue;
                 }
@@ -495,6 +501,8 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
 
         g.dispose();
+        // Store the image in a SoftReference
+        cachedImage = new SoftReference<>(img);
     }
 
     private void paintComponent(Graphics2D g, int width, int height) {
@@ -520,12 +528,14 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.clearRect(0, 0, width, height);
 
         if (entities != null && !entities.isEmpty()) {
+            BufferedImage img = cachedImage != null ? cachedImage.get() : null;
             // Generate image if needed
-            if (cachedImage == null) {
+            if (img == null) {
                 renderCachedImage();
+                img = cachedImage != null ? cachedImage.get() : null;
             }
 
-            if (cachedImage != null) {
+            if (img != null) {
                 // Store original transform for restoration later
                 AffineTransform originalTransform = g.getTransform();
 
@@ -539,7 +549,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 g.setTransform(at);
 
                 // Draw the image
-                g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
+                g.drawImage(img, -(int) srcX, -(int) srcY, null);
 
                 // Restore original transform
                 g.setTransform(originalTransform);
