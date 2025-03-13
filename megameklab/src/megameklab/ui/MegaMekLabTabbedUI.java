@@ -49,7 +49,6 @@ import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
-import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.EnhancedTabbedPane;
@@ -102,7 +101,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         // Register tab reattachment listener
         tabs.addTabReattachmentListener(tabInfo -> {
-            MegaMekLabMainUI editor = (MegaMekLabMainUI) tabInfo.getEditor();
+            MegaMekLabMainUI editor = (MegaMekLabMainUI) tabInfo.getMainUI();
             if (editor instanceof MegaMekLabMainUI) {
                 if (editor != null) {
                     editor.reattachAllTabs();
@@ -294,7 +293,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             CloseableTab tab = (CloseableTab) tabs.getTabComponentAt(tabIndex);
             tab.setTitle(tabName);
         } else {
-            tabs.setDetachedTabTitle(editor, tabName);
+            // tabs.setDetachedTabTitle(editor, tabName);
         }
     }
 

@@ -44,7 +44,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new ExitOnWindowClosingListener(this));
+        // addWindowListener(new ExitOnWindowClosingListener(this));
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
     }
 

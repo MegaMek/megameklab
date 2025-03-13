@@ -10,7 +10,7 @@ import java.awt.event.*;
 import java.util.HashMap;
 
 /**
- * author: Drake
+ * @author: Drake
  * A JTabbedPane that allows tabs to be dragged out of the pane and into a
  * floating window.
  */

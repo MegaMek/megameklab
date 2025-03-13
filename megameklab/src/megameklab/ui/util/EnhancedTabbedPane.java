@@ -1,6 +1,7 @@
 package megameklab.ui.util;
 
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.MegaMekLabTabbedUI;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
@@ -12,16 +13,18 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * author: Drake
+ * @author: Drake
  *
- * Enhanced tabbed pane with closable, draggable tabs and additional action
- * buttons.
- * This component extends JTabbedPane to add the following features:
- * - Closable tabs with an X button on each tab
- * - Ability to drag and reorder tabs
- * - Action buttons at the right side of the tab area
- * - Detachable tabs that can be dragged out (or right-click) into floating
- * windows
+ *          Enhanced tabbed pane with closable, draggable tabs and additional
+ *          action
+ *          buttons.
+ *          This component extends JTabbedPane to add the following features:
+ *          - Closable tabs with an X button on each tab
+ *          - Ability to drag and reorder tabs
+ *          - Action buttons at the right side of the tab area
+ *          - Detachable tabs that can be dragged out (or right-click) into
+ *          floating
+ *          windows
  */
 public class EnhancedTabbedPane extends JTabbedPane {
 
@@ -29,27 +32,25 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public static class DetachedTabInfo {
         String title;
         Icon icon;
-        Component component;
         int originalIndex;
-        MegaMekLabMainUI editor;
+        MegaMekLabMainUI mainUI;
         BiConsumer<Component, InputEvent> closeAction;
 
-        public DetachedTabInfo(String title, Icon icon, Component component, MegaMekLabMainUI editor,
+        public DetachedTabInfo(String title, Icon icon, MegaMekLabMainUI mainUI,
                 int originalIndex, BiConsumer<Component, InputEvent> closeAction) {
             this.title = title;
             this.icon = icon;
-            this.component = component;
-            this.editor = editor;
+            this.mainUI = mainUI;
             this.originalIndex = originalIndex;
             this.closeAction = closeAction;
         }
 
-        public MegaMekLabMainUI getEditor() {
-            return editor;
+        public MegaMekLabMainUI getMainUI() {
+            return mainUI;
         }
     }
 
-    private HashMap<JDialog, DetachedTabInfo> detachedTabs = new HashMap<>();
+    private HashMap<MegaMekLabMainUI, DetachedTabInfo> detachedTabs = new HashMap<>();
 
     // Button panel that sits outside the regular tabs
     private final JPanel actionButtonsPanel;
@@ -425,15 +426,15 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Updates the title of a detached tab window containing the given editor
      * 
-     * @param editor The editor to find in detached windows
+     * @param mainUI The editor to find in detached windows
      * @param title  The new title to set
      * @return true if a detached window was found and updated, false otherwise
      */
-    public boolean setDetachedTabTitle(MegaMekLabMainUI editor, String title) {
-        for (JDialog dialog : detachedTabs.keySet()) {
-            DetachedTabInfo info = detachedTabs.get(dialog);
-            if (info.editor == editor) {
-                dialog.setTitle(title);
+    public boolean setDetachedTabTitle(MegaMekLabMainUI mainUI, String title) {
+        for (MegaMekLabMainUI mmMainUI : detachedTabs.keySet()) {
+            DetachedTabInfo info = detachedTabs.get(mmMainUI);
+            if (info.mainUI == mainUI) {
+                mmMainUI.setTitle(title);
                 info.title = title;
                 return true;
             }
@@ -506,78 +507,66 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         // Determine the editor from the tab component
         Component tabComponent = getTabComponentAt(tabIndex);
-        MegaMekLabMainUI editor = null;
+        MegaMekLabMainUI mmMainUI = null;
         BiConsumer<Component, InputEvent> closeAction = null;
         if (tabComponent instanceof CloseableTab) {
             CloseableTab closeableTab = (CloseableTab) tabComponent;
-            editor = closeableTab.editor;
+            mmMainUI = closeableTab.mainUI;
             closeAction = closeableTab.getCloseAction();
             title = closeableTab.getTitle();
         }
 
+        if (mmMainUI == null) {
+            return;
+        }
         Dimension compSize = component.getSize();
         remove(tabIndex);
-
-        Window parent = SwingUtilities.getWindowAncestor(this);
-        JDialog frame = new JDialog(parent, title);
-
-        if (icon instanceof ImageIcon) {
-            frame.setIconImage(((ImageIcon) icon).getImage());
-        }
-
-        frame.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        frame.setResizable(true);
-        frame.getContentPane().add(component);
-        frame.setSize(compSize);
-        frame.setLocation(location);
-
-        DetachedTabInfo tabInfo = new DetachedTabInfo(title, icon, component, editor, tabIndex, closeAction);
-        detachedTabs.put(frame, tabInfo);
-
-        frame.addWindowListener(new WindowAdapter() {
+        mmMainUI.setContentPane((Container)component);
+        mmMainUI.setDefaultCloseOperation(MegaMekLabMainUI.DO_NOTHING_ON_CLOSE);
+        mmMainUI.setSize(compSize);
+        mmMainUI.setResizable(true);
+        mmMainUI.setLocation(location);
+        DetachedTabInfo tabInfo = new DetachedTabInfo(title, icon, mmMainUI, tabIndex, closeAction);
+        detachedTabs.put(mmMainUI, tabInfo);
+        mmMainUI.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                JDialog frame = (JDialog) e.getSource();
-                reattachTab(frame);
+                if (e.getSource() instanceof MegaMekLabMainUI mmMainUI) {
+                    reattachTab(mmMainUI);
+                    mmMainUI.dispose();
+                }
             }
         });
-
-        frame.setVisible(true);
+        mmMainUI.setVisible(true);
     }
 
     /**
      * Reattaches a floating tab to the tabbed pane
      * 
-     * @param frame The floating window to reattach
+     * @param mainUI The floating window to reattach
      */
-    private void reattachTab(JDialog frame) {
-        if (!detachedTabs.containsKey(frame)) {
+    private void reattachTab(MegaMekLabMainUI mainUI) {
+        if (!detachedTabs.containsKey(mainUI)) {
             return;
         }
 
-        DetachedTabInfo tabInfo = detachedTabs.get(frame);
-        frame.getContentPane().remove(tabInfo.component);
-
+        DetachedTabInfo tabInfo = detachedTabs.get(mainUI);
         int insertIndex = Math.min(tabInfo.originalIndex, getTabCount());
-        fireTabReattaching(tabInfo);
-        if (tabInfo.editor != null) {
-            addCloseableTab(tabInfo.title, tabInfo.icon, tabInfo.editor, tabInfo.closeAction);
-        } else {
-            insertTab(tabInfo.title, tabInfo.icon, tabInfo.component, null, insertIndex);
+        if (tabInfo.mainUI != null) {
+            fireTabReattaching(tabInfo);
+            addCloseableTab(tabInfo.title, tabInfo.icon, tabInfo.mainUI, tabInfo.closeAction);
+            setSelectedIndex(insertIndex);
+            detachedTabs.remove(tabInfo.mainUI);
         }
-
-        setSelectedIndex(insertIndex);
-        detachedTabs.remove(frame);
-        frame.dispose();
     }
 
     /**
      * Programmatically reattaches all detached tabs
      */
     public void reattachAllTabs() {
-        JDialog[] frames = detachedTabs.keySet().toArray(new JDialog[0]);
-        for (JDialog frame : frames) {
-            reattachTab(frame);
+        MegaMekLabMainUI[] mmMainUIs = detachedTabs.keySet().toArray(new MegaMekLabMainUI[0]);
+        for (MegaMekLabMainUI mainUI : mmMainUIs) {
+            reattachTab(mainUI);
         }
     }
 
@@ -613,7 +602,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      */
     public static class CloseableTab extends JPanel {
         private final EnhancedTabbedPane parentPane;
-        private final MegaMekLabMainUI editor;
+        private final MegaMekLabMainUI mainUI;
         private JLabel titleLabel;
         private BiConsumer<Component, InputEvent> closeAction;
 
@@ -628,7 +617,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 BiConsumer<Component, InputEvent> closeAction) {
             super(new BorderLayout(0, 0));
             this.parentPane = parentPane;
-            this.editor = mainUI;
+            this.mainUI = mainUI;
             this.closeAction = closeAction;
             setOpaque(false);
 
@@ -745,17 +734,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param title The new title to set
          */
         public void setTitle(String title) {
-            editor.getContentPane();
             titleLabel.setText(title);
             if (parentPane != null) {
-                for (JDialog dialog : parentPane.detachedTabs.keySet()) {
-                    DetachedTabInfo info = parentPane.detachedTabs.get(dialog);
-                    if (info.editor == editor) {
-                        dialog.setTitle(title);
-                        info.title = title;
-                        break;
-                    }
-                }
                 parentPane.positionActionButtons();
             }
         }
