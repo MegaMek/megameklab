@@ -67,6 +67,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        configPane.setParentUI(this);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);

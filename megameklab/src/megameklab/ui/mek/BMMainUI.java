@@ -32,7 +32,7 @@ import java.util.List;
 
 public class BMMainUI extends MegaMekLabMainUI {
 
-    JTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
+    DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
@@ -72,6 +72,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
+        configPane.setParentUI(this);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);

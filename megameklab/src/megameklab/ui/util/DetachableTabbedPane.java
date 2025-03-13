@@ -1,6 +1,10 @@
 package megameklab.ui.util;
 
 import javax.swing.*;
+
+import megamek.common.Entity;
+import megameklab.ui.MegaMekLabMainUI;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
@@ -17,6 +21,7 @@ public class DetachableTabbedPane extends JTabbedPane {
     private Point dragStartPoint = null;
     private JWindow ghostWindow;
     private boolean showingGhost = false;
+    private JFrame parentUI;
 
     private static class DetachedTabInfo {
         String title;
@@ -34,6 +39,11 @@ public class DetachableTabbedPane extends JTabbedPane {
 
     private HashMap<JDialog, DetachedTabInfo> detachedTabs = new HashMap<>();
 
+    
+    public void setParentUI(JFrame parentUI) {
+        this.parentUI = parentUI;
+    }
+  
     public DetachableTabbedPane() {
         super();
         initListeners();
@@ -64,7 +74,10 @@ public class DetachableTabbedPane extends JTabbedPane {
                     }
                     // For right click, show context menu with detach option
                     else if (SwingUtilities.isRightMouseButton(e)) {
-                        detachTab(draggedTabIndex, e.getLocationOnScreen());
+                        Point locationOnScreen = e.getLocationOnScreen();
+                        locationOnScreen.x -= 50;
+                        locationOnScreen.y -= 10;
+                        detachTab(draggedTabIndex, locationOnScreen);
                         draggedTabIndex = -1;
                     }
                 }
@@ -96,7 +109,10 @@ public class DetachableTabbedPane extends JTabbedPane {
                     if (!bounds.contains(e.getPoint())) {
                         // Mouse is outside the tabbed pane, detach the tab
                         hideGhostImage();
-                        detachTab(draggedTabIndex, e.getLocationOnScreen());
+                        Point locationOnScreen = e.getLocationOnScreen();
+                        locationOnScreen.x -= 50;
+                        locationOnScreen.y -= 10;
+                        detachTab(draggedTabIndex, locationOnScreen);
                         isDragging = false;
                         dragStartPoint = null;
                         draggedTabIndex = -1;
@@ -227,8 +243,18 @@ public class DetachableTabbedPane extends JTabbedPane {
 
         remove(tabIndex);
 
+        String windowtitle = title;
+        if (parentUI != null) {
+            if (parentUI instanceof MegaMekLabMainUI) {
+                Entity entity = ((MegaMekLabMainUI) parentUI).getEntity();
+                if (entity != null) {
+                    windowtitle = entity.getDisplayName() + " - " + title;
+                }
+            }
+        } 
+
         Window parent = SwingUtilities.getWindowAncestor(this);
-        JDialog frame = new JDialog(parent, title);
+        JDialog frame = new JDialog(parent, windowtitle);
 
         if (icon instanceof ImageIcon) {
             frame.setIconImage(((ImageIcon) icon).getImage());
