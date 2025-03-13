@@ -25,6 +25,8 @@ import java.awt.DisplayMode;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         // If there are more tabs than can fit, show a scroll bar
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        
+
         // Register tab reattachment listener
         tabs.addTabReattachmentListener(tabInfo -> {
             MegaMekLabMainUI editor = (MegaMekLabMainUI) tabInfo.getEditor();
@@ -146,7 +148,20 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         button.setFocusable(false);
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
-        button.addActionListener(e -> showNewUnitPopupMenu(button, e));
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    // Left click - directly create a new unit
+                    MegaMekLabMainUI newUi = UiLoader.getUI(Entity.ETYPE_MEK, false, false);
+                    newUi.setOwner(MegaMekLabTabbedUI.this);
+                    addTab(newUi);
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    // Right click - show popup menu
+                    showNewUnitPopupMenu(button, e);
+                }
+            }
+        });
         button.setPreferredSize(new Dimension(32, 32));
         return button;
     }
@@ -161,7 +176,18 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         button.setFocusable(false);
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
-        button.addActionListener(e -> showLoadUnitPopupMenu(button, e));
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    // Left click - directly load from cache
+                    StartupGUI.selectAndLoadUnitFromCache(MegaMekLabTabbedUI.this);
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    // Right click - show popup menu
+                    showLoadUnitPopupMenu(button, e);
+                }
+            }
+        });
         button.setPreferredSize(new Dimension(32, 32));
         return button;
     }
@@ -169,7 +195,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Displays the popup menu for creating new units
      */
-    private void showNewUnitPopupMenu(Component source, ActionEvent e) {
+    private void showNewUnitPopupMenu(Component source, MouseEvent e) {
         JPopupMenu menu = createNewUnitPopupMenu();
         Point location = new Point(5, source.getHeight());
         menu.show(source, location.x, location.y);
@@ -216,7 +242,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Displays the popup menu for loading units
      */
-    private void showLoadUnitPopupMenu(Component source, ActionEvent e) {
+    private void showLoadUnitPopupMenu(Component source, MouseEvent e) {
         JPopupMenu menu = createLoadUnitPopupMenu();
         Point location = new Point(5, source.getHeight());
         menu.show(source, location.x, location.y);
@@ -237,16 +263,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         menu.add(fromFile);
 
         return menu;
-    }
-
-    private void handleTabClose(Component component, InputEvent e) {
-        int index = tabs.indexOfComponent(component);
-        if (index >= 0) {
-            MegaMekLabMainUI editor = editors.get(index);
-            if (e.isShiftDown() || editor.safetyPrompt()) {
-                closeTabAt(index);
-            }
-        }
     }
 
     /**
