@@ -199,6 +199,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
+        setTextField(UNIT_TYPE, UnitType.getTypeDisplayableName(getEntity().getUnitType()).toUpperCase());
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());

@@ -631,7 +631,7 @@
                                                                         /><g transform="translate (2.5,3.0)"
                                                                         ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 83.211 l 4.999,7.500 l -4.999,7.500 h -83.211 Z"
                                                                           /><text x="46.604" y="11.250" fill="#ffffff" text-anchor="middle" style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal" textLength="75.646" lengthAdjust="spacingAndGlyphs"
-                                                                          >%s DATA (Cont.)</text
+                                                                          ><tspan id="unitType">%s</tspan> DATA (Cont.)</text
                                                                         ></g
                                                                       ></g
                                                                       ><text x="6.000" y="28.000" fill="#231f20" text-anchor="start" style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal" textLength="21.401" lengthAdjust="spacingAndGlyphs"
