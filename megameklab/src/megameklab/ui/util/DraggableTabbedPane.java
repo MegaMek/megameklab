@@ -269,7 +269,8 @@ public class DraggableTabbedPane extends JTabbedPane {
 
         insertTab(tabInfo.title, tabInfo.icon, tabInfo.component, null, insertIndex);
 
-        setSelectedIndex(insertIndex);
+        // Select the newly inserted tab
+        // setSelectedIndex(insertIndex);
         detachedTabs.remove(frame);
 
         frame.dispose();
