@@ -135,8 +135,16 @@ public class RecordSheetPreviewPanel extends JPanel {
         // Use standard paper size for the clipboard image
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
+
+        // Render the record sheet directly without zoom/pan
+        ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
+
+        if (nodes.size() == 0) {
+            return;
+        }
+
         int imgWidth = (int) Math.ceil(pz.pxWidth * CLIPBOARD_ZOOM_SCALE);
-        int fullWidth = imgWidth * entities.size();
+        int fullWidth = imgWidth * nodes.size();
         int imgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
 
         BufferedImage img = new BufferedImage(fullWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
@@ -159,9 +167,6 @@ public class RecordSheetPreviewPanel extends JPanel {
         // White background
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, fullWidth, imgHeight);
-
-        // Render the record sheet directly without zoom/pan
-        ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
 
         if (nodes != null && !nodes.isEmpty()) {
             int k = 0;
@@ -375,7 +380,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
-        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(entities, false, options, true);
+        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(entities, true, options, true);
         ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
@@ -384,8 +389,11 @@ public class RecordSheetPreviewPanel extends JPanel {
             } else {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
             }
-            sheet.createDocument(0, pf, false);
-            gnSheets.add(sheet.build());
+            int pagesCount = sheet.getPageCount();
+            for (int i = 0; i < pagesCount; i++) {
+                sheet.createDocument(i, pf, false);
+                gnSheets.add(sheet.build());
+            }
         }
         return gnSheets;
     }
@@ -400,9 +408,17 @@ public class RecordSheetPreviewPanel extends JPanel {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
-        int sheetCount = entities.size();
+        if (gnSheets == null || gnSheets.isEmpty()) {
+            gnSheets = getRecordSheetGraphicsNodes(entities, options);
+        }
+
+        if (gnSheets.size() == 0) {
+            cachedImage = null;
+            return;
+        }
+
         int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
-        int totalWidth = fullWidth * sheetCount;
+        int totalWidth = fullWidth * gnSheets.size();
         int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
 
         // Try to use hardware-accelerated image if possible
@@ -441,9 +457,6 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.clearRect(0, 0, totalWidth, fullHeight);
 
         // if (entity != null) {
-        if (gnSheets == null || gnSheets.isEmpty()) {
-            gnSheets = getRecordSheetGraphicsNodes(entities, options);
-        }
         if (gnSheets != null && !gnSheets.isEmpty()) {
             int k = 0;
             for (int i = 0; i < gnSheets.size(); i++) {
