@@ -18,14 +18,12 @@ import megamek.common.*;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.util.TabScrollPane;
-import megameklab.ui.util.DetachableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class HHWMainUI extends MegaMekLabMainUI {
-    private final DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
     private HHWStructureTab structureTab;
     private HHWEquipmentTab equipmentTab;
     private PreviewTab previewTab;

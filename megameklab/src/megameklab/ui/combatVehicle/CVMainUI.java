@@ -25,7 +25,6 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
-import megameklab.ui.util.DetachableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +32,6 @@ import java.util.List;
 
 public class CVMainUI extends MegaMekLabMainUI {
 
-    DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
     private CVStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;

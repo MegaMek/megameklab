@@ -22,6 +22,7 @@ import megamek.common.Mounted;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
+import megameklab.ui.util.DetachableTabbedPane;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
@@ -32,6 +33,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
+    
+    protected DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
     private Entity entity = null;
     private String fileName = "";
     protected MenuBar mmlMenuBar;
@@ -68,6 +71,14 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         int w = Math.min(getSize().width, scaledMonitorW);
         int h = Math.min(getSize().height, scaledMonitorH);
         setSize(new Dimension(w, h));
+    }
+
+    public DetachableTabbedPane getConfigPane() {
+        return configPane;
+    }
+
+    public void reattachAllTabs() {
+        configPane.reattachAllTabs();
     }
 
     @Override

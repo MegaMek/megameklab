@@ -22,7 +22,6 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
-import megameklab.ui.util.DetachableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +33,6 @@ import java.util.List;
  * @author Neoancient
  */
 public class PMMainUI extends MegaMekLabMainUI {
-    private final DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
 
     private PMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
