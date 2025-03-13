@@ -23,7 +23,7 @@ import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.*;
 import megameklab.ui.util.TabScrollPane;
-import megameklab.ui.util.DraggableTabbedPane;
+import megameklab.ui.util.DetachableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ import java.util.List;
  * Main window for support vehicle construction
  */
 public class SVMainUI extends MegaMekLabMainUI {
-    private final DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
+    private final DetachableTabbedPane configPane = new DetachableTabbedPane(SwingConstants.TOP);
     private SVStructureTab structureTab;
     private SVArmorTab armorTab;
     private AbstractEquipmentTab equipmentTab;

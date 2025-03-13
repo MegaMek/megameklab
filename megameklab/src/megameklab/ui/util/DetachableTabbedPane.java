@@ -6,10 +6,11 @@ import java.awt.event.*;
 import java.util.HashMap;
 
 /**
- *  author:  Drake
- *  A JTabbedPane that allows tabs to be dragged out of the pane and into a floating window.
+ * author: Drake
+ * A JTabbedPane that allows tabs to be dragged out of the pane and into a
+ * floating window.
  */
-public class DraggableTabbedPane extends JTabbedPane {
+public class DetachableTabbedPane extends JTabbedPane {
 
     private boolean isDragging = false;
     private int draggedTabIndex = -1;
@@ -33,17 +34,17 @@ public class DraggableTabbedPane extends JTabbedPane {
 
     private HashMap<JDialog, DetachedTabInfo> detachedTabs = new HashMap<>();
 
-    public DraggableTabbedPane() {
+    public DetachableTabbedPane() {
         super();
         initListeners();
     }
 
-    public DraggableTabbedPane(int tabPlacement) {
+    public DetachableTabbedPane(int tabPlacement) {
         super(tabPlacement);
         initListeners();
     }
 
-    public DraggableTabbedPane(int tabPlacement, int tabLayoutPolicy) {
+    public DetachableTabbedPane(int tabPlacement, int tabLayoutPolicy) {
         super(tabPlacement, tabLayoutPolicy);
         initListeners();
     }
@@ -57,8 +58,15 @@ public class DraggableTabbedPane extends JTabbedPane {
             public void mousePressed(MouseEvent e) {
                 draggedTabIndex = indexAtLocation(e.getX(), e.getY());
                 if (draggedTabIndex >= 0) {
-                    dragStartPoint = e.getPoint();
-                    isDragging = true;
+                    if (SwingUtilities.isLeftMouseButton(e)) {
+                        dragStartPoint = e.getPoint();
+                        isDragging = true;
+                    }
+                    // For right click, show context menu with detach option
+                    else if (SwingUtilities.isRightMouseButton(e)) {
+                        detachTab(draggedTabIndex, e.getLocationOnScreen());
+                        draggedTabIndex = -1;
+                    }
                 }
             }
 
@@ -185,7 +193,7 @@ public class DraggableTabbedPane extends JTabbedPane {
         if (ghostWindow != null && ghostWindow.isVisible()) {
             ghostWindow.setLocation(
                     location.x + 5, // Slight offset to the right
-                    location.y + 5  // Slight offset down
+                    location.y + 5 // Slight offset down
             );
         }
     }
