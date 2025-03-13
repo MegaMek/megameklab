@@ -32,6 +32,7 @@ import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.generalUnit.TransportTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.ui.util.DraggableTabbedPane;
 
 /**
  * MainUI for JumpShips, WarShips, and Space Stations
@@ -41,7 +42,7 @@ import megameklab.ui.util.TabScrollPane;
 public class WSMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(WSMainUI.class);
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;

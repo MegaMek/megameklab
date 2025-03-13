@@ -31,11 +31,12 @@ import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.ui.util.DraggableTabbedPane;
 
 public class ASMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(ASMainUI.class);
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
 
     private ASStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;

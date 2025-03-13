@@ -28,6 +28,7 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.ui.util.DraggableTabbedPane;
 
 public class CIMainUI extends MegaMekLabMainUI {
 
@@ -35,7 +36,7 @@ public class CIMainUI extends MegaMekLabMainUI {
     PreviewTab previewTab;
     FluffTab fluffTab;
     CIStatusBar statusbar;
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
 
     public CIMainUI() {
         super();

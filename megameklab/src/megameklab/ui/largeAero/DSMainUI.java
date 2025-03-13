@@ -31,6 +31,7 @@ import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.generalUnit.TransportTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.ui.util.DraggableTabbedPane;
 
 /**
  * Main UI for DropShips and Small Craft
@@ -40,7 +41,7 @@ import megameklab.ui.util.TabScrollPane;
 public class DSMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(DSMainUI.class);
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
     private DSStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;

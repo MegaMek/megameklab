@@ -22,6 +22,7 @@ import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
+import megameklab.ui.util.DraggableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class BAMainUI extends MegaMekLabMainUI {
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
+    DraggableTabbedPane configPane = new DraggableTabbedPane(SwingConstants.TOP);
     private BAStructureTab structureTab;
     private BABuildTab buildTab;
     private BAEquipmentTab equipTab;
