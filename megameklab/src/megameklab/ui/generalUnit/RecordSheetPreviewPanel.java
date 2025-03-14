@@ -328,7 +328,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private SoftReference<ArrayList<GraphicsNode>> gnSheets;
-    private ArrayList<Entity> entities = new ArrayList<>();
+    private List<Entity> entities = new ArrayList<>();
     private boolean needsViewReset = false;
 
     /**
@@ -336,7 +336,7 @@ public class RecordSheetPreviewPanel extends JPanel {
      * 
      * @param entities List of entities to display
      */
-    public void setEntities(ArrayList<Entity> entities) {
+    public void setEntities(List<Entity> entities) {
         if (entities == null) {
             this.entities.clear();
         } else {
@@ -347,7 +347,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         gnSheets = null;
         cachedImage = null;
 
-        if (isVisible()) {
+        if (isShowing()) {
             // If visible, update the view immediately
             resetView();
             needsViewReset = false;
@@ -363,24 +363,7 @@ public class RecordSheetPreviewPanel extends JPanel {
      * @param entity The entity to display
      */
     public void setEntity(Entity entity) {
-        if (this.entities == null) {
-            this.entities = new ArrayList<>();
-        }
-        this.entities.clear();
-        if (entity != null) {
-            this.entities.add(entity);
-        }
-        // Reset view and invalidate cached image when entity changes
-        gnSheets = null;
-        cachedImage = null;
-        if (isVisible()) {
-            // If visible, update the view immediately
-            resetView();
-            needsViewReset = false;
-        } else {
-            // If not visible, mark for update when panel becomes visible
-            needsViewReset = true;
-        }
+        this.setEntities(List.of(entity));
     }
 
     private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
