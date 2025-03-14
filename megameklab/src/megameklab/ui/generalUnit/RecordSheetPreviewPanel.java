@@ -57,7 +57,6 @@ import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.PrintSmallUnitSheet;
 import megameklab.printing.RecordSheetOptions;
-import megameklab.ui.MegaMekLabMainUI;
 import megameklab.util.UnitPrintManager;
 
 /**
