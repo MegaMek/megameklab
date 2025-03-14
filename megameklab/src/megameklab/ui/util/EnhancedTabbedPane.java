@@ -743,6 +743,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
         public String getTitle() {
             return titleLabel.getText();
         }
+
+        public MegaMekLabMainUI getMainUI() {
+            return mainUI;
+        }
     }
 
 }

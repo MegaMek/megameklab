@@ -23,8 +23,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
@@ -273,8 +271,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public MegaMekLabMainUI currentEditor() {
         int selectedIndex = tabs.getSelectedIndex();
         // Check if the selected index is valid
-        if (selectedIndex >= 0 && selectedIndex < editors.size()) {
-            return editors.get(selectedIndex);
+        if (selectedIndex >= 0) {
+            Component tabComponent = tabs.getTabComponentAt(selectedIndex);
+            if (tabComponent instanceof CloseableTab closeableTab) {
+                return (MegaMekLabMainUI) closeableTab.getMainUI();
+            }
         }
         return null;
     }
@@ -435,14 +436,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         refreshMenuBar();
     }
 
-    /**
-     * Deletes the current tab.
-     * This does not issue the safety prompt, it is up to the caller to do so!
-     */
-    public void closeCurrentTab() {
-        closeTabAt(tabs.getSelectedIndex());
-    }
-
     private void closeTabAt(int position) {
         // If you try to close the last tab, create a new blank mek tab
         // Since the UI can't exist in a meaningful state without a tab open
@@ -450,14 +443,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             newTab();
         }
 
-        var editor = editors.get(position);
-
-        tabs.remove(position);
-        if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
-            tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
+        Component tabComponent = tabs.getTabComponentAt(position);
+        if (tabComponent instanceof CloseableTab closeableTab) {
+            MegaMekLabMainUI editor = closeableTab.getMainUI();
+            tabs.remove(position);
+            if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
+                tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
+            }
+            editors.remove(editor);
+            closedEditors.push(editor);
         }
-        editors.remove(editor);
-        closedEditors.push(editor);
 
         // Tell the menu bar to enable the "reopen tab" shortcut
         refreshMenuBar();
