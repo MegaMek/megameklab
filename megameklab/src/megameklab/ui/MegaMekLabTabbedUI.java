@@ -380,6 +380,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         addTab(ui);
         ui.setOwner(this);
         ui.setEntity(entity, filename);
+        ui.reattachAllTabs();
         ui.reloadTabs();
         ui.refreshAll();
         refreshMenuBar();

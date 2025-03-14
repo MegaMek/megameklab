@@ -51,6 +51,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     protected void finishSetup() {
         mmlMenuBar = new MenuBar(this);
         setJMenuBar(mmlMenuBar);
+        reattachAllTabs();
         reloadTabs();
         refreshAll();
         this.setTransferHandler(new MMLFileDropTransferHandler(this));
@@ -78,7 +79,9 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     }
 
     public void reattachAllTabs() {
-        configPane.reattachAllTabs();
+        if (configPane != null) {
+            configPane.reattachAllTabs();
+        }
     }
 
     @Override
