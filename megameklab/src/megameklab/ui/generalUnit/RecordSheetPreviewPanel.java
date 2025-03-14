@@ -57,6 +57,7 @@ import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.PrintSmallUnitSheet;
 import megameklab.printing.RecordSheetOptions;
+import megameklab.ui.MegaMekLabMainUI;
 import megameklab.util.UnitPrintManager;
 
 /**
@@ -89,6 +90,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
+    public static final int MAX_PRINTABLE_ENTITIES = 10;
     private final double MIN_ZOOM = 1.0;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
@@ -382,7 +384,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
-        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(entities, true, options, true);
+        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), true, options, true);
         ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
