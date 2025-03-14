@@ -436,6 +436,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         refreshMenuBar();
     }
 
+    /**
+     * Deletes the current tab.
+     * This does not issue the safety prompt, it is up to the caller to do so!
+     */
+    public void closeCurrentTab() {
+        closeTabAt(tabs.getSelectedIndex());
+    }
+
     private void closeTabAt(int position) {
         // If you try to close the last tab, create a new blank mek tab
         // Since the UI can't exist in a meaningful state without a tab open
