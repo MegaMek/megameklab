@@ -462,7 +462,7 @@ import org.apache.batik.gvt.GraphicsNode;
          g.setBackground(Color.WHITE);
          g.clearRect(0, 0, totalWidth, fullHeight);
  
-         if (sheetNodes != null && !sheetNodes.isEmpty()) {
+         if (!sheetNodes.isEmpty()) {
              int k = 0;
              for (int i = 0; i < sheetNodes.size(); i++) {
                  GraphicsNode gnSheet = sheetNodes.get(i);
