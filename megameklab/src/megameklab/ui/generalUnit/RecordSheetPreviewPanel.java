@@ -362,7 +362,11 @@
       * @param entity The entity to display
       */
      public void setEntity(Entity entity) {
-         this.setEntities(List.of(entity));
+        if (entity == null) {
+             this.setEntities(null);
+         } else {
+             this.setEntities(List.of(entity));
+         }
      }
  
      private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
