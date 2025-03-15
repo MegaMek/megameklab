@@ -128,7 +128,12 @@ public class UnitPrintManager {
     }
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
-            RecordSheetOptions options) {
+    RecordSheetOptions options) {
+        return createSheets(entities, singlePrint, options, false);
+    }
+
+    public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
+            RecordSheetOptions options, boolean noWarningsOnUnprintable) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
@@ -224,10 +229,12 @@ public class UnitPrintManager {
             }
         }
 
-        if (!unprintable.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
-                    + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
-                            .collect(Collectors.joining("\n")));
+        if (!noWarningsOnUnprintable) {
+            if (!unprintable.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
+                        + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
+                                .collect(Collectors.joining("\n")));
+            }
         }
 
         if (null != tank1) {
