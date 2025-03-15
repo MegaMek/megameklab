@@ -48,6 +48,7 @@ import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.apache.batik.gvt.GraphicsNode;
@@ -104,6 +105,8 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Point lastMousePoint;
     private boolean isPanning = false;
     private boolean isHighQuality = true; // Track rendering quality mode
+    private final AffineTransform workTransform = new AffineTransform();
+    private final AffineTransform tempTransform = new AffineTransform();
 
     private SoftReference<ArrayList<GraphicsNode>> gnSheets;
     private List<Entity> entities = new ArrayList<>();
@@ -216,10 +219,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
 
                 // Apply transform for this sheet - scale and position
-                AffineTransform transform = new AffineTransform();
-                transform.translate(centerX + xOffset, centerY);
-                transform.scale(scale, scale);
-                gn.setTransform(transform);
+                tempTransform.setToIdentity();
+                tempTransform.translate(centerX + xOffset, centerY);
+                tempTransform.scale(scale, scale);
+                gn.setTransform(tempTransform);
 
                 // Draw to the clipboard image
                 gn.paint(g);
@@ -261,18 +264,25 @@ public class RecordSheetPreviewPanel extends JPanel {
                 Point mousePoint = e.getPoint();
                 double oldZoom = zoomFactor;
 
-                // Adjust zoom by scroll amount
-                zoomFactor -= e.getPreciseWheelRotation() * ZOOM_STEP;
-                zoomFactor = Math.max(minZoom, Math.min(MAX_ZOOM, zoomFactor));
+                // Calculate new zoom with acceleration for larger changes
+                double zoomDelta = e.getPreciseWheelRotation() * ZOOM_STEP;
+                if (Math.abs(e.getPreciseWheelRotation()) > 1.5) {
+                    zoomDelta *= 1.5; // Accelerate for faster scrolling
+                }
 
-                if (oldZoom != zoomFactor) {
+                // Adjust zoom by scroll amount
+                double newZoom = zoomFactor - zoomDelta;
+                newZoom = Math.max(minZoom, Math.min(MAX_ZOOM, newZoom));
+
+                if (oldZoom != newZoom) {
                     // Adjust pan to keep mouse position fixed
-                    double zoomRatio = zoomFactor / oldZoom;
+                    double zoomRatio = newZoom / oldZoom;
 
                     panOffset.setLocation(
                             mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
                             mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
                     cachedImage = null; // Invalidate cached image on zoom change
+                    zoomFactor = newZoom;
                     repaint();
                 }
             }
@@ -297,8 +307,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     setCursor(Cursor.getDefaultCursor());
                     isPanning = false;
-                    isHighQuality = true;
-                    repaint();
+                    SwingUtilities.invokeLater(() -> {
+                        isHighQuality = true;
+                        repaint();
+                    });
                 }
             }
 
@@ -508,10 +520,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                     double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
 
                     // Apply transform for this sheet - scale and position
-                    AffineTransform transform = new AffineTransform();
-                    transform.translate(centerX + xOffset, centerY);
-                    transform.scale(scale, scale);
-                    gnSheet.setTransform(transform);
+                    workTransform.setToIdentity();
+                    workTransform.translate(centerX + xOffset, centerY);
+                    workTransform.scale(scale, scale);
+                    gnSheet.setTransform(workTransform);
 
                     // Paint this sheet
                     gnSheet.paint(g);
@@ -568,10 +580,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 double srcY = Math.max(0, -panOffset.getY());
 
                 // Create a transform that handles positioning and scaling in one step
-                AffineTransform at = new AffineTransform(originalTransform);
-                at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
-                g.setTransform(at);
-
+                tempTransform.setTransform(originalTransform);
+                tempTransform.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
+                g.setTransform(tempTransform);
+                
                 // Draw the image
                 g.drawImage(img, -(int) srcX, -(int) srcY, null);
 
@@ -585,6 +597,20 @@ public class RecordSheetPreviewPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         paintComponent((Graphics2D) g, getWidth(), getHeight());
+    }
+
+    // Add cleanup method to release resources when no longer needed
+    public void cleanup() {
+        // Clear cached images to help garbage collection
+        cachedImage = null;
+        gnSheets = null;
+    }
+
+    // Call this from a removeNotify() method:
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        cleanup();
     }
 
     // Add a component resize listener to adjust the view on resize
