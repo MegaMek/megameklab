@@ -117,7 +117,7 @@ import org.apache.batik.gvt.GraphicsNode;
         addHierarchyListener(e -> {
             if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
                 // Only trigger on "becoming visible" events
-                if (needsViewReset && isShowing() {
+                if (needsViewReset && isShowing()) {
                     needsViewReset = false;
                     resetView();
                 }
@@ -577,6 +577,7 @@ import org.apache.batik.gvt.GraphicsNode;
                      resetView();
                  }
              }
+ 
          });
      }
  }
