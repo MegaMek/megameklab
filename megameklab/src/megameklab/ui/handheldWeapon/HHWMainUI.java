@@ -49,7 +49,6 @@ public class HHWMainUI extends MegaMekLabMainUI {
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
         configPane.addTab("Preview", new TabScrollPane(previewTab));
-        configPane.setParentUI(this);
 
         statusbar = new HHWStatusBar(this);
         statusbar.addRefreshedListener(this);

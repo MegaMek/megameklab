@@ -1243,7 +1243,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void reload() {
         MegaMekLabMainUI mainUi = getUnitMainUi();
         if (mainUi != null) {
-            mainUi.reattachAllTabs();
             mainUi.reloadTabs();
         }
     }

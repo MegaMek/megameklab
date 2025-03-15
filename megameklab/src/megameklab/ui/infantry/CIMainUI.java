@@ -58,7 +58,6 @@ public class CIMainUI extends MegaMekLabMainUI {
         configPane.addTab("Build", new TabScrollPane(structureTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", previewTab);
-        configPane.setParentUI(this);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);

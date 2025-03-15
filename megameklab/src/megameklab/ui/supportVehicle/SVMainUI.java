@@ -79,8 +79,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
         configPane.addTab("Preview", previewTab);
-        configPane.setParentUI(this);
-
+        
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
