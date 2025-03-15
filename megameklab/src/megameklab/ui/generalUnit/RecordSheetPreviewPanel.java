@@ -29,6 +29,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -39,12 +40,16 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
@@ -87,6 +92,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
+    public static final int MAX_PRINTABLE_ENTITIES = 10;
     private final double MIN_ZOOM = 1.0;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
@@ -99,15 +105,41 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Point lastMousePoint;
     private boolean isPanning = false;
     private boolean isHighQuality = true; // Track rendering quality mode
+    private final AffineTransform workTransform = new AffineTransform();
+    private final AffineTransform tempTransform = new AffineTransform();
 
-    // High-resolution cached image for optimized rendering
-    private BufferedImage cachedImage;
+    private SoftReference<ArrayList<GraphicsNode>> gnSheets;
+    private List<Entity> entities = new ArrayList<>();
+    private boolean needsViewReset = false;
+    private Timer resetViewTimer;
+    private static final int RESET_VIEW_DELAY = 200; // 200ms delay
+
+    // cached image for optimized rendering
+    private SoftReference<BufferedImage> cachedImage;
 
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
-        // Enable better rendering
         setDoubleBuffered(true);
+
+        // Initialize the debounce timer
+        resetViewTimer = new javax.swing.Timer(RESET_VIEW_DELAY, e -> {
+            // Stop the timer when it fires
+            resetViewTimer.stop();
+            // Execute the actual reset view operation
+            resetView();
+        });
+        resetViewTimer.setRepeats(false); // Ensure it only fires once
+
+        // Add hierarchy listener to detect actual visibility changes when in tabs
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                // Only trigger on "becoming visible" events
+                if (needsViewReset && isShowing()) {
+                    resetView();
+                }
+            }
+        });
     }
 
     /**
@@ -127,17 +159,26 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Creates a complete image of the record sheet and copies it to the clipboard
      */
     private void copyRecordSheetToClipboard() {
-        if (entity == null) {
+        if (entities == null || entities.isEmpty()) {
             return;
         }
 
         // Use standard paper size for the clipboard image
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
+
+        // Render the record sheet directly without zoom/pan
+        ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
+
+        if (nodes == null || nodes.size() == 0) {
+            return;
+        }
+
         int imgWidth = (int) Math.ceil(pz.pxWidth * CLIPBOARD_ZOOM_SCALE);
+        int fullWidth = imgWidth * nodes.size();
         int imgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
 
-        BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(fullWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = GraphicsUtil.createGraphics(img);
 
         // Set high quality rendering
@@ -156,41 +197,38 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         // White background
         g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, imgWidth, imgHeight);
+        g.clearRect(0, 0, fullWidth, imgHeight);
 
-        // Render the record sheet directly without zoom/pan
-        PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
-                .stream().findFirst().orElse(null);
+        if (!nodes.isEmpty()) {
+            int k = 0;
+            for (GraphicsNode gn : nodes) {
+                if (gn == null) {
+                    continue;
+                }
+                // Scale to fit the clipboard image
+                var bounds = gn.getBounds();
+                var yscale = (imgHeight - 20) / bounds.getHeight();
+                var xscale = (imgWidth - 20) / bounds.getWidth();
+                var scale = Math.min(yscale, xscale);
 
-        if (sheet != null) {
-            PageFormat pf = new PageFormat();
-            if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
-                sheet.createDocument(0, pf, false);
-            } else {
-                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
-                sheet.createDocument(0, pf, true);
+                // Calculate position for this sheet (side by side horizontally)
+                double xOffset = k * imgWidth;
+
+                // Center the sheet in the image
+                double centerX = (imgWidth - (bounds.getWidth() * scale)) / 2;
+                double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
+
+                // Apply transform for this sheet - scale and position
+                tempTransform.setToIdentity();
+                tempTransform.translate(centerX + xOffset, centerY);
+                tempTransform.scale(scale, scale);
+                gn.setTransform(tempTransform);
+
+                // Draw to the clipboard image
+                gn.paint(g);
+                k++;
             }
 
-            GraphicsNode gn = sheet.build();
-
-            // Scale to fit the clipboard image
-            var bounds = gn.getBounds();
-            var yscale = (imgHeight - 20) / bounds.getHeight();
-            var xscale = (imgWidth - 20) / bounds.getWidth();
-            var scale = Math.min(yscale, xscale);
-
-            // Center the sheet in the image
-            double centerX = (imgWidth - (bounds.getWidth() * scale)) / 2;
-            double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
-
-            AffineTransform transform = new AffineTransform();
-            transform.translate(centerX, centerY);
-            transform.scale(scale, scale);
-            gn.setTransform(transform);
-
-            // Draw to the clipboard image
-            gn.paint(g);
         }
 
         g.dispose();
@@ -226,18 +264,25 @@ public class RecordSheetPreviewPanel extends JPanel {
                 Point mousePoint = e.getPoint();
                 double oldZoom = zoomFactor;
 
-                // Adjust zoom by scroll amount
-                zoomFactor -= e.getPreciseWheelRotation() * ZOOM_STEP;
-                zoomFactor = Math.max(minZoom, Math.min(MAX_ZOOM, zoomFactor));
+                // Calculate new zoom with acceleration for larger changes
+                double zoomDelta = e.getPreciseWheelRotation() * ZOOM_STEP;
+                if (Math.abs(e.getPreciseWheelRotation()) > 1.5) {
+                    zoomDelta *= 1.5; // Accelerate for faster scrolling
+                }
 
-                if (oldZoom != zoomFactor) {
+                // Adjust zoom by scroll amount
+                double newZoom = zoomFactor - zoomDelta;
+                newZoom = Math.max(minZoom, Math.min(MAX_ZOOM, newZoom));
+
+                if (oldZoom != newZoom) {
                     // Adjust pan to keep mouse position fixed
-                    double zoomRatio = zoomFactor / oldZoom;
+                    double zoomRatio = newZoom / oldZoom;
 
                     panOffset.setLocation(
                             mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
                             mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
                     cachedImage = null; // Invalidate cached image on zoom change
+                    zoomFactor = newZoom;
                     repaint();
                 }
             }
@@ -262,8 +307,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     setCursor(Cursor.getDefaultCursor());
                     isPanning = false;
-                    isHighQuality = true;
-                    repaint();
+                    SwingUtilities.invokeLater(() -> {
+                        isHighQuality = true;
+                        repaint();
+                    });
                 }
             }
 
@@ -292,16 +339,31 @@ public class RecordSheetPreviewPanel extends JPanel {
         });
     }
 
+    /**
+     * Schedules a view reset with debounce behavior
+     */
+    private void scheduleResetView() {
+        if (resetViewTimer.isRunning()) {
+            resetViewTimer.stop();
+        }
+        resetViewTimer.start();
+    }
+
+    /**
+     * Performs the actual view reset operation
+     */
     private void resetView() {
+        needsViewReset = false;
         isHighQuality = true;
         zoomFactor = getMinimumZoom();
         initialZoomFactor = zoomFactor;
-        renderHighResolutionImage();
-        if (cachedImage != null) {
+        renderCachedImage();
+        BufferedImage img = cachedImage != null ? cachedImage.get() : null;
+        if (img != null) {
 
             // Calculate offsets to center the image
-            double xOffset = (getWidth() - cachedImage.getWidth()) / 2;
-            double yOffset = (getHeight() - cachedImage.getHeight()) / 2;
+            double xOffset = (getWidth() - img.getWidth()) / 2;
+            double yOffset = (getHeight() - img.getHeight()) / 2;
 
             // Set pan offset to center the image
             // Use max(0, value) to avoid negative offsets if image is bigger than panel
@@ -316,28 +378,92 @@ public class RecordSheetPreviewPanel extends JPanel {
         repaint();
     }
 
-    private Entity entity;
-    private GraphicsNode gnSheet;
+    /**
+     * Sets multiple entities to be displayed side by side horizontally
+     * 
+     * @param entities List of entities to display
+     */
+    public void setEntities(List<Entity> entities) {
+        if (entities == null) {
+            this.entities.clear();
+        } else {
+            this.entities = entities;
+        }
 
-    public void setEntity(Entity entity) {
-        this.entity = entity;
-        // Reset view and invalidate cached image when entity changes
+        // Reset view and invalidate cached image when entities change
+        gnSheets = null;
         cachedImage = null;
-        gnSheet = null;
-        resetView();
+
+        if (isShowing()) {
+            // If visible, update the view immediately
+            scheduleResetView();
+        } else {
+            // If not visible, mark for update when panel becomes visible
+            needsViewReset = true;
+        }
     }
 
-    private void renderHighResolutionImage() {
+    /**
+     * Sets a single entity to display (clears any previous multi-entity display)
+     * 
+     * @param entity The entity to display
+     */
+    public void setEntity(Entity entity) {
         if (entity == null) {
+            this.setEntities(null);
+        } else {
+            this.setEntities(List.of(entity));
+        }
+    }
+
+    private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
+        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(
+                entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), true, options, true);
+        ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
+        PageFormat pf = new PageFormat();
+        for (PrintRecordSheet sheet : sheets) {
+            if (sheet instanceof PrintSmallUnitSheet) {
+                pf.setPaper(options.getPaperSize().createPaper());
+            } else {
+                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
+            }
+            int pagesCount = sheet.getPageCount();
+            for (int i = 0; i < pagesCount; i++) {
+                sheet.createDocument(i, pf, false);
+                gnSheets.add(sheet.build());
+            }
+        }
+        return gnSheets;
+    }
+
+    private void renderCachedImage() {
+        // Check if we have any entity to render
+        if ((entities == null || entities.isEmpty())) {
             cachedImage = null;
             return;
         }
 
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
+
+        ArrayList<GraphicsNode> sheetNodes = gnSheets != null ? gnSheets.get() : null;
+        if (sheetNodes == null || sheetNodes.isEmpty()) {
+
+            sheetNodes = getRecordSheetGraphicsNodes(entities, options);
+            // Store in SoftReference
+            gnSheets = new SoftReference<>(sheetNodes);
+        }
+
+        if (sheetNodes == null || sheetNodes.size() == 0) {
+            cachedImage = null;
+            return;
+        }
+
         int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
+        int totalWidth = fullWidth * sheetNodes.size();
         int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
 
+        BufferedImage img;
         // Try to use hardware-accelerated image if possible
         try {
             // Get hardware acceleration configuration
@@ -346,15 +472,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             java.awt.GraphicsConfiguration gc = gs.getDefaultConfiguration();
 
             // Create a compatible image (should work better with hardware)
-            cachedImage = gc.createCompatibleImage(fullWidth, fullHeight, java.awt.Transparency.OPAQUE);
+            img = gc.createCompatibleImage(totalWidth, fullHeight, java.awt.Transparency.OPAQUE);
         } catch (Exception e) {
             // Fallback to standard image if hardware acceleration fails
-            cachedImage = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
+            img = new BufferedImage(totalWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
         }
-        Graphics2D g = GraphicsUtil.createGraphics(cachedImage);
+        Graphics2D g = GraphicsUtil.createGraphics(img);
         g.setComposite(java.awt.AlphaComposite.SrcOver);
 
-        // Set render quality for the high-res image
+        // Set render quality
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -366,52 +492,53 @@ public class RecordSheetPreviewPanel extends JPanel {
         rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         rh.put(org.apache.batik.ext.awt.RenderingHintsKeyExt.KEY_TRANSCODING,
                 org.apache.batik.ext.awt.RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
-        rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<BufferedImage>(cachedImage));
+        rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<BufferedImage>(img));
         g.setRenderingHints(rh);
 
         // White background
         g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, fullWidth, fullHeight);
+        g.clearRect(0, 0, totalWidth, fullHeight);
 
-        // Render the record sheet to the high-res image
-        if (gnSheet == null) {
-            PrintRecordSheet sheet = UnitPrintManager.createSheets(List.of(entity), true, options)
-            .stream().findFirst().orElse(null);
-            PageFormat pf = new PageFormat();
-            if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
-                sheet.createDocument(0, pf, false);
-            } else {
-                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
-                sheet.createDocument(0, pf, true);
-            }
-            gnSheet = sheet.build();
-        }
-        if (gnSheet != null) {
-            AffineTransform originalTransform = gnSheet.getTransform();
-            try {
-                var bounds = gnSheet.getBounds();
-                var yscale = (fullHeight - 20) / bounds.getHeight();
-                var xscale = (fullWidth - 20) / bounds.getWidth();
-                var scale = Math.min(yscale, xscale);
-    
-                double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
-                double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
-    
-                AffineTransform transform = new AffineTransform();
-                transform.translate(centerX, centerY);
-                transform.scale(scale, scale);
-                gnSheet.setTransform(transform);
-    
-                gnSheet.paint(g);
-            } finally {
-                if (originalTransform != null) {
-                    gnSheet.setTransform(originalTransform);
+        if (!sheetNodes.isEmpty()) {
+            int k = 0;
+            for (int i = 0; i < sheetNodes.size(); i++) {
+                GraphicsNode gnSheet = sheetNodes.get(i);
+                if (gnSheet == null) {
+                    continue;
+                }
+                AffineTransform originalTransform = gnSheet.getTransform();
+                try {
+                    var bounds = gnSheet.getBounds();
+                    var yscale = (fullHeight - 20) / bounds.getHeight();
+                    var xscale = (fullWidth - 20) / bounds.getWidth();
+                    var scale = Math.min(yscale, xscale);
+                    // Calculate position for this sheet (side by side horizontally)
+                    double xOffset = k * (pz.pxWidth * zoomFactor);
+
+                    // Center the sheet in the image
+                    double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
+                    double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
+
+                    // Apply transform for this sheet - scale and position
+                    workTransform.setToIdentity();
+                    workTransform.translate(centerX + xOffset, centerY);
+                    workTransform.scale(scale, scale);
+                    gnSheet.setTransform(workTransform);
+
+                    // Paint this sheet
+                    gnSheet.paint(g);
+                    k++;
+                } finally {
+                    if (originalTransform != null) {
+                        gnSheet.setTransform(originalTransform);
+                    }
                 }
             }
         }
 
         g.dispose();
+        // Store the image in a SoftReference
+        cachedImage = new SoftReference<>(img);
     }
 
     private void paintComponent(Graphics2D g, int width, int height) {
@@ -436,13 +563,15 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, width, height);
 
-        if (entity != null) {
-            // Generate high-resolution image if needed
-            if (cachedImage == null) {
-                renderHighResolutionImage();
+        if (entities != null && !entities.isEmpty()) {
+            BufferedImage img = cachedImage != null ? cachedImage.get() : null;
+            // Generate image if needed
+            if (img == null) {
+                renderCachedImage();
+                img = cachedImage != null ? cachedImage.get() : null;
             }
 
-            if (cachedImage != null) {
+            if (img != null) {
                 // Store original transform for restoration later
                 AffineTransform originalTransform = g.getTransform();
 
@@ -451,12 +580,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                 double srcY = Math.max(0, -panOffset.getY());
 
                 // Create a transform that handles positioning and scaling in one step
-                AffineTransform at = new AffineTransform(originalTransform);
-                at.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
-                g.setTransform(at);
-
+                tempTransform.setTransform(originalTransform);
+                tempTransform.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
+                g.setTransform(tempTransform);
+                
                 // Draw the image
-                g.drawImage(cachedImage, -(int) srcX, -(int) srcY, null);
+                g.drawImage(img, -(int) srcX, -(int) srcY, null);
 
                 // Restore original transform
                 g.setTransform(originalTransform);
@@ -470,6 +599,20 @@ public class RecordSheetPreviewPanel extends JPanel {
         paintComponent((Graphics2D) g, getWidth(), getHeight());
     }
 
+    // Add cleanup method to release resources when no longer needed
+    public void cleanup() {
+        // Clear cached images to help garbage collection
+        cachedImage = null;
+        gnSheets = null;
+    }
+
+    // Call this from a removeNotify() method:
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        cleanup();
+    }
+
     // Add a component resize listener to adjust the view on resize
     @Override
     public void addNotify() {
@@ -481,9 +624,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 // Only auto-fit if we haven't manually zoomed or panned yet
                 // (This prevents resetting user's view when window is resized)
                 if (cachedImage != null && zoomFactor == initialZoomFactor) {
-                    resetView();
+                    scheduleResetView();
                 }
             }
+
         });
     }
 }
