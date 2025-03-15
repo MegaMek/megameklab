@@ -153,7 +153,7 @@ import org.apache.batik.gvt.GraphicsNode;
          // Render the record sheet directly without zoom/pan
          ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
  
-         if (nodes.size() == 0) {
+         if (nodes == null || nodes.size() == 0) {
              return;
          }
  
@@ -462,7 +462,6 @@ import org.apache.batik.gvt.GraphicsNode;
          g.setBackground(Color.WHITE);
          g.clearRect(0, 0, totalWidth, fullHeight);
  
-         // if (entity != null) {
          if (sheetNodes != null && !sheetNodes.isEmpty()) {
              int k = 0;
              for (int i = 0; i < sheetNodes.size(); i++) {
