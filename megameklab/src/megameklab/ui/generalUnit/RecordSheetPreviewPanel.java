@@ -29,7 +29,8 @@
  import java.awt.datatransfer.DataFlavor;
  import java.awt.datatransfer.Transferable;
  import java.awt.datatransfer.UnsupportedFlavorException;
- import java.awt.event.MouseAdapter;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.MouseAdapter;
  import java.awt.event.MouseEvent;
  import java.awt.event.MouseMotionAdapter;
  import java.awt.event.MouseWheelEvent;
@@ -47,8 +48,9 @@
  import javax.swing.JMenuItem;
  import javax.swing.JPanel;
  import javax.swing.JPopupMenu;
- 
- import org.apache.batik.gvt.GraphicsNode;
+import javax.swing.SwingUtilities;
+
+import org.apache.batik.gvt.GraphicsNode;
  import org.apache.batik.ext.awt.RenderingHintsKeyExt;
  import org.apache.batik.ext.awt.image.GraphicsUtil;
  
@@ -109,8 +111,18 @@
      public RecordSheetPreviewPanel() {
          addMouseListener(new RightClickListener());
          setupMouseHandlers();
-         // Enable better rendering
          setDoubleBuffered(true);
+
+         // Add hierarchy listener to detect actual visibility changes when in tabs
+        addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                // Only trigger on "becoming visible" events
+                if (needsViewReset && isShowing() {
+                    needsViewReset = false;
+                    resetView();
+                }
+            }
+        });
      }
  
      /**
@@ -563,15 +575,6 @@
                  // (This prevents resetting user's view when window is resized)
                  if (cachedImage != null && zoomFactor == initialZoomFactor) {
                      resetView();
-                 }
-             }
- 
-             @Override
-             public void componentShown(java.awt.event.ComponentEvent e) {
-                 // Perform deferred view reset if needed
-                 if (needsViewReset) {
-                     resetView();
-                     needsViewReset = false;
                  }
              }
          });
