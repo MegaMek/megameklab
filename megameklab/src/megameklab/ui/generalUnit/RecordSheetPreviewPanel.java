@@ -182,7 +182,7 @@ import org.apache.batik.gvt.GraphicsNode;
          g.setBackground(Color.WHITE);
          g.clearRect(0, 0, fullWidth, imgHeight);
  
-         if (nodes != null && !nodes.isEmpty()) {
+         if (!nodes.isEmpty()) {
              int k = 0;
              for (GraphicsNode gn : nodes) {
                  if (gn == null) {
