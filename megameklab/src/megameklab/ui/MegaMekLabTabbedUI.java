@@ -49,12 +49,12 @@
  import megameklab.MegaMekLab;
  import megameklab.ui.dialog.UiLoader;
  import megameklab.ui.mek.BMMainUI;
+ import megameklab.ui.util.ExitOnWindowClosingListener;
+ import megameklab.ui.util.TabUtil;
  import megameklab.ui.util.EnhancedTabbedPane;
  import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
  import megameklab.ui.util.EnhancedTabbedPane.EnhancedTab;
  import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
- import megameklab.ui.util.ExitOnWindowClosingListener;
- import megameklab.ui.util.TabUtil;
  import megameklab.util.CConfig;
  import megameklab.util.MMLFileDropTransferHandler;
  import megameklab.util.UnitUtil;
