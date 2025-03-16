@@ -39,7 +39,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param title
          * @param icon
          * @param component
-         * @param wrapperWindowComponent
+         * @param wrapperComponent
          * @param originalIndex
          * @param closeAction
          * @param isEnhancedTab
