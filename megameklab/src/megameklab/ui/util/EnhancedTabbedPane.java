@@ -74,7 +74,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private boolean tabReorderingEnabled = false;
     private boolean actionButtonsAlignAfterTabs = true;
 
-    private class DragState {
+    private static class DragState {
         int tabIndex = -1;
         boolean isDragging = false;
         Point startPoint = null;
@@ -82,7 +82,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         boolean showingGhost = false;
     }
 
-    private DragState dragState = new DragState();
+    private static final DragState dragState = new DragState();
 
     public EnhancedTabbedPane() {
         this(null, false, false);
