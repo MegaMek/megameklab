@@ -189,10 +189,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * Called before a tab is detached from the pane
          * 
          * @param tabIndex  The index of the tab being detached
-         * @param title     The title of the tab
          * @param component The component in the tab
          */
-        default void onTabDetaching(int tabIndex, String title, Component component) {
+        default void onTabDetaching(int tabIndex, Component component) {
         }
 
         /**
@@ -216,10 +215,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * Called after a tab has been reattached to the pane
          * 
          * @param tabIndex  The index where the tab was inserted
-         * @param title     The title of the reattached tab
          * @param component The component that was reattached
          */
-        default void onTabReattached(int tabIndex, String title, Component component) {
+        default void onTabReattached(int tabIndex, Component component) {
         }
     }
 
@@ -247,9 +245,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
     }
 
     // Event firing methods
-    protected void fireTabDetaching(int tabIndex, String title, Component component) {
+    protected void fireTabDetaching(int tabIndex, Component component) {
         for (TabStateListener listener : tabStateListeners) {
-            listener.onTabDetaching(tabIndex, title, component);
+            listener.onTabDetaching(tabIndex, component);
         }
     }
 
@@ -265,9 +263,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
     }
 
-    protected void fireTabReattached(int tabIndex, String title, Component component) {
+    protected void fireTabReattached(int tabIndex, Component component) {
         for (TabStateListener listener : tabStateListeners) {
-            listener.onTabReattached(tabIndex, title, component);
+            listener.onTabReattached(tabIndex, component);
         }
     }
 
@@ -883,7 +881,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
 
         // Extract tab information once
-        String title = getTitleAt(tabIndex);
+        String title;
         Icon icon = getIconAt(tabIndex);
         Component component = getComponentAt(tabIndex);
         Component componentWindow = null;
@@ -894,10 +892,12 @@ public class EnhancedTabbedPane extends JTabbedPane {
             title = enhancedTab.getTitle();
             closeAction = enhancedTab.getCloseAction();
             componentWindow = enhancedTab.component;
+        } else {
+            title = getTitleAt(tabIndex);
         }
 
         // Notify listeners before detaching
-        fireTabDetaching(tabIndex, title, component);
+        fireTabDetaching(tabIndex, component);
 
         // Remove the tab from the pane before creating windows to avoid focus issues
         remove(tabIndex);
@@ -1029,7 +1029,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             setSelectedIndex(insertIndex);
 
             // Notify listeners that reattachment is complete
-            fireTabReattached(insertIndex, tabInfo.title, tabInfo.component);
+            fireTabReattached(insertIndex, tabInfo.component);
         }
         detachedTabs.remove(component);
         if (component instanceof JFrame frame) {

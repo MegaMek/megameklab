@@ -157,7 +157,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                     addTab(newUi);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     // Right click - show popup menu
-                    showNewUnitPopupMenu(button, e);
+                    showNewUnitPopupMenu(button);
                 }
             }
         });
@@ -183,7 +183,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                     StartupGUI.selectAndLoadUnitFromCache(MegaMekLabTabbedUI.this);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     // Right click - show popup menu
-                    showLoadUnitPopupMenu(button, e);
+                    showLoadUnitPopupMenu(button);
                 }
             }
         });
@@ -194,7 +194,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Displays the popup menu for creating new units
      */
-    private void showNewUnitPopupMenu(Component source, MouseEvent e) {
+    private void showNewUnitPopupMenu(Component source) {
         JPopupMenu menu = createNewUnitPopupMenu();
         Point location = new Point(5, source.getHeight());
         menu.show(source, location.x, location.y);
@@ -241,7 +241,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Displays the popup menu for loading units
      */
-    private void showLoadUnitPopupMenu(Component source, MouseEvent e) {
+    private void showLoadUnitPopupMenu(Component source) {
         JPopupMenu menu = createLoadUnitPopupMenu();
         Point location = new Point(5, source.getHeight());
         menu.show(source, location.x, location.y);
