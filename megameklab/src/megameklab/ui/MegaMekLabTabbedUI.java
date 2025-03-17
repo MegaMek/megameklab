@@ -451,6 +451,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (tabComponent instanceof EnhancedTab tab) {
             if (tab.getComponent() instanceof MegaMekLabMainUI) {
                 MegaMekLabMainUI editor = (MegaMekLabMainUI) tab.getComponent();
+                editor.reattachAllTabs();
                 tabs.remove(position);
                 if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
                     tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);

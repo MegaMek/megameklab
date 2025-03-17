@@ -125,7 +125,7 @@ public abstract class MegaMekLabMainUI extends JFrame
         if (!safetyPrompt()) {
             return false;
         }
-
+        reattachAllTabs();
         CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
         CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
         CConfig.writeMainUiWindowSettings(this);
