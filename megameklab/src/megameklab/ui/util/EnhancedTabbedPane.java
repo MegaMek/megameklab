@@ -572,6 +572,11 @@ public class EnhancedTabbedPane extends JTabbedPane {
             }
             bounds.height = maxBottom;
         }
+        int margin = 2;
+        bounds.x -= margin;
+        bounds.y -= margin;
+        bounds.height += margin * 2;
+        bounds.width += margin * 2;
         return bounds;
     }
 
