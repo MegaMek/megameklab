@@ -467,6 +467,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 if (!isDragFunctionalityEnabled()) {
                     return;
                 }
+                if (getTabCount() == 1) {
+                    // Don't drag/detach the last tab
+                    return;
+                }
                 dragState.tabIndex = indexAtLocation(e.getX(), e.getY());
                 if (dragState.tabIndex >= 0) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
@@ -486,6 +490,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (!isDragFunctionalityEnabled()) {
+                    return;
+                }
+                if (getTabCount() == 1) {
+                    // Don't drag the last tab
                     return;
                 }
                 if (dragState.isDragging && dragState.tabIndex >= 0 && dragState.startPoint != null) {
