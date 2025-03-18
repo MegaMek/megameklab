@@ -542,31 +542,29 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * @return Rectangle representing the tab header area
      */
     private Rectangle getTabAreaBounds() {
+        Rectangle bounds = getBounds();
+        Insets insets = getInsets();
+        bounds.x = insets.left;
+        bounds.y = insets.top;
+        bounds.width -= insets.left + insets.right;
         int tabCount = getTabCount();
         if (tabCount == 0) {
-            return new Rectangle(0, 0, 0, 0);
-        }
-
-        int tabPlacement = getTabPlacement();
-        Rectangle rect = getBoundsAt(0);
-
-        Rectangle lastRect = getBoundsAt(tabCount - 1);
-
-        // Calculate the area containing all tabs
-        if (tabPlacement == JTabbedPane.TOP || tabPlacement == JTabbedPane.BOTTOM) {
-            rect.width = lastRect.x + lastRect.width - rect.x;
+            bounds.height = 32; // Default height
         } else {
-            rect.height = lastRect.y + lastRect.height - rect.y;
+            // Find the maximum bottom edge of all tabs to account for multiple rows
+            int maxBottom = 0;
+            for (int i = 0; i < tabCount; i++) {
+                Rectangle tabBounds = getBoundsAt(i);
+                if (tabBounds != null) {
+                    int bottom = tabBounds.y + tabBounds.height;
+                    if (bottom > maxBottom) {
+                        maxBottom = bottom;
+                    }
+                }
+            }
+            bounds.height = maxBottom;
         }
-
-        // Add a small margin around the tab area
-        int margin = 2;
-        rect.x -= margin;
-        rect.y -= margin;
-        rect.width += margin * 2;
-        rect.height += margin * 2;
-
-        return rect;
+        return bounds;
     }
 
     /**
