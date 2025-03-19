@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="8"
-     inkscape:cx="79.3125"
-     inkscape:cy="91.875"
+     inkscape:zoom="2"
+     inkscape:cx="79.75"
+     inkscape:cy="91.75"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
@@ -1155,7 +1155,7 @@
          id="text227">Walking:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpWalk"
          y="56"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1169,7 +1169,7 @@
          id="text228">Running:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpRun"
          y="65"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1183,7 +1183,7 @@
          text-anchor="start">Jumping:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpJump"
          y="74"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1213,10 +1213,10 @@
          id="text230">Cruising:</text>
       <text
          fill="#231f20"
-         x="97.150"
+         x="101.15"
          id="mpCruise"
-         y="56.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
+         y="56"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
       <text
          x="59.150002"
@@ -1229,10 +1229,10 @@
          id="text231">Flanking:</text>
       <text
          fill="#231f20"
-         x="97.150"
+         x="101.15"
          id="mpFlank"
-         y="65.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
+         y="65"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
       <text
          x="112.300"
