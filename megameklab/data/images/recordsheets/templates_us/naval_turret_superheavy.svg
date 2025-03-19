@@ -9,7 +9,7 @@
    version="1.0"
    id="svg469"
    sodipodi:docname="naval_turret_superheavy.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,13 +26,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.5515873"
-     inkscape:cx="287.76982"
-     inkscape:cy="378"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="3832"
-     inkscape:window-y="-8"
+     inkscape:zoom="17.554206"
+     inkscape:cx="79.952347"
+     inkscape:cy="135.15279"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
      inkscape:current-layer="rs_template" />
   <g
@@ -1178,20 +1178,21 @@
          style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
          text-anchor="middle">0</text>
       <text
-         x="57.850"
-         y="56.000"
+         x="57.849998"
+         y="56"
          fill="#231f20"
          text-anchor="start"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
+         style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          id="lblJump"
-         textLength="29.883"
-         lengthAdjust="spacingAndGlyphs">Jumping:</text>
+         textLength="29.882999"
+         lengthAdjust="spacingAndGlyphs"
+         transform="translate(6.5411808)">Jumping:</text>
       <text
          fill="#231f20"
-         x="95.850"
+         x="102.39133"
          id="mpJump"
-         y="56.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
+         y="56"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="start">0</text>
       <text
          x="115.700"

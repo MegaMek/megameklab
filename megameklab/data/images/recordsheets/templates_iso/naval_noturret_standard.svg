@@ -9,7 +9,7 @@
    version="1.0"
    id="svg465"
    sodipodi:docname="naval_noturret_standard.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.455335"
-     inkscape:cx="114.06309"
-     inkscape:cy="403"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="8.232618"
+     inkscape:cx="66.868158"
+     inkscape:cy="164.2248"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="armorPips" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo"
      id="rs_template">
@@ -1178,20 +1178,21 @@
          style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
          text-anchor="middle">0</text>
       <text
-         x="56.150"
-         y="56.000"
+         x="56.150002"
+         y="56"
          fill="#231f20"
          text-anchor="start"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
+         style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          id="lblJump"
-         textLength="29.883"
-         lengthAdjust="spacingAndGlyphs">Jumping:</text>
+         textLength="29.882999"
+         lengthAdjust="spacingAndGlyphs"
+         transform="translate(8.1062845)">Jumping:</text>
       <text
          fill="#231f20"
-         x="94.150"
+         x="102.25627"
          id="mpJump"
-         y="56.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
+         y="56"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="start">0</text>
       <text
          x="112.300"
@@ -3299,28 +3300,27 @@
             </g>
           </g>
           <g
-                  fill="none"
-                  id="structurePipsGrouped"
-          >
+             fill="none"
+             id="structurePipsGrouped">
             <g
-                    id="structurePipsRSgrouped"
-                    transform="matrix(0, 1, -1, 0, 515, 190)">
+               id="structurePipsRSgrouped"
+               transform="matrix(0, 1, -1, 0, 515, 190)">
               <rect
-                      x="-15"
-                      width="340"
-                      y="0"
-                      height="6.8"
-                      id="rect100" />
+                 x="-15"
+                 width="340"
+                 y="0"
+                 height="6.8"
+                 id="rect100" />
             </g>
             <g
-                    id="structurePipsLSgrouped"
-                    transform="matrix(0, 1, 1, 0, 464, 190)">
+               id="structurePipsLSgrouped"
+               transform="matrix(0, 1, 1, 0, 464, 190)">
               <rect
-                      x="-15"
-                      width="340"
-                      y="0"
-                      height="6.8"
-                      id="rect230" />
+                 x="-15"
+                 width="340"
+                 y="0"
+                 height="6.8"
+                 id="rect230" />
             </g>
           </g>
         </g>
