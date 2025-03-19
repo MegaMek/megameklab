@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Collectors;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -63,51 +62,48 @@ import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
-import megameklab.ui.dialog.UiLoader;
 
 public class UnitUtil {
+
     private static final MMLogger logger = MMLogger.create(UnitUtil.class);
 
-    private static Font rsFont = null;
+    private static Font rsFont     = null;
     private static Font rsBoldFont = null;
 
     /**
-     * tells is EquipementType is an equipment that uses crits/mounted and is
-     * spread across multiple locations
+     * Tells us if the passed in EquipmentType is equipment that uses critical slots/mounted and is spread across
+     * multiple locations
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
-        return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_BA_MANIPULATOR)
-                        || eq.hasFlag(MiscType.F_PARTIAL_WING)
-                        || eq.hasFlag(MiscType.F_NULLSIG)
-                        || eq.hasFlag(MiscType.F_VOIDSIG)
-                        || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
-                        || eq.hasFlag(MiscType.F_TRACKS)
-                        || eq.hasFlag(MiscType.F_TALON)
-                        || (eq.hasFlag(MiscType.F_STEALTH)
-                                && (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
-                                        || eq.hasFlag(MiscType.F_TANK_EQUIPMENT)))
-                        || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
-                        || eq.hasFlag(MiscType.F_BLUE_SHIELD)
-                        || eq.hasFlag(MiscType.F_MAST_MOUNT)
-                        || eq.hasFlag(MiscType.F_SCM)
-                        || eq.hasFlag(MiscType.F_CHAIN_DRAPE)
-                        || (eq.hasFlag(MiscType.F_RAM_PLATE)
-                                || (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
-                                || (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
-                                || (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))
-                                || (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))));
+        return (eq instanceof MiscType) &&
+               (eq.hasFlag(MiscType.F_JUMP_BOOSTER) ||
+                eq.hasFlag(MiscType.F_BA_MANIPULATOR) ||
+                eq.hasFlag(MiscType.F_PARTIAL_WING) ||
+                eq.hasFlag(MiscType.F_NULLSIG) ||
+                eq.hasFlag(MiscType.F_VOIDSIG) ||
+                eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) ||
+                eq.hasFlag(MiscType.F_TRACKS) ||
+                eq.hasFlag(MiscType.F_TALON) ||
+                (eq.hasFlag(MiscType.F_STEALTH) &&
+                 (eq.hasFlag(MiscType.F_MEK_EQUIPMENT) || eq.hasFlag(MiscType.F_TANK_EQUIPMENT))) ||
+                eq.hasFlag(MiscType.F_CHAMELEON_SHIELD) ||
+                eq.hasFlag(MiscType.F_BLUE_SHIELD) ||
+                eq.hasFlag(MiscType.F_MAST_MOUNT) ||
+                eq.hasFlag(MiscType.F_SCM) ||
+                eq.hasFlag(MiscType.F_CHAIN_DRAPE) ||
+                (eq.hasFlag(MiscType.F_RAM_PLATE) ||
+                 (eq.hasFlag(MiscType.F_JUMP_JET) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT)) ||
+                 (eq.hasFlag(MiscType.F_UMU) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT)) ||
+                 (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT)) ||
+                 (eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscType.F_PROTOMEK_EQUIPMENT))));
     }
 
     /**
      * tells if the EquipmentType is a type of armor
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isArmor(EquipmentType eq) {
         return eq instanceof ArmorType;
@@ -117,7 +113,6 @@ public class UnitUtil {
      * tells if the EquipmentType is a type of armor
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isStructure(EquipmentType eq) {
         for (String armor : EquipmentType.structureNames) {
@@ -133,15 +128,14 @@ public class UnitUtil {
      * tells if EquipmentType is TSM or TargetComp
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isTSM(EquipmentType eq) {
-        return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag((MiscType.F_INDUSTRIAL_TSM)));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_TSM) || eq.hasFlag((MiscType.F_INDUSTRIAL_TSM)));
     }
 
     /**
      * @param eq The equipment to test The equipmentType to check
+     *
      * @return true if this is a Remote Sensor Dispenser (BA or vehicular)
      */
     public static boolean isRemoteSensorDispenser(EquipmentType eq) {
@@ -150,6 +144,7 @@ public class UnitUtil {
 
     /**
      * @param eq The equipment to test The equipmentType to check
+     *
      * @return true if this is a Mine Dispenser (BA or vehicular)
      */
     public static boolean isMineDispenser(EquipmentType eq) {
@@ -160,20 +155,18 @@ public class UnitUtil {
      * tells if EquipmentType is MASC
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isMASC(EquipmentType eq) {
-        return (eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
     }
 
     /**
-     * Returns the number of crits used by EquipmentType for each placement. For
-     * most equipment this is the same as the total slots, but some spreadable
-     * equipment is allocated a single slot at a time, or split between multiple
-     * locations.
+     * Returns the number of critical slots used by EquipmentType for each placement. For most equipment this is the
+     * same as the total slots, but some spreadable equipment is allocated a single slot at a time, or split between
+     * multiple locations.
      *
      * @param mount The equipment mount
+     *
      * @return The number of slots per allocation
      */
     public static int getCritsUsed(Mounted<?> mount) {
@@ -190,15 +183,15 @@ public class UnitUtil {
             toReturn = eq.isClan() ? 3 : 4;
         } else if (eq.hasFlag(MiscType.F_CHAIN_DRAPE)) {
             toReturn = 3;
-        } else if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                        || eq.hasFlag(MiscType.F_TALON)
-                        // Stealth armor is allocated 2 slots/location in Meks, but by individual slot
-                        // for BA
-                        || (eq.hasFlag(MiscType.F_STEALTH) && !(mount.getEntity() instanceof BattleArmor)))) {
+        } else if ((eq instanceof MiscType) &&
+                   (eq.hasFlag(MiscType.F_JUMP_BOOSTER) ||
+                    eq.hasFlag(MiscType.F_TALON) ||
+                    (eq.hasFlag(MiscType.F_STEALTH) && !(mount.getEntity() instanceof BattleArmor)))) {
+            // Stealth armor is allocated 2 slots/location in Meks, but by individual slot for BA
             toReturn = 2;
-        } else if (UnitUtil.isFixedLocationSpreadEquipment(eq) || UnitUtil.isTSM(eq)
-                || UnitUtil.isArmorOrStructure(eq)) {
+        } else if (UnitUtil.isFixedLocationSpreadEquipment(eq) ||
+                   UnitUtil.isTSM(eq) ||
+                   UnitUtil.isArmorOrStructure(eq)) {
             toReturn = 1;
         }
         if ((mount.getEntity() instanceof Mek) && mount.getEntity().isSuperHeavy()) {
@@ -210,7 +203,7 @@ public class UnitUtil {
     /**
      * Removes a piece of equipment from the Entity
      *
-     * @param unit  The entity The Entity
+     * @param unit  The entity
      * @param mount The equipment
      */
     public static void removeMounted(Entity unit, Mounted<?> mount) {
@@ -218,47 +211,47 @@ public class UnitUtil {
 
         // Some special checks for BA
         if (unit instanceof BattleArmor) {
-            // If we're removing a DWP and it has an attached weapon, we need
-            // to detach the weapon
-            if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                    && (mount.getLinked() != null)) {
+            // If we're removing a DWP, and it has an attached weapon, we need to detach the weapon
+            if (mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) && (mount.getLinked() != null)) {
                 Mounted<?> link = mount.getLinked();
                 link.setDWPMounted(false);
                 link.setLinked(null);
                 link.setLinkedBy(null);
             }
-            // If we are removing a weapon that is mounted in an DWP, we need
-            // to clear the mounted status of the DWP
-            if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
+
+            // If we are removing a weapon that is mounted in an DWP, we need to clear the mounted status of the DWP
+            if ((mount.getLinkedBy() != null) &&
+                mount.getLinkedBy().getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
                 Mounted<?> dwp = mount.getLinkedBy();
                 dwp.setLinked(null);
                 dwp.setLinkedBy(null);
             }
-            // If we're removing an APM and it has an attached weapon, we need
-            // to detach the weapon
+
+            // If we're removing an APM, and it has an attached weapon, we need to detach the weapon
             if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && (mount.getLinked() != null)) {
                 Mounted<?> link = mount.getLinked();
                 link.setAPMMounted(false);
                 link.setLinked(null);
                 link.setLinkedBy(null);
             }
-            // If we are removing a weapon that is mounted in an APM, we need
-            // to clear the mounted status of the AP Mount
-            if ((mount.getLinkedBy() != null)
-                    && mount.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
+
+            // If we're removing a weapon that is mounted in an APM, we need to clear the mounted status of the AP
+            // Mount.
+            if ((mount.getLinkedBy() != null) && mount.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
                 Mounted<?> apm = mount.getLinkedBy();
                 apm.setLinked(null);
                 apm.setLinkedBy(null);
             }
         }
+
         // We will need to reset the equipment numbers of the bay ammo and weapons
         Map<WeaponMounted, List<WeaponMounted>> bayWeapons = new HashMap<>();
-        Map<WeaponMounted, List<AmmoMounted>> bayAmmo = new HashMap<>();
+        Map<WeaponMounted, List<AmmoMounted>>   bayAmmo    = new HashMap<>();
         for (WeaponMounted bay : unit.getWeaponBayList()) {
             bayWeapons.put(bay, bay.getBayWeapons());
             bayAmmo.put(bay, bay.getBayAmmo());
         }
+
         // Some special checks for Aeros
         if (unit instanceof Aero) {
             if (mount instanceof WeaponMounted) {
@@ -268,7 +261,9 @@ public class UnitUtil {
                 unit.getWeaponGroupList().remove(mount);
             }
         }
+
         unit.getEquipment().remove(mount);
+
         if (mount instanceof MiscMounted) {
             unit.getMisc().remove(mount);
         } else if (mount instanceof AmmoMounted) {
@@ -277,6 +272,7 @@ public class UnitUtil {
             unit.getWeaponList().remove(mount);
             unit.getTotalWeaponList().remove(mount);
         }
+
         if (bayWeapons.containsKey(mount)) {
             bayWeapons.get(mount).forEach(w -> {
                 removeCriticals(unit, w);
@@ -285,15 +281,18 @@ public class UnitUtil {
             bayAmmo.get(mount).forEach(a -> {
                 removeCriticals(unit, a);
                 Mounted<?> moveTo = UnitUtil.findUnallocatedAmmo(unit, a.getType());
+
                 if (null != moveTo) {
                     moveTo.setShotsLeft(moveTo.getBaseShotsLeft() + a.getBaseShotsLeft());
                     UnitUtil.removeMounted(unit, a);
                 }
+
                 changeMountStatus(unit, a, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
             bayWeapons.remove(mount);
             bayAmmo.remove(mount);
         }
+
         for (WeaponMounted bay : bayWeapons.keySet()) {
             bay.clearBayWeapons();
             for (WeaponMounted w : bayWeapons.get(bay)) {
@@ -302,6 +301,7 @@ public class UnitUtil {
                 }
             }
         }
+
         for (WeaponMounted bay : bayAmmo.keySet()) {
             bay.clearBayAmmo();
             for (AmmoMounted a : bayAmmo.get(bay)) {
@@ -310,11 +310,13 @@ public class UnitUtil {
                 }
             }
         }
+
         // Remove ammo added for a one-shot launcher
         if ((mount.getType() instanceof WeaponType) && mount.isOneShot()) {
             List<AmmoMounted> osAmmo = new ArrayList<>();
-            for (AmmoMounted ammo = (AmmoMounted) mount.getLinked(); ammo != null; ammo = (AmmoMounted) ammo
-                    .getLinked()) {
+            for (AmmoMounted ammo = (AmmoMounted) mount.getLinked();
+                 ammo != null;
+                 ammo = (AmmoMounted) ammo.getLinked()) {
                 osAmmo.add(ammo);
             }
             osAmmo.forEach(m -> {
@@ -322,34 +324,34 @@ public class UnitUtil {
                 unit.getAmmo().remove(m);
             });
         }
-        // It's possible that the equipment we are removing was linked to
-        // something else, and so the linkedBy state may be set. We should
-        // remove it. Using getLinked could be unreliable, so we'll brute force
-        // it
-        // An example of this would be removing a linked Artemis IV FCS
+
+        // It's possible that the equipment we are removing was linked to something else, and so the linkedBy state may
+        // be set. We should remove it. Using getLinked could be unreliable, so we'll brute force it. An example of this
+        // would be removing a linked Artemis IV FCS
         for (Mounted<?> m : unit.getEquipment()) {
             if (mount.equals(m.getLinkedBy())) {
                 m.setLinkedBy(null);
             }
         }
-        if ((mount.getType() instanceof MiscType)
-                && (mount.getType().hasFlag(MiscType.F_HEAD_TURRET)
-                        || mount.getType().hasFlag(MiscType.F_SHOULDER_TURRET)
-                        || mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
+
+        if ((mount.getType() instanceof MiscType) &&
+            (mount.getType().hasFlag(MiscType.F_HEAD_TURRET) ||
+             mount.getType().hasFlag(MiscType.F_SHOULDER_TURRET) ||
+             mount.getType().hasFlag(MiscType.F_QUAD_TURRET))) {
             for (Mounted<?> m : unit.getEquipment()) {
                 if (m.getLocation() == mount.getLocation()) {
                     m.setMekTurretMounted(false);
                 }
             }
         }
-        if ((mount.getType() instanceof MiscType)
-                && mount.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
+
+        if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_SPONSON_TURRET)) {
             for (Mounted<?> m : unit.getEquipment()) {
                 m.setSponsonTurretMounted(false);
             }
         }
-        if ((mount.getType() instanceof MiscType)
-                && mount.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
+
+        if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
             for (Mounted<?> m : unit.getEquipment()) {
                 if (m.getLocation() == mount.getLocation()) {
                     m.setPintleTurretMounted(false);
@@ -369,23 +371,23 @@ public class UnitUtil {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
+
         for (int loc = 0; loc < unit.locations(); loc++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
-                if ((cs != null)
-                        && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     if (cs.getMount().equals(eq)) {
-                        // If there are two pieces of equipment in this slot,
-                        // remove first one, and replace it with the second
+                        // If there are two pieces of equipment in this slot, remove first one, and replace it with the
+                        // second
                         if (cs.getMount2() != null) {
                             cs.setMount(cs.getMount2());
                             cs.setMount2(null);
-                        } else { // If it's the only Mounted, clear the slot
+                        } else {
+                            // If it's the only Mounted, clear the slot
                             cs = null;
                             unit.setCritical(loc, slot, cs);
                         }
-                    } else if ((cs.getMount2() != null)
-                            && cs.getMount2().equals(eq)) {
+                    } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
                         cs.setMount2(null);
                     }
                 }
@@ -398,28 +400,28 @@ public class UnitUtil {
      *
      * @param unit The entity
      * @param eq   The equipment to test
-     * @param loc The location to remove crits from.
+     * @param loc  The location to remove critical slots from.
      */
     public static void removeCriticals(Entity unit, Mounted<?> eq, int loc) {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
+
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
-            if ((cs != null)
-                && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+            if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 if (cs.getMount().equals(eq)) {
                     // If there are two pieces of equipment in this slot,
                     // remove first one, and replace it with the second
                     if (cs.getMount2() != null) {
                         cs.setMount(cs.getMount2());
                         cs.setMount2(null);
-                    } else { // If it's the only Mounted, clear the slot
+                    } else {
+                        // If it's the only Mounted, clear the slot
                         cs = null;
                         unit.setCritical(loc, slot, cs);
                     }
-                } else if ((cs.getMount2() != null)
-                    && cs.getMount2().equals(eq)) {
+                } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
                     cs.setMount2(null);
                 }
             }
@@ -427,17 +429,17 @@ public class UnitUtil {
     }
 
     public static void addMounted(Entity unit, Mounted<?> mounted, int loc, boolean rearMounted)
-            throws LocationFullException {
+          throws LocationFullException {
         unit.addEquipment(mounted, loc, rearMounted);
         mounted.setOmniPodMounted(canPodMount(unit, mounted));
-        if (unit instanceof Mek) {
-            MekUtil.updateClanCasePlacement((Mek) unit);
+
+        if (unit instanceof Mek mekUnit) {
+            MekUtil.updateClanCasePlacement(mekUnit);
         }
     }
 
     /**
-     * Updates TC Crits and Mounts based on weapons on a unit or if the TC has
-     * been removed.
+     * Updates TC Critical Slots and Mounts based on weapons on a unit or if the TC has been removed.
      *
      * @param unit The entity
      */
@@ -460,10 +462,10 @@ public class UnitUtil {
     }
 
     /**
-     * Checks to see if unit can use the techlevel
+     * Checks to see if unit can use the tech level
      *
      * @param unit The entity
-     * @param tech
+     *
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
@@ -472,25 +474,24 @@ public class UnitUtil {
                 return false;
             }
         } else {
-            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL
-                    && unit.isClan() != tech.isClan()) {
+            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL && unit.isClan() != tech.isClan()) {
                 return false;
             }
 
-            if (!tech.isAvailableIn(unit.getTechLevelYear(), unit.isClan(),
-                    CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
+            if (!tech.isAvailableIn(unit.getTechLevelYear(),
+                  unit.isClan(),
+                  CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                 return false;
             }
         }
-        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(),
-                unit.isClan())) <= TechConstants.convertFromNormalToSimple(unit.getTechLevel());
+        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(), unit.isClan())) <=
+               TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 
     /**
      * checks if Mounted is a heat sink
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isHeatSink(Mounted<?> eq) {
         return ((eq.getType() != null) && isHeatSink(eq.getType()));
@@ -500,28 +501,24 @@ public class UnitUtil {
      * Checks if EquipmentType is a heat sink
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isHeatSink(EquipmentType eq) {
         return isHeatSink(eq, false);
     }
 
-    public static boolean isHeatSink(EquipmentType eq, boolean ignoreprototype) {
-        if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_HEAT_SINK)
-                        || eq.hasFlag(MiscType.F_LASER_HEAT_SINK)
-                        || eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) || (eq
-                                .hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) && !ignoreprototype))) {
-            return true;
-        }
-
-        return false;
+    public static boolean isHeatSink(EquipmentType eq, boolean ignorePrototype) {
+        return (eq instanceof megamek.common.MiscType) &&
+               (eq.hasFlag(megamek.common.MiscType.F_HEAT_SINK) ||
+                eq.hasFlag(megamek.common.MiscType.F_LASER_HEAT_SINK) ||
+                eq.hasFlag(megamek.common.MiscType.F_DOUBLE_HEAT_SINK) ||
+                (eq.hasFlag(megamek.common.MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) && !ignorePrototype));
     }
 
     /**
      * Checks if EquipmentType is a Mek Physical weapon.
      *
      * @param eq The equipment to test The equipment to check
+     *
      * @return Whether the equipment is a physical weapon
      */
     public static boolean isPhysicalWeapon(EquipmentType eq) {
@@ -533,9 +530,7 @@ public class UnitUtil {
             // construction options
             return !eq.hasSubType(MiscType.S_CLUB | MiscType.S_TREE_CLUB);
         }
-        return eq.hasFlag(MiscType.F_HAND_WEAPON)
-                || eq.hasFlag(MiscType.F_TALON)
-                || eq.hasFlag(MiscType.F_RAM_PLATE);
+        return eq.hasFlag(MiscType.F_HAND_WEAPON) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_RAM_PLATE);
     }
 
     public static String getHeatSinkType(String type, boolean clan) {
@@ -572,13 +567,12 @@ public class UnitUtil {
 
     public static boolean isJumpJet(Mounted<?> m) {
         return (m.getType() instanceof MiscType) &&
-                (m.getType().hasFlag(MiscType.F_JUMP_JET)
-                        || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
+               (m.getType().hasFlag(MiscType.F_JUMP_JET) || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER));
     }
 
     /**
-     *
      * @param type The value returned by {@link Mek#getJumpType()}
+     *
      * @return The {@link EquipmentType} lookup key for the jump jet
      */
     public static String getJumpJetType(int type) {
@@ -595,38 +589,35 @@ public class UnitUtil {
     }
 
     /**
-     * Checks whether equipment can be linked to a weapon to enhance it (e.g.
-     * Artemis, PPC Capacitor, etc).
+     * Checks whether equipment can be linked to a weapon to enhance it (e.g. Artemis, PPC Capacitor, etc.).
      *
      * @param type The equipment to check
+     *
      * @return true if the equipment is a MiscType that can be linked to a weapon.
      */
     public static boolean isWeaponEnhancement(EquipmentType type) {
-        return (type instanceof MiscType)
-                && (type.hasFlag(MiscType.F_ARTEMIS)
-                        || type.hasFlag(MiscType.F_ARTEMIS_V)
-                        || type.hasFlag(MiscType.F_ARTEMIS_PROTO)
-                        || type.hasFlag(MiscType.F_APOLLO)
-                        || type.hasFlag(MiscType.F_PPC_CAPACITOR)
-                        || type.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE));
+        return (type instanceof MiscType) &&
+               (type.hasFlag(MiscType.F_ARTEMIS) ||
+                type.hasFlag(MiscType.F_ARTEMIS_V) ||
+                type.hasFlag(MiscType.F_ARTEMIS_PROTO) ||
+                type.hasFlag(MiscType.F_APOLLO) ||
+                type.hasFlag(MiscType.F_PPC_CAPACITOR) ||
+                type.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE));
     }
 
     /**
-     * Changes the location for a Mounted instance. Note: for BattleArmor, this
-     * effects which suit the equipment is placed on (as that is what
-     * Mounted.location means for BA), but not where on the suit
-     * it's located (ie, BAMountLocation isn't affected). BattleArmor should
-     * change this outside of this method.
+     * Changes the location for a Mounted instance. Note: for BattleArmor, this effects which suit the equipment is
+     * placed on (as that is what Mounted. Location means for BA), but not where on the suit it's located (ie,
+     * BAMountLocation isn't affected). BattleArmor should change this outside of this method.
      *
      * @param unit              The entity The unit being modified
      * @param eq                The equipment to test The equipment mount to move
      * @param location          The location to move the mount to
-     * @param secondaryLocation The secondary location for split equipment,
-     *                          otherwise {@link Entity#LOC_NONE Entity.LOC_NONE}
+     * @param secondaryLocation The secondary location for split equipment, otherwise
+     *                          {@link Entity#LOC_NONE Entity.LOC_NONE}
      * @param rear              Whether to mount with a rear facing
      */
-    public static void changeMountStatus(Entity unit, Mounted<?> eq, int location,
-            int secondaryLocation, boolean rear) {
+    public static void changeMountStatus(Entity unit, Mounted<?> eq, int location, int secondaryLocation, boolean rear) {
         if ((location != eq.getLocation() && !eq.isOneShot())) {
             if (eq.getLinked() != null) {
                 eq.getLinked().setLinkedBy(null);
@@ -660,27 +651,29 @@ public class UnitUtil {
             return;
         }
         final Entity entity = mount.getEntity();
-        // Meks may need to shift the crits around to make room if the equipment grows
+        // Meks may need to shift the critical slots around to make room if the equipment grows
         if (entity instanceof Mek) {
-            final int loc = mount.getLocation();
-            int start = -1;
+            final int loc   = mount.getLocation();
+            int       start = -1;
+
             for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
-                CriticalSlot crit = entity.getCritical(loc, slot);
-                if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                        && crit.getMount().equals(mount)) {
+                CriticalSlot criticalSlot = entity.getCritical(loc, slot);
+                if ((criticalSlot != null) &&
+                    (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
+                    criticalSlot.getMount().equals(mount)) {
                     start = slot;
                     break;
                 }
             }
+
             removeCriticals(entity, mount);
             compactCriticals(entity, loc);
             if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
                 changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             } else {
-                // If the number of criticals increases, we may need to shift existing criticals
-                // to make room. Since we checked for sufficient space and compacted the
-                // existing
-                // criticals we can be assured of not overrunning the array.
+                // If the number of critical slots increases, we may need to shift existing critical slots to make
+                // room. Since we checked for sufficient space and compacted the existing critical slots we can be
+                // assured of not overrunning the array.
                 List<CriticalSlot> toAdd = new ArrayList<>();
                 for (int i = 0; i < mount.getCriticals(); i++) {
                     toAdd.add(new CriticalSlot(mount));
@@ -700,21 +693,19 @@ public class UnitUtil {
     }
 
     /**
-     * Find unallocated ammo of the same type. Used by large aerospace units when
-     * removing ammo
-     * from a location to find the group to add it to.
+     * Find unallocated ammo of the same type. Used by large aerospace units when removing ammo from a location to find
+     * the group to add it to.
      *
-     * @param unit The entity The Entity
+     * @param unit The entity
      * @param at   The type of armor to match
-     * @return An unallocated non-oneshot ammo mount of the same type, or null if
-     *         there is not one.
+     *
+     * @return An unallocated non-one-shot ammo mount of the same type, or null if there is not one.
      */
     public static Mounted<?> findUnallocatedAmmo(Entity unit, EquipmentType at) {
         for (Mounted<?> m : unit.getAmmo()) {
-            if ((m.getLocation() == Entity.LOC_NONE)
-                    && at.equals(m.getType())
-                    && ((m.getLinkedBy() == null)
-                            || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
+            if ((m.getLocation() == Entity.LOC_NONE) &&
+                at.equals(m.getType()) &&
+                ((m.getLinkedBy() == null) || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
                 return m;
             }
         }
@@ -722,32 +713,35 @@ public class UnitUtil {
     }
 
     /**
-     * Checks whether the equipment is eligible for pod mounting in an omni unit,
-     * either because the
-     * equipment itself can never be pod-mounted (such as armor, structure, or
-     * myomer enhancements),
-     * or the number of fixed heat sinks have not been assigned locations.
+     * Checks whether the equipment is eligible for pod mounting in an omni unit, either because the equipment itself
+     * can never be pod-mounted (such as armor, structure, or myomer enhancements), or the number of fixed heat sinks
+     * have not been assigned locations.
      *
      * @param unit The entity
      * @param eq   The equipment to test
-     * @return
      */
     public static boolean canPodMount(Entity unit, Mounted<?> eq) {
         if (!unit.isOmni() || eq.getType().isOmniFixedOnly()) {
             return false;
         }
 
-        if (eq.getType() instanceof MiscType && unit instanceof Mek
-                && (eq.getType().hasFlag(MiscType.F_HEAT_SINK)
-                        || eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                        || eq.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
-                && unit.hasEngine()) {
-            int needed = Math.max(0, unit.getEngine().getWeightFreeEngineHeatSinks() -
-                    UnitUtil.getCriticalFreeHeatSinks(unit, ((Mek) unit).hasCompactHeatSinks()));
-            long fixed = unit.getMisc().stream().filter(m -> (m.getType().hasFlag(MiscType.F_HEAT_SINK)
-                    || m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                    || m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
-                    && m.getLocation() != Entity.LOC_NONE && !m.isOmniPodMounted()).count();
+        if (eq.getType() instanceof MiscType &&
+            unit instanceof Mek &&
+            (eq.getType().hasFlag(MiscType.F_HEAT_SINK) ||
+             eq.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ||
+             eq.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) &&
+            unit.hasEngine()) {
+            int needed = Math.max(0,
+                  unit.getEngine().getWeightFreeEngineHeatSinks() -
+                  UnitUtil.getCriticalFreeHeatSinks(unit, ((Mek) unit).hasCompactHeatSinks()));
+            long fixed = unit.getMisc()
+                               .stream()
+                               .filter(m -> (m.getType().hasFlag(MiscType.F_HEAT_SINK) ||
+                                             m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ||
+                                             m.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) &&
+                                            m.getLocation() != Entity.LOC_NONE &&
+                                            !m.isOmniPodMounted())
+                               .count();
             // Do not count this heat among the fixed, since we are checking whether we can
             // change it to pod-mounted
             if (eq.getLocation() != Entity.LOC_NONE && !eq.isOmniPodMounted()) {
@@ -767,25 +761,20 @@ public class UnitUtil {
         if (!unit.isOmni()) {
             return;
         }
-        List<Mounted<?>> pods = unit.getEquipment().stream()
-                .filter(Mounted::isOmniPodMounted)
-                .collect(Collectors.toList());
+        List<Mounted<?>> pods = unit.getEquipment().stream().filter(Mounted::isOmniPodMounted).toList();
         for (Mounted<?> m : pods) {
             UnitUtil.removeMounted(unit, m);
-            if (m.getType() instanceof MiscType
-                    && m.getType().hasFlag(MiscType.F_JUMP_JET)) {
+            if (m.getType() instanceof MiscType && m.getType().hasFlag(MiscType.F_JUMP_JET)) {
                 unit.setOriginalJumpMP(unit.getOriginalJumpMP() - 1);
             }
         }
-        List<Transporter> transporters = unit.getTransports().stream()
-                .filter(unit::isPodMountedTransport).collect(Collectors.toList());
+        List<Transporter> transporters = unit.getTransports().stream().filter(unit::isPodMountedTransport).toList();
         transporters.forEach(unit::removeTransporter);
     }
 
     public static boolean hasTargComp(Entity unit) {
         for (Mounted<?> mount : unit.getEquipment()) {
-            if ((mount.getType() instanceof MiscType)
-                    && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 return true;
             }
         }
@@ -794,46 +783,47 @@ public class UnitUtil {
     }
 
     public static int[] getHighestContinuousNumberOfCritsArray(Mek unit) {
-        int[] critSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        int[] criticalSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+
         for (int loc = 0; loc <= Mek.LOC_LLEG; loc++) {
-            critSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
+            criticalSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
         }
-        return critSpaces;
+
+        return criticalSpaces;
     }
 
     public static int getHighestContinuousNumberOfCrits(Entity unit, int location) {
-        int highestNumberOfCrits = 0;
-        int currentCritCount = 0;
+        int highestNumberOfCriticalSlots = 0;
+        int currentCriticalSlotCount     = 0;
 
-        // Handle locations without crits
-        if ((location == Entity.LOC_DESTROYED)
-                || (location == Entity.LOC_NONE)) {
+        // Handle locations without critical clots
+        if ((location == Entity.LOC_DESTROYED) || (location == Entity.LOC_NONE)) {
             return 0;
         }
 
         for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
             if (unit.getCritical(location, slot) == null) {
-                currentCritCount++;
+                currentCriticalSlotCount++;
             } else {
-                currentCritCount = 0;
+                currentCriticalSlotCount = 0;
             }
-            highestNumberOfCrits = Math.max(currentCritCount,
-                    highestNumberOfCrits);
+            highestNumberOfCriticalSlots = Math.max(currentCriticalSlotCount, highestNumberOfCriticalSlots);
         }
 
-        return highestNumberOfCrits;
+        return highestNumberOfCriticalSlots;
     }
 
     public static double getUnallocatedAmmoTonnage(Entity unit) {
         double tonnage = 0;
 
         for (Mounted<?> mount : unit.getAmmo()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !mount.isOneShotAmmo()
-                    && (((AmmoType) mount.getType()).getAmmoType() != AmmoType.T_INFANTRY)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) &&
+                !mount.isOneShotAmmo() &&
+                (((AmmoType) mount.getType()).getAmmoType() != AmmoType.T_INFANTRY)) {
                 int slots = 1;
                 if (unit.usesWeaponBays()) {
-                    slots = (int) Math
-                            .ceil(mount.getUsableShotsLeft() / (double) ((AmmoType) mount.getType()).getShots());
+                    slots = (int) Math.ceil(mount.getUsableShotsLeft() /
+                                            (double) ((AmmoType) mount.getType()).getShots());
                 }
                 tonnage += slots * mount.getTonnage();
             }
@@ -919,8 +909,7 @@ public class UnitUtil {
             return points * ArmorType.forEntity(unit).getWeightPerPoint();
         } else if (unit.isSupportVehicle()) {
             // Max armor is determined by number of points.
-            double weight = TestSupportVehicle.maxArmorFactor(unit)
-                    * TestSupportVehicle.armorWeightPerPoint(unit);
+            double weight = TestSupportVehicle.maxArmorFactor(unit) * TestSupportVehicle.armorWeightPerPoint(unit);
             if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
                 return TestEntity.round(weight, Ceil.KILO);
             } else {
@@ -947,6 +936,7 @@ public class UnitUtil {
      * Calculate the number of armor points per ton of armor for the given unit.
      *
      * @param en The unit
+     *
      * @return The number of armor points per ton
      */
     public static double getArmorPointsPerTon(Entity en) {
@@ -969,13 +959,9 @@ public class UnitUtil {
     }
 
     /**
-     * Determine the maximum number of armor points that can be mounted in a
-     * location.
+     * Determine the maximum number of armor points that can be mounted in a location.
      *
-     * @param entity
-     * @param location
-     * @return The maximum number of armor points for the location, or null if there
-     *         is no maximum.
+     * @return The maximum number of armor points for the location, or null if there is no maximum.
      */
     public static @Nullable Integer getMaxArmor(Entity entity, int location) {
         if ((location < 0) || (location >= entity.locations())) {
@@ -1010,7 +996,7 @@ public class UnitUtil {
                 // mark the old slot empty
                 unit.setCritical(loc, slot, null);
                 // restart just after the moved slot's new location
-                slot = firstEmpty;
+                slot       = firstEmpty;
                 firstEmpty = -1;
             }
         }
@@ -1021,27 +1007,36 @@ public class UnitUtil {
     }
 
     public static boolean hasSwitchableAmmo(WeaponType weapon) {
-        return (weapon instanceof AmmoWeapon) && !(weapon instanceof StreakLRMWeapon)
-                && !(weapon instanceof StreakSRMWeapon) && !(weapon instanceof GaussWeapon)
-                && !(weapon instanceof UACWeapon) && !(weapon instanceof HVACWeapon)
-                && !(weapon instanceof MGWeapon) && !(weapon instanceof ThunderBoltWeapon)
-                && !(weapon instanceof CLChemicalLaserWeapon) && !(weapon instanceof MPodWeapon)
-                && !(weapon instanceof BPodWeapon) && !(weapon instanceof ISPlasmaRifle)
-                && !(weapon instanceof CLPlasmaCannon) && !(weapon instanceof VehicleFlamerWeapon)
-                && !UnitUtil.isAMS(weapon);
+        return (weapon instanceof AmmoWeapon) &&
+               !(weapon instanceof StreakLRMWeapon) &&
+               !(weapon instanceof StreakSRMWeapon) &&
+               !(weapon instanceof GaussWeapon) &&
+               !(weapon instanceof UACWeapon) &&
+               !(weapon instanceof HVACWeapon) &&
+               !(weapon instanceof MGWeapon) &&
+               !(weapon instanceof ThunderBoltWeapon) &&
+               !(weapon instanceof CLChemicalLaserWeapon) &&
+               !(weapon instanceof MPodWeapon) &&
+               !(weapon instanceof BPodWeapon) &&
+               !(weapon instanceof ISPlasmaRifle) &&
+               !(weapon instanceof CLPlasmaCannon) &&
+               !(weapon instanceof VehicleFlamerWeapon) &&
+               !UnitUtil.isAMS(weapon);
     }
 
     public static void loadFonts() {
         Font font = Font.decode(CConfig.getParam(CConfig.RS_FONT, "Eurostile"));
+
         // If the font is not installed, use system default sans
         if (null == font) {
             font = Font.decode(Font.SANS_SERIF);
         }
+
         // If that still doesn't work, get the default dialog font
         if (null == font) {
             font = Font.decode(null);
         }
-        rsFont = font.deriveFont(Font.PLAIN, 8);
+        rsFont     = font.deriveFont(Font.PLAIN, 8);
         rsBoldFont = font.deriveFont(Font.BOLD, 8);
     }
 
@@ -1074,6 +1069,14 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Remove Clan Case from Entity
+     *
+     * @param unit Unit to modify
+     *
+     * @deprecated since 0.50.04 - IntelliJ reports 0 uses.
+     */
+    @Deprecated(since = "0.50.04")
     public static void removeClanCase(Entity unit) {
         ArrayList<Mounted<?>> caseList = new ArrayList<>();
 
@@ -1091,8 +1094,7 @@ public class UnitUtil {
             for (int location = 0; location <= Mek.LOC_LLEG; location++) {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
                     CriticalSlot cs = unit.getCritical(location, slot);
-                    if ((cs == null)
-                            || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
+                    if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                         continue;
                     }
 
@@ -1106,8 +1108,8 @@ public class UnitUtil {
 
     public static boolean hasAmmo(Entity unit, int location) {
         for (Mounted<?> mount : unit.getEquipment()) {
-            if (mount.getType().isExplosive(mount)
-                    && ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
+            if (mount.getType().isExplosive(mount) &&
+                ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
                 return true;
             }
         }
@@ -1119,23 +1121,16 @@ public class UnitUtil {
      * Checks to see if something is a Jump Jet
      *
      * @param eq The equipment to test
-     * @return
      */
     public static boolean isJumpJet(EquipmentType eq) {
-        if ((eq instanceof MiscType)
-                && (eq.hasFlag(MiscType.F_JUMP_JET)
-                        || eq.hasFlag(MiscType.F_UMU)
-                        || eq.hasFlag(MiscType.F_BA_VTOL))) {
-            return true;
-        }
-
-        return false;
+        return (eq instanceof megamek.common.MiscType) &&
+               (eq.hasFlag(megamek.common.MiscType.F_JUMP_JET) ||
+                eq.hasFlag(megamek.common.MiscType.F_UMU) ||
+                eq.hasFlag(megamek.common.MiscType.F_BA_VTOL));
     }
 
     /**
-     * @return the name of the given equipment with (IS) or (Clan) added for mixed
-     *         tech units when
-     *         appropriate.
+     * @return the name of the given equipment with (IS) or (Clan) added for mixed tech units when appropriate.
      */
     public static String getCritName(Entity unit, EquipmentType eq) {
         String name = eq.getName();
@@ -1144,9 +1139,9 @@ public class UnitUtil {
         if (name.length() > 22 && !(eq instanceof AmmoType)) {
             name = eq.getShortName();
         }
-        if (unit.isMixedTech()
-                && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL)
-                && (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
+        if (unit.isMixedTech() &&
+            (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_ALLOWED_ALL) &&
+            (eq.getTechLevel(unit.getTechLevelYear()) != TechConstants.T_TECH_UNKNOWN)) {
             if (unit.isClan() && !TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
                 name += " (IS)";
             } else if (!unit.isClan() && TechConstants.isClan(eq.getTechLevel(unit.getTechLevelYear()))) {
@@ -1157,14 +1152,12 @@ public class UnitUtil {
     }
 
     /**
-     * Return the number of critical-space free heatsinks that the given entity
-     * can have.
+     * Return the number of critical-space free heatsinks that the given entity can have.
      *
-     * @param unit    The entity
-     *                The unit mounting the heatsinks
-     * @param compact
-     *                Whether the heatsinks are compact or not
-     * @return T he number of critical-free heat sinks.
+     * @param unit    The entity The unit mounting the heatsinks
+     * @param compact Whether the heatsinks are compact or not
+     *
+     * @return The number of critical-free heat sinks.
      */
     public static int getCriticalFreeHeatSinks(Entity unit, boolean compact) {
         int engineHSCapacity = unit.getEngine().integralHeatSinkCapacity(compact);
@@ -1176,7 +1169,33 @@ public class UnitUtil {
         return engineHSCapacity;
     }
 
+    /**
+     * Determines if the previous critical slot is empty.
+     *
+     * @param unit     Unit to check.
+     * @param cs       Critical Slot (unused)
+     * @param slot     Critical Slot Location
+     * @param location Unit Location
+     *
+     * @return True if previous is empty.
+     *
+     * @deprecated since 0.50.04 - Replaced with {@link #isPreviousCriticalSlotEmpty(Entity, int, int)}
+     */
+    @Deprecated(since = "0.50.04", forRemoval = true)
     public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs, int slot, int location) {
+        return isPreviousCriticalSlotEmpty(unit, slot, location);
+    }
+
+    /**
+     * Determines if the previous critical slot is empty.
+     *
+     * @param unit     Unit to check.
+     * @param slot     Critical Slot Location
+     * @param location Unit Location
+     *
+     * @return True if previous is empty.
+     */
+    public static boolean isPreviousCriticalSlotEmpty(Entity unit, int slot, int location) {
         if (slot == 0) {
             return false;
         } else if (unit instanceof Mek) {
@@ -1187,16 +1206,16 @@ public class UnitUtil {
     }
 
     public static boolean isLastCrit(Entity unit, CriticalSlot cs, int slot, int location) {
-        if (unit instanceof Mek) {
-            return MekUtil.isLastMekCrit((Mek) unit, cs, slot, location);
+        if (unit instanceof Mek unitMek) {
+            return MekUtil.isLastMekCrit(unitMek, cs, slot, location);
         }
+
         return true;
     }
 
     /**
-     * Finds all the critical slots in the location containing the mount and sets or
-     * clears the
-     * armored component flag in accordance with the flag on the mount.
+     * Finds all the critical slots in the location containing the mount and sets or clears the armored component flag
+     * in accordance with the flag on the mount.
      *
      * @param unit     The entity The unit the equipment is mounted on
      * @param mount    The mount
@@ -1216,9 +1235,8 @@ public class UnitUtil {
     }
 
     /**
-     * Sets the armored component flag on all critical slots occupied by an
-     * equipment mount to
-     * be the same as the flag on the mount.
+     * Sets the armored component flag on all critical slots occupied by an equipment mount to be the same as the flag
+     * on the mount.
      *
      * @param unit  The entity The unit the equipment is on
      * @param mount The equipment mount
@@ -1238,15 +1256,14 @@ public class UnitUtil {
         } else {
             updateCritsArmoredStatus(unit, mount, mount.getLocation());
 
-            if ((mount.isSplitable() || mount.getType().isSpreadable())
-                    && (mount.getSecondLocation() != Entity.LOC_NONE)) {
+            if ((mount.isSplitable() || mount.getType().isSpreadable()) &&
+                (mount.getSecondLocation() != Entity.LOC_NONE)) {
                 updateCritsArmoredStatus(unit, mount, mount.getSecondLocation());
             }
         }
     }
 
-    public static void updateCritsArmoredStatus(Entity unit, @Nullable CriticalSlot cs,
-            int location) {
+    public static void updateCritsArmoredStatus(Entity unit, @Nullable CriticalSlot cs, int location) {
         if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             return;
         }
@@ -1256,9 +1273,9 @@ public class UnitUtil {
                 for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                     CriticalSlot newCrit = unit.getCritical(loc, slot);
 
-                    if ((newCrit != null)
-                            && (newCrit.getType() == CriticalSlot.TYPE_SYSTEM)
-                            && (newCrit.getIndex() == cs.getIndex())) {
+                    if ((newCrit != null) &&
+                        (newCrit.getType() == CriticalSlot.TYPE_SYSTEM) &&
+                        (newCrit.getIndex() == cs.getIndex())) {
                         newCrit.setArmored(cs.isArmored());
                     }
                 }
@@ -1266,12 +1283,12 @@ public class UnitUtil {
         } else {
             // actuators
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot newCrit = unit.getCritical(location, slot);
+                CriticalSlot newCriticalSlot = unit.getCritical(location, slot);
 
-                if ((newCrit != null)
-                        && (newCrit.getType() == CriticalSlot.TYPE_SYSTEM)
-                        && (newCrit.getIndex() == cs.getIndex())) {
-                    newCrit.setArmored(cs.isArmored());
+                if ((newCriticalSlot != null) &&
+                    (newCriticalSlot.getType() == CriticalSlot.TYPE_SYSTEM) &&
+                    (newCriticalSlot.getIndex() == cs.getIndex())) {
+                    newCriticalSlot.setArmored(cs.isArmored());
                 }
             }
         }
@@ -1295,7 +1312,7 @@ public class UnitUtil {
         // We need to be able to update bay weapon and ammo indices. This includes
         // weapon bays and machine gun arrays.
         Map<WeaponMounted, List<WeaponMounted>> bayWeapons = new HashMap<>();
-        Map<WeaponMounted, List<AmmoMounted>> bayAmmo = new HashMap<>();
+        Map<WeaponMounted, List<AmmoMounted>>   bayAmmo    = new HashMap<>();
         for (WeaponMounted m : unit.getTotalWeaponList()) {
             bayWeapons.put(m, m.getBayWeapons());
             bayAmmo.put(m, m.getBayAmmo());
@@ -1359,27 +1376,24 @@ public class UnitUtil {
     }
 
     /**
-     * Returns true if the given Equipment is available as equipment to the given
-     * Support
-     * Vehicle. Includes WeaponTypes, AmmoTypes and MiscTypes.
+     * Returns true if the given Equipment is available as equipment to the given Support Vehicle. Includes WeaponTypes,
+     * AmmoTypes and MiscTypes.
      *
      * @param eq   The equipment to test The tested equipment
-     * @param unit The entity The support vehicles. May be an Aero or Tank subtype
+     * @param unit The entity The support vehicles. Maybe an Aero or Tank subtype
+     *
      * @return true if the equipment is usable by the entity
      */
     public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
-        if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)
-                && ((eq.getTonnage(unit) >= 5.0)
-                        || (eq instanceof MiscType) && eq.hasFlag(MiscType.F_HEAVY_EQUIPMENT))) {
+        if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) &&
+            ((eq.getTonnage(unit) >= 5.0) || (eq instanceof MiscType) && eq.hasFlag(MiscType.F_HEAVY_EQUIPMENT))) {
             return false;
         }
         if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
             return false;
-        } else if ((eq instanceof WeaponType)
-                && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+        } else if ((eq instanceof WeaponType) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
             // Small support vehicles can only mount infantry weapons
-            return (eq instanceof InfantryWeapon)
-                    && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
+            return (eq instanceof InfantryWeapon) && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
         } else if (eq instanceof AmmoType) {
             return true;
         }
@@ -1391,18 +1405,17 @@ public class UnitUtil {
     }
 
     /**
-     * remove all CriticalSlots on the passed unit that are internal structure or
-     * armor
+     * remove all CriticalSlots on the passed unit that are internal structure or armor
      *
-     * @param unit              The entity the Entity
+     * @param unit              The entity
      * @param internalStructure true to remove IS, false to remove armor
      */
     public static void removeISorArmorCrits(Entity unit, boolean internalStructure) {
         List<String> mountList = new ArrayList<>();
         if (internalStructure) {
-            for (String struc : EquipmentType.structureNames) {
-                mountList.add("IS " + struc);
-                mountList.add("Clan " + struc);
+            for (String structureName : EquipmentType.structureNames) {
+                mountList.add("IS " + structureName);
+                mountList.add("Clan " + structureName);
             }
         } else {
             mountList = ArmorType.allArmorTypes().stream().map(ArmorType::getInternalName).collect(Collectors.toList());
@@ -1410,17 +1423,15 @@ public class UnitUtil {
 
         for (int location = Mek.LOC_HEAD; location < unit.locations(); location++) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
-                CriticalSlot crit = unit.getCritical(location, slot);
-                if ((crit != null)
-                        && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    Mounted<?> mount = crit.getMount();
+                CriticalSlot criticalSlot = unit.getCritical(location, slot);
+                if ((criticalSlot != null) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    Mounted<?> mount = criticalSlot.getMount();
 
-                    if ((mount != null)
-                            && (mount.getType() instanceof MiscType)
-                            && mountList.contains(mount.getType()
-                                    .getInternalName())) {
-                        crit = null;
-                        unit.setCritical(location, slot, crit);
+                    if ((mount != null) &&
+                        (mount.getType() instanceof MiscType) &&
+                        mountList.contains(mount.getType().getInternalName())) {
+                        criticalSlot = null;
+                        unit.setCritical(location, slot, criticalSlot);
                     }
                 }
             }
@@ -1428,10 +1439,9 @@ public class UnitUtil {
     }
 
     /**
-     * remove all Mounted on the passed unit that are internal structure or
-     * armor
+     * remove all Mounted on the passed unit that are internal structure or armor
      *
-     * @param unit              The entity the Entity
+     * @param unit              The entity
      * @param internalStructure true to remove IS, false to remove armor
      */
     public static void removeISorArmorMounts(Entity unit, boolean internalStructure) {
@@ -1452,7 +1462,7 @@ public class UnitUtil {
             mountList.add(name);
         }
 
-        for (int pos = 0; pos < unit.getEquipment().size();) {
+        for (int pos = 0; pos < unit.getEquipment().size(); ) {
             Mounted<?> mount = unit.getEquipment().get(pos);
             if (mountList.contains(mount.getType().getInternalName())) {
                 unit.getEquipment().remove(pos);
@@ -1461,10 +1471,9 @@ public class UnitUtil {
             }
         }
 
-        for (int pos = 0; pos < unit.getMisc().size();) {
+        for (int pos = 0; pos < unit.getMisc().size(); ) {
             Mounted<?> mount = unit.getMisc().get(pos);
-            if ((mount.getType() instanceof MiscType)
-                    && mountList.contains(mount.getType().getInternalName())) {
+            if ((mount.getType() instanceof MiscType) && mountList.contains(mount.getType().getInternalName())) {
                 unit.getMisc().remove(pos);
             } else {
                 pos++;
@@ -1479,47 +1488,47 @@ public class UnitUtil {
     }
 
     /**
-     * Remove all mounts for the current armor type from a single location on the
-     * passed unit
-     * and sets the armor type in that location to standard.
+     * Remove all mounts for the current armor type from a single location on the passed unit and sets the armor type in
+     * that location to standard.
      *
      * @param unit The entity The <code>Entity</code>
      * @param loc  The location from which to remove the armor mounts.
      */
     public static void resetArmor(Entity unit, int loc) {
         String name = EquipmentType.getArmorTypeName(unit.getArmorType(loc),
-                TechConstants.isClan(unit.getArmorTechLevel(loc)));
+              TechConstants.isClan(unit.getArmorTechLevel(loc)));
+
         EquipmentType eq = EquipmentType.get(name);
         if (null != eq) {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
-                final CriticalSlot crit = unit.getCritical(loc, slot);
-                if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                        && (null != crit.getMount()) && crit.getMount().getType().equals(eq)) {
-                    unit.getMisc().remove(crit.getMount());
+                final CriticalSlot criticalSlot = unit.getCritical(loc, slot);
+                if ((null != criticalSlot) &&
+                    (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
+                    (null != criticalSlot.getMount()) &&
+                    criticalSlot.getMount().getType().equals(eq)) {
+                    unit.getMisc().remove(criticalSlot.getMount());
                     unit.setCritical(loc, slot, null);
                 }
             }
         }
+
         unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
         unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
     }
 
     public static void checkArmor(Entity unit) {
-        if (!(unit instanceof Mek)) {
+        if (!(unit instanceof Mek mek)) {
             return;
         }
 
         boolean foundError = false;
 
-        Mek mek = (Mek) unit;
-
-        // Check all the meks locations to see if any armor is greater than can
-        // be in there.
+        // Check all the meks locations to see if any armor is greater than can be in there.
         for (int location = 0; location < mek.locations(); location++) {
             // Head armor has a max of 9
-            if (location == Mek.LOC_HEAD) {
-                int armor = mek.getArmor(location);
+            int armor = mek.getArmor(location);
 
+            if (location == Mek.LOC_HEAD) {
                 if ((armor > 9) && !mek.isSuperHeavy()) {
                     foundError = true;
                     mek.initializeArmor(9, location);
@@ -1528,7 +1537,6 @@ public class UnitUtil {
                     mek.initializeArmor(9, location);
                 }
             } else {
-                int armor = mek.getArmor(location);
                 if (mek.hasRearArmor(location)) {
                     armor += mek.getArmor(location, true);
                 }
@@ -1543,8 +1551,7 @@ public class UnitUtil {
                     if (mek.hasRearArmor(location)) {
                         int rearArmor = mek.getArmor(location, true);
                         if (rearArmor >= armorOverage) {
-                            mek.initializeRearArmor(rearArmor - armorOverage,
-                                    location);
+                            mek.initializeRearArmor(rearArmor - armorOverage, location);
                             armorOverage = 0;
                         } else {
                             armorOverage -= rearArmor;
@@ -1563,19 +1570,21 @@ public class UnitUtil {
 
         if (foundError) {
             JOptionPane.showMessageDialog(null,
-                    "Too much armor found on this unit.\n\rMegaMekLab has automatically corrected the problem.\n\rIt is suggested you check the armor allocation.",
-                    "Too much armor", JOptionPane.WARNING_MESSAGE);
+                  "Too much armor found on this unit.\n\rMegaMekLab has automatically corrected the problem.\n\rIt is suggested you check the armor allocation.",
+                  "Too much armor",
+                  JOptionPane.WARNING_MESSAGE);
         }
     }
 
     /**
      * @param unit The entity the supplied entity
+     *
      * @return a TestEntity instance for the supplied Entity.
      */
     public static TestEntity getEntityVerifier(Entity unit) {
-        EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                "data/mekfiles/UnitVerifierOptions.xml")); // TODO : Remove inline file path
-        TestEntity testEntity = null;
+        // TODO : Remove inline file path
+        EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mekfiles/UnitVerifierOptions.xml"));
+        TestEntity     testEntity     = null;
 
         if (unit.hasETypeFlag(Entity.ETYPE_MEK)) {
             testEntity = new TestMek((Mek) unit, entityVerifier.mekOption, null);
@@ -1602,14 +1611,13 @@ public class UnitUtil {
     }
 
     /**
-     * check that the unit is vaild
+     * check that the unit is valid
      *
      * @param unit The entity
-     * @return
      */
     public static String validateUnit(Entity unit) {
-        StringBuffer sb = new StringBuffer();
-        TestEntity testEntity = getEntityVerifier(unit);
+        StringBuffer sb         = new StringBuffer();
+        TestEntity   testEntity = getEntityVerifier(unit);
 
         if (testEntity != null) {
             testEntity.correctEntity(sb, unit.getTechLevel());
@@ -1648,9 +1656,10 @@ public class UnitUtil {
     /**
      * Checks whether the equipment can be added to the location on the build tab
      *
-     * @param unit     The entity The Entity being designed
+     * @param unit     The entity being designed
      * @param eq       The equipment to test The equipment
      * @param location The location to add it
+     *
      * @return Whether the location is valid
      */
     public static boolean isValidLocation(Entity unit, EquipmentType eq, int location) {
@@ -1663,82 +1672,73 @@ public class UnitUtil {
     }
 
     /**
-     * Makes the equipment mounted in one location identical to that in another
-     * location. Any equipment
-     * previously in the target location that is does not match the source location
-     * is removed and
-     * assigned to Entity.LOC_NONE.
+     * Makes the equipment mounted in one location identical to that in another location. Any equipment previously in
+     * the target location that is does not match the source location is removed and assigned to Entity.LOC_NONE.
      *
      * @param entity  The unit being modified
      * @param fromLoc The source location index
      * @param toLoc   The target location index
+     *
      * @throws LocationFullException If the target location is full
      */
-    public static void copyLocationEquipment(Entity entity, int fromLoc, int toLoc)
-            throws LocationFullException {
+    public static void copyLocationEquipment(Entity entity, int fromLoc, int toLoc) throws LocationFullException {
         copyLocationEquipment(entity, fromLoc, toLoc, true, true);
     }
 
     /**
-     * Makes the equipment mounted in one location identical to that in another
-     * location. Any equipment
-     * previously in the target location that does not match the source location is
-     * removed and
-     * assigned to Entity.LOC_NONE. This does not handle split location equipment.
+     * Makes the equipment mounted in one location identical to that in another location. Any equipment previously in
+     * the target location that does not match the source location is removed and assigned to Entity.LOC_NONE. This does
+     * not handle split location equipment.
      *
      * @param entity         The unit being modified
      * @param fromLoc        The source location index
      * @param toLoc          The target location index
      * @param includeForward Whether to include forward-mounted equipment
      * @param includeRear    Whether to include rear-mounted equipment
+     *
      * @throws LocationFullException If the target location is full
      */
-    public static void copyLocationEquipment(final Entity entity, final int fromLoc,
-            final int toLoc, final boolean includeForward,
-            final boolean includeRear)
-            throws LocationFullException {
+    public static void copyLocationEquipment(final Entity entity, final int fromLoc, final int toLoc, final boolean includeForward, final boolean includeRear)
+          throws LocationFullException {
         // Remove any equipment already in the location, but keep a list of it
         // to reuse as much as possible.
-        List<Mounted<?>> removed = entity.getEquipment().stream()
-                .filter(m -> m.getLocation() == toLoc)
-                .filter(m -> m.isRearMounted() ? includeRear : includeForward)
-                .collect(Collectors.toList());
+        List<Mounted<?>> removed = entity.getEquipment()
+                                         .stream()
+                                         .filter(m -> m.getLocation() == toLoc)
+                                         .filter(m -> m.isRearMounted() ? includeRear : includeForward)
+                                         .collect(Collectors.toList());
 
         // Add to this any equipment that is already unequipped (= in Entity.LOC_NONE)
         // and free to be used
-        List<Mounted<?>> unequipped = entity.getEquipment().stream()
-                .filter(m -> m.getLocation() == Entity.LOC_NONE)
-                .collect(Collectors.toList());
+        List<Mounted<?>> unequipped = entity.getEquipment()
+                                            .stream()
+                                            .filter(m -> m.getLocation() == Entity.LOC_NONE)
+                                            .toList();
 
         removed.forEach(m -> UnitUtil.removeCriticals(entity, m));
 
         removed.stream()
-                .filter(m -> !(m.getType() instanceof BayWeapon))
-                .forEach(m -> changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false));
+              .filter(m -> !(m.getType() instanceof BayWeapon))
+              .forEach(m -> changeMountStatus(entity, m, Entity.LOC_NONE, Entity.LOC_NONE, false));
 
-        removed.stream()
-                .filter(m -> (m.getType() instanceof BayWeapon))
-                .forEach(m -> removeMounted(entity, m));
+        removed.stream().filter(m -> (m.getType() instanceof BayWeapon)).forEach(m -> removeMounted(entity, m));
 
         removed.addAll(unequipped);
 
-        // Now we go through the equipment in the location to copy and add it to the
-        // other location.
-        // If there is a match in what we removed, use that. Otherwise, add the
-        // equipment to the
-        // unit. If the unit uses weapon bays, we need to create them in the new
-        // location and fill
-        // them. If the unit doesn't use bays, we will iterate through the crit slots to
-        // get the
-        // equipment in the same order to be nice and tidy.
+        /*
+         * Now we go through the equipment in the location to copy and add it to the other location. If there is a
+         * match in what we removed, use that. Otherwise, add the equipment to the unit. If the unit uses weapon
+         * bays, we need to create them in the new location and fill them. If the unit doesn't use bays, we will
+         * iterate through the critical slots to get the equipment in the same order to be nice and tidy.
+         */
         if (entity.usesWeaponBays()) {
-            List<WeaponMounted> bayList = entity.getWeaponBayList().stream()
-                    .filter(bay -> (bay.getLocation() == fromLoc)
-                            && (bay.isRearMounted() ? includeRear : includeForward))
-                    .collect(Collectors.toList());
+            List<WeaponMounted> bayList = entity.getWeaponBayList()
+                                                .stream()
+                                                .filter(bay -> (bay.getLocation() == fromLoc) &&
+                                                               (bay.isRearMounted() ? includeRear : includeForward))
+                                                .toList();
             for (WeaponMounted bay : bayList) {
-                if ((bay.getLocation() == fromLoc)
-                        && (bay.isRearMounted() ? includeRear : includeForward)) {
+                if ((bay.getLocation() == fromLoc) && (bay.isRearMounted() ? includeRear : includeForward)) {
                     WeaponMounted newBay = (WeaponMounted) Mounted.createMounted(entity, bay.getType());
                     entity.addEquipment(newBay, toLoc, bay.isRearMounted());
                     for (WeaponMounted bayW : bay.getBayWeapons()) {
@@ -1754,16 +1754,15 @@ public class UnitUtil {
             // Now we copy any other equipment
             List<MiscMounted> miscList = new ArrayList<>(entity.getMisc());
             for (MiscMounted m : miscList) {
-                if ((m.getLocation() == fromLoc)
-                        && (m.isRearMounted() ? includeRear : includeForward)) {
+                if ((m.getLocation() == fromLoc) && (m.isRearMounted() ? includeRear : includeForward)) {
                     copyEquipment(entity, toLoc, m, removed);
                 }
             }
         } else {
             for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
-                final CriticalSlot crit = entity.getCritical(fromLoc, slot);
-                if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    copyEquipment(entity, toLoc, crit.getMount(), removed);
+                final CriticalSlot criticalSlot = entity.getCritical(fromLoc, slot);
+                if ((null != criticalSlot) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    copyEquipment(entity, toLoc, criticalSlot.getMount(), removed);
                 }
             }
         }
@@ -1777,27 +1776,22 @@ public class UnitUtil {
     }
 
     /**
-     * Used by {@link #copyLocationEquipment(Entity, int, int, boolean, boolean)} to
-     * perform the actual
-     * copy of equipment from one location to another.
+     * Used by {@link #copyLocationEquipment(Entity, int, int, boolean, boolean)} to perform the actual copy of
+     * equipment from one location to another.
      *
      * @param entity The entity be processed
      * @param toLoc  The location to copy the equipment to
      * @param toCopy The equipment to copy
-     * @param reuse  A list of equipment to reuse if there is a copy available. If
-     *               not, a new item will
-     *               be created. Note that this modifies the contents of the list by
-     *               removing the equipment
-     *               mount that was reused
+     * @param reuse  A list of equipment to reuse if there is a copy available. If not, a new item will be created. Note
+     *               that this modifies the contents of the list by removing the equipment mount that was reused
+     *
      * @return The new equipment mount created in the new location
-     * @throws LocationFullException
-     *                               If there are not enough slots in the new
-     *                               location to add the equipment.
+     *
+     * @throws LocationFullException If there are not enough slots in the new location to add the equipment.
      */
     private static Mounted<?> copyEquipment(Entity entity, int toLoc, Mounted<?> toCopy, List<Mounted<?>> reuse)
-            throws LocationFullException {
-        Mounted<?> toAdd = reuse.stream().filter(m -> m.getType().equals(toCopy.getType()))
-                .findFirst().orElse(null);
+          throws LocationFullException {
+        Mounted<?> toAdd = reuse.stream().filter(m -> m.getType().equals(toCopy.getType())).findFirst().orElse(null);
         if (null != toAdd) {
             reuse.remove(toAdd);
         } else {
@@ -1814,21 +1808,18 @@ public class UnitUtil {
     }
 
     /**
-     * If the given Mounted is a one-shot launcher or infantry weapon, this method
-     * removes the hidden
-     * ammo linked to it, if any. During construction, we have no use of hidden
-     * ammo. Cannot
-     * use {@link #removeOneShotAmmo(Entity)} here as it removes all ammo that has
-     * no location (which is how hidden ammo is kept when a unit is loaded from
-     * file) but during construction
-     * normal ammo may not yet have been allocated and also have no location.
+     * If the given Mounted is a one-shot launcher or infantry weapon, this method removes the hidden ammo linked to it,
+     * if any. During construction, we have no use of hidden ammo. Cannot use {@link #removeOneShotAmmo(Entity)} here as
+     * it removes all ammo that has no location (which is how hidden ammo is kept when a unit is loaded from file) but
+     * during construction normal ammo may not yet have been allocated and also have no location.
      *
      * @param mounted The weapon to remove linked hidden ammo
      */
     public static void removeHiddenAmmo(Mounted<?> mounted) {
         EquipmentType launcherType = mounted.getType();
-        if ((launcherType instanceof WeaponType) && (launcherType.hasFlag(WeaponType.F_ONESHOT)
-                || (((WeaponType) launcherType).getAmmoType() == AmmoType.T_INFANTRY))) {
+        if ((launcherType instanceof WeaponType) &&
+            (launcherType.hasFlag(WeaponType.F_ONESHOT) ||
+             (((WeaponType) launcherType).getAmmoType() == AmmoType.T_INFANTRY))) {
             Mounted<?> oneShotAmmo = mounted.getLinked();
             if (oneShotAmmo != null) {
                 mounted.getEntity().getEquipment().remove(oneShotAmmo);
@@ -1848,36 +1839,34 @@ public class UnitUtil {
     }
 
     /**
-     * Checks whether the unit has an weapon that uses the ammo type and the
-     * munition is legal for the
-     * type of unit.
+     * Checks whether the unit has a weapon that uses the ammo type and the munition is legal for the type of unit.
      *
      * @param unit           The entity The unit
-     * @param atype          The ammo
+     * @param ammoType       The ammo
      * @param includeOneShot If false, ignores one-shot weapons
+     *
      * @return Whether the unit can make use of the ammo
      */
-    public static boolean canUseAmmo(Entity unit, AmmoType atype, boolean includeOneShot) {
-        if ((unit instanceof BattleArmor) && !atype.hasFlag(AmmoType.F_BATTLEARMOR)) {
+    public static boolean canUseAmmo(Entity unit, AmmoType ammoType, boolean includeOneShot) {
+        if ((unit instanceof BattleArmor) && !ammoType.hasFlag(AmmoType.F_BATTLEARMOR)) {
             return false;
-        } else if (!(unit instanceof BattleArmor) && atype.hasFlag(AmmoType.F_BATTLEARMOR)) {
+        } else if (!(unit instanceof BattleArmor) && ammoType.hasFlag(AmmoType.F_BATTLEARMOR)) {
             return false;
-        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) && !atype.canAeroUse()) {
+        } else if (unit.hasETypeFlag(Entity.ETYPE_AERO) && !ammoType.canAeroUse()) {
             return false;
-        } else if (atype.hasFlag(AmmoType.F_PROTOMEK) && !(unit instanceof ProtoMek)) {
+        } else if (ammoType.hasFlag(AmmoType.F_PROTOMEK) && !(unit instanceof ProtoMek)) {
             return false;
         }
 
         for (Mounted<?> m : unit.getTotalWeaponList()) {
-            if (m.getType() instanceof AmmoWeapon) {
-                WeaponType wtype = (WeaponType) m.getType();
-                if ((wtype.getAmmoType() == atype.getAmmoType())
-                        && (wtype.getRackSize() == atype.getRackSize())
-                        && (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONESHOT))) {
+            if (m.getType() instanceof AmmoWeapon ammoWeaponType) {
+                if ((ammoWeaponType.getAmmoType() == ammoType.getAmmoType()) &&
+                    (ammoWeaponType.getRackSize() == ammoType.getRackSize()) &&
+                    (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONESHOT))) {
                     return true;
                 }
-            } else if ((atype instanceof SmallWeaponAmmoType)
-                    && ((SmallWeaponAmmoType) atype).isAmmoFor(m.getType())) {
+            } else if ((ammoType instanceof SmallWeaponAmmoType smallWeaponAmmoType) &&
+                       smallWeaponAmmoType.isAmmoFor(m.getType())) {
                 return true;
             }
         }
@@ -1885,79 +1874,80 @@ public class UnitUtil {
     }
 
     /**
-     * @deprecated Use
-     *             {@link UnitUtil#checkEquipmentByTechLevel(Entity, ITechManager)}
-     *             instead
+     * @deprecated Use {@link UnitUtil#checkEquipmentByTechLevel(Entity, ITechManager)} instead
      */
-    @Deprecated
+    @Deprecated(since = "0.50.04", forRemoval = true)
     public static void checkEquipmentByTechLevel(Entity unit) {
         Vector<Mounted<?>> toRemove = new Vector<>();
         for (Mounted<?> m : unit.getEquipment()) {
-            EquipmentType etype = m.getType();
-            if (UnitUtil.isArmorOrStructure(etype)
-                    || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
+            EquipmentType equipmentType = m.getType();
+            if (UnitUtil.isArmorOrStructure(equipmentType) ||
+                UnitUtil.isHeatSink(equipmentType) ||
+                UnitUtil.isJumpJet(equipmentType)) {
                 continue;
             }
-            if (etype.hasFlag(MiscType.F_TSM)
-                    || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || etype.hasFlag(MiscType.F_MASC)) {
+            if (equipmentType.hasFlag(MiscType.F_TSM) ||
+                equipmentType.hasFlag(MiscType.F_INDUSTRIAL_TSM) ||
+                equipmentType.hasFlag(MiscType.F_MASC)) {
                 continue;
             }
-            if (!UnitUtil.isLegal(unit, etype)) {
+            if (!UnitUtil.isLegal(unit, equipmentType)) {
                 toRemove.add(m);
             }
         }
         for (Mounted<?> m : toRemove) {
             UnitUtil.removeMounted(unit, m);
         }
-        if (unit instanceof Infantry) {
-            Infantry pbi = (Infantry) unit;
-            if ((null != pbi.getPrimaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
+        if (unit instanceof Infantry pbi) {
+            if ((null != pbi.getPrimaryWeapon()) && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
                 InfantryUtil.replaceMainWeapon((Infantry) unit,
-                        (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"), false);
+                      (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"),
+                      false);
             }
-            if ((null != pbi.getSecondaryWeapon())
-                    && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
+            if ((null != pbi.getSecondaryWeapon()) && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
                 InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
         }
     }
 
     /**
-     * Checks for any equipment that is added on the equipment tab and removes any
-     * that is
-     * no longer legal for the current year/tech base/tech level
+     * Checks for any equipment that is added on the equipment tab and removes any that is no longer legal for the
+     * current year/tech base/tech level
      *
      * @param unit        The entity The unit to check
      * @param techManager The manager that handles the checking
+     *
      * @return Whether any changes were made
      */
     public static boolean checkEquipmentByTechLevel(Entity unit, ITechManager techManager) {
         List<Mounted<?>> toRemove = new ArrayList<>();
-        ITechnology acTA = Entity.getArmoredComponentTechAdvancement();
-        boolean dirty = false;
+        ITechnology      acTA     = Entity.getArmoredComponentTechAdvancement();
+        boolean          dirty    = false;
         for (Mounted<?> m : unit.getEquipment()) {
             if (m.isArmored() && !techManager.isLegal(acTA)) {
                 m.setArmored(false);
                 updateCritsArmoredStatus(unit, m);
                 dirty = true;
             }
-            EquipmentType etype = m.getType();
-            if (UnitUtil.isArmorOrStructure(etype)
-                    || UnitUtil.isHeatSink(etype) || UnitUtil.isJumpJet(etype)) {
+
+            EquipmentType equipmentType = m.getType();
+            if (UnitUtil.isArmorOrStructure(equipmentType) ||
+                UnitUtil.isHeatSink(equipmentType) ||
+                UnitUtil.isJumpJet(equipmentType)) {
                 continue;
             }
-            if (etype instanceof MiscType
-                    && (etype.hasFlag(MiscType.F_TSM)
-                            || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                            || (etype.hasFlag(MiscType.F_MASC)
-                                    && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                                    && !etype.hasSubType(MiscType.S_JETBOOSTER))
-                            || etype.hasFlag(MiscType.F_SCM))) {
+
+            if (equipmentType instanceof MiscType &&
+                (equipmentType.hasFlag(MiscType.F_TSM) ||
+                 equipmentType.hasFlag(MiscType.F_INDUSTRIAL_TSM) ||
+                 (equipmentType.hasFlag(MiscType.F_MASC) &&
+                  !equipmentType.hasSubType(MiscType.S_SUPERCHARGER) &&
+                  !equipmentType.hasSubType(MiscType.S_JETBOOSTER)) ||
+                 equipmentType.hasFlag(MiscType.F_SCM))) {
                 continue;
             }
-            if (!techManager.isLegal(etype)) {
+
+            if (!techManager.isLegal(equipmentType)) {
                 toRemove.add(m);
             }
         }
@@ -1965,18 +1955,15 @@ public class UnitUtil {
         for (Mounted<?> m : toRemove) {
             UnitUtil.removeMounted(unit, m);
         }
-        if (unit instanceof Infantry) {
-            Infantry pbi = (Infantry) unit;
-            if ((null != pbi.getPrimaryWeapon())
-                    && !techManager.isLegal(pbi.getPrimaryWeapon())) {
+
+        if (unit instanceof megamek.common.Infantry pbi) {
+            if ((null != pbi.getPrimaryWeapon()) && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit,
-                        (InfantryWeapon) EquipmentType
-                                .get("Infantry Auto Rifle"),
-                        false);
+                      (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"),
+                      false);
             }
-            if ((null != pbi.getSecondaryWeapon())
-                    && !techManager.isLegal(pbi.getSecondaryWeapon())) {
+            if ((null != pbi.getSecondaryWeapon()) && !techManager.isLegal(pbi.getSecondaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
             }
@@ -1988,12 +1975,10 @@ public class UnitUtil {
     }
 
     /**
-     * Updates the manual BV value of the given entity. When manualBV is 0 or less,
-     * the entity is set to not use a manual BV value and the manual BV is set to
-     * -1.
+     * Updates the manual BV value of the given entity. When manualBV is 0 or less, the entity is set to not use a
+     * manual BV value and the manual BV is set to -1.
      *
-     * @param manualBV A manual BV value; values less than 1 remove the manual BV
-     *                 from the entity.
+     * @param manualBV A manual BV value; values less than 1 remove the manual BV from the entity.
      */
     public static void setManualBV(int manualBV, Entity entity) {
         entity.setManualBV((manualBV > 0) ? manualBV : -1);
@@ -2001,10 +1986,8 @@ public class UnitUtil {
     }
 
     /**
-     * For MiscTypes of variable size such as Ladders this sets the size to the
-     * minimum
-     * size which is equal to the step size (20m for Ladders, 0.5t for Cargo space
-     * and the like).
+     * For MiscTypes of variable size such as Ladders this sets the size to the minimum size which is equal to the step
+     * size (20m for Ladders, 0.5t for Cargo space and the like).
      */
     public static void setVariableSizeMiscTypeMinimumSize(Mounted<?> mounted) {
         if ((mounted.getType() instanceof MiscType) && mounted.getType().isVariableSize()) {
@@ -2024,17 +2007,17 @@ public class UnitUtil {
             return true;
         }
 
-        if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon))
-                && (weapon.getRackSize() != 5)
-                && (weapon.getRackSize() != 10)
-                && (weapon.getRackSize() != 15)
-                && (weapon.getRackSize() != 20)) {
+        if (((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) &&
+            (weapon.getRackSize() != 5) &&
+            (weapon.getRackSize() != 10) &&
+            (weapon.getRackSize() != 15) &&
+            (weapon.getRackSize() != 20)) {
             return true;
         }
-        if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon))
-                && (weapon.getRackSize() != 2)
-                && (weapon.getRackSize() != 4)
-                && (weapon.getRackSize() != 6)) {
+        if (((weapon instanceof SRMWeapon) || (weapon instanceof SRTWeapon)) &&
+            (weapon.getRackSize() != 2) &&
+            (weapon.getRackSize() != 4) &&
+            (weapon.getRackSize() != 6)) {
             return true;
         }
         if ((weapon instanceof MRMWeapon) && (weapon.getRackSize() < 10)) {
@@ -2045,13 +2028,12 @@ public class UnitUtil {
             return true;
         }
 
-        if (weapon.hasFlag(WeaponType.F_ENERGY)
-                || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                        .getAmmoType() == AmmoType.T_PLASMA))) {
+        if (weapon.hasFlag(WeaponType.F_ENERGY) ||
+            (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
 
-            return weapon.hasFlag(WeaponType.F_ENERGY)
-                    && weapon.hasFlag(WeaponType.F_PLASMA)
-                    && (weapon.getAmmoType() == AmmoType.T_NA);
+            return weapon.hasFlag(WeaponType.F_ENERGY) &&
+                   weapon.hasFlag(WeaponType.F_PLASMA) &&
+                   (weapon.getAmmoType() == AmmoType.T_NA);
         }
         return false;
     }
