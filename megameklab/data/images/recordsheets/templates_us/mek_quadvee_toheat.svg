@@ -26,13 +26,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.3802697"
-     inkscape:cx="394.93891"
-     inkscape:cy="207.37991"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:zoom="2"
+     inkscape:cx="75"
+     inkscape:cy="151.75"
+     inkscape:window-width="2560"
+     inkscape:window-height="1494"
+     inkscape:window-x="1"
+     inkscape:window-y="2149"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg520" />
   <g
@@ -1163,7 +1163,7 @@
          id="text227">Walking:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpWalk"
          y="56"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1177,7 +1177,7 @@
          id="text228">Running:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpRun"
          y="65"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1191,7 +1191,7 @@
          text-anchor="start">Jumping:</text>
       <text
          fill="#231f20"
-         x="44"
+         x="48"
          id="mpJump"
          y="74"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1214,12 +1214,11 @@
          id="text230">Cruising:</text>
       <text
          fill="#231f20"
-         x="98.850"
+         x="102.85"
          id="mpCruise"
-         y="56.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
-         text-anchor="middle">0
-            </text>
+         y="56"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
+         text-anchor="middle">0</text>
       <text
          x="60.849998"
          y="65"
@@ -1231,12 +1230,11 @@
          id="text231">Flanking:</text>
       <text
          fill="#231f20"
-         x="98.850"
+         x="102.85"
          id="mpFlank"
-         y="65.000"
-         style="font-family:Eurostile;font-size:7.700px;font-weight:normal;font-style:normal"
-         text-anchor="middle">0
-            </text>
+         y="65"
+         style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
+         text-anchor="middle">0</text>
       <text
          x="115.700"
          y="38.000"
