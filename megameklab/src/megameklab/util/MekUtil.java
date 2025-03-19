@@ -947,7 +947,9 @@ public final class MekUtil {
      */
     public static void fillInAllEquipment(Mek mek) {
         int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
-        for (Mounted<?> mount : mek.getEquipment()) {
+        // Create a copy of the equipment list to iterate over
+        List<Mounted<?>> equipmentList = new ArrayList<>(mek.getEquipment());
+        for (Mounted<?> mount : equipmentList) {
             if ((mount.getLocation() != Entity.LOC_NONE)
                     || (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0))) {
                 continue;
