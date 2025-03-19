@@ -13,23 +13,6 @@
  */
 package megameklab.ui.mek;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -53,6 +36,13 @@ import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
     private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
@@ -703,6 +693,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         }
         boolean changedSuperHeavyStatus = getMek().isSuperHeavy() != tonnage > 100;
 
+        getMek().setWeight(tonnage);
+
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy, remove crits
             for (Mounted<?> mount : getMek().getEquipment()) {
@@ -730,7 +722,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
             }
         }
-        getMek().setWeight(tonnage);
+
         // Force recalculation of walk MP. Set from chassis panel in case superheavy
         // flag changed
         final Engine engine = panChassis.getEngine();
