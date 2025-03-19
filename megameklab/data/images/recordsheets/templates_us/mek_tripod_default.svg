@@ -9,7 +9,7 @@
    version="1.0"
    id="svg450"
    sodipodi:docname="mek_tripod_default.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.8258961"
-     inkscape:cx="-15.882613"
-     inkscape:cy="564.9281"
-     inkscape:window-width="2560"
-     inkscape:window-height="1369"
-     inkscape:window-x="3832"
-     inkscape:window-y="-8"
+     inkscape:zoom="3.17"
+     inkscape:cx="318.76972"
+     inkscape:cy="183.43849"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g351" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1138,7 +1138,7 @@
          x="29.229"
          id="type"
          y="28.000"
-         style="font-family:Eurostile;font-size:9.670px;font-weight:normal;font-style:normal;mml-field-width:187.171"
+         style="font-family:Eurostile;font-size:9.67px;font-weight:normal;font-style:normal;mml-field-width:187.171;-inkscape-font-specification:'Eurostile, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#231f20"
          text-anchor="start">Lorem Ipsum</text>
       <text
          fill="#231f20"
@@ -3079,34 +3079,34 @@
                id="shieldDCRA"
                transform="translate(558.145,30.2841)">
               <rect
-                 x="5"
-                 width="23.3"
-                 y="5.3272"
-                 height="6.15152"
+                 x="2.2565992"
+                 width="23.299999"
+                 y="5.3271999"
+                 height="6.1515198"
                  id="rightShieldDARow00" />
               <rect
-                 x="5"
-                 width="23.3"
+                 x="2.2565992"
+                 width="23.299999"
                  y="10.6544"
-                 height="6.15152"
+                 height="6.1515198"
                  id="rightShieldDARow01" />
               <rect
-                 x="5"
-                 width="23.3"
+                 x="2.2565992"
+                 width="23.299999"
                  y="15.9816"
-                 height="6.15152"
+                 height="6.1515198"
                  id="rightShieldDARow02" />
               <rect
-                 x="5"
-                 width="23.3"
+                 x="2.2565992"
+                 width="23.299999"
                  y="21.3088"
-                 height="6.15152"
+                 height="6.1515198"
                  id="rightShieldDARow03" />
               <rect
-                 x="5"
-                 width="23.3"
+                 x="2.2565992"
+                 width="23.299999"
                  y="26.636"
-                 height="6.15152"
+                 height="6.1515198"
                  id="rightShieldDARow04" />
               <rect
                  x="0"
@@ -3132,10 +3132,10 @@
                id="shieldDARA"
                transform="matrix(0.063749,0.997966,-0.997966,0.063749,586.248,91.6269)">
               <rect
-                 x="0"
+                 x="-0.26589844"
                  width="44"
-                 y="0"
-                 height="6.15152"
+                 y="4.1625376"
+                 height="6.1515198"
                  id="rightShieldDCRow00" />
             </g>
           </g>
