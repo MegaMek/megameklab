@@ -26,12 +26,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
-import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -66,7 +60,6 @@ import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 import javax.swing.*;
-import java.util.List;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons
@@ -720,7 +713,10 @@ public class BayWeaponCriticalTree extends JTree {
     private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
         private EquipmentNode node;
 
-        /** This internal label is not shown but used to control the size of the actual label. */
+        /**
+         * This internal label is not shown but used to control the size of the actual
+         * label.
+         */
         private final JLabel internalSizingLabel = new JLabel("X".repeat(28));
 
         @Override
@@ -1456,22 +1452,38 @@ public class BayWeaponCriticalTree extends JTree {
         if (sources.length < 2) {
             return;
         }
+
+        MutableTreeNode root = (MutableTreeNode) model.getRoot();
+        if (root == null) {
+            return; // No root, nothing to do
+        }
+
         // Check whether this is equipment in a bay.
         if (sources.length > 2) {
-            BayNode bayNode = (BayNode) ((MutableTreeNode) model.getRoot())
-                    .getChildAt(Integer.parseInt(sources[2]));
-            EquipmentNode node = (EquipmentNode) bayNode.getChildAt(Integer.parseInt(sources[1]));
-            // Don't remove ammo unless all the ammo is moved or there are no shots
-            // remaining.
+            int bayIndex = Integer.parseInt(sources[2]);
+            // Validate bay index is in bounds
+            if (bayIndex < 0 || bayIndex >= root.getChildCount()) {
+                return; // Bay index out of bounds
+            }
+            BayNode bayNode = (BayNode) root.getChildAt(bayIndex);
+            int nodeIndex = Integer.parseInt(sources[1]);
+            // Validate node index is in bounds
+            if (nodeIndex < 0 || nodeIndex >= bayNode.getChildCount()) {
+                return; // Node index out of bounds
+            }
+            EquipmentNode node = (EquipmentNode) bayNode.getChildAt(nodeIndex);
+            // Don't remove ammo unless all the ammo is moved or there are no shots remaining.
             if (!(node.getMounted().getType() instanceof AmmoType)
                     || (action == AeroBayTransferHandler.AMMO_ALL)
                     || (node.getMounted().getBaseShotsLeft() == 0)) {
                 removeEquipment(node, false, false);
             }
         } else {
-            EquipmentNode node = (EquipmentNode) ((MutableTreeNode) model.getRoot())
-                    .getChildAt(Integer.parseInt(sources[1]));
-            // If we're moving an entire bay we only need to get rid of the bay node.
+            int nodeIndex = Integer.parseInt(sources[1]);
+            if (nodeIndex < 0 || nodeIndex >= root.getChildCount()) {
+                return; // Node index out of bounds
+            }
+            EquipmentNode node = (EquipmentNode) root.getChildAt(nodeIndex);
             if (node instanceof BayNode) {
                 model.removeNodeFromParent(node);
             } else {
