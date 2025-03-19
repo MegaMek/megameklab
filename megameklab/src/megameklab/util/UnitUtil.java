@@ -71,10 +71,16 @@ public class UnitUtil {
     private static Font rsBoldFont = null;
 
     /**
-     * Tells us if the passed in EquipmentType is equipment that uses critical slots/mounted and is spread across
-     * multiple locations
+     * Tells us if the passed in {@link EquipmentType} is equipment that uses critical slots/mounted and is spread
+     * across multiple locations
+     * <p>
+     * This batch of checks should be moved to the {@link MiscType} class and simplified vs a massive list here. Can be
+     * a flag on the MiscType to denote "Fixed Location" and "Spread Equipment." {@link MiscType#spreadable} is already
+     * present on the MiscType so adding the field just like {@link MiscType#omniFixedOnly}.
      *
      * @param eq The equipment to test
+     *
+     * @return True if EquipmentType is of MiscType, is Fixed, and is spread across multiple locations.
      */
     public static boolean isFixedLocationSpreadEquipment(EquipmentType eq) {
         return (eq instanceof MiscType) &&
