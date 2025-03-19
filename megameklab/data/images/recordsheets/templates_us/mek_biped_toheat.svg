@@ -27,8 +27,8 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="4.7704838"
-     inkscape:cx="212.45225"
-     inkscape:cy="83.534504"
+     inkscape:cx="381.30305"
+     inkscape:cy="133.52943"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
@@ -4026,67 +4026,78 @@
                x="487.48"
                y="46.27"
                id="textArmor_HD"
-               font-weight="bold">( 0 )</text>
+               font-weight="bold"
+               style="-inkscape-font-specification:'Eurostile, Bold';font-family:Eurostile;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal;font-size:5.79549996px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">( 0 )</text>
             <text
-               x="485.215"
+               x="484.78333"
                y="216.5"
                id="textArmor_CT"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="485.215"
-               y="275.11"
+               x="484.78333"
+               y="275.10999"
                id="textArmor_CTR"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="514.42"
-               y="59.76"
+               x="519.62476"
+               y="59.759998"
                id="textArmor_RT"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="554.735"
-               y="360.17"
+               x="554.30322"
+               y="360.17001"
                id="textArmor_RTR"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="449.24"
-               y="59.76"
+               x="448.80832"
+               y="59.759998"
                id="textArmor_LT"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="415.575"
-               y="360.17"
+               x="415.14334"
+               y="360.17001"
                id="textArmor_LTR"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="558.76"
+               x="558.32825"
                y="214.52"
                id="textArmor_RA"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="412.94"
+               x="412.50833"
                y="214.52"
                id="textArmor_LA"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="564.925"
-               y="266.9"
+               x="564.49323"
+               y="266.89999"
                id="textArmor_RL"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
             <text
-               x="405"
-               y="266.9"
+               x="404.56833"
+               y="266.89999"
                id="textArmor_LL"
                font-weight="bold"
-               text-anchor="middle">( 0 )</text>
+               text-anchor="middle"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.7955px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle">( 0 )</text>
           </g>
         </g>
         <g
@@ -5714,11 +5725,12 @@
            transform="translate(-397.43863,-386.6357)"
            id="g333">
           <text
-             x="473.3"
-             y="506.86"
+             x="473.20941"
+             y="506.85999"
              id="textIS_CT"
              font-weight="bold"
-             text-anchor="middle">( 0 )</text>
+             text-anchor="middle"
+             style="text-align:center;text-anchor:middle">( 0 )</text>
           <text
              x="532.30"
              y="400.84"
@@ -5730,25 +5742,29 @@
              id="textIS_LT"
              font-weight="bold">( 0 )</text>
           <text
-             x="537.33"
-             y="477.51"
+             x="541.04907"
+             y="477.51001"
              id="textIS_RA"
-             font-weight="bold">( 0 )</text>
+             font-weight="bold"
+             style="text-align:center;text-anchor:middle">( 0 )</text>
           <text
-             x="398.3"
-             y="477.51"
+             x="403.07251"
+             y="477.51001"
              id="textIS_LA"
-             font-weight="bold">( 0 )</text>
+             font-weight="bold"
+             style="text-align:center;text-anchor:middle">( 0 )</text>
           <text
-             x="525.53"
-             y="535.60"
+             x="530.30255"
+             y="535.59998"
              id="textIS_RL"
-             font-weight="bold">( 0 )</text>
+             font-weight="bold"
+             style="text-align:center;text-anchor:middle">( 0 )</text>
           <text
-             x="412.84"
-             y="535.60"
+             x="415.60236"
+             y="535.59998"
              id="textIS_LL"
-             font-weight="bold">( 0 )</text>
+             font-weight="bold"
+             style="text-align:center;text-anchor:middle">( 0 )</text>
         </g>
         <g
            id="structurePips"
