@@ -414,8 +414,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         StringBuilder systemFontDirectories = new StringBuilder();
         List<String> directories = new ArrayList<>();
         if (osName.contains("windows")) {
-            directories.add("C:\\Windows\\Fonts");
-            directories.add(System.getenv("LOCALAPPDATA")+"\\Microsoft\\Windows\\Fonts");
+            String winDir = System.getenv("WINDIR");
+            if (winDir == null) {
+                winDir = System.getenv("SystemRoot");
+            }
+            if (winDir == null) {
+                winDir = "C:\\Windows";
+            }
+            directories.add(winDir+"\\Fonts");
+            directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
             directories.add("/System/Library/Fonts");
             directories.add("/Library/Fonts");
@@ -435,8 +442,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         int insertPoint = configXml.indexOf("</fonts>");
         if (insertPoint > 0) {
             configXml = configXml.substring(0, insertPoint) +
-            systemFontDirectories.toString() +
-            configXml.substring(insertPoint);
+                    systemFontDirectories.toString() +
+                    configXml.substring(insertPoint);
         } else {
             logger.warn("Failed to inject system font directories into fop-config.xml");
         }
