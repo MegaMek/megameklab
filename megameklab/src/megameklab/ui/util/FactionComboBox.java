@@ -15,45 +15,38 @@ package megameklab.ui.util;
 
 import java.util.*;
 
-import megamek.client.ratgenerator.FactionRecord;
-import megamek.client.ratgenerator.RATGenerator;
 import megamek.common.ITechnology;
+import megamek.common.universe.Factions2;
+
+import javax.swing.*;
 
 /**
- * Combo box that uses the RATGenerator faction data to provide a list of factions appropriate
- * to a unit's intro year and with the era-appropriate name. The underlying data type is the
- * ITechnology faction constant.
- * 
+ * A ComboBox that provides a list of factions appropriate to a unit's intro year and with the era-appropriate name. The
+ * underlying data type is the ITechnology faction constant.
+ *
  * @author Neoancient
  */
 public class FactionComboBox extends CustomComboBox<Integer> {
     private final Map<Integer, String> displayNames = new HashMap<>();
-    
+
     public FactionComboBox() {
         super();
-        setRenderer(new Renderer<>(displayNames::get));
-        while (!RATGenerator.getInstance().isInitialized()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ignored) {
-            }
-        }
+        setRenderer(new Renderer<>(i -> displayNames.getOrDefault(i, "Marian Hegemony")));
     }
-    
+
     public void refresh(int year) {
         displayNames.clear();
         for (int i = 0; i < ITechnology.MM_FACTION_CODES.length; i++) {
-            final FactionRecord fRec = RATGenerator.getInstance().getFaction(ITechnology.MM_FACTION_CODES[i]);
-            // TA will generate a null value because the RAT Generator doesn't distinguish between TH and TA.
-            if ((null != fRec) && (fRec.isActiveInYear(year))) {
-                displayNames.put(i, fRec.getName(year));
-            }
+            int finalI = i;
+            Factions2.getInstance().getFaction(ITechnology.MM_FACTION_CODES[i])
+                  .filter(f -> f.isActiveInYear(year))
+                  .ifPresent(f -> displayNames.put(finalI, f.getName(year)));
         }
         List<Integer> sorted = new ArrayList<>(displayNames.keySet());
         sorted.sort(Comparator.comparing(displayNames::get));
         removeAllItems();
         addItem(-1);
         displayNames.put(-1, "Any");
-        sorted.forEach(this::addItem);
+        ((DefaultComboBoxModel<Integer>) getModel()).addAll(sorted);
     }
 }
