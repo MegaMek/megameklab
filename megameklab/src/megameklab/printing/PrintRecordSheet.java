@@ -80,9 +80,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;
     public static final float FONT_SIZE_VSMALL = 5.8f;
-    public static final String FILL_BLACK = "#231f20";
+    public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
-    public static final String FILL_SHADOW = "#c8c7c7";
+    public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
@@ -402,7 +402,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, true);
 
         String configXml;
-        try (InputStream configStream = getClass().getResourceAsStream("fop-config.xml")) {
+        try (InputStream configStream = PrintRecordSheet.class.getResourceAsStream("fop-config.xml")) {
             configXml = new String(configStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.warn("Failed to load fop-config.xml");

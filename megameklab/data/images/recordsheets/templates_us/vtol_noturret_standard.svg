@@ -1070,7 +1070,7 @@
     <text
        font-size="5.7px"
        transform="translate (288.0 375.0)"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="middle"
        font-family="Eurostile"
        id="footer"
@@ -1095,14 +1095,14 @@
            d="M 2.5,10.714 L 7.975,2.500 l 79.324,0.000 l 5.475,8.214 L 216.055,10.714 l 7.845,7.600 L 223.900,275.643 l -5.475,8.214 L 113.200,283.857 l -5.475,-8.214 L 10.345,275.643 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path222" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 79.324,0.000 l 5.475,8.214 L 214.555,8.214 l 7.845,7.600 L 222.400,274.143 l -5.475,8.214 L 111.200,282.357 l -5.475,-8.214 L 7.845,274.143 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path223" />
         <g
            transform="translate (2.5,3.0)"
@@ -1125,21 +1125,21 @@
       <text
          x="3.000"
          y="28.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:9.670px;font-weight:bold;font-style:normal"
          textLength="21.401"
          lengthAdjust="spacingAndGlyphs"
          id="text225">Type:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="29.229"
          id="type"
          y="28.000"
-         style="font-family:Eurostile;font-size:9.67px;font-weight:normal;font-style:normal;mml-field-width:193.171;-inkscape-font-specification:'Eurostile, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#231f20"
+         style="font-family:Eurostile;font-size:9.67px;font-weight:normal;font-style:normal;mml-field-width:193.171;-inkscape-font-specification:'Eurostile, Normal';font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
          text-anchor="start">Lorem Ipsum</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="6.000"
          y="38.000"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
@@ -1148,14 +1148,14 @@
       <text
          x="6.000"
          y="47.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="29.020"
          lengthAdjust="spacingAndGlyphs"
          id="text227">Cruising:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.000"
          id="mpWalk"
          y="47.000"
@@ -1164,14 +1164,14 @@
       <text
          x="6.000"
          y="56.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="28.937"
          lengthAdjust="spacingAndGlyphs"
          id="text228">Flanking:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.000"
          id="mpRun"
          y="56.000"
@@ -1180,7 +1180,7 @@
       <text
          x="57.849998"
          y="56"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          id="lblJump"
@@ -1188,7 +1188,7 @@
          lengthAdjust="spacingAndGlyphs"
          transform="translate(6)">Jumping:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="101.85"
          id="mpJump"
          y="56"
@@ -1197,14 +1197,14 @@
       <text
          x="115.700"
          y="38.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="29.785"
          lengthAdjust="spacingAndGlyphs"
          id="text229">Tonnage:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="158.240"
          id="tonnage"
          y="38.000"
@@ -1213,14 +1213,14 @@
       <text
          x="115.700"
          y="47.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="35.949"
          lengthAdjust="spacingAndGlyphs"
          id="text230">Tech Base:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="158.240"
          id="techBase"
          y="47.000"
@@ -1229,14 +1229,14 @@
       <text
          x="115.700"
          y="56.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="38.697"
          lengthAdjust="spacingAndGlyphs"
          id="text231">Rules Level:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="158.240"
          id="rulesLevel"
          y="56.000"
@@ -1245,14 +1245,14 @@
       <text
          x="115.700"
          y="65.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          id="labelRole"
          textLength="16.160"
          lengthAdjust="spacingAndGlyphs">Role:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="158.240"
          id="role"
          y="65.000"
@@ -1261,14 +1261,14 @@
       <text
          x="6.000"
          y="65.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="54.285"
          lengthAdjust="spacingAndGlyphs"
          id="text232">Movement Type:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="64.129"
          id="movementType"
          y="65.000"
@@ -1277,14 +1277,14 @@
       <text
          x="6.000"
          y="74.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="40.915"
          lengthAdjust="spacingAndGlyphs"
          id="text233">Engine Type:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="64.129"
          id="engineType"
          y="74.000"
@@ -1299,14 +1299,14 @@
       <text
          x="3.000"
          y="87.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
          textLength="121.508"
          lengthAdjust="spacingAndGlyphs"
          id="text234">Weapons &amp; Equipment Inventory</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="171.132"
          id="unitScale"
          y="87.500"
@@ -1328,14 +1328,14 @@
       <text
          x="13.845"
          y="268.143"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:7.700px;font-weight:bold;font-style:normal"
          textLength="11.238"
          lengthAdjust="spacingAndGlyphs"
          id="text235">BV:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="28.927"
          id="bv"
          y="268.143"
@@ -1359,14 +1359,14 @@
            d="M 2.5,10.714 L 7.975,2.500 l 68.308,0.000 l 5.475,8.214 L 142.255,10.714 l 7.845,7.600 L 150.100,80.948 l -7.845,7.600 L 10.345,88.548 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path235" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 68.308,0.000 l 5.475,8.214 L 140.755,8.214 l 7.845,7.600 L 148.600,79.448 l -7.845,7.600 L 7.845,87.048 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path236" />
         <g
            transform="translate (2.5,3.0)"
@@ -1387,14 +1387,14 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="3.000"
          y="30.000"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text238">Crew:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="23.036"
          id="pilotName0"
          y="30.000"
@@ -1405,18 +1405,18 @@
          d="M 23.036,31.000 L 142.600,31.000"
          stroke-width="0.720"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <text
          x="3.000"
          y="42.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          id="gunnerySkillText0"
          textLength="39.172"
          lengthAdjust="spacingAndGlyphs">Gunnery Skill:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="49.592"
          id="gunnerySkill0"
          y="42.000"
@@ -1427,18 +1427,18 @@
          d="M 49.592,43.000 L 68.520,43.000"
          stroke-width="0.720"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <text
          x="72.800"
          y="42.000"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          id="pilotingSkillText0"
          textLength="35.365"
          lengthAdjust="spacingAndGlyphs">Driving Skill:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="119.392"
          id="pilotingSkill0"
          y="42.000"
@@ -1449,14 +1449,14 @@
          d="M 119.392,43.000 L 142.600,43.000"
          stroke-width="0.720"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <g
          transform="translate (3.000 58.000)"
          id="g240">
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="30.632"
@@ -1467,12 +1467,12 @@
            d="M 54.520,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path239" />
         <text
            x="58.520"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1485,7 +1485,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="21.789"
@@ -1496,12 +1496,12 @@
            d="M 54.520,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path241" />
         <text
            x="58.520"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1511,7 +1511,7 @@
       <text
          x="3.000"
          y="72.400"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.830px;font-weight:normal;font-style:normal"
          textLength="45.035"
@@ -1520,7 +1520,7 @@
       <text
          x="75.800"
          y="72.400"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.830px;font-weight:normal;font-style:normal"
          textLength="54.512"
@@ -1537,14 +1537,14 @@
            d="M 2.5,10.714 L 7.975,2.500 l 100.844,0.000 l 5.475,8.214 L 142.255,10.714 l 7.845,7.600 L 150.100,80.948 l -7.845,7.600 L 10.345,88.548 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path244" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 100.844,0.000 l 5.475,8.214 L 140.755,8.214 l 7.845,7.600 L 148.600,79.448 l -7.845,7.600 L 7.845,87.048 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path245" />
         <g
            transform="translate (2.5,3.0)"
@@ -1570,7 +1570,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="46.265"
@@ -1581,12 +1581,12 @@
            d="M 69.080,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path247" />
         <text
            x="73.080"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1599,7 +1599,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="28.081"
@@ -1610,7 +1610,7 @@
            d="M 39.960,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path249" />
       </g>
       <g
@@ -1619,7 +1619,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="32.801"
@@ -1630,12 +1630,12 @@
            d="M 91.320,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path250" />
         <text
            x="95.320"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1646,12 +1646,12 @@
            d="M 102.320,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path251" />
         <text
            x="106.320"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1662,12 +1662,12 @@
            d="M 113.320,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path252" />
         <text
            x="117.320"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="4.800"
@@ -1678,12 +1678,12 @@
            d="M 124.320,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path253" />
         <text
            x="128.320"
            y="6.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="3.716"
@@ -1691,7 +1691,7 @@
            id="text254">D</text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="75.800"
          y="52.524"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
@@ -1703,7 +1703,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="15.082"
@@ -1714,7 +1714,7 @@
            d="M 31.224,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path256" />
       </g>
       <g
@@ -1723,7 +1723,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="10.652"
@@ -1734,7 +1734,7 @@
            d="M 31.224,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path257" />
       </g>
       <g
@@ -1743,7 +1743,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="14.588"
@@ -1754,7 +1754,7 @@
            d="M 31.224,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path258" />
       </g>
       <g
@@ -1763,7 +1763,7 @@
         <text
            x="0.000"
            y="6.400"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
            textLength="13.727"
@@ -1774,13 +1774,13 @@
            d="M 31.224,1.315 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 5.370,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,5.370 c 0,0.726 -0.589,1.315, -1.315,1.315 l -5.370,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path259" />
       </g>
       <text
          x="6.000"
          y="84.294"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.830px;font-weight:normal;font-style:normal"
          textLength="58.681"
@@ -1797,14 +1797,14 @@
            d="M 2.5,10.714 L 7.975,2.500 l 39.563,0.000 l 5.475,8.214 L 142.255,10.714 l 7.845,7.600 L 150.100,83.948 l -7.845,7.600 L 10.345,91.548 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path260" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 l 39.563,0.000 l 5.475,8.214 L 140.755,8.214 l 7.845,7.600 L 148.600,82.448 l -7.845,7.600 L 7.845,90.048 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path261" />
         <g
            transform="translate (2.5,3.0)"
@@ -2727,7 +2727,7 @@
              id="g57733"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path57735" />
           </g>
@@ -2735,7 +2735,7 @@
              id="g57737"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path57739" />
           </g>
@@ -2883,7 +2883,7 @@
              id="g57811"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#c7c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path57813" />
           </g>
@@ -2891,7 +2891,7 @@
              id="g57815"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path57817" />
           </g>
@@ -2899,7 +2899,7 @@
              id="g57819"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57821" />
           </g>
@@ -2907,7 +2907,7 @@
              id="g57823"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57825" />
           </g>
@@ -2915,7 +2915,7 @@
              id="g57827"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57829" />
           </g>
@@ -2923,7 +2923,7 @@
              id="g57831"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path57833" />
           </g>
@@ -2931,7 +2931,7 @@
              id="g57835"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57837" />
           </g>
@@ -2948,7 +2948,7 @@
              id="g288"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path287" />
           </g>
@@ -2956,7 +2956,7 @@
              id="g289"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path288" />
           </g>
@@ -3104,7 +3104,7 @@
              id="g307"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#c7c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path307" />
           </g>
@@ -3112,7 +3112,7 @@
              id="g308"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path308" />
           </g>
@@ -3120,7 +3120,7 @@
              id="g309"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path309" />
           </g>
@@ -3128,7 +3128,7 @@
              id="g310"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path310" />
           </g>
@@ -3136,7 +3136,7 @@
              id="g311"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path311" />
           </g>
@@ -3144,7 +3144,7 @@
              id="g312"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path312" />
           </g>
@@ -3152,7 +3152,7 @@
              id="g313"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path313" />
           </g>
@@ -3181,7 +3181,7 @@
         <text
            x="41.996"
            y="21.5"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
            id="armorType">Standard</text>

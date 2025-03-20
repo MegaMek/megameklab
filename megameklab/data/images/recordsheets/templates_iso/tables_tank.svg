@@ -40,7 +40,7 @@
     <text
        font-size="5.7px"
        transform="translate (279.5 400.0)"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="middle"
        font-family="Eurostile"
        id="footer"
@@ -65,14 +65,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 309.655,2.500 l 5.475,8.214 L 315.130,217.500 l -7.845,7.600 L 10.345,225.100 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path1" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 308.155,0.000 l 5.475,8.214 L 313.630,216.000 l -7.845,7.600 L 7.845,223.600 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path2" />
         <g
            transform="translate (2.5,3.0)"
@@ -129,7 +129,7 @@
            y="99.5" />
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="170.847"
          y="25.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
@@ -298,7 +298,7 @@
         <text
            x="6.000"
            y="7.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
@@ -307,7 +307,7 @@
         <text
            x="6.000"
            y="14.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
@@ -316,7 +316,7 @@
         <text
            x="6.000"
            y="21.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="200.326"
@@ -325,7 +325,7 @@
         <text
            x="206.326"
            y="21.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic"
            textLength="33.425"
@@ -334,7 +334,7 @@
         <text
            x="242.595"
            y="21.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="53.281"
@@ -343,14 +343,14 @@
         <text
            x="6.000"
            y="28.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
            lengthAdjust="spacingAndGlyphs"
            id="text56">A result of 12 on the Ground Combat Vehicles Hit Location Table may inflict critical hit against the turret; if the vehicle has</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="6.000"
            y="35.000"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:67827.500"
@@ -359,7 +359,7 @@
         <text
            x="6.000"
            y="42.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
@@ -368,7 +368,7 @@
         <text
            x="6.000"
            y="49.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
@@ -377,7 +377,7 @@
         <text
            x="6.000"
            y="56.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic"
            textLength="33.425"
@@ -386,7 +386,7 @@
         <text
            x="42.269"
            y="56.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="53.281"
@@ -395,14 +395,14 @@
         <text
            x="6.000"
            y="63.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="301.630"
            lengthAdjust="spacingAndGlyphs"
            id="text62">§ Side hits strike the side as indicated by the attack direction. For example, if an attack hits the right side, all Side results</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="6.000"
            y="70.000"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:69736.813"
@@ -420,14 +420,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 228.395,2.500 l 5.475,8.214 L 233.870,217.500 l -7.845,7.600 L 10.345,225.100 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path64" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 226.895,0.000 l 5.475,8.214 L 232.370,216.000 l -7.845,7.600 L 7.845,223.600 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path65" />
         <g
            transform="translate (2.5,3.0)"
@@ -577,7 +577,7 @@
       <text
          x="6.000"
          y="131.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -586,7 +586,7 @@
       <text
          x="6.000"
          y="136.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -595,7 +595,7 @@
       <text
          x="6.000"
          y="141.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -604,7 +604,7 @@
       <text
          x="6.000"
          y="146.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -613,7 +613,7 @@
       <text
          x="6.000"
          y="151.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -622,7 +622,7 @@
       <text
          x="6.000"
          y="156.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -631,7 +631,7 @@
       <text
          x="6.000"
          y="161.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -640,7 +640,7 @@
       <text
          x="6.000"
          y="166.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -649,7 +649,7 @@
       <text
          x="6.000"
          y="171.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -658,7 +658,7 @@
       <text
          x="6.000"
          y="176.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
@@ -667,14 +667,14 @@
       <text
          x="6.000"
          y="181.500"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal"
          textLength="220.370"
          lengthAdjust="spacingAndGlyphs"
          id="text106">take effect during the Physical Attack Phase. If a hover vehicle is rendered immobile while</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="6.000"
          y="186.500"
          style="font-family:Eurostile;font-size:4.800px;font-weight:normal;font-style:normal;mml-field-width:21594.053"
@@ -691,14 +691,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 550.025,2.500 l 5.475,8.214 L 555.500,140.300 l -7.845,7.600 L 10.345,147.900 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path107" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 548.525,0.000 l 5.475,8.214 L 554.000,138.800 l -7.845,7.600 L 7.845,146.400 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path108" />
         <g
            transform="translate (2.5,3.0)"
@@ -749,7 +749,7 @@
            y="311" />
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="297.540"
          y="26.000"
          style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
@@ -904,14 +904,14 @@
              id="tspan153">Turret Blown Off</tspan></text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="55.100"
          y="113.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text154">*If Combat Vehicle has ICE engine only. If Combat Vehicle has a fusion engine, treat this result as Engine Hit.</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="55.100"
          y="120.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
