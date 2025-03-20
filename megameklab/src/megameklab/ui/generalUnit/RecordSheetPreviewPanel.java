@@ -207,8 +207,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 }
                 // Scale to fit the clipboard image
                 var bounds = gn.getBounds();
-                var yscale = (imgHeight - 20) / bounds.getHeight();
-                var xscale = (imgWidth - 20) / bounds.getWidth();
+                var yscale = imgHeight / bounds.getHeight();
+                var xscale = imgWidth / bounds.getWidth();
                 var scale = Math.min(yscale, xscale);
 
                 // Calculate position for this sheet (side by side horizontally)
@@ -429,7 +429,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             }
             int pagesCount = sheet.getPageCount();
             for (int i = 0; i < pagesCount; i++) {
-                sheet.createDocument(i, pf, false);
+                sheet.createDocument(i, pf, true);
                 gnSheets.add(sheet.build());
             }
         }
@@ -509,8 +509,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 AffineTransform originalTransform = gnSheet.getTransform();
                 try {
                     var bounds = gnSheet.getBounds();
-                    var yscale = (fullHeight - 20) / bounds.getHeight();
-                    var xscale = (fullWidth - 20) / bounds.getWidth();
+                    var yscale = fullHeight / bounds.getHeight();
+                    var xscale = fullWidth / bounds.getWidth();
                     var scale = Math.min(yscale, xscale);
                     // Calculate position for this sheet (side by side horizontally)
                     double xOffset = k * (pz.pxWidth * zoomFactor);
