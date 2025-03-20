@@ -2,5 +2,6 @@
 <fop version="1.0">
   <fonts>
     <directory recursive="true">data/fonts</directory>
+    <auto-detect/>
   </fonts>
 </fop>
