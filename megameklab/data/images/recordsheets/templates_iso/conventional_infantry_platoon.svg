@@ -4,7 +4,7 @@
 <svg contentScriptType="text/ecmascript" width="559.0" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="186.5" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
 ><g style="mml-color-elements:" id="rs_template"
   ><g transform="translate (0.966 0.966)"
-    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 255.550,0.000 l 5.475,8.214 L 551.155,10.714 l 7.845,7.600 L 559.000,174.786 l -5.475,8.214 L 295.950,183.000 l -5.475,-8.214 L 10.345,174.786 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c8c7c7"
+    ><path fill="#ffffff" d="M 2.5,10.714 L 7.975,2.500 l 255.550,0.000 l 5.475,8.214 L 551.155,10.714 l 7.845,7.600 L 559.000,174.786 l -5.475,8.214 L 295.950,183.000 l -5.475,-8.214 L 10.345,174.786 l -7.845,-7.600 Z" stroke-width="5.2" stroke-linejoin="round" stroke="#c7c7c7"
       /><path fill="#ffffff" d="M 0.0,8.214 L 5.475,0.000 l 255.550,0.000 l 5.475,8.214 L 548.655,8.214 l 7.845,7.600 L 556.500,173.286 l -5.475,8.214 L 293.450,181.500 l -5.475,-8.214 L 7.845,173.286 l -7.845,-7.600 Z" stroke-width="1.932" stroke-linejoin="round" stroke="#231f20"
       /><g transform="translate (2.5,3.0)"
       ><path fill="#000000" d="M 0,7.500 l 4.999,-7.500 h 251.550 l 4.999,7.500 l -4.999,7.500 h -251.550 Z"

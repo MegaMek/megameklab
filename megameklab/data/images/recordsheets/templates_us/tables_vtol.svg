@@ -40,7 +40,7 @@
     <text
        font-size="5.7px"
        transform="translate (288.0 375.0)"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="middle"
        font-family="Eurostile"
        id="footer"
@@ -65,14 +65,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 319.345,2.500 l 5.475,8.214 L 324.820,202.500 l -7.845,7.600 L 10.345,210.100 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path1" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 317.845,0.000 l 5.475,8.214 L 323.320,201.000 l -7.845,7.600 L 7.845,208.600 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path2" />
         <g
            transform="translate (2.5,3.0)"
@@ -129,7 +129,7 @@
            y="99.5" />
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="176.176"
          y="25.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:bold;font-style:normal"
@@ -298,7 +298,7 @@
         <text
            x="6.000"
            y="7.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="311.320"
@@ -306,13 +306,13 @@
         <text
            x="6.000"
            y="14.000"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
            textLength="311.320"
            id="text52">damage normally to the armor in that section. The attacking player then immediately rolls once on the VTOL Combat Vehicle</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="6.000"
            y="21.000"
            style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:16892.987"
@@ -324,7 +324,7 @@
           <text
              x="6.000"
              y="28.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
              textLength="143"
@@ -332,7 +332,7 @@
           <text
              x="150"
              y="28.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:italic"
              textLength="38.320"
@@ -340,7 +340,7 @@
           <text
              x="193"
              y="28.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
              textLength="123.320"
@@ -348,7 +348,7 @@
           <text
              x="6.000"
              y="35.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
              textLength="311.320"
@@ -356,13 +356,13 @@
           <text
              x="6.000"
              y="42.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
              textLength="311.320"
              id="text58">multiply the new Cruising MP by 1.5 and round up. As with all damage, such movement penalties do not apply until the end</text>
           <text
-             fill="#231f20"
+             fill="#000000"
              x="6.000"
              y="49.000"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal;mml-field-width:3047847.104"
@@ -375,7 +375,7 @@
           <text
              x="6.000"
              y="56.000"
-             fill="#231f20"
+             fill="#000000"
              text-anchor="start"
              style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
              id="text60">‡ If the VTOL has no turret, a turret strike hits Rotors†</text>
@@ -392,14 +392,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,114.060 l -7.845,7.600 L 10.345,121.660 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path62" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,112.560 l -7.845,7.600 L 7.845,120.160 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path63" />
         <g
            transform="translate (2.5,3.0)"
@@ -424,7 +424,7 @@
          d="M 4.500,29.531 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,28.018 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
          stroke-width="1.0"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path65" />
       <path
          fill="none"
@@ -432,122 +432,122 @@
          d="M 4.500,43.540 h230.680 M 50.636,28.216 v30.648  M 62.639,28.216 v30.648  M 74.642,28.216 v30.648  M 86.645,28.216 v30.648  M 98.648,28.216 v30.648  M 110.651,28.216 v30.648  M 122.654,28.216 v30.648  M 134.657,28.216 v30.648  M 146.659,28.216 v30.648  M 158.662,28.216 v30.648  M 170.665,28.216 v30.648  M 182.668,28.216 v30.648  M 194.671,28.216 v30.648  M 206.674,28.216 v30.648  M 218.677,28.216 v30.648"
          stroke-linecap="round"
          stroke-linejoin="miter"
-         stroke="#231f20"
+         stroke="#000000"
          id="path66" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.500"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text66">Turn</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.500"
          y="53.864"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text67">Elevation</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.637"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text68">1</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="68.640"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text69">2</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="80.643"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text70">3</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="92.646"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text71">4</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="104.649"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text72">5</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="116.652"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text73">6</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="128.655"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text74">7</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.658"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text75">8</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="152.661"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text76">9</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="164.664"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text77">10</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="176.667"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text78">11</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="188.670"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text79">12</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="200.673"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text80">13</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="212.676"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text81">14</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="224.679"
          y="38.540"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
@@ -558,7 +558,7 @@
          d="M 4.500,75.503 c 0,-0.726 0.589,-1.315 1.315,-1.315 l 228.050,0 c 0.726,0 1.315,0.589, 1.315,1.315 l 0,28.018 c 0,0.726 -0.589,1.315, -1.315,1.315 l -228.050,0 c -0.726,0 -1.315,-0.589, -1.315,-1.315Z"
          stroke-width="1.0"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path82" />
       <path
          fill="none"
@@ -566,122 +566,122 @@
          d="M 4.500,89.512 h230.680 M 50.636,74.188 v30.648  M 62.639,74.188 v30.648  M 74.642,74.188 v30.648  M 86.645,74.188 v30.648  M 98.648,74.188 v30.648  M 110.651,74.188 v30.648  M 122.654,74.188 v30.648  M 134.657,74.188 v30.648  M 146.659,74.188 v30.648  M 158.662,74.188 v30.648  M 170.665,74.188 v30.648  M 182.668,74.188 v30.648  M 194.671,74.188 v30.648  M 206.674,74.188 v30.648  M 218.677,74.188 v30.648"
          stroke-linecap="round"
          stroke-linejoin="miter"
-         stroke="#231f20"
+         stroke="#000000"
          id="path83" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.500"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text83">Turn</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.500"
          y="99.836"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text84">Elevation</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.637"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text85">16</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="68.640"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text86">17</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="80.643"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text87">18</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="92.646"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text88">19</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="104.649"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text89">20</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="116.652"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text90">21</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="128.655"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text91">22</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.658"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text92">23</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="152.661"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text93">24</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="164.664"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text94">25</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="176.667"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text95">26</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="188.670"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text96">27</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="200.673"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text97">28</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="212.676"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text98">29</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="224.679"
          y="84.512"
          style="font-family:Eurostile;font-size:6.760px;font-weight:bold;font-style:normal"
@@ -698,14 +698,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 235.705,2.500 l 5.475,8.214 L 241.180,74.340 l -7.845,7.600 L 10.345,81.940 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path99" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 234.205,0.000 l 5.475,8.214 L 239.680,72.840 l -7.845,7.600 L 7.845,80.440 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path100" />
         <g
            transform="translate (2.5,3.0)"
@@ -788,14 +788,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 567.025,2.500 l 5.475,8.214 L 572.500,130.300 l -7.845,7.600 L 10.345,137.900 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path114" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 565.525,0.000 l 5.475,8.214 L 571.000,128.800 l -7.845,7.600 L 7.845,136.400 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path115" />
         <g
            transform="translate (2.5,3.0)"
@@ -846,7 +846,7 @@
            y="311" />
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="306.720"
          y="26.000"
          style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
@@ -1028,14 +1028,14 @@
              id="tspan169">Turret Blown Off</tspan></text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.800"
          y="113.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text170">*Only if the VTOL has an ICE engine. For VTOLs with fusion engines, treat this result as Engine Hit.</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="56.800"
          y="120.000"
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
