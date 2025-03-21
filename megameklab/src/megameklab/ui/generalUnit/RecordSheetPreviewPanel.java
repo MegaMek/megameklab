@@ -205,8 +205,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 }
                 // Scale to fit the clipboard image
                 var bounds = gn.getBounds();
-                var yscale = imgHeight / bounds.getHeight();
-                var xscale = imgWidth / bounds.getWidth();
+                var yscale = (imgHeight-20) / bounds.getHeight();
+                var xscale = (imgWidth-20) / bounds.getWidth();
                 var scale = Math.min(yscale, xscale);
 
                 // Calculate position for this sheet (side by side horizontally)
@@ -430,14 +430,14 @@ public class RecordSheetPreviewPanel extends JPanel {
         ArrayList<GraphicsNode> localGnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
+            pf.setPaper(options.getPaperSize().createPaper());
             if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
             } else {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
             }
             int pagesCount = sheet.getPageCount();
             for (int i = 0; i < pagesCount; i++) {
-                sheet.createDocument(i, pf, true);
+                sheet.createDocument(i, pf, false);
                 localGnSheets.add(sheet.build());
             }
         }
@@ -512,8 +512,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 AffineTransform originalTransform = gnSheet.getTransform();
                 try {
                     var bounds = gnSheet.getBounds();
-                    var yscale = fullHeight / bounds.getHeight();
-                    var xscale = fullWidth / bounds.getWidth();
+                    var yscale = (fullHeight-20) / bounds.getHeight();
+                    var xscale = (fullWidth-20) / bounds.getWidth();
                     var scale = Math.min(yscale, xscale);
                     // Calculate position for this sheet (side by side horizontally)
                     double xOffset = k * (pz.pxWidth * zoomFactor);
