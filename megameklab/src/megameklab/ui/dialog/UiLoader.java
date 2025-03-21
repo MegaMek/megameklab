@@ -160,6 +160,11 @@ public class UiLoader {
                     if (editors.length == 0) {
                         throw new IllegalStateException("Could not restore tabs");
                     }
+                    long loadTime = System.currentTimeMillis() - start;
+                    if (loadTime < MINIMUM_SPLASH_TIME) {
+                        // Show the splash for at least the minimum time
+                        Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
+                    }
                     tabbedUi = new MegaMekLabTabbedUI(editors);
                     tabbedUi.setVisible(true);
                 } catch (IOException | IllegalStateException e) {
