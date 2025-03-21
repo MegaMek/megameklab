@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Consumer;
@@ -56,8 +57,6 @@ import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.*;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.xpath.XPathEvaluator;
-import org.w3c.dom.xpath.XPathResult;
 
 import megamek.common.EquipmentType;
 import megamek.common.annotations.Nullable;
@@ -81,9 +80,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;
     public static final float FONT_SIZE_VSMALL = 5.8f;
-    public static final String FILL_BLACK = "#231f20";
+    public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
-    public static final String FILL_SHADOW = "#c8c7c7";
+    public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
@@ -194,7 +193,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Finds all text elements in the SVG document and replaces the font-family attribute.
+     * Finds all text elements in the SVG document and replaces the font-family
+     * attribute.
      *
      * @param doc The document to perform replacement in.
      */
@@ -204,11 +204,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
                 if (node instanceof Element elem) {
-                    // First we want to make sure it's not set in the style attribute, which could override the change
+                    // First we want to make sure it's not set in the style attribute, which could
+                    // override the change
                     if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
                         elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                            elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
-                                .replaceAll("font-family:.*?;", ""));
+                                elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
+                                        .replaceAll("font-family:.*?;", ""));
                     }
                     elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
                 }
@@ -397,12 +398,60 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (!createDocument(pageNumber + firstPage, pageFormat, true)) {
             return null;
         }
-        DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-        Configuration cfg = cfgBuilder.build(getClass().getResourceAsStream("fop-config.xml")); // TODO : remove inline
-                                                                                                // filename
         PDFTranscoder transcoder = new PDFTranscoder();
-        transcoder.configure(cfg);
-        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, false);
+        transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, true);
+
+        String configXml;
+        try (InputStream configStream = PrintRecordSheet.class.getResourceAsStream("fop-config.xml")) {
+            configXml = new String(configStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            logger.warn("Failed to load fop-config.xml");
+            configXml = "<fop version=\"1.0\"><fonts><auto-detect/></fonts></fop>";
+        }
+
+        // Define font directories based on OS
+        String osName = System.getProperty("os.name").toLowerCase();
+        StringBuilder systemFontDirectories = new StringBuilder();
+        List<String> directories = new ArrayList<>();
+        if (osName.contains("windows")) {
+            String winDir = System.getenv("WINDIR");
+            if (winDir == null) {
+                winDir = System.getenv("SystemRoot");
+            }
+            if (winDir == null) {
+                winDir = "C:\\Windows";
+            }
+            directories.add(winDir+"\\Fonts");
+            directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
+        } else if (osName.contains("mac")) {
+            directories.add("/System/Library/Fonts");
+            directories.add("/Library/Fonts");
+            directories.add("~/Library/Fonts");
+        } else {
+            directories.add("/usr/share/fonts");
+            directories.add("/usr/local/share/fonts");
+            directories.add("~/.local/share/fonts");
+        }
+        // Add only directories that exist
+        for (String path : directories) {
+            File fontDir = new File(path);
+            if (fontDir.exists() && fontDir.isDirectory()) {
+                systemFontDirectories.append("<directory recursive=\"true\">").append(path).append("</directory>");
+            }
+        }
+        int insertPoint = configXml.indexOf("</fonts>");
+        if (insertPoint > 0) {
+            configXml = configXml.substring(0, insertPoint) +
+                    systemFontDirectories.toString() +
+                    configXml.substring(insertPoint);
+        } else {
+            logger.warn("Failed to inject system font directories into fop-config.xml");
+        }
+        DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+        Configuration config = cfgBuilder.build(
+                new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
+        transcoder.configure(config);
+
         TranscoderInput input = new TranscoderInput(getSVGDocument());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         TranscoderOutput transOutput = new TranscoderOutput(output);
@@ -417,6 +466,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     public GraphicsNode build() {
+        if (getSVGDocument() == null) {
+            logger.error("Attempted to build graphics node with null SVG document");
+            return null;
+        }
         GVTBuilder builder = new GVTBuilder();
         BridgeContext ctx = new BridgeContext(new UserAgentAdapter() {
             @Override
@@ -787,7 +840,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             circle.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             circle.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
             return circle;
-        
+
         }
     }
 

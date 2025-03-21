@@ -1062,7 +1062,7 @@
     <text
        font-size="5.7px"
        transform="translate (288.0 756.0)"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="middle"
        font-family="Eurostile"
        id="footer"
@@ -1085,14 +1085,14 @@
          d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,39.257 l -7.845,7.600 L 10.345,46.857 l -7.845,-7.600 Z"
          stroke-width="5.2"
          stroke-linejoin="round"
-         stroke="#c8c7c7"
+         stroke="#c7c7c7"
          id="path222" />
       <path
          fill="#ffffff"
          d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,37.757 l -7.845,7.600 L 7.845,45.357 l -7.845,-7.600 Z"
          stroke-width="1.932"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path223" />
       <rect
          fill="none"
@@ -1151,14 +1151,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,75.424 l -7.845,7.600 L 10.345,83.024 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path224" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,73.924 l -7.845,7.600 L 7.845,81.524 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path225" />
         <g
            transform="translate (2.5,3.0)"
@@ -1179,14 +1179,14 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="54.300"
          y="27.075"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text227">BATTLE ARMOR</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="135.750"
          y="27.075"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -1267,14 +1267,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,61.651 l -7.845,7.600 L 10.345,69.251 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path238" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,60.151 l -7.845,7.600 L 7.845,67.751 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path239" />
         <g
            transform="translate (2.5,3.0)"
@@ -1295,14 +1295,14 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="54.300"
          y="27.950"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text241">BATTLE ARMOR</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="135.750"
          y="27.950"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -1353,14 +1353,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,192.493 l -7.845,7.600 L 10.345,200.093 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path248" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,190.993 l -7.845,7.600 L 7.845,198.593 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path249" />
         <g
            transform="translate (2.5,3.0)"
@@ -1381,28 +1381,28 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="36.200"
          y="27.505"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text251">ATTACKING ENEMY</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="124.890"
          y="27.505"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text252">FRIENDLY MECHANIZED BATTLE</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="36.200"
          y="37.010"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text253">BATTLE ARMOR</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="124.890"
          y="37.010"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -1596,21 +1596,21 @@
              id="tspan302">+7</tspan></text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.240"
          y="122.554"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text303">BATTLE ARMOR EQUIPMENT</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.240"
          y="132.059"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text304">Claws with magnets</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="133.940"
          y="132.059"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
@@ -1657,7 +1657,7 @@
              id="tspan312">-2</tspan></text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.240"
          y="189.088"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
@@ -1674,14 +1674,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,137.401 l -7.845,7.600 L 10.345,145.001 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path313" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,135.901 l -7.845,7.600 L 7.845,143.501 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path314" />
         <g
            transform="translate (2.5,3.0)"
@@ -1702,21 +1702,21 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="14.480"
          y="26.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text316">2D6</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="72.400"
          y="26.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text317">BIPEDAL/TRIPOD</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="144.800"
          y="26.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -1893,14 +1893,14 @@
            d="M 2.5,10.714 L 7.975,2.500 L 180.025,2.500 l 5.475,8.214 L 185.500,151.174 l -7.845,7.600 L 10.345,158.774 l -7.845,-7.600 Z"
            stroke-width="5.2"
            stroke-linejoin="round"
-           stroke="#c8c7c7"
+           stroke="#c7c7c7"
            id="path354" />
         <path
            fill="#ffffff"
            d="M 0.0,8.214 L 5.475,0.000 L 178.525,0.000 l 5.475,8.214 L 184.000,149.674 l -7.845,7.600 L 7.845,157.274 l -7.845,-7.600 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path355" />
         <g
            transform="translate (2.5,3.0)"
@@ -1921,21 +1921,21 @@
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="21.720"
          y="24.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text357">TROOPER</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="81.450"
          y="24.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text358">'MECH</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="155.660"
          y="24.964"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -2078,7 +2078,7 @@
              id="g57733"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path57735" />
           </g>
@@ -2086,7 +2086,7 @@
              id="g57737"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path57739" />
           </g>
@@ -2234,7 +2234,7 @@
              id="g57811"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#c7c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path57813" />
           </g>
@@ -2242,7 +2242,7 @@
              id="g57815"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path57817" />
           </g>
@@ -2250,7 +2250,7 @@
              id="g57819"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57821" />
           </g>
@@ -2258,7 +2258,7 @@
              id="g57823"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57825" />
           </g>
@@ -2266,7 +2266,7 @@
              id="g57827"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57829" />
           </g>
@@ -2274,7 +2274,7 @@
              id="g57831"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path57833" />
           </g>
@@ -2282,7 +2282,7 @@
              id="g57835"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57837" />
           </g>
@@ -2299,7 +2299,7 @@
              id="g380"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path379" />
           </g>
@@ -2307,7 +2307,7 @@
              id="g381"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.93200004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 l -41.12,0 c -1.712,0 -3.099,-1.425 -3.099,-3.182 l 0,-20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 l 41.12,0 c 1.711,0 3.099,1.424 3.099,3.181 L 0,0 Z"
                id="path380" />
           </g>
@@ -2455,7 +2455,7 @@
              id="g399"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:#c8c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#c7c7c7;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path399" />
           </g>
@@ -2463,7 +2463,7 @@
              id="g400"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 L 0,0 Z"
                id="path400" />
           </g>
@@ -2471,7 +2471,7 @@
              id="g401"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path401" />
           </g>
@@ -2479,7 +2479,7 @@
              id="g402"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path402" />
           </g>
@@ -2487,7 +2487,7 @@
              id="g403"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path403" />
           </g>
@@ -2495,7 +2495,7 @@
              id="g404"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path404" />
           </g>
@@ -2503,21 +2503,21 @@
              id="g405"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.48300001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path405" />
           </g>
         </g>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="21.720"
          y="87.637"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle"
          id="text406">TROOPER</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="81.450"
          y="87.637"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -2582,7 +2582,7 @@
              id="tspan420">Rear (Unit 1/Unit 2)</tspan></text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.240"
          y="150.311"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
