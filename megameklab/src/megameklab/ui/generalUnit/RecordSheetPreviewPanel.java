@@ -430,8 +430,8 @@ public class RecordSheetPreviewPanel extends JPanel {
         ArrayList<GraphicsNode> localGnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
-            pf.setPaper(options.getPaperSize().createPaper());
             if (sheet instanceof PrintSmallUnitSheet) {
+                pf.setPaper(options.getPaperSize().createPaper());
             } else {
                 pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
             }
