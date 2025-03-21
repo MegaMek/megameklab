@@ -167,15 +167,13 @@ public class RecordSheetPreviewPanel extends JPanel {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
-        // Render the record sheet directly without zoom/pan
-        ArrayList<GraphicsNode> nodes = getRecordSheetGraphicsNodes(entities, options);
-
-        if (nodes == null || nodes.size() == 0) {
+        ArrayList<GraphicsNode> sheetNodes = getRecordSheetGraphicsNodes(entities, options);
+        if (sheetNodes == null || sheetNodes.size() == 0) {
             return;
         }
 
         int imgWidth = (int) Math.ceil(pz.pxWidth * CLIPBOARD_ZOOM_SCALE);
-        int fullWidth = imgWidth * nodes.size();
+        int fullWidth = imgWidth * sheetNodes.size();
         int imgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
 
         BufferedImage img = new BufferedImage(fullWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
@@ -199,9 +197,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setBackground(Color.WHITE);
         g.clearRect(0, 0, fullWidth, imgHeight);
 
-        if (!nodes.isEmpty()) {
+        if (!sheetNodes.isEmpty()) {
             int k = 0;
-            for (GraphicsNode gn : nodes) {
+            for (GraphicsNode gn : sheetNodes) {
                 if (gn == null) {
                     continue;
                 }
@@ -417,9 +415,19 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
+        return getRecordSheetGraphicsNodes(entities, options, false);
+    }
+
+    private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options,
+            boolean force) {
+
+        ArrayList<GraphicsNode> sheetNodes = gnSheets != null ? gnSheets.get() : null;
+        if (sheetNodes != null && !sheetNodes.isEmpty() && !force) {
+            return sheetNodes;
+        }
         List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(
                 entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), true, options, true);
-        ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
+        ArrayList<GraphicsNode> localGnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
             if (sheet instanceof PrintSmallUnitSheet) {
@@ -430,10 +438,12 @@ public class RecordSheetPreviewPanel extends JPanel {
             int pagesCount = sheet.getPageCount();
             for (int i = 0; i < pagesCount; i++) {
                 sheet.createDocument(i, pf, true);
-                gnSheets.add(sheet.build());
+                localGnSheets.add(sheet.build());
             }
         }
-        return gnSheets;
+        // Store in SoftReference
+        gnSheets = new SoftReference<>(localGnSheets);
+        return localGnSheets;
     }
 
     private void renderCachedImage() {
@@ -446,14 +456,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
-        ArrayList<GraphicsNode> sheetNodes = gnSheets != null ? gnSheets.get() : null;
-        if (sheetNodes == null || sheetNodes.isEmpty()) {
-
-            sheetNodes = getRecordSheetGraphicsNodes(entities, options);
-            // Store in SoftReference
-            gnSheets = new SoftReference<>(sheetNodes);
-        }
-
+        ArrayList<GraphicsNode> sheetNodes = getRecordSheetGraphicsNodes(entities, options);
         if (sheetNodes == null || sheetNodes.size() == 0) {
             cachedImage = null;
             return;
@@ -583,7 +586,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 tempTransform.setTransform(originalTransform);
                 tempTransform.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
                 g.setTransform(tempTransform);
-                
+
                 // Draw the image
                 g.drawImage(img, -(int) srcX, -(int) srcY, null);
 
