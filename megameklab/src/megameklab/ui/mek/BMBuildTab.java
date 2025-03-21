@@ -149,10 +149,16 @@ public class BMBuildTab extends ITab {
 
     private void resetCrits() {
         for (Mounted<?> mounted : getMek().getEquipment()) {
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
-                UnitUtil.removeCriticals(getMek(), mounted);
-                MekUtil.clearMountedLocationAndLinked(mounted);
+            if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
+                continue;
             }
+
+            if (!eSource.canModifyBaseChassis() && !mounted.isOmniPodMounted()) {
+                continue;
+            }
+
+            UnitUtil.removeCriticals(getMek(), mounted);
+            MekUtil.clearMountedLocationAndLinked(mounted);
         }
         refresh.refreshAll();
     }

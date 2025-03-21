@@ -391,7 +391,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         try {
             if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
                 int slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(getMek(), location,
-                        UnitUtil.getCritsUsed(eq));
+                        UnitUtil.getCritsUsed(eq), false);
                 MekUtil.addVGL(getMek(), eq, location, slotNumber);
             } else {
                 UnitUtil.addMounted(getMek(), eq, location, false);
