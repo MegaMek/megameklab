@@ -224,7 +224,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
         var dims = SVGLocatableSupport.getBBox(getSVGDocument().getElementById("unit_0"));
 
-        var bindingBox = new Rectangle2D.Double(0, 10, dims.getWidth() + 5, dims.getHeight() - 20);
+        var bindingBox = new Rectangle2D.Double(0.9, 10, dims.getWidth() + 3.6, dims.getHeight() - 20);
 
         g.appendChild(table.createTable(bindingBox));
     }
