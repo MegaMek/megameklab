@@ -26,9 +26,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.1031746"
-     inkscape:cx="244.26598"
-     inkscape:cy="573.60614"
+     inkscape:zoom="6.2063492"
+     inkscape:cx="364.94885"
+     inkscape:cy="629.11381"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
@@ -1613,7 +1613,8 @@
          style="font-style:italic;font-weight:normal;font-size:5.7px;font-family:Eurostile"
          textLength="18.906"
          lengthAdjust="spacingAndGlyphs"
-         id="text294">Other</text>
+         id="text294"
+         transform="translate(2)">Other</text>
       <text
          x="6"
          y="142.47"
@@ -1640,7 +1641,8 @@
          style="font-style:italic;font-weight:normal;font-size:5.7px;font-family:Eurostile"
          textLength="34.847"
          lengthAdjust="spacingAndGlyphs"
-         id="text297">Total Warfare</text>
+         id="text297"
+         transform="translate(2)">Total Warfare</text>
       <text
          x="162.931"
          y="142.47"
