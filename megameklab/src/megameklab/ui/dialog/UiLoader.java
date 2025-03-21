@@ -56,13 +56,15 @@ import java.util.function.Consumer;
  */
 public class UiLoader {
 
+    private static final int MINIMUM_SPLASH_TIME = 2000;
+
     /**
      * A map of resolution widths to file names for the startup screen
      */
     private static final TreeMap<Integer, String> LOAD_SCREEN_IMAGES = new TreeMap<>(Map.of(
-            0, Configuration.miscImagesDir() + "/mml_load_spooky_hd.jpg",
-            1441, Configuration.miscImagesDir() + "/mml_load_spooky_fhd.jpg",
-            1921, Configuration.miscImagesDir() + "/mml_load_spooky_uhd.jpg"));
+            0, Configuration.miscImagesDir() + "/mml_load_hd.jpg",
+            1441, Configuration.miscImagesDir() + "/mml_load_fhd.jpg",
+            1921, Configuration.miscImagesDir() + "/mml_load_uhd.jpg"));
 
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("megameklab.resources.Menu");
     private final JDialog splashImage;
@@ -135,9 +137,15 @@ public class UiLoader {
 
     private void loadNewUi() {
         try {
+            long start = System.currentTimeMillis();
             MegaMekLabTabbedUI tabbedUi;
             if (!restore) {
                 MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
+                long loadTime = System.currentTimeMillis() - start;
+                if (loadTime < MINIMUM_SPLASH_TIME) {
+                    // Show the splash for at least the minimum time
+                    Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
+                }
                 if (newUnit != null) {
                     UnitUtil.updateLoadedUnit(newUnit);
                     newUI.setEntity(newUnit, fileName);
@@ -159,6 +167,8 @@ public class UiLoader {
                 }
             }
 
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             splashImage.setVisible(false);
             splashImage.dispose();
