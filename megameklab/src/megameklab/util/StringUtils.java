@@ -39,7 +39,6 @@ import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.*;
-import megamek.common.weapons.mortars.CLVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megamek.common.weapons.other.NarcWeapon;
@@ -167,8 +166,7 @@ public class StringUtils {
             } else if (weapon instanceof UACWeapon) {
                 info = Integer.toString(weapon.getDamage());
                 info += "/Sht [DB,R/C]";
-            } else if ((weapon instanceof ISVehicularGrenadeLauncher)
-                    || (weapon instanceof CLVehicularGrenadeLauncher)) {
+            } else if ((weapon instanceof ISVehicularGrenadeLauncher)) {
                 info = "[AE,OS]";
             } else {
                 if (!UnitUtil.isAMS(weapon)) {
