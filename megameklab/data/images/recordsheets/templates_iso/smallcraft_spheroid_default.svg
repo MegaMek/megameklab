@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.2419355"
      inkscape:cx="300.63309"
-     inkscape:cy="332.7482"
+     inkscape:cy="332.97122"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="heatScale" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale,heatScale"
      id="rs_template">
@@ -4503,9 +4503,8 @@
        id="heatScale"
        style="display:inline">
       <g
-         id="heatScaleColor-0"
-         style="display:inline"
-         inkscape:label="heatScaleColor">
+         id="heatScaleColor"
+         style="display:inline">
         <text
            x="9.0109997"
            y="8"
@@ -5037,9 +5036,8 @@
       </g>
       <g
          visibility="hidden"
-         id="heatScaleBW-8"
-         style="display:inline"
-         inkscape:label="heatScaleBW">
+         id="heatScaleBW"
+         style="display:inline">
         <text
            x="9.0109997"
            y="8"

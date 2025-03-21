@@ -28,7 +28,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.1942758"
      inkscape:cx="201.88893"
-     inkscape:cy="367.7751"
+     inkscape:cy="368.00296"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
@@ -4875,8 +4875,7 @@
     </g>
     <g
        transform="translate(556,370.91148)"
-       id="heatScale"
-       inkscape:label="heatScale">
+       id="heatScale">
       <g
          id="heatScaleColor">
         <text
