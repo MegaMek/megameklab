@@ -62,7 +62,8 @@ public class GroundToHitMods extends ReferenceTable {
         addRow("", bundle.getString("stationary"), "+0");
         addRow("", bundle.getString("walked"), "+1");
         addRow("", bundle.getString("ran"), "+2");
-        if (entity.getOriginalJumpMP() > 0) {
+        if (entity.getOriginalJumpMP() > 0 ||
+              ((entity instanceof Mek mek) && (mek.getOriginalMechanicalJumpBoosterMP() > 0))) {
             addRow("", bundle.getString("jumped"), "+3");
         }
         if (!(entity instanceof QuadMek)) {
