@@ -35,7 +35,6 @@ public class CIMainUI extends MegaMekLabMainUI {
     PreviewTab previewTab;
     FluffTab fluffTab;
     CIStatusBar statusbar;
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     public CIMainUI() {
         super();

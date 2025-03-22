@@ -33,7 +33,6 @@ import java.util.List;
  * @author Neoancient
  */
 public class PMMainUI extends MegaMekLabMainUI {
-    private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
 
     private PMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;

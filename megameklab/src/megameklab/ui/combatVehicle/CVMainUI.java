@@ -32,7 +32,6 @@ import java.util.List;
 
 public class CVMainUI extends MegaMekLabMainUI {
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private CVStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;

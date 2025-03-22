@@ -31,7 +31,6 @@ import java.util.List;
 
 public class BMMainUI extends MegaMekLabMainUI {
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private BMStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
