@@ -1,6 +1,6 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.04-SNAPSHOT
+0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
 + Fix #1710: Prevent tab names from being messed up by entity type change
 + Fix #1714/#1689: Missed an updateLoadedUnit
