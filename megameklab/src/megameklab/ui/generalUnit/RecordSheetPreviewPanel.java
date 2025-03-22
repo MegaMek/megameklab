@@ -418,7 +418,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(
-                entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), true, options, true);
+                entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), false, options, true);
         ArrayList<GraphicsNode> gnSheets = new ArrayList<GraphicsNode>();
         PageFormat pf = new PageFormat();
         for (PrintRecordSheet sheet : sheets) {
