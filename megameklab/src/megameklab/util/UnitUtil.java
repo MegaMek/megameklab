@@ -586,8 +586,6 @@ public class UnitUtil {
             return EquipmentTypeLookup.IMPROVED_JUMP_JET;
         } else if (type == Mek.JUMP_PROTOTYPE) {
             return EquipmentTypeLookup.PROTOTYPE_JUMP_JET;
-        } else if (type == Mek.JUMP_BOOSTER) {
-            return EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER;
         } else if (type == Mek.JUMP_PROTOTYPE_IMPROVED) {
             return EquipmentTypeLookup.PROTOTYPE_IMPROVED_JJ;
         }
