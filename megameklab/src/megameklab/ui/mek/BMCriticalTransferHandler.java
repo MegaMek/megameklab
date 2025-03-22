@@ -325,12 +325,17 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             location = list.getCritLocation();
         }
         if (mount != null) {
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                parentView.markUnavailableLocations(location);
-                return new StringSelection("%d:%d".formatted(getUnit().getEquipmentNum(mount), location));
+            if (mount.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
+                // cannot be moved
+                return null;
             } else {
-                parentView.markUnavailableLocations(mount);
-                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                    parentView.markUnavailableLocations(location);
+                    return new StringSelection("%d:%d".formatted(getUnit().getEquipmentNum(mount), location));
+                } else {
+                    parentView.markUnavailableLocations(mount);
+                    return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
+                }
             }
         } else {
             return null;
