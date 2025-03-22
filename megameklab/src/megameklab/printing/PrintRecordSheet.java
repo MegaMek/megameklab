@@ -26,10 +26,12 @@ import java.awt.print.Printable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
@@ -284,18 +286,19 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The document object
      */
     private @Nullable Document loadSVG(String directoryPath, String filename) {
-        final File file = new File(directoryPath, filename);
-        if (!file.exists()) {
+        final Path filePath = Paths.get(directoryPath, filename);
+        if (!Files.exists(filePath)) {
             logger
                     .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
             return null;
         }
 
+
         Document document = null;
-        try (InputStream is = new FileInputStream(file)) {
+        try (InputStream is = Files.newInputStream(filePath)) {
             SAXDocumentFactory df = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(),
                     XMLResourceDescriptor.getXMLParserClassName());
-            document = df.createDocument(file.toURI().toASCIIString(), is);
+            document = df.createDocument(filePath.toUri().toASCIIString(), is);
         } catch (Exception ex) {
             logger.error("", ex);
         }
@@ -959,13 +962,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (imageFile == null) {
             return;
         }
-
-        try {
-            embedImage(ImageIO.read(imageFile), canvas, bbox, center);
+        final Path filePath = Paths.get(imageFile.getPath());
+        try (InputStream is = Files.newInputStream(filePath)) {
+            embedImage(ImageIO.read(is), canvas, bbox, center);
         } catch (FileNotFoundException e) {
-            logger.error("Fluff image file not found: " + imageFile.getPath());
+            logger.error("Fluff image file not found: " + filePath);
         } catch (IOException e) {
-            logger.error("Error reading fluff image file: " + imageFile.getPath());
+            logger.error("Error reading fluff image file: " + filePath);
         }
     }
 
