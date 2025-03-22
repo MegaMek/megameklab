@@ -26,10 +26,12 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1761: Don't keep superheavy gyro when moving to 100 tons or below
 + Fix #1758: Allow mounting to sponson turrets regardless of turret placement
 + Fix #1768: Fix several instances of record sheet elements clipping into each other, along with other RS fixes,
-             Export to PDF can use installed fonts,
-             Center numbers in heat scale properly,
-             Fix NPE on Fill Crits,
-             Fix exception when drag-dropping SRCS.
++            Export to PDF can use installed fonts,
++            Center numbers in heat scale properly,
++            Fix NPE on Fill Crits,
++            Fix exception when drag-dropping SRCS.
++ Fix #1773: Show component armoring weight in "other" in the Mek weight summary
++ Fix #1772: Fix occasional failure to print on Windows
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)
