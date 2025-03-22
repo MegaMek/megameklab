@@ -120,14 +120,15 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         popup.add(info);
                     }
 
-                    if (!mount.isTurret() && getUnit().hasMisc(EquipmentTypeLookup.SPONSON_TURRET, mount.getLocation())) {
-                        if (!mount.isSponsonTurretMounted()) {
-                            info = new JMenuItem("Mount " + mount.getName() + " in Sponson Turret");
-                            info.addActionListener(evt2 -> changeSponsonTurretMount(true));
-                            popup.add(info);
-                        } else {
+                    if (!mount.isTurret() && getUnit().hasMisc(EquipmentTypeLookup.SPONSON_TURRET)) {
+                        if (mount.isSponsonTurretMounted()) {
                             info = new JMenuItem("Remove " + mount.getName() + " from Sponson Turret");
                             info.addActionListener(evt2 -> changeSponsonTurretMount(false));
+                            popup.add(info);
+                        } else if ((getUnit() instanceof Tank tank) && tank.isSideLocation(mount.getLocation())) {
+                            // Sponson turrets may only be mounted on ground CV/SV = Tank, TO:AUE p.160
+                            info = new JMenuItem("Mount " + mount.getName() + " in Sponson Turret");
+                            info.addActionListener(evt2 -> changeSponsonTurretMount(true));
                             popup.add(info);
                         }
                     }
