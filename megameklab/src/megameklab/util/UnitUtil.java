@@ -187,7 +187,7 @@ public class UnitUtil {
         final EquipmentType eq = mount.getType();
         if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_PARTIAL_WING)) {
             toReturn = eq.isClan() ? 3 : 4;
-        } else if (eq.hasFlag(MiscType.F_CHAIN_DRAPE)) {
+        } else if ((eq instanceof MiscType) && eq.hasFlag(MiscType.F_CHAIN_DRAPE)) {
             toReturn = 3;
         } else if ((eq instanceof MiscType) &&
                    (eq.hasFlag(MiscType.F_JUMP_BOOSTER) ||

@@ -32,7 +32,7 @@ public class OtherSummaryItem extends AbstractSummaryItem {
     @Override
     public void refresh(Entity entity) {
         TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
-        weightLabel.setText(formatWeight(testEntity.getWeightPowerAmp()
-                + testEntity.getWeightCarryingSpace() + testEntity.getWeightMisc(), entity));
+        weightLabel.setText(formatWeight(testEntity.getWeightPowerAmp() + testEntity.getArmoredComponentWeight()
+              + testEntity.getWeightCarryingSpace() + testEntity.getWeightMisc(), entity));
     }
 }

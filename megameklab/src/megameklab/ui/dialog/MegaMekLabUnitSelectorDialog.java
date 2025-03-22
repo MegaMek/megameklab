@@ -147,7 +147,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                 if (multiSelect) {
                     ArrayList<Entity> entities = getSelectedEntities();
                     if ((entities != null) && !entities.isEmpty()) {
-                        new PrintQueueDialog(frame, true, entities, true, "").setVisible(true);
+                        new PrintQueueDialog(frame, true, entities, false, "").setVisible(true);
                     }
                 } else {
                     Entity entity = getSelectedEntity();

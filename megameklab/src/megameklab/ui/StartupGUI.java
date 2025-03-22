@@ -52,9 +52,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
-        startupScreenImages.put(0, Configuration.miscImagesDir() + "/mml_start_spooky_hd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_spooky_fhd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_spooky_uhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(0, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
     }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
