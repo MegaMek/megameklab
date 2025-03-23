@@ -18,6 +18,30 @@
  */
 package megameklab.ui.dialog;
 
+import static java.util.stream.Collectors.toList;
+import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
+
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMButton;
@@ -37,26 +61,6 @@ import megameklab.util.UnitPrintManager;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
-import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
-
 /**
  * Allows selecting multiple units and printing their record sheets.
  *
@@ -67,34 +71,35 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private static final MMLogger logger = MMLogger.create(PrintQueueDialog.class);
 
     private final boolean printToPdf;
-    private final JButton addFromFileButton = new JButton("Add From File");
+    private final JButton addFromFileButton  = new JButton("Add From File");
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
-    private final JButton removeButton = new JButton("Remove Selected");
-    private final JButton saveButton = new JButton("Save Unit List");
+    private final JButton removeButton       = new JButton("Remove Selected");
+    private final JButton saveButton         = new JButton("Save Unit List");
 
-    private final JButton moveTopButton = new JButton(icon("moveTop.png"));
-    private final JButton moveUpButton = new JButton(icon("moveUp.png"));
-    private final JButton moveDownButton = new JButton(icon("moveDown.png"));
+    private final JButton moveTopButton    = new JButton(icon("moveTop.png"));
+    private final JButton moveUpButton     = new JButton(icon("moveUp.png"));
+    private final JButton moveDownButton   = new JButton(icon("moveDown.png"));
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
-    private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
-    private final JCheckBox adjustedBvCheck = new JCheckBox("Print force-adjusted BV");
-    private final JFrame parent;
-    private final List<BTObject> units = new ArrayList<>();
-    private final JList<String> queuedUnitList = new JList<>();
+    private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
+    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
+    private final JFrame         parent;
+    private final List<BTObject> units                = new ArrayList<>();
+    private final JList<String>  queuedUnitList       = new JList<>();
 
     private final boolean fromMul;
 
     private final String mulFileName;
 
-    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul,
-            String mulFileName) {
-        super(parent, true, "PrintQueueDialog",
-            printToPdf ? "PrintQueueDialog.windowNameExport.text" : "PrintQueueDialog.windowNamePrint.text");
-        this.parent = parent;
-        this.printToPdf = printToPdf;
-        this.fromMul = fromMul;
+    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul, String mulFileName) {
+        super(parent,
+              true,
+              "PrintQueueDialog",
+              printToPdf ? "PrintQueueDialog.windowNameExport.text" : "PrintQueueDialog.windowNamePrint.text");
+        this.parent      = parent;
+        this.printToPdf  = printToPdf;
+        this.fromMul     = fromMul;
         this.mulFileName = mulFileName;
         initialize();
         if (units != null) {
@@ -145,12 +150,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         oneUnitPerSheetCheck.setToolTipText(
-                "When unchecked, the record sheets for some unit types may be printed on the same page. " +
-                        "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+              "When unchecked, the record sheets for some unit types may be printed on the same page. " +
+              "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
-                "BV is always adjusted for pilot skill.");
+                                       "BV is always adjusted for pilot skill.");
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
@@ -203,32 +208,33 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     @Override
     protected JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        var printButton = new MMButton("printButton", resources,
-            printToPdf ? "PrintQueueDialog.Export.text" : "PrintQueueDialog.Print.text",
-            printToPdf ? "PrintQueueDialog.Export.toolTipText" : "PrintQueueDialog.Print.toolTipText",
-            this::okButtonActionPerformed);
+        var printButton = new MMButton("printButton",
+              resources,
+              printToPdf ? "PrintQueueDialog.Export.text" : "PrintQueueDialog.Print.text",
+              printToPdf ? "PrintQueueDialog.Export.toolTipText" : "PrintQueueDialog.Print.toolTipText",
+              this::okButtonActionPerformed);
         printButton.setMnemonic(KeyEvent.VK_P);
         panel.add(printButton);
-        panel.add(new MMButton("cancelButton", resources, "PrintQueueDialog.Cancel.text",
-                "PrintQueueDialog.Cancel.toolTipText", this::cancelActionPerformed));
+        panel.add(new MMButton("cancelButton",
+              resources,
+              "PrintQueueDialog.Cancel.text",
+              "PrintQueueDialog.Cancel.toolTipText",
+              this::cancelActionPerformed));
         getRootPane().setDefaultButton(printButton);
         return panel;
     }
 
     private void refresh() {
-        List<String> nameList = units.stream()
-                .map(unit -> {
-                    String title = String.format(" %s %s", unit.generalName(), unit.specificName());
-                    if (fromMul && unit instanceof Entity) {
-                        var crew = ((Entity) unit).getCrew();
-                        if (!crew.getName().startsWith(RandomNameGenerator.UNNAMED)) {
-                            title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(),
-                                    crew.getPiloting());
-                        }
-                    }
-                    return title;
-                })
-                .collect(toList());
+        List<String> nameList = units.stream().map(unit -> {
+            String title = String.format(" %s %s", unit.generalName(), unit.specificName());
+            if (fromMul && unit instanceof Entity) {
+                var crew = ((Entity) unit).getCrew();
+                if (!crew.getName().startsWith(RandomNameGenerator.UNNAMED)) {
+                    title += String.format("  {%s %d/%d}", crew.getName(), crew.getGunnery(), crew.getPiloting());
+                }
+            }
+            return title;
+        }).collect(toList());
 
         var replacementModel = new DefaultListModel<String>();
         replacementModel.addAll(nameList);
@@ -238,7 +244,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void linkForce() {
-        Game g = new Game();
+        Game   g = new Game();
         Player p = new Player(1, "Nobody");
         for (Entity e : getEntities()) {
             if (e.getId() == -1) {
@@ -277,7 +283,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                 exportFile = UnitPrintManager.getExportFile(parent);
             } else {
                 exportFile = UnitPrintManager.getExportFile(parent,
-                        FilenameUtils.removeExtension(mulFileName) + ".pdf");
+                      FilenameUtils.removeExtension(mulFileName) + ".pdf");
             }
             if (exportFile != null) {
                 UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
@@ -300,12 +306,14 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         var fileChooser = new JFileChooser(".");
         fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
-        var filter = new FileNameExtensionFilter(
-            Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+        var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
         fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ? mulFileName : entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
+                                                   mulFileName :
+                                                   entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
 
-        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) || fileChooser.getSelectedFile() == null) {
+        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
+            fileChooser.getSelectedFile() == null) {
             return;
         }
 
@@ -317,7 +325,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         try {
             EntityListFile.saveTo(file, entities);
         } catch (IOException e) {
-            logger.error(e, String.format("Failed to save units to file: %s", e.getMessage()), "Error");
+            logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
         }
     }
 
@@ -329,8 +337,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private void selectFromCache() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(parent);
         unitLoadingDialog.setVisible(true);
-        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent, unitLoadingDialog,
-                dialog -> entitiesSelected(dialog.getChosenEntities()));
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(parent,
+              unitLoadingDialog,
+              dialog -> entitiesSelected(dialog.getChosenEntities()));
         var entities = viewer.getChosenEntities();
         viewer.dispose();
 
@@ -338,8 +347,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     /**
-     * This is a callback function given to the Unit Selector Dialog to pass on
-     * selected units without closing the Unit Selector.
+     * This is a callback function given to the Unit Selector Dialog to pass on selected units without closing the Unit
+     * Selector.
      *
      * @param entities the chosen Units
      */
@@ -392,9 +401,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void moveTop() {
-        List<BTObject> newListTop = new ArrayList<>();
+        List<BTObject> newListTop    = new ArrayList<>();
         List<BTObject> newListBottom = new ArrayList<>();
-        boolean state = false;
+        boolean        state         = false;
         for (int i = 0; i < units.size(); i++) {
             if (i == topSelectedIndex()) {
                 state = true;
@@ -412,8 +421,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private void moveBottom() {
         List<BTObject> newListBottom = new ArrayList<>();
-        List<BTObject> newListTop = new ArrayList<>();
-        boolean state = false;
+        List<BTObject> newListTop    = new ArrayList<>();
+        boolean        state         = false;
         for (int i = 0; i < units.size(); i++) {
             if (i == topSelectedIndex()) {
                 state = true;
@@ -426,8 +435,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         units.addAll(newListTop);
         units.addAll(newListBottom);
         refresh();
-        queuedUnitList.setSelectedIndices(
-                IntStream.range(newListTop.size(), newListTop.size() + newListBottom.size()).toArray());
+        queuedUnitList.setSelectedIndices(IntStream.range(newListTop.size(), newListTop.size() + newListBottom.size())
+                                                .toArray());
     }
 
     private void moveUp() {
@@ -456,7 +465,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     /**
-     * Gets all the Entities currently queued (i.e., with pagebreaks removed).
+     * Gets all the Entities currently queued (i.e., with page breaks removed).
      */
     private ArrayList<Entity> getEntities() {
         return new ArrayList<>(units.stream().filter(i -> i instanceof Entity).map(i -> (Entity) i).toList());
@@ -498,20 +507,15 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             }
 
             var start = indices[0];
-            var end = indices[indices.length - 1];
+            var end   = indices[indices.length - 1];
             return end - start == indices.length - 1;
         }
     }
 
     // TODO: Move to UIUtil
     public static class FixedXYPanel extends JPanel {
-
         public FixedXYPanel(LayoutManager layout) {
             super(layout);
-        }
-
-        public FixedXYPanel() {
-            super();
         }
 
         @Override
