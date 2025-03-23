@@ -1179,23 +1179,6 @@ public class UnitUtil {
      * Determines if the previous critical slot is empty.
      *
      * @param unit     Unit to check.
-     * @param cs       Critical Slot (unused)
-     * @param slot     Critical Slot Location
-     * @param location Unit Location
-     *
-     * @return True if previous is empty.
-     *
-     * @deprecated since 0.50.04 - Replaced with {@link #isPreviousCriticalSlotEmpty(Entity, int, int)}
-     */
-    @Deprecated(since = "0.50.04", forRemoval = true)
-    public static boolean isPreviousCritEmpty(Entity unit, CriticalSlot cs, int slot, int location) {
-        return isPreviousCriticalSlotEmpty(unit, slot, location);
-    }
-
-    /**
-     * Determines if the previous critical slot is empty.
-     *
-     * @param unit     Unit to check.
      * @param slot     Critical Slot Location
      * @param location Unit Location
      *
@@ -1878,44 +1861,7 @@ public class UnitUtil {
         }
         return false;
     }
-
-    /**
-     * @deprecated Use {@link UnitUtil#checkEquipmentByTechLevel(Entity, ITechManager)} instead
-     */
-    @Deprecated(since = "0.50.04", forRemoval = true)
-    public static void checkEquipmentByTechLevel(Entity unit) {
-        Vector<Mounted<?>> toRemove = new Vector<>();
-        for (Mounted<?> m : unit.getEquipment()) {
-            EquipmentType equipmentType = m.getType();
-            if (UnitUtil.isArmorOrStructure(equipmentType) ||
-                UnitUtil.isHeatSink(equipmentType) ||
-                UnitUtil.isJumpJet(equipmentType)) {
-                continue;
-            }
-            if (equipmentType.hasFlag(MiscType.F_TSM) ||
-                equipmentType.hasFlag(MiscType.F_INDUSTRIAL_TSM) ||
-                equipmentType.hasFlag(MiscType.F_MASC)) {
-                continue;
-            }
-            if (!UnitUtil.isLegal(unit, equipmentType)) {
-                toRemove.add(m);
-            }
-        }
-        for (Mounted<?> m : toRemove) {
-            UnitUtil.removeMounted(unit, m);
-        }
-        if (unit instanceof Infantry pbi) {
-            if ((null != pbi.getPrimaryWeapon()) && !UnitUtil.isLegal(unit, pbi.getPrimaryWeapon())) {
-                InfantryUtil.replaceMainWeapon((Infantry) unit,
-                      (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"),
-                      false);
-            }
-            if ((null != pbi.getSecondaryWeapon()) && !UnitUtil.isLegal(unit, pbi.getSecondaryWeapon())) {
-                InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
-            }
-        }
-    }
-
+    
     /**
      * Checks for any equipment that is added on the equipment tab and removes any that is no longer legal for the
      * current year/tech base/tech level
