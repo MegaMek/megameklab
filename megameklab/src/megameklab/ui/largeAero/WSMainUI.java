@@ -41,7 +41,6 @@ import megameklab.ui.util.TabScrollPane;
 public class WSMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(WSMainUI.class);
 
-    JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private WSStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
