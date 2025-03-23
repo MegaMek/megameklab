@@ -588,7 +588,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected String formatJump() {
-        return formatMovement(getEntity().getJumpMP());
+        return formatMovement(getEntity().getAnyTypeMaxJumpMP());
     }
 
     protected String formatTechBase() {
