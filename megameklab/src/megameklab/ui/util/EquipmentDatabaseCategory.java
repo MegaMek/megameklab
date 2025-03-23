@@ -75,7 +75,7 @@ public enum EquipmentDatabaseCategory {
                     && !UnitUtil.isJumpJet(eq)
                     && !UnitUtil.isHeatSink(eq)
                     && !(isIndustrialEquipment(eq) && ((en instanceof Tank) || en.isSupportVehicle() || en instanceof Mek))
-                    && !eq.isAnyOf(LAM_FUEL_TANK)
+                    && !eq.isAnyOf(LAM_FUEL_TANK, MECHANICAL_JUMP_BOOSTER)
                     && !eq.hasFlag(F_TSM)
                     && !eq.hasFlag(F_INDUSTRIAL_TSM)
                     && !(eq.hasFlag(F_MASC)
@@ -92,7 +92,7 @@ public enum EquipmentDatabaseCategory {
                     || eq.is(COOLANT_POD)
                     || eq.is(BattleArmor.MINE_LAUNCHER)
                     || (eq instanceof TAGWeapon)
-                    || eq.hasFlag(F_AMS)),
+                    || (eq instanceof WeaponType && eq.hasFlag(F_AMS))),
 
     AP ("Anti-Personnel",
             (eq, en) -> BattleArmorUtil.isBattleArmorAPWeapon(eq),

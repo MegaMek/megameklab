@@ -1,6 +1,11 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.04-SNAPSHOT
+0.50.05-SNAPSHOT
++ PR# 1766: enhanced tabs 
++ PR# 1777: multi-select small units have preview in one sheet
++ Fix #44: Mek jump boosters and jump jets
+
+0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
 + Fix #1710: Prevent tab names from being messed up by entity type change
 + Fix #1714/#1689: Missed an updateLoadedUnit
@@ -22,6 +27,16 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1754: Print all open units
 + PR #1755: Load multiple units from cache
 + PR #1763: Sheet preview with zoom+pan
++ PR #1765: Preview record sheet in unit select dialog + multipage sheet support
++ Fix #1761: Don't keep superheavy gyro when moving to 100 tons or below
++ Fix #1758: Allow mounting to sponson turrets regardless of turret placement
++ Fix #1768: Fix several instances of record sheet elements clipping into each other, along with other RS fixes,
++            Export to PDF can use installed fonts,
++            Center numbers in heat scale properly,
++            Fix NPE on Fill Crits,
++            Fix exception when drag-dropping SRCS.
++ Fix #1773: Show component armoring weight in "other" in the Mek weight summary
++ Fix #1772: Fix occasional failure to print on Windows
 
 0.50.03 (2025-02-02 2030 UTC)
 + PR #1678: MHQ RFE #5604: save refit files from MHQ MekLab tab (MML side)

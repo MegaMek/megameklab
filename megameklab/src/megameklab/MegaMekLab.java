@@ -20,16 +20,17 @@ import java.io.File;
 import java.io.ObjectInputFilter;
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
-
-import javax.swing.*;
-
-import megamek.client.ui.swing.GUIPreferences;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 
 import io.sentry.Sentry;
 import megamek.MMLoggingConstants;
 import megamek.MegaMek;
 import megamek.SuiteConstants;
 import megamek.client.ui.preferences.SuitePreferences;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -45,10 +46,10 @@ import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLab {
-    private static final SuitePreferences mmlPreferences = new SuitePreferences();
-    private static final MMLOptions mmlOptions = new MMLOptions();
+    private static final SuitePreferences  mmlPreferences    = new SuitePreferences();
+    private static final MMLOptions        mmlOptions        = new MMLOptions();
     private static final SanityInputFilter sanityInputFilter = new SanityInputFilter();
-    private static final MMLogger logger = MMLogger.create(MegaMekLab.class);
+    private static final MMLogger          logger            = MMLogger.create(MegaMekLab.class);
 
     public static void main(String... args) {
         ObjectInputFilter.Config.setSerialFilter(sanityInputFilter);
@@ -65,10 +66,10 @@ public class MegaMekLab {
 
         // First, create a global default exception handler
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
-            final String name = t.getClass().getName();
+            final String name    = t.getClass().getName();
             final String message = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION, name);
-            final String title = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, name);
-            logger.error(t, message, title);
+            final String title   = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, name);
+            logger.errorDialog(t, message, title);
         });
 
         MegaMek.initializeLogging(MMLConstants.PROJECT_NAME);
@@ -88,6 +89,7 @@ public class MegaMekLab {
 
     /**
      * @param originProject the project that launched MegaMekLab
+     *
      * @return the underlying information for this launch of MegaMekLab
      */
     public static String getUnderlyingInformation(final String originProject) {
@@ -113,8 +115,8 @@ public class MegaMekLab {
                 var name = args[0];
                 logger.info("Trying to open file {}", name);
                 if (name.toLowerCase().endsWith(".blk") || name.endsWith(".mtf")) {
-                    var file = new File(name);
-                    Entity e = new MekFileParser(file).getEntity();
+                    var    file = new File(name);
+                    Entity e    = new MekFileParser(file).getEntity();
                     if (!UnitUtil.validateUnit(e).isBlank()) {
                         PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
                     }
@@ -123,7 +125,9 @@ public class MegaMekLab {
                 } else if (name.toLowerCase().endsWith(".mul")) {
                     Runnable printMul = () -> {
                         var frame = new JFrame();
-                        UnitPrintManager.printMUL(frame,  CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), new File(name));
+                        UnitPrintManager.printMUL(frame,
+                              CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR),
+                              new File(name));
                         frame.dispose();
                     };
                     if (args.length >= 2 && args[1].equals("--no-startup")) {
@@ -163,8 +167,8 @@ public class MegaMekLab {
 
     private static void setLookAndFeel() {
         try {
-            String plaf = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel(plaf);
+            String profileLookAndFeel = CConfig.getParam(CConfig.GUI_PLAF, UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(profileLookAndFeel);
             UIUtil.updateAfterUiChange();
         } catch (Exception ex) {
             logger.error("setLookAndFeel() Exception {}", ex);
@@ -185,8 +189,8 @@ public class MegaMekLab {
     }
 
     /**
-     * Tries loading the most recent unit. Returns true when successful, false when
-     * no such unit could be found or the unit doesn't load.
+     * Tries loading the most recent unit. Returns true when successful, false when no such unit could be found or the
+     * unit doesn't load.
      *
      * @return True when the most recent unit is successfully loaded
      */
@@ -215,8 +219,8 @@ public class MegaMekLab {
             return true;
         } catch (Exception ex) {
             final String message = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION, ex.getMessage());
-            final String title = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, unitFile.toString());
-            logger.error(ex, message, title);
+            final String title   = String.format(MMLoggingConstants.UNHANDLED_EXCEPTION_TITLE, unitFile);
+            logger.errorDialog(ex, message, title);
             return false;
         }
     }

@@ -13,23 +13,6 @@
  */
 package megameklab.ui.mek;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -53,6 +36,13 @@ import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
     private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
@@ -703,6 +693,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         }
         boolean changedSuperHeavyStatus = getMek().isSuperHeavy() != tonnage > 100;
 
+        getMek().setWeight(tonnage);
+
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy, remove crits
             for (Mounted<?> mount : getMek().getEquipment()) {
@@ -730,7 +722,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 }
             }
         }
-        getMek().setWeight(tonnage);
+
         // Force recalculation of walk MP. Set from chassis panel in case superheavy
         // flag changed
         final Engine engine = panChassis.getEngine();
@@ -1115,32 +1107,29 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (jumpJet == null) {
             getMek().setOriginalJumpMP(0);
             jumpMP = 0;
-        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET) || jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
+        } else if (jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
+            addOrRemoveMekMechanicalJumpBoosters(jumpMP, jumpJet);
+        } else if (jumpJet.hasFlag(MiscType.F_JUMP_JET)) {
             getMek().setOriginalJumpMP(jumpMP);
         } else {
             getMek().setOriginalJumpMP(0);
         }
 
-        if (jumpJet != null) {
+        // Remove or add jump jet equipment according to jump MP (if not Mek Mechanical Jump Boosters)
+        if (jumpJet != null && !jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)) {
             List<Mounted<?>> jjs = getMek().getMisc().stream()
-                    .filter(m -> jumpJet.equals(m.getType()))
-                    .collect(Collectors.toList());
-            if (jumpJet.hasFlag(MiscType.F_JUMP_BOOSTER)) {
-                if (!getMek().hasWorkingMisc(MiscType.F_JUMP_BOOSTER)) {
-                    MekUtil.createSpreadMounts(getMek(), jumpJet);
+                  .filter(m -> jumpJet.equals(m.getType()))
+                  .collect(Collectors.toList());
+            while (jjs.size() > jumpMP) {
+                UnitUtil.removeMounted(getMek(), jjs.remove(jjs.size() - 1));
+            }
+            while (jumpMP > jjs.size()) {
+                try {
+                    UnitUtil.addMounted(getMek(), Mounted.createMounted(getMek(), jumpJet), Entity.LOC_NONE, false);
+                } catch (LocationFullException ignored) {
+                    // Adding to LOC_NONE
                 }
-            } else {
-                while (jjs.size() > jumpMP) {
-                    UnitUtil.removeMounted(getMek(), jjs.remove(jjs.size() - 1));
-                }
-                while (jumpMP > jjs.size()) {
-                    try {
-                        UnitUtil.addMounted(getMek(), Mounted.createMounted(getMek(), jumpJet), Entity.LOC_NONE, false);
-                    } catch (LocationFullException ignored) {
-                        // Adding to LOC_NONE
-                    }
-                    jumpMP--;
-                }
+                jumpMP--;
             }
         }
 
@@ -1151,12 +1140,30 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.setFromEntity(getMek());
     }
 
+    private void addOrRemoveMekMechanicalJumpBoosters(final int jumpMP, EquipmentType jumpJet) {
+        assert (jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER));
+        if (jumpMP == 0) {
+            UnitUtil.removeAllMounteds(getMek(), jumpJet);
+        } else {
+            Optional<MiscMounted> mekMechanicalJumpBooster = getMek().getMisc().stream()
+                  .filter(m -> m.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER))
+                  .findFirst();
+            if (mekMechanicalJumpBooster.isEmpty()) {
+                MiscMounted createdMount = (MiscMounted) MekUtil.createSpreadMounts(getMek(), jumpJet);
+                if (createdMount != null) {
+                    mekMechanicalJumpBooster = Optional.of(createdMount);
+                }
+            }
+            mekMechanicalJumpBooster.ifPresent(m -> m.setSize(jumpMP));
+        }
+    }
+
+
     @Override
     public void jumpTypeChanged(final EquipmentType jumpJet) {
         List<Mounted<?>> jjs = getMek().getMisc().stream()
                 .filter(m -> m.getType().hasFlag(MiscType.F_JUMP_JET)
-                        || m.getType().hasFlag(MiscType.F_UMU)
-                        || m.getType().hasFlag(MiscType.F_JUMP_BOOSTER))
+                        || m.getType().hasFlag(MiscType.F_UMU))
                 .filter(m -> !jumpJet.equals(m.getType()))
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getMek(), jj));

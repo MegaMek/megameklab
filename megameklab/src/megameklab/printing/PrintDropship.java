@@ -23,6 +23,7 @@ import java.util.StringJoiner;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
+import megamek.common.UnitType;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Dropship;
@@ -136,6 +137,7 @@ public class PrintDropship extends PrintAero {
                 element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
             }
             setTextField(TITLE, getRecordSheetTitle().toUpperCase() + " (REVERSE)");
+            setTextField(UNIT_TYPE, UnitType.getTypeDisplayableName(getEntity().getUnitType()).toUpperCase());
             setTextField(TYPE, getEntity().getShortNameRaw());
             setTextField(FLUFF_NAME, ""); // TODO: fluff name needs MM support
             element = getSVGDocument().getElementById(INVENTORY);

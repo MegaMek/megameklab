@@ -33,6 +33,7 @@ public interface IdConstants {
 
     String TYPE = "type";
     String TYPE2 = "type2";
+    String UNIT_TYPE = "unitType";
     String FLUFF_NAME = "fluffName";
     String MP_WALK = "mpWalk";
     String MP_RUN = "mpRun";

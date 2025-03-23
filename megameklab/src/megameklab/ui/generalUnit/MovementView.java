@@ -29,11 +29,7 @@ import java.util.ResourceBundle;
 import java.util.StringJoiner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -81,6 +77,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JTextField txtWalkFinal = new JTextField();
     private final JTextField txtRunFinal = new JTextField();
     private final JTextField txtJumpFinal = new JTextField();
+
+    private final JLabel lblMekMechanicalJumpMP = new JLabel("Mech. J. Booster MP:");
+    private final SpinnerNumberModel spnMekMechanicalJumpModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final JSpinner spnMekMechanicalJumpMP = new JSpinner(spnMekMechanicalJumpModel);
 
     private final ITechManager techManager;
     private long etype;
@@ -170,6 +170,15 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         cbJumpType.addActionListener(this);
         cbJumpType.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
 
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        add(lblMekMechanicalJumpMP, gbc);
+        gbc.gridx = 1;
+        spnMekMechanicalJumpMP.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip"));
+        add(spnMekMechanicalJumpMP, gbc);
+        spnMekMechanicalJumpMP.addChangeListener(this);
+
         txtWalkFinal.setEditable(false);
         txtWalkFinal.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRunBase.setEditable(false);
@@ -181,12 +190,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
 
     public void setFromEntity(Entity en) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mek) && ((Mek) en).isIndustrial();
+        industrial = (en instanceof Mek mek) && mek.isIndustrial();
         refresh();
 
         Optional<MiscType> jj = en.getMisc().stream().map(Mounted::getType)
-                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)
-                        || eq.hasFlag(MiscType.F_JUMP_BOOSTER)).findAny();
+                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)).findAny();
         if (jj.isPresent()) {
             cbJumpType.removeActionListener(this);
             cbJumpType.setSelectedItem(jj.get());
@@ -310,6 +318,19 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         cbJumpType.setVisible(showJumpType);
         spnJump.setEnabled((null == maxJump) || (maxJump > 0));
         cbJumpType.setEnabled((null == maxJump) || (maxJump > 0));
+        spnMekMechanicalJumpMP.setVisible(en.isMek());
+        lblMekMechanicalJumpMP.setVisible(en.isMek());
+        // adapt the Mek Mechanical Jump Booster MP value to the equipment size
+        spnMekMechanicalJumpMP.removeChangeListener(this);
+        Optional<MiscMounted> mekMechanicalJumpBooster = en.getMisc().stream()
+              .filter(m -> m.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER))
+              .findFirst();
+        if (mekMechanicalJumpBooster.isEmpty()) {
+            spnMekMechanicalJumpMP.setValue(0);
+        } else if (getMekMechanicalJump() != mekMechanicalJumpBooster.get().getSize()) {
+            spnMekMechanicalJumpMP.setValue(mekMechanicalJumpBooster.get().getSize());
+        }
+        spnMekMechanicalJumpMP.addChangeListener(this);
 
         if ((maxJump != null) && (jump0 > maxJump)) {
             spnJump.setValue(spnJumpModel.getMaximum());
@@ -414,6 +435,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         return spnJumpModel.getNumber().intValue();
     }
 
+    public int getMekMechanicalJump() {
+        return spnMekMechanicalJumpModel.getNumber().intValue();
+    }
+
     public EquipmentType getJumpJet() {
         return (EquipmentType)cbJumpType.getSelectedItem();
     }
@@ -424,6 +449,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.walkChanged(getWalk()));
         } else if (e.getSource() == spnJump) {
             listeners.forEach(l -> l.jumpChanged(getJump(), getJumpJet()));
+        } else if (e.getSource() == spnMekMechanicalJumpMP) {
+            listeners.forEach(l -> l.jumpChanged(getMekMechanicalJump(),
+                  EquipmentType.get(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER)));
         }
     }
 

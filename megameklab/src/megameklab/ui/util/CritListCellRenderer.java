@@ -16,30 +16,36 @@
 
 package megameklab.ui.util;
 
-import megamek.common.*;
+import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH_STRING;
+import static megameklab.ui.util.CritCellUtil.EMPTY_CRITCELL_TEXT;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.border.EmptyBorder;
+
+import megamek.common.BattleArmor;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.Mounted;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-
-import static megameklab.ui.util.CritCellUtil.*;
-
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
-    private JList<?> list = null;
-    private final Entity unit;
-    private final boolean useColor;
+    private       JList<?> list = null;
+    private final Entity   unit;
+    private final boolean  useColor;
 
     public CritListCellRenderer(Entity unit, boolean useColor) {
-        this.unit = unit;
+        this.unit     = unit;
         this.useColor = useColor;
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-            boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
@@ -50,16 +56,15 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             return this;
         }
 
-        String[] split = ((String)value).split(":");
+        String[] split = ((String) value).split(":");
         setText(split[0]);
         setToolTipText(null);
 
         CriticalSlot cs = null;
         if (split.length > 2) {
             int eqId = Integer.parseInt(split[2]);
-            /**
-             * safety against logic error where we try to redraw deleted equipment due to
-             * poor dupe slot handling
+            /*
+             * safety against logic error where we try to redraw deleted equipment due to poor dupe slot handling
              **/
             Mounted<?> eq = unit.getEquipment(eqId);
             cs = eq != null ? new CriticalSlot(eq) : null;
@@ -90,13 +95,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         int loc = getCritLocation();
-        if ((cs != null)
-                && UnitUtil.isLastCrit(unit, cs, index, loc)
-                && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
+        if ((cs != null) &&
+            UnitUtil.isLastCrit(unit, cs, index, loc) &&
+            UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
-        } else if ((cs != null) && UnitUtil.isPreviousCritEmpty(unit, cs, index, loc)) {
+        } else if ((cs != null) && UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else {
             setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -112,12 +117,14 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     private CriticalSlot getCrit(int slot) {
-        int location = getCritLocation();
-        CriticalSlot crit = null;
+        int          location     = getCritLocation();
+        CriticalSlot criticalSlot = null;
+
         if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
-            crit = unit.getCritical(location, slot);
+            criticalSlot = unit.getCritical(location, slot);
         }
-        return crit;
+        
+        return criticalSlot;
     }
 
     private int getCritLocation() {

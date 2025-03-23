@@ -199,6 +199,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
+        setTextField(UNIT_TYPE, UnitType.getTypeDisplayableName(getEntity().getUnitType()).toUpperCase());
         setTextField(MP_WALK, formatWalk());
         setTextField(MP_RUN, formatRun());
         setTextField(MP_JUMP, formatJump());
@@ -587,7 +588,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected String formatJump() {
-        return formatMovement(getEntity().getJumpMP());
+        if (getEntity().getJumpMP() > 0 && getEntity().getMechanicalJumpBoosterMP() > 0) {
+            return formatMovement(getEntity().getJumpMP())
+                  + " (%d)".formatted(getEntity().getMechanicalJumpBoosterMP());
+        } else {
+            return formatMovement(getEntity().getAnyTypeMaxJumpMP());
+        }
     }
 
     protected String formatTechBase() {
