@@ -476,22 +476,15 @@ public final class MekUtil {
         }
         // if this is the same jump jet type, then only remove if too many
         // and add if too low
-        if (jjType == Mek.JUMP_BOOSTER) {
-            removeJumpJets(unit, unit.getJumpMP());
-            createSpreadMounts(
-                    unit,
-                    EquipmentType.get(UnitUtil.getJumpJetType(jjType)));
-        } else {
-            while (jjAmount > 0) {
-                try {
-                    unit.addEquipment(
-                            Mounted.createMounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
-                            Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    logger.error("", ex);
-                }
-                jjAmount--;
+        while (jjAmount > 0) {
+            try {
+                unit.addEquipment(
+                      Mounted.createMounted(unit, EquipmentType.get(UnitUtil.getJumpJetType(jjType))),
+                      Entity.LOC_NONE, false);
+            } catch (Exception ex) {
+                logger.error("", ex);
             }
+            jjAmount--;
         }
     }
 

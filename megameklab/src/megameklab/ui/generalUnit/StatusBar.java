@@ -198,7 +198,7 @@ public class StatusBar extends ITab {
             if (getEntity().getOriginalJumpMP() > 0) {
                 if (getEntity().getJumpType() == Mek.JUMP_IMPROVED) {
                     heat += Math.max(3, Math.ceil(getMek().getOriginalJumpMP() / 2.0f));
-                } else if (getEntity().getJumpType() != Mek.JUMP_BOOSTER) {
+                } else {
                     heat += Math.max(3, getEntity().getOriginalJumpMP());
                 }
                 if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
