@@ -22,7 +22,9 @@ import megamek.common.Mounted;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
-import megameklab.ui.util.ExitOnWindowClosingListener;
+import megameklab.ui.util.EnhancedTabbedPane;
+import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
+import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
@@ -31,7 +33,10 @@ import megameklab.util.MMLFileDropTransferHandler;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
+public abstract class MegaMekLabMainUI extends JFrame
+        implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
+
+    protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
     private Entity entity = null;
     private String fileName = "";
     protected MenuBar mmlMenuBar;
@@ -41,8 +46,16 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new ExitOnWindowClosingListener(this));
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
+        // Register tab reattachment listener
+        configPane.addTabStateListener(new TabStateListener() {
+            @Override
+            public void onTabDetached(Window window, DetachedTabInfo tabInfo) {
+                getEntity().generateDisplayName();
+                final String displayName = getEntity().getDisplayName();
+                configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
+            }
+        });
     }
 
     protected void finishSetup() {
@@ -68,6 +81,16 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         int w = Math.min(getSize().width, scaledMonitorW);
         int h = Math.min(getSize().height, scaledMonitorH);
         setSize(new Dimension(w, h));
+    }
+
+    public EnhancedTabbedPane getConfigPane() {
+        return configPane;
+    }
+
+    public void reattachAllTabs() {
+        if (configPane != null) {
+            configPane.reattachAllTabs();
+        }
     }
 
     @Override
@@ -102,7 +125,7 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
         if (!safetyPrompt()) {
             return false;
         }
-
+        reattachAllTabs();
         CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
         CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
         CConfig.writeMainUiWindowSettings(this);
@@ -130,10 +153,13 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     @Override
     public void refreshHeader() {
         String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
-        setTitle(getEntity().getFullChassis() + " " + getEntity().getModel() + fileInfo);
+        Entity entity = getEntity();
+        setTitle(entity.getFullChassis() + " " + entity.getModel() + fileInfo);
+        if (configPane.hasDetachedTabs()) {
+            configPane.setDetachedTabsPrefixTitle(entity.getDisplayName());
+        }
         if (owner != null) {
-            getEntity().generateDisplayName();
-            owner.setTabName(getEntity().getDisplayName(), this);
+            owner.setTabName(entity.getDisplayName(), this);
         }
     }
 
@@ -217,7 +243,8 @@ public abstract class MegaMekLabMainUI extends JFrame implements RefreshListener
     }
 
     /**
-     * Retrieves a list of mounted components that are currently not assigned to a location.
+     * Retrieves a list of mounted components that are currently not assigned to a
+     * location.
      * Such equipment would be deleted on save and reload.
      *
      * @return a List containing unallocated Mounted objects.

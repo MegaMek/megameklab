@@ -24,7 +24,6 @@ import java.awt.*;
 import java.util.List;
 
 public class HHWMainUI extends MegaMekLabMainUI {
-    private final JTabbedPane configPane = new JTabbedPane(SwingConstants.TOP);
     private HHWStructureTab structureTab;
     private HHWEquipmentTab equipmentTab;
     private PreviewTab previewTab;
