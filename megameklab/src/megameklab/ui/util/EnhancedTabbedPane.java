@@ -48,9 +48,13 @@ import javax.swing.event.MouseInputAdapter;
  * @author Drake
  *       <p>
  *       Enhanced tabbed pane with closable, draggable tabs and additional action buttons. This component extends
- *       JTabbedPane to add the following features: - Closable tabs with an X button on each tab - Ability to drag and
- *       reorder tabs - Action buttons on the right side of the tab area (sticky and not) - Detachable tabs that can be
- *       dragged out (or right-click) into floating windows
+ *       JTabbedPane to add the following features:
+ *       <ul>
+ *       <li>Closable tabs with an X button on each tab</li>
+ *       <li>Ability to drag and reorder tabs</li>
+ *       <li>Action buttons on the right side of the tab area (sticky and not)</li>
+ *       <li>Detachable tabs that can be dragged out (or right-click) into floating windows</li>
+ *       </ul>
  */
 public class EnhancedTabbedPane extends JTabbedPane {
 
