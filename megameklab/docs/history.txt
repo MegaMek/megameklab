@@ -4,6 +4,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR# 1766: enhanced tabs 
 + PR# 1777: multi-select small units have preview in one sheet
 + Fix #44: Mek jump boosters and jump jets
++ PR #1784: Removed Deprecated methods from MMLogger and updated impacted calls
 
 0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
