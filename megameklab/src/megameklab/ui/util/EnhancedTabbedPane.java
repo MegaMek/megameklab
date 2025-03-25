@@ -572,6 +572,12 @@ public class EnhancedTabbedPane extends JTabbedPane {
                         locationOnScreen.y -= 10;
                         detachTab(dragState.tabIndex, locationOnScreen);
                         dragState.tabIndex = -1;
+                    } else if (SwingUtilities.isMiddleMouseButton(e)) {
+                        // Handle middle-click to close tab
+                        Component tabComponent = getTabComponentAt(dragState.tabIndex);
+                        if (tabComponent instanceof EnhancedTab enhancedTab) {
+                            enhancedTab.close(e);
+                        }
                     }
                 }
             }
@@ -1421,18 +1427,30 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON1 && closeAction != null) {
-                        if (component instanceof JFrame frame) {
-                            Component tabContent = frame.getContentPane();
-                            closeAction.accept(tabContent, e);
-                        } else {
-                            closeAction.accept(component, e);
-                        }
+                        close(e);
                         e.consume();
                     }
                 }
             });
 
             return closeButton;
+        }
+
+        /**
+         * Perform the close action
+         * 
+         * @param e The mouse event that triggered the close action
+         */
+        public void close(MouseEvent e) {
+            if (closeAction == null) {
+                return;
+            }
+            if (component instanceof JFrame frame) {
+                Component tabContent = frame.getContentPane();
+                closeAction.accept(tabContent, e);
+            } else {
+                closeAction.accept(component, e);
+            }
         }
 
         /**
