@@ -52,9 +52,6 @@ ext {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
-    implementation "com.fasterxml.jackson.core:jackson-core:2.15.2"
-    
     implementation "org.megamek:megamek${mmBranchTag}:${version}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'

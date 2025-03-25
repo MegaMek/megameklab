@@ -34,7 +34,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
 import megamek.common.Entity;
-import megamek.common.HandheldWeapon;
 import megamek.common.Infantry;
 import megamek.common.ProtoMek;
 import megamek.common.SupportTank;
@@ -82,14 +81,6 @@ class PrintSmallUnitSheetTest {
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
         entities.add(new Infantry());
-        assertTrue(PrintSmallUnitSheet.fillsSheet(entities, noTables));
-        assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
-    }
-
-    @Test
-    void fillsSheetHHW() {
-        var entities = new ArrayList<>(List.of(new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon(), new HandheldWeapon()));
-        entities.add(new HandheldWeapon());
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
     }
