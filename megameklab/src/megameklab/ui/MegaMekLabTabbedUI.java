@@ -19,9 +19,11 @@
 
 package megameklab.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -29,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -65,6 +66,7 @@ import megameklab.util.UnitUtil;
  * open at once.
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
+    private final static Font symbolFont = new Font("Noto Sans Symbols 2", Font.PLAIN, 12);
 
     private final List<MegaMekLabMainUI> editors = new ArrayList<>();
 
@@ -142,13 +144,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Creates a configured "New" button
      */
+    @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
     private JButton createNewButton() {
-        Icon newIcon = UIManager.getIcon("FileView.fileIcon");
-        JButton button = new JButton(newIcon);
+        JButton button = new JButton("\u271A");
+        button.setFont(symbolFont);
+        button.setFont(symbolFont.deriveFont(Font.BOLD));
         button.setToolTipText("<html>New Blank Mek<br>Right Click: Select Unit Type");
         button.setFocusable(false);
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
+        button.putClientProperty("hoverForeground", Color.GREEN);
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -170,13 +175,15 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Creates a configured "Open" button
      */
+    @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
     private JButton createOpenButton() {
-        Icon openIcon = UIManager.getIcon("Tree.openIcon");
-        JButton button = new JButton(openIcon);
+        JButton button = new JButton("\uD83D\uDDC1");
+        button.setFont(symbolFont.deriveFont(Font.BOLD));
         button.setToolTipText("<html>Load unit from cache<br>Right Click: Load Unit Menu");
         button.setFocusable(false);
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
+        button.putClientProperty("hoverForeground", Color.CYAN);
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

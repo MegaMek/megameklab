@@ -365,12 +365,18 @@ public class EnhancedTabbedPane extends JTabbedPane {
     protected void addHoverEffect(JButton button) {
         // Save original appearance
         final Color originalBackground = button.getBackground();
+        final Color originalForeground = button.getForeground();
+        final Color hoverForeground = (Color) button.getClientProperty("hoverForeground");
+
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 // Apply hover appearance
                 button.setContentAreaFilled(true);
                 button.setBackground(UIManager.getColor("Button.highlight"));
+                if (hoverForeground != null) {
+                    button.setForeground(hoverForeground);
+                }
             }
 
             @Override
@@ -378,6 +384,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 // Restore original appearance
                 button.setContentAreaFilled(false);
                 button.setBackground(originalBackground);
+                if (hoverForeground != null) {
+                    button.setForeground(originalForeground);
+                }
             }
         });
     }
