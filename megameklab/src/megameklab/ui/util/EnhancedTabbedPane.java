@@ -46,15 +46,18 @@ import javax.swing.event.MouseInputAdapter;
 
 /**
  * @author Drake
- *       <p>
- *       Enhanced tabbed pane with closable, draggable tabs and additional action buttons. This component extends
- *       JTabbedPane to add the following features:
- *       <ul>
- *       <li>Closable tabs with an X button on each tab</li>
- *       <li>Ability to drag and reorder tabs</li>
- *       <li>Action buttons on the right side of the tab area (sticky and not)</li>
- *       <li>Detachable tabs that can be dragged out (or right-click) into floating windows</li>
- *       </ul>
+ *         <p>
+ *         Enhanced tabbed pane with closable, draggable tabs and additional
+ *         action buttons. This component extends
+ *         JTabbedPane to add the following features:
+ *         <ul>
+ *         <li>Closable tabs with an X button on each tab</li>
+ *         <li>Ability to drag and reorder tabs</li>
+ *         <li>Action buttons on the right side of the tab area (sticky and
+ *         not)</li>
+ *         <li>Detachable tabs that can be dragged out (or right-click) into
+ *         floating windows</li>
+ *         </ul>
  */
 public class EnhancedTabbedPane extends JTabbedPane {
 
@@ -80,7 +83,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param closeAction
          * @param isEnhancedTab
          */
-        public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex, BiConsumer<Component, InputEvent> closeAction, boolean isEnhancedTab) {
+        public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex,
+                BiConsumer<Component, InputEvent> closeAction, boolean isEnhancedTab) {
             this.title = title;
             this.icon = icon;
             this.component = component;
@@ -132,7 +136,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     }
 
     /**
-     * Creates a new EnhancedTabbedPane with closable, draggable tabs and action buttons.
+     * Creates a new EnhancedTabbedPane with closable, draggable tabs and action
+     * buttons.
      *
      * @param actionButtons Action Buttons
      */
@@ -197,7 +202,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     }
 
     /**
-     * Sets whether action buttons should be aligned after the tabs or on the right side of the window
+     * Sets whether action buttons should be aligned after the tabs or on the right
+     * side of the window
      *
      * @param alignAfterTabs
      */
@@ -367,8 +373,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
     protected void addHoverEffect(JButton button) {
         // Save original appearance
         final Color originalBackground = button.getBackground();
-        final Color originalForeground = button.getForeground();
-        final Color hoverForeground = (Color) button.getClientProperty("hoverForeground");
 
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -376,9 +380,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 // Apply hover appearance
                 button.setContentAreaFilled(true);
                 button.setBackground(UIManager.getColor("Button.highlight"));
-                if (hoverForeground != null) {
-                    button.setForeground(hoverForeground);
-                }
             }
 
             @Override
@@ -386,9 +387,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 // Restore original appearance
                 button.setContentAreaFilled(false);
                 button.setBackground(originalBackground);
-                if (hoverForeground != null) {
-                    button.setForeground(originalForeground);
-                }
             }
         });
     }
@@ -478,9 +476,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private void positionActionButtons() {
         // Check if the tabbed pane is showing, has a parent, and has action buttons
         if (actionButtonsPanel == null ||
-                  !isShowing() ||
-                  getParent() == null ||
-                  actionButtonsPanel.getComponentCount() == 0) {
+                !isShowing() ||
+                getParent() == null ||
+                actionButtonsPanel.getComponentCount() == 0) {
             return;
         }
         Container parent = actionButtonsPanel.getParent();
@@ -530,8 +528,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
                     }
                     // Position the buttons properly after the last tab, aligning vertically
                     y = tabPosition.y - parentPosition.y +
-                              lastTabBounds.y +
-                              (lastTabBounds.height - actionButtonsPanelHeight) / 2;
+                            lastTabBounds.y +
+                            (lastTabBounds.height - actionButtonsPanelHeight) / 2;
                 }
             }
 
@@ -632,10 +630,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
                     locationOnScreen.y -= 10;
                     detachTab(dragState.tabIndex, locationOnScreen);
                 } else if (tabReorderingEnabled &&
-                                 dragState.isDragging &&
-                                 dragState.tabIndex >= 0 &&
-                                 targetIndex >= 0 &&
-                                 targetIndex != dragState.tabIndex) {
+                        dragState.isDragging &&
+                        dragState.tabIndex >= 0 &&
+                        targetIndex >= 0 &&
+                        targetIndex != dragState.tabIndex) {
                     moveTab(dragState.tabIndex, targetIndex);
                 }
                 dragState.isDragging = false;
@@ -646,7 +644,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
             }
         };
     }
-
 
     /**
      * @return Rectangle representing the tab header area
@@ -946,7 +943,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
         setSelectedIndex(toIndex);
     }
 
-    public int addEnhancedTab(String title, Icon icon, Component component, BiConsumer<Component, InputEvent> closeTabAction) {
+    public int addEnhancedTab(String title, Icon icon, Component component,
+            BiConsumer<Component, InputEvent> closeTabAction) {
         return addEnhancedTab(title, icon, component, closeTabAction, getTabCount());
     }
 
@@ -960,7 +958,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
      *
      * @return The index of the newly added tab
      */
-    public int addEnhancedTab(String title, Icon icon, Component component, BiConsumer<Component, InputEvent> closeTabAction, int tabIndex) {
+    public int addEnhancedTab(String title, Icon icon, Component component,
+            BiConsumer<Component, InputEvent> closeTabAction, int tabIndex) {
         Component contentToAdd = null;
         if (component instanceof JFrame) {
             contentToAdd = ((JFrame) component).getContentPane();
@@ -1035,14 +1034,14 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         // Create the detached window based on component type
         Window detachedWindow = createDetachedWindow(title,
-              icon,
-              componentWindow,
-              component,
-              compSize,
-              location,
-              tabComponent,
-              closeAction,
-              tabIndex);
+                icon,
+                componentWindow,
+                component,
+                compSize,
+                location,
+                tabComponent,
+                closeAction,
+                tabIndex);
 
         // Notify listeners after detaching
         DetachedTabInfo tabInfo = detachedTabs.get(detachedWindow);
@@ -1075,7 +1074,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Creates an appropriate window type for the detached tab
      */
-    private Window createDetachedWindow(String title, Icon icon, Component window, Component component, Dimension size, Point location, Component tabComponent, BiConsumer<Component, InputEvent> closeAction, int tabIndex) {
+    private Window createDetachedWindow(String title, Icon icon, Component window, Component component, Dimension size,
+            Point location, Component tabComponent, BiConsumer<Component, InputEvent> closeAction, int tabIndex) {
 
         final boolean isEnhancedTab = tabComponent instanceof EnhancedTab;
         Window result;
@@ -1094,7 +1094,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
         // Store the detached tab information for later reattachment
         detachedTabs.put(result,
-              new DetachedTabInfo(title, icon, detachedComponent, result, tabIndex, closeAction, isEnhancedTab));
+                new DetachedTabInfo(title, icon, detachedComponent, result, tabIndex, closeAction, isEnhancedTab));
 
         // Ensure listeners are properly managed - remove first then add
         cleanupAndAddWindowListener(result);
@@ -1112,7 +1112,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     }
 
     /**
-     * Checks if a detached window is being dragged over the tabbed pane and reattaches it if so
+     * Checks if a detached window is being dragged over the tabbed pane and
+     * reattaches it if so
      *
      * @param window The detached window to check
      */
@@ -1166,7 +1167,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Configures a JFrame for detached tab display
      */
-    private void setupFrame(JFrame frame, String title, Icon icon, Component component, Dimension size, Point location) {
+    private void setupFrame(JFrame frame, String title, Icon icon, Component component, Dimension size,
+            Point location) {
         frame.setContentPane((Container) component);
         if (icon instanceof ImageIcon imageIcon) {
             frame.setIconImage(imageIcon.getImage());
@@ -1181,7 +1183,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Configures a JDialog for detached tab display
      */
-    private void setupDialog(JDialog dialog, String title, Icon icon, Component component, Dimension size, Point location) {
+    private void setupDialog(JDialog dialog, String title, Icon icon, Component component, Dimension size,
+            Point location) {
         if (icon instanceof ImageIcon imageIcon) {
             dialog.setIconImage(imageIcon.getImage());
         }
@@ -1206,7 +1209,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Reattaches a floating tab to the tabbed pane at a specific position
      *
      * @param component   The floating window to reattach
-     * @param targetIndex The index at which to insert the tab, or -1 to use originalIndex
+     * @param targetIndex The index at which to insert the tab, or -1 to use
+     *                    originalIndex
      */
     private void reattachTab(Component component, int targetIndex) {
         if (!detachedTabs.containsKey(component)) {
@@ -1265,29 +1269,30 @@ public class EnhancedTabbedPane extends JTabbedPane {
             repaint();
         }
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // Draw the message only when needed
         if (shouldShowNoTabsMessage) {
             Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
-                                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
             // Set up font and color
             Font originalFont = getFont();
             Font messageFont = originalFont.deriveFont(Font.BOLD);
             g2d.setFont(messageFont);
             g2d.setColor(Color.GRAY);
-            
+
             // Calculate position for centered text
             FontMetrics fm = g2d.getFontMetrics(messageFont);
             int messageWidth = fm.stringWidth(noTabsMessage);
             int messageHeight = fm.getHeight();
             int x = (getWidth() - messageWidth) / 2;
             int y = (getHeight() - messageHeight) / 2 + fm.getAscent();
-            
+
             // Draw the text
             g2d.drawString(noTabsMessage, x, y);
             g2d.dispose();
@@ -1381,7 +1386,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param component   The component associated with this tab
          * @param closeAction Action to perform when the close button is clicked
          */
-        public EnhancedTab(EnhancedTabbedPane parentPane, String title, Component component, BiConsumer<Component, InputEvent> closeAction) {
+        public EnhancedTab(EnhancedTabbedPane parentPane, String title, Component component,
+                BiConsumer<Component, InputEvent> closeAction) {
             super(new BorderLayout(0, 0));
             this.parentPane = parentPane;
             this.component = component;
@@ -1437,14 +1443,14 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
                         // Create a new event at the tabbed pane location
                         MouseEvent convertedEvent = new MouseEvent(tabbedPane,
-                              e.getID(),
-                              e.getWhen(),
-                              e.getModifiersEx(),
-                              tabPanePoint.x,
-                              tabPanePoint.y,
-                              e.getClickCount(),
-                              e.isPopupTrigger(),
-                              e.getButton());
+                                e.getID(),
+                                e.getWhen(),
+                                e.getModifiersEx(),
+                                tabPanePoint.x,
+                                tabPanePoint.y,
+                                e.getClickCount(),
+                                e.isPopupTrigger(),
+                                e.getButton());
 
                         tabbedPane.dispatchEvent(convertedEvent);
                     }
