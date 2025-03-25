@@ -171,7 +171,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * Creates a configured "Open" button
      */
     private JButton createOpenButton() {
-        Icon openIcon = UIManager.getIcon("FileView.directoryIcon");
+        Icon openIcon = UIManager.getIcon("Tree.openIcon");
         JButton button = new JButton(openIcon);
         button.setToolTipText("<html>Load unit from cache<br>Right Click: Load Unit Menu");
         button.setFocusable(false);
