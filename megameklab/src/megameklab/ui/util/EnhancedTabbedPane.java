@@ -114,8 +114,11 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private boolean actionButtonsAlignAfterTabs = true;
     private int minimumTabsCount = 0;
     private boolean dragDockingToVisibleTabsAreaOnly = true;
-    private final String noTabsMessage = "<All tabs detached>";
+    private final String noTabsMessage = "<All tabs detached>\n" +
+            "Double-click to reattach all tabs";
+    private final String tabReattachTabbedBarDoubleclickHint = "Double-click to reattach all tabs";
     private boolean shouldShowNoTabsMessage = false;
+    private boolean shouldShowReattachHint = false;
 
     private static class DragState {
         int tabIndex = -1;
@@ -159,6 +162,32 @@ public class EnhancedTabbedPane extends JTabbedPane {
         // Initialize drag and drop capabilities
         initDragEventsHandler();
         setupDragEventsListeners();
+
+        // Add double-click listener for tab area reattachment
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && hasDetachedTabs()) {
+                    int tabIndex = indexAtLocation(e.getX(), e.getY());
+                    if (tabIndex == -1) {
+                        Rectangle tabArea = getFullTabAreaBounds();
+                        // Case 1: Empty space in tab strip was clicked
+                        if (tabArea.contains(e.getPoint())) {
+                            if (e.getY() <= tabArea.height) {
+                                reattachAllTabs();
+                                e.consume();
+                                return;
+                            }
+                        }
+                        // Case 2: Content area was clicked when no tabs are present
+                        else if (tabIndex == -1 && getTabCount() == 0 && !tabArea.contains(e.getPoint())) {
+                            reattachAllTabs();
+                            e.consume();
+                        }
+                    }
+                }
+            }
+        });
 
         // Add the component listener to handle positioning of action buttons
         addComponentListener(new ComponentAdapter() {
@@ -1087,9 +1116,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
             result = frame;
         } else {
             Window parent = SwingUtilities.getWindowAncestor(this);
-            JDialog newWrapperDialog = new JDialog(parent, title);
+            JFrame newWrapperDialog = new JFrame(title);
             detachedComponent = component;
-            setupDialog(newWrapperDialog, title, icon, component, size, location);
+            setupFrame(newWrapperDialog, title, icon, component, size, location);
+            newWrapperDialog.getRootPane().putClientProperty("parentWindow", parent);
             result = newWrapperDialog;
         }
         // Store the detached tab information for later reattachment
@@ -1106,7 +1136,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 checkForDragReattach(result);
             }
         });
-
         result.setVisible(true);
         return result;
     }
@@ -1181,21 +1210,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
     }
 
     /**
-     * Configures a JDialog for detached tab display
-     */
-    private void setupDialog(JDialog dialog, String title, Icon icon, Component component, Dimension size,
-            Point location) {
-        if (icon instanceof ImageIcon imageIcon) {
-            dialog.setIconImage(imageIcon.getImage());
-        }
-        dialog.getContentPane().add(component);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        dialog.setSize(size);
-        dialog.setResizable(true);
-        dialog.setLocation(location);
-    }
-
-    /**
      * Reattaches a floating tab to the tabbed pane
      *
      * @param component The floating window to reattach
@@ -1231,6 +1245,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
         if (tabInfo.component != null) {
             if (component instanceof JDialog dialog) {
                 dialog.getContentPane().remove(tabInfo.component);
+            } else if (component instanceof JFrame frame) {
+                frame.getContentPane().remove(tabInfo.component); //TODO: is it really needed?
             }
             if (tabInfo.isEnhancedTab) {
                 addEnhancedTab(tabInfo.title, tabInfo.icon, tabInfo.component, tabInfo.closeAction, insertIndex);
@@ -1263,9 +1279,12 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Updates whether the "All tabs detached" message should be shown
      */
     private void updateNoTabsMessageVisibility() {
-        boolean allTabsDetached = getTabCount() == 0 && !detachedTabs.isEmpty();
-        if (shouldShowNoTabsMessage != allTabsDetached) {
+        final boolean hasDetachedTabs = !detachedTabs.isEmpty();
+        boolean allTabsDetached = getTabCount() == 0 && hasDetachedTabs;
+        if ((shouldShowNoTabsMessage != allTabsDetached)
+        || (shouldShowReattachHint != (hasDetachedTabs && !allTabsDetached))) {
             shouldShowNoTabsMessage = allTabsDetached;
+            shouldShowReattachHint = (hasDetachedTabs && !allTabsDetached);
             repaint();
         }
     }
@@ -1273,6 +1292,36 @@ public class EnhancedTabbedPane extends JTabbedPane {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        if (shouldShowReattachHint) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // Set up font and color
+            Font originalFont = getFont();
+            Font hintFont = originalFont.deriveFont(originalFont.getSize2D() - 1f);
+            g2d.setFont(hintFont);
+            g2d.setColor(Color.GRAY);
+            
+            // Calculate text width and required space
+            Rectangle fullTabArea = getFullTabAreaBounds();
+            Rectangle tabsArea = getTabAreaBounds();
+            FontMetrics fm = g2d.getFontMetrics(hintFont);
+            int textWidth = fm.stringWidth(tabReattachTabbedBarDoubleclickHint);
+            int requiredWidth = textWidth + 20; // Add some padding
+            int emptySpaceWidth = fullTabArea.width - (tabsArea.x + tabsArea.width - fullTabArea.x);
+
+            if (emptySpaceWidth >= requiredWidth) {
+                int x = fullTabArea.x + fullTabArea.width - textWidth - 10; // 10px padding from right
+                int y = fullTabArea.y + fm.getAscent() + (fullTabArea.height - fm.getHeight()) / 2;
+
+                // Draw the hint text
+                g2d.drawString(tabReattachTabbedBarDoubleclickHint, x, y);
+            }
+
+            g2d.dispose();
+        }
 
         // Draw the message only when needed
         if (shouldShowNoTabsMessage) {
@@ -1282,19 +1331,27 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
             // Set up font and color
             Font originalFont = getFont();
-            Font messageFont = originalFont.deriveFont(Font.BOLD);
+            Font messageFont = originalFont;
             g2d.setFont(messageFont);
             g2d.setColor(Color.GRAY);
 
-            // Calculate position for centered text
+            // Split the message into lines
+            String[] lines = noTabsMessage.split("\n");
             FontMetrics fm = g2d.getFontMetrics(messageFont);
-            int messageWidth = fm.stringWidth(noTabsMessage);
-            int messageHeight = fm.getHeight();
-            int x = (getWidth() - messageWidth) / 2;
-            int y = (getHeight() - messageHeight) / 2 + fm.getAscent();
+            int lineHeight = fm.getHeight();
+            int totalHeight = lineHeight * lines.length;
 
-            // Draw the text
-            g2d.drawString(noTabsMessage, x, y);
+            // Start position (centered vertically)
+            int y = (getHeight() - totalHeight) / 2 + fm.getAscent();
+
+            // Draw each line centered horizontally
+            for (String line : lines) {
+                int lineWidth = fm.stringWidth(line);
+                int x = (getWidth() - lineWidth) / 2;
+                g2d.drawString(line, x, y);
+                y += lineHeight; // Move to next line
+            }
+
             g2d.dispose();
         }
     }
@@ -1334,6 +1391,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         reattachAllTabs();
         super.removeAll();
         deferredPositionActionButtons();
+        updateNoTabsMessageVisibility();
     }
 
     @Override
