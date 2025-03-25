@@ -156,10 +156,10 @@ public abstract class MegaMekLabMainUI extends JFrame
         Entity entity = getEntity();
         setTitle(entity.getFullChassis() + " " + entity.getModel() + fileInfo);
         if (configPane.hasDetachedTabs()) {
-            configPane.setDetachedTabsPrefixTitle(entity.getDisplayName());
+            configPane.setDetachedTabsPrefixTitle(entity.getShortNameRaw());
         }
         if (owner != null) {
-            owner.setTabName(entity.getDisplayName(), this);
+            owner.setTabName(entity.getShortNameRaw(), this);
         }
     }
 
