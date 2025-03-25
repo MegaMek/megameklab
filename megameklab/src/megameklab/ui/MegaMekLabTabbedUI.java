@@ -98,7 +98,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Initialize tabs with action handlers
         tabs = new EnhancedTabbedPane(List.of(newButton, openButton), true, true);
         tabs.setMinimumTabsCount(1);
-        tabs.setDragDockingToVisibleTabsAreaOnly(true);
 
         // If there are more tabs than can fit, show a scroll bar
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);

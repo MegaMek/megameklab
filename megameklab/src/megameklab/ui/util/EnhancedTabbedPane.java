@@ -109,7 +109,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private boolean tabReorderingEnabled = false;
     private boolean actionButtonsAlignAfterTabs = true;
     private int minimumTabsCount = 0;
-    private boolean dragDockingToVisibleTabsAreaOnly = false;
+    private boolean dragDockingToVisibleTabsAreaOnly = true;
+    private final String noTabsMessage = "<All tabs detached>";
+    private boolean shouldShowNoTabsMessage = false;
 
     private static class DragState {
         int tabIndex = -1;
@@ -1253,6 +1255,45 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
     }
 
+    /**
+     * Updates whether the "All tabs detached" message should be shown
+     */
+    private void updateNoTabsMessageVisibility() {
+        boolean allTabsDetached = getTabCount() == 0 && !detachedTabs.isEmpty();
+        if (shouldShowNoTabsMessage != allTabsDetached) {
+            shouldShowNoTabsMessage = allTabsDetached;
+            repaint();
+        }
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        // Draw the message only when needed
+        if (shouldShowNoTabsMessage) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+                                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            
+            // Set up font and color
+            Font originalFont = getFont();
+            Font messageFont = originalFont.deriveFont(Font.BOLD);
+            g2d.setFont(messageFont);
+            g2d.setColor(Color.GRAY);
+            
+            // Calculate position for centered text
+            FontMetrics fm = g2d.getFontMetrics(messageFont);
+            int messageWidth = fm.stringWidth(noTabsMessage);
+            int messageHeight = fm.getHeight();
+            int x = (getWidth() - messageWidth) / 2;
+            int y = (getHeight() - messageHeight) / 2 + fm.getAscent();
+            
+            // Draw the text
+            g2d.drawString(noTabsMessage, x, y);
+            g2d.dispose();
+        }
+    }
+
     @Override
     public void updateUI() {
         super.updateUI();
@@ -1270,6 +1311,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
         deferredPositionActionButtons();
+        updateNoTabsMessageVisibility();
     }
 
     /**
@@ -1279,6 +1321,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void remove(int index) {
         super.remove(index);
         deferredPositionActionButtons();
+        updateNoTabsMessageVisibility();
     }
 
     @Override
