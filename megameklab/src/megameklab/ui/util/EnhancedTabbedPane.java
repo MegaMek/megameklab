@@ -1454,8 +1454,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
             titleLabel.addMouseMotionListener(tabEventForwarder);
         }
 
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         private JButton createCloseButton() {
-            JButton closeButton = new JButton("×");
+            JButton closeButton = new JButton("\u00D7");
             closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 16f));
             closeButton.setPreferredSize(new Dimension(14, 16));
             closeButton.setToolTipText("Close this tab (Shift+click to skip save confirmation)");
