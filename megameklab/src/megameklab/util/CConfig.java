@@ -40,6 +40,7 @@ import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.largeAero.WSMainUI;
@@ -82,6 +83,7 @@ public final class CConfig {
     public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
     public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
     public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
+    public static final String GUI_HHW_MAINUI_WINDOW = "HHWWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
@@ -518,6 +520,8 @@ public final class CConfig {
         } else if (ui instanceof SVMainUI) {
             return GUI_SV_MAINUI_WINDOW;
         } else if (ui instanceof WSMainUI) {
+            return GUI_WS_MAINUI_WINDOW;
+        } else if (ui instanceof HHWMainUI) {
             return GUI_WS_MAINUI_WINDOW;
         } else if (ui instanceof MegaMekLabTabbedUI) {
             return GUI_TABBED_WINDOW;
