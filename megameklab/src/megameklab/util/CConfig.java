@@ -194,7 +194,7 @@ public final class CConfig {
     /**
      * Loads the Config file.
      */
-    public static void loadConfigFile() {
+    public synchronized static void loadConfigFile() {
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
             File backupConfigurationFile = new File(CONFIG_BACKUP_FILE);
             if (backupConfigurationFile.exists()) {
@@ -330,7 +330,7 @@ public final class CConfig {
     /**
      * Write the config file out to ./data/mwconfig.txt.
      */
-    public static void saveConfig() {
+    public synchronized static void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
                 PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
@@ -439,13 +439,13 @@ public final class CConfig {
     }
 
     public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi, boolean undocked) {
-        return getWindowSize(settingForMainUi(mainUi)+(undocked ? _UNDOCKED : ""));
+        return getWindowSize(settingForMainUi(mainUi) + (undocked ? _UNDOCKED : ""));
     }
 
     public static Optional<Point> getMainUiWindowPosition(MenuBarOwner mainUi) {
         return getWindowPosition(settingForMainUi(mainUi));
     }
-    
+
     public static Optional<Dimension> getNamedWindowSize(String name) {
         return getWindowSize(name);
     }
@@ -454,8 +454,8 @@ public final class CConfig {
         writeMainUiWindowSettings(mainUi, false);
     }
 
-    public static void writeMainUiWindowSettings(MenuBarOwner mainUi , boolean undocked) {
-        writeWindowSettings(settingForMainUi(mainUi)+(undocked ? _UNDOCKED : ""), (Component) mainUi);
+    public static void writeMainUiWindowSettings(MenuBarOwner mainUi, boolean undocked) {
+        writeWindowSettings(settingForMainUi(mainUi) + (undocked ? _UNDOCKED : ""), (Component) mainUi);
     }
 
     public static void writeNamedWindowSize(String name, Window component) {
@@ -487,17 +487,17 @@ public final class CConfig {
         setParam(GUI_DS_MAINUI_WINDOW, "");
         setParam(GUI_WS_MAINUI_WINDOW, "");
         setParam(GUI_HHW_MAINUI_WINDOW, "");
-        setParam(FILE_CHOOSER_WINDOW+_UNDOCKED, "");
-        setParam(GUI_BM_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_CV_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_AS_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_SV_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_PM_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_BA_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_CI_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_DS_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_WS_MAINUI_WINDOW+_UNDOCKED, "");
-        setParam(GUI_HHW_MAINUI_WINDOW+_UNDOCKED, "");
+        setParam(FILE_CHOOSER_WINDOW + _UNDOCKED, "");
+        setParam(GUI_BM_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_CV_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_AS_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_SV_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_PM_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_BA_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_CI_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_DS_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_WS_MAINUI_WINDOW + _UNDOCKED, "");
+        setParam(GUI_HHW_MAINUI_WINDOW + _UNDOCKED, "");
         saveConfig();
     }
 
