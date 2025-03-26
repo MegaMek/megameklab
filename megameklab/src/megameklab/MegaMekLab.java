@@ -16,6 +16,7 @@
  */
 package megameklab;
 
+import java.awt.Window;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.lang.management.ManagementFactory;
@@ -278,8 +279,23 @@ public class MegaMekLab {
      * Brings a visible window to the front
      */
     private static void bringWindowsToFront() {
-        // TODO: This is a placeholder implementation.
-        logger.info("Bringing windows to front");
+        for (Window window : Window.getWindows()) {
+            if (window.isVisible()) {
+                if (window instanceof JFrame) {
+                    JFrame frame = (JFrame) window;
+                    if ((frame.getExtendedState() & JFrame.ICONIFIED) != 0) {
+                        frame.setExtendedState(frame.getExtendedState() & ~JFrame.ICONIFIED);
+                    }
+                    // Bring the window to the front
+                    frame.setAlwaysOnTop(true);
+                    frame.toFront();
+                    frame.requestFocus();
+                    frame.setAlwaysOnTop(false);
+                    //TODO: implement a window manager to handle multiple windows
+                    break;
+                }
+            }
+        }
     }
 
     /**
