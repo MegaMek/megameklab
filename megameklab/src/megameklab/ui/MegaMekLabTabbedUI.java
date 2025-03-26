@@ -25,9 +25,12 @@ import java.awt.DisplayMode;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -49,7 +52,6 @@ import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
-import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.TabUtil;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
@@ -66,9 +68,9 @@ import megameklab.util.UnitUtil;
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
 
-    private final List<MegaMekLabMainUI> editors = new ArrayList<>();
-
-    private final ReopenTabStack closedEditors = new ReopenTabStack();
+    private static final ConcurrentHashMap<MegaMekLabTabbedUI, Boolean> openWindows = new ConcurrentHashMap<>();
+    private static final List<MegaMekLabMainUI> editors = new CopyOnWriteArrayList<>();
+    private static final ReopenTabStack closedEditors = new ReopenTabStack();
 
     // Replace the existing JTabbedPane with our enhanced version
     private final EnhancedTabbedPane tabs;
@@ -90,12 +92,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
-
+        openWindows.put(this, true);
+        System.out.println("Open windows: " + openWindows.size());
         JButton newButton = createNewButton();
         JButton openButton = createOpenButton();
         // Initialize tabs with action handlers
         tabs = new EnhancedTabbedPane(List.of(newButton, openButton), true, true);
-        tabs.setMinimumTabsCount(1);
+        tabs.setDockGroupId("MegaMekLabTabbedUI.tabs");
 
         // If there are more tabs than can fit, show a scroll bar
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -103,17 +106,37 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Register tab reattachment listener
         tabs.addTabStateListener(new TabStateListener() {
             @Override
-            public void onTabReattaching(DetachedTabInfo tabInfo) {
+            public boolean onTabReattaching(DetachedTabInfo tabInfo) {
                 if (tabInfo.getComponent() instanceof MegaMekLabMainUI mainUI) {
                     mainUI.reattachAllTabs();
                 }
+                return true;
+            }
+
+            @Override
+            public boolean onTabDetaching(int tabIndex, Component component) {
+                if (tabs.getTabCount() <= 1) {
+                    // If there is only one tab, don't allow detachment
+                    return false;
+                }
+                return true;
             }
         });
         tabs.setTabDetachmentHandler((pane, tabIndex, component, locationOnScreen) -> {
             if (component instanceof MegaMekLabMainUI mainUI) {
-                //TODO: to be implemented custom detachment behavior
+                // TODO: to be implemented custom detachment behavior
             }
             return false; // Return false to use default behavior
+        });
+        tabs.setDetachedWindowFactory((title, icon, component, size, location) -> {
+            if (component instanceof MegaMekLabMainUI mainUI) {
+                // Create a new tabbed UI to host this detached tab
+                MegaMekLabTabbedUI newTabbedUI = new MegaMekLabTabbedUI();
+                newTabbedUI.setLocation(location);
+                newTabbedUI.addTab(mainUI);
+                return newTabbedUI;
+            }
+            return null; // Return null to use default window creation
         });
 
         // Add initial tabs
@@ -136,10 +159,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         setLocationRelativeTo(null);
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
-
-        // ...and save that size and position on exit
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new ExitOnWindowClosingListener(this));
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exit(); // Call exit() to handle closing the window
+            }
+        });
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
 
     }
@@ -315,11 +341,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param editor The MegaMekLabMainUI instance to be added as a new tab.
      */
     private void addTab(MegaMekLabMainUI editor) {
-        editors.add(editor);
+        if (!editors.contains(editor)) {
+            editors.add(editor);
+        }
         Entity entity = editor.getEntity();
 
         // Use the enhanced tabbed pane to add a closeable tab
-        String tabName = entity.getDisplayName();
+        String tabName = entity.getShortNameRaw();
         tabs.addEnhancedTab(tabName, null, editor, (component, e) -> {
             int index = tabs.indexOfComponent(component);
             if (index >= 0) {
@@ -331,6 +359,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
         editor.setOwner(this);
         editor.refreshAll();
+        System.out.println("Editors: " + editors.size());
     }
 
     /**
@@ -391,19 +420,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             return true;
         }
         int savePrompt = JOptionPane.showConfirmDialog(this,
-                "All unsaved changes to open units will be discarded. Are you sure you would like to exit?",
-                "Save Units Before Proceeding?",
+                "All unsaved changes to open units will be discarded. Close anyway?",
+                "Confirm Close",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         return savePrompt == JOptionPane.YES_OPTION;
     }
 
-    @Override
-    public boolean exit() {
-        if (!exitPrompt()) {
-            return false;
-        }
-
+    private synchronized void saveConfig() {
         CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
         CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
         CConfig.writeMainUiWindowSettings(this);
@@ -419,7 +443,31 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 throw new RuntimeException(e);
             }
         }
+    }
 
+    @Override
+    public boolean exit() {
+        if (!exitPrompt()) {
+            return false;
+        }
+        openWindows.remove(this);
+        System.out.println("Open windows: " + openWindows.size());
+        saveConfig(); // Save settings before closing
+        // We dispose all tabs, we already prompted the user for saving
+        for (int i = editors.size() - 1; i >= 0; i--) {
+            MegaMekLabMainUI editor = editors.get(i);
+            if (editor.getOwner() != MegaMekLabTabbedUI.this) {
+                continue;
+            }
+            editors.remove(editor);
+            closedEditors.push(editor);
+        }
+        System.out.println("Editors: " + editors.size());
+        if (openWindows.isEmpty()) {
+            System.exit(0);
+        } else {
+            dispose();
+        }
         return true;
     }
 
@@ -446,12 +494,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     private void closeTabAt(int position) {
-        // If you try to close the last tab, create a new blank mek tab
-        // Since the UI can't exist in a meaningful state without a tab open
-        if (tabs.getTabCount() <= 1) {
-            newTab();
-        }
-
         Component tabComponent = tabs.getTabComponentAt(position);
         if (tabComponent instanceof EnhancedTab tab) {
             if (tab.getComponent() instanceof MegaMekLabMainUI) {
@@ -464,14 +506,27 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                     // (or the next one if it was the first tab)
                     if (currentIndex > 0 && currentIndex < tabs.getTabCount()) {
                         tabs.setSelectedIndex(currentIndex - 1);
-                    } else 
-                    if (tabs.getTabCount() > 0) {
+                    } else if (tabs.getTabCount() > 0) {
                         tabs.setSelectedIndex(0);
                     }
                 }
                 editors.remove(editor);
                 closedEditors.push(editor);
             }
+        }
+
+        System.out.println("Editors: " + editors.size());
+
+        // If you try to close the last tab, we close this window
+        if (tabs.getTabCount() < 1) {
+            if (openWindows.size() <= 1) {
+                // This is the last window, use the full exit process with prompts
+                dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            } else {
+                openWindows.remove(this);
+                dispose();
+            }
+            return;
         }
 
         // Tell the menu bar to enable the "reopen tab" shortcut

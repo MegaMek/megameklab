@@ -242,6 +242,10 @@ public abstract class MegaMekLabMainUI extends JFrame
         this.owner = owner;
     }
 
+    public MegaMekLabTabbedUI getOwner() {
+        return owner;
+    }
+
     /**
      * Retrieves a list of mounted components that are currently not assigned to a
      * location.
