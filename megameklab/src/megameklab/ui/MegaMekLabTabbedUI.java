@@ -93,7 +93,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
         openWindows.put(this, true);
-        System.out.println("Open windows: " + openWindows.size());
         JButton newButton = createNewButton();
         JButton openButton = createOpenButton();
         // Initialize tabs with action handlers
@@ -359,7 +358,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
         editor.setOwner(this);
         editor.refreshAll();
-        System.out.println("Editors: " + editors.size());
     }
 
     /**
@@ -451,7 +449,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             return false;
         }
         openWindows.remove(this);
-        System.out.println("Open windows: " + openWindows.size());
         if (openWindows.size() == 0) {
             saveConfig(); // Save settings before closing
         }
@@ -464,7 +461,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             editors.remove(editor);
             closedEditors.push(editor);
         }
-        System.out.println("Editors: " + editors.size());
         if (openWindows.isEmpty()) {
             System.exit(0);
         } else {
@@ -516,8 +512,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 closedEditors.push(editor);
             }
         }
-
-        System.out.println("Editors: " + editors.size());
 
         // If you try to close the last tab, we close this window
         if (tabs.getTabCount() < 1) {
