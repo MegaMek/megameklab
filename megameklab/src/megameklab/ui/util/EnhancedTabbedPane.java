@@ -180,7 +180,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                             }
                         }
                         // Case 2: Content area was clicked when no tabs are present
-                        else if (tabIndex == -1 && getTabCount() == 0 && !tabArea.contains(e.getPoint())) {
+                        else if (getTabCount() == 0 && !tabArea.contains(e.getPoint())) {
                             reattachAllTabs();
                             e.consume();
                         }
@@ -1072,6 +1072,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 closeAction,
                 tabIndex);
 
+        updateNoTabsMessageVisibility();
         // Notify listeners after detaching
         DetachedTabInfo tabInfo = detachedTabs.get(detachedWindow);
         fireTabDetached(detachedWindow, tabInfo);
@@ -1264,6 +1265,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         } else if (component instanceof JDialog dialog) {
             dialog.dispose();
         }
+        updateNoTabsMessageVisibility();
     }
 
     /**
@@ -1280,7 +1282,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      */
     private void updateNoTabsMessageVisibility() {
         final boolean hasDetachedTabs = !detachedTabs.isEmpty();
-        boolean allTabsDetached = getTabCount() == 0 && hasDetachedTabs;
+        final boolean allTabsDetached = hasDetachedTabs && getTabCount() == 0;
         if ((shouldShowNoTabsMessage != allTabsDetached)
         || (shouldShowReattachHint != (hasDetachedTabs && !allTabsDetached))) {
             shouldShowNoTabsMessage = allTabsDetached;
@@ -1383,7 +1385,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void remove(int index) {
         super.remove(index);
         deferredPositionActionButtons();
-        updateNoTabsMessageVisibility();
     }
 
     @Override
@@ -1391,7 +1392,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
         reattachAllTabs();
         super.removeAll();
         deferredPositionActionButtons();
-        updateNoTabsMessageVisibility();
     }
 
     @Override
