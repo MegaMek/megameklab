@@ -60,7 +60,7 @@ public class MegaMekLab {
 
         multiInstanceMode = hasArgument(args, "--multi");
         noStartup = hasArgument(args, "--no-startup");
-        // Filter out the --multi argument from args for later processing
+        // Filter out already read args
         String[] filteredArgs = filterArguments(args, new String[] { "--multi", "--no-startup" });
 
         // Skip single instance check if in multi-instance mode
@@ -75,11 +75,7 @@ public class MegaMekLab {
                 logger.info("Another instance of MegaMekLab is already running");
 
                 if (filteredArgs.length >= 1) {
-                    if (noStartup) {
-                        singleInstanceService.sendMessage("NO_STARTUP_FILE=" + filteredArgs[0]);
-                    } else {
-                        singleInstanceService.sendMessage("FILE=" + filteredArgs[0]);
-                    }
+                    singleInstanceService.sendMessage("FILE=" + filteredArgs[0]);
                 } else {
                     singleInstanceService.sendMessage("ACTIVATE");
                 }
@@ -95,9 +91,6 @@ public class MegaMekLab {
                 SwingUtilities.invokeLater(() -> {
                     if ("ACTIVATE".equals(message)) {
                         bringWindowsToFront();
-                    } else if (message.startsWith("NO_STARTUP_FILE=")) {
-                        String filePath = message.substring("NO_STARTUP_FILE=".length());
-                        openUnitFile(filePath, true);
                     } else if (message.startsWith("FILE=")) {
                         String filePath = message.substring("FILE=".length());
                         openUnitFile(filePath, false);
@@ -227,6 +220,7 @@ public class MegaMekLab {
         if (args.length >= 1) {
             String name = args[0];
             openUnitFile(name, noStartup);
+            if (noStartup) return;
         }
 
         // Create a startup frame and display it
@@ -323,7 +317,6 @@ public class MegaMekLab {
                 };
                 if (noStartup) {
                     printMul.run();
-                    return;
                 } else {
                     SwingUtilities.invokeLater(printMul);
                 }
