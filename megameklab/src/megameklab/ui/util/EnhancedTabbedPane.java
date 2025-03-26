@@ -675,7 +675,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private Rectangle getTabAreaBounds() {
         int tabCount = getTabCount();
         if (tabCount == 0) {
-            return getFullTabAreaBounds(); // if no tabs, return the full area
+            Rectangle bounds = getBounds();
+            return new Rectangle(bounds.x, bounds.y, 0, 32); //fallback
         }
 
         int tabPlacement = getTabPlacement();
