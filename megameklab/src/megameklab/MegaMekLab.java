@@ -17,6 +17,7 @@
 package megameklab;
 
 import java.awt.Window;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.lang.management.ManagementFactory;
@@ -38,6 +39,7 @@ import megamek.common.MekFileParser;
 import megamek.common.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
 import megamek.logging.MMLogger;
+import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
@@ -220,7 +222,8 @@ public class MegaMekLab {
         if (args.length >= 1) {
             String name = args[0];
             openUnitFile(name, noStartup);
-            if (noStartup) return;
+            if (noStartup)
+                return;
         }
 
         // Create a startup frame and display it
@@ -274,22 +277,26 @@ public class MegaMekLab {
      */
     private static void bringWindowsToFront() {
         for (Window window : Window.getWindows()) {
-            if (window.isVisible()) {
-                if (window instanceof JFrame) {
-                    JFrame frame = (JFrame) window;
-                    if ((frame.getExtendedState() & JFrame.ICONIFIED) != 0) {
-                        frame.setExtendedState(frame.getExtendedState() & ~JFrame.ICONIFIED);
-                    }
-                    // Bring the window to the front
-                    frame.setAlwaysOnTop(true);
-                    frame.toFront();
-                    frame.requestFocus();
-                    frame.setAlwaysOnTop(false);
-                    //TODO: implement a window manager to handle multiple windows
-                    break;
+            if (!window.isVisible()) {
+                continue;
+            }
+            if (window instanceof MegaMekLabTabbedUI mainUI) {
+                if ((mainUI.getExtendedState() & JFrame.ICONIFIED) != 0) {
+                    mainUI.setExtendedState(mainUI.getExtendedState() & ~JFrame.ICONIFIED);
                 }
+                // Bring the window to the front
+                mainUI.setAlwaysOnTop(true);
+                mainUI.toFront();
+                mainUI.requestFocus();
+                mainUI.setAlwaysOnTop(false);
+                break; // Exit the loop after bringing the first visible window to the front
             }
         }
+    }
+
+    private static void dispatchEvent(WindowEvent windowEvent) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'dispatchEvent'");
     }
 
     /**
