@@ -56,7 +56,7 @@ import java.util.function.Consumer;
  */
 public class UiLoader {
 
-    private static final int MINIMUM_SPLASH_TIME = 2000;
+    private static final int MINIMUM_SPLASH_TIME = 0; // This is criminal
 
     /**
      * A map of resolution widths to file names for the startup screen
