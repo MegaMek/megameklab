@@ -451,9 +451,17 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             if (tab.getComponent() instanceof MegaMekLabMainUI) {
                 MegaMekLabMainUI editor = (MegaMekLabMainUI) tab.getComponent();
                 editor.reattachAllTabs();
+                final int currentIndex = tabs.getSelectedIndex();
                 tabs.remove(position);
-                if (tabs.getSelectedIndex() == tabs.getTabCount() - 1) {
-                    tabs.setSelectedIndex(tabs.getSelectedIndex() - 1);
+                if (currentIndex == position) {
+                    // If the tab we just closed was the selected tab, select the previous one
+                    // (or the next one if it was the first tab)
+                    if (currentIndex > 0 && currentIndex < tabs.getTabCount()) {
+                        tabs.setSelectedIndex(currentIndex - 1);
+                    } else 
+                    if (tabs.getTabCount() > 0) {
+                        tabs.setSelectedIndex(0);
+                    }
                 }
                 editors.remove(editor);
                 closedEditors.push(editor);
