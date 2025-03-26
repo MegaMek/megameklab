@@ -1308,7 +1308,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         previewPanel.putClientProperty(PREVIEW_TAB_ID, true);
 
         // Add the preview tab
-        super.insertTab(tabInfo.title, tabInfo.icon, previewPanel, "", targetIndex);
+        insertTab(tabInfo.title, tabInfo.icon, previewPanel, "", targetIndex);
 
         // Get the color used for selected tab indicator from UIManager
         Color selectionColor = UIManager.getColor("TabbedPane.underlineColor");
