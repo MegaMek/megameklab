@@ -1126,15 +1126,16 @@ public class EnhancedTabbedPane extends JTabbedPane {
             setupFrame(frame, title, icon, component, size, location);
             result = frame;
         } else {
-            Window parent = SwingUtilities.getWindowAncestor(this);
             JFrame newWrapperDialog = new JFrame(title);
             detachedComponent = component;
             setupFrame(newWrapperDialog, title, icon, component, size, location);
-            newWrapperDialog.getRootPane().putClientProperty("parentWindow", parent);
             result = newWrapperDialog;
 
             Timer resizeTimer = new Timer(500, e -> {
-                CConfig.writeNamedWindowSize(title, result);
+                if (result instanceof JFrame frame &&
+                        (frame.getExtendedState() & (JFrame.MAXIMIZED_BOTH | JFrame.ICONIFIED)) == 0) {
+                    CConfig.writeNamedWindowSize(title, result);
+                }
             });
             resizeTimer.setRepeats(false);
             result.addComponentListener(new ComponentAdapter() {
@@ -1307,7 +1308,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         final boolean hasDetachedTabs = !detachedTabs.isEmpty();
         final boolean allTabsDetached = hasDetachedTabs && getTabCount() == 0;
         if ((shouldShowNoTabsMessage != allTabsDetached)
-        || (shouldShowReattachHint != (hasDetachedTabs && !allTabsDetached))) {
+                || (shouldShowReattachHint != (hasDetachedTabs && !allTabsDetached))) {
             shouldShowNoTabsMessage = allTabsDetached;
             shouldShowReattachHint = (hasDetachedTabs && !allTabsDetached);
             repaint();
@@ -1328,7 +1329,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             Font hintFont = originalFont.deriveFont(originalFont.getSize2D() - 1f);
             g2d.setFont(hintFont);
             g2d.setColor(Color.GRAY);
-            
+
             // Calculate text width and required space
             Rectangle fullTabArea = getFullTabAreaBounds();
             Rectangle tabsArea = getTabAreaBounds();
