@@ -452,7 +452,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
         openWindows.remove(this);
         System.out.println("Open windows: " + openWindows.size());
-        saveConfig(); // Save settings before closing
+        if (openWindows.size() == 0) {
+            saveConfig(); // Save settings before closing
+        }
         // We dispose all tabs, we already prompted the user for saving
         for (int i = editors.size() - 1; i >= 0; i--) {
             MegaMekLabMainUI editor = editors.get(i);
