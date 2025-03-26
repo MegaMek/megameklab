@@ -307,12 +307,14 @@ public class MegaMekLab {
         try {
             if (filePath.toLowerCase().endsWith(".blk") || filePath.endsWith(".mtf")) {
                 File file = new File(filePath);
+                logger.info("Opening file: " + filePath);
                 Entity e = new MekFileParser(file).getEntity();
                 if (!UnitUtil.validateUnit(e).isBlank()) {
                     PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
                 }
                 UiLoader.loadUi(e, file.toString());
             } else if (filePath.toLowerCase().endsWith(".mul")) {
+                logger.info("Printing file: " + filePath);
                 Runnable printMul = () -> {
                     var frame = new JFrame();
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR),
