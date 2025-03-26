@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
+import megameklab.util.CConfig;
 
 /**
  * @author Drake
@@ -1044,9 +1045,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Icon icon = getIconAt(tabIndex);
         Component component = getComponentAt(tabIndex);
         Component componentWindow = null;
-        Dimension compSize = ensureValidSize(getTabContentSize(tabIndex), 400, 300);
         Component tabComponent = getTabComponentAt(tabIndex);
         BiConsumer<Component, InputEvent> closeAction = null;
+        Dimension compSize;
         if (tabComponent instanceof EnhancedTab enhancedTab) {
             title = enhancedTab.getTitle();
             closeAction = enhancedTab.getCloseAction();
@@ -1054,7 +1055,16 @@ public class EnhancedTabbedPane extends JTabbedPane {
         } else {
             title = getTitleAt(tabIndex);
         }
-
+        if (componentWindow != null || component instanceof JFrame || component instanceof JDialog) {
+            // Is a window, probably it has his own size management... but we initialize it
+            // anyway with the tab size
+            compSize = ensureValidSize(getTabContentSize(tabIndex), 400, 300);
+        } else {
+            // Get the named tab stored window size if available, otherwise fallback to the
+            // tab size
+            compSize = ensureValidSize(CConfig.getNamedWindowSize(title)
+                    .orElse(getTabContentSize(tabIndex)), 400, 300);
+        }
         // Notify listeners before detaching
         fireTabDetaching(tabIndex, component);
 
@@ -1122,6 +1132,17 @@ public class EnhancedTabbedPane extends JTabbedPane {
             setupFrame(newWrapperDialog, title, icon, component, size, location);
             newWrapperDialog.getRootPane().putClientProperty("parentWindow", parent);
             result = newWrapperDialog;
+
+            Timer resizeTimer = new Timer(500, e -> {
+                CConfig.writeNamedWindowSize(title, result);
+            });
+            resizeTimer.setRepeats(false);
+            result.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    resizeTimer.restart();
+                }
+            });
         }
         // Store the detached tab information for later reattachment
         detachedTabs.put(result,
@@ -1137,6 +1158,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 checkForDragReattach(result);
             }
         });
+        // CConfig.writeMainUiWindowSettings(this);
+        // CConfig.saveConfig();
         result.setVisible(true);
         return result;
     }
@@ -1247,7 +1270,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             if (component instanceof JDialog dialog) {
                 dialog.getContentPane().remove(tabInfo.component);
             } else if (component instanceof JFrame frame) {
-                frame.getContentPane().remove(tabInfo.component); //TODO: is it really needed?
+                frame.getContentPane().remove(tabInfo.component); // TODO: is it really needed?
             }
             if (tabInfo.isEnhancedTab) {
                 addEnhancedTab(tabInfo.title, tabInfo.icon, tabInfo.component, tabInfo.closeAction, insertIndex);
