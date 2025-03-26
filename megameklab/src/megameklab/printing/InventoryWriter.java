@@ -408,7 +408,7 @@ public class InventoryWriter {
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
         yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
         if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
-            printBayInfo(metrics[0], metrics[1], yPosition);
+            yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
