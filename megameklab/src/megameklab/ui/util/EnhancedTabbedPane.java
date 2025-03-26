@@ -110,6 +110,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     // Button panel that sits outside the regular tabs
     private final JPanel actionButtonsPanel;
     private MouseInputAdapter dragEventsHandler;
+    private TabDetachmentHandler tabDetachmentHandler;
     private JWindow ghostWindow;
     private boolean tabDetachingEnabled = false;
     private boolean tabReorderingEnabled = false;
@@ -130,6 +131,25 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Point startPoint = null;
         Point dragOffset = null;
         boolean showingGhost = false;
+    }
+
+    /**
+     * Interface for customizing tab detachment behavior
+     */
+    @FunctionalInterface
+    public interface TabDetachmentHandler {
+        /**
+         * Handles custom tab detachment behavior
+         * 
+         * @param tabbedPane       The tabbedPane instance
+         * @param tabIndex         The index of the tab being detached
+         * @param component        The component in the tab
+         * @param locationOnScreen The screen location where detachment occurred
+         * @return true if the detachment was handled by this handler, false to use
+         *         default behavior
+         */
+        boolean handleTabDetachment(EnhancedTabbedPane tabbedPane, int tabIndex,
+                Component component, Point locationOnScreen);
     }
 
     private static final DragState dragState = new DragState();
@@ -252,6 +272,15 @@ public class EnhancedTabbedPane extends JTabbedPane {
      */
     public void setMinimumTabsCount(int minimumTabsCount) {
         this.minimumTabsCount = minimumTabsCount;
+    }
+
+    /**
+     * Sets a custom handler for tab detachment operations
+     * 
+     * @param handler The handler to call when a tab is being detached
+     */
+    public void setTabDetachmentHandler(TabDetachmentHandler handler) {
+        this.tabDetachmentHandler = handler;
     }
 
     /**
@@ -650,14 +679,21 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 if (tabDetachingEnabled && !bounds.contains(e.getPoint())) {
                     // Mouse is outside the tabbed pane, detach the tab
                     Point locationOnScreen = e.getLocationOnScreen();
-                    locationOnScreen.x -= 50;
-                    locationOnScreen.y -= 10;
-                    detachTab(dragState.tabIndex, locationOnScreen);
-                } else if (tabReorderingEnabled &&
-                        dragState.isDragging &&
-                        dragState.tabIndex >= 0 &&
-                        targetIndex >= 0 &&
-                        targetIndex != dragState.tabIndex) {
+                    boolean customHandled = false;
+                    if (tabDetachmentHandler != null && dragState.tabIndex >= 0) {
+                        // Call the custom handler if provided
+                        Component component = getComponentAt(dragState.tabIndex);
+                        customHandled = tabDetachmentHandler.handleTabDetachment(
+                                EnhancedTabbedPane.this, dragState.tabIndex, component, locationOnScreen);
+                    }
+                    // If not handled by the custom handler, detach the tab normally
+                    if (!customHandled) {
+                        locationOnScreen.x -= 50;
+                        locationOnScreen.y -= 10;
+                        detachTab(dragState.tabIndex, locationOnScreen);
+                    }
+                } else if (tabReorderingEnabled && dragState.isDragging && dragState.tabIndex >= 0 &&
+                        targetIndex >= 0 && targetIndex != dragState.tabIndex) {
                     moveTab(dragState.tabIndex, targetIndex);
                 }
                 dragState.isDragging = false;
@@ -676,7 +712,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         int tabCount = getTabCount();
         if (tabCount == 0) {
             Rectangle bounds = getBounds();
-            return new Rectangle(bounds.x, bounds.y, 0, 32); //fallback
+            return new Rectangle(bounds.x, bounds.y, 0, 32); // fallback
         }
 
         int tabPlacement = getTabPlacement();
@@ -1203,7 +1239,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             // Get the bounds of the tabbed pane in screen coordinates
             Rectangle localTabAreaBounds = getTabAreaBounds();
             Rectangle fullTabAreaBounds = getFullTabAreaBounds();
-            int extendedTabAreaWidth = localTabAreaBounds.width + (DRAG_DOCK_VERTICAL_MAGNETIC_THRESHOLD*2);
+            int extendedTabAreaWidth = localTabAreaBounds.width + (DRAG_DOCK_VERTICAL_MAGNETIC_THRESHOLD * 2);
             if (extendedTabAreaWidth > fullTabAreaBounds.width) {
                 extendedTabAreaWidth = fullTabAreaBounds.width;
             }
