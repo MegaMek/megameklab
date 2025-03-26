@@ -109,6 +109,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 }
             }
         });
+        tabs.setTabDetachmentHandler((pane, tabIndex, component, locationOnScreen) -> {
+            if (component instanceof MegaMekLabMainUI mainUI) {
+                //TODO: to be implemented custom detachment behavior
+            }
+            return false; // Return false to use default behavior
+        });
 
         // Add initial tabs
         for (MegaMekLabMainUI e : entities) {
