@@ -71,7 +71,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Window wrapperComponent;
         BiConsumer<Component, InputEvent> closeAction;
         boolean isEnhancedTab = false;
-        boolean hasMovedAwayFromTabArea = false;
+        boolean reattachAllowed = false;
 
         /**
          * Creates a new DetachedTabInfo instance
@@ -93,7 +93,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             this.originalIndex = originalIndex;
             this.closeAction = closeAction;
             this.isEnhancedTab = isEnhancedTab;
-            this.hasMovedAwayFromTabArea = false;
+            this.reattachAllowed = false;
         }
 
         public Component getComponent() {
@@ -105,6 +105,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private static final int BUTTON_SPACING = 2;
     private static final int GHOST_DRAG_THRESHOLD = 5;
     private static final float GHOST_OPACITY = 0.7f; // Semi-transparent
+    private static final int DRAG_DOCK_VERTICAL_MAGNETIC_THRESHOLD = 30;
 
     // Button panel that sits outside the regular tabs
     private final JPanel actionButtonsPanel;
@@ -114,12 +115,14 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private boolean tabReorderingEnabled = false;
     private boolean actionButtonsAlignAfterTabs = true;
     private int minimumTabsCount = 0;
-    private boolean dragDockingToVisibleTabsAreaOnly = true;
     private final String noTabsMessage = "<All tabs detached>\n" +
             "Double-click to reattach all tabs";
     private final String tabReattachTabbedBarDoubleclickHint = "Double-click to reattach all tabs";
     private boolean shouldShowNoTabsMessage = false;
     private boolean shouldShowReattachHint = false;
+    private boolean isShowingDockingPreview = false;
+    private int previewTabIndex = -1;
+    private static final String PREVIEW_TAB_ID = "PREVIEW_TAB";
 
     private static class DragState {
         int tabIndex = -1;
@@ -249,15 +252,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
      */
     public void setMinimumTabsCount(int minimumTabsCount) {
         this.minimumTabsCount = minimumTabsCount;
-    }
-
-    /**
-     * Limits the dragging and docking of tabs to the visible tabs area only
-     *
-     * @param enabled
-     */
-    public void setDragDockingToVisibleTabsAreaOnly(boolean enabled) {
-        this.dragDockingToVisibleTabsAreaOnly = enabled;
     }
 
     /**
@@ -1100,6 +1094,24 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
         // Add the reattachment listener
         window.addWindowListener(componentReattachmentListener);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (isShowingDockingPreview) {
+                    removePreviewTab();
+                }
+                if (e.getSource() instanceof Component component) {
+                    reattachTab(component);
+                }
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                if (isShowingDockingPreview) {
+                    removePreviewTab();
+                }
+            }
+        });
     }
 
     /**
@@ -1131,7 +1143,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             setupFrame(newWrapperDialog, title, icon, component, size, location);
             result = newWrapperDialog;
 
-            Timer resizeTimer = new Timer(500, e -> {
+            Timer resizeTimer = new Timer(200, e -> {
                 if (result instanceof JFrame frame &&
                         (frame.getExtendedState() & (JFrame.MAXIMIZED_BOTH | JFrame.ICONIFIED)) == 0) {
                     CConfig.writeNamedWindowSize(title, result);
@@ -1153,21 +1165,168 @@ public class EnhancedTabbedPane extends JTabbedPane {
         cleanupAndAddWindowListener(result);
 
         // Add component listener to handle drag-to-reattach
+        Timer dragReattachTimer = new Timer(200, e -> checkForDragReattach(result));
+        Timer dragReattachDenyTimer = new Timer(300, e -> {
+            DetachedTabInfo tabInfo = detachedTabs.get(result);
+            if (tabInfo != null) {
+                tabInfo.reattachAllowed = true;
+            }
+            dragReattachTimer.stop();
+        });
+        dragReattachTimer.setRepeats(false);
+        dragReattachDenyTimer.setRepeats(false);
         result.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
-                checkForDragReattach(result);
+                showPreviewIfReattachAllowed(result);
+                dragReattachTimer.restart();
             }
+
         });
-        // CConfig.writeMainUiWindowSettings(this);
-        // CConfig.saveConfig();
         result.setVisible(true);
+        dragReattachDenyTimer.start();
         return result;
     }
 
+    private void showPreviewIfReattachAllowed(Window window) {
+        if (!isShowing() || !detachedTabs.containsKey(window)) {
+            return;
+        }
+
+        DetachedTabInfo tabInfo = detachedTabs.get(window);
+        if (!tabInfo.reattachAllowed) {
+            return;
+        }
+
+        try {
+            // Get the bounds of the tabbed pane in screen coordinates
+            Rectangle localTabAreaBounds = getTabAreaBounds();
+            Rectangle fullTabAreaBounds = getFullTabAreaBounds();
+            int extendedTabAreaWidth = localTabAreaBounds.width + (DRAG_DOCK_VERTICAL_MAGNETIC_THRESHOLD*2);
+            if (extendedTabAreaWidth > fullTabAreaBounds.width) {
+                extendedTabAreaWidth = fullTabAreaBounds.width;
+            }
+            Rectangle tabAreaBounds = new Rectangle(fullTabAreaBounds.x, fullTabAreaBounds.y,
+                    extendedTabAreaWidth, fullTabAreaBounds.height);
+
+            Point tabbedPaneLocation = getLocationOnScreen();
+            tabAreaBounds.setLocation(tabbedPaneLocation.x + tabAreaBounds.x,
+                    tabbedPaneLocation.y + tabAreaBounds.y);
+            Rectangle expandedTabAreaBounds = new Rectangle(
+                    tabAreaBounds.x,
+                    tabAreaBounds.y,
+                    tabAreaBounds.width,
+                    tabAreaBounds.height + DRAG_DOCK_VERTICAL_MAGNETIC_THRESHOLD);
+            // Get current mouse position
+            Point mousePosition = MouseInfo.getPointerInfo().getLocation();
+
+            // Check if the mouse cursor is over the tab area
+            boolean isOverTabArea = expandedTabAreaBounds.contains(mousePosition);
+
+            // Remove any existing preview tab when mouse leaves the area
+            if (!isOverTabArea && isShowingDockingPreview) {
+                removePreviewTab();
+                return;
+            }
+
+            if (isOverTabArea) {
+                // Convert mouse position to tabbed pane coordinates
+                Point tabbedPanePoint = new Point(mousePosition);
+                SwingUtilities.convertPointFromScreen(tabbedPanePoint, this);
+                Point derivedPoint = tabAreaBounds.getLocation();
+                SwingUtilities.convertPointFromScreen(derivedPoint, this);
+
+                // Find which tab position the mouse is over
+                int targetIndex = indexAtLocation(tabbedPanePoint.x, derivedPoint.y + 1);
+
+                // If mouse isn't over a specific tab, add to the end
+                if (targetIndex == -1) {
+                    targetIndex = getTabCount();
+                }
+
+                // Check if we need to adjust the target index if we already have a preview tab
+                if (isShowingDockingPreview && targetIndex > previewTabIndex) {
+                    targetIndex--;
+                }
+
+                // Only update if position changed
+                if (!isShowingDockingPreview || targetIndex != previewTabIndex) {
+                    // Remove any existing preview
+                    if (isShowingDockingPreview) {
+                        removePreviewTab();
+                    }
+
+                    // Insert the preview tab at target position
+                    addPreviewTab(tabInfo, targetIndex);
+                }
+            }
+        } catch (IllegalComponentStateException ex) {
+            // Component might not be showing on screen yet
+        }
+    }
+
+    private void addPreviewTab(DetachedTabInfo tabInfo, int targetIndex) {
+        // Create a panel to serve as a placeholder
+        JPanel previewPanel = new JPanel();
+        previewPanel.putClientProperty(PREVIEW_TAB_ID, true);
+
+        // Add the preview tab
+        super.insertTab(tabInfo.title, tabInfo.icon, previewPanel, "", targetIndex);
+
+        // Get the color used for selected tab indicator from UIManager
+        Color selectionColor = UIManager.getColor("TabbedPane.underlineColor");
+        if (selectionColor == null) {
+            selectionColor = UIManager.getColor("TabbedPane.highlight");
+        }
+        if (selectionColor == null) {
+            selectionColor = UIManager.getColor("TabbedPane.focus");
+        }
+        if (selectionColor == null) {
+            // Default fallback color if no UI colors found
+            selectionColor = new Color(70, 106, 146, 255);
+        }
+
+        // Style the tab to match the tab selection indicator color
+        setBackgroundAt(targetIndex, selectionColor);
+        Color foreground = isLightColor(selectionColor) ? Color.BLACK : Color.WHITE;
+        setForegroundAt(targetIndex, foreground);
+
+        isShowingDockingPreview = true;
+        previewTabIndex = targetIndex;
+
+        // Make sure we don't select the preview tab
+        int currentSelectedTab = getSelectedIndex();
+        if (currentSelectedTab == targetIndex) {
+            setSelectedIndex(Math.max(0, targetIndex - 1));
+        }
+    }
+
+    private boolean isLightColor(Color color) {
+        // Calculate perceived brightness using the luminance formula
+        // https://www.w3.org/TR/AERT/#color-contrast
+        int brightness = (int) Math.sqrt(
+                color.getRed() * color.getRed() * 0.299 +
+                        color.getGreen() * color.getGreen() * 0.587 +
+                        color.getBlue() * color.getBlue() * 0.114);
+
+        return brightness > 130;
+    }
+
+    private void removePreviewTab() {
+        if (isShowingDockingPreview && previewTabIndex >= 0 && previewTabIndex < getTabCount()) {
+            // Verify this is actually our preview tab
+            Component comp = getComponentAt(previewTabIndex);
+            if (comp instanceof JPanel &&
+                    Boolean.TRUE.equals(((JPanel) comp).getClientProperty(PREVIEW_TAB_ID))) {
+                remove(previewTabIndex);
+            }
+        }
+        isShowingDockingPreview = false;
+        previewTabIndex = -1;
+    }
+
     /**
-     * Checks if a detached window is being dragged over the tabbed pane and
-     * reattaches it if so
+     * If the docking preview is showing, reattach the tab to the tabbed pane
      *
      * @param window The detached window to check
      */
@@ -1176,41 +1335,20 @@ public class EnhancedTabbedPane extends JTabbedPane {
             return;
         }
         DetachedTabInfo tabInfo = detachedTabs.get(window);
+        if (!tabInfo.reattachAllowed) {
+            return;
+        }
         try {
-            // Get the bounds of the tabbed pane in screen coordinates
-            Rectangle tabbedPaneBounds = getBounds();
-            Point tabbedPaneLocation = getLocationOnScreen();
-            tabbedPaneBounds.setLocation(tabbedPaneLocation);
-
-            // Get the tab area bounds (just the header part)
-            Rectangle tabAreaBounds = dragDockingToVisibleTabsAreaOnly ? getTabAreaBounds() : getFullTabAreaBounds();
-            tabAreaBounds.setLocation(tabbedPaneLocation.x + tabAreaBounds.x, tabbedPaneLocation.y + tabAreaBounds.y);
-
-            // Get current mouse position instead of using window location
-            Point mousePosition = MouseInfo.getPointerInfo().getLocation();
-
-            // Check if the mouse cursor is over the tab area
-            boolean isOverTabArea = tabAreaBounds.contains(mousePosition);
-
-            if (!isOverTabArea) {
-                // Window has moved away from the tab area, mark it as eligible for reattachment
-                if (!tabInfo.hasMovedAwayFromTabArea) {
-                    tabInfo.hasMovedAwayFromTabArea = true;
-                }
-            } else if (tabInfo.hasMovedAwayFromTabArea) {
-                // Convert mouse position to tabbed pane coordinates
-                Point tabbedPanePoint = new Point(mousePosition);
-                SwingUtilities.convertPointFromScreen(tabbedPanePoint, this);
-
+            if (isShowingDockingPreview) {
                 // Find which tab position the mouse is over
-                int targetIndex = indexAtLocation(tabbedPanePoint.x, tabbedPanePoint.y);
+                int targetIndex = previewTabIndex;
 
                 // If mouse isn't over a specific tab, add to the end
                 if (targetIndex == -1) {
                     targetIndex = getTabCount();
                 }
-
-                // Mouse is over the tab area AND window has previously moved away - reattach it
+                removePreviewTab();
+                // Mouse is over the tab area - reattach it
                 reattachTab(window, targetIndex);
             }
         } catch (IllegalComponentStateException ex) {
@@ -1429,6 +1567,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
     @Override
     public void removeNotify() {
+        if (isShowingDockingPreview) {
+            removePreviewTab();
+        }
         hideGhostImage();
         super.removeNotify();
     }
