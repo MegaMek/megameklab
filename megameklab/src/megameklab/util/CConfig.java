@@ -86,7 +86,6 @@ public final class CConfig {
     public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
     public static final String GUI_HHW_MAINUI_WINDOW = "HHWWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
-    public static final String _UNDOCKED = "_undocked";
 
     public static final int RECENT_FILE_COUNT = 10;
     public static final String FILE_RECENT_PREFIX = "Save_File_";
@@ -435,11 +434,7 @@ public final class CConfig {
     }
 
     public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi) {
-        return getMainUiWindowSize(mainUi, false);
-    }
-
-    public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi, boolean undocked) {
-        return getWindowSize(settingForMainUi(mainUi) + (undocked ? _UNDOCKED : ""));
+        return getWindowSize(settingForMainUi(mainUi));
     }
 
     public static Optional<Point> getMainUiWindowPosition(MenuBarOwner mainUi) {
@@ -451,11 +446,7 @@ public final class CConfig {
     }
 
     public static void writeMainUiWindowSettings(MenuBarOwner mainUi) {
-        writeMainUiWindowSettings(mainUi, false);
-    }
-
-    public static void writeMainUiWindowSettings(MenuBarOwner mainUi, boolean undocked) {
-        writeWindowSettings(settingForMainUi(mainUi) + (undocked ? _UNDOCKED : ""), (Component) mainUi);
+        writeWindowSettings(settingForMainUi(mainUi), (Component) mainUi);
     }
 
     public static void writeNamedWindowSize(String name, Window component) {
@@ -487,17 +478,6 @@ public final class CConfig {
         setParam(GUI_DS_MAINUI_WINDOW, "");
         setParam(GUI_WS_MAINUI_WINDOW, "");
         setParam(GUI_HHW_MAINUI_WINDOW, "");
-        setParam(FILE_CHOOSER_WINDOW + _UNDOCKED, "");
-        setParam(GUI_BM_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_CV_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_AS_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_SV_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_PM_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_BA_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_CI_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_DS_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_WS_MAINUI_WINDOW + _UNDOCKED, "");
-        setParam(GUI_HHW_MAINUI_WINDOW + _UNDOCKED, "");
         saveConfig();
     }
 
