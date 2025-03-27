@@ -313,7 +313,7 @@ public class MegaMekLab {
      */
     private static boolean openUnitFile(String filePath, boolean noStartup) {
         try {
-            File file = new File(filePath);
+            final File file = new File(filePath).getCanonicalFile();
             if (!file.exists()) {
                 throw new IllegalArgumentException("File not found: " + filePath);
             }
