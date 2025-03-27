@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +41,7 @@ import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.largeAero.WSMainUI;
@@ -82,6 +84,7 @@ public final class CConfig {
     public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
     public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
     public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
+    public static final String GUI_HHW_MAINUI_WINDOW = "HHWWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
@@ -190,7 +193,7 @@ public final class CConfig {
     /**
      * Loads the Config file.
      */
-    public static void loadConfigFile() {
+    public synchronized static void loadConfigFile() {
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
             File backupConfigurationFile = new File(CONFIG_BACKUP_FILE);
             if (backupConfigurationFile.exists()) {
@@ -326,7 +329,7 @@ public final class CConfig {
     /**
      * Write the config file out to ./data/mwconfig.txt.
      */
-    public static void saveConfig() {
+    public synchronized static void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
                 PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
@@ -438,8 +441,16 @@ public final class CConfig {
         return getWindowPosition(settingForMainUi(mainUi));
     }
 
+    public static Optional<Dimension> getNamedWindowSize(String name) {
+        return getWindowSize(name);
+    }
+
     public static void writeMainUiWindowSettings(MenuBarOwner mainUi) {
         writeWindowSettings(settingForMainUi(mainUi), (Component) mainUi);
+    }
+
+    public static void writeNamedWindowSize(String name, Window component) {
+        writeWindowSettings(name, component);
     }
 
     public static String getRecentFile(int recentFileNumber) {
@@ -466,6 +477,7 @@ public final class CConfig {
         setParam(GUI_CI_MAINUI_WINDOW, "");
         setParam(GUI_DS_MAINUI_WINDOW, "");
         setParam(GUI_WS_MAINUI_WINDOW, "");
+        setParam(GUI_HHW_MAINUI_WINDOW, "");
         saveConfig();
     }
 
@@ -518,6 +530,8 @@ public final class CConfig {
         } else if (ui instanceof SVMainUI) {
             return GUI_SV_MAINUI_WINDOW;
         } else if (ui instanceof WSMainUI) {
+            return GUI_WS_MAINUI_WINDOW;
+        } else if (ui instanceof HHWMainUI) {
             return GUI_WS_MAINUI_WINDOW;
         } else if (ui instanceof MegaMekLabTabbedUI) {
             return GUI_TABBED_WINDOW;

@@ -382,6 +382,10 @@ public class RecordSheetPreviewPanel extends JPanel {
      * @param entities List of entities to display
      */
     public void setEntities(List<Entity> entities) {
+        boolean isSameEntity = entities != null && entities.size() == 1 
+                && this.entities != null && this.entities.size() == 1
+                && entities.get(0) == this.entities.get(0);
+
         if (entities == null) {
             this.entities.clear();
         } else {
@@ -394,7 +398,11 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         if (isShowing()) {
             // If visible, update the view immediately
-            scheduleResetView();
+            if (isSameEntity) {
+                repaint();
+            } else {
+                scheduleResetView();
+            }
         } else {
             // If not visible, mark for update when panel becomes visible
             needsViewReset = true;
