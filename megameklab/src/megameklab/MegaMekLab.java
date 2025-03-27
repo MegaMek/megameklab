@@ -64,6 +64,12 @@ public class MegaMekLab {
         noStartup = hasArgument(args, "--no-startup");
         // Filter out already read args
         String[] filteredArgs = filterArguments(args, new String[] { "--multi", "--no-startup" });
+        if (args.length >= 1) {
+            final String filePath = args[0];
+            if (noStartup && filePath.toLowerCase().endsWith(".mul")) {
+                multiInstanceMode = true;
+            }
+        }
 
         // Skip single instance check if in multi-instance mode
         if (!multiInstanceMode) {
