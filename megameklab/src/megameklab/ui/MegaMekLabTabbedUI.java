@@ -24,11 +24,14 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -55,7 +58,7 @@ import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.TabUtil;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
-import megameklab.ui.util.EnhancedTabbedPane.EnhancedTab;
+import megameklab.ui.util.EnhancedTabbedPane.CloseableTab;
 import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -68,7 +71,7 @@ import megameklab.util.UnitUtil;
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
 
-    private static final ConcurrentHashMap<MegaMekLabTabbedUI, Boolean> openWindows = new ConcurrentHashMap<>();
+    private static final Set<MegaMekLabTabbedUI> openWindows = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final List<MegaMekLabMainUI> editors = new CopyOnWriteArrayList<>();
     private static final ReopenTabStack closedEditors = new ReopenTabStack();
 
@@ -92,7 +95,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
-        openWindows.put(this, true);
+        openWindows.add(this);
         JButton newButton = createNewButton();
         JButton openButton = createOpenButton();
         // Initialize tabs with action handlers
@@ -122,13 +125,22 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             }
 
             @Override
+            public void onTabCloseRequest(int tabIndex, Component component, InputEvent e) {
+                if (component instanceof MegaMekLabMainUI editor) {
+                    if (e.isShiftDown() || editor.safetyPrompt()) {
+                        closeTabAt(tabIndex);
+                    }
+                }
+            }
+
+            @Override
             public void onTabRemoved(int tabIndex, Component component) {
                 // If you try to close the last tab, we close this window
                 if (tabs.getTabCount() < 1) {
                     // if (openWindows.size() == 1 && !noTabsOpenExitPrompt()) {
-                    //     newTab();
+                    // newTab();
                     // } else {
-                        cleanupAndDispose();
+                    cleanupAndDispose();
                     // }
                 }
             }
@@ -313,7 +325,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Check if the selected index is valid
         if (selectedIndex >= 0) {
             Component tabComponent = tabs.getTabComponentAt(selectedIndex);
-            if (tabComponent instanceof EnhancedTab tab) {
+            if (tabComponent instanceof CloseableTab tab) {
                 if (tab.getComponent() instanceof MegaMekLabMainUI mainUI) {
                     return mainUI;
                 }
@@ -333,7 +345,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         Component contentPane = editor.getContentPane();
         int tabIndex = tabs.indexOfComponent(contentPane);
         if (tabIndex >= 0) {
-            EnhancedTab tab = (EnhancedTab) tabs.getTabComponentAt(tabIndex);
+            CloseableTab tab = (CloseableTab) tabs.getTabComponentAt(tabIndex);
             tab.setTitle(tabName);
         }
     }
@@ -353,14 +365,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
         // Use the enhanced tabbed pane to add a closeable tab
         String tabName = entity.getShortNameRaw();
-        tabs.addEnhancedTab(tabName, null, editor, (component, e) -> {
-            int index = tabs.indexOfComponent(component);
-            if (index >= 0) {
-                if (e.isShiftDown() || editor.safetyPrompt()) {
-                    closeTabAt(index);
-                }
-            }
-        });
+        tabs.addCloseableTab(tabName, null, editor);
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
         editor.setTabOwner(this);
         editor.refreshAll();
@@ -515,7 +520,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     private void closeTabAt(int position) {
         Component tabComponent = tabs.getTabComponentAt(position);
-        if (tabComponent instanceof EnhancedTab tab) {
+        if (tabComponent instanceof CloseableTab tab) {
             if (tab.getComponent() instanceof MegaMekLabMainUI) {
                 MegaMekLabMainUI editor = (MegaMekLabMainUI) tab.getComponent();
                 editor.reattachAllTabs();

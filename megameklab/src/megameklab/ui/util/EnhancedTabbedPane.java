@@ -72,7 +72,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Component component;
         Window wrapperComponent;
         BiConsumer<Component, InputEvent> closeAction;
-        boolean isEnhancedTab = false;
+        boolean isCloseableTab = false;
         boolean reattachAllowed = false;
         WeakReference<EnhancedTabbedPane> sourcePane;
         String dockGroupId;
@@ -86,17 +86,17 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param wrapperComponent
          * @param originalIndex
          * @param closeAction
-         * @param isEnhancedTab
+         * @param isCloseableTab
          */
         public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex,
-                BiConsumer<Component, InputEvent> closeAction, boolean isEnhancedTab) {
+                BiConsumer<Component, InputEvent> closeAction, boolean isCloseableTab) {
             this.title = title;
             this.icon = icon;
             this.component = component;
             this.wrapperComponent = wrapperComponent;
             this.originalIndex = originalIndex;
             this.closeAction = closeAction;
-            this.isEnhancedTab = isEnhancedTab;
+            this.isCloseableTab = isCloseableTab;
             this.reattachAllowed = false;
         }
 
@@ -130,7 +130,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private int previewTabIndex = -1;
     private static final String PREVIEW_TAB_ID = "PREVIEW_TAB";
     private String dockGroupId;
-    private static final List<EnhancedTabbedPane> dockableInstances = new CopyOnWriteArrayList<>();
+    private static final List<WeakReference<EnhancedTabbedPane>> dockableInstances = new CopyOnWriteArrayList<>();
 
     private static class DragState {
         int tabIndex = -1;
@@ -431,6 +431,16 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
 
         /**
+         * Called when a tab wants to be closed
+         * 
+         * @param tabIndex  The index of the tab
+         * @param component The component in the tab
+         * @param event     The event that triggered the close (may be null)
+         */
+        default void onTabCloseRequest(int tabIndex, Component component, InputEvent event) {
+        }
+
+        /**
          * Called after a tab has been removed
          *
          * @param tabIndex  The index of the tab that was removed
@@ -723,7 +733,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                     } else if (SwingUtilities.isMiddleMouseButton(e)) {
                         // Handle middle-click to close tab
                         Component tabComponent = getTabComponentAt(dragState.tabIndex);
-                        if (tabComponent instanceof EnhancedTab enhancedTab) {
+                        if (tabComponent instanceof CloseableTab enhancedTab) {
                             enhancedTab.close(e);
                         }
                     }
@@ -804,7 +814,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
         if (dockGroupId == null) {
             return null;
         }
-        for (EnhancedTabbedPane pane : dockableInstances) {
+        // Cleanup stale references
+        dockableInstances.removeIf(ref -> ref.get() == null);
+        for (WeakReference<EnhancedTabbedPane> ref : dockableInstances) {
+            EnhancedTabbedPane pane = ref.get();
             if (pane != this && pane.dockGroupId != null && pane.dockGroupId.equals(this.dockGroupId)
                     && pane.isShowing()) {
                 try {
@@ -852,6 +865,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
         targetPane.insertTab(title, icon, component, tooltip, targetIndex);
         if (tabComponent != null) {
             targetPane.setTabComponentAt(targetIndex, tabComponent);
+            if (tabComponent instanceof CloseableTab closeableTab) {
+                closeableTab.setParentPane(targetPane);
+            }
         }
 
         targetPane.setSelectedIndex(targetIndex);
@@ -952,7 +968,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         boolean isSelected = (getSelectedIndex() == tabIndex);
 
         // If we have a custom tab component, try to match its appearance
-        if (tabComponent instanceof EnhancedTab enhancedTab) {
+        if (tabComponent instanceof CloseableTab enhancedTab) {
             title = enhancedTab.getTitle(); // Get the title from the enhanced tab
 
             JLabel titleLabel = new JLabel(title);
@@ -1015,7 +1031,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         ghostWindow.pack();
 
         dragState.dragOffset = new Point(ghostWindow.getWidth() / 2, ghostWindow.getHeight() / 2);
-    
+
         updateGhostLocation(location);
         ghostWindow.setVisible(true);
         dragState.showingGhost = true;
@@ -1158,9 +1174,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
         setSelectedIndex(toIndex);
     }
 
-    public int addEnhancedTab(String title, Icon icon, Component component,
-            BiConsumer<Component, InputEvent> closeTabAction) {
-        return addEnhancedTab(title, icon, component, closeTabAction, getTabCount());
+    public int addCloseableTab(String title, Icon icon, Component component) {
+        return addCloseableTab(title, icon, component, getTabCount());
     }
 
     /**
@@ -1173,8 +1188,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      *
      * @return The index of the newly added tab
      */
-    public int addEnhancedTab(String title, Icon icon, Component component,
-            BiConsumer<Component, InputEvent> closeTabAction, int tabIndex) {
+    public int addCloseableTab(String title, Icon icon, Component component, int tabIndex) {
         Component contentToAdd = null;
         if (component instanceof JFrame) {
             contentToAdd = ((JFrame) component).getContentPane();
@@ -1183,7 +1197,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
         int actualIndex = tabIndex < 0 ? getTabCount() : Math.min(tabIndex, getTabCount());
         insertTab(title, icon, contentToAdd, null, actualIndex);
-        setTabComponentAt(actualIndex, new EnhancedTab(this, title, component, closeTabAction));
+        setTabComponentAt(actualIndex, new CloseableTab(this, title, component, true));
         return actualIndex;
     }
 
@@ -1205,7 +1219,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * @param tab      An EnhancedTab instance representing the tab to detach
      * @param location The screen location where to position the new window
      */
-    public void detachTab(EnhancedTab tab, Point location) {
+    public void detachTab(CloseableTab tab, Point location) {
         int tabIndex = tab.findTabIndex();
         if (tabIndex < 0) {
             return;
@@ -1233,9 +1247,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Component tabComponent = getTabComponentAt(tabIndex);
         BiConsumer<Component, InputEvent> closeAction = null;
         Dimension compSize;
-        if (tabComponent instanceof EnhancedTab enhancedTab) {
+        if (tabComponent instanceof CloseableTab enhancedTab) {
             title = enhancedTab.getTitle();
-            closeAction = enhancedTab.getCloseAction();
             componentWindow = enhancedTab.component;
         } else {
             title = getTitleAt(tabIndex);
@@ -1327,7 +1340,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private Window createDetachedWindow(String title, Icon icon, Component window, Component component, Dimension size,
             Point location, Component tabComponent, BiConsumer<Component, InputEvent> closeAction, int tabIndex) {
 
-        final boolean isEnhancedTab = tabComponent instanceof EnhancedTab;
+        final boolean isEnhancedTab = tabComponent instanceof CloseableTab;
         Window result = null;
         Component detachedComponent;
 
@@ -1625,8 +1638,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
             } else if (component instanceof JFrame frame) {
                 frame.getContentPane().remove(tabInfo.component); // TODO: is it really needed?
             }
-            if (tabInfo.isEnhancedTab) {
-                addEnhancedTab(tabInfo.title, tabInfo.icon, tabInfo.component, tabInfo.closeAction, insertIndex);
+            if (tabInfo.isCloseableTab) {
+                addCloseableTab(tabInfo.title, tabInfo.icon, tabInfo.component, insertIndex);
             } else {
                 insertTab(tabInfo.title, tabInfo.icon, tabInfo.component, null, insertIndex);
             }
@@ -1790,13 +1803,13 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void addNotify() {
         super.addNotify();
         if (dockGroupId != null) {
-            dockableInstances.add(this);
+            dockableInstances.add(new WeakReference<>(this));
         }
     }
 
     @Override
     public void removeNotify() {
-        dockableInstances.remove(this);
+        dockableInstances.removeIf(ref -> ref.get() == this || ref.get() == null);
         if (isShowingDockingPreview) {
             removePreviewTab();
         }
@@ -1822,29 +1835,27 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Custom component to represent a tab with a title and a close button
      */
-    public static class EnhancedTab extends JPanel {
-        private final EnhancedTabbedPane parentPane;
+    public static class CloseableTab extends JPanel {
         private final Component component;
+        private EnhancedTabbedPane parentPane;
         private JLabel titleLabel;
-        private BiConsumer<Component, InputEvent> closeAction;
+        private boolean closeable = false;
 
-        public EnhancedTab(EnhancedTabbedPane parentPane, String title, Component component) {
-            this(parentPane, title, component, null);
+        public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component) {
+            this(parentPane, title, component, false);
         }
 
         /**
          * Creates a new closeable tab with the specified title
          *
-         * @param title       The title to display
-         * @param component   The component associated with this tab
-         * @param closeAction Action to perform when the close button is clicked
+         * @param title     The title to display
+         * @param component The component associated with this tab
          */
-        public EnhancedTab(EnhancedTabbedPane parentPane, String title, Component component,
-                BiConsumer<Component, InputEvent> closeAction) {
+        public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component, boolean closeable) {
             super(new BorderLayout(0, 0));
             this.parentPane = parentPane;
             this.component = component;
-            this.closeAction = closeAction;
+            this.closeable = closeable;
             setOpaque(false);
 
             // Create the title label
@@ -1853,7 +1864,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
             // Add components to panel
             add(titleLabel, BorderLayout.WEST);
-            if (closeAction != null) {
+            if (closeable) {
                 JButton closeButton = createCloseButton();
                 add(closeButton, BorderLayout.EAST);
             }
@@ -1884,7 +1895,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                  */
                 private void forwardEventToTabbedPane(MouseEvent e) {
                     // Find the parent tabbed pane
-                    Container parent = EnhancedTab.this.getParent();
+                    Container parent = CloseableTab.this.getParent();
                     while (parent != null && !(parent instanceof JTabbedPane)) {
                         parent = parent.getParent();
                     }
@@ -1938,7 +1949,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON1 && closeAction != null) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && closeable) {
                         close(e);
                         e.consume();
                     }
@@ -1954,14 +1965,17 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param e The mouse event that triggered the close action
          */
         public void close(MouseEvent e) {
-            if (closeAction == null) {
+            if (!closeable) {
                 return;
             }
-            if (component instanceof JFrame frame) {
-                Component tabContent = frame.getContentPane();
-                closeAction.accept(tabContent, e);
-            } else {
-                closeAction.accept(component, e);
+            int tabIndex = findTabIndex();
+            if (tabIndex < 0) {
+                return;
+            }
+            for (TabStateListener listener : parentPane.tabStateListeners) {
+                if (listener != null) {
+                    listener.onTabCloseRequest(tabIndex, component, e);
+                }
             }
         }
 
@@ -1976,13 +1990,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 }
             }
             return -1;
-        }
-
-        /**
-         * Gets the close action for this tab
-         */
-        public BiConsumer<Component, InputEvent> getCloseAction() {
-            return closeAction;
         }
 
         /**
@@ -2010,6 +2017,20 @@ public class EnhancedTabbedPane extends JTabbedPane {
         public Component getComponent() {
             return component;
         }
+
+        public void setParentPane(EnhancedTabbedPane parentPane) {
+            this.parentPane = parentPane;
+        }
+
+        public EnhancedTabbedPane getParentPane() {
+            return parentPane;
+        }
+
+        public boolean isCloseable() {
+            return closeable;
+        }
+
+
     }
 
 }
