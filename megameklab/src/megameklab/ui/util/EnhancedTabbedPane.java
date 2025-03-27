@@ -130,7 +130,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private int previewTabIndex = -1;
     private static final String PREVIEW_TAB_ID = "PREVIEW_TAB";
     private String dockGroupId;
-    private static final List<WeakReference<EnhancedTabbedPane>> dockableInstances = new CopyOnWriteArrayList<>();
+    private static final List<EnhancedTabbedPane> dockableInstances = new CopyOnWriteArrayList<>();
 
     private static class DragState {
         int tabIndex = -1;
@@ -804,9 +804,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         if (dockGroupId == null) {
             return null;
         }
-        dockableInstances.removeIf(ref -> ref.get() == null);
-        for (WeakReference<EnhancedTabbedPane> ref : dockableInstances) {
-            final EnhancedTabbedPane pane = ref.get();
+        for (EnhancedTabbedPane pane : dockableInstances) {
             if (pane != this && pane.dockGroupId != null && pane.dockGroupId.equals(this.dockGroupId)
                     && pane.isShowing()) {
                 try {
@@ -1792,13 +1790,13 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void addNotify() {
         super.addNotify();
         if (dockGroupId != null) {
-            dockableInstances.add(new WeakReference<>(this));
+            dockableInstances.add(this);
         }
     }
 
     @Override
     public void removeNotify() {
-        dockableInstances.removeIf(ref -> ref.get() == this || ref.get() == null);
+        dockableInstances.remove(this);
         if (isShowingDockingPreview) {
             removePreviewTab();
         }
