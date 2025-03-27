@@ -24,11 +24,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
+import megamek.codeUtilities.StringUtility;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.HandheldWeapon;
 import megamek.common.WeaponType;
+import megameklab.util.CConfig;
 
 /**
  * Lays out a record sheet block for a single handheld weapon unit
@@ -580,6 +582,9 @@ public class PrintHandheldWeapon extends PrintEntity {
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
+        final String entityName = CConfig.getMekNameArrangement().printChassis(getEntity())
+                + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+        setTextField(TYPE, entityName + " (" + formatWeight(handheldWeapon.getWeight()) + ")");
     }
 
     @Override
