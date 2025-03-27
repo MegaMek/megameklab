@@ -227,9 +227,9 @@ public class MegaMekLab {
 
         if (args.length >= 1) {
             String name = args[0];
-            openUnitFile(name, noStartup);
-            if (noStartup)
+            if (openUnitFile(name, noStartup)) {
                 return;
+            };
         }
 
         // Create a startup frame and display it
@@ -308,35 +308,41 @@ public class MegaMekLab {
     /**
      * Opens a unit file. This is called from command line
      *
-     * @param filePath
+     * @param filePath The path to the file to open
+     * @param noStartup for .mul files
      */
-    private static void openUnitFile(String filePath, boolean noStartup) {
+    private static boolean openUnitFile(String filePath, boolean noStartup) {
         try {
-            if (filePath.toLowerCase().endsWith(".blk") || filePath.endsWith(".mtf")) {
-                File file = new File(filePath);
+            File file = new File(filePath);
+            if (!file.exists()) {
+                throw new IllegalArgumentException("File not found: " + filePath);
+            }
+            if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
                 logger.info("Opening file: " + filePath);
                 Entity e = new MekFileParser(file).getEntity();
                 if (!UnitUtil.validateUnit(e).isBlank()) {
                     PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
                 }
                 UiLoader.loadUi(e, file.toString());
-            } else if (filePath.toLowerCase().endsWith(".mul")) {
+            } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 logger.info("Printing file: " + filePath);
                 Runnable printMul = () -> {
                     var frame = new JFrame();
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR),
-                            new File(filePath));
+                            file);
                     frame.dispose();
                 };
                 if (noStartup) {
                     printMul.run();
                 } else {
                     SwingUtilities.invokeLater(printMul);
+                    return false;
                 }
             }
         } catch (Exception e) {
             logger.error("Error processing file: " + filePath, e);
         }
+        return true;
     }
 
     /**
