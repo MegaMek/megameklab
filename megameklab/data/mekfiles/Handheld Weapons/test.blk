@@ -1,0 +1,62 @@
+#Saved from version 0.50.05-SNAPSHOT on 2025-03-24
+<UnitType>
+HandheldWeapon
+</UnitType>
+
+<Name>
+TEST
+</Name>
+
+<Model>
+
+</Model>
+
+<year>
+3084
+</year>
+
+<originalBuildYear>
+3084
+</originalBuildYear>
+
+<type>
+IS Level 3
+</type>
+
+<armor_type>
+0
+</armor_type>
+
+<armor_tech_rating>
+0
+</armor_tech_rating>
+
+<armor_tech_level>
+0
+</armor_tech_level>
+
+<internal_type>
+-1
+</internal_type>
+
+<armor>
+16
+</armor>
+
+<Gun Equipment>
+Machine Gun
+Flamer (Vehicle)
+IS Machine Gun Ammo - Half:Shots12#
+IS Vehicle Flamer Ammo:Shots12#
+Autocannon/2
+IS Ammo AC/2:Shots12#
+</Gun Equipment>
+
+<source>
+TRO:Prototypes
+</source>
+
+<tonnage>
+9.0
+</tonnage>
+
