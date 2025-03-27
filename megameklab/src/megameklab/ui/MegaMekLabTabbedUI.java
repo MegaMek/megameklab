@@ -120,6 +120,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 }
                 return true;
             }
+
+            @Override
+            public void onTabRemoved(int tabIndex, Component component) {
+                if (tabs.getTabCount() < 1) {
+                    cleanupAndDispose();
+                }
+            }
         });
         tabs.setTabDetachmentHandler((pane, tabIndex, component, locationOnScreen) -> {
             if (component instanceof MegaMekLabMainUI mainUI) {
@@ -443,11 +450,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
     }
 
-    @Override
-    public boolean exit() {
-        if (!exitPrompt()) {
-            return false;
-        }
+    private void cleanupAndDispose() {
         openWindows.remove(this);
         if (openWindows.size() == 0) {
             saveConfig(); // Save settings before closing
@@ -466,6 +469,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         } else {
             dispose();
         }
+    }
+
+    @Override
+    public boolean exit() {
+        if (!exitPrompt()) {
+            return false;
+        }
+        cleanupAndDispose();
         return true;
     }
 
