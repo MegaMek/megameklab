@@ -125,7 +125,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             public void onTabRemoved(int tabIndex, Component component) {
                 // If you try to close the last tab, we close this window
                 if (tabs.getTabCount() < 1) {
-                    if (openWindows.size() == 1) {
+                    if (openWindows.size() == 1/*&& !noTabsOpenExitPrompt() */ ) {
                         newTab();
                     } else {
                         cleanupAndDispose();
@@ -423,6 +423,18 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         ui.reloadTabs();
         ui.refreshAll();
         refreshMenuBar();
+    }
+
+    private boolean noTabsOpenExitPrompt() {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
+            return true;
+        }
+        int exitPrompt = JOptionPane.showConfirmDialog(this,
+                "Would you like to exit MegaMekLab?",
+                "Confirm Close",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        return exitPrompt == JOptionPane.YES_OPTION;
     }
 
     private boolean exitPrompt() {
