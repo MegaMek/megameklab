@@ -853,13 +853,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
         remove(sourceIndex);
 
         // Add to target
-        if (tabComponent instanceof EnhancedTab) {
-            targetPane.addEnhancedTab(title, icon, component, closeAction, targetIndex);
-        } else {
-            targetPane.insertTab(title, icon, component, tooltip, targetIndex);
-            if (tabComponent != null) {
-                targetPane.setTabComponentAt(targetIndex, tabComponent);
-            }
+        targetPane.insertTab(title, icon, component, tooltip, targetIndex);
+        if (tabComponent != null) {
+            targetPane.setTabComponentAt(targetIndex, tabComponent);
         }
 
         targetPane.setSelectedIndex(targetIndex);
