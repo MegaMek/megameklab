@@ -256,7 +256,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Sets whether tabs can be detached from the pane
      *
-     * @param enabled
+     * @param enabled true to enable tab detaching, false to disable
      */
     public void setTabDetachingEnabled(boolean enabled) {
         tabDetachingEnabled = enabled;
@@ -266,7 +266,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Sets whether tabs can be reordered by dragging
      *
-     * @param enabled
+     * @param enabled true to enable tab reordering, false to disable
      */
     public void setTabReorderingEnabled(boolean enabled) {
         tabReorderingEnabled = enabled;
@@ -277,7 +277,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Sets whether action buttons should be aligned after the tabs or on the right
      * side of the window
      *
-     * @param alignAfterTabs
+     * @param alignAfterTabs true to align after tabs, false to align on the right side
      */
     public void setActionButtonsAlignAfterTabs(boolean alignAfterTabs) {
         actionButtonsAlignAfterTabs = alignAfterTabs;
@@ -287,7 +287,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Sets the minimum number of tabs that can't be detached
      *
-     * @param minimumTabsCount
+     * @param minimumTabsCount The minimum number of tabs that can't be detached
      */
     public void setMinimumTabsCount(int minimumTabsCount) {
         this.minimumTabsCount = minimumTabsCount;
@@ -297,7 +297,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Sets the dock group ID for this tabbed pane. This ID is used to group tabbed
      * panels that can share tabs between each other.
      * 
-     * @param dockGroupId
+     * @param dockGroupId The ID to set for this tabbed pane (used for cross-pane docking)
      */
     public void setDockGroupId(String dockGroupId) {
         this.dockGroupId = dockGroupId;
@@ -306,7 +306,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Returns the dock group ID for this tabbed pane
      * 
-     * @return
+     * @return The ID of the dock group for this tabbed pane, or null if not set
      */
     public String getDockGroupId() {
         return dockGroupId;
@@ -1837,6 +1837,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         /**
          * Creates a new closeable tab with the specified title
          *
+         * @param parentPane The parent tabbed pane
          * @param title     The title to display
          * @param component The component associated with this tab
          */
@@ -2001,10 +2002,18 @@ public class EnhancedTabbedPane extends JTabbedPane {
             return component;
         }
 
+        /**
+         * Sets the parent pane of this tab
+         */
         public void setParentPane(EnhancedTabbedPane parentPane) {
             this.parentPane = parentPane;
         }
 
+        /**
+         * Gets the parent pane of this tab
+         * 
+         * @return
+         */
         public EnhancedTabbedPane getParentPane() {
             return parentPane;
         }
