@@ -79,12 +79,12 @@ public class EnhancedTabbedPane extends JTabbedPane {
         /**
          * Creates a new DetachedTabInfo instance
          *
-         * @param title
-         * @param icon
-         * @param component
-         * @param wrapperComponent
-         * @param originalIndex
-         * @param isCloseableTab
+         * @param title Title of the tab
+         * @param icon Icon for the tab
+         * @param component Component to be displayed in the tab
+         * @param wrapperComponent The window that wraps the tab
+         * @param originalIndex The original index of the tab in the source pane
+         * @param isCloseableTab Whether the tab is closeable
          */
         public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex, boolean isCloseableTab) {
             this.title = title;
@@ -729,8 +729,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
                     } else if (SwingUtilities.isMiddleMouseButton(e)) {
                         // Handle middle-click to close tab
                         Component tabComponent = getTabComponentAt(dragState.tabIndex);
-                        if (tabComponent instanceof CloseableTab enhancedTab) {
-                            enhancedTab.close(e);
+                        if (tabComponent instanceof CloseableTab closeableTab) {
+                            closeableTab.close(e);
                         }
                     }
                 }
@@ -957,15 +957,15 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         JPanel ghostPanel = new JPanel(new BorderLayout());
 
-        // Get the tab component (our custom EnhancedTab or default tab)
+        // Get the tab component (our custom CloseableTab or default tab)
         Component tabComponent = getTabComponentAt(tabIndex);
         String title = getTitleAt(tabIndex);
         Icon icon = getIconAt(tabIndex);
         boolean isSelected = (getSelectedIndex() == tabIndex);
 
         // If we have a custom tab component, try to match its appearance
-        if (tabComponent instanceof CloseableTab enhancedTab) {
-            title = enhancedTab.getTitle(); // Get the title from the enhanced tab
+        if (tabComponent instanceof CloseableTab closeableTab) {
+            title = closeableTab.getTitle(); // Get the title from the enhanced tab
 
             JLabel titleLabel = new JLabel(title);
             titleLabel.setIcon(icon);
@@ -1152,7 +1152,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         String tooltip = getToolTipTextAt(fromIndex);
         boolean isEnabled = isEnabledAt(fromIndex);
 
-        // Get the tab component (our custom EnhancedTab) if it exists
+        // Get the tab component (our custom CloseableTab) if it exists
         Component tabComponent = getTabComponentAt(fromIndex);
 
         // Remove the tab
@@ -1193,7 +1193,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         }
         int actualIndex = tabIndex < 0 ? getTabCount() : Math.min(tabIndex, getTabCount());
         insertTab(title, icon, contentToAdd, null, actualIndex);
-        setTabComponentAt(actualIndex, new CloseableTab(this, title, component, true));
+        setTabComponentAt(actualIndex, new CloseableTab(this, title, component));
         return actualIndex;
     }
 
@@ -1212,7 +1212,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Detaches a tab from the pane and creates a floating window
      *
-     * @param tab      An EnhancedTab instance representing the tab to detach
+     * @param tab      An CloseableTab instance representing the tab to detach
      * @param location The screen location where to position the new window
      */
     public void detachTab(CloseableTab tab, Point location) {
@@ -1242,9 +1242,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Component componentWindow = null;
         Component tabComponent = getTabComponentAt(tabIndex);
         Dimension compSize;
-        if (tabComponent instanceof CloseableTab enhancedTab) {
-            title = enhancedTab.getTitle();
-            componentWindow = enhancedTab.component;
+        if (tabComponent instanceof CloseableTab closeableTab) {
+            title = closeableTab.getTitle();
+            componentWindow = closeableTab.component;
         } else {
             title = getTitleAt(tabIndex);
         }
@@ -1334,7 +1334,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     private Window createDetachedWindow(String title, Icon icon, Component window, Component component, Dimension size,
             Point location, Component tabComponent, int tabIndex) {
 
-        final boolean isEnhancedTab = tabComponent instanceof CloseableTab;
+        final boolean isCloseableTab = tabComponent instanceof CloseableTab;
         Window result = null;
         Component detachedComponent;
 
@@ -1377,7 +1377,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         final Window finalResult = result;
         // Store the detached tab information for later reattachment
         detachedTabs.put(result,
-                new DetachedTabInfo(title, icon, detachedComponent, result, tabIndex, isEnhancedTab));
+                new DetachedTabInfo(title, icon, detachedComponent, result, tabIndex, isCloseableTab));
 
         // Ensure listeners are properly managed - remove first then add
         cleanupAndAddWindowListener(result);
@@ -1833,11 +1833,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
         private final Component component;
         private EnhancedTabbedPane parentPane;
         private JLabel titleLabel;
-        private boolean closeable = false;
-
-        public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component) {
-            this(parentPane, title, component, false);
-        }
 
         /**
          * Creates a new closeable tab with the specified title
@@ -1845,11 +1840,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param title     The title to display
          * @param component The component associated with this tab
          */
-        public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component, boolean closeable) {
+        public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component) {
             super(new BorderLayout(0, 0));
             this.parentPane = parentPane;
             this.component = component;
-            this.closeable = closeable;
             setOpaque(false);
 
             // Create the title label
@@ -1858,10 +1852,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
             // Add components to panel
             add(titleLabel, BorderLayout.WEST);
-            if (closeable) {
-                JButton closeButton = createCloseButton();
-                add(closeButton, BorderLayout.EAST);
-            }
+            JButton closeButton = createCloseButton();
+            add(closeButton, BorderLayout.EAST);
 
             MouseAdapter tabEventForwarder = new MouseAdapter() {
                 @Override
@@ -1943,7 +1935,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON1 && closeable) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
                         close(e);
                         e.consume();
                     }
@@ -1959,9 +1951,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * @param e The mouse event that triggered the close action
          */
         public void close(MouseEvent e) {
-            if (!closeable) {
-                return;
-            }
             int tabIndex = findTabIndex();
             if (tabIndex < 0) {
                 return;
@@ -2019,11 +2008,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
         public EnhancedTabbedPane getParentPane() {
             return parentPane;
         }
-
-        public boolean isCloseable() {
-            return closeable;
-        }
-
 
     }
 
