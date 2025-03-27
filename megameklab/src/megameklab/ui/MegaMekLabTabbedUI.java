@@ -197,7 +197,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     // Left click - directly create a new unit
                     MegaMekLabMainUI newUi = UiLoader.getUI(Entity.ETYPE_MEK, false, false);
-                    newUi.setOwner(MegaMekLabTabbedUI.this);
+                    newUi.setTabOwner(MegaMekLabTabbedUI.this);
                     addTab(newUi);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     // Right click - show popup menu
@@ -276,7 +276,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         JMenuItem item = new JMenuItem(name);
         item.addActionListener(e -> {
             MegaMekLabMainUI newUi = UiLoader.getUI(entityType, primitive, false);
-            newUi.setOwner(MegaMekLabTabbedUI.this);
+            newUi.setTabOwner(MegaMekLabTabbedUI.this);
             addTab(newUi);
         });
         return item;
@@ -368,7 +368,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             }
         });
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
-        editor.setOwner(this);
+        editor.setTabOwner(this);
         editor.refreshAll();
     }
 
@@ -385,7 +385,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         var oldUi = editors.get(tabs.getSelectedIndex());
 
         var newUi = UiLoader.getUI(type, primitive, industrial);
-        newUi.setOwner(this);
+        newUi.setTabOwner(this);
         editors.set(tabs.getSelectedIndex(), newUi);
         tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
@@ -418,7 +418,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         var ui = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(entity), entity.isPrimitive(),
                 entity.isIndustrialMek());
         addTab(ui);
-        ui.setOwner(this);
+        ui.setTabOwner(this);
         ui.setEntity(entity, filename);
         ui.reloadTabs();
         ui.refreshAll();

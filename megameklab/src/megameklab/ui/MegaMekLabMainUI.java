@@ -42,7 +42,7 @@ public abstract class MegaMekLabMainUI extends JFrame
     protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
-    private MegaMekLabTabbedUI owner = null;
+    private MegaMekLabTabbedUI tabOwner = null;
 
     public MegaMekLabMainUI() {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -158,8 +158,8 @@ public abstract class MegaMekLabMainUI extends JFrame
         if (configPane.hasDetachedTabs()) {
             configPane.setDetachedTabsPrefixTitle(entity.getShortNameRaw());
         }
-        if (owner != null) {
-            owner.setTabName(entity.getShortNameRaw(), this);
+        if (tabOwner != null) {
+            tabOwner.setTabName(entity.getShortNameRaw(), this);
         }
     }
 
@@ -238,12 +238,12 @@ public abstract class MegaMekLabMainUI extends JFrame
         return mmlMenuBar;
     }
 
-    public void setOwner(MegaMekLabTabbedUI owner) {
-        this.owner = owner;
+    public void setTabOwner(MegaMekLabTabbedUI owner) {
+        this.tabOwner = owner;
     }
 
-    public MegaMekLabTabbedUI getOwner() {
-        return owner;
+    public MegaMekLabTabbedUI getTabOwner() {
+        return tabOwner;
     }
 
     /**
