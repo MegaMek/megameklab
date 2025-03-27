@@ -1965,6 +1965,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         /**
          * Finds the index of this tab in the parent pane
+         * 
+         * @return The index of this tab in the parent pane, or -1 if not found
          */
         private int findTabIndex() {
             // Find this tab's index in the parent pane
@@ -1990,6 +1992,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         /**
          * Gets the title of this tab
+         * 
+         * @return The title of this tab
          */
         public String getTitle() {
             return titleLabel.getText();
@@ -1997,6 +2001,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         /**
          * Gets the component associated with this tab
+         * 
+         * @return The component associated with this tab
          */
         public Component getComponent() {
             return component;
@@ -2004,6 +2010,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         /**
          * Sets the parent pane of this tab
+         * 
+         * @param parentPane The parent pane to set
          */
         public void setParentPane(EnhancedTabbedPane parentPane) {
             this.parentPane = parentPane;
@@ -2012,7 +2020,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         /**
          * Gets the parent pane of this tab
          * 
-         * @return
+         * @return The parent pane of this tab
          */
         public EnhancedTabbedPane getParentPane() {
             return parentPane;
