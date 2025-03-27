@@ -835,11 +835,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
         Icon icon = getIconAt(sourceIndex);
         String tooltip = getToolTipTextAt(sourceIndex);
         Component tabComponent = getTabComponentAt(sourceIndex);
-        BiConsumer<Component, InputEvent> closeAction = null;
 
-        if (tabComponent instanceof EnhancedTab enhancedTab) {
-            closeAction = enhancedTab.getCloseAction();
-        }
         Point targetPoint = new Point(screenPoint);
         SwingUtilities.convertPointFromScreen(targetPoint, targetPane);
 
