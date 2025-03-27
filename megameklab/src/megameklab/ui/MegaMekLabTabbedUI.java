@@ -123,8 +123,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
             @Override
             public void onTabRemoved(int tabIndex, Component component) {
+                // If you try to close the last tab, we close this window
                 if (tabs.getTabCount() < 1) {
-                    cleanupAndDispose();
+                    if (openWindows.size() == 1) {
+                        newTab();
+                    } else {
+                        cleanupAndDispose();
+                    }
                 }
             }
         });
@@ -522,12 +527,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 editors.remove(editor);
                 closedEditors.push(editor);
             }
-        }
-
-        // If you try to close the last tab, we close this window
-        if (tabs.getTabCount() < 1) {
-            cleanupAndDispose();
-            return;
         }
 
         // Tell the menu bar to enable the "reopen tab" shortcut
