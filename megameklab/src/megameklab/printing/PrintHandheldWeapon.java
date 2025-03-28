@@ -49,7 +49,7 @@ public class PrintHandheldWeapon extends PrintEntity {
     /** Default minimum spacing between the outer edges of pips */
     public static final double MIN_PIP_SPACING = 0.3;
     /** In case there are labels, offset the first label (and the whole bbox) */
-    public static final double OFFSET_FIRST_LABEL = -2;
+    public static final double OFFSET_FIRST_LABEL = -3;
     /** Default/Fallback font size for labels */
     public static final double LABEL_DEFAULT_FONT_SIZE = 6;
     /** Minimum margin above an ammo label */
