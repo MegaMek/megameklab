@@ -18,7 +18,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
 
     steps:
-      - name: "Check out MegaMek"
+      - name: "Check out MegaMekLab"
         uses: actions/checkout@v4
         with:
           path: megameklab
