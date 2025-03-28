@@ -23,6 +23,8 @@ import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
+import org.w3c.dom.Text;
 
 import megamek.codeUtilities.StringUtility;
 import megamek.common.AmmoType;
@@ -33,18 +35,35 @@ import megamek.common.WeaponType;
 import megameklab.util.CConfig;
 
 /**
+ * @author drake
  * Lays out a record sheet block for a single handheld weapon unit
  */
 public class PrintHandheldWeapon extends PrintEntity {
 
     /** Default radius for a pip */
-    public static final double PIP_RADIUS = 3.5;
+    public static final double PIP_RADIUS = 3.6;
     /** Default minimum radius for pip */
     public static final double PIP_MIN_RADIUS = 1.6;
     /** Default stroke width for a pip */
     public static final double PIP_STROKE_WIDTH = 0.9;
+    /** Default minimum spacing between the outer edges of pips */
+    public static final double MIN_PIP_SPACING = 0.3;
+    /** In case there are labels, offset the first label (and the whole bbox) */
+    public static final double OFFSET_FIRST_LABEL = -2;
+    /** Default/Fallback font size for labels */
+    public static final double LABEL_DEFAULT_FONT_SIZE = 6;
+    /** Minimum margin above an ammo label */
+    public static final double MIN_MARGIN_ABOVE_LABEL = 0.2;
+    /** Maximum margin above an ammo label */
+    public static final double MAX_MARGIN_ABOVE_LABEL = 3;
+    /** Default margin below an ammo label */
+    public static final double MARGIN_BELOW_LABEL = 0;
+    /** Maximum distance between pips relative to pip diameter (Horizontal) */
+    public static final double PIP_MAX_DISTANCE_MULTIPLIER_X = 1;
+    /** Maximum distance between pips relative to pip diameter (Vertical) */
+    public static final double PIP_MAX_DISTANCE_MULTIPLIER_Y = 0.6;
     /** Default minimum amount of pips for a row */
-    public static final int MIN_PIPS_PER_ROW = 8;
+    public static final int MIN_ARMOR_PIPS_PER_ROW = 8;
     /** Maximum amount of pips displayable, after that we leave blank */
     public static final int MAX_ARMOR_PIPS = 360;
     /** Maximum amount of pips displayable, after that we leave blank */
@@ -55,7 +74,7 @@ public class PrintHandheldWeapon extends PrintEntity {
     public static final int LARGE_LAYOUT_THRESHOLD_WEAPON_TYPE_COUNT = 2;
     public static final int LARGE_LAYOUT_THRESHOLD_AMMO_TYPE_COUNT = 2;
     public static final int LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT1 = 200;
-    public static final int LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT2 = 120;
+    public static final int LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT2 = 125;
 
     private final HandheldWeapon handheldWeapon;
 
@@ -72,374 +91,15 @@ public class PrintHandheldWeapon extends PrintEntity {
         this.handheldWeapon = handheldWeapon;
     }
 
-    public void layoutPips(SVGElement target, Rectangle2D bbox, int pipsCount) {
-        // Define constants.
-        // We work with square side lengths equal to 2*radius.
-        final double S_min = 2 * PIP_MIN_RADIUS;
-        final double S_max = 2 * PIP_RADIUS;
-
-        // Get SVG rectangle dimensions.
-        double W = bbox.getWidth();
-        double H = bbox.getHeight();
-        double startX = bbox.getX();
-        double startY = bbox.getY();
-        // Reserve stroke margin so squares (including stroke) remain inside.
-        double effectiveWidth = W - PIP_STROKE_WIDTH;
-        double effectiveHeight = H - PIP_STROKE_WIDTH;
-
-        // We'll determine a grid configuration.
-        // For multi-row (pipsCount > 8), we search for candidate column counts between
-        // 8 and pipsCount.
-        // For a single row (pipsCount ≤ 8), we force a grid of 8 columns (for spacing)
-        // and 1 row.
-        int bestCols = 0;
-        int bestRows = 0;
-        double bestSquareSize = 0;
-        double bestGap = 0;
-
-        if (pipsCount <= 8) {
-            // Special case: one row but spacing computed as if there were 8 columns.
-            bestCols = 8;
-            bestRows = 1;
-            // Horizontal: 8*S + 7*gap = effectiveWidth, so maximum S from width is
-            // effectiveWidth/8.
-            double S_horizontal_max = effectiveWidth / 8.0;
-            // Vertical: since one row, S can be as high as effectiveHeight.
-            double S_vertical_max = effectiveHeight;
-            double S_candidate = Math.min(S_horizontal_max, S_vertical_max);
-            // Also, to have gap <= S, we need S >= effectiveWidth/(2*8 - 1) =
-            // effectiveWidth/15.
-            double S_lower_from_gap = effectiveWidth / 15.0;
-            if (S_candidate < S_lower_from_gap) {
-                System.out.println("Calculated square size (" + S_candidate +
-                        ") is too small given the spacing requirements.");
-                return;
-            }
-            // Clamp to global bounds.
-            S_candidate = Math.max(S_candidate, S_min);
-            S_candidate = Math.min(S_candidate, S_max);
-            double gap = (effectiveWidth - 8 * S_candidate) / 7.0;
-            // Verify gap condition.
-            if (gap < 0 || gap > S_candidate) {
-                System.out.println("Invalid gap computed: " + gap);
-                return;
-            }
-            bestSquareSize = S_candidate;
-            bestGap = gap;
-        } else {
-            // pipsCount > 8: try candidate configurations with at least 8 columns.
-            int candidateStartCols = 8;
-            int candidateEndCols = pipsCount; // maximum possible columns is pipsCount (each pip in its own column)
-
-            for (int cols = candidateStartCols; cols <= candidateEndCols; cols++) {
-                int rows = (int) Math.ceil((double) pipsCount / cols);
-                // For multi-row, we require that every full row (except possibly the last) has
-                // at least 8 squares.
-                // Since cols is at least 8, this condition is automatically met.
-
-                // Horizontal equation: cols * S + (cols - 1) * gap = effectiveWidth.
-                // For gap ≤ S, we need: S >= effectiveWidth / (2*cols - 1).
-                double S_lower_from_gap = effectiveWidth / (2.0 * cols - 1);
-                double S_horizontal_max = effectiveWidth / cols;
-
-                // Vertical constraint:
-                // If rows == 1 then S_vertical_max = effectiveHeight.
-                // Otherwise, derive an upper bound from:
-                // rows * S + (rows - 1) * ((effectiveWidth - cols*S)/(cols - 1)) <=
-                // effectiveHeight.
-                double S_vertical_max;
-                if (rows == 1) {
-                    S_vertical_max = effectiveHeight;
-                } else if (cols != rows) {
-                    S_vertical_max = (effectiveHeight * (cols - 1) - (rows - 1) * effectiveWidth) / (cols - rows);
-                } else {
-                    S_vertical_max = effectiveHeight / rows;
-                }
-
-                double S_candidate = Math.min(S_horizontal_max, S_vertical_max);
-                if (S_candidate < S_lower_from_gap)
-                    continue;
-                // Enforce global min and max.
-                S_candidate = Math.max(S_candidate, S_min);
-                S_candidate = Math.min(S_candidate, S_max);
-
-                double gap = (effectiveWidth - cols * S_candidate) / (cols - 1);
-                if (gap < 0 || gap > S_candidate)
-                    continue;
-                if (rows * S_candidate + (rows - 1) * gap > effectiveHeight + 1e-9)
-                    continue;
-
-                if (S_candidate > bestSquareSize) {
-                    bestSquareSize = S_candidate;
-                    bestCols = cols;
-                    bestRows = rows;
-                    bestGap = gap;
-                }
-            }
-        }
-
-        if (bestSquareSize < S_min || bestSquareSize <= 0) {
-            System.out.println("Calculated square size (" + bestSquareSize +
-                    ") is less than the minimum allowed (" + S_min + "). No squares created.");
-            return;
-        }
-
-        // Finally, create exactly pipsCount squares.
-        // The grid is computed using bestCols and bestRows (which for pipsCount<=8 is
-        // set to 8 and 1 respectively).
-        int created = 0;
-        for (int r = 0; r < bestRows && created < pipsCount; r++) {
-            for (int c = 0; c < bestCols && created < pipsCount; c++) {
-                double x = startX + (c * (bestSquareSize + bestGap));
-                double y = startY + (r * (bestSquareSize + bestGap));
-                Element pip = createSquarePip(x, y, bestSquareSize, PIP_STROKE_WIDTH);
-                target.appendChild(pip);
-                created++;
-            }
-        }
-    }
-
-    public void printOptimalPipLayout(SVGRectElement svgRect, int count) {
-        if (count < 1) {
-            return;
-        }
-        SVGElement target = (SVGElement) svgRect.getParentNode();
-        if (target == null) {
-            return; // No parent element to append to
-        }
-        // Get the rectangle parameters (assumed available via getters)
-        Rectangle2D svgRectBBox = getRectBBox(svgRect);
-        double rectX = svgRectBBox.getX();
-        double rectY = svgRectBBox.getY();
-        double rectWidth = svgRectBBox.getWidth();
-        double rectHeight = svgRectBBox.getHeight();
-
-        double DIAMETER_MAX = PIP_RADIUS * 2;
-        double DIAMETER_MIN = PIP_MIN_RADIUS * 2;
-
-        double bestPipSize = -1;
-        double bestGap = 0;
-        int bestCols = 0;
-        int bestRows = 0;
-
-        // If count > 1, we start from 2 columns because a single column with multiple
-        // rows is disallowed.
-        int startCols = (count == 1) ? 1 : 2;
-        for (int cols = startCols; cols <= count; cols++) {
-            int rows = (int) Math.ceil((double) count / cols);
-
-            double candidateGap;
-            double candidatePipSize;
-
-            // CASE: Single row (many columns)
-            if (rows == 1) {
-                candidateGap = PIP_STROKE_WIDTH; // minimal gap
-                candidatePipSize = (rectWidth - (cols - 1) * candidateGap) / cols;
-                // Must also fit vertically.
-                if (candidatePipSize > rectHeight) {
-                    continue; // candidate doesn't fit
-                }
-            }
-            // CASE: Multiple rows
-            else {
-                // Start with minimal allowed gap.
-                candidateGap = PIP_STROKE_WIDTH;
-                candidatePipSize = (rectWidth - (cols - 1) * candidateGap) / cols;
-                double verticalOccupancy = rows * candidatePipSize + (rows - 1) * candidateGap;
-
-                if (verticalOccupancy > rectHeight) {
-                    // If the grid is too tall, try adjusting gap if possible (only if rows !=
-                    // cols).
-                    if (rows != cols) {
-                        candidateGap = (rectHeight * cols - rows * rectWidth) / (rows - cols);
-                        candidatePipSize = (rectWidth - (cols - 1) * candidateGap) / cols;
-                        if (candidateGap < PIP_STROKE_WIDTH || candidateGap > candidatePipSize) {
-                            continue; // invalid candidate, skip it
-                        }
-                    } else {
-                        continue; // cannot adjust gap if rows == cols, so skip
-                    }
-                }
-            }
-
-            // Clamp square size to SQUARE_MAX_WIDTH if necessary.
-            if (candidatePipSize > DIAMETER_MAX) {
-                candidatePipSize = DIAMETER_MAX;
-                if (cols > 1) {
-                    candidateGap = (rectWidth - cols * candidatePipSize) / (cols - 1);
-                } else {
-                    candidateGap = PIP_STROKE_WIDTH;
-                }
-                double verticalOccupancy = rows * candidatePipSize + (rows - 1) * candidateGap;
-                if (verticalOccupancy > rectHeight) {
-                    continue;
-                }
-            }
-
-            if (candidatePipSize < DIAMETER_MIN) {
-                continue;
-            }
-
-            // Choose candidate if it produces a larger square.
-            if (candidatePipSize > bestPipSize) {
-                bestPipSize = candidatePipSize;
-                bestGap = candidateGap;
-                bestCols = cols;
-                bestRows = rows;
-            }
-        }
-
-        // Abort if no candidate yields a valid square size.
-        if (bestPipSize < DIAMETER_MIN) {
-            System.out.println("Calculated square size (" + bestPipSize
-                    + ") is less than the minimum allowed (" + DIAMETER_MIN + "). Aborting.");
-            return;
-        }
-
-        double xStep = (bestPipSize + bestGap);
-        double yStep = (bestPipSize + bestGap);
-        if (yStep > (bestPipSize * 2)) {
-            yStep = bestPipSize * 2;
-        }
-
-        // Now, loop through rows and columns (top-left aligned).
-        // If there are more grid cells than the count, we stop after creating 'count'
-        // squares.
-        int createdCount = 0;
-        for (int row = 0; row < bestRows && createdCount < count; row++) {
-            for (int col = 0; col < bestCols && createdCount < count; col++) {
-                double x = rectX + col * yStep;
-                double y = rectY + row * xStep;
-                // Create the square using the helper function.
-                Element pip = createSquarePip(x, y, bestPipSize, PIP_STROKE_WIDTH);
-                target.appendChild(pip);
-                createdCount++;
-            }
-        }
-    }
-
     /**
-     * Creates a square pip SVG element.
+     * Simplified drawing routine for the armor pips
      * 
-     * @param x           X coordinate of the top-left corner
-     * @param y           Y coordinate of the top-left corner
-     * @param size        Size of the square
-     * @param strokeWidth Width of the stroke
-     * @return SVG element representing a square pip
+     * @param svgRect The SVG rectangle element to draw the pips in
+     * @param pipsCount The number of pips to draw
+     * @param useAlternateColumns true if the pips will be drawn in alternate columns
      */
-    private Element createSquarePip(double x, double y, double size, double strokeWidth) {
-        Element square = getSVGDocument().createElementNS(SVGConstants.SVG_NAMESPACE_URI, SVGConstants.SVG_RECT_TAG);
-        square.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
-        square.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
-        square.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(size));
-        square.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(size));
-        square.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
-        square.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, "black");
-        square.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, "none");
-        return square;
-    }
-
-    public void createPips(SVGRectElement svgRect, int pipsCount) {
-        // Get the bounding box of the given rectangle.
-        Rectangle2D svgRectBBox = getRectBBox(svgRect);
-        double rectX = svgRectBBox.getX();
-        double rectY = svgRectBBox.getY();
-        double rectWidth = svgRectBBox.getWidth();
-        double rectHeight = svgRectBBox.getHeight();
-
-        // Constants (assumed to be defined elsewhere in your code)
-        final double minRadius = PIP_MIN_RADIUS; // minimum allowed pip radius
-        final double maxRadius = PIP_RADIUS; // maximum (and starting) pip radius
-        final double stroke = PIP_STROKE_WIDTH; // stroke width (drawn outside the pip)
-
-        // For a pip of radius r, its drawn boundary extends r+stroke from its center.
-        // To guarantee a gap of one stroke between adjacent pips,
-        // the minimal center-to-center distance must be:
-        // d = 2*r + 3*stroke
-
-        // --- 1. Check one-row layout using maxRadius ---
-        // For a one-row layout:
-        // The required width is:
-        // widthOneRow = 2*(maxRadius+stroke) + (pipsCount-1) * (2*maxRadius+3*stroke)
-        // and the required height is:
-        // heightOneRow = 2*(maxRadius+stroke)
-        double oneRowRequiredWidth = 2 * (maxRadius + stroke) + (pipsCount - 1) * (2 * maxRadius + 3 * stroke);
-        double oneRowRequiredHeight = 2 * (maxRadius + stroke);
-        if (oneRowRequiredWidth <= rectWidth && oneRowRequiredHeight <= rectHeight) {
-            // One row fits: compute pip centers such that the leftmost pip is flush.
-            // For the first pip, we want:
-            // centerX = rectX + (maxRadius + stroke)
-            // Then each subsequent pip is offset by (2*maxRadius+3*stroke)
-            double bestPipRadius = maxRadius;
-            SVGElement target = (SVGElement) svgRect.getParentNode();
-            for (int j = 0; j < pipsCount; j++) {
-                double x = rectX + (bestPipRadius + stroke) + j * (2 * bestPipRadius + 3 * stroke);
-                double y = rectY + (bestPipRadius + stroke); // single row (top-aligned)
-                Element pip = createPip(x, y, bestPipRadius, stroke);
-                target.appendChild(pip);
-            }
-            return;
-        }
-
-        // --- 2. Determine optimal grid layout ---
-        // Try possible numbers of rows (from 1 up to pipsCount).
-        // For a given candidate grid of (rows x cols) where cols =
-        // ceil(pipsCount/rows),
-        // the pips must fit horizontally and vertically.
-        // Horizontally the drawn pip areas (including stroke) will span:
-        // totalWidth = 2*(r+stroke) + (cols-1) * (2*r+3*stroke)
-        // which rearranges to: 2*cols*r + (3*cols - 1)*stroke.
-        // So the maximum r allowed horizontally is:
-        // r <= (rectWidth - (3*cols - 1)*stroke) / (2 * cols)
-        // Similarly, vertically:
-        // r <= (rectHeight - (3*rows - 1)*stroke) / (2 * rows)
-        // The candidate pip radius is the minimum of these two and must not exceed
-        // maxRadius.
-        double bestCandidateRadius = -1;
-        int bestRows = 0;
-        int bestCols = 0;
-        for (int rows = 1; rows <= pipsCount; rows++) {
-            int cols = (int) Math.ceil((double) pipsCount / rows);
-            double candidateRHoriz = (rectWidth - (3 * cols - 1) * stroke) / (2 * cols);
-            double candidateRVert = (rectHeight - (3 * rows - 1) * stroke) / (2 * rows);
-            double candidateR = Math.min(candidateRHoriz, candidateRVert);
-            candidateR = Math.min(candidateR, maxRadius);
-            if (candidateR >= minRadius && candidateR > bestCandidateRadius) {
-                bestCandidateRadius = candidateR;
-                bestRows = rows;
-                bestCols = cols;
-            }
-        }
-
-        if (bestCandidateRadius < minRadius) {
-            System.out.println("Calculated optimal pip radius is less than minimum radius. No pips created.");
-            return;
-        }
-
-        // --- 3. Place pips using the chosen grid ---
-        // With grid top-left anchored at (rectX, rectY), the pip centers are computed
-        // so that:
-        // centerX = rectX + (bestCandidateRadius + stroke) +
-        // col*(2*bestCandidateRadius+3*stroke)
-        // centerY = rectY + (bestCandidateRadius + stroke) +
-        // row*(2*bestCandidateRadius+3*stroke)
-        // This guarantees that the top-left pip is flush with the rectangle's top-left
-        // border:
-        // (centerX - (r+stroke)) = rectX and similarly for y.
-        SVGElement target = (SVGElement) svgRect.getParentNode();
-        int pipCountPlaced = 0;
-        for (int row = 0; row < bestRows && pipCountPlaced < pipsCount; row++) {
-            for (int col = 0; col < bestCols && pipCountPlaced < pipsCount; col++) {
-                double x = rectX + (bestCandidateRadius + stroke) + col * (2 * bestCandidateRadius + 3 * stroke);
-                double y = rectY + (bestCandidateRadius + stroke) + row * (2 * bestCandidateRadius + 3 * stroke);
-                Element pip = createPip(x, y, bestCandidateRadius, stroke);
-                target.appendChild(pip);
-                pipCountPlaced++;
-            }
-        }
-    }
-
-    private void printArmorPips(SVGRectElement svgRect, int pipsCount, boolean useAlternateColumns) {
+    private void drawArmorPips(SVGRectElement svgRect, int pipsCount,
+            boolean useAlternateColumns) {
         if (pipsCount < 1) {
             return;
         }
@@ -448,13 +108,8 @@ public class PrintHandheldWeapon extends PrintEntity {
         }
         Rectangle2D bbox = getRectBBox(svgRect);
         SVGElement target = (SVGElement) svgRect.getParentNode();
-        printArmorPipsRectangle(target, bbox, pipsCount, useAlternateColumns);
-    }
-
-    private void printArmorPipsRectangle(SVGElement target, Rectangle2D bbox, int pipsCount,
-            boolean useAlternateColumns) {
         double pipRadius = PIP_RADIUS;
-        int pipsPerRow = MIN_PIPS_PER_ROW;
+        int pipsPerRow = MIN_ARMOR_PIPS_PER_ROW;
         double strokeWidth = PIP_STROKE_WIDTH;
         final double pipResizedRadiusRatio = useAlternateColumns ? 0.6 : 0.4;
         double aspectRatio = bbox.getWidth() / bbox.getHeight();
@@ -466,7 +121,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         }
         final int maxPipsPerRow = (int) ((bbox.getWidth() - PIP_MIN_RADIUS) / (PIP_MIN_RADIUS + strokeWidth * 2));
         pipsPerRow = Math.min(pipsPerRow, maxPipsPerRow);
-        pipsPerRow = Math.max(pipsPerRow, MIN_PIPS_PER_ROW);
+        pipsPerRow = Math.max(pipsPerRow, MIN_ARMOR_PIPS_PER_ROW);
         // Then derive rows from pipsPerRow
         int rows = (int) Math.ceil((double) pipsCount / pipsPerRow);
 
@@ -479,13 +134,13 @@ public class PrintHandheldWeapon extends PrintEntity {
             strokeWidth = Math.max(PIP_STROKE_WIDTH / 3, (pipRadius / 3));
         }
         // Calculate vertical spacing to distribute pips more evenly
-        double spaceBetweenPipsY = (bbox.getHeight() - (useAlternateColumns ? pipRadius : 0)) / (rows + 0.5);
+        double spaceBetweenPipsY = bbox.getHeight() / rows;
 
         // Limit maximum Y spacing
-        if (spaceBetweenPipsY > ((pipRadius + (strokeWidth * 2)) * 2)) {
-            spaceBetweenPipsY = ((pipRadius + (strokeWidth * 2)) * 2);
+        if (spaceBetweenPipsY > ((pipRadius + strokeWidth) * 2)) {
+            spaceBetweenPipsY = ((pipRadius + strokeWidth) * 2);
         }
-        double spaceBetweenPipsX = bbox.getWidth() / (pipsPerRow + 0.5);
+        double spaceBetweenPipsX = bbox.getWidth() / pipsPerRow;
 
         int remainingArmor = pipsCount;
         boolean isOdd = false;
@@ -494,7 +149,7 @@ public class PrintHandheldWeapon extends PrintEntity {
             final double currY = bbox.getY() + pipRadius + (r * spaceBetweenPipsY);
             double currX = bbox.getX() + pipRadius + ((useAlternateColumns && isOdd) ? (spaceBetweenPipsX / 2) : 0);
             for (int c = 0; c < pipsInRow; c++) {
-                Element pip = createPip(currX, currY, pipRadius, strokeWidth);
+                Element pip = createPip(currX - pipRadius, currY - pipRadius, pipRadius, strokeWidth);
                 target.appendChild(pip);
                 remainingArmor--;
                 currX += spaceBetweenPipsX;
@@ -503,27 +158,42 @@ public class PrintHandheldWeapon extends PrintEntity {
         }
     }
 
+    /**
+     * Gets the number of armor pips for the handheld weapon
+     * 
+     * @return The number of armor pips
+     */
     private int getArmorPips() {
-        return handheldWeapon.getOArmor(HandheldWeapon.LOC_GUN);
+        return getEntity().getOArmor(HandheldWeapon.LOC_GUN);
     }
 
+    /**
+     * Gets the number of weapon types in the handheld weapon
+     * 
+     * @return The number of weapon types
+     */
     private int getWeaponsCount() {
-        return (int) handheldWeapon.getEquipment().stream()
+        return (int) getEntity().getEquipment().stream()
                 .filter(m -> m.getType() instanceof WeaponType)
                 .map(m -> m.getType().getShortName())
                 .distinct()
                 .count();
     }
 
+    /**
+     * Gets the list of ammo types and their counts for the handheld weapon
+     * 
+     * @return A list of ammo types and their counts
+     */
     private List<Map.Entry<String, Integer>> getAmmoList() {
-        List<Map.Entry<String, Integer>> ammoDetails = new ArrayList<>();
-        handheldWeapon.getEquipment().stream()
+        List<Map.Entry<String, Integer>> pipsList = new ArrayList<>();
+        getEntity().getEquipment().stream()
                 .filter(m -> m.getType() instanceof AmmoType)
                 .forEach(m -> {
                     String ammoName = m.getType().getShortName().replace("Ammo", "").replace("(Clan)", "");
                     int shotsLeft = m.getBaseShotsLeft();
                     boolean found = false;
-                    for (Map.Entry<String, Integer> entry : ammoDetails) {
+                    for (Map.Entry<String, Integer> entry : pipsList) {
                         if (entry.getKey().equals(ammoName)) {
                             entry.setValue(entry.getValue() + shotsLeft);
                             found = true;
@@ -531,12 +201,17 @@ public class PrintHandheldWeapon extends PrintEntity {
                         }
                     }
                     if (!found) {
-                        ammoDetails.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
+                        pipsList.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
                     }
                 });
-        return ammoDetails;
+        return pipsList;
     }
 
+    /**
+     * Checks if the layout is large based on the number of pips and ammo types
+     * 
+     * @return true if the layout is large, false otherwise
+     */
     public boolean isLargeLayout() {
         if (getArmorPips() > LARGE_LAYOUT_THRESHOLD_ARMOR_PIPS) {
             return true;
@@ -584,130 +259,565 @@ public class PrintHandheldWeapon extends PrintEntity {
         super.writeTextFields();
         final String entityName = CConfig.getMekNameArrangement().printChassis(getEntity())
                 + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
-        setTextField(TYPE, entityName + " (" + formatWeight(handheldWeapon.getWeight()) + ")");
+        setTextField(TYPE, entityName + " (" + formatWeight(getEntity().getWeight()) + ")");
+
     }
 
     @Override
     protected void drawArmor() {
-        super.drawArmor();
-        String armorName = EquipmentType.getArmorTypeName(handheldWeapon.getArmorType(HandheldWeapon.LOC_GUN));
+        String armorName = EquipmentType.getArmorTypeName(getEntity().getArmorType(HandheldWeapon.LOC_GUN));
         EquipmentType armor = EquipmentType.get(armorName);
         if (armor != null) {
             setTextField(ARMOR_TYPE, armor.getShortName(), true);
         }
+        setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(HandheldWeapon.LOC_GUN),
+                getEntity().getOArmor(HandheldWeapon.LOC_GUN));
+        drawArmorStructurePips();
+        drawAmmo();
+    }
+
+    /**
+     * Draws the ammo pips for the handheld weapon.
+     * This method retrieves the ammo types and their counts, calculates the
+     * optimal pip radius and decides if they should be displayed or not
+     */
+    private void drawAmmo() {
+        final String idAmmo = AMMO_PIPS + getEntity().getLocationAbbr(HandheldWeapon.LOC_GUN);
+        final Element elementAmmo = getSVGDocument().getElementById(idAmmo);
+        if (elementAmmo instanceof SVGRectElement svgElement) {
+            List<Map.Entry<String, Integer>> pipsList = getAmmoList();
+            // Only draw if we have ammo
+            if (!pipsList.isEmpty()) {
+                final int totalAmmo = pipsList.stream().mapToInt(Map.Entry::getValue).sum();
+                if (totalAmmo > MAX_AMMO_PIPS) {
+                    // If total pips exceed max, don't draw anything
+                    return;
+                }
+                // Check if we can fit the pips else we don't draw anything
+                final boolean canFit = checkRadiusFit(PIP_MIN_RADIUS, getRectBBox(svgElement), pipsList, pipsList.size() > 1,
+                        LABEL_DEFAULT_FONT_SIZE);
+                if (canFit) {
+                    drawPipsFromList(svgElement, pipsList, false);
+                }
+            }
+        }
+    }
+
+    private void drawPipsFromList(SVGRectElement svgElement, List<Map.Entry<String, Integer>> pipsList,
+            boolean alternate) {
+        drawPipsFromList(svgElement, pipsList, alternate, 0);
+    }
+
+    /**
+     * Draws pips within the specified SVG rectangle element.
+     * Handles standard and alternating row layouts and optimizes pip size.
+     *
+     * @param svgElement The SVGRectElement defining the bounding box.
+     * @param pipsList   List of pips with ammo type and count.
+     * @param alternate  True to use alternating row layout, false for standard grid.
+     */
+    private void drawPipsFromList(SVGRectElement svgElement, List<Map.Entry<String, Integer>> pipsList,
+            boolean alternate, int minColumns) {
+        if (pipsList == null || pipsList.isEmpty()) {
+            return;
+        }
+
+        final double TOLERANCE = 1e-6;
+        Rectangle2D bbox = getRectBBox(svgElement);
+        final SVGElement target = (SVGElement) svgElement.getParentNode();
+
+        // Label Setup
+        final boolean needsLabels = pipsList.size() > 1;
+        double actualLabelHeight = 0;
+        SVGTextElement labelTemplate = null;
+        if (needsLabels) {
+            bbox = new Rectangle2D.Double(
+                bbox.getX(),
+                bbox.getY()+OFFSET_FIRST_LABEL,
+                bbox.getWidth(),
+                bbox.getHeight()-OFFSET_FIRST_LABEL
+            );
+            Element existingLabel = getSVGDocument().getElementById("ammoEntryLabel");
+            if (existingLabel instanceof SVGTextElement) {
+                labelTemplate = (SVGTextElement) existingLabel;
+                double fontSize = LABEL_DEFAULT_FONT_SIZE;
+                try {
+                    String fontSizeStr = labelTemplate.getAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE);
+                    if (!StringUtility.isNullOrBlank(fontSizeStr))
+                        fontSize = Double.parseDouble(fontSizeStr);
+                } catch (Exception e) {
+                    // Could not read font size from 'ammoEntryLabel'!!
+                }
+                fontSize = Math.max(4, fontSize);
+                actualLabelHeight = fontSize;
+            } else {
+                // Could not find label template 'ammoEntryLabel'. Using default text settings and size
+                actualLabelHeight = LABEL_DEFAULT_FONT_SIZE;
+            }
+        }
+
+        // Find Optimal Pip Radius
+        double optimalRadius = findOptimalPipRadius(bbox, pipsList, needsLabels, actualLabelHeight);
+        if (optimalRadius < PIP_MIN_RADIUS - TOLERANCE) { // Use tolerance check
+            // Cannot fit ammo pips, skip drawing
+            return;
+        }
+
+        // Layout Calculations
+        double pipDiameter = 2 * optimalRadius;
+        double pipStroke = PIP_STROKE_WIDTH;
+        // Adjust stroke dynamically if radius is very small
+        if (optimalRadius < (pipStroke * 2.5)) { // Slightly larger threshold than armor
+            pipStroke = Math.max(PIP_STROKE_WIDTH / 3, optimalRadius / 2.5);
+        }
+        double layoutDiameter = pipDiameter + pipStroke;
+        double maxGapX = Math.max(MIN_PIP_SPACING, pipDiameter * PIP_MAX_DISTANCE_MULTIPLIER_X);
+        double maxGapY = Math.max(MIN_PIP_SPACING, pipDiameter * PIP_MAX_DISTANCE_MULTIPLIER_Y);
+
+        // Determine FINAL Column Count (colsToUse)
+        int maxColsPossible = (int) Math
+                .floor((bbox.getWidth() + MIN_PIP_SPACING - TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
+        maxColsPossible = Math.max(1, maxColsPossible);
+        int minColsRequired;
+        double denominatorX = layoutDiameter + maxGapX;
+        if (minColumns > 0) {
+            minColsRequired = minColumns;
+        } else if (denominatorX < TOLERANCE) {
+            minColsRequired = Integer.MAX_VALUE;
+        } else {
+            minColsRequired = (int) Math.ceil((bbox.getWidth() + maxGapX - TOLERANCE) / denominatorX);
+        }
+        minColsRequired = Math.max(1, minColsRequired);
+
+        int colsToUse = -1;
+        boolean firstBlockProcessedHeightCheck;
+        // loop to find colsToUse
+        for (int colsToCheck = minColsRequired; colsToCheck <= maxColsPossible; colsToCheck++) {
+            double totalRequiredHeight = 0;
+            firstBlockProcessedHeightCheck = false;
+            boolean fits = true;
+            for (Map.Entry<String, Integer> entry : pipsList) {
+                int pipsCount = entry.getValue();
+                if (pipsCount <= 0) {
+                    continue;
+                }
+                int rows = (int) Math.ceil((double) pipsCount / colsToCheck);
+                if (needsLabels) {
+                    if (firstBlockProcessedHeightCheck) {
+                        totalRequiredHeight += MIN_MARGIN_ABOVE_LABEL;
+                    }
+                    totalRequiredHeight += actualLabelHeight;
+                    totalRequiredHeight += MARGIN_BELOW_LABEL;
+                } else {
+                    if (firstBlockProcessedHeightCheck) {
+                        totalRequiredHeight += MIN_PIP_SPACING;
+                    }
+                }
+                int gapsInBlock = Math.max(0, rows - 1);
+                totalRequiredHeight += rows * layoutDiameter;
+                totalRequiredHeight += gapsInBlock * MIN_PIP_SPACING;
+                firstBlockProcessedHeightCheck = true;
+                if (totalRequiredHeight > bbox.getHeight() + TOLERANCE) {
+                    fits = false;
+                    break;
+                }
+            }
+            if (fits) {
+                colsToUse = colsToCheck;
+                break;
+            }
+        }
+        if (colsToUse == -1) {
+            colsToUse = maxColsPossible; // Fallback
+        }
+
+        // Calculate Final Horizontal Spacing and Centering
+        double spacingX;
+        double effectiveWidth = bbox.getWidth(); // Start with full width for calculation base
+
+        if (colsToUse <= 1) {
+            spacingX = 0;
+            effectiveWidth = layoutDiameter;
+        } else {
+            // Calculate initial spacing based on full width to estimate the shift
+            double initialSpacingX = (bbox.getWidth() - colsToUse * layoutDiameter) / (colsToUse - 1);
+            initialSpacingX = Math.max(MIN_PIP_SPACING, initialSpacingX);
+            initialSpacingX = Math.min(initialSpacingX, maxGapX);
+
+            if (alternate) {
+                // If alternate mode, calculate the horizontal shift
+                double horizontalShiftForWidthCalc = (layoutDiameter + initialSpacingX) / 2;
+                // Reduce the effective width available for layout
+                effectiveWidth = bbox.getWidth() - horizontalShiftForWidthCalc;
+                // Ensure effectiveWidth is not less than minimum required width
+                double minRequiredWidth = colsToUse * layoutDiameter + Math.max(0, colsToUse - 1) * MIN_PIP_SPACING;
+                if (effectiveWidth < minRequiredWidth - TOLERANCE) {
+                    effectiveWidth = minRequiredWidth;
+                }
+            }
+
+            // Calculate final spacing based on the effective width
+            spacingX = (effectiveWidth - colsToUse * layoutDiameter) / (colsToUse - 1);
+            spacingX = Math.max(MIN_PIP_SPACING, spacingX); // Apply minimum spacing
+            spacingX = Math.min(spacingX, maxGapX); // Apply maximum spacing gap
+        }
+        // Note: spacingX is the gap between the *stroke edges* implicitly,
+        // the distance between *centers* is layoutDiameter + spacingX !!!!!
+
+        // Recalculate the actual width the grid will occupy using the final clamped spacingX
+        double gridWidth = colsToUse * layoutDiameter + Math.max(0, colsToUse - 1) * spacingX;
+        // Center the potentially narrower grid within the original bbox width
+        double horizontalMargin = Math.max(0, (bbox.getWidth() - gridWidth) / 2);
+        // Base X for the center of the first pip in an un-offset row
+        double firstPipCenterX_Base = bbox.getX() + horizontalMargin + optimalRadius + (pipStroke / 2);
+
+        // Calculate Vertical Spacing
+        List<Integer> rowsPerAmmo = new ArrayList<>();
+        double totalMinVerticalHeight = 0;
+        int expandableGaps = 0;
+        boolean firstBlockDrawnVertCalc = false;
+        for (int i = 0; i < pipsList.size(); i++) {
+            int pipsCount = pipsList.get(i).getValue();
+            if (pipsCount <= 0) {
+                rowsPerAmmo.add(0);
+                continue;
+            }
+            int rows = (int) Math.ceil((double) pipsCount / colsToUse);
+            rowsPerAmmo.add(rows);
+            int gapsInBlock = Math.max(0, rows - 1);
+
+            if (needsLabels) {
+                if (firstBlockDrawnVertCalc) {
+                    totalMinVerticalHeight += MIN_MARGIN_ABOVE_LABEL;
+                    expandableGaps++; // Gap between blocks (above label) is expandable
+                }
+                totalMinVerticalHeight += actualLabelHeight; // Label height
+                totalMinVerticalHeight += MARGIN_BELOW_LABEL; // Fixed margin below label (but we expand it later with calculations)
+            } else {
+                // If no labels, gap between blocks is just pip spacing
+                if (firstBlockDrawnVertCalc) {
+                    totalMinVerticalHeight += MIN_PIP_SPACING;
+                    expandableGaps++; // Gap between blocks (no labels) is expandable
+                }
+            }
+            totalMinVerticalHeight += rows * layoutDiameter; // Height of pips themselves
+            totalMinVerticalHeight += gapsInBlock * MIN_PIP_SPACING; // Min height of gaps within block
+            expandableGaps += gapsInBlock; // Gaps within block are expandable
+
+            firstBlockDrawnVertCalc = true;
+        }
+        // Fill remaining rowsPerAmmo
+        while (rowsPerAmmo.size() < pipsList.size())
+            rowsPerAmmo.add(0);
+
+        // Calculate extra spacing to distribute vertically
+        double remainingHeight = bbox.getHeight() - totalMinVerticalHeight;
+        double additionalSpacingY = (expandableGaps > 0 && remainingHeight > TOLERANCE) ? (remainingHeight / expandableGaps) : 0;
+        // Final vertical spacing between pip centers (includes layoutDiameter + calculated gap)
+        double spacingY = MIN_PIP_SPACING + additionalSpacingY;
+        spacingY = Math.max(MIN_PIP_SPACING, spacingY);
+        spacingY = Math.min(spacingY, maxGapY);
+
+        // Calculate effective margins using the distributed spacing
+        double effectiveMarginAbove = MIN_MARGIN_ABOVE_LABEL + additionalSpacingY;
+        effectiveMarginAbove = Math.max(MIN_MARGIN_ABOVE_LABEL, effectiveMarginAbove);
+        effectiveMarginAbove = Math.min(effectiveMarginAbove, MAX_MARGIN_ABOVE_LABEL);
+
+        double effectiveMarginBelow = MARGIN_BELOW_LABEL;
+        effectiveMarginBelow = MARGIN_BELOW_LABEL + additionalSpacingY * 0.2;
+
+        // Finally we start drawing
+        double currentY = bbox.getY(); // We start drawing from the top
+        boolean firstBlockDrawn = false;
+
+        for (int i = 0; i < pipsList.size(); i++) {
+            Map.Entry<String, Integer> entry = pipsList.get(i);
+            String ammoName = entry.getKey();
+            int pipsCount = entry.getValue();
+            int rowsForThisAmmo = rowsPerAmmo.get(i);
+
+            // Skip drawing if no pips or rows allocated for this entry
+            if (pipsCount <= 0 || rowsForThisAmmo <= 0) {
+                continue;
+            }
+
+            // Add vertical spacing BEFORE drawing the block (label or pips)
+            if (firstBlockDrawn) {
+                // Use expandable margin if labels exist, otherwise use expandable pip gap
+                currentY += needsLabels ? effectiveMarginAbove : spacingY;
+            }
+
+            // Draw label
+            double blockContentStartY = currentY; // Y position where label/pips start for this block
+            if (needsLabels) {
+                double labelBaselineY = blockContentStartY + actualLabelHeight * 0.8;
+                double labelStartX = firstPipCenterX_Base - optimalRadius - (pipStroke / 2);
+                labelStartX = Math.max(bbox.getX(), labelStartX);
+                Element label = createLabel(labelTemplate, ammoName + ":", labelStartX, labelBaselineY);
+                target.appendChild(label);
+
+                // Advance currentY past the label and its bottom margin
+                currentY += actualLabelHeight + effectiveMarginBelow;
+            }
+
+            // Draw pips for this block
+            double pipBlockStartY = currentY; // Y position where the pips start for this block
+            int pipsDrawnInBlock = 0;
+
+            for (int r = 0; r < rowsForThisAmmo; r++) { // r is 0-based row index within this ammo block
+                // Calculate the center Y coordinate for pips in this row
+                double pipCenterY = pipBlockStartY + optimalRadius + (pipStroke / 2) // Center of first row
+                        + r * (layoutDiameter + spacingY); // Offset for subsequent rows
+
+                double rowStartX;
+                double horizontalShift = 0; // for alternate mode
+                boolean isEvenRow = alternate && (r % 2 == 1);
+
+                if (isEvenRow && colsToUse > 1) {
+                    // Calculate horizontal offset for even rows using the FINAL calculated spacingX
+                    horizontalShift = (layoutDiameter + spacingX) / 2;
+                    rowStartX = firstPipCenterX_Base + horizontalShift;
+                } else {
+                    // Odd rows or non-alternate mode start at the base X position
+                    rowStartX = firstPipCenterX_Base;
+                }
+
+                // Determine the number of pips to draw in this specific row
+                int pipsRemainingInBlock = pipsCount - pipsDrawnInBlock;
+                int numPipsThisRow = Math.min(colsToUse, pipsRemainingInBlock);
+                numPipsThisRow = Math.max(0, numPipsThisRow); // Ensure non-negative
+
+                // Draw the pips for this row
+                for (int c = 0; c < numPipsThisRow; c++) {
+                    double pipCenterX = rowStartX + c * (layoutDiameter + spacingX);
+                    Element pip = createPip(pipCenterX - optimalRadius, pipCenterY - optimalRadius, optimalRadius,
+                            pipStroke);
+                    target.appendChild(pip);
+                }
+                pipsDrawnInBlock += numPipsThisRow;
+            }
+            // Update the current Y position for the next block
+            currentY = pipBlockStartY + rowsForThisAmmo * layoutDiameter + Math.max(0, rowsForThisAmmo - 1) * spacingY;
+
+            firstBlockDrawn = true;
+        }
+    }
+
+    /**
+     * Finds the largest possible radius for pips that allows all ammo types (and
+     * labels) to fit within the bounding box, respecting size and spacing constraints.
+     * Uses a binary search approach.
+     *
+     * @param bbox        Bounding box for drawing.
+     * @param pipsList    List of ammo types and counts.
+     * @param needsLabels Whether labels are required.
+     * @param labelHeight Estimated height of one label row including margins.
+     * @return The optimal pip radius, or 0 if no fit is found.
+     */
+    private double findOptimalPipRadius(Rectangle2D bbox, List<Map.Entry<String, Integer>> pipsList,
+            boolean needsLabels, double labelHeight) {
+
+        double low = PIP_MIN_RADIUS;
+        // Start high search bound slightly larger than default radius, limited by box dimensions
+        double high = Math.min(PIP_RADIUS * 1.2, Math.min(bbox.getWidth(), bbox.getHeight()) / 2);
+        double bestRadius = 0;
+        int iterations = 10;
+        final double SEARCH_TOLERANCE = 1e-4; // Tolerance for binary search convergence
+
+        // Check if even the minimum radius fits before starting search
+        if (!checkRadiusFit(PIP_MIN_RADIUS, bbox, pipsList, needsLabels, labelHeight)) {
+            return 0; // Cannot fit even the smallest pips
+        }
+
+        // Binary search for the best radius
+        for (int i = 0; i < iterations; i++) {
+            double mid = low + (high - low) / 2;
+            if (mid < PIP_MIN_RADIUS)
+                mid = PIP_MIN_RADIUS;
+
+            if (checkRadiusFit(mid, bbox, pipsList, needsLabels, labelHeight)) {
+                // This radius fits, it's a potential candidate. Try larger.
+                bestRadius = mid;
+                low = mid;
+            } else {
+                // This radius doesn't fit, need smaller.
+                high = mid;
+            }
+            // Break early if the search range is very small
+            if (high - low < SEARCH_TOLERANCE)
+                break;
+        }
+
+        // bestRadius now holds the largest value tested that fit.
+        if (bestRadius >= PIP_MIN_RADIUS - SEARCH_TOLERANCE) {
+            return Math.min(PIP_RADIUS, Math.max(PIP_MIN_RADIUS, bestRadius));
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Checks if pips of a given radius can fit all ammo types (and labels)
+     * within the bounding box. Iterates through valid column counts to see if
+     * *any* configuration allows vertical fit using minimum spacing.
+     */
+    private boolean checkRadiusFit(double radiusToTest, Rectangle2D bbox, List<Map.Entry<String, Integer>> pipsList,
+            boolean needsLabels, double labelHeight) {
+
+        final double TOLERANCE = 1e-6; // Tolerance for floating point comparisons
+        if (radiusToTest < PIP_MIN_RADIUS - TOLERANCE)
+            return false; // Definitely too small
+
+            double pipDiameter = 2 * radiusToTest;
+        double pipStroke = PIP_STROKE_WIDTH;
+        double layoutDiameter = pipDiameter + pipStroke;
+        double boxWidth = bbox.getWidth();
+        double boxHeight = bbox.getHeight();
+
+        // Check if a single pip even fits horizontally/vertically
+        if (layoutDiameter > boxWidth + TOLERANCE || layoutDiameter > boxHeight + TOLERANCE) {
+            return false;
+        }
+
+        // Determine the range of possible column counts for this radius
+        int maxColsPossible = (int) Math
+                .floor((boxWidth + MIN_PIP_SPACING + TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
+        maxColsPossible = Math.max(1, maxColsPossible); // Must be at least 1 column
+
+        for (int colsToCheck = 1; colsToCheck <= maxColsPossible; colsToCheck++) {
+            double totalRequiredHeight = 0;
+            boolean firstBlockProcessed = false;
+            boolean possibleWithThisColCount = true;
+
+            // Calculate total minimum vertical height required for 'colsToCheck' columns
+            for (Map.Entry<String, Integer> entry : pipsList) {
+                int pipsCount = entry.getValue();
+                if (pipsCount <= 0) {
+                    continue;
+                }
+
+                // Calculate rows needed for this ammo type with 'colsToCheck' columns
+                int rows = (int) Math.ceil((double) pipsCount / colsToCheck);
+                if (rows == 0 && pipsCount > 0) {
+                    rows = 1;
+                }
+
+                // Add height for label and margins if needed
+                if (needsLabels) {
+                    if (firstBlockProcessed) {
+                        totalRequiredHeight += MIN_MARGIN_ABOVE_LABEL;
+                    }
+                    totalRequiredHeight += labelHeight;
+                    totalRequiredHeight += MARGIN_BELOW_LABEL;
+                } else {
+                    // If no labels, add minimum pip spacing between blocks
+                    if (firstBlockProcessed) {
+                        totalRequiredHeight += MIN_PIP_SPACING;
+                    }
+                }
+
+                // Add height for the pips themselves in this block
+                int gapsInBlock = Math.max(0, rows - 1);
+                totalRequiredHeight += rows * layoutDiameter; // Height of pip rows
+                totalRequiredHeight += gapsInBlock * MIN_PIP_SPACING; // Minimum height of gaps within block
+
+                firstBlockProcessed = true;
+
+                // Check if the required height already exceeds the available box height
+                if (totalRequiredHeight > boxHeight + TOLERANCE) {
+                    possibleWithThisColCount = false; // This column count requires too much height
+                    break;
+                }
+            }
+
+            // If after checking all ammo types, the total height fits for this column count
+            if (possibleWithThisColCount) {
+                return true; // Found a valid column count that fits
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Creates an SVG text element for an ammo label.
+     * Attempts to clone style from a template if provided.
+     *
+     * @param template Optional SVGTextElement to clone style from.
+     * @param text     The text content for the label.
+     * @param x        X coordinate for the label (usually text-anchor start).
+     * @param y        Y coordinate for the label (baseline).
+     * @return SVG element representing the text label.
+     */
+    private Element createLabel(SVGTextElement template, String text, double x, double y) {
+        SVGTextElement label;
+        boolean cloned = false;
+        if (template != null) {
+            try {
+                label = (SVGTextElement) template.cloneNode(false);
+
+                // Remove attributes that should be unique or might cause issues
+                label.removeAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE);
+                label.removeAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE);
+                label.removeAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE);
+                label.removeAttributeNS(null, SVGConstants.CSS_VISIBILITY_PROPERTY);
+                label.removeAttributeNS(null, SVGConstants.CSS_DISPLAY_PROPERTY);
+
+                // Remove text content
+                while (label.hasChildNodes()) {
+                    label.removeChild(label.getFirstChild());
+                }
+                cloned = true;
+            } catch (Exception e) {
+                // Cloning failed, create a new label instead
+                label = (SVGTextElement) getSVGDocument().createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                        SVGConstants.SVG_TEXT_TAG);
+            }
+        } else {
+            // Create a new text element with default attributes if no template
+            label = (SVGTextElement) getSVGDocument().createElementNS(SVGConstants.SVG_NAMESPACE_URI,
+                    SVGConstants.SVG_TEXT_TAG);
+        }
+
+        // Apply default styles if missing
+        if (!cloned || !label.hasAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+            label.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, "Eurostile");
+        }
+        if (!cloned || !label.hasAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE)) {
+            label.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, String.valueOf(LABEL_DEFAULT_FONT_SIZE));
+        }
+        if (!cloned || !label.hasAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE)) {
+            label.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+        }
+        if (!label.hasAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE)) {
+            label.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, SVGConstants.SVG_START_VALUE);
+        }
+
+        label.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
+        label.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
+
+        Text textNode = getSVGDocument().createTextNode(text);
+        label.appendChild(textNode);
+
+        return label;
     }
 
     @Override
-    void writeArmorStructureTextFields() {
-        setTextField(TEXT_ARMOR + handheldWeapon.getLocationAbbr(HandheldWeapon.LOC_GUN),
-                handheldWeapon.getOArmor(HandheldWeapon.LOC_GUN));
+    protected void drawStructure() {
+        // Not used
     }
 
     @Override
     protected void drawArmorStructurePips() {
-        final String idArmor = ARMOR_PIPS + handheldWeapon.getLocationAbbr(HandheldWeapon.LOC_GUN);
+        // Draws the armor pips using the specific armor drawing logic
+        final String idArmor = ARMOR_PIPS + getEntity().getLocationAbbr(HandheldWeapon.LOC_GUN);
         Element elementArmor = getSVGDocument().getElementById(idArmor);
-        if (elementArmor instanceof SVGRectElement) {
+        if (elementArmor instanceof SVGRectElement svgRect) {
             final int armorPips = getArmorPips();
-            if (armorPips <= MAX_ARMOR_PIPS) {
-                printArmorPips((SVGRectElement) elementArmor, armorPips, true);
+            if (armorPips <= MAX_ARMOR_PIPS && armorPips > 0) {
+                // Use the dedicated armor pip drawing function which handles its own layout
+                drawArmorPips(svgRect, armorPips, true); // Use alternate for armor
             }
-        }
-        final String idAmmo = AMMO_PIPS + handheldWeapon.getLocationAbbr(HandheldWeapon.LOC_GUN);
-        Element elementAmmo = getSVGDocument().getElementById(idAmmo);
-        if (elementAmmo instanceof SVGRectElement) {
-            List<Map.Entry<String, Integer>> ammoDetails = new ArrayList<>();
-            handheldWeapon.getEquipment().stream()
-                    .filter(m -> m.getType() instanceof AmmoType)
-                    .forEach(m -> {
-                        String ammoName = m.getType().getShortName().replace("Ammo", "").replace("(Clan)", "");
-                        int shotsLeft = m.getBaseShotsLeft();
-                        boolean found = false;
-                        System.out.println(ammoName);
-                        for (Map.Entry<String, Integer> entry : ammoDetails) {
-                            if (entry.getKey().equals(ammoName)) {
-                                entry.setValue(entry.getValue() + shotsLeft);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            ammoDetails.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
-                        }
-                    });
-            int ammoCount = ammoDetails.stream()
-                    .mapToInt(Map.Entry::getValue)
-                    .sum();
-            if (ammoDetails.size() > 0 && ammoCount <= MAX_AMMO_PIPS) {
-                if (ammoDetails.size() == 1) {
-                    Rectangle2D bbox = getRectBBox((SVGRectElement) elementAmmo);
-                    SVGElement target = (SVGElement) elementAmmo.getParentNode();
-                    layoutPips(target, bbox, ammoCount);
-                } else {
-                    Rectangle2D bbox = getRectBBox((SVGRectElement) elementAmmo);
-                    System.out.println("Full bounding box: " + bbox);
-                    SVGElement target = (SVGElement) elementAmmo.getParentNode();
-                    Element ammoMainLabel = getSVGDocument().getElementById("ammoLabel");
-                    if (ammoMainLabel != null) {
-                        ammoMainLabel.setTextContent(ammoDetails.get(0).getKey() + ':');
-                    }
-                    double totalHeight = bbox.getHeight();
-                    double textHeight = 8.4; // Approximate text height for labels
-                    double totalTextSpace = textHeight * (ammoDetails.size() - 1);
-                    double availablePipSpace = totalHeight - totalTextSpace;
-                    System.out.println("Total Height: " + totalHeight);
-                    System.out.println("Available pip space: " + availablePipSpace);
-                    double currentY = bbox.getY();
-                    // First entry (already has label)
-                    double firstProportion = Math.max(MIN_PIPS_PER_ROW * 2, ammoDetails.get(0).getValue())
-                            / (double) ammoCount;
-                    double firstPipHeight = availablePipSpace * firstProportion;
-
-                    // Create bounding box for first entry
-                    Rectangle2D firstBBox = new Rectangle2D.Double(
-                            bbox.getX(),
-                            currentY,
-                            bbox.getWidth(),
-                            firstPipHeight);
-                    System.out.println("First ammo type bounding box: " + firstBBox);
-
-                    // Draw pips for first entry
-                    layoutPips(target, firstBBox, ammoDetails.get(0).getValue());
-                    currentY += firstPipHeight;
-
-                    // Process remaining entries
-                    for (int j = 1; j < ammoDetails.size(); j++) {
-                        // Create text label for this ammo type
-                        Element ammoLabel = (Element) ammoMainLabel.cloneNode(true);
-                        ammoLabel.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(21));
-                        ammoLabel.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE,
-                                String.valueOf(currentY + (textHeight / 1.3)));
-                        ammoLabel.setTextContent(ammoDetails.get(j).getKey() + ":");
-                        ammoLabel.removeAttribute("id");
-                        target.appendChild(ammoLabel);
-                        currentY += textHeight;
-                        double proportion = Math.max(MIN_PIPS_PER_ROW * 2, ammoDetails.get(j).getValue())
-                                / (double) ammoCount;
-                        double pipHeight = availablePipSpace * proportion;
-
-                        // Create bounding box for this ammo type's pips
-                        Rectangle2D ammoTypeBBox = new Rectangle2D.Double(
-                                bbox.getX(),
-                                currentY,
-                                bbox.getWidth(),
-                                pipHeight);
-                        System.out.println("Ammo type bounding box: " + ammoTypeBBox);
-
-                        // Draw pips for this ammo type
-                        layoutPips(target, ammoTypeBBox, ammoDetails.get(j).getValue());
-
-                        // Update position for next ammo type
-                        currentY += pipHeight;
-                    }
-                }
-
-            }
-
         }
     }
 

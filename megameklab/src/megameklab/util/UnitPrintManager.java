@@ -198,6 +198,16 @@ public class UnitPrintManager {
                         protoList = new ArrayList<>();
                     }
                 } else if (unit instanceof HandheldWeapon) {
+                    if (!singlePrint) {
+                        final PrintHandheldWeapon phw = new PrintHandheldWeapon((HandheldWeapon) unit, pageCount, options);
+                        final int reservedSpace = phw.isLargeLayout() ? 1 : 0;
+                        if (reservedSpace > 0 && PrintSmallUnitSheet.fillsSheet(hhwList, options, reservedSpace)) {
+                            PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                            pageCount += prs.getPageCount();
+                            sheets.add(prs);
+                            hhwList = new ArrayList<>();
+                        }
+                    } 
                     hhwList.add((HandheldWeapon) unit);
                     if (singlePrint || PrintSmallUnitSheet.fillsSheet(hhwList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
