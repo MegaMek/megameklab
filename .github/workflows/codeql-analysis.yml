@@ -2,24 +2,33 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
     paths-ignore:
       - "**/*.mtf"
       - "**/*.blk"
       - "**/*.pdf"
-
+ 
 jobs:
   analyze:
     name: Analyze
     strategy:
       fail-fast: false
-    runs-on: [ubuntu-latest]
+    runs-on: [ ubuntu-latest ]
 
     steps:
-      - name: "Check out MegaMekLab"
+      - name: "Check out MegaMek"
         uses: actions/checkout@v4
+        with:
+          path: megameklab
+
+      - name: Checkout MegaMek
+        uses: actions/checkout@v4
+        with:
+          repository: MegaMek/megamek
+          ref: master
+          path: megamek
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -27,6 +36,8 @@ jobs:
           languages: java-kotlin
           build-mode: none
           queries: security-and-quality
+        working-directory: megameklab
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        working-directory: megameklab
