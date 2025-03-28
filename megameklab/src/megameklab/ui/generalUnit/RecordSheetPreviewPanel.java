@@ -64,6 +64,7 @@ import megameklab.util.UnitPrintManager;
 
 /**
  * @author pavelbraginskiy
+ * @author drake
  *         Simply fills itself with the record sheet for the given unit.
  */
 public class RecordSheetPreviewPanel extends JPanel {
@@ -570,9 +571,9 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         g.setRenderingHints(rh);
 
-        // White background
-        g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, width, height);
+        // Background
+        g.setBackground(Color.GRAY);
+        g.fillRect(0, 0, width, height);
 
         if (entities != null && !entities.isEmpty()) {
             BufferedImage img = cachedImage != null ? cachedImage.get() : null;
