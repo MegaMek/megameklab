@@ -35,6 +35,7 @@ jobs:
         with:
           languages: java-kotlin
           queries: security-and-quality
+          build-mode: autobuild
           config: |
             paths:
               - megameklab
