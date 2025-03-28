@@ -9,7 +9,7 @@ on:
       - "**/*.mtf"
       - "**/*.blk"
       - "**/*.pdf"
- 
+
 jobs:
   analyze:
     name: Analyze
@@ -36,7 +36,6 @@ jobs:
           languages: java-kotlin
           build-mode: none
           queries: security-and-quality
-        working-directory: megameklab
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
