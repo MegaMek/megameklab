@@ -13,9 +13,9 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        java-distribution: [temurin]
-        java-version: [17]
+        os: [ ubuntu-latest ]
+        java-distribution: [ temurin ]
+        java-version: [ 17 ]
       fail-fast: false
 
     name: Nightly MegaMekLab CI ${{ matrix.os }} on ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
