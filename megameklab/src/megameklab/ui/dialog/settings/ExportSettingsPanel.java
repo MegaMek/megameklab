@@ -60,6 +60,7 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkRowShading = new JCheckBox();
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
+    private final JCheckBox chkBoldType = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -112,6 +113,10 @@ class ExportSettingsPanel extends JPanel {
         chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
         chkFrameless.setToolTipText(resourceMap.getString("ConfigurationDialog.chkFrameless.tooltip"));
         chkFrameless.setSelected(CConfig.getBooleanParam(CConfig.RS_FRAMELESS));
+
+        chkBoldType.setText(resourceMap.getString("ConfigurationDialog.chkBoldType.text"));
+        chkBoldType.setToolTipText(resourceMap.getString("ConfigurationDialog.chkBoldType.tooltip"));
+        chkBoldType.setSelected(CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -195,6 +200,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkTacOpsHeat);
         gridPanel.add(chkAlternateArmorGrouping);
         gridPanel.add(chkFrameless);
+        gridPanel.add(chkBoldType);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
         SpringUtilities.makeCompactGrid(gridPanel, 17, 1, 0, 0, 15, 6);
@@ -224,6 +230,7 @@ class ExportSettingsPanel extends JPanel {
                 Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
+        recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
         return recordSheetSettings;
     }
 

@@ -257,9 +257,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    private void makeBoldType() {
+        if (options.useBoldType()) {
+            Element e = getSVGDocument().getElementById(TYPE);
+            String style = e.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (style == null || style.isEmpty()) {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, "font-weight:bold;");
+            } else if (!style.contains("font-weight:")) {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style + "font-weight:bold;");
+            } else {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                        style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+            }
+        }
+    }
+
     private void makeFrameless() {
-        for (Element e : getElementsByClass(FRAME)) {
-            if (options.isFrameless()) {
+        if (options.isFrameless()) {
+            for (Element e : getElementsByClass(FRAME)) {
                 hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
 
                 // I have no idea with this loop is necessary
@@ -292,7 +307,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
             return null;
         }
-
 
         Document document = null;
         try (InputStream is = Files.newInputStream(filePath)) {
@@ -378,6 +392,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         processImage(pageIndex - firstPage, pageFormat);
         shadeTableRows();
         makeFrameless();
+        makeBoldType();
         return true;
     }
 
@@ -424,7 +439,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             if (winDir == null) {
                 winDir = "C:\\Windows";
             }
-            directories.add(winDir+"\\Fonts");
+            directories.add(winDir + "\\Fonts");
             directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
             directories.add("/System/Library/Fonts");
