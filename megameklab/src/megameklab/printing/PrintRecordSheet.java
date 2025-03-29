@@ -38,6 +38,11 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
@@ -235,17 +240,36 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    /**
+     * Finds elements by class name (using XPath).
+     *
+     * @param className The class name to search for.
+     * @return A list of matching elements.
+     */
     private ArrayList<Element> getElementsByClass(String className) {
-        var tags = getSVGDocument().getElementsByTagName("*");
-        var ret = new ArrayList<Element>(tags.getLength());
-        for (int i = 0; i < tags.getLength(); i++) {
-            var tag = tags.item(i);
-            if (className.equals(
-                    Optional.ofNullable(tag.getAttributes().getNamedItem("class"))
-                            .map(Node::getNodeValue)
-                            .orElse(null))) {
-                ret.add((Element) tag);
+        ArrayList<Element> ret = new ArrayList<>();
+        if (className == null || className.isEmpty() || getSVGDocument() == null) {
+            return ret;
+        }
+
+        try {
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            String expressionStr = "//*[contains(concat(' ', normalize-space(@class), ' '), ' " + className + " ')]";
+            XPathExpression expr = xpath.compile(expressionStr);
+
+            NodeList nodeList = (NodeList) expr.evaluate(getSVGDocument(), XPathConstants.NODESET);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                if (nodeList.item(i) instanceof Element element) {
+                    ret.add(element);
+                }
             }
+
+        } catch (XPathExpressionException e) {
+            logger.error("XPath error finding elements by class '" + className + "': " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error(
+                    "Unexpected error finding elements by class '" + className + "' using XPath: " + e.getMessage(), e);
         }
 
         return ret;
