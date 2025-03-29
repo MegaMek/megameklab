@@ -157,7 +157,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     private void drawFluffImage() {
         Entity unit = entities.get(0);
-        if (!unit.isProtoMek() && !unit.isInfantry()) {
+        if (!unit.isProtoMek() && !unit.isInfantry() && !unit.isHandheldWeapon()) {
             return;
         }
         if (entities.size() > 1) {
