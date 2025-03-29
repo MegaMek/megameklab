@@ -104,6 +104,7 @@ public interface IdConstants {
     String TEXT_KFDRIVE = "textKFDrive";
     String TEXT_DOCKING_COLLARS = "textDockingCollars";
     String ARMOR_PIPS = "armorPips";
+    String AMMO_PIPS = "ammoPips";
     String IS_PIPS = "isPips";
     String IS_PIPS_HD = "isPipsHD";
     String IS_PIPS_HD_SH = "isPipsHD_SH";
