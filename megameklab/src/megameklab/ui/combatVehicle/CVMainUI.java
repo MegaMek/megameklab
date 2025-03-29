@@ -92,6 +92,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         statusbar.refresh();
+        quirksTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();

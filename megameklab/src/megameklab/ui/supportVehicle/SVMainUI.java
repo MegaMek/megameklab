@@ -102,6 +102,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         buildTab.refresh();
         transportTab.refresh();
         statusbar.refresh();
+        quirksTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
