@@ -273,23 +273,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     private void makeFrameless() {
-        if (options.isFrameless()) {
-            for (Element e : getElementsByClass(FRAME)) {
-                hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
+        if (!options.isFrameless()) {
+            return;
+        }
+        for (Element e : getElementsByClass(FRAME)) {
+            hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
 
-                // I have no idea with this loop is necessary
-                // Hiding a parent should hide its children
-                // But without it pilot data sneaks onto the sheet
-                for (int i = 0; i < e.getChildNodes().getLength(); i++) {
-                    var c = e.getChildNodes().item(i);
-                    if (!(c instanceof SVGOMElement child)) {
-                        continue;
-                    }
-                    if (child.getId() == null) {
-                        child.setId(UUID.randomUUID().toString());
-                    }
-                    hideElement(child.getId());
+            // I have no idea with this loop is necessary
+            // Hiding a parent should hide its children
+            // But without it pilot data sneaks onto the sheet
+            for (int i = 0; i < e.getChildNodes().getLength(); i++) {
+                var c = e.getChildNodes().item(i);
+                if (!(c instanceof SVGOMElement child)) {
+                    continue;
                 }
+                if (child.getId() == null) {
+                    child.setId(UUID.randomUUID().toString());
+                }
+                hideElement(child.getId());
             }
         }
     }
