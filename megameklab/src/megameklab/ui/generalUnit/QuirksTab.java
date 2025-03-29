@@ -279,9 +279,6 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
         int currentNumCols = calculateNumberOfColumns(availableWidthInPanel, globalMaxItemWidth);
 
-        System.out.println("QuirksTab: Container width: " + containerWidth + ", available width: "
-                + availableWidthInPanel + ", max item width: " + globalMaxItemWidth + ", numCols: " + currentNumCols
-                + ", lastNumCols: " + lastCalculatedNumCols);
         // Only relayout if the number of columns needs to change
         if (currentNumCols != lastCalculatedNumCols) {
             lastCalculatedNumCols = currentNumCols;
