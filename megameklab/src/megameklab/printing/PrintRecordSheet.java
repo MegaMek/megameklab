@@ -284,6 +284,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private void makeBoldType() {
         if (options.useBoldType()) {
             Element e = getSVGDocument().getElementById(TYPE);
+            if (e == null) {
+                return;
+            }
             String style = e.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
             if (style == null || style.isEmpty()) {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, "font-weight:bold;");
