@@ -1178,7 +1178,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Adds a closeable tab to this tabbed pane
      *
      * @param title          The title of the tab
-     * @param icon           The icon to display in the tab
+     * @param icon           the {@link Icon} for the tab.
      * @param component      The component to display in the tab
      * @param tabIndex       The index at which to add the tab
      *

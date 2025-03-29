@@ -34,8 +34,8 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java-kotlin
-          build-mode: none
           queries: security-and-quality
+          build-mode: none
           config: |
             paths:
               - megameklab
