@@ -52,14 +52,12 @@ public class DSMainUI extends MegaMekLabMainUI {
     public DSMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
         MekSummaryCache.getInstance();
     }
 
     public DSMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
-        finishSetup();
         MekSummaryCache.getInstance();
     }
 
@@ -190,6 +188,7 @@ public class DSMainUI extends MegaMekLabMainUI {
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

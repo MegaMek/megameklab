@@ -99,9 +99,6 @@ public interface MenuBarOwner extends AppCloser {
             getFrame().setVisible(false);
             getFrame().dispose();
             CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
-            if (this instanceof MegaMekLabMainUI) {
-                CConfig.writeMainUiWindowSettings((MegaMekLabMainUI) this);
-            }
             CConfig.saveConfig();
             UiLoader.loadUi(type, primitive, false);
         }

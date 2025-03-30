@@ -40,13 +40,11 @@ public class BAMainUI extends MegaMekLabMainUI {
     public BAMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public BAMainUI() {
         super();
         createNewUnit(Entity.ETYPE_BATTLEARMOR);
-        finishSetup();
     }
 
     @Override
@@ -81,6 +79,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

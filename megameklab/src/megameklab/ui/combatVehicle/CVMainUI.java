@@ -44,13 +44,11 @@ public class CVMainUI extends MegaMekLabMainUI {
     public CVMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public CVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_TANK, false, false);
-        finishSetup();
     }
 
     @Override
@@ -88,6 +86,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new CVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

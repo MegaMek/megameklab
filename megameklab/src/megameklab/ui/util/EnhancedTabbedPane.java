@@ -1530,6 +1530,26 @@ public class EnhancedTabbedPane extends JTabbedPane {
         return brightness > 130;
     }
 
+    /**
+     * Checks if the specified component is the currently selected tab
+     * 
+     * @param component The component to check
+     * @return
+     */
+    public boolean isTabSelected(Component component) {
+        int selectedIndex = getSelectedIndex();
+        if (selectedIndex >= 0) {
+            final Component tab = getTabComponentAt(selectedIndex);
+            if (tab instanceof CloseableTab closeableTab) {
+                return selectedIndex == closeableTab.findTabIndex();
+            } else {
+                Component selectedComponent = getComponentAt(selectedIndex);
+                return component == selectedComponent;
+            }
+        }
+        return false;
+    }
+
     private void removePreviewTab() {
         if (isShowingDockingPreview && previewTabIndex >= 0 && previewTabIndex < getTabCount()) {
             // Verify this is actually our preview tab
@@ -1997,6 +2017,15 @@ public class EnhancedTabbedPane extends JTabbedPane {
          */
         public String getTitle() {
             return titleLabel.getText();
+        }
+
+        /**
+         * Checks if this tab is selected
+         * 
+         * @return True if this tab is selected, false otherwise
+         */
+        public boolean isTabSelected() {
+            return (parentPane.getSelectedIndex() == findTabIndex());
         }
 
         /**

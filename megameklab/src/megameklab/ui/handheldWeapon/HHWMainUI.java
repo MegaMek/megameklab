@@ -32,13 +32,11 @@ public class HHWMainUI extends MegaMekLabMainUI {
     public HHWMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public HHWMainUI() {
         super();
         createNewUnit(Entity.ETYPE_HANDHELD_WEAPON);
-        finishSetup();
     }
 
     @Override
@@ -62,6 +60,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

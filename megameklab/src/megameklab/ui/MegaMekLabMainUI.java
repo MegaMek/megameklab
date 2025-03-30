@@ -15,38 +15,32 @@
  */
 package megameklab.ui;
 
-import megamek.MegaMek;
-import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.Mounted;
-import megamek.common.preference.PreferenceManager;
-import megameklab.MMLConstants;
-import megameklab.MegaMekLab;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
 import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
-import megameklab.util.MMLFileDropTransferHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 
 public abstract class MegaMekLabMainUI extends JFrame
-        implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
+        implements RefreshListener, EntitySource, FileNameManager {
 
     protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
     private Entity entity = null;
     private String fileName = "";
-    protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
     private MegaMekLabTabbedUI tabOwner = null;
+    private boolean initializedTabs = false;
 
     public MegaMekLabMainUI() {
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
         // Register tab reattachment listener
         configPane.addTabStateListener(new TabStateListener() {
             @Override
@@ -56,31 +50,19 @@ public abstract class MegaMekLabMainUI extends JFrame
                 configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
             }
         });
-    }
-
-    protected void finishSetup() {
-        mmlMenuBar = new MenuBar(this);
-        setJMenuBar(mmlMenuBar);
-        reloadTabs();
-        refreshAll();
-        this.setTransferHandler(new MMLFileDropTransferHandler(this));
-    }
-
-    protected void setSizeAndLocation() {
-        pack();
-        restrictToScreenSize();
-        setLocationRelativeTo(null);
-        CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
-        CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
-    }
-
-    private void restrictToScreenSize() {
-        DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
-        int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
-        int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
-        int w = Math.min(getSize().width, scaledMonitorW);
-        int h = Math.min(getSize().height, scaledMonitorH);
-        setSize(new Dimension(w, h));
+        final Container contentPane = getContentPane();
+        contentPane.addHierarchyListener(new HierarchyListener() {
+            @Override
+            public void hierarchyChanged(HierarchyEvent e) {
+                if (tabOwner == null) return;
+                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                    if (!initializedTabs && tabOwner.isTabEditorSelected(MegaMekLabMainUI.this)) {
+                        initializedTabs = true;
+                        reloadTabs();
+                    }
+                }
+            }
+        });
     }
 
     public EnhancedTabbedPane getConfigPane() {
@@ -95,16 +77,12 @@ public abstract class MegaMekLabMainUI extends JFrame
 
     @Override
     public void setVisible(boolean b) {
-        if (b) {
-            setSizeAndLocation();
-        }
         super.setVisible(b);
         if (!b && (getFloatingEquipmentDatabase() != null)) {
             getFloatingEquipmentDatabase().setVisible(false);
         }
     }
 
-    @Override
     public boolean safetyPrompt() {
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
@@ -116,23 +94,15 @@ public abstract class MegaMekLabMainUI extends JFrame
                     JOptionPane.WARNING_MESSAGE);
             // When the user did not actually save the unit, return as if CANCEL was pressed
             return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION) && mmlMenuBar.saveUnit());
+                    || ((savePrompt == JOptionPane.YES_OPTION)); // && mmlMenuBar.saveUnit()); //TODO: saveUnit() method
         }
     }
 
-    @Override
     public boolean exit() {
         if (!safetyPrompt()) {
             return false;
         }
         reattachAllTabs();
-        CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
-        CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
-        CConfig.writeMainUiWindowSettings(this);
-        CConfig.saveConfig();
-        PreferenceManager.getInstance().save();
-        MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
-        MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
         return true;
     }
 
@@ -205,7 +175,6 @@ public abstract class MegaMekLabMainUI extends JFrame
 
     public abstract JDialog getFloatingEquipmentDatabase();
 
-    @Override
     public JFrame getFrame() {
         return this;
     }
@@ -224,18 +193,8 @@ public abstract class MegaMekLabMainUI extends JFrame
     }
 
     @Override
-    public void refreshMenuBar() {
-        mmlMenuBar.refreshMenuBar();
-    }
-
-    @Override
     public boolean hasEntityNameChanged() {
         return !MegaMekLabFileSaver.createUnitFilename(entity).equals(originalName);
-    }
-
-    @Override
-    public MenuBar getMMLMenuBar() {
-        return mmlMenuBar;
     }
 
     public void setTabOwner(MegaMekLabTabbedUI owner) {

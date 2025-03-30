@@ -188,6 +188,20 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
+     * Checks if the given editor is the currently selected tab in the tabbed UI.
+     * 
+     * @param editor The MegaMekLabMainUI instance to check against the currently selected
+     * @return True if the given editor is the currently selected tab, false otherwise.
+     */
+    public boolean isTabEditorSelected(MegaMekLabMainUI editor) {
+        Component tab = tabs.getTabComponentAt(tabs.getSelectedIndex());
+        if (tab instanceof CloseableTab closeableTab) {
+            return closeableTab.isTabSelected();
+        }
+        return false;
+    }
+    
+    /**
      * Creates a configured "New" button
      */
     private JButton createNewButton() {
@@ -355,9 +369,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * to the internal editor collection, refreshing it, setting the ownership,
      * and adding the tab to the tabs UI.
      *
-     * @param editor The MegaMekLabMainUI instance to be added as a new tab.
+     * @param editor      The MegaMekLabMainUI instance to be added as a new tab.
+     * @param setSelected Whether to set the new tab as the currently selected tab.
      */
-    private void addTab(MegaMekLabMainUI editor) {
+    private void addTab(MegaMekLabMainUI editor, boolean setSelected) {
         if (!editors.contains(editor)) {
             editors.add(editor);
         }
@@ -366,9 +381,15 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Use the enhanced tabbed pane to add a closeable tab
         String tabName = entity.getShortNameRaw();
         tabs.addCloseableTab(tabName, null, editor);
-        tabs.setSelectedIndex(tabs.getTabCount() - 1);
         editor.setTabOwner(this);
+        if (setSelected) {
+            tabs.setSelectedIndex(tabs.getTabCount() - 1);
+        }
         // editor.refreshAll(); // not needed?
+    }
+
+    private void addTab(MegaMekLabMainUI editor) {
+        addTab(editor, true);
     }
 
     /**
@@ -408,13 +429,14 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Adds a new tab with the given unit to the tabbed user interface.
      *
-     * @param entity   The Entity object representing the unit to be added.
-     * @param filename The name of the file associated with the unit being added.
+     * @param entity      The Entity object representing the unit to be added.
+     * @param filename    The name of the file associated with the unit being added.
+     * @param setSelected Whether to set the new tab as the currently selected tab.
      */
-    public void addUnit(Entity entity, String filename) {
+    public void addUnit(Entity entity, String filename, boolean setSelected) {
         UnitUtil.updateLoadedUnit(entity);
         var ui = UiLoader.getUI(entity, filename);
-        addTab(ui);
+        addTab(ui, setSelected);
         refreshMenuBar();
     }
 

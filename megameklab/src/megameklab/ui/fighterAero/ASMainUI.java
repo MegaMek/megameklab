@@ -47,13 +47,11 @@ public class ASMainUI extends MegaMekLabMainUI {
     public ASMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public ASMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_AERO, primitive);
-        finishSetup();
     }
 
     @Override
@@ -91,6 +89,7 @@ public class ASMainUI extends MegaMekLabMainUI {
                 new ASFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

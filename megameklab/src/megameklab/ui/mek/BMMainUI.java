@@ -43,13 +43,11 @@ public class BMMainUI extends MegaMekLabMainUI {
     public BMMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public BMMainUI(boolean primitive, boolean industrial) {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MEK, primitive, industrial);
-        finishSetup();
     }
 
     @Override
@@ -86,6 +84,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

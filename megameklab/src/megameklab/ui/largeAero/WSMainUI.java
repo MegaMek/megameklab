@@ -54,7 +54,6 @@ public class WSMainUI extends MegaMekLabMainUI {
     public WSMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
         MekSummaryCache.getInstance();
     }
 
@@ -65,7 +64,6 @@ public class WSMainUI extends MegaMekLabMainUI {
         } else {
             createNewUnit(Entity.ETYPE_WARSHIP, true, false);
         }
-        finishSetup();
         MekSummaryCache.getInstance();
     }
 
@@ -207,6 +205,7 @@ public class WSMainUI extends MegaMekLabMainUI {
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

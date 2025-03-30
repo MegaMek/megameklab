@@ -39,13 +39,11 @@ public class CIMainUI extends MegaMekLabMainUI {
     public CIMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public CIMainUI() {
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
-        finishSetup();
     }
 
     @Override
@@ -68,6 +66,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }

@@ -45,13 +45,11 @@ public class PMMainUI extends MegaMekLabMainUI {
     public PMMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);
-        finishSetup();
     }
 
     public PMMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMEK);
-        finishSetup();
     }
 
     @Override
@@ -87,6 +85,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new PMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }
