@@ -189,11 +189,7 @@ public class TabUtil {
                     }
                 }
 
-                var editor = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(loadedUnit), loadedUnit.isPrimitive(), loadedUnit.isIndustrialMek());
-                editor.setEntity(loadedUnit);
-                editor.setFileName(fileName);
-                editor.reloadTabs();
-                editor.refreshAll();
+                var editor = UiLoader.getUI(loadedUnit, fileName);
                 editors.add(editor);
             } catch (EntityLoadingException e) {
                 logger.warn("Could not restore tab for entity file %s:%s".formatted(entityFile, fileName), e);

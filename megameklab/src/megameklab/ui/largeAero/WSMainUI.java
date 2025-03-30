@@ -51,6 +51,13 @@ public class WSMainUI extends MegaMekLabMainUI {
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public WSMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+        MekSummaryCache.getInstance();
+    }
+
     public WSMainUI(boolean primitive) {
         super();
         if (!primitive) {

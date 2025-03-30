@@ -44,6 +44,12 @@ public class ASMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public ASMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public ASMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_AERO, primitive);

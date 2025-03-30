@@ -37,6 +37,12 @@ public class BAMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public BAMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public BAMainUI() {
         super();
         createNewUnit(Entity.ETYPE_BATTLEARMOR);

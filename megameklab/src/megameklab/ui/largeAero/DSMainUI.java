@@ -49,6 +49,13 @@ public class DSMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public DSMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+        MekSummaryCache.getInstance();
+    }
+
     public DSMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);

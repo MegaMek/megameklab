@@ -29,6 +29,12 @@ public class HHWMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private HHWStatusBar statusbar;
 
+    public HHWMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public HHWMainUI() {
         super();
         createNewUnit(Entity.ETYPE_HANDHELD_WEAPON);

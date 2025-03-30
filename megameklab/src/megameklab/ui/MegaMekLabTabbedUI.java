@@ -368,7 +368,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.addCloseableTab(tabName, null, editor);
         tabs.setSelectedIndex(tabs.getTabCount() - 1);
         editor.setTabOwner(this);
-        editor.refreshAll();
+        // editor.refreshAll(); // not needed?
     }
 
     /**
@@ -413,14 +413,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     public void addUnit(Entity entity, String filename) {
         UnitUtil.updateLoadedUnit(entity);
-
-        var ui = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(entity), entity.isPrimitive(),
-                entity.isIndustrialMek());
+        var ui = UiLoader.getUI(entity, filename);
         addTab(ui);
-        ui.setTabOwner(this);
-        ui.setEntity(entity, filename);
-        ui.reloadTabs();
-        ui.refreshAll();
         refreshMenuBar();
     }
 

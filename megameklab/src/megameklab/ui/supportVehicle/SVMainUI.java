@@ -44,6 +44,12 @@ public class SVMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public SVMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public SVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);

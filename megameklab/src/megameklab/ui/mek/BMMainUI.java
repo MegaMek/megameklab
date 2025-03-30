@@ -40,6 +40,12 @@ public class BMMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public BMMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public BMMainUI(boolean primitive, boolean industrial) {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MEK, primitive, industrial);

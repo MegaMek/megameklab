@@ -42,6 +42,12 @@ public class PMMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public PMMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public PMMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMEK);

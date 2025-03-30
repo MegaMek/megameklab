@@ -41,6 +41,12 @@ public class CVMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public CVMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        finishSetup();
+    }
+
     public CVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_TANK, false, false);
