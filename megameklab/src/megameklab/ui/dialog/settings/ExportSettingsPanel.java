@@ -185,25 +185,31 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(cbRSScale);
 
         JPanel gridPanel = new JPanel(new SpringLayout());
+        JPanel innerGridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkProgressBar);
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
-        gridPanel.add(chkColor);
-        gridPanel.add(chkRowShading);
-        gridPanel.add(chkShowReferenceTables);
-        gridPanel.add(chkShowCondensedTables);
-        gridPanel.add(chkShowQuirks);
-        gridPanel.add(chkShowPilotData);
-        gridPanel.add(chkShowEraIcon);
-        gridPanel.add(chkShowRole);
-        gridPanel.add(chkHeatProfile);
-        gridPanel.add(chkTacOpsHeat);
-        gridPanel.add(chkAlternateArmorGrouping);
-        gridPanel.add(chkFrameless);
-        gridPanel.add(chkBoldType);
+        gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
+        innerGridPanel.add(chkColor);
+        innerGridPanel.add(chkBoldType);
+        innerGridPanel.add(chkRowShading);
+        innerGridPanel.add(chkShowReferenceTables);
+        innerGridPanel.add(chkShowCondensedTables);
+        innerGridPanel.add(chkShowQuirks);
+        innerGridPanel.add(chkShowPilotData);
+        innerGridPanel.add(chkShowEraIcon);
+        innerGridPanel.add(chkShowRole);
+        innerGridPanel.add(chkHeatProfile);
+        innerGridPanel.add(chkTacOpsHeat);
+        innerGridPanel.add(chkAlternateArmorGrouping);
+        innerGridPanel.add(chkFrameless);
+        innerGridPanel.add(new JLabel("")); //filler
+        gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 17, 1, 0, 0, 15, 6);
+
+        SpringUtilities.makeCompactGrid(innerGridPanel, 7, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(gridPanel, 7, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
