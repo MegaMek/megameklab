@@ -193,6 +193,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        quirksTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
