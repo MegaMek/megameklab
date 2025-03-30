@@ -14,18 +14,25 @@
 
 package megameklab.ui.handheldWeapon;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+import java.util.List;
+import javax.swing.JDialog;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.HandheldWeapon;
+import megamek.common.ITechManager;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.util.TabScrollPane;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 public class HHWMainUI extends MegaMekLabMainUI {
     private HHWStructureTab structureTab;
     private HHWEquipmentTab equipmentTab;
+    private FluffTab fluffTab;
     private PreviewTab previewTab;
     private HHWStatusBar statusbar;
 
@@ -43,11 +50,14 @@ public class HHWMainUI extends MegaMekLabMainUI {
         structureTab = new HHWStructureTab(this, this);
         equipmentTab = new HHWEquipmentTab(this);
         equipmentTab.addRefreshedListener(this);
+        fluffTab = new FluffTab(this);
+        fluffTab.setRefreshedListener(this);
         previewTab = new PreviewTab(this);
         structureTab.addRefreshedListener(this);
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Preview", new TabScrollPane(previewTab));
 
         statusbar = new HHWStatusBar(this);
