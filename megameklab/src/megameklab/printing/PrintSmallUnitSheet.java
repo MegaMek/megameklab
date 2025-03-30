@@ -33,6 +33,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
+import megamek.common.HandheldWeapon;
 import megamek.common.Infantry;
 import megamek.common.ProtoMek;
 import megamek.common.UnitType;
@@ -89,10 +90,18 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             element.setTextContent(String.format(element.getTextContent(), LocalDate.now().getYear()));
         }
         int count = 0;
+        int clusterTableBlocksSize = 1;
+        int index = 0;
         for (Entity entity : entities) {
-            Element g = getSVGDocument().getElementById("unit_" + count);
+            Element g = getSVGDocument().getElementById("unit_" + index);
             if (g != null) {
                 PrintEntity sheet = getBlockFor(entity, count);
+                if (sheet instanceof PrintHandheldWeapon) {
+                    clusterTableBlocksSize = 2;
+                    index += ((PrintHandheldWeapon) sheet).isLargeLayout() ? 2 : 1;
+                } else {
+                    index += 1;
+                }
                 if (sheet.createDocument(startPage, pageFormat, false)) {
                     g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
                 }
@@ -102,8 +111,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         drawFluffImage();
         if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
-        } else if (options.showCondensedReferenceCharts() && !fillsSheet(entities, options)) {
-            addClusterChart();
+        } else if (options.showCondensedReferenceCharts()
+                && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
+            addClusterChart(clusterTableBlocksSize, index);
         }
     }
 
@@ -114,6 +124,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             return new PrintInfantry((Infantry) entity, getFirstPage(), options);
         } else if (entity instanceof ProtoMek) {
             return new PrintProtoMek((ProtoMek) entity, getFirstPage(), index, options);
+        } else if (entity instanceof HandheldWeapon) {
+            return new PrintHandheldWeapon((HandheldWeapon) entity, getFirstPage(), options);
         }
         throw new IllegalArgumentException("Cannot create block for "
                 + UnitType.getTypeDisplayableName(entity.getUnitType()));
@@ -129,6 +141,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             } else {
                 return "conventional_infantry_default.svg";
             }
+        } else if (entities.get(0) instanceof HandheldWeapon) {
+            return "handheld_weapon_default.svg";
         } else if (entities.get(0) instanceof ProtoMek) {
             return "protomek_default.svg";
         }
@@ -143,7 +157,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     private void drawFluffImage() {
         Entity unit = entities.get(0);
-        if (!unit.isProtoMek() && !unit.isInfantry()) {
+        if (!unit.isProtoMek() && !unit.isInfantry() && !unit.isHandheldWeapon()) {
             return;
         }
         if (entities.size() > 1) {
@@ -205,8 +219,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 
-    private void addClusterChart() {
-        Element g = getSVGDocument().getElementById("unit_" + entities.size());
+    private void addClusterChart(int blocksSize, int index) {
+        Element g = getSVGDocument().getElementById("unit_" + index);
         if (g == null) {
             return;
         }
@@ -224,9 +238,13 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
         var dims = SVGLocatableSupport.getBBox(getSVGDocument().getElementById("unit_0"));
 
-        var bindingBox = new Rectangle2D.Double(0.9, 10, dims.getWidth() + 3.6, dims.getHeight() - 20);
+        var bindingBox = new Rectangle2D.Double(0.9, 10, dims.getWidth() + 3.6, (dims.getHeight() * blocksSize) - 20);
 
         g.appendChild(table.createTable(bindingBox));
+    }
+
+    public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options) {
+        return fillsSheet(entities, options, 0);
     }
 
     /**
@@ -238,7 +256,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
      *                 available space
      * @return {@code true} if no more entities can be printed on a single sheet
      */
-    public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options) {
+    public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options,
+            int desiredExtraEmptySlots) {
         var numTypes = entities.stream().map(Entity::getClass).distinct().count();
         if (numTypes == 0) {
             return false;
@@ -247,10 +266,19 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             throw new IllegalArgumentException("Heterogeneous unit types are not supported");
         }
         if ((entities.get(0) instanceof BattleArmor) || (entities.get(0) instanceof ProtoMek)) {
-            return entities.size() > 4;
+            return entities.size() > (4 - desiredExtraEmptySlots);
         }
         if (entities.get(0) instanceof Infantry) {
-            return entities.size() > (options.showReferenceCharts() ? 2 : 3);
+            return entities.size() > ((options.showReferenceCharts() ? 2 : 3) - desiredExtraEmptySlots);
+        }
+        if (entities.get(0) instanceof HandheldWeapon) {
+            int fillSize = 0;
+            for (Entity entity : entities) {
+                final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) entity, 0,
+                        null);
+                fillSize += printHandheldWeapon.isLargeLayout() ? 2 : 1;
+            }
+            return fillSize > (8 - desiredExtraEmptySlots);
         }
         throw new IllegalArgumentException("Small unit sheet only supports CI, BA, and ProtoMeks");
     }

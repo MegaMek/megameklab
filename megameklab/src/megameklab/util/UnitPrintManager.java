@@ -138,6 +138,7 @@ public class UnitPrintManager {
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
         List<ProtoMek> protoList = new ArrayList<>();
+        List<HandheldWeapon> hhwList = new ArrayList<>();
         List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
@@ -196,6 +197,24 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         protoList = new ArrayList<>();
                     }
+                } else if (unit instanceof HandheldWeapon) {
+                    if (!singlePrint) {
+                        final PrintHandheldWeapon phw = new PrintHandheldWeapon((HandheldWeapon) unit, pageCount, options);
+                        final int reservedSpace = phw.isLargeLayout() ? 1 : 0;
+                        if (reservedSpace > 0 && PrintSmallUnitSheet.fillsSheet(hhwList, options, reservedSpace)) {
+                            PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                            pageCount += prs.getPageCount();
+                            sheets.add(prs);
+                            hhwList = new ArrayList<>();
+                        }
+                    } 
+                    hhwList.add((HandheldWeapon) unit);
+                    if (singlePrint || PrintSmallUnitSheet.fillsSheet(hhwList, options)) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        hhwList = new ArrayList<>();
+                    }
                 } else {
                     unprintable.add(unit);
                 }
@@ -218,6 +237,12 @@ public class UnitPrintManager {
                         pageCount += prs.getPageCount();
                         sheets.add(prs);
                         protoList = new ArrayList<>();
+                    }
+                    if (!hhwList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        hhwList = new ArrayList<>();
                     }
                     if (null != tank1) {
                         sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
@@ -251,6 +276,9 @@ public class UnitPrintManager {
 
         if (!protoList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
+        }
+        if (!hhwList.isEmpty()) {
+            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount));
         }
         return sheets;
     }
