@@ -83,15 +83,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showguides="true"
-     inkscape:zoom="25.595826"
-     inkscape:cx="187.3743"
-     inkscape:cy="139.14378"
+     inkscape:zoom="2.2623728"
+     inkscape:cx="174.15344"
+     inkscape:cy="141.22341"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="armorPips">
+     inkscape:current-layer="ammoPips">
     <inkscape:page
        x="0"
        y="0"
@@ -240,7 +240,7 @@
        transform="translate(450,27)">
       <rect
          x="-16"
-         width="113"
+         width="112"
          y="0.0024681839"
          height="117.37542"
          id="ammoPipsGUN" />
