@@ -37,6 +37,7 @@ public class RecordSheetOptions {
     private boolean rowShading;
     private boolean alternateArmorGrouping;
     private boolean frameless;
+    private boolean boldType;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -58,6 +59,7 @@ public class RecordSheetOptions {
         this.rowShading = CConfig.getBooleanParam(CConfig.RS_ROW_SHADING);
         this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
+        this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -75,6 +77,7 @@ public class RecordSheetOptions {
         rowShading = options.rowShading;
         alternateArmorGrouping = options.alternateArmorGrouping;
         frameless = options.frameless;
+        boldType = options.boldType;
     }
 
     public PaperSize getPaperSize() {
@@ -137,6 +140,10 @@ public class RecordSheetOptions {
         return frameless;
     }
 
+    public boolean useBoldType() {
+        return boldType;
+    }
+
     public void setPaperSize(PaperSize paperSize) {
         this.paperSize = paperSize;
     }
@@ -183,5 +190,9 @@ public class RecordSheetOptions {
 
     public void setFrameless(boolean frameless) {
         this.frameless = frameless;
+    }
+
+    public void setBoldType(boolean boldType) {
+        this.boldType = boldType;
     }
 }
