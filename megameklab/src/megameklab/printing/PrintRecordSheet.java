@@ -598,7 +598,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param text   The text to set as content
      * @param unhide Sets the element visible if the text is non-null
      */
-     protected void setTextField(String id, String text, boolean unhide) {
+    protected void setTextField(String id, String text, boolean unhide) {
         Element element = getSVGDocument().getElementById(id);
         if (null != element) {
             if (null == text) {
