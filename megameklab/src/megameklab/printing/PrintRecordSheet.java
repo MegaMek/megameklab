@@ -598,64 +598,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param text   The text to set as content
      * @param unhide Sets the element visible if the text is non-null
      */
-    protected void setTextField(String id, @Nullable String text, boolean unhide) {
+     protected void setTextField(String id, String text, boolean unhide) {
         Element element = getSVGDocument().getElementById(id);
-        if (element == null) {
-            return; // Element not found, do nothing
-        }
-        if (text == null || text.isEmpty()) {
-            hideElement(element, true);
-            element.setTextContent("");
-        } else {
-            if (unhide) {
-                hideElement(element, false);
-            }
-            element.setTextContent(text);
-
-            String fieldWidthStyle = parseStyle(element, MML_FIELD_WIDTH);
-            if (fieldWidthStyle != null) {
-                try {
-                    double maxWidth = Double.parseDouble(fieldWidthStyle);
-                    // Estimate text width using font metrics
-                    float fontSize = FONT_SIZE_MEDIUM; // Default, or parse from element style
-                    String sizeStyle = parseStyle(element, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE);
-                    if (sizeStyle != null) {
-                        try {
-                            fontSize = Float.parseFloat(sizeStyle.replace("px", "").trim());
-                        } catch (NumberFormatException nfe) {
-                            // Ignore and use default font size
-                        }
-                    }
-                    String weight = SVGConstants.SVG_NORMAL_VALUE; // Default, or parse
-                    String weightStyle = parseStyle(element, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE);
-                    if (weightStyle != null && SVGConstants.SVG_BOLD_VALUE.equalsIgnoreCase(weightStyle)) {
-                        weight = SVGConstants.SVG_BOLD_VALUE;
-                    }
-
-                    double textWidth = (SVGConstants.SVG_BOLD_VALUE.equals(weight))
-                            ? getBoldTextLength(text, fontSize)
-                            : getTextLength(text, fontSize);
-
-                    // Apply textLength attribute if estimated width exceeds max width
-                    if (textWidth > maxWidth) {
-                        element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(maxWidth));
-                        element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
-                                SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
-                    } else {
-                        // Remove attributes if text now fits (or never exceeded)
-                        element.removeAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
-                        element.removeAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE);
-                    }
-                } catch (NumberFormatException ex) {
-                    logger.warn(
-                            "Could not parse " + MML_FIELD_WIDTH + ": " + fieldWidthStyle + " for element ID: " + id);
-                } catch (Exception e) {
-                    logger.warn("Error estimating text width for element ID: " + id, e);
-                }
+        if (null != element) {
+            if (null == text) {
+                hideElement(element, true);
             } else {
-                // If no field width defined, ensure scaling attributes are removed
-                element.removeAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
-                element.removeAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE);
+                if (unhide) {
+                    hideElement(element, false);
+                }
+                element.setTextContent(text);
+                /*
+                 * In cases where the text may be too long for the space we will need to add the
+                 * textLength attribute to fit it into the space. We only want to set the
+                 * textLength
+                 * when the text is too long so we don't stretch shorter text to fit. So we
+                 * abuse the
+                 * style attribute to sneak in metadata about the max width of the space.
+                 */
+                String fieldWidth = parseStyle(element, MML_FIELD_WIDTH);
+                if (null != fieldWidth) {
+                    try {
+                        double width = Double.parseDouble(fieldWidth);
+                        build();
+                        double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
+                        if (textWidth > width) {
+                            element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
+                                    String.valueOf(width));
+                            element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
+                                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                        }
+                    } catch (NumberFormatException ex) {
+                        logger.warn("Could not parse fieldWidth: " + fieldWidth);
+                    }
+                }
             }
         }
     }
