@@ -18,15 +18,20 @@
  */
 package megameklab.ui.dialog.settings;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+
 import megamek.client.ui.baseComponents.MMButton;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.AbstractMMLButtonDialog;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * This is MML's general preferences dialog with color, record sheet and other settings.
@@ -91,5 +96,11 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
             setBorder(null);
             getVerticalScrollBar().setUnitIncrement(16);
         }
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        pack();
     }
 }
