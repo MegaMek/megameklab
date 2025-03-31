@@ -187,6 +187,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));

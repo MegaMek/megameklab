@@ -70,6 +70,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));

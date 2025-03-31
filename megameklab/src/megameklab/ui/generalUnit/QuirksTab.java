@@ -51,12 +51,14 @@ import megamek.common.options.Quirks;
 import megamek.common.options.WeaponQuirks;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
+import megameklab.ui.util.RefreshListener;
 
 public class QuirksTab extends ITab implements DialogOptionListener {
 
     private static final boolean SORT_QUIRKS_ALPHABETICALLY = true;
     private final Map<JPanel, List<DialogOptionComponent>> groupLayoutMap = new LinkedHashMap<>();
     private final Map<DialogOptionComponent, Dimension> originalPreferredSizes = new HashMap<>();
+    RefreshListener refresh = null;
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
@@ -80,6 +82,10 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             }
         });
         refreshQuirks();
+    }
+
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
     }
 
     /**
@@ -384,6 +390,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     @Override
     public void optionClicked(DialogOptionComponent comp, IOption option, boolean state) {
         option.setValue(state);
+        refresh.markDirty();
     }
 
     @Override

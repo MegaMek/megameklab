@@ -169,6 +169,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         transportTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
