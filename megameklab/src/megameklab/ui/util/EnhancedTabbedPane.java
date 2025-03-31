@@ -34,10 +34,10 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -207,6 +207,19 @@ public class EnhancedTabbedPane extends JTabbedPane {
         initDragEventsHandler();
         setupDragEventsListeners();
 
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int tabIndex = indexAtLocation(e.getX(), e.getY());
+                if (tabIndex >= 0) {
+                    // Mouse is over a tab, set hand cursor
+                    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                } else {
+                    // Mouse is not over a tab, set default cursor
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        });
         // Add double-click listener for tab area reattachment
         addMouseListener(new MouseAdapter() {
             @Override
@@ -1852,6 +1865,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Custom component to represent a tab with a title and a close button
      */
+    @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
     public static class CloseableTab extends JPanel {
         private final Component component;
         private EnhancedTabbedPane parentPane;
@@ -1938,10 +1952,9 @@ public class EnhancedTabbedPane extends JTabbedPane {
             titleLabel.addMouseMotionListener(tabEventForwarder);
         }
 
-        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         private JButton createCloseButton() {
             JButton closeButton = new JButton(closeButtonText);
-            closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 16f));
+            closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 18f));
             closeButton.setPreferredSize(new Dimension(18, 18));
             closeButton.setToolTipText("Close this tab (Shift+click to skip save confirmation)");
             closeButton.setContentAreaFilled(false);
@@ -2034,23 +2047,20 @@ public class EnhancedTabbedPane extends JTabbedPane {
          * 
          * @param dirty
          */
-        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         public void setDirty(boolean dirty) {
             if (this.isDirty != dirty) {
                 this.isDirty = dirty;
                 if (dirty) {
                     closeButton.setText(closeButtonDirtyText);
-                    closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 18f));
                 } else {
                     closeButton.setText(closeButtonText);
-                    closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 16f));
             
                 }
                 revalidate();
                 repaint();
             }
         }
-        
+
         /**
          * Gets the title of this tab
          * 
