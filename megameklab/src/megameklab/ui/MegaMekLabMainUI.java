@@ -51,18 +51,13 @@ public abstract class MegaMekLabMainUI extends JPanel
                 configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
             }
         });
-        addHierarchyListener(new HierarchyListener() {
-            @Override
-            public void hierarchyChanged(HierarchyEvent e) {
-                if (tabOwner == null) return;
-                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-                    if (!initializedTabs && tabOwner.isTabEditorSelected(MegaMekLabMainUI.this)) {
-                        initializedTabs = true;
-                        reloadTabs();
-                    }
-                }
-            }
-        });
+    }
+    
+    public void onActivated() {
+        if (!initializedTabs) {
+            initializedTabs = true;
+            reloadTabs();
+        }
     }
 
     public EnhancedTabbedPane getConfigPane() {

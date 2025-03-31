@@ -105,6 +105,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // If there are more tabs than can fit, show a scroll bar
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
+        tabs.addChangeListener(e -> {
+            Component selected = tabs.getSelectedComponent();
+            if (selected instanceof MegaMekLabMainUI mainUI) {
+                mainUI.onActivated();
+            }
+        });
         // Register tab reattachment listener
         tabs.addTabStateListener(new TabStateListener() {
             @Override
