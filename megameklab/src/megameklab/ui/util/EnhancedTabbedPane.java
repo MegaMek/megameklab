@@ -1795,7 +1795,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
     @Override
     public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
-        deferredPositionActionButtons();
+        positionActionButtons();
         updateNoTabsMessageVisibility();
     }
 
@@ -1809,7 +1809,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             component = getComponentAt(index);
         }
         super.remove(index);
-        deferredPositionActionButtons();
+        positionActionButtons();
         fireTabRemoved(index, component);
     }
 
@@ -1817,7 +1817,13 @@ public class EnhancedTabbedPane extends JTabbedPane {
     public void removeAll() {
         reattachAllTabs();
         super.removeAll();
-        deferredPositionActionButtons();
+        positionActionButtons();
+    }
+
+    @Override
+    public void setTabComponentAt(int index, Component component) {
+        super.setTabComponentAt(index, component);
+        positionActionButtons();
     }
 
     @Override
@@ -1872,8 +1878,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
         private JLabel titleLabel;
         private JButton closeButton;
         private boolean isDirty = false;
-        final private String closeButtonText = "\u00D7";  // X
-        final private String closeButtonDirtyText = "\u25CF";  // Big bullet point
+        final private String closeButtonText = "\u00D7"; // X
+        final private String closeButtonDirtyText = "\u25CF"; // Big bullet point
 
         /**
          * Creates a new closeable tab with the specified title
@@ -2054,7 +2060,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                     closeButton.setText(closeButtonDirtyText);
                 } else {
                     closeButton.setText(closeButtonText);
-            
+
                 }
                 revalidate();
                 repaint();
