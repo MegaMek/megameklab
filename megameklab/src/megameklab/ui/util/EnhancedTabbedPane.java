@@ -1650,7 +1650,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
             if (component instanceof JDialog dialog) {
                 dialog.getContentPane().remove(tabInfo.component);
             } else if (component instanceof JFrame frame) {
-                frame.getContentPane().remove(tabInfo.component); // TODO: is it really needed?
+                frame.getContentPane().remove(tabInfo.component);
             }
             if (tabInfo.isCloseableTab) {
                 addCloseableTab(tabInfo.title, tabInfo.icon, tabInfo.component, insertIndex);
