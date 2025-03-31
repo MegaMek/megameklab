@@ -41,6 +41,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean initializedTabs = false;
 
     public MegaMekLabMainUI() {
+        setLayout(new BorderLayout());
         // Register tab reattachment listener
         configPane.addTabStateListener(new TabStateListener() {
             @Override
