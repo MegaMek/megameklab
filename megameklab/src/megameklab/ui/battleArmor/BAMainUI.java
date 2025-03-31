@@ -50,7 +50,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new BAStructureTab(this);
         equipTab = new BAEquipmentTab(this);
@@ -76,7 +76,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

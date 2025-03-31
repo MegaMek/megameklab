@@ -54,7 +54,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         statusbar = new CVStatusBar(this);
         structureTab = new CVStructureTab(this);
@@ -83,7 +83,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new CVFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new CVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

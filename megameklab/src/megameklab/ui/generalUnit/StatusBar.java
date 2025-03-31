@@ -54,7 +54,7 @@ public class StatusBar extends ITab {
 
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
-    private final MegaMekLabMainUI parentFrame;
+    private final MegaMekLabMainUI parent;
     private final JLabel bvLabel = new ClickableLabel(
             e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     protected final JLabel tons = new ClickableLabel(
@@ -70,7 +70,7 @@ public class StatusBar extends ITab {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
         setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
-        parentFrame = parent;
+        this.parent = parent;
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
@@ -166,7 +166,7 @@ public class StatusBar extends ITab {
     }
 
     private JFrame getParentFrame() {
-        return parentFrame;
+        return parent != null ? parent.getParentFrame() : null;
     }
 
     public void addRefreshedListener(RefreshListener refreshListener) {

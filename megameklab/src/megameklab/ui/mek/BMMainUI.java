@@ -53,7 +53,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new BMStructureTab(this);
         previewTab = new PreviewTab(this);
@@ -81,7 +81,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BMFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

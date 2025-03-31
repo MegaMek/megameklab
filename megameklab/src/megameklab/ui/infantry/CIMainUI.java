@@ -49,7 +49,7 @@ public class CIMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         statusbar = new CIStatusBar(this);
         structureTab = new CIStructureTab(this);

@@ -170,7 +170,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new WSStructureTab(this);
         previewTab = new PreviewTab(this);
@@ -201,7 +201,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this,
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 

@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 
-public abstract class MegaMekLabMainUI extends JFrame
+public abstract class MegaMekLabMainUI extends JPanel
         implements RefreshListener, EntitySource, FileNameManager {
 
     protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
@@ -50,8 +50,7 @@ public abstract class MegaMekLabMainUI extends JFrame
                 configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
             }
         });
-        final Container contentPane = getContentPane();
-        contentPane.addHierarchyListener(new HierarchyListener() {
+        addHierarchyListener(new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
                 if (tabOwner == null) return;
@@ -94,7 +93,7 @@ public abstract class MegaMekLabMainUI extends JFrame
                     JOptionPane.WARNING_MESSAGE);
             // When the user did not actually save the unit, return as if CANCEL was pressed
             return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION)); // && mmlMenuBar.saveUnit()); //TODO: saveUnit() method
+                    || ((savePrompt == JOptionPane.YES_OPTION) && tabOwner.getMMLMenuBar().saveUnit(this));
         }
     }
 
@@ -122,14 +121,11 @@ public abstract class MegaMekLabMainUI extends JFrame
 
     @Override
     public void refreshHeader() {
-        String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
-        Entity entity = getEntity();
-        setTitle(entity.getFullChassis() + " " + entity.getModel() + fileInfo);
         if (configPane.hasDetachedTabs()) {
-            configPane.setDetachedTabsPrefixTitle(entity.getShortNameRaw());
+            configPane.setDetachedTabsPrefixTitle(getEntity().getShortNameRaw());
         }
         if (tabOwner != null) {
-            tabOwner.setTabName(entity.getShortNameRaw(), this);
+            tabOwner.setTabName(getEntity().getShortNameRaw(), this);
         }
     }
 
@@ -175,10 +171,6 @@ public abstract class MegaMekLabMainUI extends JFrame
 
     public abstract JDialog getFloatingEquipmentDatabase();
 
-    public JFrame getFrame() {
-        return this;
-    }
-
     @Override
     public String getFileName() {
         return fileName;
@@ -203,6 +195,10 @@ public abstract class MegaMekLabMainUI extends JFrame
 
     public MegaMekLabTabbedUI getTabOwner() {
         return tabOwner;
+    }
+
+    public JFrame getParentFrame() {
+        return tabOwner != null ? tabOwner : (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
     }
 
     /**

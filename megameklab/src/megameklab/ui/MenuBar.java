@@ -385,20 +385,28 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     public boolean saveUnitAs() {
+        return saveUnitAs(getUnitMainUi());
+    }
+
+    public boolean saveUnitAs(MegaMekLabMainUI mainUI) {
         warnOnInvalid();
-        Entity entity = getUnitMainUi().getEntity();
+        Entity entity = mainUI.getEntity();
         UnitUtil.compactCriticals(entity);
-        getUnitMainUi().refreshAll(); // The crits may have moved
-        String file = fileSaver.saveUnitAs(getUnitMainUi(), entity);
+        mainUI.refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnitAs(mainUI.getParentFrame(), entity);
         if (file == null) {
             return false;
         }
-        getUnitMainUi().setFileName(file);
+        mainUI.setFileName(file);
         return true;
     }
 
     public boolean saveUnit() {
-        Entity entity = getUnitMainUi().getEntity();
+        return saveUnit(getUnitMainUi());
+    }
+
+    public boolean saveUnit(MegaMekLabMainUI mainUI) {
+        Entity entity = mainUI.getEntity();
         if (entity == null) {
             logger.error("Tried to save null entity.");
             return false;
@@ -406,15 +414,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             warnOnInvalid();
         }
         UnitUtil.compactCriticals(entity);
-        getUnitMainUi().refreshAll(); // The crits may have moved
-        String file = fileSaver.saveUnit(getUnitMainUi().getFrame(), getUnitMainUi(), entity);
+        mainUI.refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnit(mainUI.getParentFrame(), mainUI, entity);
         if (file == null) {
             return false;
         }
-        getUnitMainUi().setFileName(file);
+        mainUI.setFileName(file);
         return true;
     }
-
     /**
      * @return the created Export menu
      */

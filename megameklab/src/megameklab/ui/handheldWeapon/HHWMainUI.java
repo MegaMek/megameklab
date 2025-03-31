@@ -42,7 +42,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new HHWStructureTab(this, this);
         equipmentTab = new HHWEquipmentTab(this);

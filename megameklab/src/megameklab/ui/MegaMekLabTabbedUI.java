@@ -356,11 +356,12 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param editor  The editor for which the tab name needs to be set
      */
     public void setTabName(String tabName, MegaMekLabMainUI editor) {
-        Component contentPane = editor.getContentPane();
-        int tabIndex = tabs.indexOfComponent(contentPane);
+        int tabIndex = tabs.indexOfComponent(editor);
         if (tabIndex >= 0) {
             CloseableTab tab = (CloseableTab) tabs.getTabComponentAt(tabIndex);
-            tab.setTitle(tabName);
+            if (tab != null) {
+                tab.setTitle(tabName);
+            }
         }
     }
 
@@ -402,14 +403,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param industrial whether the unit is an IndustrialMek
      */
     private void newUnit(long type, boolean primitive, boolean industrial) {
-        var oldUi = editors.get(tabs.getSelectedIndex());
-
         var newUi = UiLoader.getUI(type, primitive, industrial);
         newUi.setTabOwner(this);
         editors.set(tabs.getSelectedIndex(), newUi);
-        tabs.setComponentAt(tabs.getSelectedIndex(), newUi.getContentPane());
+        tabs.setComponentAt(tabs.getSelectedIndex(), newUi);
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
-        oldUi.dispose();
         refreshMenuBar();
     }
 
@@ -490,7 +488,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // We dispose all tabs, we already prompted the user for saving
         for (int i = editors.size() - 1; i >= 0; i--) {
             MegaMekLabMainUI editor = editors.get(i);
-            if (editor.getOwner() != MegaMekLabTabbedUI.this) {
+            if (editor.getTabOwner() != MegaMekLabTabbedUI.this) {
                 continue;
             }
             editors.remove(editor);
@@ -644,7 +642,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         public void push(MegaMekLabMainUI editor) {
             int pos = start + size % closedEditors.length;
             if (size == closedEditors.length) {
-                closedEditors[pos].dispose();
                 start++;
                 start %= closedEditors.length;
             } else {
