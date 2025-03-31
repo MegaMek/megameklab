@@ -143,11 +143,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             public void onTabRemoved(int tabIndex, Component component) {
                 // If you try to close the last tab, we close this window
                 if (tabs.getTabCount() < 1) {
-                    // if (openWindows.size() == 1 && !noTabsOpenExitPrompt()) {
-                    // newTab();
-                    // } else {
-                    cleanupAndDispose();
-                    // }
+                    if (openWindows.size() == 1 && (CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT)) && !noTabsOpenExitPrompt()) {
+                        newTab();
+                    } else {
+                        cleanupAndDispose();
+                    }
                 }
             }
         });
@@ -196,8 +196,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Checks if the given editor is the currently selected tab in the tabbed UI.
      * 
-     * @param editor The MegaMekLabMainUI instance to check against the currently selected
-     * @return True if the given editor is the currently selected tab, false otherwise.
+     * @param editor The MegaMekLabMainUI instance to check against the currently
+     *               selected
+     * @return True if the given editor is the currently selected tab, false
+     *         otherwise.
      */
     public boolean isTabEditorSelected(MegaMekLabMainUI editor) {
         Component tab = tabs.getTabComponentAt(tabs.getSelectedIndex());
@@ -206,7 +208,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
         return false;
     }
-    
+
     /**
      * Creates a configured "New" button
      */
