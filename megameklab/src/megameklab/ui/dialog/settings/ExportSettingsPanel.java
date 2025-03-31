@@ -60,6 +60,7 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkRowShading = new JCheckBox();
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
+    private final JCheckBox chkBoldType = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -112,6 +113,10 @@ class ExportSettingsPanel extends JPanel {
         chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
         chkFrameless.setToolTipText(resourceMap.getString("ConfigurationDialog.chkFrameless.tooltip"));
         chkFrameless.setSelected(CConfig.getBooleanParam(CConfig.RS_FRAMELESS));
+
+        chkBoldType.setText(resourceMap.getString("ConfigurationDialog.chkBoldType.text"));
+        chkBoldType.setToolTipText(resourceMap.getString("ConfigurationDialog.chkBoldType.tooltip"));
+        chkBoldType.setSelected(CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -180,24 +185,31 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(cbRSScale);
 
         JPanel gridPanel = new JPanel(new SpringLayout());
+        JPanel innerGridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkProgressBar);
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
-        gridPanel.add(chkColor);
-        gridPanel.add(chkRowShading);
-        gridPanel.add(chkShowReferenceTables);
-        gridPanel.add(chkShowCondensedTables);
-        gridPanel.add(chkShowQuirks);
-        gridPanel.add(chkShowPilotData);
-        gridPanel.add(chkShowEraIcon);
-        gridPanel.add(chkShowRole);
-        gridPanel.add(chkHeatProfile);
-        gridPanel.add(chkTacOpsHeat);
-        gridPanel.add(chkAlternateArmorGrouping);
-        gridPanel.add(chkFrameless);
+        gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
+        innerGridPanel.add(chkColor);
+        innerGridPanel.add(chkBoldType);
+        innerGridPanel.add(chkRowShading);
+        innerGridPanel.add(chkShowReferenceTables);
+        innerGridPanel.add(chkShowCondensedTables);
+        innerGridPanel.add(chkShowQuirks);
+        innerGridPanel.add(chkShowPilotData);
+        innerGridPanel.add(chkShowEraIcon);
+        innerGridPanel.add(chkShowRole);
+        innerGridPanel.add(chkHeatProfile);
+        innerGridPanel.add(chkTacOpsHeat);
+        innerGridPanel.add(chkAlternateArmorGrouping);
+        innerGridPanel.add(chkFrameless);
+        innerGridPanel.add(new JLabel("")); //filler
+        gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 17, 1, 0, 0, 15, 6);
+
+        SpringUtilities.makeCompactGrid(innerGridPanel, 7, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(gridPanel, 7, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -224,6 +236,7 @@ class ExportSettingsPanel extends JPanel {
                 Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
+        recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
         return recordSheetSettings;
     }
 

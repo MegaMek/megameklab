@@ -117,6 +117,7 @@ public final class CConfig {
     public static final String RS_MEK_NAMES = "rs_mek_names";
     public static final String RS_ARMOR_GROUPING = "rs_armor_grouping";
     public static final String RS_FRAMELESS = "rs_frameless";
+    public static final String RS_BOLD_TYPE = "rs_bold_type";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";

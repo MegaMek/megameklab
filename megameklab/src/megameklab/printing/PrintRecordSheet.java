@@ -38,6 +38,11 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
@@ -235,17 +240,36 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    /**
+     * Finds elements by class name (using XPath).
+     *
+     * @param className The class name to search for.
+     * @return A list of matching elements.
+     */
     private ArrayList<Element> getElementsByClass(String className) {
-        var tags = getSVGDocument().getElementsByTagName("*");
-        var ret = new ArrayList<Element>(tags.getLength());
-        for (int i = 0; i < tags.getLength(); i++) {
-            var tag = tags.item(i);
-            if (className.equals(
-                    Optional.ofNullable(tag.getAttributes().getNamedItem("class"))
-                            .map(Node::getNodeValue)
-                            .orElse(null))) {
-                ret.add((Element) tag);
+        ArrayList<Element> ret = new ArrayList<>();
+        if (className == null || className.isEmpty() || getSVGDocument() == null) {
+            return ret;
+        }
+
+        try {
+            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPath xpath = xPathfactory.newXPath();
+            String expressionStr = "//*[contains(concat(' ', normalize-space(@class), ' '), ' " + className + " ')]";
+            XPathExpression expr = xpath.compile(expressionStr);
+
+            NodeList nodeList = (NodeList) expr.evaluate(getSVGDocument(), XPathConstants.NODESET);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                if (nodeList.item(i) instanceof Element element) {
+                    ret.add(element);
+                }
             }
+
+        } catch (XPathExpressionException e) {
+            logger.error("XPath error finding elements by class '" + className + "': " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error(
+                    "Unexpected error finding elements by class '" + className + "' using XPath: " + e.getMessage(), e);
         }
 
         return ret;
@@ -257,24 +281,43 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
-    private void makeFrameless() {
-        for (Element e : getElementsByClass(FRAME)) {
-            if (options.isFrameless()) {
-                hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
+    private void makeBoldType() {
+        if (options.useBoldType()) {
+            Element e = getSVGDocument().getElementById(TYPE);
+            if (e == null) {
+                return;
+            }
+            String style = e.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (style == null || style.isEmpty()) {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, "font-weight:bold;");
+            } else if (!style.contains("font-weight:")) {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style + "font-weight:bold;");
+            } else {
+                e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
+                        style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+            }
+        }
+    }
 
-                // I have no idea with this loop is necessary
-                // Hiding a parent should hide its children
-                // But without it pilot data sneaks onto the sheet
-                for (int i = 0; i < e.getChildNodes().getLength(); i++) {
-                    var c = e.getChildNodes().item(i);
-                    if (!(c instanceof SVGOMElement child)) {
-                        continue;
-                    }
-                    if (child.getId() == null) {
-                        child.setId(UUID.randomUUID().toString());
-                    }
-                    hideElement(child.getId());
+    private void makeFrameless() {
+        if (!options.isFrameless()) {
+            return;
+        }
+        for (Element e : getElementsByClass(FRAME)) {
+            hideElement(e.getAttributes().getNamedItem("id").getNodeValue());
+
+            // I have no idea with this loop is necessary
+            // Hiding a parent should hide its children
+            // But without it pilot data sneaks onto the sheet
+            for (int i = 0; i < e.getChildNodes().getLength(); i++) {
+                var c = e.getChildNodes().item(i);
+                if (!(c instanceof SVGOMElement child)) {
+                    continue;
                 }
+                if (child.getId() == null) {
+                    child.setId(UUID.randomUUID().toString());
+                }
+                hideElement(child.getId());
             }
         }
     }
@@ -292,7 +335,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
             return null;
         }
-
 
         Document document = null;
         try (InputStream is = Files.newInputStream(filePath)) {
@@ -378,6 +420,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         processImage(pageIndex - firstPage, pageFormat);
         shadeTableRows();
         makeFrameless();
+        makeBoldType();
         return true;
     }
 
@@ -424,7 +467,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             if (winDir == null) {
                 winDir = "C:\\Windows";
             }
-            directories.add(winDir+"\\Fonts");
+            directories.add(winDir + "\\Fonts");
             directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
             directories.add("/System/Library/Fonts");
