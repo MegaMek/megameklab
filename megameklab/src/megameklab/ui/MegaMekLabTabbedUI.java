@@ -278,6 +278,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         menu.add(newUnitItem("New Battle Armor", Entity.ETYPE_BATTLEARMOR, false));
         menu.add(newUnitItem("New Conventional Infantry", Entity.ETYPE_INFANTRY, false));
         menu.add(newUnitItem("New ProtoMek", Entity.ETYPE_PROTOMEK, false));
+        menu.add(newUnitItem("New Handheld Weapon", Entity.ETYPE_HANDHELD_WEAPON, false));
 
         JMenu primitive = new JMenu("New Primitive...");
         primitive.add(newUnitItem("New Mek", Entity.ETYPE_MEK, true));
@@ -409,6 +410,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setComponentAt(tabs.getSelectedIndex(), newUi);
         tabs.setEnabledAt(tabs.getSelectedIndex(), true);
         refreshMenuBar();
+        newUi.refreshHeader();
     }
 
     /**

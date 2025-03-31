@@ -14,6 +14,25 @@
  */
 package megameklab.ui;
 
+import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLEditorKit;
+
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
@@ -34,24 +53,6 @@ import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.html.HTMLEditorKit;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.ResourceBundle;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
@@ -280,6 +281,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToProtoMek.setMnemonic(KeyEvent.VK_P);
             miSwitchToProtoMek.addActionListener(evt -> switchUnitType(Entity.ETYPE_PROTOMEK));
             switchUnitTypeMenu.add(miSwitchToProtoMek);
+        }
+
+        if ((entity == null) || (!entity.hasETypeFlag(Entity.ETYPE_HANDHELD_WEAPON))) {
+            final JMenuItem miSwitchToHandheldWeapon = new JMenuItem(resources.getString("miSwitchToHandheldWeapon.text"));
+            miSwitchToHandheldWeapon.setName("miSwitchToHandheldWeapon");
+            miSwitchToHandheldWeapon.setMnemonic(KeyEvent.VK_H);
+            miSwitchToHandheldWeapon.addActionListener(evt -> switchUnitType(Entity.ETYPE_HANDHELD_WEAPON));
+            switchUnitTypeMenu.add(miSwitchToHandheldWeapon);
         }
 
         switchUnitTypeMenu.add(createPrimitiveMenu(entity));

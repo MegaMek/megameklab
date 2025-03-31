@@ -6,6 +6,11 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #44: Mek jump boosters and jump jets
 + PR #1784: Removed Deprecated methods from MMLogger and updated impacted calls
 + PR #1796: Handheld Weapon record sheets
++ PR #1799: Option to bold unit name in RS
++ PR #1798: Redesigned Quirks tab
++ Fix #1804: Properly size Configuration dialog window
++ PR #1801: Handheld Weapons now have a fluff tab
++ PR #1800: Enable creating new HHWs in the GUI
 
 0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
