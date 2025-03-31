@@ -99,6 +99,9 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     public boolean safetyPrompt() {
+        if (!isDirty()) {
+            return true;
+        }
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
         } else {
