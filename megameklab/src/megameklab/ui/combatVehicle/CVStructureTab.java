@@ -18,6 +18,7 @@ package megameklab.ui.combatVehicle;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,6 +144,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);

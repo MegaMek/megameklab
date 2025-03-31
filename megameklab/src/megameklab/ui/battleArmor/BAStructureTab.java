@@ -62,7 +62,7 @@ public class BAStructureTab extends ITab
 
     private RefreshListener refresh;
 
-    Dimension labelSize = new Dimension(110, 25);
+    Dimension labelSize = new Dimension(60, 25);
 
     private BasicInfoView panBasicInfo;
     private BAChassisView panChassis;
@@ -81,7 +81,7 @@ public class BAStructureTab extends ITab
             0.5);
     private final JSpinner spnLeftManipulatorSize = new JSpinner(spnLeftManipulatorSizeModel);
     private final JSpinner spnRightManipulatorSize = new JSpinner(spnRightManipulatorSizeModel);
-    private final JLabel lblSize = createLabel("Size:", labelSize);
+    private final JLabel lblSize = createLabel("Size:", new Dimension(40, 25));
 
     private PreviewTab previewTab;
 
@@ -104,8 +104,8 @@ public class BAStructureTab extends ITab
         JPanel manipulatorPanel = new JPanel(new GridBagLayout());
         panEnhancements = new BAEnhancementView(panBasicInfo);
         GridBagConstraints gbc = new GridBagConstraints();
-        Dimension comboSize = new Dimension(250, 25);
-        Dimension spinnerSize = new Dimension(100, 25);
+        Dimension comboSize = new Dimension(180, 25);
+        Dimension spinnerSize = new Dimension(60, 25);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -161,6 +161,7 @@ public class BAStructureTab extends ITab
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = java.awt.GridBagConstraints.VERTICAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         add(leftPanel, gbc);
@@ -170,6 +171,7 @@ public class BAStructureTab extends ITab
         gbc.fill = GridBagConstraints.BOTH;  // Fill both horizontally and vertically
         gbc.weightx = 1.0;                         // Expand to fill horizontal space
         gbc.weighty = 1.0;                         // Expand to fill vertical space
+        gbc.insets = new Insets(0, 0, 0, 0);
         add(rightPanel, gbc);
     }
 
@@ -300,6 +302,7 @@ public class BAStructureTab extends ITab
                         e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
                                 : BattleArmor.MOUNT_LOC_RARM,
                         true);
+            refresh.markDirty();
             }
         }
         refresh.refreshAll();
@@ -332,6 +335,7 @@ public class BAStructureTab extends ITab
                 }
             }
         }
+        refresh.markDirty();
     }
 
     private @Nullable MiscMounted getManipulator(int mountLoc) {
@@ -355,9 +359,11 @@ public class BAStructureTab extends ITab
             setManipulatorSize(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
             if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
                 spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
+                refresh.markDirty();
             }
         } else if (evt.getSource() == spnRightManipulatorSize) {
             setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
+            refresh.markDirty();
         }
         refresh.refreshAll();
     }

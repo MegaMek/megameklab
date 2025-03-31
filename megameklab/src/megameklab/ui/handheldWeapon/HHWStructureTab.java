@@ -87,6 +87,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         gbc.weightx = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;

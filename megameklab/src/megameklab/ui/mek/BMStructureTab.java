@@ -142,6 +142,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         add(leftPanel, gbc);
         gbc.gridx = 1;
         add(centerPanel, gbc);
