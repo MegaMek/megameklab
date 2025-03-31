@@ -28,7 +28,8 @@ import megameklab.ui.util.RefreshListener;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -45,10 +46,11 @@ import java.util.ResourceBundle;
 public class FluffTab extends ITab implements FocusListener {
     private static final MMLogger logger = MMLogger.create(FluffTab.class);
 
-    private final JTextArea txtCapabilities = new JTextArea(4, 40);
-    private final JTextArea txtOverview = new JTextArea(4, 40);
-    private final JTextArea txtDeployment = new JTextArea(4, 40);
-    private final JTextArea txtHistory = new JTextArea(4, 40);
+    private final JTextArea txtCapabilities = new JTextArea(5, 35);
+    private final JTextArea txtOverview = new JTextArea(5, 35);
+    private final JTextArea txtDeployment = new JTextArea(5, 35);
+    private final JTextArea txtHistory = new JTextArea(5, 35);
+    private final JTextArea txtNotes = new JTextArea(5, 35);
 
     private final JTextField txtManufacturer = new JTextField(12);
     private final JTextField txtPrimaryFactory = new JTextField(12);
@@ -57,12 +59,17 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextField txtWidth = new JTextField(8);
     private final JTextField txtHeight = new JTextField(8);
 
-    private final JTextArea txtNotes = new JTextArea(4, 40);
-
+    private final JButton btnSetFluffImage = new JButton("Set Fluff Image from File");
+    private final JButton btnImportFluffImage = new JButton("Import Fluff Image from Unit");
     private final JButton btnRemoveFluff = new JButton("Remove Fluff Image");
 
+    private final JLabel lblFluffImage = new JLabel();
+    private final JScrollPane imgScrollPane = new JScrollPane(lblFluffImage);
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
+    private static final int MAX_CONTENT_WIDTH = 1400;
+    private static final int MAX_FLUFF_IMG_WIDTH = 300;
+    private static final int MAX_FLUFF_IMG_HEIGHT = 300;
 
     private RefreshListener refresh;
 
@@ -71,7 +78,6 @@ public class FluffTab extends ITab implements FocusListener {
         initUi();
     }
 
-    // For convenience
     private EntityFluff getFluff() {
         return eSource.getEntity().getFluff();
     }
@@ -82,176 +88,301 @@ public class FluffTab extends ITab implements FocusListener {
 
     private void initUi() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Tabs");
-        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        Insets elementInsets = new Insets(2, 5, 2, 5);
+        Insets panelInsets = new Insets(5, 5, 5, 5);
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JPanel panLeft = new JPanel();
-        JPanel panRight = new JPanel();
-        add(panLeft);
-        if (!eSource.getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
-                || eSource.getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
-            add(panRight);
-        }
+        final boolean hasRightPanelEntries = !getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
+                || getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        setLayout(new GridBagLayout());
+        GridBagConstraints mainGbc = new GridBagConstraints();
 
-        panLeft.setLayout(new GridBagLayout());
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setMaximumSize(new Dimension(MAX_CONTENT_WIDTH, Integer.MAX_VALUE));
 
-        JButton btnSetFluffImage = new JButton("Set Fluff Image from File");
+        // --- Left Panel ---
+        JPanel panLeft = new JPanel(new GridBagLayout());
+        panLeft.setBorder(new EmptyBorder(panelInsets)); // Add padding around the panel
+        GridBagConstraints gbcLeft = new GridBagConstraints();
+        gbcLeft.gridx = 0;
+        gbcLeft.gridy = 0;
+        gbcLeft.anchor = GridBagConstraints.NORTHWEST;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL; // Buttons only fill horizontally
+        gbcLeft.weightx = 1.0; // Buttons take horizontal space
+        gbcLeft.insets = elementInsets;
+
         btnSetFluffImage.addActionListener(evt -> chooseFluffImage());
-        panLeft.add(btnSetFluffImage, gbc);
-        gbc.gridy++;
+        panLeft.add(btnSetFluffImage, gbcLeft);
+        gbcLeft.gridy++;
 
-        JButton btnImportFluffImage = new JButton("Import Fluff Image from Unit");
         btnImportFluffImage.addActionListener(evt -> importFluffImage());
-        panLeft.add(btnImportFluffImage, gbc);
-        gbc.gridy++;
+        panLeft.add(btnImportFluffImage, gbcLeft);
+        gbcLeft.gridy++;
 
         btnRemoveFluff.addActionListener(evt -> removeFluffImage());
-        panLeft.add(btnRemoveFluff, gbc);
-        refreshGUI();
-        gbc.gridy++;
+        panLeft.add(btnRemoveFluff, gbcLeft);
+        gbcLeft.gridy++;
 
-        panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtCapabilities")), gbc);
-        gbc.gridy++;
-        txtCapabilities.setLineWrap(true);
-        txtCapabilities.setWrapStyleWord(true);
-        txtCapabilities.setBorder(border);
+        // Add some space between buttons and text areas
+        gbcLeft.insets = new Insets(10, 5, 2, 5);
+
+        // Helper to add Label + TextArea pairs
+        java.util.function.BiConsumer<String, JTextArea> addLabeledTextArea = (labelText, textArea) -> {
+            gbcLeft.gridy++;
+            gbcLeft.weighty = 0.0; // Label doesn't stretch vertically
+            gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+            panLeft.add(new JLabel(labelText), gbcLeft);
+
+            gbcLeft.gridy++;
+            gbcLeft.fill = GridBagConstraints.BOTH;
+            gbcLeft.weighty = 0.2; // Allow text areas some vertical stretchability, evenly distributed
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            // Use a scroll pane for potentially long text
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            panLeft.add(scrollPane, gbcLeft);
+            textArea.addFocusListener(this);
+            gbcLeft.insets = elementInsets; // Reset insets for next element
+        };
+
+        addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtCapabilities"), txtCapabilities);
         txtCapabilities.setText(getFluff().getCapabilities());
-        panLeft.add(txtCapabilities, gbc);
-        txtCapabilities.addFocusListener(this);
-        gbc.gridy++;
 
-        panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtOverview")), gbc);
-        gbc.gridy++;
-        txtOverview.setLineWrap(true);
-        txtOverview.setWrapStyleWord(true);
+        addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtOverview"), txtOverview);
         txtOverview.setText(getFluff().getOverview());
-        txtOverview.setBorder(border);
-        panLeft.add(txtOverview, gbc);
-        txtOverview.addFocusListener(this);
-        gbc.gridy++;
 
-        panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtDeployment")), gbc);
-        gbc.gridy++;
-        txtDeployment.setLineWrap(true);
-        txtDeployment.setWrapStyleWord(true);
-        txtDeployment.setBorder(border);
+        addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtDeployment"), txtDeployment);
         txtDeployment.setText(getFluff().getDeployment());
-        panLeft.add(txtDeployment, gbc);
-        txtDeployment.addFocusListener(this);
-        gbc.gridy++;
 
-        panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtHistory")), gbc);
-        gbc.gridy++;
-        txtHistory.setLineWrap(true);
-        txtHistory.setWrapStyleWord(true);
-        txtHistory.setBorder(border);
+        addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtHistory"), txtHistory);
         txtHistory.setText(getFluff().getHistory());
-        panLeft.add(txtHistory, gbc);
-        txtHistory.addFocusListener(this);
-        gbc.gridy++;
 
-        panLeft.add(new JLabel(resourceMap.getString("FluffTab.txtNotes")), gbc);
-        gbc.gridy++;
-        txtNotes.setLineWrap(true);
-        txtNotes.setWrapStyleWord(true);
-        txtNotes.setBorder(border);
+        addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtNotes"), txtNotes);
         txtNotes.setText(getFluff().getNotes());
-        gbc.weighty = 1.0;
-        panLeft.add(txtNotes, gbc);
-        txtNotes.addFocusListener(this);
 
-        panRight.setLayout(new GridBagLayout());
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panRight.add(new JLabel(resourceMap.getString("FluffTab.txtManufacturer")), gbc);
-        txtManufacturer.setText(getFluff().getManufacturer());
-        gbc.gridx = 1;
-        panRight.add(txtManufacturer, gbc);
-        txtManufacturer.addFocusListener(this);
-        gbc.gridy++;
+        // Add a filler component at the bottom of panLeft to push content up
+        gbcLeft.gridy++;
+        gbcLeft.weighty = 1.0; // Takes up remaining vertical space
+        gbcLeft.fill = GridBagConstraints.VERTICAL;
+        panLeft.add(new JPanel(), gbcLeft); // Invisible spacer
 
-        gbc.gridx = 0;
-        panRight.add(new JLabel(resourceMap.getString("FluffTab.txtPrimaryFactory")), gbc);
-        txtPrimaryFactory.setText(getFluff().getPrimaryFactory());
-        gbc.gridx = 1;
-        panRight.add(txtPrimaryFactory, gbc);
-        txtPrimaryFactory.addFocusListener(this);
-        gbc.gridy++;
+        // --- Right Panel ---
+        JPanel panRight = new JPanel(new GridBagLayout());
+        panRight.setBorder(new EmptyBorder(panelInsets)); // Add padding around the panel
+        GridBagConstraints gbcRight = new GridBagConstraints();
+        gbcRight.gridx = 0;
+        gbcRight.gridy = 0;
+        gbcRight.anchor = GridBagConstraints.WEST; // Align labels to the left
+        gbcRight.insets = elementInsets;
 
-        if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            gbc.gridx = 0;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtUse")), gbc);
-            gbc.gridx = 1;
-            txtUse.setText(getFluff().getUse());
-            panRight.add(txtUse, gbc);
-            txtUse.addFocusListener(this);
-            gbc.gridy++;
+        // --- Add Fluff Image Display ---
+        lblFluffImage.setHorizontalAlignment(JLabel.CENTER);
+        lblFluffImage.setVerticalAlignment(JLabel.CENTER);
+        // Set a preferred size based on max dimensions to influence layout
+        imgScrollPane.setPreferredSize(new Dimension(MAX_FLUFF_IMG_WIDTH + 20, MAX_FLUFF_IMG_HEIGHT + 20));
+        imgScrollPane.setMinimumSize(new Dimension(100, 100)); // Ensure it doesn't collapse too small
+        imgScrollPane.setBorder(BorderFactory.createEtchedBorder()); // Add border to image area
+        imgScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        imgScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-            gbc.gridx = 0;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtLength")), gbc);
-            gbc.gridx = 1;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtWidth")), gbc);
-            gbc.gridx = 2;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbc);
-            gbc.gridy++;
+        gbcRight.gridx = 0;
+        gbcRight.gridy = 0;
+        gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Image spans all columns initially
+        gbcRight.weightx = 1.0;
+        gbcRight.weighty = 0.0; // Image area doesn't stretch vertically initially
+        gbcRight.fill = GridBagConstraints.HORIZONTAL; // Allow horizontal fill up to preferred/max size
+        gbcRight.anchor = GridBagConstraints.CENTER; // Center the image area
+        panRight.add(imgScrollPane, gbcRight);
+        gbcRight.gridy++;
 
-            gbc.gridx = 0;
-            txtLength.setText(getFluff().getLength());
-            panRight.add(txtLength, gbc);
-            txtLength.addFocusListener(this);
+        if (hasRightPanelEntries) {
 
-            gbc.gridx = 1;
-            txtWidth.setText(getFluff().getWidth());
-            panRight.add(txtWidth, gbc);
-            txtWidth.addFocusListener(this);
+            // Separator after image
+            gbcRight.insets = new Insets(10, 5, 5, 5);
+            gbcRight.fill = GridBagConstraints.HORIZONTAL;
+            panRight.add(new JSeparator(), gbcRight);
+            gbcRight.gridy++;
+            gbcRight.insets = elementInsets; // Reset insets
+            gbcRight.gridwidth = 1; // Reset gridwidth for subsequent rows
+            gbcRight.anchor = GridBagConstraints.WEST; // Reset anchor for labels
 
-            gbc.gridx = 2;
-            txtHeight.setText(getFluff().getHeight());
-            panRight.add(txtHeight, gbc);
-            txtHeight.addFocusListener(this);
-            gbc.gridy++;
-        }
-        gbc.gridx = 0;
-        panRight.add(new JLabel(resourceMap.getString("FluffTab.System")), gbc);
-        gbc.gridx = 1;
-        panRight.add(new JLabel(resourceMap.getString("FluffTab.Manufacturer")), gbc);
-        gbc.gridx = 2;
-        panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbc);
-        gbc.gridy++;
-        for (EntityFluff.System system : EntityFluff.System.values()) {
-            if ((system == EntityFluff.System.JUMPJET)
-                    && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
-                continue;
+            // Helper to add Label + TextField pairs
+            java.util.function.BiConsumer<String, JTextField> addLabeledTextField = (labelText, textField) -> {
+                gbcRight.gridx = 0;
+                gbcRight.weightx = 0.0; // Label takes minimal width
+                gbcRight.fill = GridBagConstraints.NONE;
+                panRight.add(new JLabel(labelText), gbcRight);
+
+                gbcRight.gridx = 1;
+                gbcRight.weightx = 1.0; // TextField takes available width
+                gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Span remaining columns
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                panRight.add(textField, gbcRight);
+                textField.addFocusListener(this);
+
+                gbcRight.gridy++;
+                gbcRight.gridwidth = 1; // Reset gridwidth
+            };
+
+            addLabeledTextField.accept(resourceMap.getString("FluffTab.txtManufacturer"), txtManufacturer);
+            txtManufacturer.setText(getFluff().getManufacturer());
+
+            addLabeledTextField.accept(resourceMap.getString("FluffTab.txtPrimaryFactory"), txtPrimaryFactory);
+            txtPrimaryFactory.setText(getFluff().getPrimaryFactory());
+
+            if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
+                    || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+
+                addLabeledTextField.accept(resourceMap.getString("FluffTab.txtUse"), txtUse);
+                txtUse.setText(getFluff().getUse());
+
+                // Length/Width/Height need special handling (3 columns on one row)
+                gbcRight.gridx = 0;
+                gbcRight.weightx = 0.0;
+                gbcRight.fill = GridBagConstraints.NONE;
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.txtLength")), gbcRight);
+
+                gbcRight.gridx = 1;
+                gbcRight.weightx = 1.0 / 3.0; // Distribute width
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                txtLength.setText(getFluff().getLength());
+                panRight.add(txtLength, gbcRight);
+                txtLength.addFocusListener(this);
+
+                gbcRight.gridx = 2;
+                gbcRight.weightx = 0.0;
+                gbcRight.fill = GridBagConstraints.NONE;
+                // Add small gap before Width label
+                gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
+                        elementInsets.right);
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.txtWidth")), gbcRight);
+                gbcRight.insets = elementInsets; // Reset insets
+
+                gbcRight.gridx = 3;
+                gbcRight.weightx = 1.0 / 3.0; // Distribute width
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                txtWidth.setText(getFluff().getWidth());
+                panRight.add(txtWidth, gbcRight);
+                txtWidth.addFocusListener(this);
+
+                gbcRight.gridx = 4;
+                gbcRight.weightx = 0.0;
+                gbcRight.fill = GridBagConstraints.NONE;
+                // Add small gap before Height label
+                gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
+                        elementInsets.right);
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbcRight);
+                gbcRight.insets = elementInsets; // Reset insets
+
+                gbcRight.gridx = 5;
+                gbcRight.weightx = 1.0 / 3.0; // Distribute width
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                txtHeight.setText(getFluff().getHeight());
+                panRight.add(txtHeight, gbcRight);
+                txtHeight.addFocusListener(this);
+
+                gbcRight.gridy++;
             }
-            gbc.gridx = 0;
-            panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + system.toString())), gbc);
-            gbc.gridx = 1;
-            JTextField txt = new JTextField(12);
-            txt.setText(getFluff().getSystemManufacturer(system));
-            panRight.add(txt, gbc);
-            txt.setName(system.name() + ":" + TAG_MANUFACTURER);
-            txt.addFocusListener(this);
-            gbc.gridx = 2;
-            txt = new JTextField(12);
-            txt.setText(getFluff().getSystemModel(system));
-            panRight.add(txt, gbc);
-            txt.setName(system.name() + ":" + TAG_MODEL);
-            txt.addFocusListener(this);
-            gbc.gridy++;
-        }
-        gbc.gridx = 0;
-        gbc.weighty = 1.0;
-        panRight.add(new JPanel(), gbc);
 
+            // Add some space before the Systems section
+            gbcRight.gridx = 0;
+            gbcRight.gridwidth = GridBagConstraints.REMAINDER;
+            gbcRight.insets = new Insets(10, 5, 2, 5);
+            panRight.add(new JSeparator(), gbcRight); // Separator line
+            gbcRight.gridwidth = 1; // Reset gridwidth
+            gbcRight.insets = elementInsets; // Reset insets
+            gbcRight.gridy++;
+
+            // System/Manufacturer/Model Headers
+            gbcRight.gridx = 0;
+            gbcRight.weightx = 0.0;
+            gbcRight.anchor = GridBagConstraints.WEST;
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.System")), gbcRight);
+            gbcRight.gridx = 1;
+            gbcRight.weightx = 0.5; // Give Manufacturer column some weight
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.Manufacturer")), gbcRight);
+            gbcRight.gridx = 2;
+            gbcRight.weightx = 0.5; // Give Model column some weight
+            gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Ensure it takes rest of line
+            panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbcRight);
+            gbcRight.gridy++;
+            gbcRight.gridwidth = 1; // Reset gridwidth
+
+            // Loop through Systems
+            for (EntityFluff.System system : EntityFluff.System.values()) {
+                if ((system == EntityFluff.System.JUMPJET)
+                        && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
+                    continue;
+                }
+
+                // System Label
+                gbcRight.gridx = 0;
+                gbcRight.weightx = 0.0;
+                gbcRight.fill = GridBagConstraints.NONE;
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + system.toString())), gbcRight);
+
+                // Manufacturer Text Field
+                gbcRight.gridx = 1;
+                gbcRight.weightx = 0.5; // Match header weight
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                JTextField txtMan = new JTextField(12);
+                txtMan.setText(getFluff().getSystemManufacturer(system));
+                txtMan.setName(system.name() + ":" + TAG_MANUFACTURER);
+                txtMan.addFocusListener(this);
+                panRight.add(txtMan, gbcRight);
+
+                // Model Text Field
+                gbcRight.gridx = 2;
+                gbcRight.weightx = 0.5; // Match header weight
+                gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Take rest of line
+                gbcRight.fill = GridBagConstraints.HORIZONTAL;
+                JTextField txtMod = new JTextField(12);
+                txtMod.setText(getFluff().getSystemModel(system));
+                txtMod.setName(system.name() + ":" + TAG_MODEL);
+                txtMod.addFocusListener(this);
+                panRight.add(txtMod, gbcRight);
+
+                gbcRight.gridy++;
+                gbcRight.gridwidth = 1; // Reset gridwidth
+            }
+        }
+
+        // We push the content up
+        gbcRight.gridy++;
+        gbcRight.weighty = 1.0;
+        gbcRight.fill = GridBagConstraints.VERTICAL;
+        gbcRight.gridwidth = GridBagConstraints.REMAINDER;
+        panRight.add(new JPanel(), gbcRight);
+
+        // --- Add Panels to Main Layout ---
+        mainGbc.gridx = 0;
+        mainGbc.gridy = 0;
+        mainGbc.weightx = 0.6; // Give left panel slightly more weight
+        mainGbc.weighty = 1.0;
+        mainGbc.fill = GridBagConstraints.BOTH;
+        mainGbc.anchor = GridBagConstraints.NORTHWEST;
+        mainGbc.insets = new Insets(0, 0, 0, 2); // Gap between panels
+        contentPanel.add(panLeft, mainGbc);
+
+        mainGbc.gridx = 1;
+        mainGbc.weightx = 0.4; // Give right panel less weight
+        mainGbc.insets = new Insets(0, 2, 0, 0); // Gap between panels
+        contentPanel.add(panRight, mainGbc);
+
+        // --- Add Content Panel to Main Layout ---
+        mainGbc.gridx = 0;
+        mainGbc.gridy = 0;
+        mainGbc.weightx = 1.0;
+        mainGbc.weighty = 1.0;
+        mainGbc.anchor = GridBagConstraints.NORTH;
+        mainGbc.fill = GridBagConstraints.VERTICAL;
+        mainGbc.insets = new Insets(5, 5, 5, 5);
+
+        add(contentPanel, mainGbc);
+
+        refreshGUI();
     }
 
     @Override
@@ -261,41 +392,93 @@ public class FluffTab extends ITab implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        if (e.getSource() == txtCapabilities) {
-            getFluff().setCapabilities(txtCapabilities.getText());
-        } else if (e.getSource() == txtOverview) {
-            getFluff().setOverview(txtOverview.getText());
-        } else if (e.getSource() == txtDeployment) {
-            getFluff().setDeployment(txtDeployment.getText());
-        } else if (e.getSource() == txtHistory) {
-            getFluff().setHistory(txtHistory.getText());
-        } else if (e.getSource() == txtManufacturer) {
-            getFluff().setManufacturer(txtManufacturer.getText());
-        } else if (e.getSource() == txtPrimaryFactory) {
-            getFluff().setPrimaryFactory(txtPrimaryFactory.getText());
-        } else if (e.getSource() == txtUse) {
-            getFluff().setUse(txtUse.getText());
-        } else if (e.getSource() == txtLength) {
-            getFluff().setLength(txtLength.getText());
-        } else if (e.getSource() == txtWidth) {
-            getFluff().setWidth(txtWidth.getText());
-        } else if (e.getSource() == txtHeight) {
-            getFluff().setHeight(txtHeight.getText());
-        } else if (e.getSource() == txtNotes) {
-            getFluff().setNotes(txtNotes.getText());
-        } else if (e.getSource() instanceof JTextField) {
-            String[] fields = ((JTextField) e.getSource()).getName().split(":");
-            EntityFluff.System system = EntityFluff.System.parse(fields[0]);
-            if (null != system) {
-                if (TAG_MANUFACTURER.equals(fields[1])) {
-                    getFluff().setSystemManufacturer(system, ((JTextField) e.getSource()).getText());
-                } else if (TAG_MODEL.equals(fields[1])) {
-                    getFluff().setSystemModel(system, ((JTextField) e.getSource()).getText());
+        boolean changed = false;
+        Object source = e.getSource();
+
+        if (source == txtCapabilities) {
+            if (!getFluff().getCapabilities().equals(txtCapabilities.getText())) {
+                getFluff().setCapabilities(txtCapabilities.getText());
+                changed = true;
+            }
+        } else if (source == txtOverview) {
+            if (!getFluff().getOverview().equals(txtOverview.getText())) {
+                getFluff().setOverview(txtOverview.getText());
+                changed = true;
+            }
+        } else if (source == txtDeployment) {
+            if (!getFluff().getDeployment().equals(txtDeployment.getText())) {
+                getFluff().setDeployment(txtDeployment.getText());
+                changed = true;
+            }
+        } else if (source == txtHistory) {
+            if (!getFluff().getHistory().equals(txtHistory.getText())) {
+                getFluff().setHistory(txtHistory.getText());
+                changed = true;
+            }
+        } else if (source == txtManufacturer) {
+            if (!getFluff().getManufacturer().equals(txtManufacturer.getText())) {
+                getFluff().setManufacturer(txtManufacturer.getText());
+                changed = true;
+            }
+        } else if (source == txtPrimaryFactory) {
+            if (!getFluff().getPrimaryFactory().equals(txtPrimaryFactory.getText())) {
+                getFluff().setPrimaryFactory(txtPrimaryFactory.getText());
+                changed = true;
+            }
+        } else if (source == txtUse) {
+            if (!getFluff().getUse().equals(txtUse.getText())) {
+                getFluff().setUse(txtUse.getText());
+                changed = true;
+            }
+        } else if (source == txtLength) {
+            if (!getFluff().getLength().equals(txtLength.getText())) {
+                getFluff().setLength(txtLength.getText());
+                changed = true;
+            }
+        } else if (source == txtWidth) {
+            if (!getFluff().getWidth().equals(txtWidth.getText())) {
+                getFluff().setWidth(txtWidth.getText());
+                changed = true;
+            }
+        } else if (source == txtHeight) {
+            if (!getFluff().getHeight().equals(txtHeight.getText())) {
+                getFluff().setHeight(txtHeight.getText());
+                changed = true;
+            }
+        } else if (source == txtNotes) {
+            if (!getFluff().getNotes().equals(txtNotes.getText())) {
+                getFluff().setNotes(txtNotes.getText());
+                changed = true;
+            }
+        } else if (source instanceof JTextField textField) { // Use pattern matching
+            String name = textField.getName();
+            String text = textField.getText();
+            if (name != null && name.contains(":")) {
+                String[] fields = name.split(":");
+                try {
+                    EntityFluff.System system = EntityFluff.System.parse(fields[0]);
+                    if (system != null) {
+                        if (TAG_MANUFACTURER.equals(fields[1])) {
+                            if (!getFluff().getSystemManufacturer(system).equals(text)) {
+                                getFluff().setSystemManufacturer(system, text);
+                                changed = true;
+                            }
+                        } else if (TAG_MODEL.equals(fields[1])) {
+                            if (!getFluff().getSystemModel(system).equals(text)) {
+                                getFluff().setSystemModel(system, text);
+                                changed = true;
+                            }
+                        }
+                    }
+                } catch (IllegalArgumentException ex) {
+                    logger.warn("Invalid system name found in JTextField name: {}", name, ex);
                 }
             }
         }
-        if (null != refresh) {
+
+        if (changed && refresh != null) {
             refresh.refreshPreview();
+            refresh.markDirty();
         }
     }
 
@@ -326,7 +509,6 @@ public class FluffTab extends ITab implements FocusListener {
             }
         }
         refreshGUI();
-        refresh.refreshAll();
     }
 
     private void importFluffImage() {
@@ -351,11 +533,12 @@ public class FluffTab extends ITab implements FocusListener {
             }
         }
         viewer.dispose();
+        unitLoadingDialog.dispose();
         refreshGUI();
     }
 
     private void removeFluffImage() {
-        if (getEntity() != null) {
+        if (getEntity() != null && getEntity().getFluff().hasEmbeddedFluffImage()) {
             getEntity().getFluff().setFluffImage("");
             refresh.refreshPreview();
             refresh.markDirty();
@@ -363,7 +546,51 @@ public class FluffTab extends ITab implements FocusListener {
         refreshGUI();
     }
 
+    /**
+     * Scales an image while maintaining aspect ratio to fit within max dimensions.
+     */
+    private Image scaleImage(Image originalImage, int maxWidth, int maxHeight) {
+        int originalWidth = originalImage.getWidth(null);
+        int originalHeight = originalImage.getHeight(null);
+
+        if (originalWidth <= maxWidth && originalHeight <= maxHeight) {
+            return originalImage;
+        }
+
+        double widthRatio = (double) maxWidth / originalWidth;
+        double heightRatio = (double) maxHeight / originalHeight;
+        double scaleRatio = Math.min(widthRatio, heightRatio);
+
+        int newWidth = (int) (originalWidth * scaleRatio);
+        int newHeight = (int) (originalHeight * scaleRatio);
+
+        return originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+    }
+
     private void refreshGUI() {
-        btnRemoveFluff.setEnabled((getEntity() != null) && getEntity().getFluff().hasEmbeddedFluffImage());
+
+        EntityFluff fluff = getFluff();
+        boolean hasImage = (fluff != null) && fluff.hasEmbeddedFluffImage();
+
+        btnRemoveFluff.setEnabled(hasImage);
+
+        ImageIcon icon = null;
+        if (hasImage) {
+            try {
+                Image img = fluff.getFluffImage();
+                if (img != null) {
+                    // Scale the image if necessary
+                    Image scaledImg = scaleImage(img, MAX_FLUFF_IMG_WIDTH, MAX_FLUFF_IMG_HEIGHT);
+                    icon = new ImageIcon(scaledImg);
+                }
+            } catch (Exception e) {
+                logger.error("Unexpected error displaying fluff image", e);
+            }
+        }
+
+        lblFluffImage.setIcon(icon);
+        lblFluffImage.setText(icon == null ? "(No Image)" : null);
+        imgScrollPane.revalidate();
+        imgScrollPane.repaint();
     }
 }
