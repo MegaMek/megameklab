@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiConsumer;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import megameklab.util.CConfig;
@@ -1858,7 +1857,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
         private EnhancedTabbedPane parentPane;
         private JLabel titleLabel;
         private JButton closeButton;
-        private Icon dirtyIcon;
         private boolean isDirty = false;
         final private String closeButtonText = "\u00D7";  // X
         final private String closeButtonDirtyText = "\u25CF";  // Big bullet point
@@ -2041,11 +2039,6 @@ public class EnhancedTabbedPane extends JTabbedPane {
             if (this.isDirty != dirty) {
                 this.isDirty = dirty;
                 if (dirty) {
-                    // if (dirtyIcon == null) {
-                    //     dirtyIcon = createDirtyIcon();
-                    // }
-                    // titleLabel.setIcon(dirtyIcon);
-                    // titleLabel.setIconTextGap(4);
                     closeButton.setText(closeButtonDirtyText);
                     closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 18f));
                 } else {
@@ -2057,23 +2050,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 repaint();
             }
         }
-        /**
-         * Creates a small filled circle icon to indicate unsaved changes
-         * 
-         * @return An ImageIcon with a filled circle
-         */
-        private ImageIcon createDirtyIcon() {
-            // Create a small filled circle icon
-            int size = 8;
-            BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = image.createGraphics();
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(Color.GRAY);
-            g2d.fillOval(0, 0, size, size);
-            g2d.dispose();
-            return new ImageIcon(image);
-        }
-
+        
         /**
          * Gets the title of this tab
          * 
