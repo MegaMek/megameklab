@@ -94,12 +94,13 @@ public class FluffTab extends ITab implements FocusListener {
         final boolean hasRightPanelEntries = !getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
                 || getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
 
-        setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         GridBagConstraints mainGbc = new GridBagConstraints();
 
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setMaximumSize(new Dimension(MAX_CONTENT_WIDTH, Integer.MAX_VALUE));
-
+        contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         // --- Left Panel ---
         JPanel panLeft = new JPanel(new GridBagLayout());
         panLeft.setBorder(new EmptyBorder(panelInsets)); // Add padding around the panel
