@@ -49,7 +49,6 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
-import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -68,8 +67,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public final MMLFileChooser loadImageFileChooser = new MMLFileChooser();
     private final JMenu fileMenu = new JMenu(resources.getString("fileMenu.text"));
 
-    private MegaMekLabFileSaver fileSaver;
-
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
         initialize();
@@ -83,9 +80,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @return The unit main UI of this menubar or null
      */
     public @Nullable MegaMekLabMainUI getUnitMainUi() {
-        if (owner instanceof MegaMekLabMainUI) {
-            return (MegaMekLabMainUI) owner;
-        } else if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
             return tabbedUI.currentEditor();
         } else {
             return null;
@@ -369,7 +364,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      * @return the created Save menu
      */
     private JMenu createSaveMenu() {
-        fileSaver = new MegaMekLabFileSaver(logger, resources.getString("dialog.saveAs.title"));
         final JMenu saveMenu = new JMenu(resources.getString("Save.text"));
         saveMenu.setName("saveMenu");
         saveMenu.setMnemonic(KeyEvent.VK_S);
@@ -394,43 +388,21 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     public boolean saveUnitAs() {
-        return saveUnitAs(getUnitMainUi());
-    }
-
-    public boolean saveUnitAs(MegaMekLabMainUI mainUI) {
-        warnOnInvalid();
-        Entity entity = mainUI.getEntity();
-        UnitUtil.compactCriticals(entity);
-        mainUI.refreshAll(); // The crits may have moved
-        String file = fileSaver.saveUnitAs(mainUI.getParentFrame(), entity);
-        if (file == null) {
+        MegaMekLabMainUI mainUI = getUnitMainUi();
+        if (mainUI == null) {
             return false;
         }
-        mainUI.setFileName(file);
-        return true;
+        return mainUI.saveUnitAs();
     }
 
     public boolean saveUnit() {
-        return saveUnit(getUnitMainUi());
+        MegaMekLabMainUI mainUI = getUnitMainUi();
+        if (mainUI == null) {
+            return false;
+        }
+        return mainUI.saveUnit();
     }
 
-    public boolean saveUnit(MegaMekLabMainUI mainUI) {
-        Entity entity = mainUI.getEntity();
-        if (entity == null) {
-            logger.error("Tried to save null entity.");
-            return false;
-        } else {
-            warnOnInvalid();
-        }
-        UnitUtil.compactCriticals(entity);
-        mainUI.refreshAll(); // The crits may have moved
-        String file = fileSaver.saveUnit(mainUI.getParentFrame(), mainUI, entity);
-        if (file == null) {
-            return false;
-        }
-        mainUI.setFileName(file);
-        return true;
-    }
     /**
      * @return the created Export menu
      */
@@ -1126,34 +1098,38 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
 
         Entity en = owner.getEntity();
+        MegaMekLabMainUI mainUI = getUnitMainUi();
+        if (mainUI == null) {
+            return;
+        }
         if (en instanceof Tank) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_TANK);
+            mainUI.createNewUnit(Entity.ETYPE_TANK);
         } else if (en instanceof Mek) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_BIPED_MEK, en.isPrimitive(), ((Mek) en).isIndustrial());
+            mainUI.createNewUnit(Entity.ETYPE_BIPED_MEK, en.isPrimitive(), ((Mek) en).isIndustrial());
         } else if (en.hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_DROPSHIP, en.isPrimitive());
+            mainUI.createNewUnit(Entity.ETYPE_DROPSHIP, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_SMALL_CRAFT, en.isPrimitive());
+            mainUI.createNewUnit(Entity.ETYPE_SMALL_CRAFT, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_SPACE_STATION);
+            mainUI.createNewUnit(Entity.ETYPE_SPACE_STATION);
         } else if (en.hasETypeFlag(Entity.ETYPE_WARSHIP)) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_WARSHIP, en.isPrimitive());
+            mainUI.createNewUnit(Entity.ETYPE_WARSHIP, en.isPrimitive());
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_JUMPSHIP);
+            mainUI.createNewUnit(Entity.ETYPE_JUMPSHIP);
         } else if (owner.getEntity() instanceof Aero) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_AERO, en.isPrimitive());
+            mainUI.createNewUnit(Entity.ETYPE_AERO, en.isPrimitive());
         } else if (owner.getEntity() instanceof BattleArmor) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_BATTLEARMOR);
+            mainUI.createNewUnit(Entity.ETYPE_BATTLEARMOR);
         } else if (owner.getEntity() instanceof Infantry) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_INFANTRY);
+            mainUI.createNewUnit(Entity.ETYPE_INFANTRY);
         } else if (owner.getEntity() instanceof ProtoMek) {
-            getUnitMainUi().createNewUnit(Entity.ETYPE_PROTOMEK);
+            mainUI.createNewUnit(Entity.ETYPE_PROTOMEK);
         } else {
             logger.warn("Received unknown entityType!");
         }
         reload();
         refresh();
-        getUnitMainUi().repaint();
+        mainUI.repaint();
     }
 
     private String entitySummaryText(ViewFormatting formatting) {
@@ -1214,11 +1190,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 throw new Exception();
             }
 
-            // Safety prompt is only needed on MainUI, since other UIs don't close a unit when loading a new one.
-            if ((owner instanceof MegaMekLabMainUI) && !owner.safetyPrompt()) {
-                return;
-            }
-
             warnOnInvalid(loadedUnit);
 
             newRecentUnit(unitFile.toString());
@@ -1229,11 +1200,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 owner.getFrame().setVisible(false);
                 owner.getFrame().dispose();
                 UiLoader.loadUi(loadedUnit, unitFile.toString());
-            } else if (owner instanceof MegaMekLabMainUI ){
-                getUnitMainUi().setEntity(loadedUnit, unitFile.toString());
-                UnitUtil.updateLoadedUnit(getUnitMainUi().getEntity());
-                reload();
-                refresh();
             }
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());

@@ -355,6 +355,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
+            refresh.markDirty();
         }
     }
 
@@ -387,6 +388,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
+            refresh.markDirty();
         }
         refresh();
     }

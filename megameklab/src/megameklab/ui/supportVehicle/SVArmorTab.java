@@ -122,6 +122,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -133,6 +134,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -143,6 +145,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -157,6 +160,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -181,6 +185,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -190,6 +195,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -200,6 +206,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -213,6 +220,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -248,6 +256,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -320,5 +329,6 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 }

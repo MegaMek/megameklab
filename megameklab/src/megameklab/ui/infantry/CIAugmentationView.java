@@ -104,6 +104,7 @@ public class CIAugmentationView extends IView implements ActionListener {
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshPreview();
+            refresh.markDirty();
         }
     }
     

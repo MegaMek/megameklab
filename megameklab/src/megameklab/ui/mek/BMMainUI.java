@@ -171,6 +171,7 @@ public class BMMainUI extends MegaMekLabMainUI {
             mek.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             mek.setMixedTech(oldEntity.isMixedTech());
         }
+        SwingUtilities.invokeLater(this::resetDirty);
     }
 
     @Override

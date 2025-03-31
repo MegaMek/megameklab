@@ -219,6 +219,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshTransport();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
@@ -227,12 +228,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
     public void yearChanged(int year) {
         getSV().setYear(year);
         updateTechLevel();
+        refresh.markDirty();
     }
 
     @Override
@@ -253,12 +256,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshArmor();
         refresh.refreshTransport();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
     public void sourceChanged(String source) {
         getSV().setSource(source);
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -291,6 +296,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panMovement.addListener(this);
         panFuel.setFromEntity(getSV());
         panChassis.refresh();
+        refresh.markDirty();
     }
 
     @Override
@@ -312,6 +318,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panMovement.removeListener(this);
             panMovement.setFromEntity(getSV());
             panMovement.addListener(this);
+            refresh.markDirty();
         }
     }
 
@@ -365,6 +372,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -387,6 +395,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panCrew.setFromEntity(getSV());
             panSummary.refresh();
             refresh.refreshAll();
+            refresh.markDirty();
         }
     }
 
@@ -397,6 +406,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -431,6 +441,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshEquipment();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -441,6 +452,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -491,6 +503,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshStatus();
         refresh.refreshPreview();
         refresh.refreshBuild();
+        refresh.markDirty();
     }
 
     @Override
@@ -527,6 +540,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -560,6 +574,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -592,6 +607,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     /**
@@ -658,6 +674,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -707,6 +724,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -753,6 +771,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     private void removeTurret(int loc) {
@@ -789,6 +808,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -811,6 +831,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -841,10 +862,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
+        refresh.markDirty();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.markDirty();
     }
 }

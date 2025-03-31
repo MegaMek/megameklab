@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
@@ -160,6 +161,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             ship.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
             ship.setMixedTech(oldUnit.isMixedTech());
         }
+        SwingUtilities.invokeLater(this::resetDirty);
     }
 
     @Override

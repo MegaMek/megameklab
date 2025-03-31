@@ -40,4 +40,6 @@ public interface RefreshListener extends EventListener {
     // Refreshers for just one thing on a tab
     void refreshSummary();
     void refreshEquipmentTable();
+
+    void markDirty();
 }

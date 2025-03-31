@@ -318,6 +318,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
@@ -326,17 +327,20 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
     public void yearChanged(int year) {
         getProtoMek().setYear(year);
         updateTechLevel();
+        refresh.markDirty();
     }
 
     @Override
     public void sourceChanged(String source) {
         getProtoMek().setSource(source);
+        refresh.markDirty();
     }
 
     @Override
@@ -344,12 +348,14 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         if ((clan != getProtoMek().isClan()) || (mixed != getProtoMek().isMixedTech())) {
             getProtoMek().setMixedTech(mixed);
             updateTechLevel();
+            refresh.markDirty();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
+        refresh.markDirty();
     }
 
     @Override
@@ -374,12 +380,14 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshBuild();
         addAllListeners();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -395,6 +403,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -445,6 +454,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -456,6 +466,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -466,6 +477,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -480,6 +492,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -504,6 +517,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -517,6 +531,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshPreview();
         panMovement.setFromEntity(getProtoMek());
         panChassis.refresh();
+        refresh.markDirty();
     }
 
     @Override
@@ -550,6 +565,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getProtoMek());
+        refresh.markDirty();
     }
 
     @Override
@@ -561,6 +577,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getProtoMek(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
+        refresh.markDirty();
     }
 
     @Override
@@ -570,6 +587,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -593,6 +611,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     /**
@@ -655,6 +674,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     private void addArmorPoint(int location) {
         if (getProtoMek().getOArmor(location) < UnitUtil.getMaximumArmorPoints(getProtoMek(), location)) {
             getProtoMek().initializeArmor(getProtoMek().getOArmor(location) + 1, location);
+            refresh.markDirty();
         }
     }
 
@@ -678,6 +698,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         panArmorAllocation.setFromEntity(getProtoMek());
         refresh.refreshBuild();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -711,20 +732,24 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
     public void setISInterface(boolean selected) {
         getProtoMek().setInterfaceCockpit(selected);
+        refresh.markDirty();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getProtoMek().setMulId(mulId);
+        refresh.markDirty();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.markDirty();
     }
 }

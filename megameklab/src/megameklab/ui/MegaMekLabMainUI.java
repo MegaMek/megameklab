@@ -17,20 +17,21 @@ package megameklab.ui;
 
 import megamek.common.Entity;
 import megamek.common.Mounted;
+import megamek.logging.MMLogger;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
 import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
-
+import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
+import java.util.ResourceBundle;
 
 public abstract class MegaMekLabMainUI extends JPanel
         implements RefreshListener, EntitySource, FileNameManager {
+    private static final MMLogger logger = MMLogger.create(MegaMekLabMainUI.class);
 
     protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
     private Entity entity = null;
@@ -39,6 +40,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     private String originalName = "";
     private MegaMekLabTabbedUI tabOwner = null;
     private boolean initializedTabs = false;
+    private boolean dirty = false;
 
     public MegaMekLabMainUI() {
         setLayout(new BorderLayout());
@@ -70,6 +72,24 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
     }
 
+    public void markDirty() {
+        if (!dirty) {
+            dirty = true;
+            refreshHeader();
+        }
+    }
+
+    public void resetDirty() {
+        if (dirty) {
+            dirty = false;
+            refreshHeader();
+        }
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
@@ -89,9 +109,53 @@ public abstract class MegaMekLabMainUI extends JPanel
                     JOptionPane.WARNING_MESSAGE);
             // When the user did not actually save the unit, return as if CANCEL was pressed
             return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION) && tabOwner.getMMLMenuBar().saveUnit(this));
+                    || ((savePrompt == JOptionPane.YES_OPTION) && saveUnit());
         }
     }
+
+    private void warnOnInvalid() {
+        var report = UnitUtil.validateUnit(getEntity());
+        if (!report.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(getParentFrame(), report);
+        }
+    }
+
+    public boolean saveUnitAs() {
+        warnOnInvalid();
+        UnitUtil.compactCriticals(getEntity());
+        refreshAll();
+        final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+        final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger, resources.getString("dialog.saveAs.title"));
+        String file = fileSaver.saveUnitAs(getParentFrame(), entity);
+        if (file == null) {
+            return false;
+        }
+        setFileName(file);
+        resetDirty();
+        return true;
+
+    }
+    
+    public boolean saveUnit() {
+        if (getEntity() == null) {
+            logger.error("Tried to save null entity.");
+            return false;
+        } else {
+            warnOnInvalid();
+        }
+        UnitUtil.compactCriticals(entity);
+        final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+        final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger, resources.getString("dialog.saveAs.title"));
+        refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnit(getParentFrame(), this, getEntity());
+        if (file == null) {
+            return false;
+        }
+        setFileName(file);
+        resetDirty();
+        return true;
+    }
+    
 
     public boolean exit() {
         if (!safetyPrompt()) {
@@ -117,11 +181,12 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     @Override
     public void refreshHeader() {
+        String titlePrefix = dirty ? "*" : "";
         if (configPane.hasDetachedTabs()) {
-            configPane.setDetachedTabsPrefixTitle(getEntity().getShortNameRaw());
+            configPane.setDetachedTabsPrefixTitle(titlePrefix + getEntity().getShortNameRaw());
         }
         if (tabOwner != null) {
-            tabOwner.setTabName(getEntity().getShortNameRaw(), this);
+            tabOwner.setTabName(titlePrefix + getEntity().getShortNameRaw(), this);
         }
     }
 

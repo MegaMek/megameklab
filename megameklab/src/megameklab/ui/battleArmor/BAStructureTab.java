@@ -399,6 +399,7 @@ public class BAStructureTab extends ITab
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
@@ -407,17 +408,20 @@ public class BAStructureTab extends ITab
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
+        refresh.markDirty();
     }
 
     @Override
     public void yearChanged(int year) {
         getBattleArmor().setYear(year);
         updateTechLevel();
+        refresh.markDirty();
     }
 
     @Override
     public void sourceChanged(String source) {
         getBattleArmor().setSource(source);
+        refresh.markDirty();
     }
 
     @Override
@@ -461,6 +465,7 @@ public class BAStructureTab extends ITab
         }
         addAllListeners();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -594,6 +599,7 @@ public class BAStructureTab extends ITab
             refresh.refreshStatus();
             refresh.refreshPreview();
             refresh.refreshBuild();
+            refresh.markDirty();
         }
     }
 
@@ -618,6 +624,7 @@ public class BAStructureTab extends ITab
         refresh.refreshStatus();
         refresh.refreshPreview();
         refresh.refreshBuild();
+        refresh.markDirty();
     }
 
     @Override
@@ -653,6 +660,7 @@ public class BAStructureTab extends ITab
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
+        refresh.markDirty();
     }
 
     @Override
@@ -662,6 +670,7 @@ public class BAStructureTab extends ITab
         }
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -682,6 +691,7 @@ public class BAStructureTab extends ITab
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+        refresh.markDirty();
     }
 
     @Override
@@ -712,10 +722,12 @@ public class BAStructureTab extends ITab
     @Override
     public void mulIdChanged(int mulId) {
         getBattleArmor().setMulId(mulId);
+        refresh.markDirty();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.markDirty();
     }
 }

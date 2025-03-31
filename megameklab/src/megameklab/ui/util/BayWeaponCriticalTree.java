@@ -273,6 +273,7 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshPreview();
             refresh.refreshStatus();
             refresh.refreshSummary();
+            refresh.markDirty();
         }
     }
 
@@ -346,6 +347,7 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshPreview();
             refresh.refreshStatus();
             refresh.refreshSummary();
+            refresh.markDirty();
         }
     }
 
@@ -386,6 +388,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -404,6 +407,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -432,6 +436,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshStatus();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -454,6 +459,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -971,6 +977,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -1036,6 +1043,7 @@ public class BayWeaponCriticalTree extends JTree {
                     refresh.refreshPreview();
                     refresh.refreshStatus();
                     refresh.refreshSummary();
+                    refresh.markDirty();
                     return;
                 }
             }
@@ -1071,6 +1079,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     private void updateAmmoCapacity(AmmoMounted ammoMount) {
@@ -1099,6 +1108,7 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshPreview();
             refresh.refreshStatus();
             refresh.refreshSummary();
+            refresh.markDirty();
         } else {
             try {
                 Mounted<?> m = eSource.getEntity().addEquipment(at, bay.getLocation());
@@ -1129,6 +1139,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     /**
@@ -1189,6 +1200,7 @@ public class BayWeaponCriticalTree extends JTree {
             refresh.refreshPreview();
             refresh.refreshStatus();
             refresh.refreshSummary();
+            refresh.markDirty();
         } else {
             addToBay(getBayFromPath(path), eq);
         }
@@ -1211,6 +1223,7 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             addAmmoToBay(getBayFromPath(path), eq, shots);
         }
+        refresh.markDirty();
     }
 
     /**
@@ -1245,6 +1258,7 @@ public class BayWeaponCriticalTree extends JTree {
             model.insertNodeInto(node, bayNode, bayNode.getChildCount());
             node.setParent(bayNode);
         }
+        refresh.markDirty();
     }
 
     private void moveToArc(Mounted<?> eq) {
@@ -1504,6 +1518,7 @@ public class BayWeaponCriticalTree extends JTree {
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
+        refresh.markDirty();
     }
 
     private void restoreExpandedBays(List<Integer> expandedBayIds) {
