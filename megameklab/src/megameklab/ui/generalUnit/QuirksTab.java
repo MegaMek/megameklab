@@ -390,6 +390,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     @Override
     public void optionClicked(DialogOptionComponent comp, IOption option, boolean state) {
         option.setValue(state);
+        refresh.refreshPreview();
         refresh.markDirty();
     }
 
