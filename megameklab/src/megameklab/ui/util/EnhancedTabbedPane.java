@@ -37,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,14 +80,15 @@ public class EnhancedTabbedPane extends JTabbedPane {
         /**
          * Creates a new DetachedTabInfo instance
          *
-         * @param title Title of the tab
-         * @param icon Icon for the tab
-         * @param component Component to be displayed in the tab
+         * @param title            Title of the tab
+         * @param icon             Icon for the tab
+         * @param component        Component to be displayed in the tab
          * @param wrapperComponent The window that wraps the tab
-         * @param originalIndex The original index of the tab in the source pane
-         * @param isCloseableTab Whether the tab is closeable
+         * @param originalIndex    The original index of the tab in the source pane
+         * @param isCloseableTab   Whether the tab is closeable
          */
-        public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex, boolean isCloseableTab) {
+        public DetachedTabInfo(String title, Icon icon, Component component, Window wrapperComponent, int originalIndex,
+                boolean isCloseableTab) {
             this.title = title;
             this.icon = icon;
             this.component = component;
@@ -277,7 +279,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Sets whether action buttons should be aligned after the tabs or on the right
      * side of the window
      *
-     * @param alignAfterTabs true to align after tabs, false to align on the right side
+     * @param alignAfterTabs true to align after tabs, false to align on the right
+     *                       side
      */
     public void setActionButtonsAlignAfterTabs(boolean alignAfterTabs) {
         actionButtonsAlignAfterTabs = alignAfterTabs;
@@ -297,7 +300,8 @@ public class EnhancedTabbedPane extends JTabbedPane {
      * Sets the dock group ID for this tabbed pane. This ID is used to group tabbed
      * panels that can share tabs between each other.
      * 
-     * @param dockGroupId The ID to set for this tabbed pane (used for cross-pane docking)
+     * @param dockGroupId The ID to set for this tabbed pane (used for cross-pane
+     *                    docking)
      */
     public void setDockGroupId(String dockGroupId) {
         this.dockGroupId = dockGroupId;
@@ -1177,10 +1181,10 @@ public class EnhancedTabbedPane extends JTabbedPane {
     /**
      * Adds a closeable tab to this tabbed pane
      *
-     * @param title          The title of the tab
-     * @param icon           the {@link Icon} for the tab.
-     * @param component      The component to display in the tab
-     * @param tabIndex       The index at which to add the tab
+     * @param title     The title of the tab
+     * @param icon      the {@link Icon} for the tab.
+     * @param component The component to display in the tab
+     * @param tabIndex  The index at which to add the tab
      *
      * @return The index of the newly added tab
      */
@@ -1853,13 +1857,18 @@ public class EnhancedTabbedPane extends JTabbedPane {
         private final Component component;
         private EnhancedTabbedPane parentPane;
         private JLabel titleLabel;
+        private JButton closeButton;
+        private Icon dirtyIcon;
+        private boolean isDirty = false;
+        final private String closeButtonText = "\u00D7";  // X
+        final private String closeButtonDirtyText = "\u25CF";  // Big bullet point
 
         /**
          * Creates a new closeable tab with the specified title
          *
          * @param parentPane The parent tabbed pane
-         * @param title     The title to display
-         * @param component The component associated with this tab
+         * @param title      The title to display
+         * @param component  The component associated with this tab
          */
         public CloseableTab(EnhancedTabbedPane parentPane, String title, Component component) {
             super(new BorderLayout(0, 0));
@@ -1873,7 +1882,7 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
             // Add components to panel
             add(titleLabel, BorderLayout.WEST);
-            JButton closeButton = createCloseButton();
+            closeButton = createCloseButton();
             add(closeButton, BorderLayout.EAST);
 
             MouseAdapter tabEventForwarder = new MouseAdapter() {
@@ -1933,12 +1942,12 @@ public class EnhancedTabbedPane extends JTabbedPane {
 
         @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
         private JButton createCloseButton() {
-            JButton closeButton = new JButton("\u00D7");
+            JButton closeButton = new JButton(closeButtonText);
             closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 16f));
-            closeButton.setPreferredSize(new Dimension(14, 16));
+            closeButton.setPreferredSize(new Dimension(18, 18));
             closeButton.setToolTipText("Close this tab (Shift+click to skip save confirmation)");
             closeButton.setContentAreaFilled(false);
-            closeButton.setBorder(BorderFactory.createEmptyBorder(-2, 0, 0, -2));
+            closeButton.setBorder(BorderFactory.createEmptyBorder(-3, 0, 0, 2));
             closeButton.setBorderPainted(false);
             closeButton.setFocusable(false);
 
@@ -2008,6 +2017,61 @@ public class EnhancedTabbedPane extends JTabbedPane {
             if (parentPane != null) {
                 parentPane.positionActionButtons();
             }
+        }
+
+        /**
+         * Sets the font style of the title label to bold or plain
+         *
+         * @param bold
+         */
+        public void setBold(boolean bold) {
+            Font font = titleLabel.getFont();
+            if (font != null) {
+                titleLabel.setFont(font.deriveFont(bold ? Font.BOLD : Font.PLAIN));
+            }
+        }
+
+        /**
+         * Sets the visual dirty state of this tab and updates the icon accordingly
+         * 
+         * @param dirty
+         */
+        @SuppressWarnings("UnnecessaryUnicodeEscape") // It's necessary or the encoding breaks on some systems
+        public void setDirty(boolean dirty) {
+            if (this.isDirty != dirty) {
+                this.isDirty = dirty;
+                if (dirty) {
+                    // if (dirtyIcon == null) {
+                    //     dirtyIcon = createDirtyIcon();
+                    // }
+                    // titleLabel.setIcon(dirtyIcon);
+                    // titleLabel.setIconTextGap(4);
+                    closeButton.setText(closeButtonDirtyText);
+                    closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 18f));
+                } else {
+                    closeButton.setText(closeButtonText);
+                    closeButton.setFont(closeButton.getFont().deriveFont(Font.BOLD, 16f));
+            
+                }
+                revalidate();
+                repaint();
+            }
+        }
+        /**
+         * Creates a small filled circle icon to indicate unsaved changes
+         * 
+         * @return An ImageIcon with a filled circle
+         */
+        private ImageIcon createDirtyIcon() {
+            // Create a small filled circle icon
+            int size = 8;
+            BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = image.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setColor(Color.GRAY);
+            g2d.fillOval(0, 0, size, size);
+            g2d.dispose();
+            return new ImageIcon(image);
         }
 
         /**

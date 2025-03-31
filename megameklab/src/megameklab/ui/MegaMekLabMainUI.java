@@ -184,12 +184,11 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     @Override
     public void refreshHeader() {
-        String titlePrefix = dirty ? "*" : "";
         if (configPane.hasDetachedTabs()) {
-            configPane.setDetachedTabsPrefixTitle(titlePrefix + getEntity().getShortNameRaw());
+            configPane.setDetachedTabsPrefixTitle(getEntity().getShortNameRaw());
         }
         if (tabOwner != null) {
-            tabOwner.setTabName(titlePrefix + getEntity().getShortNameRaw(), this);
+            tabOwner.setTabName(this, getEntity().getShortNameRaw());
         }
     }
 
