@@ -98,7 +98,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         smallCraft.setWeight(200);
         smallCraft.setOriginalWalkMP(2); // Start at 1G
         smallCraft.setArmorTechLevel(getEntity().getTechLevel());
-        smallCraft.set0SI(3);
+        smallCraft.setOSI(3);
         smallCraft.setDesignType(SmallCraft.MILITARY);
 
         smallCraft.setHeatType(Aero.HEAT_SINGLE);
@@ -108,7 +108,7 @@ public class DSMainUI extends MegaMekLabMainUI {
             if (loc == SmallCraft.LOC_HULL) {
                 smallCraft.initializeArmor(IArmorState.ARMOR_NA, loc);
             } else {
-                smallCraft.initializeArmor(smallCraft.get0SI(), loc);
+                smallCraft.initializeArmor(smallCraft.getOSI(), loc);
             }
         }
 

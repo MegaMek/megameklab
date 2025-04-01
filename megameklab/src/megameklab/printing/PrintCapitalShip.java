@@ -160,7 +160,7 @@ public class PrintCapitalShip extends PrintDropship {
         setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
         if (ship instanceof Warship) {
-            printInternalRegion(SI_PIPS, ship.get0SI(), 100);
+            printInternalRegion(SI_PIPS, ship.getOSI(), 100);
         }
         printInternalRegion(KF_PIPS, ship.getKFIntegrity(), 30);
         printInternalRegion(SAIL_PIPS, ship.getSailIntegrity(), 10);
