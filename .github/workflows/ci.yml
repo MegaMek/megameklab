@@ -67,9 +67,9 @@ jobs:
         run: |
           echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
 
-      - name: Build with Gradle
+      - name: Test All
         working-directory: megameklab
-        run: ./gradlew build  -x checkstyleMain -x checkstyleTest --stacktrace --scan
+        run: ./gradlew testAll --stacktrace --scan
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v4
@@ -84,6 +84,10 @@ jobs:
           directory: ./megameklab/megameklab/build/reports/jacoco/test
           fail_ci_if_error: false
           verbose: true
+
+      - name: Build with Gradle
+        working-directory: megameklab
+        run: ./gradlew build  -x test
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4
