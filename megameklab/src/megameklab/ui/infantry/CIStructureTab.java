@@ -314,7 +314,6 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     public void refreshEquipmentTable() {
-        super.refreshEquipmentTable();
         weaponView.refresh();
     }
 
