@@ -41,5 +41,5 @@ public interface RefreshListener extends EventListener {
     void refreshSummary();
     void refreshEquipmentTable();
 
-    void markDirty();
+    void requestDirtyCheck();
 }

@@ -220,7 +220,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshTransport();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -229,14 +229,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getSV().setYear(year);
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -257,14 +257,14 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshArmor();
         refresh.refreshTransport();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getSV().setSource(source);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -285,7 +285,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -299,7 +299,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panMovement.addListener(this);
         panFuel.setFromEntity(getSV());
         panChassis.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -321,7 +321,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panMovement.removeListener(this);
             panMovement.setFromEntity(getSV());
             panMovement.addListener(this);
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
@@ -375,7 +375,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -398,7 +398,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panCrew.setFromEntity(getSV());
             panSummary.refresh();
             refresh.refreshAll();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
@@ -409,7 +409,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -444,7 +444,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshEquipment();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -455,7 +455,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -506,7 +506,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshStatus();
         refresh.refreshPreview();
         refresh.refreshBuild();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -543,7 +543,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -577,7 +577,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -610,7 +610,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     /**
@@ -677,7 +677,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -727,7 +727,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -774,7 +774,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     private void removeTurret(int loc) {
@@ -811,7 +811,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -834,7 +834,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -865,12 +865,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }

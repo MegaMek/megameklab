@@ -329,7 +329,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -338,14 +338,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getInfantry().setYear(year);
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -366,14 +366,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         specializationView.refresh();
         augmentationView.refresh();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getInfantry().setSource(source);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -381,14 +381,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         if ((clan != getInfantry().isClan()) || (mixed != getInfantry().isMixedTech())) {
             getInfantry().setMixedTech(mixed);
             updateTechLevel();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -396,7 +396,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -425,7 +425,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         mountView.refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -436,7 +436,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         panPlatoonType.setFromEntity(getInfantry());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -447,7 +447,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         weaponView.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -463,7 +463,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -475,7 +475,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                 count);
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -491,7 +491,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         TestInfantry.adaptAntiMekAttacks(getInfantry());
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -512,12 +512,12 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void mulIdChanged(int mulId) {
         getInfantry().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }

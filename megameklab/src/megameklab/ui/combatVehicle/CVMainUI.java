@@ -49,6 +49,7 @@ public class CVMainUI extends MegaMekLabMainUI {
     public CVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_TANK, false, false);
+        requestDirtyCheck();
     }
 
     @Override
@@ -93,6 +94,7 @@ public class CVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
@@ -105,35 +107,43 @@ public class CVMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
-        // not used for vees
+        super.refreshTransport();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
@@ -201,6 +211,7 @@ public class CVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 

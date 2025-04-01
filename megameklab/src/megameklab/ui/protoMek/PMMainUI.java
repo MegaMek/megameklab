@@ -50,6 +50,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     public PMMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMEK);
+        requestDirtyCheck();
     }
 
     @Override
@@ -131,6 +132,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
@@ -142,40 +144,49 @@ public class PMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
-        // not used for protomeks
+        super.refreshTransport();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshSummary() {

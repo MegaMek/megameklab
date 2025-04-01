@@ -240,7 +240,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -249,7 +249,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -263,13 +263,13 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
             panHeat.setFromAero(getJumpship());
         }
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getJumpship().setSource(source);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -277,14 +277,14 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         if ((clan != getJumpship().isClan()) || (mixed != getJumpship().isMixedTech())) {
             getJumpship().setMixedTech(mixed);
             updateTechLevel();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -304,7 +304,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshTransport();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -312,7 +312,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -323,7 +323,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -342,7 +342,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -353,7 +353,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -368,7 +368,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -391,7 +391,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -405,7 +405,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panHeat.setFromAero(getJumpship());
         panChassis.setFromEntity(getJumpship());
         panFuel.setFromEntity(getJumpship());
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -430,7 +430,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -439,7 +439,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -450,7 +450,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -460,7 +460,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         }
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -468,7 +468,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setSail(sail);
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -509,7 +509,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         }
         refresh();
         refresh.refreshAll();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -518,7 +518,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -533,7 +533,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -544,7 +544,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -554,7 +554,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -565,7 +565,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -620,7 +620,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
 
     }
 
@@ -635,7 +635,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         // May need to adjust number of officers
         panCrew.setFromEntity(getJumpship());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -643,7 +643,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setNOfficers(nOfficers);
         panCrew.setFromEntity(getJumpship());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -652,28 +652,28 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setNGunners(nGunners);
         panCrew.setFromEntity(getJumpship());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void passengersChanged(int nPassengers) {
         getJumpship().setNPassenger(nPassengers);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void marinesChanged(int nMarines) {
         getJumpship().setNMarines(nMarines);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void baMarinesChanged(int nBAMarines) {
         getJumpship().setNBattleArmor(nBAMarines);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -683,7 +683,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -693,7 +693,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -703,7 +703,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -713,19 +713,19 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         refresh.refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
 
     @Override
     public void mulIdChanged(int mulId) {
         getJumpship().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }

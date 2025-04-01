@@ -48,6 +48,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     public BMMainUI(boolean primitive, boolean industrial) {
         super();
         createNewUnit(Entity.ETYPE_BIPED_MEK, primitive, industrial);
+        requestDirtyCheck();
     }
 
     @Override
@@ -172,11 +173,11 @@ public class BMMainUI extends MegaMekLabMainUI {
             mek.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             mek.setMixedTech(oldEntity.isMixedTech());
         }
-        SwingUtilities.invokeLater(this::resetDirty);
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
@@ -188,38 +189,49 @@ public class BMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
-    public void refreshTransport() { }
+    public void refreshTransport() {
+        super.refreshTransport();
+    }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshSummary() {

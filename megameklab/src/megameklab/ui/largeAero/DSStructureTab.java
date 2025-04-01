@@ -223,7 +223,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -232,7 +232,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -246,19 +246,19 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
             panHeat.setFromAero(getSmallCraft());
         }
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getSmallCraft().setSource(source);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getSmallCraft().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -266,14 +266,14 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         if ((clan != getSmallCraft().isClan()) || (mixed != getSmallCraft().isMixedTech())) {
             getSmallCraft().setMixedTech(mixed);
             updateTechLevel();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -292,7 +292,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshTransport();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -300,7 +300,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -311,7 +311,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -328,7 +328,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -339,7 +339,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -354,7 +354,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -377,7 +377,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -391,7 +391,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat.setFromAero(getSmallCraft());
         panChassis.setFromEntity(getSmallCraft());
         panFuel.setFromEntity(getSmallCraft());
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -414,7 +414,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshTransport();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -425,7 +425,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -442,7 +442,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         }
         refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -456,7 +456,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         }
         refresh();
         refresh.refreshAll();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
 
@@ -472,7 +472,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panArmor.setFromEntity(getSmallCraft());
         panHeat.setFromAero(getSmallCraft());
         refresh.refreshAll();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -487,7 +487,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -498,7 +498,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -508,7 +508,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -519,7 +519,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -562,7 +562,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
 
     }
 
@@ -577,7 +577,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         // May need to adjust number of officers
         panCrew.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -585,7 +585,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setNOfficers(nOfficers);
         panCrew.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -594,28 +594,28 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setNGunners(nGunners);
         panCrew.setFromEntity(getSmallCraft());
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void passengersChanged(int nPassengers) {
         getSmallCraft().setNPassenger(nPassengers);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void marinesChanged(int nMarines) {
         getSmallCraft().setNMarines(nMarines);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void baMarinesChanged(int nBAMarines) {
         getSmallCraft().setNBattleArmor(nBAMarines);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -625,7 +625,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -635,7 +635,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -645,12 +645,12 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         refreshSummary();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }

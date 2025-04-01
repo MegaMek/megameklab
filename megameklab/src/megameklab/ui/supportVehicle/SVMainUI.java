@@ -52,6 +52,7 @@ public class SVMainUI extends MegaMekLabMainUI {
     public SVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
+        requestDirtyCheck();
     }
 
     @Override
@@ -102,6 +103,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         structureTab.refresh();
         armorTab.refresh();
         equipmentTab.refresh();
@@ -121,16 +123,19 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
+        super.refreshTransport();
         transportTab = new TransportTab(this);
         transportTab.addRefreshedListener(this);
         int idx = configPane.indexOfTab("Transport");
@@ -141,16 +146,19 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
     }
 
     @Override
@@ -217,6 +225,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 

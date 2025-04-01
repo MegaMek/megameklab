@@ -92,7 +92,7 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
             refresh.refreshEquipment();
             refresh.refreshPreview();
             refresh.refreshBuild();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 

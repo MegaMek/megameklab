@@ -212,7 +212,7 @@ public abstract class AbstractEquipmentTab extends ITab {
         loadOutModel.refreshModel();
         refreshTable();
         refreshOtherTabs();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     private void refreshOtherTabs() {

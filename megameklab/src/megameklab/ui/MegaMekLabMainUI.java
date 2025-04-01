@@ -60,6 +60,9 @@ public abstract class MegaMekLabMainUI extends JPanel
         });
     }
     
+    /**
+     * Called when the panel is activated or shown for the first initialization (lazy tab loading)
+     */
     public void onActivated() {
         if (!initializedTabs) {
             initializedTabs = true;
@@ -71,19 +74,29 @@ public abstract class MegaMekLabMainUI extends JPanel
         return configPane;
     }
 
+    /**
+     * Reattaches all tabs to the main window.
+     */
     public void reattachAllTabs() {
         if (configPane != null) {
             configPane.reattachAllTabs();
         }
     }
 
-    public void markDirty() {
+    /**
+     * Requests a dirty check on the unit. This is done by scheduling a
+     * dirtyCheck() call to be run on the event dispatch thread.
+     */
+    public void requestDirtyCheck() {
         if (!dirtyCheckPending) {
             dirtyCheckPending = true;
             SwingUtilities.invokeLater(this::dirtyCheck);
         }
     }
 
+    /**
+     * Logs the differences between the current unit snapshot and the saved unit.
+     */
     private void logDifferences(String currentSnapshot) {
         if (currentSnapshot == null || savedUnitSnapshot == null) {
             return;
@@ -97,17 +110,25 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
     }
 
+    /**
+     * Checks if the unit has been modified since it was last saved. If the unit
+     * has been modified, it updates the dirty state and refreshes the header.
+     */
     private void dirtyCheck() {
         dirtyCheckPending = false;
         final String currentSnapshot = saveUnitToString(entity, false);
         boolean dirtyState = currentSnapshot == null || !currentSnapshot.equals(savedUnitSnapshot);
+        logDifferences(currentSnapshot);
         if (dirty != dirtyState) {
             dirty = dirtyState;
             refreshHeader();
         }
     }
 
-    public void resetDirty() {
+    /**
+     * Resets the dirty state of the unit.
+     */
+    private void resetDirty() {
         savedUnitSnapshot = saveUnitToString(entity, false);
         if (dirty) {
             dirty = false;
@@ -115,6 +136,11 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
     }
 
+    /**
+     * Returns true if the unit has been modified since it was last saved.
+     * 
+     * @return
+     */
     public boolean isDirty() {
         return dirty;
     }
@@ -232,16 +258,24 @@ public abstract class MegaMekLabMainUI extends JPanel
     public abstract void reloadTabs();
 
     @Override
-    public abstract void refreshAll();
+    public void refreshAll() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshArmor();
+    public void refreshArmor() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshBuild();
+    public void refreshBuild() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshEquipment();
+    public void refreshEquipment() {
+        requestDirtyCheck();
+    }
 
     @Override
     public void refreshHeader() {
@@ -254,16 +288,29 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     @Override
-    public abstract void refreshStatus();
+    public void refreshStatus() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshStructure();
+    public void refreshTransport() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshWeapons();
+    public void refreshStructure() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshPreview();
+    public void refreshWeapons() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshPreview() {
+        requestDirtyCheck();
+    }
 
     public void setEntity(Entity en) {
         setEntity(en, "");

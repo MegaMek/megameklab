@@ -302,7 +302,7 @@ public class BAStructureTab extends ITab
                         e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
                                 : BattleArmor.MOUNT_LOC_RARM,
                         true);
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
             }
         }
         refresh.refreshAll();
@@ -335,7 +335,7 @@ public class BAStructureTab extends ITab
                 }
             }
         }
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     private @Nullable MiscMounted getManipulator(int mountLoc) {
@@ -359,11 +359,11 @@ public class BAStructureTab extends ITab
             setManipulatorSize(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
             if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
                 spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
-                refresh.markDirty();
+                refresh.requestDirtyCheck();
             }
         } else if (evt.getSource() == spnRightManipulatorSize) {
             setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
         refresh.refreshAll();
     }
@@ -405,7 +405,6 @@ public class BAStructureTab extends ITab
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
     }
 
     @Override
@@ -414,20 +413,19 @@ public class BAStructureTab extends ITab
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
     }
 
     @Override
     public void yearChanged(int year) {
         getBattleArmor().setYear(year);
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getBattleArmor().setSource(source);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -471,7 +469,7 @@ public class BAStructureTab extends ITab
         }
         addAllListeners();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -479,7 +477,7 @@ public class BAStructureTab extends ITab
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -607,7 +605,7 @@ public class BAStructureTab extends ITab
             refresh.refreshStatus();
             refresh.refreshPreview();
             refresh.refreshBuild();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
@@ -632,7 +630,7 @@ public class BAStructureTab extends ITab
         refresh.refreshStatus();
         refresh.refreshPreview();
         refresh.refreshBuild();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -668,7 +666,7 @@ public class BAStructureTab extends ITab
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -678,7 +676,7 @@ public class BAStructureTab extends ITab
         }
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -699,7 +697,7 @@ public class BAStructureTab extends ITab
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -730,12 +728,12 @@ public class BAStructureTab extends ITab
     @Override
     public void mulIdChanged(int mulId) {
         getBattleArmor().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }

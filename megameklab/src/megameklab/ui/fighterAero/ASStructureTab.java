@@ -292,7 +292,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -301,20 +301,20 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getAero().setYear(year);
         updateTechLevel();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getAero().setSource(source);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -322,7 +322,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         if ((clan != getAero().isClan()) || (mixed != getAero().isMixedTech())) {
             getAero().setMixedTech(mixed);
             updateTechLevel();
-            refresh.markDirty();
+            refresh.requestDirtyCheck();
         }
     }
 
@@ -384,7 +384,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -392,7 +392,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -406,7 +406,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -435,7 +435,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -445,7 +445,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -460,7 +460,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -481,7 +481,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -499,7 +499,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat.setFromAero(getAero());
         panChassis.setFromEntity(getAero());
         panFuel.setFromEntity(getAero());
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -527,7 +527,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -538,7 +538,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat.setFromAero(getAero());
         panTransport.setOmni(omni);
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -547,7 +547,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshPreview();
         refresh.refreshStatus();
         refresh.refreshSummary();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -574,7 +574,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -583,7 +583,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -591,7 +591,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         UnitUtil.resetBaseChassis(getAero());
         panTransport.clearPodSpace();
         refresh.scheduleRefresh();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     /**
@@ -617,7 +617,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     /**
@@ -648,7 +648,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -659,7 +659,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -669,7 +669,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -684,7 +684,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -723,7 +723,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
 
     }
 
@@ -756,19 +756,19 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
 
     @Override
     public void mulIdChanged(int mulId) {
         getAero().setMulId(mulId);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.markDirty();
+        refresh.requestDirtyCheck();
     }
 }
