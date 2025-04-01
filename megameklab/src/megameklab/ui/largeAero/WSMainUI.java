@@ -76,6 +76,7 @@ public class WSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }

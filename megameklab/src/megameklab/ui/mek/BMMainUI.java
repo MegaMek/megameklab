@@ -240,6 +240,7 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }

@@ -141,6 +141,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refresh();
     }
 

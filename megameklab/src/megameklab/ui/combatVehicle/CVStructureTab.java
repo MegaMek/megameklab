@@ -281,31 +281,31 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void chassisChanged(String chassis) {
         getTank().setChassis(chassis);
         refresh.refreshHeader();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void modelChanged(String model) {
         getTank().setModel(model);
         refresh.refreshHeader();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getTank().setYear(year);
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getTank().setSource(source);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -313,14 +313,12 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         if ((clan != getTank().isClan()) || (mixed != getTank().isMixedTech())) {
             getTank().setMixedTech(mixed);
             updateTechLevel();
-            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -367,16 +365,16 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         addAllListeners();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -398,12 +396,12 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
         panChassis.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -421,11 +419,11 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             panSummary.refresh();
             refresh.refreshBuild();
             refresh.refreshStatus();
+            refresh.refreshSummary();
             refresh.refreshPreview();
             panMovement.removeListener(this);
             panMovement.setFromEntity(getTank());
             panMovement.addListener(this);
-            refresh.requestDirtyCheck();
         }
     }
 
@@ -453,8 +451,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -463,8 +461,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -478,8 +476,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -501,8 +499,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -518,9 +516,9 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 / (int) getTank().getWeight());
         getTank().autoSetInternal();
         refresh();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -562,10 +560,10 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshEquipment();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -583,9 +581,9 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panChassis.setFromEntity(getTank());
         panSummary.refresh();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -643,16 +641,14 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshEquipment();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void extraSeatsChanged(int seats) {
         getTank().setExtraCrewSeats(seats);
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.refreshSummary();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -686,7 +682,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -695,7 +690,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         getTank().setBaseChassisTurret2Weight(turret2);
         panSummary.refresh();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -715,7 +709,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -739,7 +732,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -752,7 +744,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -766,7 +757,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -825,7 +815,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -860,18 +849,18 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getTank().setMulId(mulId);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

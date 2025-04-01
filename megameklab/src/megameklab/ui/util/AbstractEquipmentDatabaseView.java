@@ -505,7 +505,6 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
             refresh.refreshPreview();
             refresh.refreshSummary();
             refresh.refreshEquipment();
-            refresh.requestDirtyCheck();
         }
     }
 

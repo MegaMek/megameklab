@@ -304,7 +304,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
-            refresh.requestDirtyCheck();
+            
         }
         tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE)
                 .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));
@@ -537,7 +537,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refresh.refreshStructure();
                 refresh.refreshStatus();
                 refresh.refreshPreview();
-                refresh.requestDirtyCheck();
             }
         } else if ((ev.getSource() == spnTroopSpace) || (ev.getSource() == spnPodTroopSpace)) {
             final double fixed = (Double) spnTroopSpace.getValue();
@@ -558,7 +557,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refresh.refreshStructure();
                 refresh.refreshStatus();
                 refresh.refreshPreview();
-                refresh.requestDirtyCheck();
             }
         }
     }
@@ -719,7 +717,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 getEntity().addTransporter(t, (Boolean) value);
                 if (null != refresh) {
                     refresh.refreshPreview();
-                    refresh.requestDirtyCheck();
                 }
             }
         }
@@ -882,7 +879,6 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refresh.refreshStructure();
                 refresh.refreshStatus();
                 refresh.refreshPreview();
-                refresh.requestDirtyCheck();
             }
         }
 

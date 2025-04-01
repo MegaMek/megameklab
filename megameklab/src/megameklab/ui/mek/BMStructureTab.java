@@ -573,7 +573,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -582,7 +581,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -591,26 +589,25 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshHeader();
         refresh.refreshPreview();
         iconView.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getMek().setYear(year);
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getMek().setSource(source);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getMek().setMulId(mulId);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
     }
 
     @Override
@@ -618,20 +615,19 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if ((clan != getMek().isClan()) || (mixed != getMek().isMixedTech())) {
             getMek().setMixedTech(mixed);
             updateTechLevel();
-            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -687,7 +683,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         addAllListeners();
         panMovement.refresh();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -695,7 +690,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -757,7 +751,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -767,7 +760,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setFromMek(getMek());
         MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -840,7 +832,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -872,7 +863,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             refresh.refreshEquipment();
             refresh.refreshPreview();
             refresh.refreshStatus();
-            refresh.requestDirtyCheck();
         }
     }
 
@@ -892,7 +882,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -915,7 +904,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             refreshSummary();
             refresh.refreshPreview();
             refresh.refreshStatus();
-            refresh.requestDirtyCheck();
         }
     }
 
@@ -939,7 +927,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshStatus();
         refresh.refreshSummary();
         refresh.refreshEquipment();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -980,7 +967,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -990,7 +976,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -999,7 +984,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1041,7 +1025,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1062,7 +1045,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshStatus();
         refresh.refreshBuild();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1072,7 +1054,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1087,7 +1068,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1110,7 +1090,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1127,7 +1106,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.setFromEntity(getMek());
         panHeat.setFromMek(getMek());
         panChassis.refresh();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1167,7 +1145,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshStatus();
         refresh.refreshPreview();
         panMovement.setFromEntity(getMek());
-        refresh.requestDirtyCheck();
     }
 
     private void addOrRemoveMekMechanicalJumpBoosters(final int jumpMP, EquipmentType jumpJet) {
@@ -1214,7 +1191,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -1273,7 +1249,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     /**
@@ -1444,6 +1419,5 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshPreview();
         refresh.refreshSummary();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 }

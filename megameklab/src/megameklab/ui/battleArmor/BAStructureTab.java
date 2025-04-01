@@ -302,7 +302,6 @@ public class BAStructureTab extends ITab
                         e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
                                 : BattleArmor.MOUNT_LOC_RARM,
                         true);
-            refresh.requestDirtyCheck();
             }
         }
         refresh.refreshAll();
@@ -335,7 +334,8 @@ public class BAStructureTab extends ITab
                 }
             }
         }
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     private @Nullable MiscMounted getManipulator(int mountLoc) {
@@ -359,11 +359,9 @@ public class BAStructureTab extends ITab
             setManipulatorSize(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
             if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
                 spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
-                refresh.requestDirtyCheck();
             }
         } else if (evt.getSource() == spnRightManipulatorSize) {
             setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
-            refresh.requestDirtyCheck();
         }
         refresh.refreshAll();
     }
@@ -419,13 +417,13 @@ public class BAStructureTab extends ITab
     public void yearChanged(int year) {
         getBattleArmor().setYear(year);
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void sourceChanged(String source) {
         getBattleArmor().setSource(source);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -468,16 +466,16 @@ public class BAStructureTab extends ITab
             armorTypeChanged(armor);
         }
         addAllListeners();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -603,9 +601,9 @@ public class BAStructureTab extends ITab
                 getBattleArmor().initializeArmor(armor, i);
             }
             refresh.refreshStatus();
+            refresh.refreshSummary();
             refresh.refreshPreview();
             refresh.refreshBuild();
-            refresh.requestDirtyCheck();
         }
     }
 
@@ -628,9 +626,9 @@ public class BAStructureTab extends ITab
         }
         panChassis.setFromEntity(getBattleArmor());
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshBuild();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -666,7 +664,6 @@ public class BAStructureTab extends ITab
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -675,8 +672,8 @@ public class BAStructureTab extends ITab
             getBattleArmor().initializeArmor(points, i);
         }
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -696,8 +693,8 @@ public class BAStructureTab extends ITab
         }
         refresh.refreshBuild();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -728,12 +725,13 @@ public class BAStructureTab extends ITab
     @Override
     public void mulIdChanged(int mulId) {
         getBattleArmor().setMulId(mulId);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

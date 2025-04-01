@@ -98,6 +98,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      * has been modified, it updates the dirty state and refreshes the header.
      */
     private void dirtyCheck() {
+        System.out.println("Dirty check called.");
         dirtyCheckPending = false;
         final String currentSnapshot = saveUnitToString(entity, false);
         boolean dirtyState = currentSnapshot == null || !currentSnapshot.equals(savedUnitSnapshot);
@@ -260,6 +261,11 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     @Override
+    public void refreshEquipmentTable() {
+        requestDirtyCheck();
+    }
+
+    @Override
     public void refreshHeader() {
         if (configPane.hasDetachedTabs()) {
             configPane.setDetachedTabsPrefixTitle(getEntity().getShortNameRaw());
@@ -291,6 +297,11 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     @Override
     public void refreshPreview() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshSummary() {
         requestDirtyCheck();
     }
 

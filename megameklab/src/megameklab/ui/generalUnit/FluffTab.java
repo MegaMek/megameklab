@@ -479,7 +479,6 @@ public class FluffTab extends ITab implements FocusListener {
 
         if (changed && refresh != null) {
             refresh.refreshPreview();
-            refresh.requestDirtyCheck();
         }
     }
 
@@ -502,7 +501,6 @@ public class FluffTab extends ITab implements FocusListener {
                     }
                     getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
                     refresh.refreshPreview();
-                    refresh.requestDirtyCheck();
                 } catch (Exception ex) {
                     PopupMessages.showFileReadError(getParent(), imageFile.toString(), ex.getMessage());
                     logger.error("", ex);
@@ -527,7 +525,6 @@ public class FluffTab extends ITab implements FocusListener {
                 }
                 eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
                 refresh.refreshPreview();
-                refresh.requestDirtyCheck();
             } catch (Exception ex) {
                 PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
                 logger.error("Fluff could not be copied!", ex);
@@ -542,7 +539,6 @@ public class FluffTab extends ITab implements FocusListener {
         if (getEntity() != null && getEntity().getFluff().hasEmbeddedFluffImage()) {
             getEntity().getFluff().setFluffImage("");
             refresh.refreshPreview();
-            refresh.requestDirtyCheck();
         }
         refreshGUI();
     }

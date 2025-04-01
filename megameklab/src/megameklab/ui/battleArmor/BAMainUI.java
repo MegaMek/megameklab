@@ -165,10 +165,13 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        super.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }

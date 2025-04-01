@@ -140,7 +140,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         refresh.refreshStatus();
         refresh.refreshPreview();
         refresh.refreshStructure();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -151,7 +150,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         refresh.refreshArmor();
         refresh.refreshStatus();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -164,7 +162,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         getEntity().setChassis(chassis);
         refresh.refreshPreview();
         refresh.refreshHeader();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -172,14 +169,12 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         getEntity().setModel(model);
         refresh.refreshPreview();
         refresh.refreshHeader();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void yearChanged(int year) {
         getEntity().setYear(year);
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -198,13 +193,14 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     @Override
     public void sourceChanged(String source) {
         getEntity().setSource(source);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
-        refresh.requestDirtyCheck();
+        refresh.refreshSummary();
     }
 
     @Override
@@ -212,21 +208,19 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         if ((clan != getEntity().isClan()) || (mixed != getEntity().isMixedTech())) {
             getEntity().setMixedTech(mixed);
             updateTechLevel();
-            refresh.requestDirtyCheck();
         }
     }
 
     @Override
     public void techLevelChanged(SimpleTechLevel techLevel) {
         updateTechLevel();
-        refresh.requestDirtyCheck();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
         refresh.refreshPreview();
-        refresh.requestDirtyCheck();
     }
 
     @Override
@@ -234,7 +228,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.requestDirtyCheck();
     }
 
     @Override

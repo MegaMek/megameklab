@@ -154,10 +154,13 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        structureTab.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         structureTab.refreshEquipmentTable();
     }
 

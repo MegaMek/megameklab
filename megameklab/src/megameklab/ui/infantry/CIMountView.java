@@ -388,7 +388,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
-            refresh.requestDirtyCheck();
         }
         refresh();
     }
@@ -408,7 +407,6 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
-            refresh.requestDirtyCheck();
         }
         refresh();
     }
