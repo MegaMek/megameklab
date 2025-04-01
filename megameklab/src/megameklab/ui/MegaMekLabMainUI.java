@@ -98,7 +98,6 @@ public abstract class MegaMekLabMainUI extends JPanel
      * has been modified, it updates the dirty state and refreshes the header.
      */
     private void dirtyCheck() {
-        System.out.println("Dirty check called.");
         dirtyCheckPending = false;
         final String currentSnapshot = saveUnitToString(entity, false);
         boolean dirtyState = currentSnapshot == null || !currentSnapshot.equals(savedUnitSnapshot);
