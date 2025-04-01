@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit;
 
 import java.awt.Event;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
@@ -174,7 +175,7 @@ public class StatusBar extends ITab {
     }
 
     private final ActionListener validationListener = e -> {
-        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+        if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
             DebugEntity.copyEquipmentState(getEntity());
         } else {
             UnitUtil.showValidation(getEntity(), getParentFrame());
