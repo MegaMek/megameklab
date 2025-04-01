@@ -93,23 +93,6 @@ public abstract class MegaMekLabMainUI extends JPanel
             SwingUtilities.invokeLater(this::dirtyCheck);
         }
     }
-
-    /**
-     * Logs the differences between the current unit snapshot and the saved unit.
-     */
-    private void logDifferences(String currentSnapshot) {
-        if (currentSnapshot == null || savedUnitSnapshot == null) {
-            return;
-        }
-        String[] currentLines = currentSnapshot.split("\n");
-        String[] dirtyLines = savedUnitSnapshot.split("\n");
-        for (int i = 0; i < Math.min(currentLines.length, dirtyLines.length); i++) {
-            if (!currentLines[i].equals(dirtyLines[i])) {
-                System.out.println("Difference at line " + i + ": " + currentLines[i] + " vs " + dirtyLines[i]);
-            }
-        }
-    }
-
     /**
      * Checks if the unit has been modified since it was last saved. If the unit
      * has been modified, it updates the dirty state and refreshes the header.
@@ -118,7 +101,6 @@ public abstract class MegaMekLabMainUI extends JPanel
         dirtyCheckPending = false;
         final String currentSnapshot = saveUnitToString(entity, false);
         boolean dirtyState = currentSnapshot == null || !currentSnapshot.equals(savedUnitSnapshot);
-        logDifferences(currentSnapshot);
         if (dirty != dirtyState) {
             dirty = dirtyState;
             refreshHeader();
