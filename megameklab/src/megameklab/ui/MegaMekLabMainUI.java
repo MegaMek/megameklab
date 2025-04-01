@@ -16,7 +16,10 @@
 package megameklab.ui;
 
 import megamek.common.Entity;
+import megamek.common.Mek;
 import megamek.common.Mounted;
+import megamek.common.loaders.BLKFile;
+import megamek.common.util.BuildingBlock;
 import megamek.logging.MMLogger;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
@@ -41,6 +44,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     private MegaMekLabTabbedUI tabOwner = null;
     private boolean initializedTabs = false;
     private boolean dirty = false;
+    private boolean dirtyCheckPending = false;
+    private String savedUnitSnapshot = "";
 
     public MegaMekLabMainUI() {
         setLayout(new BorderLayout());
@@ -73,13 +78,37 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     public void markDirty() {
-        if (!dirty) {
-            dirty = true;
+        if (!dirtyCheckPending) {
+            dirtyCheckPending = true;
+            SwingUtilities.invokeLater(this::dirtyCheck);
+        }
+    }
+
+    private void logDifferences(String currentSnapshot) {
+        if (currentSnapshot == null || savedUnitSnapshot == null) {
+            return;
+        }
+        String[] currentLines = currentSnapshot.split("\n");
+        String[] dirtyLines = savedUnitSnapshot.split("\n");
+        for (int i = 0; i < Math.min(currentLines.length, dirtyLines.length); i++) {
+            if (!currentLines[i].equals(dirtyLines[i])) {
+                System.out.println("Difference at line " + i + ": " + currentLines[i] + " vs " + dirtyLines[i]);
+            }
+        }
+    }
+
+    private void dirtyCheck() {
+        dirtyCheckPending = false;
+        final String currentSnapshot = saveUnitToString(entity, false);
+        boolean dirtyState = currentSnapshot == null || !currentSnapshot.equals(savedUnitSnapshot);
+        if (dirty != dirtyState) {
+            dirty = dirtyState;
             refreshHeader();
         }
     }
 
     public void resetDirty() {
+        savedUnitSnapshot = saveUnitToString(entity, false);
         if (dirty) {
             dirty = false;
             refreshHeader();
@@ -159,6 +188,38 @@ public abstract class MegaMekLabMainUI extends JPanel
         return true;
     }
     
+    /**
+     * Encodes the unit to a string.
+     * 
+     * @param entity The unit to encode
+     * @return The encoded unit as a string, or null if the unit is null or an error
+     */
+    public String saveUnitToString(Entity entity, boolean includeGeneratorHeader) {
+        if (entity == null) {
+            return null;
+        }
+        try {
+            String unitAsString;
+            if (entity instanceof Mek) {
+                unitAsString = ((Mek) entity).getMtf();
+            } else {
+                BuildingBlock blk = BLKFile.getBlock(entity);
+                StringBuilder sb = new StringBuilder();
+                String[] lines = blk.getAllDataAsString();
+                for (String line : lines) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+                unitAsString = sb.toString();
+            }
+            if (!includeGeneratorHeader) {
+                return unitAsString.substring(unitAsString.indexOf("\n") + 1);
+            }
+            return unitAsString;
+        } catch (Exception ex) {
+            logger.error("", ex);
+            return null;
+        }
+    }
 
     public boolean exit() {
         if (!safetyPrompt()) {
@@ -217,6 +278,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         this.entity = entity;
         originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         setFileName(currentEntityFilename);
+        resetDirty();
     }
 
     @Override
