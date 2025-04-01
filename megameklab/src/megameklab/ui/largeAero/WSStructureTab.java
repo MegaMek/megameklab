@@ -523,7 +523,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void siChanged(int si) {
-        getJumpship().set0SI(si);
+        getJumpship().setOSI(si);
         panArmor.setFromEntity(getJumpship());
         // Change in SI can reduce the maximum armor tonnage
         if (getJumpship().getLabArmorTonnage() != panArmor.getArmorTonnage()) {

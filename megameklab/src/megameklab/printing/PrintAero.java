@@ -138,7 +138,7 @@ public class PrintAero extends PrintEntity {
         super.drawArmorStructurePips();
         Element element = getElementById(SI_PIPS);
         if (null != element) {
-            ArmorPipLayout.addPips(this, element, aero.get0SI(),
+            ArmorPipLayout.addPips(this, element, aero.getOSI(),
                     PipType.CIRCLE, 0.5, FILL_WHITE, useAlternateArmorGrouping());
         }
     }
@@ -150,7 +150,7 @@ public class PrintAero extends PrintEntity {
             setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(loc),
                     String.format(FORMAT, aero.getThresh(loc), getEntity().getOArmor(loc)));
         }
-        setTextField(TEXT_SI, aero.get0SI());
+        setTextField(TEXT_SI, aero.getOSI());
     }
 
     @Override

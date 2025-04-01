@@ -120,10 +120,10 @@ public class WSMainUI extends MegaMekLabMainUI {
         ship.setWeight(TestAdvancedAerospace.getMinTonnage(ship));
         if (entitytype == Entity.ETYPE_WARSHIP) {
             ship.setOriginalWalkMP(2); // Start at 1G
-            ship.set0SI(3);
+            ship.setOSI(3);
         } else {
             ship.setOriginalWalkMP(0);
-            ship.set0SI(1);
+            ship.setOSI(1);
         }
         ship.setArmorTechLevel(getEntity().getTechLevel());
 
@@ -136,7 +136,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             if (loc >= Jumpship.LOC_HULL) {
                 ship.initializeArmor(IArmorState.ARMOR_NA, loc);
             } else {
-                ship.initializeArmor((int) Math.round(ship.get0SI() / 10.0), loc);
+                ship.initializeArmor((int) Math.round(ship.getOSI() / 10.0), loc);
             }
         }
 

@@ -220,7 +220,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         cbBaseType.addActionListener(this);
         cbBaseType.setEnabled(!craft.isPrimitive());
 
-        spnSIModel.setValue(craft.get0SI());
+        spnSIModel.setValue(craft.getOSI());
         if (craft.isPrimitive()) {
             spnRange.removeChangeListener(this);
             spnRange.setValue(craft.getJumpRange());

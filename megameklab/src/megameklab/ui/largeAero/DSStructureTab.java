@@ -477,7 +477,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
 
     @Override
     public void siChanged(int si) {
-        getSmallCraft().set0SI(si);
+        getSmallCraft().setOSI(si);
         panArmor.setFromEntity(getSmallCraft());
         // Change in SI can reduce the maximum armor tonnage
         if (getSmallCraft().getLabArmorTonnage() != panArmor.getArmorTonnage()) {
