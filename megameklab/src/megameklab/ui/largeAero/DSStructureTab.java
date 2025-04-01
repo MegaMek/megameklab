@@ -299,6 +299,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
         refresh.markDirty();
     }
 
