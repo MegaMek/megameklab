@@ -67,7 +67,7 @@ jobs:
         run: |
           echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
 
-      - name: Build with Gradle
+      - name: Test All
         working-directory: megameklab
         run: ./gradlew testAll --stacktrace --scan
 
