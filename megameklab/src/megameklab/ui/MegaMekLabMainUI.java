@@ -224,7 +224,6 @@ public abstract class MegaMekLabMainUI extends JPanel
             }
             return unitAsString;
         } catch (Exception ex) {
-            logger.error("", ex);
             return null;
         }
     }
