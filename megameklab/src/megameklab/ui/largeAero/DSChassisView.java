@@ -177,7 +177,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
         cbChassisType.setSelectedIndex(craft.isSpheroid()? CHASSIS_SPHEROID : CHASSIS_AERODYNE);
         cbChassisType.addActionListener(this);
 
-        spnSIModel.setValue(craft.get0SI());
+        spnSIModel.setValue(craft.getOSI());
     }
 
     public void setAsCustomization() {
