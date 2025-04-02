@@ -523,6 +523,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         return true;
     }
 
+
+    @Override
+    public void refreshAll() {
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getTabOwner() == this) {
+                editor.refreshAll();
+            }
+        }
+    }
+
     private void restrictToScreenSize() {
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
