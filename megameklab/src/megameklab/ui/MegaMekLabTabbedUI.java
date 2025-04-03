@@ -107,19 +107,25 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         tabs.addChangeListener(new ChangeListener() {
+            private WeakReference<Component> lastSelectedComponent = null;
+
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (tabs.getSelectedIndex() < 0) {
                     return;
                 }
                 final Component selectedComponent = tabs.getSelectedComponent();
+                final Component previousComponent = lastSelectedComponent != null ? lastSelectedComponent.get() : null;
+        
+                if (selectedComponent != previousComponent) {
                     if (selectedComponent instanceof MegaMekLabMainUI mainUI) {
                         mainUI.onActivated();
                         refreshEditMenu();
                     }
+                }
+                lastSelectedComponent = new WeakReference<>(selectedComponent);
             }
         });
-        
         // Register tab reattachment listener
         tabs.addTabStateListener(new TabStateListener() {
             @Override
