@@ -413,16 +413,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param primitive  whether the unit is primitive
      * @param industrial whether the unit is an IndustrialMek
      */
-
-    /**
-     * The name is misleading, this is actually the Switch Unit Type operation!
-     * Replaces the current editor with a new blank one of the given unit type.
-     * Disposes of the old editor UI after the new one is initialized.
-     *
-     * @param type       the type of unit to load for the new editor UI
-     * @param primitive  whether the unit is primitive
-     * @param industrial whether the unit is an IndustrialMek
-     */
     private void newUnit(long type, boolean primitive, boolean industrial) {
         final int index = tabs.getSelectedIndex();
         if (index < 0) {
