@@ -62,6 +62,7 @@ public final class CConfig {
     public static final String MISC_STARTUP = "StartupGui";
     public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
     public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
+    public static final String MISC_APPLICATION_EXIT_PROMPT = "applicationExitPrompt";
     public static final String MISC_MUL_OPEN_BEHAVIOUR = "mulDndBehaviour";
 
     public static final String GUI_PLAF = "lookAndFeel";

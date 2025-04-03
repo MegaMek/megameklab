@@ -36,16 +36,21 @@ public class HHWMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private HHWStatusBar statusbar;
 
+    public HHWMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public HHWMainUI() {
         super();
         createNewUnit(Entity.ETYPE_HANDHELD_WEAPON);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new HHWStructureTab(this, this);
         equipmentTab = new HHWEquipmentTab(this);
@@ -66,12 +71,14 @@ public class HHWMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         structureTab.refresh();
         previewTab.refresh();
         statusbar.refresh();
@@ -81,41 +88,49 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
+        super.refreshArmor();
         structureTab.refresh();
     }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         structureTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         structureTab.refresh();
         equipmentTab.refresh();
     }
 
     @Override
-    public void refreshTransport() { }
+    public void refreshTransport() {
+        super.refreshTransport();
+    }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
-
+        super.refreshStructure();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
         structureTab.refresh();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -126,6 +141,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refresh();
     }
 

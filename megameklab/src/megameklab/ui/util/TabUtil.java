@@ -189,11 +189,7 @@ public class TabUtil {
                     }
                 }
 
-                var editor = UiLoader.getUI(UnitUtil.getEditorTypeForEntity(loadedUnit), loadedUnit.isPrimitive(), loadedUnit.isIndustrialMek());
-                editor.setEntity(loadedUnit);
-                editor.setFileName(fileName);
-                editor.reloadTabs();
-                editor.refreshAll();
+                var editor = UiLoader.getUI(loadedUnit, fileName);
                 editors.add(editor);
             } catch (EntityLoadingException e) {
                 logger.warn("Could not restore tab for entity file %s:%s".formatted(entityFile, fileName), e);
@@ -272,7 +268,7 @@ public class TabUtil {
     private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI, ProgressMonitor progress) {
         var newUnit = entities.get(i);
         try {
-            tabbedUI.addUnit(newUnit, fileNames.get(i));
+            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0 ? true : false);
             String validationResult = UnitUtil.validateUnit(newUnit);
             if (!validationResult.isBlank()) {
                 PopupMessages.showUnitInvalidWarning(tabbedUI.getFrame(), validationResult);

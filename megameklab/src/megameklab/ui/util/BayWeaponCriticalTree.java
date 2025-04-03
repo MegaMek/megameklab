@@ -1211,6 +1211,8 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             addAmmoToBay(getBayFromPath(path), eq, shots);
         }
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     /**

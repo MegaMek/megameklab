@@ -154,11 +154,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        add(new JScrollPane(leftPanel), gbc);
+        gbc.insets = new Insets(5, 5, 5, 5);
+        add(leftPanel, gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
+        gbc.insets = new Insets(5, 0, 5, 0);
         add(equipmentPane, gbc);
     }
 
@@ -386,6 +388,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -495,10 +498,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void mulIdChanged(int mulId) {
         getInfantry().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

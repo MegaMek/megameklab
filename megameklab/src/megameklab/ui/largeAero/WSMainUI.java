@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
@@ -51,6 +52,12 @@ public class WSMainUI extends MegaMekLabMainUI {
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public WSMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        MekSummaryCache.getInstance();
+    }
+
     public WSMainUI(boolean primitive) {
         super();
         if (!primitive) {
@@ -58,8 +65,8 @@ public class WSMainUI extends MegaMekLabMainUI {
         } else {
             createNewUnit(Entity.ETYPE_WARSHIP, true, false);
         }
-        finishSetup();
         MekSummaryCache.getInstance();
+        requestDirtyCheck();
     }
 
     @Override
@@ -69,12 +76,14 @@ public class WSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
 
     @Override
     public void refreshTransport() {
+        super.refreshTransport();
         transportTab.refresh();
     }
 
@@ -165,7 +174,7 @@ public class WSMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new WSStructureTab(this);
         previewTab = new PreviewTab(this);
@@ -180,6 +189,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
@@ -196,16 +206,18 @@ public class WSMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this,
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
@@ -218,34 +230,41 @@ public class WSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
+        super.refreshArmor();
     }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 

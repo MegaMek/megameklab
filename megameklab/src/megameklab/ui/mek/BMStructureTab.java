@@ -142,6 +142,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         add(leftPanel, gbc);
         gbc.gridx = 1;
         add(centerPanel, gbc);
@@ -599,11 +600,14 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void sourceChanged(String source) {
         getMek().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getMek().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
@@ -622,6 +626,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -683,6 +689,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

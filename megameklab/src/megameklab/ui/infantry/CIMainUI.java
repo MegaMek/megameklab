@@ -36,16 +36,21 @@ public class CIMainUI extends MegaMekLabMainUI {
     FluffTab fluffTab;
     CIStatusBar statusbar;
 
+    public CIMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public CIMainUI() {
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         statusbar = new CIStatusBar(this);
         structureTab = new CIStructureTab(this);
@@ -62,6 +67,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }
@@ -87,6 +93,7 @@ public class CIMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         previewTab.refresh();
@@ -94,34 +101,45 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
-    public void refreshBuild() { }
+    public void refreshBuild() {
+        super.refreshBuild();
+    }
 
     @Override
-    public void refreshEquipment() { }
+    public void refreshEquipment() {
+        super.refreshEquipment();
+    }
 
     @Override
     public void refreshTransport() {
-        // not used for infantry
+        super.refreshTransport();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -136,10 +154,13 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        structureTab.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         structureTab.refreshEquipmentTable();
     }
 

@@ -18,6 +18,7 @@ package megameklab.ui.combatVehicle;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,6 +144,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -279,6 +281,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void chassisChanged(String chassis) {
         getTank().setChassis(chassis);
         refresh.refreshHeader();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         iconView.refresh();
     }
@@ -287,6 +290,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void modelChanged(String model) {
         getTank().setModel(model);
         refresh.refreshHeader();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         iconView.refresh();
     }
@@ -300,6 +304,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void sourceChanged(String source) {
         getTank().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -359,6 +365,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         addAllListeners();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 
@@ -366,6 +373,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -387,6 +396,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
@@ -409,6 +419,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             panSummary.refresh();
             refresh.refreshBuild();
             refresh.refreshStatus();
+            refresh.refreshSummary();
             refresh.refreshPreview();
             panMovement.removeListener(this);
             panMovement.setFromEntity(getTank());
@@ -440,6 +451,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshBuild();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 
@@ -449,6 +461,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 
@@ -463,6 +476,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 
@@ -485,6 +499,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panArmorAllocation.setFromEntity(getTank());
         panSummary.refresh();
         refresh.refreshStatus();
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 
@@ -501,6 +516,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 / (int) getTank().getWeight());
         getTank().autoSetInternal();
         refresh();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -544,6 +560,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
         panArmorAllocation.setFromEntity(getTank());
         refresh.refreshEquipment();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshBuild();
         refresh.refreshStatus();
@@ -564,6 +581,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panChassis.setFromEntity(getTank());
         panSummary.refresh();
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -628,9 +646,9 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void extraSeatsChanged(int seats) {
         getTank().setExtraCrewSeats(seats);
+        refresh.refreshSummary();
         refresh.refreshPreview();
         refresh.refreshStatus();
-        refresh.refreshSummary();
     }
 
     @Override
@@ -836,10 +854,13 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void mulIdChanged(int mulId) {
         getTank().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

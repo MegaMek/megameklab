@@ -140,17 +140,17 @@ public class UiLoader {
             long start = System.currentTimeMillis();
             MegaMekLabTabbedUI tabbedUi;
             if (!restore) {
-                MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
+                MegaMekLabMainUI newUI;
+                if (newUnit != null) {
+                    UnitUtil.updateLoadedUnit(newUnit);
+                    newUI = getUI(newUnit, fileName);
+                } else {
+                    newUI = getUI(type, primitive, industrial);
+                }
                 long loadTime = System.currentTimeMillis() - start;
                 if (loadTime < MINIMUM_SPLASH_TIME) {
                     // Show the splash for at least the minimum time
                     Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
-                }
-                if (newUnit != null) {
-                    UnitUtil.updateLoadedUnit(newUnit);
-                    newUI.setEntity(newUnit, fileName);
-                    newUI.reloadTabs();
-                    newUI.refreshAll();
                 }
                 tabbedUi = new MegaMekLabTabbedUI(newUI);
                 tabbedUi.setVisible(true);
@@ -220,6 +220,37 @@ public class UiLoader {
             return new HHWMainUI();
         } else {
             return new BMMainUI(primitive, industrial);
+        }
+    }
+
+    /**
+     * @return The correct MainUI for an Entity
+     */
+    public static MegaMekLabMainUI getUI(Entity entity, String filename) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
+        long type = UnitUtil.getEditorTypeForEntity(entity);
+        if (type == Entity.ETYPE_TANK) {
+            return new CVMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_SUPPORT_TANK) {
+            return new SVMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_PROTOMEK) {
+            return new PMMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_BATTLEARMOR) {
+            return new BAMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_INFANTRY) {
+            return new CIMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_AERO) {
+            return new ASMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_DROPSHIP) {
+            return new DSMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_JUMPSHIP) {
+            return new WSMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
+            return new HHWMainUI(entity, filename);
+        } else {
+            return new BMMainUI(entity, filename);
         }
     }
 }

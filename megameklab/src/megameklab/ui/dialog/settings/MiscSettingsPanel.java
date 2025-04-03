@@ -23,9 +23,6 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -55,6 +52,7 @@ public class MiscSettingsPanel extends JPanel {
 
     private final MMComboBox<MMLStartUp> startUpMMComboBox = new MMComboBox<>("StartUp", MMLStartUp.values());
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
+    private final JCheckBox chkApplicationExitPrompt = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
@@ -84,9 +82,6 @@ public class MiscSettingsPanel extends JPanel {
         mulOpenLine.add(Box.createHorizontalStrut(5));
         mulOpenLine.add(cbMulOpenBehaviour);
 
-        chkSummaryFormatTRO.setText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
-        chkSummaryFormatTRO.setToolTipText(resources.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
-
         JLabel userDirLabel = new JLabel(resourceMap.getString("ConfigurationDialog.userDir.text"));
         userDirLabel.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
         txtUserDir.setToolTipText(resourceMap.getString("ConfigurationDialog.userDir.tooltip"));
@@ -111,6 +106,10 @@ public class MiscSettingsPanel extends JPanel {
         userDirLine.add(userDirChooser);
         userDirLine.add(Box.createHorizontalStrut(10));
         userDirLine.add(userDirHelp);
+
+        chkApplicationExitPrompt.setText(resources.getString("ConfigurationDialog.chkApplicationExitPrompt.text"));
+        chkApplicationExitPrompt.setToolTipText(resources.getString("ConfigurationDialog.chkApplicationExitPrompt.tooltip"));
+        chkApplicationExitPrompt.setSelected(CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT));
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
         chkSummaryFormatTRO.setToolTipText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.tooltip"));
@@ -143,11 +142,12 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(startUpLine);
         gridPanel.add(userDirLine);
         gridPanel.add(mulOpenLine);
+        gridPanel.add(chkApplicationExitPrompt);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 6, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 7, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -155,6 +155,7 @@ public class MiscSettingsPanel extends JPanel {
 
     Map<String, String> getMiscSettings() {
         Map<String, String> miscSettings = new HashMap<>();
+        miscSettings.put(CConfig.MISC_APPLICATION_EXIT_PROMPT, String.valueOf(chkApplicationExitPrompt.isSelected()));
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
         MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null

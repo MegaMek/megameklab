@@ -18,8 +18,11 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -51,12 +54,14 @@ import megamek.common.options.Quirks;
 import megamek.common.options.WeaponQuirks;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
+import megameklab.ui.util.RefreshListener;
 
 public class QuirksTab extends ITab implements DialogOptionListener {
 
     private static final boolean SORT_QUIRKS_ALPHABETICALLY = true;
     private final Map<JPanel, List<DialogOptionComponent>> groupLayoutMap = new LinkedHashMap<>();
     private final Map<DialogOptionComponent, Dimension> originalPreferredSizes = new HashMap<>();
+    RefreshListener refresh = null;
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
@@ -80,6 +85,10 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             }
         });
         refreshQuirks();
+    }
+
+    public void addRefreshedListener(RefreshListener l) {
+        refresh = l;
     }
 
     /**
@@ -197,12 +206,31 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
+     * Updates the font style of a quirk component based on its selection state
+     */
+    private void updateQuirkFontStyle(DialogOptionComponent comp, boolean selected) {
+        for (Component child : comp.getComponents()) {
+            Font currentFont = child.getFont();
+            if (currentFont != null) {
+                if (selected) {
+                    child.setForeground(Color.YELLOW);
+                } else {
+                    child.setForeground(null);
+                }
+            }
+        }
+        comp.invalidate();
+        comp.repaint();
+    }
+
+    /**
      * Creates a quirk entry, stores its info, and adds it to lists.
      */
     private void addQuirkInfo(IOption option, List<DialogOptionComponent> groupList,
             List<DialogOptionComponent> allList) {
         DialogOptionComponent comp = new DialogOptionComponent(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
+        updateQuirkFontStyle(comp, option.booleanValue());
         groupList.add(comp);
         allList.add(comp);
     }
@@ -359,7 +387,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             groupPanel.add(comp, gbc);
         }
 
-        // Because we are auto-spacing them horizontally (bgc.weightx = 1 above), we create fake columns in case
+        // Because we are auto-spacing them horizontally (bgc.weightx = 1 above), we
+        // create fake columns in case
         // this group doesn't have enough (usually weapons)
         final int lastColUsed = totalItems % itemsPerCol;
         for (int i = lastColUsed + 1; i < numCols; i++) {
@@ -369,7 +398,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         }
 
         // Fill space to the right of the last column (forces everything aligned left)
-        // We need this if we don't do the trick above with the fake columns and auto-spacing
+        // We need this if we don't do the trick above with the fake columns and
+        // auto-spacing
         // gbc.gridx = numCols;
         // gbc.gridy = 0;
         // gbc.weightx = 1;
@@ -384,6 +414,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     @Override
     public void optionClicked(DialogOptionComponent comp, IOption option, boolean state) {
         option.setValue(state);
+        updateQuirkFontStyle(comp, state);
+        refresh.refreshPreview();
     }
 
     @Override

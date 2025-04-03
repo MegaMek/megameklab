@@ -15,6 +15,7 @@ package megameklab.ui.battleArmor;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -65,6 +66,7 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         chkPartialWing.setText(resourceMap.getString("BAEnhancementView.chkPartialWing.text"));
         chkPartialWing.setToolTipText(resourceMap.getString("BAEnhancementView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);

@@ -16,6 +16,7 @@ package megameklab.ui.largeAero;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -144,6 +145,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -264,6 +266,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void sourceChanged(String source) {
         getJumpship().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -302,6 +306,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -389,6 +394,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panHeat.setFromAero(getJumpship());
         panChassis.setFromEntity(getJumpship());
         panFuel.setFromEntity(getJumpship());
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -681,10 +688,13 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void mulIdChanged(int mulId) {
         getJumpship().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

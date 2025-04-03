@@ -381,7 +381,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     @Override
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
-        double value = (Double) field.getModel().getValue();      
+        double value = (Double) field.getModel().getValue();
         getInfantry().setArmorDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();

@@ -46,6 +46,7 @@ public class MMLFileDropTransferHandler extends TransferHandler {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean importData(TransferSupport support) {
         if (!canImport(support)) {
             return false;

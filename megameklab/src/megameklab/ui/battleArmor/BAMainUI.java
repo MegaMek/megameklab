@@ -37,16 +37,21 @@ public class BAMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public BAMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public BAMainUI() {
         super();
         createNewUnit(Entity.ETYPE_BATTLEARMOR);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new BAStructureTab(this);
         equipTab = new BAEquipmentTab(this);
@@ -59,6 +64,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipTab);
@@ -72,9 +78,10 @@ public class BAMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
+        statusbar.refresh();
         refreshHeader();
         validate();
     }
@@ -102,6 +109,7 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         refreshStatus();
         refreshStructure();
         refreshEquipmentTable();
@@ -112,46 +120,58 @@ public class BAMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
-        // not used for ba
+        super.refreshTransport();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         structureTab.refreshPreview();
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        super.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }

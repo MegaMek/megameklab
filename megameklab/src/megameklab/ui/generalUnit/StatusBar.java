@@ -20,6 +20,7 @@ package megameklab.ui.generalUnit;
 
 import java.awt.Event;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
@@ -54,7 +55,7 @@ public class StatusBar extends ITab {
 
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
-    private final MegaMekLabMainUI parentFrame;
+    private final MegaMekLabMainUI parent;
     private final JLabel bvLabel = new ClickableLabel(
             e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     protected final JLabel tons = new ClickableLabel(
@@ -70,7 +71,7 @@ public class StatusBar extends ITab {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
         setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
-        parentFrame = parent;
+        this.parent = parent;
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
@@ -166,7 +167,7 @@ public class StatusBar extends ITab {
     }
 
     private JFrame getParentFrame() {
-        return parentFrame;
+        return parent != null ? parent.getParentFrame() : null;
     }
 
     public void addRefreshedListener(RefreshListener refreshListener) {
@@ -174,7 +175,7 @@ public class StatusBar extends ITab {
     }
 
     private final ActionListener validationListener = e -> {
-        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+        if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
             DebugEntity.copyEquipmentState(getEntity());
         } else {
             UnitUtil.showValidation(getEntity(), getParentFrame());

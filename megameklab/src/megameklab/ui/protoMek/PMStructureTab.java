@@ -17,6 +17,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,6 +132,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(centerPanel, gbc);
@@ -337,6 +339,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     @Override
     public void sourceChanged(String source) {
         getProtoMek().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -380,6 +384,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -561,6 +566,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                 .collect(Collectors.toList());
         jjs.forEach(jj -> UnitUtil.removeMounted(getProtoMek(), jj));
         jumpChanged(panMovement.getJump(), jumpJet);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -655,6 +662,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     private void addArmorPoint(int location) {
         if (getProtoMek().getOArmor(location) < UnitUtil.getMaximumArmorPoints(getProtoMek(), location)) {
             getProtoMek().initializeArmor(getProtoMek().getOArmor(location) + 1, location);
+            refresh.refreshSummary();
+            refresh.refreshPreview();
         }
     }
 
@@ -716,15 +725,20 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     @Override
     public void setISInterface(boolean selected) {
         getProtoMek().setInterfaceCockpit(selected);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getProtoMek().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }
