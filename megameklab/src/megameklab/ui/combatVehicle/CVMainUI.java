@@ -84,7 +84,8 @@ public class CVMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new CVFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
+                new CVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();
@@ -147,66 +148,68 @@ public class CVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
+        Tank newUnit;
         if (entityType == Entity.ETYPE_VTOL) {
-            setEntity(new VTOL());
-            getEntity().setTechLevel(TechConstants.T_INTRO_BOXSET);
-            getEntity().setWeight(20);
-            getEntity().setMovementMode(EntityMovementMode.VTOL);
+            newUnit = new VTOL();
+            newUnit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+            newUnit.setWeight(20);
+            newUnit.setMovementMode(EntityMovementMode.VTOL);
+        } else if (entityType == Entity.ETYPE_SUPER_HEAVY_TANK) {
+            newUnit = new SuperHeavyTank();
+            newUnit.setTechLevel(TechConstants.T_IS_ADVANCED);
+            newUnit.setWeight(51);
+            newUnit.setMovementMode(EntityMovementMode.HOVER);
         } else {
-            if (entityType == Entity.ETYPE_SUPER_HEAVY_TANK) {
-                setEntity(new SuperHeavyTank());
-                getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
-                getEntity().setWeight(51);
-            } else {
-                setEntity(new Tank());
-                getEntity().setTechLevel(TechConstants.T_INTRO_BOXSET);
-                getEntity().setWeight(20);
-            }
-            getEntity().setMovementMode(EntityMovementMode.HOVER);
+            newUnit = new Tank();
+            newUnit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+            newUnit.setWeight(20);
+            newUnit.setMovementMode(EntityMovementMode.HOVER);
         }
-
-        Tank tank = (Tank) getEntity();
-
-        tank.setYear(3145);
-
-        tank.setEngine(new Engine(Math.max(10, (int) getEntity().getWeight()
-                - tank.getSuspensionFactor()), Engine.NORMAL_ENGINE,
+        newUnit.setYear(3145);
+        newUnit.setEngine(new Engine(Math.max(10, (int) newUnit.getWeight()
+                - newUnit.getSuspensionFactor()), Engine.NORMAL_ENGINE,
                 Engine.TANK_ENGINE));
 
-        tank.autoSetInternal();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
-            tank.initializeArmor(0, loc);
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
 
-        getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
-        getEntity().setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-        tank.setHasNoDualTurret(true);
+        newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        newUnit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+        newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        newUnit.setHasNoDualTurret(true);
         if (Entity.ETYPE_VTOL == entityType) {
-            tank.setHasNoTurret(true);
+            newUnit.setHasNoTurret(true);
         }
         if (null == oldEntity) {
-            tank.setChassis("New");
-            tank.setModel("Tank");
-            tank.setYear(3145);
+            newUnit.setChassis("New");
+            newUnit.setModel("Tank");
+            newUnit.setYear(3145);
         } else {
-            tank.setChassis(oldEntity.getChassis());
-            tank.setModel(oldEntity.getModel());
-            tank.setYear(Math.max(oldEntity.getYear(),
-                    tank.getConstructionTechAdvancement().getIntroductionDate()));
-            tank.setSource(oldEntity.getSource());
-            tank.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(tank.getStaticTechLevel(),
+            newUnit.setChassis(oldEntity.getChassis());
+            newUnit.setModel(oldEntity.getModel());
+            newUnit.setYear(Math.max(oldEntity.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldEntity.getSource());
+            newUnit.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            tank.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            tank.setMixedTech(oldEntity.isMixedTech());
-            tank.setMovementMode(oldEntity.getMovementMode());
-            tank.setWeight(Math.min(tank.getWeight(), TestTank.maxTonnage(tank.getMovementMode(), tank.isSuperHeavy())));
-            if (tank.isSuperHeavy()) {
-                tank.setWeight(Math.max(tank.getWeight(), TestTank.maxTonnage(tank.getMovementMode(), false) + 1.0));
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            newUnit.setMixedTech(oldEntity.isMixedTech());
+            newUnit.setMovementMode(oldEntity.getMovementMode());
+            newUnit.setWeight(
+                    Math.min(newUnit.getWeight(),
+                            TestTank.maxTonnage(newUnit.getMovementMode(), newUnit.isSuperHeavy())));
+            if (newUnit.isSuperHeavy()) {
+                newUnit.setWeight(
+                        Math.max(newUnit.getWeight(), TestTank.maxTonnage(newUnit.getMovementMode(), false) + 1.0));
             }
         }
-        tank.setOriginalWalkMP((tank.getEngine().getRating() + tank.getSuspensionFactor()) / (int)tank.getWeight());
+        newUnit.setOriginalWalkMP(
+                (newUnit.getEngine().getRating() + newUnit.getSuspensionFactor()) / (int) newUnit.getWeight());
+        setEntity(newUnit, "");
+        invalidateSnapshot();
     }
 
     @Override

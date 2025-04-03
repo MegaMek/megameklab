@@ -88,23 +88,21 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        setEntity(new BattleArmor());
-        BattleArmor ba = (BattleArmor) getEntity();
-
-        ba.setYear(3145);
-        ba.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-        ba.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
-        ba.setTroopers(4);
-        ba.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
-
-        ba.autoSetInternal();
-        for (int loc = 0; loc < ba.locations(); loc++) {
-            ba.initializeArmor(0, loc);
+        BattleArmor newUnit = new BattleArmor();
+        newUnit.setYear(3145);
+        newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        newUnit.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
+        newUnit.setTroopers(4);
+        newUnit.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
-
-        ba.setChassis("New");
-        ba.setModel("BattleArmor");
+        newUnit.setChassis("New");
+        newUnit.setModel("BattleArmor");
+        setEntity(newUnit, "");
+        invalidateSnapshot();
     }
 
     @Override

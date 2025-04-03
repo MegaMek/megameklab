@@ -89,81 +89,78 @@ public class WSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+        Jumpship newUnit;
         if (entitytype == Entity.ETYPE_JUMPSHIP) {
-            setEntity(new Jumpship());
+            newUnit = new Jumpship();
         } else if (entitytype == Entity.ETYPE_WARSHIP) {
-            setEntity(new Warship());
+            newUnit = new Warship();
             if ((null != oldUnit)
                     && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
-                ((Jumpship) getEntity()).setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
+                newUnit.setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
             }
         } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
-            setEntity(new SpaceStation());
+            newUnit = new SpaceStation();
         } else {
             logger.error("Received incorrect entityType!");
             return;
         }
-        getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
-
-        Jumpship ship = (Jumpship) getEntity();
-
+        newUnit.setTechLevel(TechConstants.T_IS_ADVANCED);
         if (isPrimitive) {
-            ship.setYear(2470);
-            ship.setOriginalBuildYear(2470);
-            ship.setDriveCoreType(Jumpship.DRIVE_CORE_PRIMITIVE);
-            ship.setJumpRange(30);
+            newUnit.setYear(2470);
+            newUnit.setOriginalBuildYear(2470);
+            newUnit.setDriveCoreType(Jumpship.DRIVE_CORE_PRIMITIVE);
+            newUnit.setJumpRange(30);
         } else {
-            ship.setYear(3145);
+            newUnit.setYear(3145);
         }
         if (isPrimitive) {
-            ship.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
         } else {
-            ship.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         }
-        ship.setWeight(TestAdvancedAerospace.getMinTonnage(ship));
+        newUnit.setWeight(TestAdvancedAerospace.getMinTonnage(newUnit));
         if (entitytype == Entity.ETYPE_WARSHIP) {
-            ship.setOriginalWalkMP(2); // Start at 1G
-            ship.setOSI(3);
+            newUnit.setOriginalWalkMP(2); // Start at 1G
+            newUnit.setOSI(3);
         } else {
-            ship.setOriginalWalkMP(0);
-            ship.setOSI(1);
+            newUnit.setOriginalWalkMP(0);
+            newUnit.setOSI(1);
         }
-        ship.setArmorTechLevel(getEntity().getTechLevel());
-
-        ship.setHeatType(Aero.HEAT_SINGLE);
-
-        ship.autoSetInternal();
-        ship.initializeKFIntegrity();
-        ship.initializeSailIntegrity();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
+        newUnit.setArmorTechLevel(newUnit.getTechLevel());
+        newUnit.setHeatType(Aero.HEAT_SINGLE);
+        newUnit.autoSetInternal();
+        newUnit.initializeKFIntegrity();
+        newUnit.initializeSailIntegrity();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
             if (loc >= Jumpship.LOC_HULL) {
-                ship.initializeArmor(IArmorState.ARMOR_NA, loc);
+                newUnit.initializeArmor(IArmorState.ARMOR_NA, loc);
             } else {
-                ship.initializeArmor((int) Math.round(ship.getOSI() / 10.0), loc);
+                newUnit.initializeArmor((int) Math.round(newUnit.getOSI() / 10.0), loc);
             }
         }
-
         if (null == oldUnit) {
-            getEntity().setChassis("New");
+            newUnit.setChassis("New");
             if ((entitytype == Entity.ETYPE_WARSHIP) && !isPrimitive) {
-                ship.setModel("Warship");
+                newUnit.setModel("Warship");
             } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
-                ship.setModel("Station");
+                newUnit.setModel("Station");
             } else {
-                ship.setModel("Jumpship");
+                newUnit.setModel("Jumpship");
             }
         } else {
-            ship.setChassis(oldUnit.getChassis());
-            ship.setModel(oldUnit.getModel());
-            ship.setYear(Math.max(oldUnit.getYear(),
-                    ship.getConstructionTechAdvancement().getIntroductionDate()));
-            ship.setSource(oldUnit.getSource());
-            ship.setManualBV(oldUnit.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(ship.getStaticTechLevel(),
+            newUnit.setChassis(oldUnit.getChassis());
+            newUnit.setModel(oldUnit.getModel());
+            newUnit.setYear(Math.max(oldUnit.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldUnit.getSource());
+            newUnit.setManualBV(oldUnit.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
-            ship.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
-            ship.setMixedTech(oldUnit.isMixedTech());
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+            newUnit.setMixedTech(oldUnit.isMixedTech());
         }
+        setEntity(newUnit, "");
+        invalidateSnapshot();
     }
 
     @Override
