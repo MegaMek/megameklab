@@ -102,7 +102,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         newUnit.setChassis("New");
         newUnit.setModel("BattleArmor");
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

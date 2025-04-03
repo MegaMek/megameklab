@@ -90,7 +90,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         newUnit.setChassis("New");
         newUnit.setModel("Infantry");
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

@@ -144,7 +144,7 @@ public class ASMainUI extends MegaMekLabMainUI {
             newUnit.setMixedTech(oldEntity.isMixedTech());
         }
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

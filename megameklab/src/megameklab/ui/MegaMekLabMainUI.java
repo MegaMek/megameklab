@@ -48,6 +48,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean initializedTabs = false;
     private boolean dirty = false;
     private boolean dirtyCheckPending = false;
+    private boolean forceDirtyUntilNextSave = false;
     private String savedUnitSnapshot = null;
     private String currentSnapshot = null;
     private Deque<String> undoStack = new LinkedList<>();
@@ -147,9 +148,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     /**
      * Invalidates the current snapshot of the unit.
      */
-    protected void invalidateSnapshot() {
-        savedUnitSnapshot = null;
-        requestDirtyCheck();
+    public void forceDirtyUntilNextSave() {
+        forceDirtyUntilNextSave = true;
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     public boolean canReload() {
-        return savedUnitSnapshot != null && !savedUnitSnapshot.isEmpty() && isDirty();
+        return savedUnitSnapshot != null && !savedUnitSnapshot.isEmpty() && dirty;
     }
 
     /**
@@ -252,7 +252,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Performs reload operation if available.
      */
     public void reload() {
-        if (!isDirty()) {
+        if (!dirty) {
             return;
         }
         try {
@@ -282,7 +282,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      * @return
      */
     public boolean isDirty() {
-        return dirty;
+        return dirty || forceDirtyUntilNextSave;
     }
 
     /**
@@ -352,6 +352,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (file == null) {
             return false;
         }
+        forceDirtyUntilNextSave = false;
         setFileName(file);
         resetDirty();
         return true;
@@ -374,6 +375,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (file == null) {
             return false;
         }
+        forceDirtyUntilNextSave = false;
         setFileName(file);
         resetDirty();
         return true;

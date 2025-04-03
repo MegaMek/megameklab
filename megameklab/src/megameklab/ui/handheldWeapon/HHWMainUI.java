@@ -179,7 +179,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
             newUnit.setMixedTech(oldUnit.isMixedTech());
         }
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

@@ -160,7 +160,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             newUnit.setMixedTech(oldUnit.isMixedTech());
         }
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

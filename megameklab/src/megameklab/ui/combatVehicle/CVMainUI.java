@@ -209,7 +209,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         newUnit.setOriginalWalkMP(
                 (newUnit.getEngine().getRating() + newUnit.getSuspensionFactor()) / (int) newUnit.getWeight());
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

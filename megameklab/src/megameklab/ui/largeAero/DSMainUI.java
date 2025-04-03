@@ -141,7 +141,7 @@ public class DSMainUI extends MegaMekLabMainUI {
             newUnit.setMovementMode(oldUnit.getMovementMode());
         }
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

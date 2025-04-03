@@ -123,7 +123,7 @@ public class PMMainUI extends MegaMekLabMainUI {
             newUnit.setMixedTech(oldEntity.isMixedTech());
         }
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override

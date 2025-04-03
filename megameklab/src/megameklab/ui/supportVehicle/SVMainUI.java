@@ -223,7 +223,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         }
         newUnit.recalculateTechAdvancement();
         setEntity(newUnit, "");
-        invalidateSnapshot();
+        forceDirtyUntilNextSave();
     }
 
     @Override
