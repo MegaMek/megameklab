@@ -414,13 +414,20 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param industrial whether the unit is an IndustrialMek
      */
     private void newUnit(long type, boolean primitive, boolean industrial) {
-        var newUi = UiLoader.getUI(type, primitive, industrial);
-        newUi.setTabOwner(this);
-        editors.set(tabs.getSelectedIndex(), newUi);
-        tabs.setComponentAt(tabs.getSelectedIndex(), newUi);
-        tabs.setEnabledAt(tabs.getSelectedIndex(), true);
-        refreshMenuBar();
-        newUi.refreshHeader();
+        final int index = tabs.getSelectedIndex();
+        if (index < 0) {
+            return; // No tab selected, nothing to do
+        }
+        MegaMekLabMainUI editor = UiLoader.getUI(type, primitive, industrial);
+        if (!editors.contains(editor)) {
+            editors.add(editor);
+        }
+        final Entity entity = editor.getEntity();
+        final String tabName = entity.getShortNameRaw();
+        tabs.addCloseableTab(tabName, null, editor, index);
+        editor.setTabOwner(this);
+        tabs.setSelectedIndex(index);
+        closeTabAt(index+1); // Close the old tab
     }
 
     /**
