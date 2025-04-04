@@ -402,7 +402,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             }
             return unitAsString;
         } catch (Exception ex) {
-            logger.error("", ex);
+            logger.error("Error while taking unit snapshot", ex);
             return null;
         }
     }
