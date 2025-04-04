@@ -115,13 +115,11 @@ public abstract class MegaMekLabMainUI extends JPanel
 
         if (ignoreNextStateChange) {
             ignoreNextStateChange = false;
-            System.out.println("Dirty check but ignored UNDO STACK");
         } else 
         // If we have a previous currentSnapshot, we need to push it to the undo stack before overwriting it.
         if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot)) 
         && (undoStack.isEmpty() || !undoStack.peek().equals(newSnapshot))) {
             pushUndoState(currentSnapshot);
-            System.out.println("Dirty check, Pushing to UNDO STACK. Undos: " + undoStack.size() + " Redos: " + redoStack.size());
         } else
         // If we don't have a currentSnapshot, the undoStack is empty and we have a savedUnitSnapshot, this is the first undo point
         if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
@@ -138,11 +136,13 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Resets the dirty state of the unit.
      */
     private void resetDirty() {
-        savedUnitSnapshot = saveUnitToString(entity, false);
-        if (dirty) {
-            dirty = false;
-            refreshHeader();
-        }
+        SwingUtilities.invokeLater(() -> {
+            savedUnitSnapshot = saveUnitToString(entity, false);
+            if (dirty) {
+                dirty = false;
+                refreshHeader();
+            }
+        });
     }
 
     /**
@@ -156,8 +156,13 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Pushes the state of the unit to the undo stack.
      * 
      * @param state The state to push to the undo stack.
+     * @return true if the state was pushed, false if it was not (e.g., if it was the
+     *         same as the previous state).
      */
-    private void pushUndoState(String state) {
+    private boolean pushUndoState(String state) {
+        if (!undoStack.isEmpty() && undoStack.peek().equals(state)) {
+            return false; // Avoid pushing the same state multiple times
+        }
         // Clear redo stack when a new action is performed
         redoStack.clear();
         undoStack.push(state);
@@ -166,16 +171,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             undoStack.removeLast();
         }
         updateUndoRedoMenuItems();
-    }
-
-    /**
-     * Pushes the current state of the unit to the undo stack.
-     */
-    private void pushUndoState() {
-        final String currentState = saveUnitToString(entity, false);
-        if (currentState != null) {
-            pushUndoState(currentState);
-        }
+        return true;
     }
 
     /**
@@ -209,7 +205,6 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to redo stack
-            System.out.println("Undo");
             final String currentState = saveUnitToString(entity, false);
             // Pop and apply state from undo stack
             String previousState = undoStack.pop();
@@ -218,7 +213,6 @@ public abstract class MegaMekLabMainUI extends JPanel
             ignoreNextStateChange = true;
             applyState(previousState);
             updateUndoRedoMenuItems();
-            System.out.println("Undo done. Undos: " + undoStack.size() + " Redos: " + redoStack.size());
         } catch (Exception e) {
             logger.error("Error during undo operation", e);
         }
@@ -232,7 +226,6 @@ public abstract class MegaMekLabMainUI extends JPanel
             return;
         }
         try {
-            System.out.println("Redo");
             // Push current state to undo stack
             final String currentState = saveUnitToString(entity, false);
             undoStack.push(currentState);
@@ -242,7 +235,6 @@ public abstract class MegaMekLabMainUI extends JPanel
             ignoreNextStateChange = true;
             applyState(nextState);
             updateUndoRedoMenuItems();
-            System.out.println("Redo done. Undos: " + undoStack.size() + " Redos: " + redoStack.size());
         } catch (Exception e) {
             logger.error("Error during redo operation", e);
         }
@@ -252,13 +244,14 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Performs reload operation if available.
      */
     public void reload() {
-        if (!dirty) {
+        if (!canReload()) {
             return;
         }
         try {
             final String currentState = saveUnitToString(entity, false);
-            pushUndoState(currentState);
-            ignoreNextStateChange = true;
+            if (currentState == savedUnitSnapshot) {
+                return; // No changes to reload
+            }
             applyState(savedUnitSnapshot);
             updateUndoRedoMenuItems();
             requestDirtyCheck();
@@ -426,7 +419,6 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     @Override
     public void refreshAll() {
-        System.out.println("RefreshAll!");
         requestDirtyCheck();
     }
 
