@@ -53,7 +53,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     private String currentSnapshot = null;
     private Deque<String> undoStack = new LinkedList<>();
     private Deque<String> redoStack = new LinkedList<>();
-    private static final int MAX_UNDO_HISTORY = 30;
+    private static final int MAX_UNDO_HISTORY = 1000;
     private boolean ignoreNextStateChange = false;
 
     public MegaMekLabMainUI() {
