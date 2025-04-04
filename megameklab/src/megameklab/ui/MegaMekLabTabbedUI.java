@@ -358,6 +358,18 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      *
      * @return The currently selected MegaMekLabMainUI instance, which represents
      *         the active editor in the tabbed UI, or null if no tab is selected.
+     * @deprecated Use {@link #getActiveEditor()} instead as it provides the same functionality.
+     */
+    @Deprecated(since = "0.50.05", forRemoval = true)
+    public MegaMekLabMainUI currentEditor() {
+        return getActiveEditor();
+    }
+
+    /**
+     * Retrieves the currently selected editor from the tabbed user interface.
+     *
+     * @return The currently selected MegaMekLabMainUI instance, which represents
+     *         the active editor in the tabbed UI, or null if no tab is selected.
      */
     public MegaMekLabMainUI getActiveEditor() {
         int selectedIndex = tabs.getSelectedIndex();
