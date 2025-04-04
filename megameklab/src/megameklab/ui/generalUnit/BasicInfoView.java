@@ -270,10 +270,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         setTechLevel(SimpleTechLevel.max(lvl,
                 SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         cbTechLevel.addActionListener(this);
-        if (en.getManualBV() >= 0) {
-            setManualBV(en.getManualBV());
-        }
-        txtManualBV.setText(en.getManualBV() > 0 ? en.getManualBV()+"" : "");
+        setManualBV(en.getManualBV());
         cbRole.removeActionListener(this);
         cbRole.removeAllItems();
         for (UnitRole role : UnitRole.values()) {
