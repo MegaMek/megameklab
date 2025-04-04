@@ -249,7 +249,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             final String currentState = saveUnitToString(entity, false);
-            if (currentState == savedUnitSnapshot) {
+            if (savedUnitSnapshot == null || savedUnitSnapshot.equals(currentState)) {
                 return; // No changes to reload
             }
             applyState(savedUnitSnapshot);
