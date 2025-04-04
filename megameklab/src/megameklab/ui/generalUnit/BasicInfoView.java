@@ -273,6 +273,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (en.getManualBV() >= 0) {
             setManualBV(en.getManualBV());
         }
+        txtManualBV.setText(en.getManualBV() > 0 ? en.getManualBV()+"" : "");
         cbRole.removeActionListener(this);
         cbRole.removeAllItems();
         for (UnitRole role : UnitRole.values()) {
