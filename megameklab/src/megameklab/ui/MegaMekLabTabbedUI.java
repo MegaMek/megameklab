@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -105,10 +106,24 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // If there are more tabs than can fit, show a scroll bar
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        tabs.addChangeListener(e -> {
-            Component selected = tabs.getSelectedComponent();
-            if (selected instanceof MegaMekLabMainUI mainUI) {
-                mainUI.onActivated();
+        tabs.addChangeListener(new ChangeListener() {
+            private WeakReference<Component> lastSelectedComponent = null;
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (tabs.getSelectedIndex() < 0) {
+                    return;
+                }
+                final Component selectedComponent = tabs.getSelectedComponent();
+                final Component previousComponent = lastSelectedComponent != null ? lastSelectedComponent.get() : null;
+        
+                if (selectedComponent != previousComponent) {
+                    if (selectedComponent instanceof MegaMekLabMainUI mainUI) {
+                        mainUI.onActivated();
+                        refreshEditMenu();
+                    }
+                }
+                lastSelectedComponent = new WeakReference<>(selectedComponent);
             }
         });
         // Register tab reattachment listener
@@ -343,8 +358,20 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      *
      * @return The currently selected MegaMekLabMainUI instance, which represents
      *         the active editor in the tabbed UI, or null if no tab is selected.
+     * @deprecated Use {@link #getActiveEditor()} instead as it provides the same functionality.
      */
+    @Deprecated(since = "0.50.05", forRemoval = true)
     public MegaMekLabMainUI currentEditor() {
+        return getActiveEditor();
+    }
+
+    /**
+     * Retrieves the currently selected editor from the tabbed user interface.
+     *
+     * @return The currently selected MegaMekLabMainUI instance, which represents
+     *         the active editor in the tabbed UI, or null if no tab is selected.
+     */
+    public MegaMekLabMainUI getActiveEditor() {
         int selectedIndex = tabs.getSelectedIndex();
         // Check if the selected index is valid
         if (selectedIndex >= 0) {
@@ -388,10 +415,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (!editors.contains(editor)) {
             editors.add(editor);
         }
-        Entity entity = editor.getEntity();
-
-        // Use the enhanced tabbed pane to add a closeable tab
-        String tabName = entity.getShortNameRaw();
+        final Entity entity = editor.getEntity();
+        final String tabName = entity.getShortNameRaw();
         tabs.addCloseableTab(tabName, null, editor);
         editor.setTabOwner(this);
         if (setSelected) {
@@ -609,7 +634,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public Entity getEntity() {
-        MegaMekLabMainUI editor = currentEditor();
+        MegaMekLabMainUI editor = getActiveEditor();
         if (editor == null) {
             return null;
         }
@@ -618,20 +643,26 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public String getFileName() {
-        MegaMekLabMainUI editor = currentEditor();
+        MegaMekLabMainUI editor = getActiveEditor();
         return editor != null ? editor.getFileName() : null;
     }
 
     @Override
     public boolean hasEntityNameChanged() {
-        MegaMekLabMainUI editor = currentEditor();
+        MegaMekLabMainUI editor = getActiveEditor();
         return editor != null && editor.hasEntityNameChanged();
     }
 
     @Override
     public void refreshMenuBar() {
-        if (menuBar != null && currentEditor() != null) {
+        if (menuBar != null && getActiveEditor() != null) {
             menuBar.refreshMenuBar();
+        }
+    }
+
+    public void refreshEditMenu() {
+        if (menuBar != null && getActiveEditor() != null) {
+            menuBar.refreshEditMenu();
         }
     }
 
@@ -642,7 +673,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == tabs && !editors.isEmpty() && currentEditor() != null) {
+        if (e.getSource() == tabs && !editors.isEmpty() && getActiveEditor() != null) {
             refreshMenuBar();
         }
     }
