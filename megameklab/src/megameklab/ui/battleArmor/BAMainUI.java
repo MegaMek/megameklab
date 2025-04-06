@@ -112,6 +112,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         refreshStructure();
         refreshEquipmentTable();
         quirksTab.refresh();
+        fluffTab.refresh();
         refreshBuild();
         refreshPreview();
         refreshHeader();

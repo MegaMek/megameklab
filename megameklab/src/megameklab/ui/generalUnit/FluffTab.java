@@ -100,7 +100,7 @@ public class FluffTab extends ITab implements FocusListener {
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setMaximumSize(new Dimension(MAX_CONTENT_WIDTH, Integer.MAX_VALUE));
         contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         // --- Left Panel ---
         JPanel panLeft = new JPanel(new GridBagLayout());
         panLeft.setBorder(new EmptyBorder(panelInsets)); // Add padding around the panel
@@ -589,5 +589,71 @@ public class FluffTab extends ITab implements FocusListener {
         lblFluffImage.setText(icon == null ? "(No Image)" : null);
         imgScrollPane.revalidate();
         imgScrollPane.repaint();
+    }
+
+    /**
+     * Refreshes all fields from the entity data.
+     * This should be called when the entity is changed externally.
+     */
+    public void refresh() {
+        if (eSource == null || eSource.getEntity() == null) {
+            return;
+        }
+
+        EntityFluff fluff = getFluff();
+
+        // Update all text areas
+        txtCapabilities.setText(fluff.getCapabilities());
+        txtOverview.setText(fluff.getOverview());
+        txtDeployment.setText(fluff.getDeployment());
+        txtHistory.setText(fluff.getHistory());
+        txtNotes.setText(fluff.getNotes());
+
+        // Update general text fields
+        txtManufacturer.setText(fluff.getManufacturer());
+        txtPrimaryFactory.setText(fluff.getPrimaryFactory());
+        txtUse.setText(fluff.getUse());
+        txtLength.setText(fluff.getLength());
+        txtWidth.setText(fluff.getWidth());
+        txtHeight.setText(fluff.getHeight());
+
+        // Update system manufacturer/model fields
+        for (Component component : getComponents()) {
+            if (component instanceof JPanel panel) {
+                updatePanelTextFields(panel, fluff);
+            }
+        }
+
+        // Refresh the fluff image display
+        refreshGUI();
+    }
+
+    /**
+     * Helper method to recursively update text fields in panels based on their
+     * names.
+     */
+    private void updatePanelTextFields(Container container, EntityFluff fluff) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof JTextField textField) {
+                String name = textField.getName();
+                if (name != null && name.contains(":")) {
+                    String[] fields = name.split(":");
+                    try {
+                        EntityFluff.System system = EntityFluff.System.parse(fields[0]);
+                        if (system != null) {
+                            if (TAG_MANUFACTURER.equals(fields[1])) {
+                                textField.setText(fluff.getSystemManufacturer(system));
+                            } else if (TAG_MODEL.equals(fields[1])) {
+                                textField.setText(fluff.getSystemModel(system));
+                            }
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        // Already logged in focusLost handler
+                    }
+                }
+            } else if (component instanceof Container nestedContainer) {
+                updatePanelTextFields(nestedContainer, fluff);
+            }
+        }
     }
 }

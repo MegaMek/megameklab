@@ -80,6 +80,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
     public void refreshAll() {
         super.refreshAll();
         structureTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         statusbar.refresh();
         equipmentTab.refresh();

@@ -155,6 +155,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();

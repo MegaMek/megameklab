@@ -40,6 +40,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
     private QuirksTab quirksTab;
+    private FluffTab  fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public PMMainUI(Entity entity, String filename) {
@@ -64,7 +65,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab = new PMEquipmentTab(this);
         buildTab = new PMBuildTab(this, this);
         quirksTab = new QuirksTab(this);
-        FluffTab fluffTab = new FluffTab(this);
+        fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
@@ -134,6 +135,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
