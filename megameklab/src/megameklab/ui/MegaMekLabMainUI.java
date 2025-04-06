@@ -92,13 +92,24 @@ public abstract class MegaMekLabMainUI extends JPanel
             if (this == other) {
                 return true;
             }
-            if (entityState == null || other.entityState == null) {
+            // Compare entityState
+            if (entityState == null) {
+                if (other.entityState != null) {
+                    return false;
+                }
+            } else if (!entityState.equals(other.entityState)) {
                 return false;
             }
-            return entityState.equals(other.entityState)
-                    && ((unallocatedEquipment == null && other.unallocatedEquipment == null)
-                            || (unallocatedEquipment != null
-                                    && unallocatedEquipment.equals(other.unallocatedEquipment)));
+            // Compare unallocatedEquipment
+            if (unallocatedEquipment == null) {
+                if (other.unallocatedEquipment != null) {
+                    return false;
+                }
+            } else if (!unallocatedEquipment.equals(other.unallocatedEquipment)) {
+                return false;
+            }
+            // If we get here, both fields are equal
+            return true;
         }
     }
 
@@ -164,8 +175,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         } else
         // If we have a previous currentSnapshot, we need to push it to the undo stack
         // before overwriting it.
-        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))
-                && (undoStack.isEmpty() || !undoStack.peek().equals(newSnapshot))) {
+        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))) {
             pushUndoState(currentSnapshot);
         } else
         // If we don't have a currentSnapshot, the undoStack is empty and we have a
