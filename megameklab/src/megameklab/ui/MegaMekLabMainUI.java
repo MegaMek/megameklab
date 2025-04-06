@@ -16,10 +16,12 @@
 package megameklab.ui;
 
 import megamek.common.Entity;
+import megamek.common.EquipmentType;
 import megamek.common.Mek;
 import megamek.common.MekFileParser;
 import megamek.common.Mounted;
 import megamek.common.loaders.BLKFile;
+import megamek.common.loaders.MtfFile;
 import megamek.common.util.BuildingBlock;
 import megamek.logging.MMLogger;
 import megameklab.ui.util.EnhancedTabbedPane;
@@ -31,12 +33,19 @@ import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public abstract class MegaMekLabMainUI extends JPanel
         implements RefreshListener, EntitySource, FileNameManager {
+    private static final int MAX_UNDO_HISTORY = 1000;
+
     private static final MMLogger logger = MMLogger.create(MegaMekLabMainUI.class);
 
     protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
@@ -49,12 +58,49 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean dirty = false;
     private boolean dirtyCheckPending = false;
     private boolean forceDirtyUntilNextSave = false;
-    private String savedUnitSnapshot = null;
-    private String currentSnapshot = null;
-    private Deque<String> undoStack = new LinkedList<>();
-    private Deque<String> redoStack = new LinkedList<>();
-    private static final int MAX_UNDO_HISTORY = 1000;
+    private UnitMemento savedUnitSnapshot = null;
+    private UnitMemento currentSnapshot = null;
+    private Deque<UnitMemento> undoStack = new LinkedList<>();
+    private Deque<UnitMemento> redoStack = new LinkedList<>();
     private boolean ignoreNextStateChange = false;
+
+    private static class UnitMemento {
+        private final String entityState;
+        private final String unallocatedEquipment;
+
+        public UnitMemento(String entityState, String unallocatedEquipment) {
+            this.entityState = entityState;
+            this.unallocatedEquipment = unallocatedEquipment;
+        }
+
+        public String getEntityState() {
+            return entityState;
+        }
+
+        public String getUnallocatedEquipment() {
+            return unallocatedEquipment;
+        }
+
+        public boolean isEmpty() {
+            return entityState == null || entityState.isEmpty();
+        }
+
+        public boolean equals(UnitMemento other) {
+            if (other == null) {
+                return false;
+            }
+            if (this == other) {
+                return true;
+            }
+            if (entityState == null || other.entityState == null) {
+                return false;
+            }
+            return entityState.equals(other.entityState)
+                    && ((unallocatedEquipment == null && other.unallocatedEquipment == null)
+                            || (unallocatedEquipment != null
+                                    && unallocatedEquipment.equals(other.unallocatedEquipment)));
+        }
+    }
 
     public MegaMekLabMainUI() {
         setLayout(new BorderLayout());
@@ -110,18 +156,20 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void dirtyCheck() {
         dirtyCheckPending = false;
-        final String newSnapshot = saveUnitToString(entity, false);
+        final UnitMemento newSnapshot = createMemento();
         final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
 
         if (ignoreNextStateChange) {
             ignoreNextStateChange = false;
-        } else 
-        // If we have a previous currentSnapshot, we need to push it to the undo stack before overwriting it.
-        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot)) 
-        && (undoStack.isEmpty() || !undoStack.peek().equals(newSnapshot))) {
+        } else
+        // If we have a previous currentSnapshot, we need to push it to the undo stack
+        // before overwriting it.
+        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))
+                && (undoStack.isEmpty() || !undoStack.peek().equals(newSnapshot))) {
             pushUndoState(currentSnapshot);
         } else
-        // If we don't have a currentSnapshot, the undoStack is empty and we have a savedUnitSnapshot, this is the first undo point
+        // If we don't have a currentSnapshot, the undoStack is empty and we have a
+        // savedUnitSnapshot, this is the first undo point
         if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
             pushUndoState(savedUnitSnapshot);
         }
@@ -137,7 +185,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void resetDirty() {
         SwingUtilities.invokeLater(() -> {
-            savedUnitSnapshot = saveUnitToString(entity, false);
+            savedUnitSnapshot = createMemento();
             if (dirty) {
                 dirty = false;
                 refreshHeader();
@@ -156,10 +204,11 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Pushes the state of the unit to the undo stack.
      * 
      * @param state The state to push to the undo stack.
-     * @return true if the state was pushed, false if it was not (e.g., if it was the
+     * @return true if the state was pushed, false if it was not (e.g., if it was
+     *         the
      *         same as the previous state).
      */
-    private boolean pushUndoState(String state) {
+    private boolean pushUndoState(UnitMemento state) {
         if (!undoStack.isEmpty() && undoStack.peek().equals(state)) {
             return false; // Avoid pushing the same state multiple times
         }
@@ -205,13 +254,13 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to redo stack
-            final String currentState = saveUnitToString(entity, false);
-            // Pop and apply state from undo stack
-            String previousState = undoStack.pop();
+            final UnitMemento currentState = createMemento();
             redoStack.push(currentState);
+            // Pop and apply state from undo stack
+            final UnitMemento previousState = undoStack.pop();
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
-            applyState(previousState);
+            restoreUnitState(previousState);
             updateUndoRedoMenuItems();
         } catch (Exception e) {
             logger.error("Error during undo operation", e);
@@ -227,13 +276,13 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to undo stack
-            final String currentState = saveUnitToString(entity, false);
+            final UnitMemento currentState = createMemento();
             undoStack.push(currentState);
             // Pop and apply state from redo stack
-            final String nextState = redoStack.pop();
+            final UnitMemento nextState = redoStack.pop();
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
-            applyState(nextState);
+            restoreUnitState(nextState);
             updateUndoRedoMenuItems();
         } catch (Exception e) {
             logger.error("Error during redo operation", e);
@@ -248,11 +297,11 @@ public abstract class MegaMekLabMainUI extends JPanel
             return;
         }
         try {
-            final String currentState = saveUnitToString(entity, false);
+            final UnitMemento currentState = createMemento();
             if (savedUnitSnapshot == null || savedUnitSnapshot.equals(currentState)) {
                 return; // No changes to reload
             }
-            applyState(savedUnitSnapshot);
+            restoreUnitState(savedUnitSnapshot);
             updateUndoRedoMenuItems();
             requestDirtyCheck();
         } catch (Exception e) {
@@ -279,13 +328,36 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Apply a saved state to the current entity.
+     * Apply a saved unit memento snapshot to the current entity.
      */
-    private void applyState(String state) {
+    private void restoreUnitState(UnitMemento state) {
         try {
-            final Entity restoredEntity = new MekFileParser(state).getEntity();
+            final Entity restoredEntity = new MekFileParser(state.getEntityState()).getEntity();
             if (restoredEntity != null) {
                 entity = restoredEntity;
+                // Restore unallocated equipment if available
+                String unallocatedEquipment = state.getUnallocatedEquipment();
+                if (unallocatedEquipment != null && !unallocatedEquipment.isEmpty()) {
+                    try (Scanner sc = new Scanner(unallocatedEquipment)) {
+                        int unallocatedEquipmentCount = Integer.parseInt(sc.nextLine());
+                        for (int i = 0; i < unallocatedEquipmentCount; i++) {
+                            try {
+                                String line = sc.nextLine();
+                                String[] parts = line.split(Pattern.quote(MtfFile.SIZE));
+                                EquipmentType type = EquipmentType.get(parts[0]);
+                                Mounted<?> mounted = Mounted.createMounted(entity, type);
+                                if (parts.length > 1) {
+                                    mounted.setSize(Double.parseDouble(parts[1]));
+                                }
+                                entity.addEquipment(mounted, Entity.LOC_NONE, false);
+                            } catch (Exception e) {
+                                logger.warn("Could not restore unallocated equipment item", e);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.warn("Could not restore unallocated equipment", e);
+                    }
+                }
                 refreshAll();
             }
         } catch (Exception e) {
@@ -405,6 +477,32 @@ public abstract class MegaMekLabMainUI extends JPanel
             logger.error("Error while taking unit snapshot", ex);
             return null;
         }
+    }
+
+    public UnitMemento createMemento() {
+        final String unitState = saveUnitToString(entity, false);
+        String unallocatedEquipment = null;
+        // If the unit has unallocated equipment, save it to a string
+        List<Mounted<?>> unallocatedMounted = getUnallocatedMounted();
+        if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
+            StringWriter stringWriter = new StringWriter();
+            try (PrintWriter pw = new PrintWriter(stringWriter)) {
+                pw.println(unallocatedMounted.size());
+                for (Mounted<?> mounted : unallocatedMounted) {
+                    EquipmentType type = mounted.getType();
+                    if (type.isVariableSize()) {
+                        pw.printf("%s%s%f\n",
+                                type.getInternalName(),
+                                MtfFile.SIZE,
+                                mounted.getSize());
+                    } else {
+                        pw.println(type.getInternalName());
+                    }
+                }
+                unallocatedEquipment = stringWriter.toString();
+            }
+        }
+        return new UnitMemento(unitState, unallocatedEquipment);
     }
 
     public boolean exit() {
