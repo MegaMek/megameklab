@@ -13,11 +13,15 @@ import megameklab.ui.MegaMekLabMainUI;
 public class UnitMemento {
     private final String entityState;
     private final String unallocatedEquipment;
+    private final double armorTonnage;
 
-    public static UnitMemento createMemento(MegaMekLabMainUI mainUI, Entity entity) {
-        final String unitState = UnitUtil.saveUnitToString(entity, false);
+    public UnitMemento(Entity entity, MegaMekLabMainUI mainUI) {
+        this.entityState = UnitUtil.saveUnitToString(entity, false);
+        double armorTonnage = -1;
         String unallocatedEquipment = null;
-        // If the unit has unallocated equipment, save it to a string
+        if (entity != null) {
+            armorTonnage = entity.getLabArmorTonnage();
+        }
         if (mainUI != null) {
             List<Mounted<?>> unallocatedMounted = mainUI.getUnallocatedMounted();
             if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
@@ -39,11 +43,7 @@ public class UnitMemento {
                 }
             }
         }
-        return new UnitMemento(unitState, unallocatedEquipment);
-    }
-
-    public UnitMemento(String entityState, String unallocatedEquipment) {
-        this.entityState = entityState;
+        this.armorTonnage = armorTonnage;
         this.unallocatedEquipment = unallocatedEquipment;
     }
 
@@ -53,6 +53,10 @@ public class UnitMemento {
 
     public String getUnallocatedEquipment() {
         return unallocatedEquipment;
+    }
+
+    public double getArmorTonnage() {
+        return armorTonnage;
     }
 
     public boolean isEmpty() {
@@ -72,6 +76,10 @@ public class UnitMemento {
                 return false;
             }
         } else if (!entityState.equals(other.entityState)) {
+            return false;
+        }
+        // Compare armorTonnage
+        if (armorTonnage != other.armorTonnage) {
             return false;
         }
         // Compare unallocatedEquipment

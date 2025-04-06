@@ -113,7 +113,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void dirtyCheck() {
         dirtyCheckPending = false;
-        final UnitMemento newSnapshot = UnitMemento.createMemento(this, entity);
+        final UnitMemento newSnapshot = new UnitMemento(entity, this);
         final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
 
         if (ignoreNextStateChange) {
@@ -135,13 +135,13 @@ public abstract class MegaMekLabMainUI extends JPanel
             refreshHeader();
         }
     }
-
+    
     /**
      * Resets the dirty state of the unit.
      */
     private void resetDirty() {
         SwingUtilities.invokeLater(() -> {
-            savedUnitSnapshot = UnitMemento.createMemento(this, entity);
+            savedUnitSnapshot = new UnitMemento(entity, this);
             if (dirty) {
                 dirty = false;
                 refreshHeader();
@@ -210,7 +210,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to redo stack
-            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
+            final UnitMemento currentState = new UnitMemento(entity, this);
             redoStack.push(currentState);
             // Pop and apply state from undo stack
             final UnitMemento previousState = undoStack.pop();
@@ -232,7 +232,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to undo stack
-            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
+            final UnitMemento currentState = new UnitMemento(entity, this);
             undoStack.push(currentState);
             // Pop and apply state from redo stack
             final UnitMemento nextState = redoStack.pop();
@@ -253,7 +253,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             return;
         }
         try {
-            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
+            final UnitMemento currentState = new UnitMemento(entity, this);
             if (savedUnitSnapshot == null || savedUnitSnapshot.equals(currentState)) {
                 return; // No changes to reload
             }
@@ -291,6 +291,9 @@ public abstract class MegaMekLabMainUI extends JPanel
             final Entity restoredEntity = new MekFileParser(state.getEntityState()).getEntity();
             if (restoredEntity != null) {
                 entity = restoredEntity;
+                if (state.getArmorTonnage() >= 0) {
+                    entity.setArmorTonnage(state.getArmorTonnage());
+                }
                 // Restore unallocated equipment if available
                 String unallocatedEquipment = state.getUnallocatedEquipment();
                 if (unallocatedEquipment != null && !unallocatedEquipment.isEmpty()) {
