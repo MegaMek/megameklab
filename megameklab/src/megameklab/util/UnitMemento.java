@@ -18,23 +18,25 @@ public class UnitMemento {
         final String unitState = UnitUtil.saveUnitToString(entity, false);
         String unallocatedEquipment = null;
         // If the unit has unallocated equipment, save it to a string
-        List<Mounted<?>> unallocatedMounted = mainUI.getUnallocatedMounted();
-        if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
-            StringWriter stringWriter = new StringWriter();
-            try (PrintWriter pw = new PrintWriter(stringWriter)) {
-                pw.println(unallocatedMounted.size());
-                for (Mounted<?> mounted : unallocatedMounted) {
-                    EquipmentType type = mounted.getType();
-                    if (type.isVariableSize()) {
-                        pw.printf("%s%s%f\n",
-                                type.getInternalName(),
-                                MtfFile.SIZE,
-                                mounted.getSize());
-                    } else {
-                        pw.println(type.getInternalName());
+        if (mainUI != null) {
+            List<Mounted<?>> unallocatedMounted = mainUI.getUnallocatedMounted();
+            if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
+                StringWriter stringWriter = new StringWriter();
+                try (PrintWriter pw = new PrintWriter(stringWriter)) {
+                    pw.println(unallocatedMounted.size());
+                    for (Mounted<?> mounted : unallocatedMounted) {
+                        EquipmentType type = mounted.getType();
+                        if (type.isVariableSize()) {
+                            pw.printf("%s%s%f\n",
+                                    type.getInternalName(),
+                                    MtfFile.SIZE,
+                                    mounted.getSize());
+                        } else {
+                            pw.println(type.getInternalName());
+                        }
                     }
+                    unallocatedEquipment = stringWriter.toString();
                 }
-                unallocatedEquipment = stringWriter.toString();
             }
         }
         return new UnitMemento(unitState, unallocatedEquipment);
