@@ -17,12 +17,9 @@ package megameklab.ui;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
-import megamek.common.Mek;
 import megamek.common.MekFileParser;
 import megamek.common.Mounted;
-import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.MtfFile;
-import megamek.common.util.BuildingBlock;
 import megamek.logging.MMLogger;
 import megameklab.ui.util.EnhancedTabbedPane;
 import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
@@ -30,14 +27,12 @@ import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
+import megameklab.util.UnitMemento;
 import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -63,55 +58,6 @@ public abstract class MegaMekLabMainUI extends JPanel
     private Deque<UnitMemento> undoStack = new LinkedList<>();
     private Deque<UnitMemento> redoStack = new LinkedList<>();
     private boolean ignoreNextStateChange = false;
-
-    private static class UnitMemento {
-        private final String entityState;
-        private final String unallocatedEquipment;
-
-        public UnitMemento(String entityState, String unallocatedEquipment) {
-            this.entityState = entityState;
-            this.unallocatedEquipment = unallocatedEquipment;
-        }
-
-        public String getEntityState() {
-            return entityState;
-        }
-
-        public String getUnallocatedEquipment() {
-            return unallocatedEquipment;
-        }
-
-        public boolean isEmpty() {
-            return entityState == null || entityState.isEmpty();
-        }
-
-        public boolean equals(UnitMemento other) {
-            if (other == null) {
-                return false;
-            }
-            if (this == other) {
-                return true;
-            }
-            // Compare entityState
-            if (entityState == null) {
-                if (other.entityState != null) {
-                    return false;
-                }
-            } else if (!entityState.equals(other.entityState)) {
-                return false;
-            }
-            // Compare unallocatedEquipment
-            if (unallocatedEquipment == null) {
-                if (other.unallocatedEquipment != null) {
-                    return false;
-                }
-            } else if (!unallocatedEquipment.equals(other.unallocatedEquipment)) {
-                return false;
-            }
-            // If we get here, both fields are equal
-            return true;
-        }
-    }
 
     public MegaMekLabMainUI() {
         setLayout(new BorderLayout());
@@ -167,7 +113,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void dirtyCheck() {
         dirtyCheckPending = false;
-        final UnitMemento newSnapshot = createMemento();
+        final UnitMemento newSnapshot = UnitMemento.createMemento(this, entity);
         final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
 
         if (ignoreNextStateChange) {
@@ -195,7 +141,7 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void resetDirty() {
         SwingUtilities.invokeLater(() -> {
-            savedUnitSnapshot = createMemento();
+            savedUnitSnapshot = UnitMemento.createMemento(this, entity);
             if (dirty) {
                 dirty = false;
                 refreshHeader();
@@ -264,7 +210,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to redo stack
-            final UnitMemento currentState = createMemento();
+            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
             redoStack.push(currentState);
             // Pop and apply state from undo stack
             final UnitMemento previousState = undoStack.pop();
@@ -286,7 +232,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         try {
             // Push current state to undo stack
-            final UnitMemento currentState = createMemento();
+            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
             undoStack.push(currentState);
             // Pop and apply state from redo stack
             final UnitMemento nextState = redoStack.pop();
@@ -307,7 +253,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             return;
         }
         try {
-            final UnitMemento currentState = createMemento();
+            final UnitMemento currentState = UnitMemento.createMemento(this, entity);
             if (savedUnitSnapshot == null || savedUnitSnapshot.equals(currentState)) {
                 return; // No changes to reload
             }
@@ -454,65 +400,6 @@ public abstract class MegaMekLabMainUI extends JPanel
         setFileName(file);
         resetDirty();
         return true;
-    }
-
-    /**
-     * Encodes the unit to a string.
-     * 
-     * @param entity The unit to encode
-     * @return The encoded unit as a string, or null if the unit is null or an error
-     */
-    public String saveUnitToString(Entity entity, boolean includeGeneratorHeader) {
-        if (entity == null) {
-            return null;
-        }
-        try {
-            String unitAsString;
-            if (entity instanceof Mek) {
-                unitAsString = ((Mek) entity).getMtf();
-            } else {
-                BuildingBlock blk = BLKFile.getBlock(entity);
-                StringBuilder sb = new StringBuilder();
-                String[] lines = blk.getAllDataAsString();
-                for (String line : lines) {
-                    sb.append(line).append(System.lineSeparator());
-                }
-                unitAsString = sb.toString();
-            }
-            if (!includeGeneratorHeader) {
-                return unitAsString.substring(unitAsString.indexOf("\n") + 1);
-            }
-            return unitAsString;
-        } catch (Exception ex) {
-            logger.error("Error while taking unit snapshot", ex);
-            return null;
-        }
-    }
-
-    public UnitMemento createMemento() {
-        final String unitState = saveUnitToString(entity, false);
-        String unallocatedEquipment = null;
-        // If the unit has unallocated equipment, save it to a string
-        List<Mounted<?>> unallocatedMounted = getUnallocatedMounted();
-        if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
-            StringWriter stringWriter = new StringWriter();
-            try (PrintWriter pw = new PrintWriter(stringWriter)) {
-                pw.println(unallocatedMounted.size());
-                for (Mounted<?> mounted : unallocatedMounted) {
-                    EquipmentType type = mounted.getType();
-                    if (type.isVariableSize()) {
-                        pw.printf("%s%s%f\n",
-                                type.getInternalName(),
-                                MtfFile.SIZE,
-                                mounted.getSize());
-                    } else {
-                        pw.println(type.getInternalName());
-                    }
-                }
-                unallocatedEquipment = stringWriter.toString();
-            }
-        }
-        return new UnitMemento(unitState, unallocatedEquipment);
     }
 
     public boolean exit() {
