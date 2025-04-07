@@ -28,22 +28,15 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
-import megameklab.ui.util.TipOfTheDay; // Import the new class
+import megamek.common.util.TipOfTheDay;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -68,24 +61,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
+    private final TipOfTheDay tipOfTheDay = new TipOfTheDay("megameklab.resources.TipOfTheDay");
 
-    // Tip of the Day variables
-    private final String tipOfTheDay;
-    private final String tipLabel = "Tip of the Day:";
-    private Font tipFont;
-    private Font tipLabelFont;
-    private static final int TIP_BOTTOM_MARGIN = 60;
-    private static final int TIP_SIDE_PADDING = 20;
-    private static final float TIP_TITLE_FONT_SIZE = 24f;
-    private static final float TIP_FONT_SIZE = 32f;
-    private static final float STROKE_WIDTH = 4.0f;
-    private static final Color TIP_STROKE_COLOR = Color.BLACK;
-    private static final Color TIP_TITLE_FONT_COLOR = Color.WHITE;
-    private static final Color TIP_FONT_COLOR = Color.WHITE;
 
     public StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
-        this.tipOfTheDay = TipOfTheDay.getRandomTip();
         initComponents();
     }
 
@@ -120,13 +100,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         splash = UIUtil.createSplashComponent(startupScreenImages, frame);
         splash.setOpaque(false);
         add(splash, BorderLayout.CENTER);
-
-        Font baseFont = new Font(skinSpec.fontName, Font.PLAIN, skinSpec.fontSize); // getFont();
-        if (baseFont == null) {
-            baseFont = new Font(Font.SANS_SERIF, Font.BOLD, 12); //fallback
-        }
-        tipLabelFont = baseFont.deriveFont(Font.BOLD, TIP_TITLE_FONT_SIZE); // Tip title font
-        tipFont = baseFont.deriveFont(Font.BOLD, TIP_FONT_SIZE); // Tip font
 
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250, 15));
@@ -294,110 +267,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         // Now draw the tip on top
         if (splash != null && splash.isVisible() && splash.getWidth() > 0 && splash.getHeight() > 0) {
-            drawTipOfTheDay((Graphics2D) g);
-        }
-    }
-
-    /**
-     * Draws the Tip of the Day text with word wrap and styling.
-     */
-    private void drawTipOfTheDay(Graphics2D g2d) {
-        if (tipOfTheDay == null || tipOfTheDay.isEmpty() || tipLabelFont == null || tipFont == null) {
-            return;
-        }
-
-        Graphics2D g = (Graphics2D) g2d.create();
-
-        try {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
-            // Get splash bounds relative to this panel
-            Rectangle splashBounds = splash.getBounds();
-            if (splashBounds == null || splashBounds.width <= 0 || splashBounds.height <= 0) {
-                return; // Cannot draw if splash has no size/location yet
-            }
-
-            // Calculate available width for text inside splash bounds with padding
-            float availableWidth = splashBounds.width - (TIP_SIDE_PADDING * 2);
-            if (availableWidth <= 0)
-                return; // Not enough space
-
-            FontRenderContext frc = g.getFontRenderContext();
-
-            // "Tip of the Day:" label
-            AttributedString labelAS = new AttributedString(tipLabel);
-            labelAS.addAttribute(TextAttribute.FONT, tipLabelFont);
-            TextLayout labelLayout = new TextLayout(labelAS.getIterator(), frc);
-            float labelHeight = labelLayout.getAscent() + labelLayout.getDescent() + labelLayout.getLeading();
-            float labelWidth = (float) labelLayout.getBounds().getWidth();
-
-            // Actual tip text with word wrapping
-            AttributedString tipAS = new AttributedString(tipOfTheDay);
-            tipAS.addAttribute(TextAttribute.FONT, tipFont);
-            LineBreakMeasurer measurer = new LineBreakMeasurer(tipAS.getIterator(), frc);
-            List<TextLayout> tipLayouts = new ArrayList<>();
-            float totalTipHeight = 0;
-            measurer.setPosition(0);
-            while (measurer.getPosition() < tipAS.getIterator().getEndIndex()) {
-                TextLayout layout = measurer.nextLayout(availableWidth);
-                if (layout != null) {
-                    tipLayouts.add(layout);
-                    totalTipHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
-                } else {
-                    break; // Should not happen with LineBreakMeasurer unless width is tiny
-                }
-                if (measurer.getPosition() == layout.getCharacterCount() + measurer.getPosition()
-                        && measurer.getPosition() < tipAS.getIterator().getEndIndex()) {
-                    break;
-                }
-            }
-
-            // Positioning
-            float totalBlockHeight = labelHeight + totalTipHeight;
-            float startY = splashBounds.y + splashBounds.height - TIP_BOTTOM_MARGIN - totalBlockHeight;
-            float startX = splashBounds.x + TIP_SIDE_PADDING;
-
-            // Draw the text (outline then fill)
-            BasicStroke outlineStroke = new BasicStroke(STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g.setStroke(outlineStroke);
-
-            // Draw Label
-            float labelDrawX = startX + (availableWidth - labelWidth) / 2; // Center label
-            float labelDrawY = startY + labelLayout.getAscent();
-            Shape labelShape = labelLayout.getOutline(null);
-
-            g.translate(labelDrawX, labelDrawY);
-            g.setColor(TIP_STROKE_COLOR);
-            g.draw(labelShape); // Draw outline
-            g.setColor(TIP_TITLE_FONT_COLOR); // Fill color
-            g.fill(labelShape); // Draw fill
-            g.translate(-labelDrawX, -labelDrawY); // Translate back
-
-            // Draw Tip Lines
-            float currentY = startY + labelHeight; // Start drawing tips below the label
-            for (TextLayout tipLayout : tipLayouts) {
-                float lineAscent = tipLayout.getAscent();
-                float lineHeight = lineAscent + tipLayout.getDescent() + tipLayout.getLeading();
-                float lineDrawY = currentY + lineAscent; // Baseline for this line
-                float lineWidth = (float) tipLayout.getBounds().getWidth();
-
-                float lineDrawX = startX + (availableWidth - lineWidth) / 2f; // Center line
-                lineDrawX = Math.max(startX, lineDrawX); // Ensure it doesn't go out of bounds
-                Shape tipShape = tipLayout.getOutline(AffineTransform.getTranslateInstance(lineDrawX, lineDrawY));
-                g.setColor(TIP_STROKE_COLOR); // Outline color
-                g.draw(tipShape);      // Draw outline
-                g.setColor(TIP_FONT_COLOR); // Fill color
-                g.fill(tipShape);      // Draw fill
-
-
-                currentY += lineHeight;
-            }
-
-        } finally {
-            g.dispose();
+            tipOfTheDay.drawTipOfTheDay((Graphics2D) g, splash.getBounds(), true);
         }
     }
 
