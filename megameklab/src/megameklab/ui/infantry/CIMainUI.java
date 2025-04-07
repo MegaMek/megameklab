@@ -74,21 +74,23 @@ public class CIMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        setEntity(new Infantry());
-        getEntity().setYear(3145);
-        getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ((Infantry) getEntity()).setSquadCount(4);
-        ((Infantry) getEntity()).setSquadSize(7);
-        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
+        Infantry newUnit = new Infantry();
+        newUnit.setYear(3145);
+        newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setSquadCount(4);
+        newUnit.setSquadSize(7);
+        newUnit.setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
         try {
-            getEntity().addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
+            newUnit.addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
             PopupMessages.showLocationFullError(this, EquipmentType.get("InfantryAssaultRifle").getName());
         }
-        getEntity().autoSetInternal();
-        getEntity().setChassis("New");
-        getEntity().setModel("Infantry");
+        newUnit.autoSetInternal();
+        newUnit.setChassis("New");
+        newUnit.setModel("Infantry");
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
@@ -96,6 +98,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         refreshHeader();
     }

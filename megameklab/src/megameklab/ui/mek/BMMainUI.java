@@ -83,7 +83,8 @@ public class BMMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BMFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
+                new BMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();
@@ -93,6 +94,7 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
+        Mek newUnit;
         int cockpit = Mek.COCKPIT_STANDARD;
         int at = EquipmentType.T_ARMOR_STANDARD;
         int st = EquipmentType.T_STRUCTURE_STANDARD;
@@ -108,71 +110,71 @@ public class BMMainUI extends MegaMekLabMainUI {
             at = EquipmentType.T_ARMOR_INDUSTRIAL;
             st = EquipmentType.T_STRUCTURE_INDUSTRIAL;
         }
-
         if (entityType == Entity.ETYPE_TRIPOD_MEK) {
-            setEntity(new TripodMek(Mek.GYRO_STANDARD, Mek.COCKPIT_TRIPOD));
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new TripodMek(Mek.GYRO_STANDARD, Mek.COCKPIT_TRIPOD);
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_QUAD_MEK) {
-            setEntity(new QuadMek(Mek.GYRO_STANDARD, cockpit));
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new QuadMek(Mek.GYRO_STANDARD, cockpit);
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_LAND_AIR_MEK) {
-            setEntity(new LandAirMek(Mek.GYRO_STANDARD, Mek.COCKPIT_STANDARD, LandAirMek.LAM_STANDARD));
-            getEntity().setTechLevel(TechConstants.T_IS_ADVANCED);
-            getEntity().setManualBV(-1);
+            newUnit = new LandAirMek(Mek.GYRO_STANDARD, Mek.COCKPIT_STANDARD, LandAirMek.LAM_STANDARD);
+            newUnit.setTechLevel(TechConstants.T_IS_ADVANCED);
+            newUnit.setManualBV(-1);
         } else if (entityType == Entity.ETYPE_QUADVEE) {
-            setEntity(new QuadVee(Mek.GYRO_STANDARD, QuadVee.MOTIVE_TRACK));
-            getEntity().setTechLevel(TechConstants.T_CLAN_ADVANCED);
-            MekUtil.createSpreadMounts((Mek)getEntity(), EquipmentType.get(EquipmentTypeLookup.MEK_TRACKS));
-            getEntity().setManualBV(-1);
+            newUnit = new QuadVee(Mek.GYRO_STANDARD, QuadVee.MOTIVE_TRACK);
+            newUnit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
+            MekUtil.createSpreadMounts((Mek) newUnit, EquipmentType.get(EquipmentTypeLookup.MEK_TRACKS));
+            newUnit.setManualBV(-1);
         } else { // type == 0
-            setEntity(new BipedMek(Mek.GYRO_STANDARD, cockpit));
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new BipedMek(Mek.GYRO_STANDARD, cockpit);
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         }
-        Mek mek = (Mek) getEntity();
-        getEntity().setWeight(25);
+        newUnit.setWeight(25);
         if (entityType == Entity.ETYPE_LAND_AIR_MEK) {
-            mek.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
-            MekUtil.updateJumpJets(((Mek)getEntity()), 3, Mek.JUMP_STANDARD);
+            newUnit.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
+            MekUtil.updateJumpJets(((Mek) newUnit), 3, Mek.JUMP_STANDARD);
         } else {
-            mek.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+            newUnit.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         }
-        getEntity().setArmorType(at);
-        getEntity().setArmorTechLevel(getEntity().getTechLevel());
-        getEntity().setStructureType(st);
+        newUnit.setArmorType(at);
+        newUnit.setArmorTechLevel(newUnit.getTechLevel());
+        newUnit.setStructureType(st);
 
-        mek.addGyro();
-        mek.addEngineCrits();
+        newUnit.addGyro();
+        newUnit.addEngineCrits();
         if (isPrimitive) {
-            mek.addPrimitiveCockpit();
+            newUnit.addPrimitiveCockpit();
         } else if (Entity.ETYPE_QUADVEE == entityType) {
-            mek.addQuadVeeCockpit();
+            newUnit.addQuadVeeCockpit();
         } else {
-            mek.addCockpit();
+            newUnit.addCockpit();
         }
-        MekUtil.updateHeatSinks(mek, 10, "Single");
+        MekUtil.updateHeatSinks(newUnit, 10, "Single");
 
-        getEntity().autoSetInternal();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
-            mek.initializeArmor(0, loc);
-            mek.initializeRearArmor(0, loc);
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
+            newUnit.initializeRearArmor(0, loc);
         }
 
         if (null == oldEntity) {
-            mek.setChassis("New");
-            mek.setModel("Mek");
-            mek.setYear(3145);
+            newUnit.setChassis("New");
+            newUnit.setModel("Mek");
+            newUnit.setYear(3145);
         } else {
-            mek.setChassis(oldEntity.getChassis());
-            mek.setModel(oldEntity.getModel());
-            mek.setYear(Math.max(oldEntity.getYear(),
-                    mek.getConstructionTechAdvancement().getIntroductionDate()));
-            mek.setSource(oldEntity.getSource());
-            mek.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(mek.getStaticTechLevel(),
+            newUnit.setChassis(oldEntity.getChassis());
+            newUnit.setModel(oldEntity.getModel());
+            newUnit.setYear(Math.max(oldEntity.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldEntity.getSource());
+            newUnit.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            mek.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            mek.setMixedTech(oldEntity.isMixedTech());
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            newUnit.setMixedTech(oldEntity.isMixedTech());
         }
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
@@ -185,6 +187,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         quirksTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
+        fluffTab.refresh();
         refreshHeader();
     }
 

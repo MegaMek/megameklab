@@ -80,6 +80,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
     public void refreshAll() {
         super.refreshAll();
         structureTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         statusbar.refresh();
         equipmentTab.refresh();
@@ -157,28 +158,29 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
-        HandheldWeapon hhw = new HandheldWeapon();
-        setEntity(hhw);
-        hhw.setWeight(6);
-        hhw.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-        hhw.autoSetInternal();
-        hhw.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        hhw.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-        hhw.initializeArmor(0, HandheldWeapon.LOC_GUN);
+        HandheldWeapon newUnit = new HandheldWeapon();
+        newUnit.setWeight(6);
+        newUnit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        newUnit.autoSetInternal();
+        newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        newUnit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        newUnit.initializeArmor(0, HandheldWeapon.LOC_GUN);
 
         if (null == oldUnit) {
-            hhw.setChassis("New");
-            hhw.setModel("Handheld Weapon");
-            hhw.setYear(3145);
+            newUnit.setChassis("New");
+            newUnit.setModel("Handheld Weapon");
+            newUnit.setYear(3145);
         } else {
-            hhw.setChassis(oldUnit.getChassis());
-            hhw.setModel(oldUnit.getModel());
-            hhw.setYear(Math.max(oldUnit.getYear(), hhw.getConstructionTechAdvancement().getIntroductionDate()));
-            hhw.setSource(oldUnit.getSource());
-            hhw.setManualBV(oldUnit.getManualBV());
-            hhw.setTechLevel(oldUnit.getTechLevel());
-            hhw.setMixedTech(oldUnit.isMixedTech());
+            newUnit.setChassis(oldUnit.getChassis());
+            newUnit.setModel(oldUnit.getModel());
+            newUnit.setYear(Math.max(oldUnit.getYear(), newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldUnit.getSource());
+            newUnit.setManualBV(oldUnit.getManualBV());
+            newUnit.setTechLevel(oldUnit.getTechLevel());
+            newUnit.setMixedTech(oldUnit.isMixedTech());
         }
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
