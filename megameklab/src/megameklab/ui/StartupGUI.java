@@ -28,6 +28,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.util.TipOfTheDay;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -61,11 +62,13 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
-    private final TipOfTheDay tipOfTheDay = new TipOfTheDay("megameklab.resources.TipOfTheDay");
+    private TipOfTheDay tipOfTheDay;
 
 
     public StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
+        System.out.println("StartupGUI: " + UIUtil.getDpiScaleFactor(this));
+        tipOfTheDay = new TipOfTheDay("megameklab.resources.TipOfTheDay", UIUtil.getDpiScaleFactor(this));
         initComponents();
     }
 
