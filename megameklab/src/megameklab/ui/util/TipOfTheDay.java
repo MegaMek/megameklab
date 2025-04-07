@@ -31,7 +31,7 @@ public final class TipOfTheDay {
     
     // Static tips array
     private static final List<String> TIPS = Arrays.asList(
-        "You can copy a Record Sheet as image by doing right click and \\\"Copy to clipboard\" on it. You can then paste it in any image editor or even discord.",
+        "You can copy a Record Sheet as image by doing right click and \"Copy to clipboard\" on it. You can then paste it in any image editor or even discord.",
         "Press CTRL+S to quickly save your current unit.",
         "Use CTRL+Z to undo and CTRL+Y to redo recent changes to your unit design.",
         "Customize your workspace by dragging tabs to reorder or separate them from the main window.",
