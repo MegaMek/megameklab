@@ -28,14 +28,22 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
+import megameklab.ui.util.TipOfTheDay; // Import the new class
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.io.File;
+import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -43,11 +51,13 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 
 /**
  * A startup splash screen for MegaMekLab
+ * 
  * @author Taharqa
  */
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     JFrame frame;
     MenuBar mmlMenuBar;
+    JLabel splash;
 
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
@@ -59,8 +69,23 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
 
+    // Tip of the Day variables
+    private final String tipOfTheDay;
+    private final String tipLabel = "Tip of the Day:";
+    private Font tipFont;
+    private Font tipLabelFont;
+    private static final int TIP_BOTTOM_MARGIN = 60;
+    private static final int TIP_SIDE_PADDING = 20;
+    private static final float TIP_TITLE_FONT_SIZE = 24f;
+    private static final float TIP_FONT_SIZE = 32f;
+    private static final float STROKE_WIDTH = 4.0f;
+    private static final Color TIP_STROKE_COLOR = Color.BLACK;
+    private static final Color TIP_TITLE_FONT_COLOR = Color.WHITE;
+    private static final Color TIP_FONT_COLOR = Color.WHITE;
+
     public StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
+        this.tipOfTheDay = TipOfTheDay.getRandomTip();
         initComponents();
     }
 
@@ -76,7 +101,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         CConfig.setParam(CConfig.NAG_IMPORT_SETTINGS, Boolean.toString(false));
         int choice = JOptionPane.showConfirmDialog(this,
                 "Do you wish to import settings from another MML" +
-                        "? You can also do this later from the main menu.", "Import Settings?", YES_NO_OPTION);
+                        "? You can also do this later from the main menu.",
+                "Import Settings?", YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             mmlMenuBar.importSettings();
         }
@@ -91,11 +117,19 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.setJMenuBar(mmlMenuBar);
 
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
-        JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
+        splash = UIUtil.createSplashComponent(startupScreenImages, frame);
+        splash.setOpaque(false);
         add(splash, BorderLayout.CENTER);
 
+        Font baseFont = new Font(skinSpec.fontName, Font.PLAIN, skinSpec.fontSize); // getFont();
+        if (baseFont == null) {
+            baseFont = new Font(Font.SANS_SERIF, Font.BOLD, 12); //fallback
+        }
+        tipLabelFont = baseFont.deriveFont(Font.BOLD, TIP_TITLE_FONT_SIZE); // Tip title font
+        tipFont = baseFont.deriveFont(Font.BOLD, TIP_FONT_SIZE); // Tip font
+
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
-        labVersion.setPreferredSize(new Dimension(250,15));
+        labVersion.setPreferredSize(new Dimension(250, 15));
         if (!skinSpec.fontColors.isEmpty()) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
@@ -153,12 +187,12 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         // the button width "look" reasonable.
         int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
 
-        //no more than 50% of image width
+        // no more than 50% of image width
         if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
             maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
 
-        Dimension minButtonDim = new Dimension((int)(maximumWidth / 1.618), 25);
+        Dimension minButtonDim = new Dimension((int) (maximumWidth / 1.618), 25);
         if (textDim.getWidth() > minButtonDim.getWidth()) {
             minButtonDim = textDim;
         }
@@ -189,24 +223,32 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         // layout
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        // Left Column
+        // Left Column (Splash Image)
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(10, 5, 10, 10);
-        c.ipadx = 10; c.ipady = 5;
-        c.gridx = 0;  c.gridy = 0;
+        c.ipadx = 10;
+        c.ipady = 5;
+        c.gridx = 0;
+        c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
-        c.weightx = 0.0; c.weighty = 0.0;
+        c.weightx = 0.0;
+        c.weighty = 0.0;
         c.gridwidth = 1;
         c.gridheight = 12;
         add(splash, c);
-        // Right Column
+
+        // Right Column (Buttons)
         c.insets = new Insets(2, 2, 2, 10);
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1.0; c.weighty = 1.0;
-        c.ipadx = 0; c.ipady = 0;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.ipadx = 0;
+        c.ipady = 0;
         c.gridheight = 1;
-        c.gridx = 1; c.gridy = 0;
+        c.gridx = 1;
+        c.gridy = 0;
         add(labVersion, c);
+
         c.gridy++;
         add(btnLoadUnit, c);
         c.gridy++;
@@ -230,6 +272,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         c.gridy++;
         add(btnQuit, c);
 
+        setOpaque(false);
+
         frame.setResizable(false);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(this, BorderLayout.CENTER);
@@ -239,6 +283,122 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         this.setTransferHandler(new MMLFileDropTransferHandler(this));
+    }
+
+    /**
+     * Override paint to draw the tip *after* children are painted.
+     */
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g); // Draw background, border, and children first
+
+        // Now draw the tip on top
+        if (splash != null && splash.isVisible() && splash.getWidth() > 0 && splash.getHeight() > 0) {
+            drawTipOfTheDay((Graphics2D) g);
+        }
+    }
+
+    /**
+     * Draws the Tip of the Day text with word wrap and styling.
+     */
+    private void drawTipOfTheDay(Graphics2D g2d) {
+        if (tipOfTheDay == null || tipOfTheDay.isEmpty() || tipLabelFont == null || tipFont == null) {
+            return;
+        }
+
+        Graphics2D g = (Graphics2D) g2d.create();
+
+        try {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+            // Get splash bounds relative to this panel
+            Rectangle splashBounds = splash.getBounds();
+            if (splashBounds == null || splashBounds.width <= 0 || splashBounds.height <= 0) {
+                return; // Cannot draw if splash has no size/location yet
+            }
+
+            // Calculate available width for text inside splash bounds with padding
+            float availableWidth = splashBounds.width - (TIP_SIDE_PADDING * 2);
+            if (availableWidth <= 0)
+                return; // Not enough space
+
+            FontRenderContext frc = g.getFontRenderContext();
+
+            // "Tip of the Day:" label
+            AttributedString labelAS = new AttributedString(tipLabel);
+            labelAS.addAttribute(TextAttribute.FONT, tipLabelFont);
+            TextLayout labelLayout = new TextLayout(labelAS.getIterator(), frc);
+            float labelHeight = labelLayout.getAscent() + labelLayout.getDescent() + labelLayout.getLeading();
+            float labelWidth = (float) labelLayout.getBounds().getWidth();
+
+            // Actual tip text with word wrapping
+            AttributedString tipAS = new AttributedString(tipOfTheDay);
+            tipAS.addAttribute(TextAttribute.FONT, tipFont);
+            LineBreakMeasurer measurer = new LineBreakMeasurer(tipAS.getIterator(), frc);
+            List<TextLayout> tipLayouts = new ArrayList<>();
+            float totalTipHeight = 0;
+            measurer.setPosition(0);
+            while (measurer.getPosition() < tipAS.getIterator().getEndIndex()) {
+                TextLayout layout = measurer.nextLayout(availableWidth);
+                if (layout != null) {
+                    tipLayouts.add(layout);
+                    totalTipHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
+                } else {
+                    break; // Should not happen with LineBreakMeasurer unless width is tiny
+                }
+                if (measurer.getPosition() == layout.getCharacterCount() + measurer.getPosition()
+                        && measurer.getPosition() < tipAS.getIterator().getEndIndex()) {
+                    break;
+                }
+            }
+
+            // Positioning
+            float totalBlockHeight = labelHeight + totalTipHeight;
+            float startY = splashBounds.y + splashBounds.height - TIP_BOTTOM_MARGIN - totalBlockHeight;
+            float startX = splashBounds.x + TIP_SIDE_PADDING;
+
+            // Draw the text (outline then fill)
+            BasicStroke outlineStroke = new BasicStroke(STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g.setStroke(outlineStroke);
+
+            // Draw Label
+            float labelDrawX = startX + (availableWidth - labelWidth) / 2; // Center label
+            float labelDrawY = startY + labelLayout.getAscent();
+            Shape labelShape = labelLayout.getOutline(null);
+
+            g.translate(labelDrawX, labelDrawY);
+            g.setColor(TIP_STROKE_COLOR);
+            g.draw(labelShape); // Draw outline
+            g.setColor(TIP_TITLE_FONT_COLOR); // Fill color
+            g.fill(labelShape); // Draw fill
+            g.translate(-labelDrawX, -labelDrawY); // Translate back
+
+            // Draw Tip Lines
+            float currentY = startY + labelHeight; // Start drawing tips below the label
+            for (TextLayout tipLayout : tipLayouts) {
+                float lineAscent = tipLayout.getAscent();
+                float lineHeight = lineAscent + tipLayout.getDescent() + tipLayout.getLeading();
+                float lineDrawY = currentY + lineAscent; // Baseline for this line
+                float lineWidth = (float) tipLayout.getBounds().getWidth();
+
+                float lineDrawX = startX + (availableWidth - lineWidth) / 2f; // Center line
+                lineDrawX = Math.max(startX, lineDrawX); // Ensure it doesn't go out of bounds
+                Shape tipShape = tipLayout.getOutline(AffineTransform.getTranslateInstance(lineDrawX, lineDrawY));
+                g.setColor(TIP_STROKE_COLOR); // Outline color
+                g.draw(tipShape);      // Draw outline
+                g.setColor(TIP_FONT_COLOR); // Fill color
+                g.fill(tipShape);      // Draw fill
+
+
+                currentY += lineHeight;
+            }
+
+        } finally {
+            g.dispose();
+        }
     }
 
     private static String processFileName(File file, Entity newUnit) {
@@ -262,12 +422,16 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     /**
-     * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen
-     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept and updated
-     * to the chosen unit, otherwise, a new UI will be created for the unit and previousFrame will
+     * Shows the Unit Selector Window and loads the unit if the user selects one.
+     * When the chosen
+     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept
+     * and updated
+     * to the chosen unit, otherwise, a new UI will be created for the unit and
+     * previousFrame will
      * be closed and disposed.
      *
-     * @param previousFrame The active frame before loading a new unit; can be the StartupGUI or any
+     * @param previousFrame The active frame before loading a new unit; can be the
+     *                      StartupGUI or any
      *                      MegaMekLabMainUI.
      */
     public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
@@ -275,7 +439,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer;
         if (previousFrame instanceof MegaMekLabTabbedUI tabbedUI) {
-            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, dialog -> addUnits(dialog, tabbedUI));
+            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog,
+                    dialog -> addUnits(dialog, tabbedUI));
         } else {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, true);
         }
@@ -309,7 +474,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     @Override
     public void refreshMenuBar() {
-        mmlMenuBar.refreshMenuBar();
+        if (mmlMenuBar != null) {
+            mmlMenuBar.refreshMenuBar();
+        }
     }
 
     @Override
