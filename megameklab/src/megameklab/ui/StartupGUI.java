@@ -28,7 +28,6 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
-import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.util.TipOfTheDay;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
