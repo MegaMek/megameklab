@@ -34,7 +34,7 @@ import megameklab.ui.util.TabScrollPane;
 
 public class ASMainUI extends MegaMekLabMainUI {
     private static final MMLogger logger = MMLogger.create(ASMainUI.class);
-    
+
     private ASStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
@@ -98,55 +98,53 @@ public class ASMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-
+        Aero newUnit;
         if (entityType == Entity.ETYPE_AERO) {
-            setEntity(new AeroSpaceFighter());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new AeroSpaceFighter();
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entityType == Entity.ETYPE_CONV_FIGHTER) {
-            setEntity(new ConvFighter());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new ConvFighter();
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
             logger.error("Received incorrect entityType!");
             return;
         }
-
-        Aero aero = (Aero) getEntity();
-
-        aero.setYear(3145);
-        aero.setWeight(25);
-        aero.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
+        newUnit.setYear(3145);
+        newUnit.setWeight(25);
+        newUnit.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         if (isPrimitive) {
-            aero.setCockpitType(Aero.COCKPIT_PRIMITIVE);
-            aero.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
+            newUnit.setCockpitType(Aero.COCKPIT_PRIMITIVE);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_FIGHTER);
         } else {
-            aero.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
         }
-        aero.setArmorTechLevel(getEntity().getTechLevel());
-        aero.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        newUnit.setArmorTechLevel(newUnit.getTechLevel());
+        newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
 
-        aero.setHeatSinks(10);
-        aero.setHeatType(Aero.HEAT_SINGLE);
+        newUnit.setHeatSinks(10);
+        newUnit.setHeatType(Aero.HEAT_SINGLE);
 
-        aero.autoSetInternal();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
-            aero.initializeArmor(0, loc);
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
-
         if (null == oldEntity) {
-            getEntity().setChassis("New");
-            getEntity().setModel("Aero");
+            newUnit.setChassis("New");
+            newUnit.setModel("Aero");
         } else {
-            aero.setChassis(oldEntity.getChassis());
-            aero.setModel(oldEntity.getModel());
-            aero.setYear(Math.max(oldEntity.getYear(),
-                    aero.getConstructionTechAdvancement().getIntroductionDate()));
-            aero.setSource(oldEntity.getSource());
-            aero.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(aero.getStaticTechLevel(),
+            newUnit.setChassis(oldEntity.getChassis());
+            newUnit.setModel(oldEntity.getModel());
+            newUnit.setYear(Math.max(oldEntity.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldEntity.getSource());
+            newUnit.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            aero.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            aero.setMixedTech(oldEntity.isMixedTech());
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            newUnit.setMixedTech(oldEntity.isMixedTech());
         }
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
@@ -157,6 +155,7 @@ public class ASMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();

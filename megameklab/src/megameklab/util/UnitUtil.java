@@ -36,6 +36,8 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.loaders.BLKFile;
+import megamek.common.util.BuildingBlock;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.AmmoWeapon;
@@ -2067,4 +2069,37 @@ public class UnitUtil {
             throw new IllegalArgumentException("Cannot open this entity in an editor");
         }
     }
+
+    /**
+     * Encodes the unit to a string.
+     * 
+     * @param entity The unit to encode
+     * @return The encoded unit as a string, or null if the unit is null or an error
+     */
+    public static String saveUnitToString(Entity entity, boolean includeGeneratorHeader) {
+        if (entity == null) {
+            return null;
+        }
+        try {
+            String unitAsString;
+            if (entity instanceof Mek) {
+                unitAsString = ((Mek) entity).getMtf();
+            } else {
+                BuildingBlock blk = BLKFile.getBlock(entity);
+                StringBuilder sb = new StringBuilder();
+                String[] lines = blk.getAllDataAsString();
+                for (String line : lines) {
+                    sb.append(line).append(System.lineSeparator());
+                }
+                unitAsString = sb.toString();
+            }
+            if (!includeGeneratorHeader) {
+                return unitAsString.substring(unitAsString.indexOf("\n") + 1);
+            }
+            return unitAsString;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
 }

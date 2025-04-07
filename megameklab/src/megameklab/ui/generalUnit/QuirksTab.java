@@ -122,7 +122,18 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         createAndAddGroupPanels(groupsToDisplay);
 
         // Relayout all columns
-        SwingUtilities.invokeLater(this::triggerRelayoutCheck);
+        if (isShowing()) {
+            triggerRelayoutCheck();
+        } else {
+            // If not visible yet, add a one-time listener to do layout when shown
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    triggerRelayoutCheck();
+                    removeComponentListener(this);
+                }
+            });
+        }
 
         validate();
         repaint();

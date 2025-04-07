@@ -71,6 +71,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
         }
         initialize();
+        setupDoubleClickListener();
         setupRecordSheetTab();
         run();
         setVisible(true);
@@ -98,6 +99,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
         this.entityPickCallback = entityPickCallback;
         initialize();
+        setupDoubleClickListener();
         // This overrides the default close behavior to avoid selecting another unit
         // when closing with ESC or the Close button. AbstractUnitSelectorDialog should
         // probably be changed to make the selectedEntity null in these cases
@@ -111,6 +113,21 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         run();
         setVisible(true);
 
+    }
+
+    private void setupDoubleClickListener() {
+        // The table showing units is in the parent class
+        if (tableUnits != null) {
+            tableUnits.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    if (evt.getClickCount() == 2) {
+                        // Double click detected - select and close
+                        select(true);
+                    }
+                }
+            });
+        }
     }
 
     private void setupRecordSheetTab() {
