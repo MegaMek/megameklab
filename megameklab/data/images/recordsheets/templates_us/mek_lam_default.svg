@@ -1221,7 +1221,7 @@
       <text
          fill="#000000"
          x="96.655998"
-         id="mpAirMechWalk"
+         id="mpAirMekWalk"
          y="74"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
@@ -1237,7 +1237,7 @@
       <text
          fill="#000000"
          x="96.655998"
-         id="mpAirMechRun"
+         id="mpAirMekRun"
          y="83"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
@@ -1253,7 +1253,7 @@
       <text
          fill="#000000"
          x="149.312"
-         id="mpAirMechCruise"
+         id="mpAirMekCruise"
          y="74"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
@@ -1269,7 +1269,7 @@
       <text
          fill="#000000"
          x="149.312"
-         id="mpAirMechFlank"
+         id="mpAirMekFlank"
          y="83"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
          text-anchor="middle">0</text>
