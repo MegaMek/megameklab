@@ -66,7 +66,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     public StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
-        tipOfTheDay = new TipOfTheDay("megameklab.resources.TipOfTheDay", UIUtil.getDpiScaleFactor(this));
+        tipOfTheDay = new TipOfTheDay("megameklab.resources.TipOfTheDay", this);
         initComponents();
     }
 
