@@ -11,7 +11,8 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1804: Properly size Configuration dialog window
 + PR #1801: Handheld Weapons now have a fluff tab
 + PR #1800: Enable creating new HHWs in the GUI
-+ P$ #1802: Performance improvements and Dirty indicator for unsaved work
++ PR #1802: Performance improvements and Dirty indicator for unsaved work
++ PR #1816: Undo/Redo
 
 0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
