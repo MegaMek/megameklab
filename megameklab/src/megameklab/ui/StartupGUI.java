@@ -267,7 +267,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         // Now draw the tip on top
         if (splash != null && splash.isVisible() && splash.getWidth() > 0 && splash.getHeight() > 0) {
-            tipOfTheDay.drawTipOfTheDay((Graphics2D) g, splash.getBounds(), true);
+            tipOfTheDay.drawTipOfTheDay((Graphics2D) g, splash.getBounds(), TipOfTheDay.Position.BOTTOM_BORDER);
         }
     }
 
