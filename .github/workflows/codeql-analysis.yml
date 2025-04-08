@@ -43,12 +43,14 @@ jobs:
           config: |
             paths:
               - megameklab
+            paths-ignore:
+              - megamek
+
       - if: ${{ matrix.build-mode == 'manual' }}
         name: Build MegaMekLab
         run: |
           cd megameklab
           ./gradlew --no-daemon clean test
-
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
