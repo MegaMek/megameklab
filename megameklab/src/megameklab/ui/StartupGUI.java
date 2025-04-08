@@ -124,9 +124,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         removeAll();
         initComponents();
         frame.getContentPane().add(this, BorderLayout.CENTER);
-        frame.revalidate();
-        frame.repaint();
-        frame.pack();
         Dimension newSize = frame.getSize();
         Point newTopLeft = new Point(oldCenter.x - newSize.width / 2,
                                      oldCenter.y - newSize.height / 2);
