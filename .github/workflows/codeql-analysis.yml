@@ -17,40 +17,20 @@ jobs:
       matrix:
         include:
           - language: java-kotlin
-            build-mode: manual # analyzes Java only
+            build-mode: none # analyzes Java only
       fail-fast: false
     runs-on: [ ubuntu-latest ]
 
     steps:
       - name: "Check out MegaMekLab"
         uses: actions/checkout@v4
-        with:
-          path: megameklab
-
-      - name: Checkout MegaMek
-        uses: actions/checkout@v4
-        with:
-          repository: MegaMek/megamek
-          ref: master
-          path: megamek
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
-          build-mode: manual
-          config: |
-            paths:
-              - megameklab
-            paths-ignore:
-              - megamek
-
-      - if: ${{ matrix.build-mode == 'manual' }}
-        name: Build MegaMekLab
-        run: |
-          cd megameklab
-          ./gradlew --no-daemon clean test
+          build-mode: ${{ matrix.build-mode }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
