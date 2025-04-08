@@ -32,10 +32,12 @@ jobs:
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
+        run: |
+          gradlew --no-daemon clean test
         with:
           languages: java-kotlin
           queries: security-and-quality
-          build-mode: none
+          build-mode: manual
           config: |
             paths:
               - megameklab

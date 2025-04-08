@@ -2,7 +2,7 @@ import java.time.LocalDateTime
 
 plugins {
     id 'application'
-    id 'com.palantir.git-version' version '3.1.0'
+    id 'com.palantir.git-version' version '3.2.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
     id "io.sentry.jvm.gradle" version "5.3.0"
     id 'jacoco'
@@ -81,15 +81,15 @@ dependencies {
 
     implementation('org.apache.commons:commons-collections4:4.5.0-M3')
 
-    testImplementation 'org.mockito:mockito-core:5.15.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.1'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Compatibility.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.1'
 }
 
 application {
