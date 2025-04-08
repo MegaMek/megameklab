@@ -46,7 +46,7 @@ jobs:
       - if: ${{ matrix.build-mode == 'manual' }}
         name: Build MegaMekLab
         run: |
-          gradlew --no-daemon clean test
+          ./gradlew --no-daemon clean test
 
 
       - name: Perform CodeQL Analysis
