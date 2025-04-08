@@ -46,6 +46,7 @@ jobs:
       - if: ${{ matrix.build-mode == 'manual' }}
         name: Build MegaMekLab
         run: |
+          cd megameklab
           ./gradlew --no-daemon clean test
 
 
