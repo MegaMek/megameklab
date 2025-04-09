@@ -39,11 +39,21 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
-import java.io.IOException;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsConfiguration;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -56,6 +66,7 @@ import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import megamek.common.Entity;
+import megamek.logging.MMLogger;
 import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.PrintSmallUnitSheet;
@@ -66,15 +77,48 @@ import megameklab.util.UnitPrintManager;
  * @author pavelbraginskiy
  * @author drake
  *         Simply fills itself with the record sheet for the given unit.
+ *         Uses background rendering for performance.
  */
 public class RecordSheetPreviewPanel extends JPanel {
+    private static final MMLogger logger = MMLogger.create(RecordSheetPreviewPanel.class);
+    private static final int N_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
+    private static final ExecutorService renderExecutor = Executors.newFixedThreadPool(N_THREADS, new ThreadFactory() {
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(r, "RecordSheetRenderer-" + threadNumber.getAndIncrement());
+            t.setDaemon(true); // Allow JVM exit even if rendering threads are active
+            t.setPriority(Thread.MIN_PRIORITY); // Render at lower priority
+            return t;
+        }
+    });
+
+    static {
+        // Shutdown hook to gracefully terminate the executor
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.debug("Shutting down RecordSheetRenderer executor...");
+            renderExecutor.shutdown();
+            try {
+                if (!renderExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    renderExecutor.shutdownNow();
+                    logger.warn("RecordSheetRenderer executor did not terminate gracefully.");
+                } else {
+                    logger.debug("RecordSheetRenderer executor shut down successfully.");
+                }
+            } catch (InterruptedException e) {
+                renderExecutor.shutdownNow();
+                Thread.currentThread().interrupt();
+                logger.error("Interrupted while shutting down RecordSheetRenderer executor.", e);
+            }
+        }, "RecordSheetRenderer-ShutdownHook"));
+    }
+
     private class RightClickListener extends MouseAdapter {
         private final JPopupMenu popup = new JPopupMenu();
         {
             var copyItem = new JMenuItem("Copy to clipboard");
-            copyItem.addActionListener(l -> {
-                copyRecordSheetToClipboard();
-            });
+            copyItem.addActionListener(l -> copyRecordSheetToClipboard());
             popup.add(copyItem);
 
             var resetItem = new JMenuItem("Reset view");
@@ -98,49 +142,87 @@ public class RecordSheetPreviewPanel extends JPanel {
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
-    private double minZoom = getMinimumZoom();
-    private double zoomFactor = minZoom;
-    private double initialZoomFactor = zoomFactor;
+    private volatile double minZoom = calculateMinimumZoom();
+    private volatile double zoomFactor = minZoom;
+    private volatile double cachedImageZoomFactor = 1.0;
 
     private Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
     private boolean isPanning = false;
-    private boolean isHighQuality = true; // Track rendering quality mode
-    private final AffineTransform workTransform = new AffineTransform();
-    private final AffineTransform tempTransform = new AffineTransform();
+    private volatile boolean isHighQualityPaint = true;
+    private final AffineTransform workTransform = new AffineTransform(); // Reusable transform for rendering
+    private final AffineTransform tempTransform = new AffineTransform(); // Reusable transform for painting
 
+    // Record Sheet Data & Caching
     private SoftReference<ArrayList<GraphicsNode>> gnSheets;
     private List<Entity> entities = new ArrayList<>();
-    private boolean needsViewReset = false;
-    private Timer resetViewTimer;
-    private static final int RESET_VIEW_DELAY = 200; // 200ms delay
+    private SoftReference<BufferedImage> cachedImage; // Cache for the rendered image
+    private volatile Future<?> pendingRenderTask = null; // Track background rendering
+    private volatile int renderVersion = 0; // Used to discard stale render results
 
-    // cached image for optimized rendering
-    private SoftReference<BufferedImage> cachedImage;
+    // Timers for debouncing actions
+    private Timer resetViewTimer;
+    private Timer zoomRenderDebounceTimer;
+    private static final int RESET_VIEW_DELAY = 200; // 200ms delay
+    private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 150; // 150ms delay before triggering render after zoom stops
+
+    private boolean needsViewReset = false;
 
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
         setDoubleBuffered(true);
 
-        // Initialize the debounce timer
-        resetViewTimer = new javax.swing.Timer(RESET_VIEW_DELAY, e -> {
-            // Stop the timer when it fires
+        // Debounce timer for view reset
+        resetViewTimer = new Timer(RESET_VIEW_DELAY, e -> {
             resetViewTimer.stop();
-            // Execute the actual reset view operation
-            resetView();
+            performResetView();
         });
-        resetViewTimer.setRepeats(false); // Ensure it only fires once
+        resetViewTimer.setRepeats(false);
 
-        // Add hierarchy listener to detect actual visibility changes when in tabs
+        // Debounce timer for zoom rendering
+        zoomRenderDebounceTimer = new Timer(ZOOM_RENDER_DEBOUNCE_DELAY, e -> {
+            zoomRenderDebounceTimer.stop();
+            requestRender();
+        });
+        zoomRenderDebounceTimer.setRepeats(false);
+
+        // Hierarchy listener for visibility changes
         addHierarchyListener(e -> {
             if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-                // Only trigger on "becoming visible" events
-                if (needsViewReset && isShowing()) {
-                    resetView();
+                if (isShowing()) {
+                    // Became visible
+                    minZoom = calculateMinimumZoom(); // Recalculate min zoom based on current size
+                    if (needsViewReset) {
+                        // If a reset was pending, do it now
+                        resetView(); // Will schedule the reset
+                    } else if (cachedImage == null || cachedImage.get() == null) {
+                        requestRender();
+                    }
+                } else {
+                    // Became hidden - cancel any pending render
+                    if (pendingRenderTask != null) {
+                        pendingRenderTask.cancel(false);
+                    }
                 }
             }
         });
+
+        // Component listener for resize events
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                double oldMinZoom = minZoom;
+                minZoom = calculateMinimumZoom();
+                if (cachedImage != null && zoomFactor <= oldMinZoom + 0.01) { // If we were at min zoom (or very close)
+                    scheduleResetView(); // Auto-adjust view if we were fitted before resize
+                }
+            }
+        });
+
+        // Initial state
+        setMinimumSize(new java.awt.Dimension(200, 200));
+        performResetView();
     }
 
     /**
@@ -149,145 +231,185 @@ public class RecordSheetPreviewPanel extends JPanel {
      * 
      * @return The minimum zoom factor
      */
-    private double getMinimumZoom() {
+    private double calculateMinimumZoom() {
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
-        double minZoom = getHeight() / (double) pz.pxHeight;
-        return Math.max(MIN_ZOOM, minZoom);
+        double availableHeight = getHeight() > 0 ? getHeight() : 600;
+        // Add some padding
+        double padding = 20.0;
+        double targetHeight = availableHeight - padding;
+        if (targetHeight <= 0)
+            return MIN_ZOOM;
+
+        double calculatedZoom = targetHeight / pz.pxHeight;
+
+        if (entities == null || entities.isEmpty()) {
+            return Math.max(MIN_ZOOM, calculatedZoom);
+        }
+        int numSheets = Math.min(entities.size(), MAX_PRINTABLE_ENTITIES);
+        if (numSheets > 1) {
+            double availableWidth = getWidth() > 0 ? getWidth() : 800;
+            double targetWidth = availableWidth - padding;
+            if (targetWidth <= 0)
+                return Math.max(MIN_ZOOM, calculatedZoom);
+
+            double widthPerSheet = targetWidth / numSheets;
+            double widthZoom = widthPerSheet / pz.pxWidth;
+            calculatedZoom = Math.min(calculatedZoom, widthZoom);
+        }
+
+        return Math.max(MIN_ZOOM, calculatedZoom);
     }
 
     /**
-     * Creates a complete image of the record sheet and copies it to the clipboard
+     * Creates a complete image (synchronously) for clipboard copy.
      */
     private void copyRecordSheetToClipboard() {
-        if (entities == null || entities.isEmpty()) {
+        List<Entity> currentEntities = entities;
+        if (currentEntities == null || currentEntities.isEmpty()) {
             return;
         }
 
-        // Use standard paper size for the clipboard image
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
+        ArrayList<GraphicsNode> sheetNodes = getRecordSheetGraphicsNodes(currentEntities, options, true);
 
-        ArrayList<GraphicsNode> sheetNodes = getRecordSheetGraphicsNodes(entities, options);
-        if (sheetNodes == null || sheetNodes.size() == 0) {
+        if (sheetNodes == null || sheetNodes.isEmpty()) {
+            logger.warn("Failed to generate GraphicsNodes for clipboard copy.");
             return;
         }
 
+        int numSheets = sheetNodes.size();
         int imgWidth = (int) Math.ceil(pz.pxWidth * CLIPBOARD_ZOOM_SCALE);
-        int fullWidth = imgWidth * sheetNodes.size();
         int imgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
+        int totalWidth = imgWidth * numSheets;
 
-        BufferedImage img = new BufferedImage(fullWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = GraphicsUtil.createGraphics(img);
+        BufferedImage img = null;
+        Graphics2D g = null;
+        try {
+            img = new BufferedImage(totalWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
+            g = GraphicsUtil.createGraphics(img);
 
-        // Set high quality rendering
-        RenderingHints rh = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        rh.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        rh.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        rh.put(org.apache.batik.ext.awt.RenderingHintsKeyExt.KEY_TRANSCODING,
-                org.apache.batik.ext.awt.RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING);
-        g.setRenderingHints(rh);
+            // Set highest quality rendering hints
+            setupRenderingHints(g, true, true, img);
 
-        // White background
-        g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, fullWidth, imgHeight);
+            g.setBackground(Color.WHITE);
+            g.clearRect(0, 0, totalWidth, imgHeight);
 
-        if (!sheetNodes.isEmpty()) {
             int k = 0;
             for (GraphicsNode gn : sheetNodes) {
-                if (gn == null) {
+                if (gn == null)
                     continue;
+                AffineTransform originalTransform = gn.getTransform(); // Save original
+                try {
+                    var bounds = gn.getBounds();
+                    if (bounds == null || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+                        logger.warn("Skipping node with invalid bounds for clipboard copy.");
+                        continue; // Skip if bounds are invalid
+                    }
+
+                    // Calculate scale to fit within the allocated space per sheet
+                    double padding = 20 * CLIPBOARD_ZOOM_SCALE; // Scaled padding
+                    double scaleX = (imgWidth - padding) / bounds.getWidth();
+                    double scaleY = (imgHeight - padding) / bounds.getHeight();
+                    double scale = Math.min(scaleX, scaleY);
+
+                    // Center within its allocated space
+                    double sheetStartX = k * imgWidth;
+                    double centerX = sheetStartX + (imgWidth - (bounds.getWidth() * scale)) / 2.0;
+                    double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2.0;
+
+                    // Apply transform: translate to position, then scale
+                    tempTransform.setToIdentity();
+                    tempTransform.translate(centerX, centerY);
+                    tempTransform.scale(scale, scale);
+                    tempTransform.translate(-bounds.getX(), -bounds.getY());
+
+                    gn.setTransform(tempTransform);
+                    gn.paint(g);
+                    k++;
+                } catch (Exception ex) {
+                    logger.error("Error painting node for clipboard copy", ex);
+                } finally {
+                    if (originalTransform != null)
+                        gn.setTransform(originalTransform); // Restore original
                 }
-                // Scale to fit the clipboard image
-                var bounds = gn.getBounds();
-                var yscale = (imgHeight-20) / bounds.getHeight();
-                var xscale = (imgWidth-20) / bounds.getWidth();
-                var scale = Math.min(yscale, xscale);
-
-                // Calculate position for this sheet (side by side horizontally)
-                double xOffset = k * imgWidth;
-
-                // Center the sheet in the image
-                double centerX = (imgWidth - (bounds.getWidth() * scale)) / 2;
-                double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2;
-
-                // Apply transform for this sheet - scale and position
-                tempTransform.setToIdentity();
-                tempTransform.translate(centerX + xOffset, centerY);
-                tempTransform.scale(scale, scale);
-                gn.setTransform(tempTransform);
-
-                // Draw to the clipboard image
-                gn.paint(g);
-                k++;
             }
 
+            // Copy to clipboard
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new TransferableImage(img), null);
+        } catch (OutOfMemoryError ex) {
+            logger.error("OutOfMemoryError creating image for clipboard copy.", ex);
+        } catch (Exception ex) {
+            logger.error("Error copying record sheet to clipboard.", ex);
+        } finally {
+            if (g != null) {
+                g.dispose();
+            }
+        }
+    }
+
+    // Helper class for Transferable Image
+    private static class TransferableImage implements Transferable {
+        private final BufferedImage image;
+
+        public TransferableImage(BufferedImage image) {
+            this.image = image;
         }
 
-        g.dispose();
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[] { DataFlavor.imageFlavor };
+        }
 
-        // Copy to clipboard
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
-            @Override
-            public DataFlavor[] getTransferDataFlavors() {
-                return new DataFlavor[] { DataFlavor.imageFlavor };
-            }
+        @Override
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return DataFlavor.imageFlavor.equals(flavor);
+        }
 
-            @Override
-            public boolean isDataFlavorSupported(DataFlavor flavor) {
-                return DataFlavor.imageFlavor.equals(flavor);
+        @Override
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
+            if (!isDataFlavorSupported(flavor)) {
+                throw new UnsupportedFlavorException(flavor);
             }
-
-            @Override
-            public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-                if (!isDataFlavorSupported(flavor)) {
-                    throw new UnsupportedFlavorException(flavor);
-                }
-                return img;
-            }
-        }, null);
+            return image;
+        }
     }
 
     private void setupMouseHandlers() {
-        // Set up mouse wheel for zooming
+        // Zoom
         addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                // Calculate zoom centered on mouse position
                 Point mousePoint = e.getPoint();
                 double oldZoom = zoomFactor;
 
-                // Calculate new zoom with acceleration for larger changes
-                double zoomDelta = e.getPreciseWheelRotation() * ZOOM_STEP;
-                if (Math.abs(e.getPreciseWheelRotation()) > 1.5) {
-                    zoomDelta *= 1.5; // Accelerate for faster scrolling
-                }
+                // Calculate new zoom with slight acceleration
+                double scroll = e.getPreciseWheelRotation();
+                double zoomDelta = scroll * ZOOM_STEP * (1 + Math.abs(scroll) * 0.1); // Faster scroll = bigger step
+                double newZoom = zoomFactor * (1 - zoomDelta); // Multiplicative zoom
 
-                // Adjust zoom by scroll amount
-                double newZoom = zoomFactor - zoomDelta;
                 newZoom = Math.max(minZoom, Math.min(MAX_ZOOM, newZoom));
 
-                if (oldZoom != newZoom) {
-                    // Adjust pan to keep mouse position fixed
+                if (Math.abs(oldZoom - newZoom) > 0.001) { // Check for actual change
+                    // Adjust pan to keep mouse position fixed relative to the content
                     double zoomRatio = newZoom / oldZoom;
-
                     panOffset.setLocation(
                             mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
                             mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
-                    cachedImage = null; // Invalidate cached image on zoom change
+
                     zoomFactor = newZoom;
+                    // Don't render immediately. Debounce.
+                    zoomRenderDebounceTimer.restart();
+                    // Repaint immediately for visual feedback of the zoom/pan adjustment,
+                    // even if the underlying image isn't re-rendered yet.
+                    isHighQualityPaint = false;
                     repaint();
                 }
             }
         });
 
-        // Mouse listener for double-click and drag init
+        // Pan Start/Stop and Double-Click reset
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -295,19 +417,19 @@ public class RecordSheetPreviewPanel extends JPanel {
                     lastMousePoint = e.getPoint();
                     setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                     isPanning = true;
-                    // Switch to low quality during panning for better performance
-                    isHighQuality = false;
-                    // repaint();
+                    isHighQualityPaint = false;
+                    zoomRenderDebounceTimer.stop(); // Stop any pending render from zoom
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON1 && isPanning) {
                     setCursor(Cursor.getDefaultCursor());
                     isPanning = false;
+                    lastMousePoint = null;
+                    // Schedule a high-quality repaint after panning stops
                     SwingUtilities.invokeLater(() -> {
-                        isHighQuality = true;
                         repaint();
                     });
                 }
@@ -321,7 +443,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             }
         });
 
-        // Mouse motion listener for panning
+        // Panning
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -339,81 +461,106 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     /**
-     * Schedules a view reset with debounce behavior
+     * Schedule a view reset after a delay to avoid excessive resets during zooming
+     * or panning.
      */
     private void scheduleResetView() {
-        if (resetViewTimer.isRunning()) {
-            resetViewTimer.stop();
-        }
-        resetViewTimer.start();
+        resetViewTimer.restart();
     }
 
     /**
-     * Performs the actual view reset operation
+     * Request a reset of the view. This will be scheduled to happen after a short
+     * delay.
      */
-    private void resetView() {
+    public void resetView() {
+        scheduleResetView();
+    }
+
+    /**
+     * Perform the actual reset of the view, adjusting zoom and pan to fit the
+     * content.
+     */
+    private void performResetView() {
         needsViewReset = false;
-        isHighQuality = true;
-        zoomFactor = getMinimumZoom();
-        initialZoomFactor = zoomFactor;
-        renderCachedImage();
-        BufferedImage img = cachedImage != null ? cachedImage.get() : null;
-        if (img != null) {
+        isHighQualityPaint = true;
+        zoomFactor = calculateMinimumZoom();
+        RecordSheetOptions options = new RecordSheetOptions();
+        PaperSize pz = options.getPaperSize();
+        int numSheets = Math.min(entities.size(), MAX_PRINTABLE_ENTITIES);
+        if (numSheets == 0)
+            numSheets = 1;
 
-            // Calculate offsets to center the image
-            double xOffset = (getWidth() - img.getWidth()) / 2;
-            double yOffset = (getHeight() - img.getHeight()) / 2;
+        double contentWidth = pz.pxWidth * zoomFactor * numSheets;
+        double contentHeight = pz.pxHeight * zoomFactor;
 
-            // Set pan offset to center the image
-            // Use max(0, value) to avoid negative offsets if image is bigger than panel
-            panOffset.setLocation(
-                    Math.max(0, xOffset),
-                    Math.max(0, yOffset));
-        } else {
-            // Default to 0,0 if no image
-            panOffset.setLocation(0, 0);
-        }
+        double xOffset = (getWidth() - contentWidth) / 2.0;
+        double yOffset = (getHeight() - contentHeight) / 2.0;
 
+        panOffset.setLocation(Math.max(0, xOffset), Math.max(0, yOffset));
+        requestRender();
         repaint();
     }
 
     /**
-     * Sets multiple entities to be displayed side by side horizontally
+     * Set the entities to be displayed in the record sheet preview.
      * 
-     * @param entities List of entities to display
+     * @param newEntities The list of entities to display.
      */
-    public void setEntities(List<Entity> entities) {
-        boolean isSameEntity = entities != null && entities.size() == 1 
-                && this.entities != null && this.entities.size() == 1
-                && entities.get(0) == this.entities.get(0);
-
-        if (entities == null) {
-            this.entities.clear();
+    public void setEntities(List<Entity> newEntities) {
+        List<Entity> processedEntities;
+        if (newEntities == null) {
+            processedEntities = Collections.emptyList();
         } else {
-            this.entities = entities;
+            // Create a new list to avoid external modifications affecting us
+            processedEntities = new ArrayList<>(newEntities);
         }
-
-        // Reset view and invalidate cached image when entities change
-        gnSheets = null;
-        cachedImage = null;
-
-        if (isShowing()) {
-            // If visible, update the view immediately
-            if (isSameEntity) {
-                repaint();
+        // Basic check if entities actually changed
+        boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.entities, processedEntities);
+        this.entities = processedEntities;
+        if (entitiesChanged) {
+            gnSheets = null;
+            cachedImage = null;
+            if (pendingRenderTask != null) {
+                pendingRenderTask.cancel(false); // Don't interrupt, just cancel if pending
+                pendingRenderTask = null;
+            }
+            if (isShowing()) {
+                scheduleResetView(); // Reset view and trigger render when entities change
             } else {
-                scheduleResetView();
+                needsViewReset = true; // Mark for reset when shown
             }
         } else {
-            // If not visible, mark for update when panel becomes visible
-            needsViewReset = true;
+            // Entities are the same, but maybe their internal state changed.
+            // Force a re-render but don't reset zoom/pan.
+            gnSheets = null;
+            // cachedImage = null; // No need to clear cached image, so we don't have a flicker refresh
+            if (isShowing()) {
+                requestRender();
+                repaint();
+            }
         }
     }
 
+    // Helper to compare entity lists
+    private boolean areEntityListsEffectivelyEqual(List<Entity> list1, List<Entity> list2) {
+        if (list1 == list2)
+            return true;
+        if (list1 == null || list2 == null)
+            return false;
+        if (list1.size() != list2.size())
+            return false;
+        for (int i = 0; i < list1.size(); i++) {
+            if (list1.get(i) != list2.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
-     * Sets a single entity to display (clears any previous multi-entity display)
+     * Set a single entity to be displayed in the record sheet preview.
      * 
-     * @param entity The entity to display
+     * @param entity
      */
     public void setEntity(Entity entity) {
         if (entity == null) {
@@ -423,223 +570,387 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
     }
 
-    private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options) {
-        return getRecordSheetGraphicsNodes(entities, options, false);
-    }
+    // Gets or generates GraphicsNodes
+    private synchronized ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entitiesToRender,
+            RecordSheetOptions options,
+            boolean forceGenerate) {
+        ArrayList<GraphicsNode> nodes = (gnSheets != null && !forceGenerate) ? gnSheets.get() : null;
+        if (nodes != null && !nodes.isEmpty()) {
+            return nodes;
+        }
 
-    private ArrayList<GraphicsNode> getRecordSheetGraphicsNodes(List<Entity> entities, RecordSheetOptions options,
-            boolean force) {
-
-        ArrayList<GraphicsNode> sheetNodes = gnSheets != null ? gnSheets.get() : null;
-        if (sheetNodes != null && !sheetNodes.isEmpty() && !force) {
-            return sheetNodes;
+        // Generation logic
+        if (entitiesToRender == null || entitiesToRender.isEmpty()) {
+            return new ArrayList<>(); // Return empty list, not null
         }
         List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(
-                entities.subList(0, Math.min(entities.size(), MAX_PRINTABLE_ENTITIES)), false, options, true);
-        ArrayList<GraphicsNode> localGnSheets = new ArrayList<GraphicsNode>();
+                entitiesToRender.subList(0, Math.min(entitiesToRender.size(), MAX_PRINTABLE_ENTITIES)),
+                false, options, true);
+
+        ArrayList<GraphicsNode> generatedNodes = new ArrayList<>();
         PageFormat pf = new PageFormat();
+        PaperSize paperDef = options.getPaperSize();
+
         for (PrintRecordSheet sheet : sheets) {
             if (sheet instanceof PrintSmallUnitSheet) {
-                pf.setPaper(options.getPaperSize().createPaper());
+                pf.setPaper(paperDef.createPaper());
             } else {
-                pf.setPaper(options.getPaperSize().createPaper(5, 5, 5, 5));
+                pf.setPaper(paperDef.createPaper(5, 5, 5, 5));
             }
+
+            // Handle multi-page sheets if necessary
             int pagesCount = sheet.getPageCount();
             for (int i = 0; i < pagesCount; i++) {
-                sheet.createDocument(i, pf, false);
-                localGnSheets.add(sheet.build());
+                try {
+                    sheet.createDocument(i, pf, false);
+                    GraphicsNode node = sheet.build();
+                    if (node != null) {
+                        generatedNodes.add(node);
+                    } else {
+                        logger.warn("Failed to build GraphicsNode for a sheet.");
+                    }
+                } catch (Exception e) {
+                    logger.error("Error generating GraphicsNode for sheet", e);
+                }
             }
         }
-        // Store in SoftReference
-        gnSheets = new SoftReference<>(localGnSheets);
-        return localGnSheets;
+        gnSheets = new SoftReference<>(generatedNodes);
+        return new ArrayList<>(generatedNodes); // Return a copy of the list
     }
 
-    private void renderCachedImage() {
-        // Check if we have any entity to render
-        if ((entities == null || entities.isEmpty())) {
+    /**
+     * Central method to request a background render.
+     */
+    private synchronized void requestRender() {
+        final List<Entity> entitiesToRender = new ArrayList<>(this.entities); // Create snapshot copy
+        final double currentZoomFactor = this.zoomFactor;
+        final int currentRenderVersion = ++this.renderVersion;
+
+        // Cancel any previously submitted render task that hasn't completed
+        if (pendingRenderTask != null) {
+            pendingRenderTask.cancel(false); // false = don't interrupt if running, just cancel if pending
+            pendingRenderTask = null;
+        }
+
+        // If no entities, clear cache and repaint immediately
+        if (entitiesToRender == null || entitiesToRender.isEmpty()) {
             cachedImage = null;
+            cachedImageZoomFactor = -1;
+            gnSheets = null;
+            pendingRenderTask = null; // No task needed
+            if (SwingUtilities.isEventDispatchThread()) {
+                repaint();
+            } else {
+                SwingUtilities.invokeLater(this::repaint);
+            }
             return;
         }
 
-        RecordSheetOptions options = new RecordSheetOptions();
-        PaperSize pz = options.getPaperSize();
+        // Create the rendering task
+        Callable<BufferedImage> renderTask = () -> {
+            // --- This code runs on a background thread ---
+            long startTime = System.nanoTime();
+            // Check for interruption before heavy work
+            if (Thread.currentThread().isInterrupted()) {
+                logger.debug("Render task v" + currentRenderVersion + " interrupted before drawing.");
+                return null;
+            }
 
-        ArrayList<GraphicsNode> sheetNodes = getRecordSheetGraphicsNodes(entities, options);
-        if (sheetNodes == null || sheetNodes.size() == 0) {
-            cachedImage = null;
-            return;
-        }
+            RecordSheetOptions options = new RecordSheetOptions();
+            final ArrayList<GraphicsNode> sheetNodesToRender = getRecordSheetGraphicsNodes(entitiesToRender, options,
+                    false);
 
-        int fullWidth = (int) Math.ceil(pz.pxWidth * zoomFactor);
-        int totalWidth = fullWidth * sheetNodes.size();
-        int fullHeight = (int) Math.ceil(pz.pxHeight * zoomFactor);
+            if (sheetNodesToRender == null || sheetNodesToRender.isEmpty()) {
+                logger.warn("No GraphicsNodes available to render for v" + currentRenderVersion
+                        + ", skipping background task.");
+                cachedImage = null;
+                cachedImageZoomFactor = -1;
+                pendingRenderTask = null;
+                return null;
+            }
 
-        BufferedImage img;
-        // Try to use hardware-accelerated image if possible
-        try {
-            // Get hardware acceleration configuration
-            java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
-            java.awt.GraphicsDevice gs = ge.getDefaultScreenDevice();
-            java.awt.GraphicsConfiguration gc = gs.getDefaultConfiguration();
+            PaperSize pz = options.getPaperSize();
+            int numSheets = sheetNodesToRender.size();
+            int sheetWidthPx = (int) Math.ceil(pz.pxWidth * currentZoomFactor);
+            int sheetHeightPx = (int) Math.ceil(pz.pxHeight * currentZoomFactor);
+            int totalWidth = sheetWidthPx * numSheets;
+            int totalHeight = sheetHeightPx;
 
-            // Create a compatible image (should work better with hardware)
-            img = gc.createCompatibleImage(totalWidth, fullHeight, java.awt.Transparency.OPAQUE);
-        } catch (Exception e) {
-            // Fallback to standard image if hardware acceleration fails
-            img = new BufferedImage(totalWidth, fullHeight, BufferedImage.TYPE_INT_RGB);
-        }
-        Graphics2D g = GraphicsUtil.createGraphics(img);
-        g.setComposite(java.awt.AlphaComposite.SrcOver);
+            if (totalWidth <= 0 || totalHeight <= 0) {
+                logger.warn("Invalid render dimensions calculated for v" + currentRenderVersion + ". W=" + totalWidth
+                        + ", H=" + totalHeight);
+                return null;
+            }
 
-        // Set render quality
-        RenderingHints rh = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        rh.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        rh.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        rh.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        rh.put(org.apache.batik.ext.awt.RenderingHintsKeyExt.KEY_TRANSCODING,
-                org.apache.batik.ext.awt.RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
-        rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<BufferedImage>(img));
-        g.setRenderingHints(rh);
-
-        // White background
-        g.setBackground(Color.WHITE);
-        g.clearRect(0, 0, totalWidth, fullHeight);
-
-        if (!sheetNodes.isEmpty()) {
-            int k = 0;
-            for (int i = 0; i < sheetNodes.size(); i++) {
-                GraphicsNode gnSheet = sheetNodes.get(i);
-                if (gnSheet == null) {
-                    continue;
-                }
-                AffineTransform originalTransform = gnSheet.getTransform();
+            BufferedImage img = null;
+            Graphics2D g = null;
+            try {
+                // Create image. Try to use hardware-accelerated image if possible
                 try {
-                    var bounds = gnSheet.getBounds();
-                    var yscale = (fullHeight-20) / bounds.getHeight();
-                    var xscale = (fullWidth-20) / bounds.getWidth();
-                    var scale = Math.min(yscale, xscale);
-                    // Calculate position for this sheet (side by side horizontally)
-                    double xOffset = k * (pz.pxWidth * zoomFactor);
+                    // Get hardware acceleration configuration
+                    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    GraphicsDevice gs = ge.getDefaultScreenDevice();
+                    GraphicsConfiguration gc = gs.getDefaultConfiguration();
 
-                    // Center the sheet in the image
-                    double centerX = (fullWidth - (bounds.getWidth() * scale)) / 2;
-                    double centerY = (fullHeight - (bounds.getHeight() * scale)) / 2;
+                    // Create a compatible image (should work better with hardware)
+                    img = gc.createCompatibleImage(totalWidth, totalHeight, java.awt.Transparency.OPAQUE);
+                } catch (Exception e) {
+                    // Fallback to standard image if hardware acceleration fails
+                    img = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+                }
+                g = GraphicsUtil.createGraphics(img);
+                setupRenderingHints(g, true, false, img);
+                g.setBackground(Color.WHITE);
+                g.clearRect(0, 0, totalWidth, totalHeight);
 
-                    // Apply transform for this sheet - scale and position
-                    workTransform.setToIdentity();
-                    workTransform.translate(centerX + xOffset, centerY);
-                    workTransform.scale(scale, scale);
-                    gnSheet.setTransform(workTransform);
+                int k = 0;
+                for (int i = 0; i < sheetNodesToRender.size(); i++) {
+                    GraphicsNode gnSheet = sheetNodesToRender.get(i);
+                    if (gnSheet == null)
+                        continue;
 
-                    // Paint this sheet
-                    gnSheet.paint(g);
-                    k++;
-                } finally {
-                    if (originalTransform != null) {
-                        gnSheet.setTransform(originalTransform);
+                    // Check for interruption between sheets
+                    if (Thread.currentThread().isInterrupted()) {
+                        logger.debug("Render task v" + currentRenderVersion + " interrupted during drawing.");
+                        return null; // Abort rendering
+                    }
+
+                    AffineTransform originalTransform = null;
+                    try {
+                        originalTransform = gnSheet.getTransform(); // Save original
+                        var bounds = gnSheet.getBounds();
+                        if (bounds == null || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+                            logger.warn("Skipping node with invalid bounds during render v" + currentRenderVersion);
+                            continue; // Skip node if bounds are invalid
+                        }
+
+                        // Calculate scale to fit, similar to paintComponent but for the cache zoom
+                        // level
+                        double padding = 20 * currentZoomFactor; // Scaled padding
+                        double scaleX = (sheetWidthPx > padding) ? (sheetWidthPx - padding) / bounds.getWidth() : 1.0;
+                        double scaleY = (sheetHeightPx > padding) ? (sheetHeightPx - padding) / bounds.getHeight() : 1.0;
+                        double scale = Math.min(scaleX, scaleY);
+
+                        // Center within its allocated space
+                        double sheetStartX = k * sheetWidthPx;
+                        double centerX = sheetStartX + (sheetWidthPx - (bounds.getWidth() * scale)) / 2.0;
+                        double centerY = (sheetHeightPx - (bounds.getHeight() * scale)) / 2.0;
+
+                        // Apply transform: translate to position, scale, and account for node origin
+                        workTransform.setToIdentity();
+                        workTransform.translate(centerX, centerY);
+                        workTransform.scale(scale, scale);
+                        workTransform.translate(-bounds.getX(), -bounds.getY()); // Translate node origin to 0,0 before scaling
+
+                        gnSheet.setTransform(workTransform);
+                        gnSheet.paint(g); // The expensive part
+                        k++;
+                    } catch (Exception ex) {
+                        logger.error("Error painting node during render v" + currentRenderVersion, ex);
+                    } finally {
+                        // IMPORTANT: Restore original transform to node for next render cycle
+                        try {
+                            if (originalTransform != null)
+                                gnSheet.setTransform(originalTransform);
+                        } catch (Exception ex) {
+                            logger.error("Error restoring original transform for node index " + i + " during render v"
+                                    + currentRenderVersion, ex);
+                        }
                     }
                 }
-            }
-        }
-
-        g.dispose();
-        // Store the image in a SoftReference
-        cachedImage = new SoftReference<>(img);
-    }
-
-    private void paintComponent(Graphics2D g, int width, int height) {
-        // Set render hints based on quality mode
-        RenderingHints rh = new RenderingHints(
-                RenderingHints.KEY_RENDERING,
-                isHighQuality ? RenderingHints.VALUE_RENDER_QUALITY : RenderingHints.VALUE_RENDER_SPEED);
-        rh.put(RenderingHints.KEY_INTERPOLATION,
-                isHighQuality ? RenderingHints.VALUE_INTERPOLATION_BICUBIC
-                        : RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        rh.put(RenderingHints.KEY_ANTIALIASING,
-                isHighQuality ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
-        rh.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-                isHighQuality ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-        rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
-                isHighQuality ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-        rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
-        g.setRenderingHints(rh);
-
-        // Background
-        g.setBackground(Color.GRAY);
-        g.fillRect(0, 0, width, height);
-
-        if (entities != null && !entities.isEmpty()) {
-            BufferedImage img = cachedImage != null ? cachedImage.get() : null;
-            // Generate image if needed
-            if (img == null) {
-                renderCachedImage();
-                img = cachedImage != null ? cachedImage.get() : null;
-            }
-
-            if (img != null) {
-                // Store original transform for restoration later
-                AffineTransform originalTransform = g.getTransform();
-
-                // Calculate source region (in image coordinates)
-                double srcX = Math.max(0, -panOffset.getX());
-                double srcY = Math.max(0, -panOffset.getY());
-
-                // Create a transform that handles positioning and scaling in one step
-                tempTransform.setTransform(originalTransform);
-                tempTransform.translate(Math.max(0, panOffset.getX()), Math.max(0, panOffset.getY()));
-                g.setTransform(tempTransform);
-
-                // Draw the image
-                g.drawImage(img, -(int) srcX, -(int) srcY, null);
-
-                // Restore original transform
-                g.setTransform(originalTransform);
-            }
-        }
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        paintComponent((Graphics2D) g, getWidth(), getHeight());
-    }
-
-    // Add cleanup method to release resources when no longer needed
-    public void cleanup() {
-        // Clear cached images to help garbage collection
-        cachedImage = null;
-        gnSheets = null;
-    }
-
-    // Call this from a removeNotify() method:
-    @Override
-    public void removeNotify() {
-        super.removeNotify();
-        cleanup();
-    }
-
-    // Add a component resize listener to adjust the view on resize
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
-                minZoom = getMinimumZoom();
-                // Only auto-fit if we haven't manually zoomed or panned yet
-                // (This prevents resetting user's view when window is resized)
-                if (cachedImage != null && zoomFactor == initialZoomFactor) {
-                    scheduleResetView();
+            } catch (OutOfMemoryError ex) {
+                logger.error("OutOfMemoryError during background rendering v" + currentRenderVersion, ex);
+                if (g != null)
+                    g.dispose();
+                img = null;
+            } catch (Exception ex) {
+                logger.error("Unexpected error during background rendering v" + currentRenderVersion, ex);
+                img = null;
+            } finally {
+                if (g != null) {
+                    g.dispose();
                 }
             }
 
+            long endTime = System.nanoTime();
+            logger.debug("Finished background render v" + currentRenderVersion + " in "
+                    + (endTime - startTime) / 1_000_000 + " ms");
+            return img;
+        };
+
+        // Submit the task to the shared executor
+        pendingRenderTask = renderExecutor.submit(() -> {
+            try {
+                final BufferedImage resultImage = renderTask.call(); // Execute the task
+
+                // --- Post-processing back on the EDT ---
+                SwingUtilities.invokeLater(() -> {
+                    // Check if this result is still valid (correct version and task hasn't been cancelled)
+                    if (this.renderVersion == currentRenderVersion && pendingRenderTask != null
+                            && !pendingRenderTask.isCancelled()) {
+                        if (resultImage != null) {
+                            cachedImage = new SoftReference<>(resultImage);
+                            cachedImageZoomFactor = currentZoomFactor;
+                        } else {
+                            // Render failed or produced null image, clear cache
+                            cachedImage = null;
+                            cachedImageZoomFactor = -1;
+                            logger.warn("Render v" + currentRenderVersion + " resulted in null image.");
+                        }
+                        pendingRenderTask = null; // Mark task as completed
+                        isHighQualityPaint = true; // Ensure next paint is high quality
+                        repaint(); // Update the display with the new image (or lack of)
+                    } else {
+                        // Stale result, discard it
+                        logger.debug("Discarding stale render result v" + currentRenderVersion + " (current is v"
+                                + this.renderVersion + ")");
+                    }
+                });
+            } catch (Exception e) {
+                if (!(e instanceof InterruptedException || e instanceof java.util.concurrent.CancellationException)) {
+                    logger.error("Exception in background render task execution v" + currentRenderVersion, e);
+                } else {
+                    logger.debug("Render task v" + currentRenderVersion + " caught InterruptedException.");
+                }
+                // Ensure task is cleared on error, update UI on EDT
+                SwingUtilities.invokeLater(() -> {
+                    if (this.renderVersion == currentRenderVersion) { // Only clear if it's still the relevant task
+                        pendingRenderTask = null;
+                        cachedImage = null;
+                        cachedImageZoomFactor = -1;
+                        repaint();
+                    }
+                });
+            }
         });
+    }
+
+    /** Helper to set rendering hints for Graphics2D */
+    private void setupRenderingHints(Graphics2D g, boolean highQuality, boolean forPrinting,
+            BufferedImage targetImage) {
+        RenderingHints rh = new RenderingHints(null);
+
+        // Basic Quality vs Speed
+        rh.put(RenderingHints.KEY_RENDERING,
+                highQuality ? RenderingHints.VALUE_RENDER_QUALITY : RenderingHints.VALUE_RENDER_SPEED);
+        rh.put(RenderingHints.KEY_COLOR_RENDERING,
+                highQuality ? RenderingHints.VALUE_COLOR_RENDER_QUALITY : RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION, highQuality ? RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
+                : RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+
+        // Anti-aliasing
+        rh.put(RenderingHints.KEY_ANTIALIASING,
+                highQuality ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
+        rh.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                highQuality ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+
+        // Interpolation (for image scaling if any happens implicitly)
+        rh.put(RenderingHints.KEY_INTERPOLATION, highQuality ? RenderingHints.VALUE_INTERPOLATION_BICUBIC
+                : RenderingHints.VALUE_INTERPOLATION_BILINEAR); // Bilinear might be compromise
+
+        // Stroking and Metrics
+        rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
+                highQuality ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+
+        rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        rh.put(RenderingHintsKeyExt.KEY_TRANSCODING,
+                forPrinting ? RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING
+                        : RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
+        if (targetImage != null) {
+            rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<>(targetImage));
+        }
+        g.setRenderingHints(rh);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        try {
+            BufferedImage img = (cachedImage != null) ? cachedImage.get() : null;
+            boolean scalePlaceholder = false;
+            double placeholderRatio = 1.0;
+            if (img != null && cachedImageZoomFactor > 0 && Math.abs(cachedImageZoomFactor - zoomFactor) > 0.001) {
+                scalePlaceholder = true;
+                placeholderRatio = zoomFactor / cachedImageZoomFactor;
+            }
+            boolean useHighQualityHints = isHighQualityPaint && !scalePlaceholder;
+            setupRenderingHints(g2d, useHighQualityHints, false, null);
+            if (scalePlaceholder) {
+                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            }
+
+            // Background
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+
+            if (img != null) {
+                double drawX = panOffset.getX();
+                double drawY = panOffset.getY();
+
+                int sx1 = (int) Math.max(0, Math.floor(-drawX / placeholderRatio));
+                int sy1 = (int) Math.max(0, Math.floor(-drawY / placeholderRatio));
+                int sx2 = (int) Math.min(img.getWidth(), Math.ceil((-drawX + getWidth()) / placeholderRatio));
+                int sy2 = (int) Math.min(img.getHeight(), Math.ceil((-drawY + getHeight()) / placeholderRatio));
+
+                int dx1 = (int) Math.max(0, Math.floor(drawX + sx1 * placeholderRatio));
+                int dy1 = (int) Math.max(0, Math.floor(drawY + sy1 * placeholderRatio));
+                int dx2 = (int) Math.min(getWidth(), Math.ceil(drawX + sx2 * placeholderRatio));
+                int dy2 = (int) Math.min(getHeight(), Math.ceil(drawY + sy2 * placeholderRatio));
+
+                // Ensure valid rectangles before drawing
+                if ((sx2 > sx1) && (sy2 > sy1) && (dx2 > dx1) && (dy2 > dy1)) {
+                    g2d.drawImage(img,
+                            dx1, dy1, dx2, dy2, // Destination rect (on screen)
+                            sx1, sy1, sx2, sy2, // Source rect (from cached image)
+                            null);
+                }
+
+            } else {
+                // No image available - show status
+                if (pendingRenderTask != null && !pendingRenderTask.isDone()) {
+                    g2d.setColor(Color.LIGHT_GRAY);
+                    g2d.drawString("Rendering...", getWidth() / 2 - 30, getHeight() / 2);
+                } else if (entities == null || entities.isEmpty()) {
+                    g2d.setColor(Color.WHITE);
+                    g2d.drawString("No Unit Selected", getWidth() / 2 - 50, getHeight() / 2);
+                } else if (!resetViewTimer.isRunning() && !needsViewReset) {
+                    // No image, no pending task, but has entities - maybe render failed? It can
+                    // happen during detach/attach of the tab
+                    // A refresh should happen shortly after to fix this
+                    g2d.setColor(Color.LIGHT_GRAY);
+                    g2d.drawString("No Sheet Image", getWidth() / 2 - 50, getHeight() / 2);
+                }
+            }
+        } finally {
+            g2d.dispose();
+        }
+    }
+
+    /**
+     * Cleans up resources and references to help with garbage collection.
+     */
+    public void cleanup() {
+        if (pendingRenderTask != null) {
+            pendingRenderTask.cancel(true); // Attempt to interrupt running task
+            pendingRenderTask = null;
+        }
+        cachedImage = null;
+        cachedImageZoomFactor = -1;
+        gnSheets = null;
+        if (resetViewTimer != null && resetViewTimer.isRunning())
+            resetViewTimer.stop();
+        if (zoomRenderDebounceTimer != null && zoomRenderDebounceTimer.isRunning())
+            zoomRenderDebounceTimer.stop();
+        // Do NOT shutdown the static executor here, as it's shared!!! (We rely on the
+        // Runtime shutdown hook)
+    }
+
+    @Override
+    public void removeNotify() {
+        cleanup();
+        super.removeNotify();
     }
 }
