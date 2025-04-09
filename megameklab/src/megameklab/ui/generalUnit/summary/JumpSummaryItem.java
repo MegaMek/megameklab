@@ -18,10 +18,12 @@
  */
 package megameklab.ui.generalUnit.summary;
 
+import java.util.Iterator;
+
 import megamek.common.Entity;
 import megamek.common.MiscType;
-import megamek.common.Mounted;
 import megamek.common.Tank;
+import megamek.common.equipment.MiscMounted;
 
 public class JumpSummaryItem extends AbstractSummaryItem {
 
@@ -35,7 +37,9 @@ public class JumpSummaryItem extends AbstractSummaryItem {
         double totalWeight = 0.0f;
         int totalCrits = 0;
         availabilityLabel.setText("");
-        for (Mounted<?> m : entity.getMisc()) {
+        Iterator<MiscMounted> iterator = entity.getMisc().iterator();
+        while (iterator.hasNext()) {
+            MiscMounted m = iterator.next();
             MiscType mt = (MiscType) m.getType();
             if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || mt.hasFlag(MiscType.F_UMU)) {
