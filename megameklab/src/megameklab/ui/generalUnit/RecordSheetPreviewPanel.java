@@ -222,8 +222,11 @@ public class RecordSheetPreviewPanel extends JPanel {
     // Timers for debouncing actions
     private Timer resetViewTimer;
     private Timer zoomRenderDebounceTimer;
+    private Timer updateTimer;
+    private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
+    private static final int REGENERATE_AND_UPDATE_DEBOUNCE_DELAY = 200; // ms delay before rendering after entity set
 
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
@@ -238,6 +241,16 @@ public class RecordSheetPreviewPanel extends JPanel {
             performResetView();
         });
         resetViewTimer.setRepeats(false);
+        updateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
+            updateTimer.stop();
+            performUpdateSheetContentInPlace();
+        });
+        updateTimer.setRepeats(false);
+        regenerateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
+            regenerateTimer.stop();
+            performRegenerateAndReset();
+        });
+        updateTimer.setRepeats(false);
 
         zoomRenderDebounceTimer = new Timer(ZOOM_RENDER_DEBOUNCE_DELAY, e -> {
             zoomRenderDebounceTimer.stop();
@@ -385,7 +398,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             this.currentEntities = processedEntities;
             regenerateAndReset();
         } else {
-            updateSheetContentInPlace();
+            updateTimer.restart(); // Restart update timer to debounce
         }
     }
 
@@ -418,10 +431,22 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     /**
+     * Debounce regeneration and reset of the view.
+     */
+    private void regenerateAndReset() {
+        if (!isShowing()) {
+            needsViewReset = true;
+            return;
+        }
+        updateTimer.stop();
+        regenerateTimer.restart();
+    }
+
+    /**
      * Clears current state, regenerates sheets and pages, then schedules a view
      * reset.
      */
-    private void regenerateAndReset() {
+    private void performRegenerateAndReset() {
         cleanupPageTasksAndData(); // Cancel tasks, clear page list
         generatedSheets = null; // Clear cached sheets
 
@@ -551,6 +576,16 @@ public class RecordSheetPreviewPanel extends JPanel {
             pendingInPlaceUpdate = true;
             return;
         }
+        regenerateTimer.stop();
+        updateTimer.restart(); // Restart update timer to debounce
+    }
+
+    private void performUpdateSheetContentInPlace() {
+        if (!isShowing()) {
+            pendingInPlaceUpdate = true;
+            return;
+        }
+        updateTimer.stop(); // Stop the timer to prevent multiple calls
         pendingInPlaceUpdate = false;
         final double currentZoom = this.zoomFactor;
         final Point2D currentPan = new Point2D.Double(panOffset.getX(), panOffset.getY());
@@ -1279,6 +1314,8 @@ public class RecordSheetPreviewPanel extends JPanel {
             resetViewTimer.stop();
         if (zoomRenderDebounceTimer != null && zoomRenderDebounceTimer.isRunning())
             zoomRenderDebounceTimer.stop();
+        if (updateTimer != null && updateTimer.isRunning())
+            updateTimer.stop();
 
         cleanupPageTasksAndData();
         generatedSheets = null;
