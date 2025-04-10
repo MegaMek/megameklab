@@ -754,38 +754,29 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Recalculate minimum zoom to fit all current pages.
      */
     private double calculateMinimumFitZoom() {
+        final int VERTICAL_PADDING = 0; // Padding for vertical fit
+
         if (sheetPages.isEmpty() || getWidth() <= 0 || getHeight() <= 0) {
-            return 1.0;
+            return MIN_ZOOM;
         }
 
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
-
-        double totalBaseWidth = 0;
         double maxBaseHeight = 0;
-
         if (!sheetPages.isEmpty()) {
             SheetPageInfo firstPage = sheetPages.get(0);
-            SheetPageInfo lastPage = sheetPages.get(sheetPages.size() - 1);
-            totalBaseWidth = (lastPage.layoutPosition.x + lastPage.baseWidthPx) - firstPage.layoutPosition.x;
-            maxBaseHeight = firstPage.baseHeightPx; // Assuming constant height
+            maxBaseHeight = firstPage.baseHeightPx;
         } else {
             // Fallback if pages somehow not populated yet
-            totalBaseWidth = pz.pxWidth;
             maxBaseHeight = pz.pxHeight;
         }
 
-        if (totalBaseWidth <= 0 || maxBaseHeight <= 0)
-            return 1.0;
+        if (maxBaseHeight <= 0)
+            return MIN_ZOOM;
 
-        double availableWidth = getWidth() - 20; // Padding
-        double availableHeight = getHeight() - 20; // Padding
-
-        double zoomX = (availableWidth > 0) ? availableWidth / totalBaseWidth : 1.0;
+        double availableHeight = getHeight() - VERTICAL_PADDING;
         double zoomY = (availableHeight > 0) ? availableHeight / maxBaseHeight : 1.0;
-
-        // Fit based on the more restrictive dimension
-        return Math.max(MIN_ZOOM, Math.min(zoomX, zoomY));
+        return Math.max(MIN_ZOOM, zoomY);
     }
 
     /**
