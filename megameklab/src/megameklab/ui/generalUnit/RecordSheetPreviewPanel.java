@@ -1074,7 +1074,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 } else if (currentEntities.isEmpty()) {
                     message = "No Unit Selected";
                 } else {
-                    message = "No Sheets Generated";
+                    message = " "; // No message
                 }
                 int stringWidth = g2d.getFontMetrics().stringWidth(message);
                 g2d.drawString(message, (getWidth() - stringWidth) / 2, getHeight() / 2);
