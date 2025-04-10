@@ -150,8 +150,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Point lastMousePoint;
     private boolean isPanning = false;
     private volatile boolean isHighQualityPaint = true;
-    private final AffineTransform workTransform = new AffineTransform(); // Reusable transform for rendering
-    private final AffineTransform tempTransform = new AffineTransform(); // Reusable transform for painting
+    private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard
 
     // Record Sheet Data & Caching
     private SoftReference<ArrayList<GraphicsNode>> gnSheets;
@@ -320,12 +319,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                     double centerY = (imgHeight - (bounds.getHeight() * scale)) / 2.0;
 
                     // Apply transform: translate to position, then scale
-                    tempTransform.setToIdentity();
-                    tempTransform.translate(centerX, centerY);
-                    tempTransform.scale(scale, scale);
-                    tempTransform.translate(-bounds.getX(), -bounds.getY());
+                    paintTransform.setToIdentity();
+                    paintTransform.translate(centerX, centerY);
+                    paintTransform.scale(scale, scale);
+                    paintTransform.translate(-bounds.getX(), -bounds.getY());
 
-                    gn.setTransform(tempTransform);
+                    gn.setTransform(paintTransform);
                     gn.paint(g);
                     k++;
                 } catch (Exception ex) {
@@ -739,6 +738,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         double centerY = (sheetHeightPx - (bounds.getHeight() * scale)) / 2.0;
 
                         // Apply transform: translate to position, scale, and account for node origin
+                        final AffineTransform workTransform = new AffineTransform();
                         workTransform.setToIdentity();
                         workTransform.translate(centerX, centerY);
                         workTransform.scale(scale, scale);
