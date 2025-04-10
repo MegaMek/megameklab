@@ -226,7 +226,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
-    private static final int REGENERATE_AND_UPDATE_DEBOUNCE_DELAY = 200; // ms delay before rendering after entity set
+    private static final int REGENERATE_AND_UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
 
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
