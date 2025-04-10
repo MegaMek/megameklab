@@ -70,6 +70,7 @@ import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 
+import megamek.common.BTObject;
 import megamek.common.Entity;
 import megamek.logging.MMLogger;
 import megameklab.printing.PaperSize;
@@ -192,13 +193,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (e.getButton() != MouseEvent.BUTTON3) {
                 return;
             }
-            popup.show(e.getComponent(), e.getX(), e.getY());
+            if (e.getComponent().isShowing()) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
         }
     }
 
     // Zoom and pan state
     public static final int MAX_PRINTABLE_ENTITIES = 50;
-    private final double MIN_ZOOM = 1.0;
+    private final double MIN_ZOOM = 0.1;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
@@ -214,7 +217,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
     // Record Sheet Data & Caching
-    private List<Entity> currentEntities = Collections.emptyList();
+    private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
     private final ReentrantLock sheetGenerationLock = new ReentrantLock(); // Lock for sheet generation
@@ -230,7 +233,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
-
+    
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
@@ -383,15 +386,37 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set the entities to be displayed in the record sheet preview.
      * 
-     * @param newEntities The list of entities to display.
+     * @param selectedEntities The list of entities to display.
      */
-    public void setEntities(List<Entity> newEntities) {
-        List<Entity> processedEntities;
-        if (newEntities == null) {
+    public void setEntities(List<BTObject> selectedEntities) {
+        List<BTObject> processedEntities;
+        if (selectedEntities == null) {
             processedEntities = Collections.emptyList();
         } else {
             // Create a new list to avoid external modifications affecting us
-            processedEntities = new ArrayList<>(newEntities);
+            processedEntities = new ArrayList<>(selectedEntities);
+        }
+        boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
+        if (entitiesChanged) {
+            this.currentEntities = processedEntities;
+            regenerateAndReset();
+        } else {
+            updateTimer.restart(); // Restart update timer to debounce
+        }
+    }
+
+    /**
+     * Set the entities to be displayed in the record sheet preview.
+     * 
+     * @param selectedEntities The list of entities to display.
+     */
+    public void setEntities(ArrayList<Entity> selectedEntities) {
+        List<BTObject> processedEntities;
+        if (selectedEntities == null) {
+            processedEntities = Collections.emptyList();
+        } else {
+            // Create a new list to avoid external modifications affecting us
+            processedEntities = new ArrayList<>(selectedEntities);
         }
         boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
         if (entitiesChanged) {
@@ -415,7 +440,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Helper to compare entity lists
-    private boolean areEntityListsEffectivelyEqual(List<Entity> list1, List<Entity> list2) {
+    private boolean areEntityListsEffectivelyEqual(List<BTObject> list1, List<BTObject> list2) {
         if (list1 == list2)
             return true;
         if (list1 == null || list2 == null)
@@ -478,7 +503,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Generates the PrintRecordSheet objects and populates the sheetPages list.
      */
-    private void generateSheetPages(List<Entity> entitiesToGenerate) {
+    private void generateSheetPages(List<BTObject> entitiesToGenerate) {
         if (entitiesToGenerate == null || entitiesToGenerate.isEmpty()) {
             return;
         }

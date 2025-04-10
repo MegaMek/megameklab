@@ -21,6 +21,7 @@ package megameklab.ui.dialog;
 import static java.util.stream.Collectors.toList;
 import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -58,6 +59,7 @@ import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
+import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -87,6 +89,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JFrame         parent;
     private final List<BTObject> units                = new ArrayList<>();
     private final JList<String>  queuedUnitList       = new JList<>();
+    private final RecordSheetPreviewPanel recordSheetPanel = new RecordSheetPreviewPanel();
 
     private final boolean fromMul;
 
@@ -161,7 +164,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
 
-        JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 1));
+        JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 2));
         if (!fromMul) {
             saveButton.setEnabled(false);
         }
@@ -183,12 +186,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitListScrollPane.setAlignmentY(JComponent.TOP_ALIGNMENT);
         queuedUnitListScrollPane.setBorder(new TitledBorder("Selected Units:"));
 
-        Box centerPanel = Box.createHorizontalBox();
-        centerPanel.add(buttonPanel);
-        centerPanel.add(Box.createHorizontalStrut(30));
-        centerPanel.add(moveButtonPanel);
-        centerPanel.add(queuedUnitListScrollPane);
-        centerPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
+        Box unitsPanel = Box.createHorizontalBox();
+        unitsPanel.add(moveButtonPanel);
+        unitsPanel.add(queuedUnitListScrollPane);
 
         JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
@@ -197,12 +197,31 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             checkboxPanel.add(adjustedBvCheck);
             adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         }
+        checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
+        
+        Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
+        buttonPanelWithCheckboxes.add(buttonPanel);
+        buttonPanelWithCheckboxes.add(Box.createHorizontalStrut(30));
+        buttonPanelWithCheckboxes.add(checkboxPanel);
+        buttonPanelWithCheckboxes.setAlignmentY(JComponent.TOP_ALIGNMENT);
 
-        Box panel = Box.createVerticalBox();
-        panel.add(centerPanel);
-        panel.add(checkboxPanel);
-        panel.add(Box.createVerticalStrut(20));
-        return panel;
+        Box leftPanel = Box.createVerticalBox();
+        leftPanel.add(unitsPanel);
+        leftPanel.add(Box.createVerticalStrut(30));
+        leftPanel.add(buttonPanelWithCheckboxes);
+
+        JPanel recordSheetContainer = new JPanel(new BorderLayout());
+        recordSheetContainer.add(recordSheetPanel, BorderLayout.CENTER);
+        recordSheetContainer.setMinimumSize(new Dimension(400, 200));
+        recordSheetContainer.setPreferredSize(new Dimension(600, 200));
+        
+        Box centerPanel = Box.createHorizontalBox();
+        centerPanel.add(leftPanel);
+        centerPanel.add(Box.createHorizontalStrut(15));
+        centerPanel.add(recordSheetContainer);
+        centerPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        return centerPanel;
     }
 
     @Override
@@ -241,6 +260,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.setModel(replacementModel);
 
         saveButton.setEnabled(units.stream().anyMatch(unit -> unit instanceof Entity));
+        recordSheetPanel.setEntities(units);
     }
 
     private void linkForce() {
