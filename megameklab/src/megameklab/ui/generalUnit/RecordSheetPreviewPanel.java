@@ -89,7 +89,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         public Thread newThread(Runnable r) {
             Thread t = new Thread(r, "RecordSheetRenderer-" + threadNumber.getAndIncrement());
             t.setDaemon(true); // Allow JVM exit even if rendering threads are active
-            t.setPriority(Thread.MIN_PRIORITY); // Render at lower priority
+            t.setPriority(Thread.MIN_PRIORITY + 1); // Render at lower priority
             return t;
         }
     });
@@ -533,7 +533,8 @@ public class RecordSheetPreviewPanel extends JPanel {
             // Entities are the same, but maybe their internal state changed.
             // Force a re-render but don't reset zoom/pan.
             gnSheets = null;
-            // cachedImage = null; // No need to clear cached image, so we don't have a flicker refresh
+            // cachedImage = null; // No need to clear cached image, so we don't have a
+            // flicker refresh
             if (isShowing()) {
                 requestRender();
                 repaint();
@@ -728,7 +729,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                         // level
                         double padding = 20 * currentZoomFactor; // Scaled padding
                         double scaleX = (sheetWidthPx > padding) ? (sheetWidthPx - padding) / bounds.getWidth() : 1.0;
-                        double scaleY = (sheetHeightPx > padding) ? (sheetHeightPx - padding) / bounds.getHeight() : 1.0;
+                        double scaleY = (sheetHeightPx > padding) ? (sheetHeightPx - padding) / bounds.getHeight()
+                                : 1.0;
                         double scale = Math.min(scaleX, scaleY);
 
                         // Center within its allocated space
@@ -740,7 +742,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                         workTransform.setToIdentity();
                         workTransform.translate(centerX, centerY);
                         workTransform.scale(scale, scale);
-                        workTransform.translate(-bounds.getX(), -bounds.getY()); // Translate node origin to 0,0 before scaling
+                        workTransform.translate(-bounds.getX(), -bounds.getY()); // Translate node origin to 0,0 before
+                                                                                 // scaling
 
                         gnSheet.setTransform(workTransform);
                         gnSheet.paint(g); // The expensive part
@@ -785,7 +788,8 @@ public class RecordSheetPreviewPanel extends JPanel {
 
                 // --- Post-processing back on the EDT ---
                 SwingUtilities.invokeLater(() -> {
-                    // Check if this result is still valid (correct version and task hasn't been cancelled)
+                    // Check if this result is still valid (correct version and task hasn't been
+                    // cancelled)
                     if (this.renderVersion == currentRenderVersion && pendingRenderTask != null
                             && !pendingRenderTask.isCancelled()) {
                         if (resultImage != null) {
