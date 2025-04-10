@@ -155,6 +155,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
               "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+            oneUnitPerSheetCheck.addActionListener(e -> {
+                recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+            });
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +

@@ -217,6 +217,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
     // Record Sheet Data & Caching
+    private boolean oneUnitPerSheet = false;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -460,6 +461,19 @@ private double constrainPanX(double panX) {
     }
 
     /**
+     * Set to true if only one unit should be printed per sheet.
+     * 
+     * @param oneUnitPerSheet
+     */
+    public void setOneUnitPerSheet(boolean oneUnitPerSheet) {
+        if (this.oneUnitPerSheet == oneUnitPerSheet) {
+            return;
+        }
+        this.oneUnitPerSheet = oneUnitPerSheet;
+        regenerateAndReset();
+    }
+
+    /**
      * Set the entities to be displayed in the record sheet preview.
      * 
      * @param selectedEntities The list of entities to display.
@@ -594,7 +608,7 @@ private double constrainPanX(double panX) {
             long start = System.nanoTime();
             List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(
                     entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
-                    false, options, true);
+                    oneUnitPerSheet, options, true);
             long end = System.nanoTime();
             logger.debug("Finished UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -707,7 +721,7 @@ private double constrainPanX(double panX) {
                 RecordSheetOptions options = new RecordSheetOptions();
                 newGeneratedSheets = UnitPrintManager.createSheets(
                         currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)),
-                        false, options, true);
+                        oneUnitPerSheet, options, true);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
