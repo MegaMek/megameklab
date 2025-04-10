@@ -24,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -49,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -115,6 +118,16 @@ public class RecordSheetPreviewPanel extends JPanel {
                 logger.error("Interrupted while shutting down RecordSheetRenderer executor.", e);
             }
         }, "RecordSheetRenderer-ShutdownHook"));
+    }
+
+    private static class RenderResult {
+        final BufferedImage image;
+        final double zoomFactor; // The zoom used to render this image
+    
+        RenderResult(BufferedImage image, double zoomFactor) {
+            this.image = image;
+            this.zoomFactor = zoomFactor;
+        }
     }
 
     private class SheetPageInfo {
@@ -198,8 +211,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Point lastMousePoint;
     private boolean isPanning = false;
     private volatile boolean isHighQualityPaint = true;
-    private final AffineTransform workTransform = new AffineTransform(); // Reusable transform for rendering
-    private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for painting
+    private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
     // Record Sheet Data & Caching
     private List<Entity> currentEntities = Collections.emptyList();
@@ -801,14 +813,14 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         final int currentRenderVersion = pageInfo.renderVersion; // Capture version for this task
 
-        Callable<BufferedImage> renderTask = () -> {
+        Callable<RenderResult> renderTask = () -> {
             // Background Thread
             if (Thread.currentThread().isInterrupted())
-                return null;
+                return new RenderResult(null, targetZoom); 
 
             GraphicsNode node = pageInfo.graphicsNode;
             if (node == null)
-                return null;
+                return new RenderResult(null, targetZoom); 
 
             int renderWidth = (int) Math.ceil(pageInfo.baseWidthPx * targetZoom);
             int renderHeight = (int) Math.ceil(pageInfo.baseHeightPx * targetZoom);
@@ -816,15 +828,18 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (renderWidth <= 0 || renderHeight <= 0) {
                 logger.warn("Invalid render dimensions for page {}: {}x{}", pageInfo.globalPageIndex, renderWidth,
                         renderHeight);
-                return null; // Cannot render
+                return new RenderResult(null, targetZoom); // Cannot render
             }
 
             BufferedImage img = null;
             Graphics2D g = null;
             AffineTransform originalTransform = null;
+            boolean success = false;
             try {
                 img = createCompatibleImage(renderWidth, renderHeight);
-
+                if (img == null) {
+                    return new RenderResult(null, targetZoom); // Failed to create image, possible OOM
+                }
                 g = GraphicsUtil.createGraphics(img);
                 setupRenderingHints(g, true, false, img);
                 g.setColor(Color.WHITE);
@@ -832,33 +847,28 @@ public class RecordSheetPreviewPanel extends JPanel {
 
                 originalTransform = node.getTransform(); // Save original
 
-                Rectangle2D bounds = node.getBounds();
-                if (bounds == null || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
+                final Rectangle2D bounds = node.getBounds();
+                if (bounds == null || bounds.isEmpty() || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
                     logger.warn("Node bounds invalid for page {}", pageInfo.globalPageIndex);
-                    return img; // Return blank image
+                    return new RenderResult(null, targetZoom); // Return blank image
                 }
-
-                // Calculate transform to scale and center node within the page image
-                double padding = 5 * targetZoom; // Small padding within the page image
-                double scaleX = (renderWidth > 2 * padding) ? (renderWidth - 2 * padding) / bounds.getWidth() : 1.0;
-                double scaleY = (renderHeight > 2 * padding) ? (renderHeight - 2 * padding) / bounds.getHeight() : 1.0;
+                double nodePadding = 5 * targetZoom;
+                double availableNodeWidth = Math.max(1, renderWidth - nodePadding * 2);
+                double availableNodeHeight = Math.max(1, renderHeight - nodePadding * 2);
+                double scaleX = availableNodeWidth / bounds.getWidth();
+                double scaleY = availableNodeHeight / bounds.getHeight();
                 double scale = Math.min(scaleX, scaleY);
+                double nodeX = (renderWidth - (bounds.getWidth() * scale)) / 2.0;
+                double nodeY = (renderHeight - (bounds.getHeight() * scale)) / 2.0;
 
-                double nodeRenderWidth = bounds.getWidth() * scale;
-                double nodeRenderHeight = bounds.getHeight() * scale;
-
-                double centerX = (renderWidth - nodeRenderWidth) / 2.0;
-                double centerY = (renderHeight - nodeRenderHeight) / 2.0;
-
-                workTransform.setToIdentity();
-                workTransform.translate(centerX, centerY);
+                AffineTransform workTransform = new AffineTransform();
+                workTransform.translate(nodeX, nodeY);
                 workTransform.scale(scale, scale);
-                // Translate node's origin (bounds.getX/Y) to 0,0 before scaling/positioning
                 workTransform.translate(-bounds.getX(), -bounds.getY());
-
                 node.setTransform(workTransform);
-                node.paint(g); // Render the node
 
+                node.paint(g); // Render the node
+                success = true; // Mark as successful render
             } catch (OutOfMemoryError oom) {
                 logger.error("OOM rendering page {} at zoom {}", pageInfo.globalPageIndex, targetZoom, oom);
                 img = null; // Discard partial image
@@ -877,60 +887,89 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             }
-            return img; // Return rendered image (or null on error)
+            return new RenderResult(success ? img : null, targetZoom); // Return rendered image (or null on error)
         };
 
-        // Submit task
-        pageInfo.pendingRenderTask = renderExecutor.submit(() -> {
-            BufferedImage resultImage = null;
+        final CompletableFuture<RenderResult> completableRenderFuture = CompletableFuture.supplyAsync(() -> {
             try {
-                resultImage = renderTask.call(); // Execute rendering
-
-                // Post-processing back on the EDT
-                final BufferedImage finalResult = resultImage; // Effectively final for lambda
-                SwingUtilities.invokeLater(() -> {
-                    synchronized (pageInfo) { // Synchronize access to pageInfo state
-                        // Check if this result is still valid (correct version and task matches)
-                        if (pageInfo.renderVersion == currentRenderVersion && pageInfo.pendingRenderTask != null
-                                && !pageInfo.pendingRenderTask.isCancelled()) {
-                            if (finalResult != null) {
-                                pageInfo.cachedImage = new SoftReference<>(finalResult);
-                                pageInfo.imageRenderZoom = targetZoom;
-                            } else {
-                                // Render failed or produced null image
-                                pageInfo.cachedImage = new SoftReference<>(null);
-                                pageInfo.imageRenderZoom = -1.0; // Mark as invalid
-                            }
-                            pageInfo.pendingRenderTask = null; // Mark task as completed
-                            repaint(); // Repaint the panel to show the new image
-                        } else {
-                            logger.trace("Discarding stale render result v{} for page {}", currentRenderVersion,
-                                    pageInfo.globalPageIndex);
-                        }
-                    }
-                });
-
-            } catch (Exception e) {
-                if (!(e instanceof InterruptedException || e instanceof java.util.concurrent.CancellationException)) {
-                    logger.error("Exception in background render task execution v{} page {}", currentRenderVersion,
-                            pageInfo.globalPageIndex, e);
-                } else {
-                    logger.trace("Render task v{} page {} interrupted/cancelled.", currentRenderVersion,
-                            pageInfo.globalPageIndex);
+                // Check interruption status again just before execution
+                if (Thread.currentThread().isInterrupted()) {
+                    return new RenderResult(null, targetZoom);
                 }
-                // Ensure task is cleared on error, update UI on EDT
-                SwingUtilities.invokeLater(() -> {
-                    synchronized (pageInfo) {
-                        if (pageInfo.renderVersion == currentRenderVersion) { // Only clear if it's still the relevant task
-                            pageInfo.pendingRenderTask = null;
-                            pageInfo.cachedImage = new SoftReference<>(null);
-                            pageInfo.imageRenderZoom = -1.0;
-                            repaint();
-                        }
-                    }
-                });
+                return renderTask.call(); // Execute the Callable
+            } catch (InterruptedException e) {
+                // This handles interruption during renderTask.call() execution
+                Thread.currentThread().interrupt(); // Restore interrupt status
+                return new RenderResult(null, targetZoom);
+            } catch (Exception e) {
+                logger.error("Exception during renderTask.call(), wrapping in CompletionException", e);
+                throw new CompletionException(e);
             }
+        }, renderExecutor);
+
+        pageInfo.pendingRenderTask = completableRenderFuture;
+
+        // Process the result asynchronously on the EDT
+        completableRenderFuture.thenAcceptAsync(result -> {
+            // ---- EDT Thread ----
+            synchronized (pageInfo) { // Synchronize access to pageInfo state
+                boolean isCancelled = completableRenderFuture.isDone() && completableRenderFuture.isCancelled(); // Check cancellation status
+
+                // Check if this result is still valid (correct version AND this task hasn't been cancelled/replaced)
+                if (pageInfo.renderVersion == currentRenderVersion && pageInfo.pendingRenderTask == completableRenderFuture && !isCancelled) {
+
+                    if (result != null && result.image != null) {
+                        // SUCCESS: Use image and the zoom FROM THE RESULT
+                        pageInfo.cachedImage = new SoftReference<>(result.image);
+                        pageInfo.imageRenderZoom = result.zoomFactor;
+                    } else {
+                        // Render failed, was interrupted, or produced null image
+                        pageInfo.cachedImage = new SoftReference<>(null);
+                        pageInfo.imageRenderZoom = -1.0; // Mark as invalid
+                    }
+                    // Mark task as completed ONLY IF IT IS STILL THE CURRENT TASK reference
+                    if (pageInfo.pendingRenderTask == completableRenderFuture) {
+                        pageInfo.pendingRenderTask = null;
+                    }
+                    repaint(); // Repaint the panel to show the new image or clear old one
+
+                } else {
+                    // Discarding stale/cancelled result
+                    if (result != null && result.image != null) {
+                        result.image.flush();
+                    }
+                    // Clear if a cancelled task somehow lingered as pending
+                    if (isCancelled && pageInfo.pendingRenderTask == completableRenderFuture) {
+                        pageInfo.pendingRenderTask = null;
+                    }
+                }
+            }
+        }, SwingUtilities::invokeLater) // Ensure execution on EDT
+        .exceptionally(ex -> { // Handle exceptions during task execution or completion stage
+            // ---- EDT Thread ----
+            Throwable cause = (ex instanceof CompletionException) ? ex.getCause() : ex; // Unwrap CompletionException
+
+            if (cause instanceof java.util.concurrent.CancellationException) {
+                logger.trace("Render task v{} page {} explicitly cancelled (exceptionally).", currentRenderVersion, pageInfo.globalPageIndex);
+            } else if (cause instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+                logger.trace("Render task v{} page {} interrupted (exceptionally).", currentRenderVersion, pageInfo.globalPageIndex);
+            } else {
+                logger.error("Exception completing render task v{} page {}", currentRenderVersion, pageInfo.globalPageIndex, cause);
+            }
+
+            // Ensure task state is cleared correctly on error/cancellation
+            synchronized (pageInfo) {
+                if (pageInfo.renderVersion == currentRenderVersion && pageInfo.pendingRenderTask == completableRenderFuture) {
+                    pageInfo.pendingRenderTask = null;
+                    pageInfo.cachedImage = new SoftReference<>(null);
+                    pageInfo.imageRenderZoom = -1.0;
+                    repaint(); // Repaint to show placeholder
+                }
+            }
+            return null;
         });
+
     }
 
     /**
@@ -971,7 +1010,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 highQuality ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         rh.put(RenderingHints.KEY_INTERPOLATION,
                 highQuality ? RenderingHints.VALUE_INTERPOLATION_BICUBIC
-                        : RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+                        : RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE); // Or STROKE_NORMALIZE
         rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
                 highQuality ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
@@ -1002,84 +1041,87 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (sheetPages.isEmpty()) {
                 // Draw placeholder text if no sheets/pages
                 g2d.setColor(getForeground()); // Use panel foreground color
-                setupRenderingHints(g2d, true, false, null); // Use good text hints
+                setupRenderingHints(g2d, true, false, null);
                 String message;
                 if (!currentEntities.isEmpty() && sheetGenerationLock.isLocked()) {
                     message = "Generating Sheets...";
                 } else if (currentEntities.isEmpty()) {
                     message = "No Unit Selected";
                 } else {
-                    message = "No Sheets Generated"; // Or other status
+                    message = "No Sheets Generated";
                 }
                 int stringWidth = g2d.getFontMetrics().stringWidth(message);
                 g2d.drawString(message, (getWidth() - stringWidth) / 2, getHeight() / 2);
                 return; // Nothing more to draw
             }
 
-            // Draw each page
+            final double currentZoom = this.zoomFactor;
+            final Point2D currentPan = this.panOffset;
+            final boolean highQuality = this.isHighQualityPaint;
             // Create a copy for thread safety during iteration
             List<SheetPageInfo> pagesToDraw = new ArrayList<>(sheetPages);
 
+            // Draw each page
             for (SheetPageInfo pageInfo : pagesToDraw) {
                 BufferedImage pageImage = (pageInfo.cachedImage != null) ? pageInfo.cachedImage.get() : null;
+                final double cachedZoom = pageInfo.imageRenderZoom;
 
                 // Calculate position and size on screen
-                double drawX = panOffset.getX() + pageInfo.layoutPosition.x * zoomFactor;
-                double drawY = panOffset.getY() + pageInfo.layoutPosition.y * zoomFactor;
-                double drawWidth = pageInfo.baseWidthPx * zoomFactor;
-                double drawHeight = pageInfo.baseHeightPx * zoomFactor;
+                double targetDrawX = currentPan.getX() + pageInfo.layoutPosition.x * currentZoom;
+                double targetDrawY = currentPan.getY() + pageInfo.layoutPosition.y * currentZoom;
+                double targetDrawWidth = pageInfo.baseWidthPx * currentZoom;
+                double targetDrawHeight = pageInfo.baseHeightPx * currentZoom;
 
+                int targetX = (int) Math.round(targetDrawX);
+                int targetY = (int) Math.round(targetDrawY);
+                int targetW = (int) Math.round(targetDrawWidth);
+                int targetH = (int) Math.round(targetDrawHeight);
+                
                 // Clip drawing to visible area for efficiency
-                Rectangle2D drawBounds = new Rectangle2D.Double(drawX, drawY, drawWidth, drawHeight);
-                if (!g2d.getClipBounds().intersects(drawBounds)) {
-                    continue; // Skip drawing if page is entirely off-screen
+                Rectangle targetBoundsInt = new Rectangle(targetX, targetY, targetW, targetH);
+                if (!g2d.getClipBounds().intersects(targetBoundsInt)) {
+                    continue; // Skip drawing if page is entirely off-screen (creates issues)
                 }
 
-                if (pageImage != null && pageInfo.imageRenderZoom > 0) {
+                if (pageImage != null && cachedZoom > 0 && targetW > 0 && targetH > 0 && pageImage.getWidth() > 0 && pageImage.getHeight() > 0) {
                     // We have a cached image
-                    double scaleRatio = zoomFactor / pageInfo.imageRenderZoom;
-
-                    if (Math.abs(scaleRatio - 1.0) < 0.01) {
-                        // Image is already at the correct zoom (or very close) - draw directly
-                        setupRenderingHints(g2d, isHighQualityPaint, false, null);
-                        g2d.drawImage(pageImage, (int) Math.round(drawX), (int) Math.round(drawY),
-                                (int) Math.round(drawWidth), (int) Math.round(drawHeight), null);
+                    boolean zoomsMatch = Math.abs(currentZoom - cachedZoom) < 0.005; // Allow small tolerance for zoom match
+                    
+                    if (zoomsMatch && highQuality) {
+                        setupRenderingHints(g2d, true, false, null);
+                        int drawPosX = (int) Math.round(currentPan.getX() + pageInfo.layoutPosition.x * cachedZoom);
+                        int drawPosY = (int) Math.round(currentPan.getY() + pageInfo.layoutPosition.y * cachedZoom);
+                        // Draw image at its native size at the calculated position
+                        g2d.drawImage(pageImage, drawPosX, drawPosY, null);
                     } else {
-                        // Image is at a different zoom - scale it (placeholder)
                         setupRenderingHints(g2d, false, false, null);
-                        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
                         g2d.drawImage(pageImage,
-                                (int) Math.round(drawX), (int) Math.round(drawY),
-                                (int) Math.round(drawX + drawWidth), (int) Math.round(drawY + drawHeight), // Dest rect
-                                0, 0, pageImage.getWidth(), pageImage.getHeight(), // Source rect (full image)
-                                null);
+                            targetX, targetY, targetX + targetW, targetY + targetH,     // Destination rect (target area)
+                            0, 0, pageImage.getWidth(), pageImage.getHeight(),  // Source rect (full cached image)
+                            null);
                     }
                 } else {
                     // No cached image available, draw placeholder
                     g2d.setColor(Color.LIGHT_GRAY);
-                    g2d.fillRect((int) Math.round(drawX), (int) Math.round(drawY),
-                            (int) Math.round(drawWidth), (int) Math.round(drawHeight));
+                    g2d.fillRect(targetX, targetY, targetW, targetH);
                     g2d.setColor(Color.DARK_GRAY);
-                    g2d.drawRect((int) Math.round(drawX), (int) Math.round(drawY),
-                            (int) Math.round(drawWidth) - 1, (int) Math.round(drawHeight) - 1);
+                    g2d.drawRect(targetX, targetY, targetW - 1, targetH - 1);
 
                     if (pageInfo.isRenderTaskActive()) {
                         g2d.setColor(Color.BLACK);
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Rendering...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(drawX + (drawWidth - sw) / 2),
-                                (int) Math.round(drawY + drawHeight / 2));
+                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
+                                (int) Math.round(targetY + targetH / 2));
                     } else if (pageInfo.graphicsNode != null) {
                         // Has node but no image and no task
                         g2d.setColor(Color.DARK_GRAY);
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Waiting...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(drawX + (drawWidth - sw) / 2),
-                                (int) Math.round(drawY + drawHeight / 2));
+                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
+                                (int) Math.round(targetY + targetH / 2));
                     }
                 }
             } // End loop over pages
