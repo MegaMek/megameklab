@@ -300,7 +300,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 double scroll = e.getPreciseWheelRotation();
                 double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
 
-                newZoom = Math.max(minFitZoom * 0.8, Math.min(MAX_ZOOM, newZoom));
+                newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
 
                 if (Math.abs(oldZoom - newZoom) > 0.001) {
                     double zoomRatio = newZoom / oldZoom;
@@ -719,8 +719,8 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         if (sheetPages.isEmpty()) {
             // If no pages, just center the view area (or set to 0,0)
-            zoomFactor = 1.0;
-            minFitZoom = 1.0;
+            minFitZoom = calculateMinimumFitZoom();
+            zoomFactor = minFitZoom;
             panOffset.setLocation(0, 0);
             repaint();
             return;
