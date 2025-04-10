@@ -325,6 +325,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                             mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
 
                     zoomFactor = newZoom;
+
+                    // Constrain pan offset to keep content visible
+                    panOffset.setLocation(
+                        constrainPanX(panOffset.getX()),
+                        constrainPanY(panOffset.getY()));
+                        
                     isHighQualityPaint = false;
                     repaint();
                     zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
@@ -375,12 +381,82 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (isPanning && lastMousePoint != null) {
                     int dx = e.getX() - lastMousePoint.x;
                     int dy = e.getY() - lastMousePoint.y;
-                    panOffset.setLocation(panOffset.getX() + dx, panOffset.getY() + dy);
+                    
+                    double newPanX = panOffset.getX() + dx;
+                    double newPanY = panOffset.getY() + dy;
+                    newPanX = constrainPanX(newPanX);
+                    newPanY = constrainPanY(newPanY);
+
+                    panOffset.setLocation(newPanX, newPanY);
                     lastMousePoint = e.getPoint();
                     repaint();
                 }
             }
         });
+    }
+/**
+ * Constrains horizontal panning to keep content visible.
+ * @param panX The proposed X pan coordinate
+ * @return Constrained X coordinate
+ */
+private double constrainPanX(double panX) {
+    if (sheetPages.isEmpty()) {
+        return 0;
+    }
+    
+    // Calculate leftmost and rightmost content bounds
+    double leftmostX = Double.MAX_VALUE;
+    double rightmostX = Double.MIN_VALUE;
+    
+    for (SheetPageInfo page : sheetPages) {
+        double pageLeft = page.layoutPosition.x * zoomFactor;
+        double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+        
+        leftmostX = Math.min(leftmostX, pageLeft);
+        rightmostX = Math.max(rightmostX, pageRight);
+    }
+    
+    // Left constraint: don't allow content to move right of viewport left edge
+    double minPanX = getWidth() - rightmostX;
+    // Right constraint: don't allow content to move left of viewport right edge
+    double maxPanX = -leftmostX;
+    
+    // If content is narrower than viewport, center it
+    if (rightmostX - leftmostX < getWidth()) {
+        double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
+        return centerOffset - leftmostX;
+    }
+    
+    return Math.min(maxPanX, Math.max(minPanX, panX));
+}
+
+    /**
+     * Constrains vertical panning to keep content visible.
+     * @param panY The proposed Y pan coordinate
+     * @return Constrained Y coordinate
+     */
+    private double constrainPanY(double panY) {
+        if (sheetPages.isEmpty()) {
+            return 0;
+        }
+        
+        // Get the tallest page height
+        double maxPageHeight = 0;
+        for (SheetPageInfo page : sheetPages) {
+            maxPageHeight = Math.max(maxPageHeight, page.baseHeightPx * zoomFactor);
+        }
+        
+        // Top constraint: don't allow content to move below viewport top edge
+        double minPanY = getHeight() - maxPageHeight;
+        // Bottom constraint: don't allow content to move above viewport bottom edge
+        double maxPanY = 0;
+        
+        // If content is shorter than viewport, center it
+        if (maxPageHeight < getHeight()) {
+            return (getHeight() - maxPageHeight) / 2.0;
+        }
+        
+        return Math.min(maxPanY, Math.max(minPanY, panY));
     }
 
     /**
