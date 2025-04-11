@@ -491,7 +491,7 @@ private double constrainPanX(double panX) {
             this.currentEntities = processedEntities;
             regenerateAndReset();
         } else {
-            updateTimer.restart(); // Restart update timer to debounce
+            updateSheetContentInPlace();
         }
     }
 
