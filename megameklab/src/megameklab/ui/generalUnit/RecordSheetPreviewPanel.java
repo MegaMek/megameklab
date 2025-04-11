@@ -772,8 +772,9 @@ private double constrainPanX(double panX) {
                     return;
                 }
                 if (finalStructureChanged) {
-                    // If structure changed (or error occurred), fall back to full reset
-                    logger.warn(
+                    // If structure changed (or error occurred), fall back to full reset.
+                    // It can happen when the tab is re-attached
+                    logger.debug(
                             "Sheet structure changed during in-place update or error occurred. Performing full reset.");
                     regenerateAndReset(); // Use the full reset logic
                     return;
