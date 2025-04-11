@@ -194,7 +194,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (e.getButton() != MouseEvent.BUTTON3) {
                 return;
             }
-            if (e.getComponent().isShowing()) {
+            if ((e.getComponent() != null) && (e.getComponent().isShowing())) {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         }
