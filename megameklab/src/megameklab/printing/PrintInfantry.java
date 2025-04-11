@@ -403,21 +403,26 @@ public class PrintInfantry extends PrintEntity {
         EquipmentType armor = infantry.getArmorKit();
         if (armor != null) {
             setTextField(ARMOR_KIT, armor.getName());
-        } else if (infantry.hasDEST()) {
-            setTextField(ARMOR_KIT, "DEST");
         } else {
-            StringJoiner sj = new StringJoiner("/");
-            if (infantry.hasSneakCamo()) {
-                sj.add("Camo");
-            }
-            if (infantry.hasSneakIR()) {
-                sj.add("IR");
-            }
-            if (infantry.hasSneakECM()) {
-                sj.add("ECM");
-            }
-            if (sj.length() > 0) {
-                setTextField(ARMOR_KIT, "Sneak(" + sj + ")");
+
+            if (infantry.hasDEST()) {
+                setTextField(ARMOR_KIT, "Custom DEST");
+            } else {
+                StringJoiner sj = new StringJoiner("/");
+                if (infantry.hasSneakCamo()) {
+                    sj.add("Camo");
+                }
+                if (infantry.hasSneakIR()) {
+                    sj.add("IR");
+                }
+                if (infantry.hasSneakECM()) {
+                    sj.add("ECM");
+                }
+                if (sj.length() > 0) {
+                    setTextField(ARMOR_KIT, "Custom Sneak(" + sj + ")");
+                } else if (infantry.getArmorDamageDivisor() != 1.0) {
+                    setTextField(ARMOR_KIT, "Custom");
+                }
             }
         }
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()

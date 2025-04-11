@@ -25,6 +25,7 @@ import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.client.ui.swing.tileset.EntityImage;
 import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.swing.util.PlayerColour;
+import megamek.common.BTObject;
 import megamek.common.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
