@@ -220,8 +220,13 @@ public class EnhancedTabbedPane extends JTabbedPane {
                 }
             }
         });
-        // Add double-click listener for tab area reattachment
+        // Add double-click listener for tab area reattachment and cursor reset
         addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Reset cursor when mouse exits the tabbed pane
+                setCursor(Cursor.getDefaultCursor());
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && hasDetachedTabs()) {
