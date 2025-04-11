@@ -1,15 +1,29 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -29,8 +43,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -39,16 +51,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.Bay;
 import megamek.common.DockingCollar;
 import megamek.common.Entity;
 import megamek.common.EntityWeightClass;
-import megamek.common.InfantryBay;
+import megamek.common.InfantryCompartment;
 import megamek.common.Jumpship;
 import megamek.common.RoundWeight;
 import megamek.common.Transporter;
-import megamek.common.InfantryCompartment;
-import megamek.common.verifier.BayData;
+import megamek.common.bays.Bay;
+import megamek.common.bays.BayData;
+import megamek.common.bays.InfantryBay;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -68,10 +80,10 @@ import megameklab.util.UnitUtil;
 public class TransportTab extends IView implements ActionListener, ChangeListener {
     private static final MMLogger logger = MMLogger.create(TransportTab.class);
 
-    private final JLabel lblDockingHardpoints = new JLabel();
-    private final JLabel lblMaxHardpoints = new JLabel();
-    private final SpinnerNumberModel spnHardpointsModel = new SpinnerNumberModel(0, 0, null, 1);
-    private final JSpinner spnDockingHardpoints = new JSpinner(spnHardpointsModel);
+    private final JLabel lblDockingHardPoints = new JLabel();
+    private final JLabel lblMaxHardPoints = new JLabel();
+    private final SpinnerNumberModel spnHardPointsModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final JSpinner spnDockingHardPoints = new JSpinner(spnHardPointsModel);
     private final JSpinner spnTroopSpace = new JSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.5));
     private final JSpinner spnPodTroopSpace = new JSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.5));
     private final JLabel lblMaxDoors = new JLabel();
@@ -83,7 +95,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private final JButton btnRemoveBay = new JButton();
     private final JButton btnAddBay = new JButton();
     private final JButton btnAddToCargo = new JButton();
-    private final JPanel panTroopspace = new JPanel();
+    private final JPanel panTroopSpace = new JPanel();
 
     private TableColumn podColumn;
 
@@ -99,41 +111,41 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         setLayout(new BorderLayout());
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            JPanel panHardpoints = new JPanel();
-            lblDockingHardpoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text"));
-            panHardpoints.add(lblDockingHardpoints);
-            panHardpoints.add(spnDockingHardpoints);
+            JPanel panHardPoints = new JPanel();
+            lblDockingHardPoints.setText(resourceMap.getString("TransportTab.spnDockingHardpoints.text"));
+            panHardPoints.add(lblDockingHardPoints);
+            panHardPoints.add(spnDockingHardPoints);
             Dimension size = new Dimension(60, 25);
-            spnDockingHardpoints.setPreferredSize(size);
-            add(panHardpoints, BorderLayout.NORTH);
-            spnDockingHardpoints.addChangeListener(this);
-            spnDockingHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnDockingHardpoints.tooltip"));
-            panHardpoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text")));
-            panHardpoints.add(lblMaxHardpoints);
-            lblMaxHardpoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip"));
+            spnDockingHardPoints.setPreferredSize(size);
+            add(panHardPoints, BorderLayout.NORTH);
+            spnDockingHardPoints.addChangeListener(this);
+            spnDockingHardPoints.setToolTipText(resourceMap.getString("TransportTab.spnDockingHardpoints.tooltip"));
+            panHardPoints.add(new JLabel(resourceMap.getString("TransportTab.spnMaxHardpoints.text")));
+            panHardPoints.add(lblMaxHardPoints);
+            lblMaxHardPoints.setToolTipText(resourceMap.getString("TransportTab.spnMaxHardpoints.tooltip"));
         } else {
             Dimension size = new Dimension(60, 25);
             spnTroopSpace.setPreferredSize(size);
             spnPodTroopSpace.setPreferredSize(size);
-            panTroopspace.setLayout(new GridBagLayout());
+            panTroopSpace.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0;
             gbc.gridy = 0;
-            panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc);
+            panTroopSpace.add(new JLabel(resourceMap.getString("TransportTab.spnTroopspace.text")), gbc);
             spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnTroopspace.tooltip"));
             spnTroopSpace.addChangeListener(this);
             gbc.gridx = 1;
-            panTroopspace.add(spnTroopSpace, gbc);
+            panTroopSpace.add(spnTroopSpace, gbc);
             if (getEntity().isSupportVehicle()) {
                 gbc.gridx = 0;
                 gbc.gridy = 1;
-                panTroopspace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc);
+                panTroopSpace.add(new JLabel(resourceMap.getString("TransportTab.spnPodTroopspace.text")), gbc);
                 spnTroopSpace.setToolTipText(resourceMap.getString("TransportTab.spnPodTroopspace.tooltip"));
                 gbc.gridx = 1;
-                panTroopspace.add(spnPodTroopSpace, gbc);
+                panTroopSpace.add(spnPodTroopSpace, gbc);
                 spnPodTroopSpace.addChangeListener(this);
             }
-            add(panTroopspace, BorderLayout.NORTH);
+            add(panTroopSpace, BorderLayout.NORTH);
         }
 
         JPanel bayPanel = new JPanel(new GridBagLayout());
@@ -220,14 +232,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         col = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_FACING);
         podColumn = tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_POD);
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            JComboBox<Integer> cb = new JComboBox<>(new Integer[] { Jumpship.LOC_NOSE,
-                    Jumpship.LOC_FLS, Jumpship.LOC_FRS,
-                    Jumpship.LOC_ALS, Jumpship.LOC_ARS, Jumpship.LOC_AFT });
+            JComboBox<Integer> cb = new JComboBox<>(new Integer[] { Jumpship.LOC_NOSE, Jumpship.LOC_FLS,
+                                                                    Jumpship.LOC_FRS, Jumpship.LOC_ALS,
+                                                                    Jumpship.LOC_ARS, Jumpship.LOC_AFT });
             col.setCellEditor(new DefaultCellEditor(cb));
             cb.setRenderer(new DefaultListCellRenderer() {
                 @Override
                 public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                        boolean isSelected, boolean cellHasFocus) {
+                      boolean isSelected, boolean cellHasFocus) {
                     int loc = Entity.LOC_NONE;
                     if (null != value) {
                         loc = (Integer) value;
@@ -278,20 +290,20 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             lblMinDoors.setText(String.valueOf(doorsRequired()));
         }
         if (canMountInfantryCompartment()) {
-            panTroopspace.setVisible(true);
+            panTroopSpace.setVisible(true);
             final double total = getEntity().getTroopCarryingSpace();
             final double pod = getEntity().getPodMountedTroopCarryingSpace();
             spnTroopSpace.setValue(total - pod);
             spnPodTroopSpace.setValue(pod);
             spnPodTroopSpace.setEnabled(getEntity().isOmni());
         } else {
-            panTroopspace.setVisible(false);
+            panTroopSpace.setVisible(false);
             spnTroopSpace.setValue(0.0);
             spnPodTroopSpace.setValue(0.0);
         }
         if (getEntity().isOmni()) {
-            if (podColumn != tblInstalled.getColumnModel()
-                    .getColumn(tblInstalled.getColumnModel().getColumnCount() - 1)) {
+            if (podColumn !=
+                      tblInstalled.getColumnModel().getColumn(tblInstalled.getColumnModel().getColumnCount() - 1)) {
                 tblInstalled.getColumnModel().addColumn(podColumn);
             }
         } else {
@@ -304,39 +316,38 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
-            
+
         }
-        tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE)
-                .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));
+        tblInstalled.getColumnModel()
+              .getColumn(InstalledBaysModel.COL_TONNAGE)
+              .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));
         tblInstalled.getTableHeader().resizeAndRepaint();
     }
 
     /**
-     * This refreshes the count of docking hardpoints on the display
+     * This refreshes the count of docking hard points on the display
      */
     public void refreshDockingHardpoints() {
         if (getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             int max = TestAdvancedAerospace.getMaxDockingHardpoints(getJumpship());
-            spnHardpointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
-            spnHardpointsModel.setMaximum(max);
-            lblMaxHardpoints.setText(Integer.toString(max));
+            spnHardPointsModel.setValue(Math.min(getJumpship().getDockingCollars().size(), max));
+            spnHardPointsModel.setMaximum(max);
+            lblMaxHardPoints.setText(Integer.toString(max));
         }
     }
 
     /**
-     * Checks whether the current unit type can mount infantry compartments (i.e.
-     * {@code Troopspace}.
-     * Infantry compartments cannot be used by DropShips or advanced aerospace
-     * vessels (i.e. large craft)
-     * or by large naval or airship support vehicles.
+     * Checks whether the current unit type can mount infantry compartments (i.e. {@code Troopspace}. Infantry
+     * compartments cannot be used by DropShips or advanced aerospace vessels (i.e. large craft) or by large naval or
+     * airship support vehicles.
      *
      * @return Whether the current unit can mount infantry compartments.
      */
     private boolean canMountInfantryCompartment() {
         if (getEntity().isLargeCraft()) {
             return false;
-        } else if ((getEntity().isSupportVehicle()
-                && (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT))) {
+        } else if ((getEntity().isSupportVehicle() &&
+                          (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT))) {
             final SVType type = SVType.getVehicleType(getEntity());
             return (type != SVType.NAVAL) && (type != SVType.AIRSHIP);
         } else {
@@ -347,8 +358,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     private void checkButtons() {
         btnRemoveBay.setEnabled(tblInstalled.getSelectedRow() >= 0);
         btnAddBay.setEnabled(canAddSelectedBay());
-        btnAddToCargo.setEnabled(UnitUtil.getEntityVerifier(getEntity())
-                .calculateWeight() < getEntity().getWeight());
+        btnAddToCargo.setEnabled(UnitUtil.getEntityVerifier(getEntity()).calculateWeight() < getEntity().getWeight());
     }
 
     private int doorsAvailable() {
@@ -411,17 +421,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
     }
 
     /**
-     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice
-     * to let the
-     * user order the bays. Since bay numbers are immutable we have to instantiate a
-     * new bay to
-     * alter it.
+     * Removing bays can cause undesirable gaps in bay numbers, and it would be nice to let the user order the bays.
+     * Since bay numbers are immutable we have to instantiate a new bay to alter it.
      */
     private void rebuildBays() {
         int bayNum = 1;
         List<Transporter> fixedList = new ArrayList<>();
         List<Transporter> podList = new ArrayList<>();
-        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext();) {
+        for (Iterator<Bay> iter = modelInstalled.getBays(); iter.hasNext(); ) {
             final Bay bay = iter.next();
             if (bay.getBayNumber() == bayNum) {
                 if (getEntity().isPodMountedTransport(bay)) {
@@ -430,7 +437,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     fixedList.add(bay);
                 }
             } else {
-                BayData bayType = BayData.getBayType(bay);
+                BayData bayType = bay.getBayData();
                 Bay newBay = bayType.newBay(bay.getUnusedSlots(), bayNum);
                 newBay.setDoors(bay.getDoors());
                 newBay.setFacing(bay.getFacing());
@@ -486,8 +493,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 refresh();
             }
         } else if (evt.getSource() == btnAddToCargo) {
-            double size = getEntity().getWeight() - UnitUtil.getEntityVerifier(getEntity())
-                    .calculateWeight();
+            double size = getEntity().getWeight() - UnitUtil.getEntityVerifier(getEntity()).calculateWeight();
             // Testing has shown some floating-point precision errors creeping in here.
             if (useKilogramStandard()) {
                 size = TestEntity.round(size, Ceil.KILO);
@@ -496,9 +502,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 int selected = tblInstalled.getSelectedRow();
                 Bay bay;
                 int bayNum = 1;
-                if ((selected >= 0)
-                        && (modelInstalled
-                                .getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
+                if ((selected >= 0) &&
+                          (modelInstalled.getBayType(tblInstalled.convertRowIndexToModel(selected)) == BayData.CARGO)) {
                     bay = modelInstalled.getBay(tblInstalled.convertRowIndexToModel(selected));
                     size += bay.getCapacity();
                     bayNum = bay.getBayNumber();
@@ -517,8 +522,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
     @Override
     public void stateChanged(ChangeEvent ev) {
-        if (ev.getSource() == spnDockingHardpoints) {
-            int numCollars = spnHardpointsModel.getNumber().intValue();
+        if (ev.getSource() == spnDockingHardPoints) {
+            int numCollars = spnHardPointsModel.getNumber().intValue();
             List<DockingCollar> collars = getJumpship().getDockingCollars();
             if (numCollars < collars.size()) {
                 for (int i = 0; i < collars.size() - numCollars; i++) {
@@ -542,8 +547,10 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             final double fixed = (Double) spnTroopSpace.getValue();
             final double pod = (Double) spnPodTroopSpace.getValue();
 
-            List<Transporter> toRemove = getEntity().getTransports().stream()
-                    .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
+            List<Transporter> toRemove = getEntity().getTransports()
+                                               .stream()
+                                               .filter(t -> t instanceof InfantryCompartment)
+                                               .toList();
             toRemove.forEach(t -> getEntity().removeTransporter(t));
             double troopTons = TestEntity.round(fixed, Ceil.HALFTON);
             if (troopTons > 0) {
@@ -585,12 +592,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             // Bays so we're going to save ourselves a second list instantiation and
             // iteration by
             // doing it all at once here.
-            List<Bay> bays = getEntity().getTransports().stream()
-                    .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters())
-                    .map(t -> (Bay) t).sorted(Comparator.comparingInt(Bay::getBayNumber))
-                    .collect(Collectors.toList());
+            List<Bay> bays = getEntity().getTransports()
+                                   .stream()
+                                   .filter(t -> (t instanceof Bay) && !((Bay) t).isQuarters())
+                                   .map(t -> (Bay) t)
+                                   .sorted(Comparator.comparingInt(Bay::getBayNumber))
+                                   .toList();
             for (Bay bay : bays) {
-                BayData bayType = BayData.getBayType(bay);
+                BayData bayType = bay.getBayData();
                 if (null != bayType) {
                     bayList.add(bay);
                     bayTypeList.add(bayType);
@@ -599,9 +608,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
             fireTableDataChanged();
 
-            // We need to refresh the docking hardpoint count to ensure that the count is
-            // correct
-            // following the removal of any naval repair facilities
+            // We need to refresh the docking hard point count to ensure that the count is correct following the
+            // removal of any naval repair facilities
             refreshDockingHardpoints();
         }
 
@@ -619,24 +627,18 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public String getColumnName(int column) {
-            switch (column) {
-                case COL_NAME:
-                    return resourceMap.getString("TransportTab.colName.text");
-                case COL_SIZE:
-                    return resourceMap.getString("TransportTab.colSize.text");
-                case COL_DOORS:
-                    return resourceMap.getString("TransportTab.colDoors.text");
-                case COL_TONNAGE:
-                    return useKilogramStandard() ? resourceMap.getString("TransportTab.colKilograms.text")
-                            : resourceMap.getString("TransportTab.colTonnage.text");
-                case COL_PERSONNEL:
-                    return resourceMap.getString("TransportTab.colPersonnel.text");
-                case COL_FACING:
-                    return resourceMap.getString("TransportTab.colFacing.text");
-                case COL_POD:
-                    return resourceMap.getString("TransportTab.colPod.text");
-            }
-            return "";
+            return switch (column) {
+                case COL_NAME -> resourceMap.getString("TransportTab.colName.text");
+                case COL_SIZE -> resourceMap.getString("TransportTab.colSize.text");
+                case COL_DOORS -> resourceMap.getString("TransportTab.colDoors.text");
+                case COL_TONNAGE -> useKilogramStandard() ?
+                                          resourceMap.getString("TransportTab.colKilograms.text") :
+                                          resourceMap.getString("TransportTab.colTonnage.text");
+                case COL_PERSONNEL -> resourceMap.getString("TransportTab.colPersonnel.text");
+                case COL_FACING -> resourceMap.getString("TransportTab.colFacing.text");
+                case COL_POD -> resourceMap.getString("TransportTab.colPod.text");
+                default -> "";
+            };
         }
 
         @Override
@@ -651,20 +653,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public Class<?> getColumnClass(int columnIndex) {
-            switch (columnIndex) {
-                case COL_SIZE:
-                case COL_TONNAGE:
-                    return Double.class;
-                case COL_PERSONNEL:
-                case COL_DOORS:
-                case COL_FACING:
-                    return Integer.class;
-                case COL_POD:
-                    return Boolean.class;
-                case COL_NAME:
-                default:
-                    return String.class;
-            }
+            return switch (columnIndex) {
+                case COL_SIZE, COL_TONNAGE -> Double.class;
+                case COL_PERSONNEL, COL_DOORS, COL_FACING -> Integer.class;
+                case COL_POD -> Boolean.class;
+                default -> String.class;
+            };
         }
 
         @Override
@@ -685,8 +679,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (bayList.get(rowIndex) instanceof InfantryBay) {
                         return "*";
                     }
-                    return bayTypeList.get(rowIndex).getPersonnel()
-                            * (int) bayList.get(rowIndex).getCapacity();
+                    return bayTypeList.get(rowIndex).getPersonnel() * (int) bayList.get(rowIndex).getCapacity();
                 case COL_TONNAGE:
                     final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), Ceil.KILO);
                     if (useKilogramStandard()) {
@@ -723,18 +716,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-            switch (columnIndex) {
-                case COL_SIZE:
-                    return bayTypeList.get(rowIndex).hasVariableSize();
-                case COL_TONNAGE:
-                    return bayTypeList.get(rowIndex).isCargoBay();
-                case COL_FACING:
-                    return bayTypeList.get(rowIndex).requiresFacing();
-                case COL_POD:
-                    return getEntity().isOmni();
-                default:
-                    return (columnIndex == COL_DOORS);
-            }
+            return switch (columnIndex) {
+                case COL_SIZE -> bayTypeList.get(rowIndex).hasVariableSize();
+                case COL_TONNAGE -> bayTypeList.get(rowIndex).isCargoBay();
+                case COL_FACING -> bayTypeList.get(rowIndex).requiresFacing();
+                case COL_POD -> getEntity().isOmni();
+                default -> (columnIndex == COL_DOORS);
+            };
         }
 
         void reorder(int from, int to) {
@@ -761,9 +749,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
         void refreshBays() {
             bayList.clear();
             for (BayData bay : BayData.values()) {
-                if (eSource.getTechManager().isLegal(bay.getTechAdvancement())
-                        && bay.isLegalFor(getEntity())
-                        && (!useKilogramStandard() || bay.isCargoBay())) {
+                if (eSource.getTechManager().isLegal(bay.getTechAdvancement()) &&
+                          bay.isLegalFor(getEntity()) &&
+                          (!useKilogramStandard() || bay.isCargoBay())) {
                     bayList.add(bay);
                 }
             }
@@ -776,16 +764,12 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public String getColumnName(int column) {
-            switch (column) {
-                case COL_NAME:
-                    return "Bay Type";
-                case COL_SIZE:
-                    return "Unit Weight";
-                case COL_PERSONNEL:
-                    return "Personnel";
-                default:
-                    return "";
-            }
+            return switch (column) {
+                case COL_NAME -> "Bay Type";
+                case COL_SIZE -> "Unit Weight";
+                case COL_PERSONNEL -> "Personnel";
+                default -> "";
+            };
         }
 
         @Override
@@ -862,16 +846,13 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 addBay(newBay, pod);
                 modelInstalled.bayList.set(row, newBay);
 
-                // We need to refresh the docking hardpoint count to ensure that the count is
-                // correct
-                // following the size change of any naval repair facilities
+                // We need to refresh the docking hard point count to ensure that the count is correct following the
+                // size change of any naval repair facilities
                 refreshDockingHardpoints();
 
             } else if (column == InstalledBaysModel.COL_DOORS) {
                 int value = (Integer) getCellEditorValue();
-                modelInstalled.bayList.get(row).setDoors(
-                    Math.max(value, bay.getMinDoors())
-                );
+                modelInstalled.bayList.get(row).setDoors(Math.max(value, bay.getMinDoors()));
             }
             modelInstalled.fireTableRowsUpdated(row, row);
             checkButtons();
@@ -884,20 +865,19 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-                int column) {
+              int column) {
             boolean isCargo = modelInstalled.bayTypeList.get(row).isCargoBay();
-            boolean isInfantry = modelInstalled.bayTypeList.get(row).isInfantryBay();
             if (column == InstalledBaysModel.COL_DOORS) {
                 int doors = (Integer) modelInstalled.getValueAt(row, column);
                 SpinnerNumberModel model = new SpinnerNumberModel(doors,
-                        modelInstalled.bayList.get(row).getMinDoors(),
-                        getEntity().isAero() ? doorsAvailable() + doors : Integer.MAX_VALUE, 1);
+                      modelInstalled.bayList.get(row).getMinDoors(),
+                      getEntity().isAero() ? doorsAvailable() + doors : Integer.MAX_VALUE,
+                      1);
                 spinner.removeChangeListener(this);
                 spinner.setModel(model);
                 spinner.addChangeListener(this);
                 return spinner;
-            } else if ((column == InstalledBaysModel.COL_SIZE)
-                    || (column == InstalledBaysModel.COL_TONNAGE)) {
+            } else if ((column == InstalledBaysModel.COL_SIZE) || (column == InstalledBaysModel.COL_TONNAGE)) {
                 double step = (isCargo && !useKilogramStandard()) ? 0.5 : 1.0;
                 double current;
                 if (column == InstalledBaysModel.COL_SIZE) {
@@ -937,8 +917,8 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             }
 
             try {
-                int rowFrom = Integer
-                        .parseInt((String) support.getTransferable().getTransferData(DataFlavor.stringFlavor));
+                int rowFrom = Integer.parseInt((String) support.getTransferable()
+                                                              .getTransferData(DataFlavor.stringFlavor));
                 if (rowFrom != -1 && rowFrom != index) {
                     modelInstalled.reorder(rowFrom, index);
                     if (index > rowFrom) {
@@ -955,9 +935,9 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
 
         @Override
         public boolean canImport(TransferSupport support) {
-            return support.isDataFlavorSupported(DataFlavor.stringFlavor)
-                    && (support.getComponent() == tblInstalled)
-                    && support.isDrop();
+            return support.isDataFlavorSupported(DataFlavor.stringFlavor) &&
+                         (support.getComponent() == tblInstalled) &&
+                         support.isDrop();
         }
 
         @Override

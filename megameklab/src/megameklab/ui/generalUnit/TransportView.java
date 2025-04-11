@@ -1,40 +1,57 @@
 /*
- * Copyright (c) 2018-2025 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.Bay;
-import megamek.common.Entity;
-import megamek.common.verifier.BayData;
-import megameklab.ui.listeners.BuildListener;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.Entity;
+import megamek.common.bays.Bay;
+import megamek.common.bays.BayData;
+import megameklab.ui.listeners.BuildListener;
 
 /**
- * Panel for combat vehicle aero cargo and troop space.
- * This includes aero
+ * Panel for combat vehicle aero cargo and troop space. This includes aero
  *
  * @author Neoancient
  */
 public abstract class TransportView extends BuildView implements ChangeListener {
 
     public abstract void addListener(BuildListener listener);
+
     public abstract void removeListener(BuildListener listener);
 
     protected final SpinnerNumberModel spnFixedTroopModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
@@ -88,7 +105,7 @@ public abstract class TransportView extends BuildView implements ChangeListener 
                 continue;
             }
             String tooltip = String.format(resourceMap.getString("CVTransportView.bay.tooltipFormat"),
-                1 / bayType.getWeight());
+                  1 / bayType.getWeight());
             gbc.gridx = 0;
             gbc.gridy++;
             final JLabel lblBayType = createLabel("lbl" + bayType.name(), bayType.getDisplayName());
@@ -126,7 +143,7 @@ public abstract class TransportView extends BuildView implements ChangeListener 
         Map<BayData, Double> fixedCargo = new HashMap<>();
         Map<BayData, Double> podCargo = new HashMap<>();
         for (Bay b : entity.getTransportBays()) {
-            BayData bayType = BayData.getBayType(b);
+            BayData bayType = b.getBayData();
             if (null != bayType) {
                 if (entity.isPodMountedTransport(b)) {
                     podCargo.merge(bayType, b.getCapacity(), Double::sum);
