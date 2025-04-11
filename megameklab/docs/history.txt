@@ -13,6 +13,7 @@ MEGAMEKLAB VERSION HISTORY:
 + PR #1800: Enable creating new HHWs in the GUI
 + PR #1802: Performance improvements and Dirty indicator for unsaved work
 + PR #1816: Undo/Redo
++ PR #1827: Print preview in print queue dialog + performance improvements
 
 0.50.04 (2025-03-22 1600 UTC)
 + Fix #1707: Fix transport tab weight inflation on infantry bays
