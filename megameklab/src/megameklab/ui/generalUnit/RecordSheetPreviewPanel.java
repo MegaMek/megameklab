@@ -478,7 +478,7 @@ private double constrainPanX(double panX) {
      * 
      * @param selectedEntities The list of entities to display.
      */
-    public void setEntities(List<BTObject> selectedEntities) {
+    public void setEntities(List<? extends BTObject> selectedEntities) {
         List<BTObject> processedEntities;
         if (selectedEntities == null) {
             processedEntities = Collections.emptyList();
@@ -494,31 +494,6 @@ private double constrainPanX(double panX) {
             updateTimer.restart(); // Restart update timer to debounce
         }
     }
-
-    /**
-     * Set the entities to be displayed in the record sheet preview.
-     * 
-     * @param selectedEntities The list of entities to display.
-     */
-    public void setEntities(ArrayList<Entity> selectedEntities) {
-        List<BTObject> processedEntities;
-        if (selectedEntities == null) {
-            processedEntities = Collections.emptyList();
-        } else {
-            // Create a new list to avoid external modifications affecting us
-            processedEntities = new ArrayList<>(selectedEntities);
-        }
-        boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
-        if (entitiesChanged) {
-            this.currentEntities = processedEntities;
-            regenerateAndReset();
-        } else {
-            updateTimer.restart(); // Restart update timer to debounce
-        }
-    }
-
-    
-
 
     /**
      * Set a single entity to be displayed in the record sheet preview.
