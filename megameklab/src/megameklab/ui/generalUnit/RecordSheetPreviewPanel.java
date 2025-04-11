@@ -59,6 +59,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -670,6 +671,25 @@ private double constrainPanX(double panX) {
         updateTimer.restart(); // Restart update timer to debounce
     }
 
+    private List<PrintRecordSheet> createSheetsInEDT(List<BTObject> entitiesToGenerate, boolean singlePrint,
+            RecordSheetOptions options) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            // If not, use invokeAndWait to call this method on the EDT
+            final AtomicReference<List<PrintRecordSheet>> resultHolder = new AtomicReference<>();
+            try {
+                SwingUtilities.invokeAndWait(() -> 
+                    resultHolder.set(createSheetsInEDT(entitiesToGenerate, singlePrint, options))
+                );
+                return resultHolder.get();
+            } catch (Exception e) {
+                logger.error("Error dispatching createSheets to EDT", e);
+                return Collections.emptyList();
+            }
+        }
+        List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(entitiesToGenerate, singlePrint, options, true);
+        return tempGeneratedSheets;
+    }
+
     private void performUpdateSheetContentInPlace() {
         if (!isShowing()) {
             pendingInPlaceUpdate = true;
@@ -694,9 +714,7 @@ private double constrainPanX(double panX) {
                 long start = System.nanoTime();
                 // Regenerate sheets based on potentially updated entity state
                 RecordSheetOptions options = new RecordSheetOptions();
-                newGeneratedSheets = UnitPrintManager.createSheets(
-                        currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)),
-                        oneUnitPerSheet, options, true);
+                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
