@@ -256,6 +256,9 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getUnallocatedView().getEquipment();
     }
 }

@@ -209,6 +209,9 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getBuildView().getEquipment();
     }
 }

@@ -384,10 +384,14 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Add quirks to the group panel in a grid layout
+        int lastColIndex = 0;
         for (int i = 0; i < totalItems; i++) {
-            final int colIndex = i % itemsPerCol;
+            final int rowIndex = i % itemsPerCol;
             gbc.gridx = i / itemsPerCol;
-            gbc.gridy = colIndex;
+            gbc.gridy = rowIndex;
+            if (gbc.gridx > lastColIndex) {
+                lastColIndex = gbc.gridx;
+            }
 
             DialogOptionComponent comp = quirks.get(i);
             // Set preferred width so we match the width of the widest item
@@ -401,10 +405,9 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         // Because we are auto-spacing them horizontally (bgc.weightx = 1 above), we
         // create fake columns in case
         // this group doesn't have enough (usually weapons)
-        final int lastColUsed = totalItems % itemsPerCol;
-        for (int i = lastColUsed + 1; i < numCols; i++) {
-            gbc.gridx = numCols - 1;
-            gbc.gridy = i;
+        for (int i = lastColIndex + 1; i < numCols; i++) {
+            gbc.gridx = i;
+            gbc.gridy = 0;
             groupPanel.add(Box.createHorizontalStrut(globalMaxItemWidth), gbc);
         }
 

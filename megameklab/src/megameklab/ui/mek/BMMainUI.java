@@ -260,6 +260,9 @@ public class BMMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return this.buildTab.getBuildView().getEquipment();
     }
 }
