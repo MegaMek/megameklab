@@ -59,6 +59,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -193,7 +194,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (e.getButton() != MouseEvent.BUTTON3) {
                 return;
             }
-            if (e.getComponent().isShowing()) {
+            if ((e.getComponent() != null) && (e.getComponent().isShowing())) {
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
         }
@@ -478,7 +479,7 @@ private double constrainPanX(double panX) {
      * 
      * @param selectedEntities The list of entities to display.
      */
-    public void setEntities(List<BTObject> selectedEntities) {
+    public void setEntities(List<? extends BTObject> selectedEntities) {
         List<BTObject> processedEntities;
         if (selectedEntities == null) {
             processedEntities = Collections.emptyList();
@@ -491,34 +492,9 @@ private double constrainPanX(double panX) {
             this.currentEntities = processedEntities;
             regenerateAndReset();
         } else {
-            updateTimer.restart(); // Restart update timer to debounce
+            updateSheetContentInPlace();
         }
     }
-
-    /**
-     * Set the entities to be displayed in the record sheet preview.
-     * 
-     * @param selectedEntities The list of entities to display.
-     */
-    public void setEntities(ArrayList<Entity> selectedEntities) {
-        List<BTObject> processedEntities;
-        if (selectedEntities == null) {
-            processedEntities = Collections.emptyList();
-        } else {
-            // Create a new list to avoid external modifications affecting us
-            processedEntities = new ArrayList<>(selectedEntities);
-        }
-        boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
-        if (entitiesChanged) {
-            this.currentEntities = processedEntities;
-            regenerateAndReset();
-        } else {
-            updateTimer.restart(); // Restart update timer to debounce
-        }
-    }
-
-    
-
 
     /**
      * Set a single entity to be displayed in the record sheet preview.
@@ -695,6 +671,25 @@ private double constrainPanX(double panX) {
         updateTimer.restart(); // Restart update timer to debounce
     }
 
+    private List<PrintRecordSheet> createSheetsInEDT(List<BTObject> entitiesToGenerate, boolean singlePrint,
+            RecordSheetOptions options) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            // If not, use invokeAndWait to call this method on the EDT
+            final AtomicReference<List<PrintRecordSheet>> resultHolder = new AtomicReference<>();
+            try {
+                SwingUtilities.invokeAndWait(() -> 
+                    resultHolder.set(createSheetsInEDT(entitiesToGenerate, singlePrint, options))
+                );
+                return resultHolder.get();
+            } catch (Exception e) {
+                logger.error("Error dispatching createSheets to EDT", e);
+                return Collections.emptyList();
+            }
+        }
+        List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(entitiesToGenerate, singlePrint, options, true);
+        return tempGeneratedSheets;
+    }
+
     private void performUpdateSheetContentInPlace() {
         if (!isShowing()) {
             pendingInPlaceUpdate = true;
@@ -719,9 +714,7 @@ private double constrainPanX(double panX) {
                 long start = System.nanoTime();
                 // Regenerate sheets based on potentially updated entity state
                 RecordSheetOptions options = new RecordSheetOptions();
-                newGeneratedSheets = UnitPrintManager.createSheets(
-                        currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)),
-                        oneUnitPerSheet, options, true);
+                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -797,8 +790,9 @@ private double constrainPanX(double panX) {
                     return;
                 }
                 if (finalStructureChanged) {
-                    // If structure changed (or error occurred), fall back to full reset
-                    logger.warn(
+                    // If structure changed (or error occurred), fall back to full reset.
+                    // It can happen when the tab is re-attached
+                    logger.debug(
                             "Sheet structure changed during in-place update or error occurred. Performing full reset.");
                     regenerateAndReset(); // Use the full reset logic
                     return;

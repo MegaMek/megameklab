@@ -271,6 +271,9 @@ public class WSMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getBuildView().getEquipment();
     }
 }
