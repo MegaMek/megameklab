@@ -1,3 +1,30 @@
+/*
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMekLab.
+ *
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ */
 package megameklab.util;
 
 import java.io.BufferedReader;
@@ -41,7 +68,7 @@ public class SingleInstanceService {
 
     /**
      * Creates a new single instance service
-     * 
+     *
      * @param applicationId Unique identifier for this application
      */
     public SingleInstanceService(String applicationId) {
@@ -50,7 +77,7 @@ public class SingleInstanceService {
 
     /**
      * Creates a new single instance service with specific port
-     * 
+     *
      * @param applicationId Unique identifier for this application
      * @param port          Port to use for communication
      */
@@ -61,7 +88,7 @@ public class SingleInstanceService {
 
     /**
      * Register this as the primary instance
-     * 
+     *
      * @return true if this is the first instance, false otherwise
      */
     public boolean register() {
@@ -102,8 +129,9 @@ public class SingleInstanceService {
 
     /**
      * Send a message to the running instance
-     * 
+     *
      * @param message Message to send
+     *
      * @return true if successful, false otherwise
      */
     public boolean sendMessage(String message) {
@@ -121,7 +149,7 @@ public class SingleInstanceService {
 
             // Connect to the server
             try (Socket socket = new Socket(InetAddress.getLoopbackAddress(), port);
-                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                  PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
                 // Send the message
                 out.println(message);
@@ -136,7 +164,7 @@ public class SingleInstanceService {
 
     /**
      * Sets a handler for messages from other instances
-     * 
+     *
      * @param handler Handler to process messages
      */
     public void setMessageHandler(MessageHandler handler) {
@@ -152,8 +180,7 @@ public class SingleInstanceService {
                 try {
                     Socket clientSocket = serverSocket.accept();
                     connectionExecutor.submit(() -> {
-                        try (BufferedReader in = new BufferedReader(
-                                new InputStreamReader(clientSocket.getInputStream()))) {
+                        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
                             String message = in.readLine();
                             if (message != null && messageHandler != null) {
