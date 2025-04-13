@@ -366,6 +366,49 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
+     * Finds an open editor tab for the given entity, brings its window to the front,
+     * and selects the tab. If no editor is found, creates a new tab in the first
+     * available window.
+     *
+     * @param entityToFind The entity to show the editor for.
+     */
+    public static synchronized void showEditorForEntity(Entity entityToFind) {
+        if (entityToFind == null) {
+            return;
+        }
+
+        // Try to find the entity in the open editors
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getEntity() == entityToFind) {
+                MegaMekLabTabbedUI owner = editor.getTabOwner();
+                if (owner != null) {
+                    owner.setVisible(true);
+                    owner.toFront();
+                    owner.requestFocus();
+                    owner.tabs.setSelectedComponent(editor);
+                    return; // Found and activated
+                }
+            }
+        }
+
+        // If not found, create a new tab in the first available window
+        MegaMekLabTabbedUI targetWindow = openWindows.stream().findFirst().orElse(null);
+        if (targetWindow == null) {
+            // If no windows are open, create a new one
+            targetWindow = new MegaMekLabTabbedUI();
+            targetWindow.setVisible(true);
+        }
+
+        UnitUtil.updateLoadedUnit(entityToFind);
+        MegaMekLabMainUI newUi = UiLoader.getUI(entityToFind, "");
+        targetWindow.addTab(newUi, true);
+
+        targetWindow.setVisible(true);
+        targetWindow.toFront();
+        targetWindow.requestFocus();
+    }
+
+    /**
      * Retrieves the currently selected editor from the tabbed user interface.
      *
      * @return The currently selected MegaMekLabMainUI instance, which represents

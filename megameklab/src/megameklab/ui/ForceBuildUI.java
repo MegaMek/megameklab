@@ -34,6 +34,8 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -58,6 +60,7 @@ import javax.swing.table.TableColumnModel;
 
 import megamek.common.Crew;
 import megamek.common.Entity;
+import megameklab.ui.MegaMekLabTabbedUI;
 
 public class ForceBuildUI extends JFrame {
 
@@ -251,6 +254,21 @@ public class ForceBuildUI extends JFrame {
         entityTable = new JTable(tableModel);
         entityTable.setFillsViewportHeight(true);
         entityTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        entityTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = entityTable.rowAtPoint(e.getPoint());
+                    if (row >= 0 && row < forceList.size()) {
+                        Entity entityToFind = forceList.get(row);
+                        MegaMekLabTabbedUI.showEditorForEntity(entityToFind);
+                        getInstance().toFront();
+                        getInstance().requestFocus();
+                    }
+                }
+            }
+        });
 
         TableColumnModel columnModel = entityTable.getColumnModel();
 
