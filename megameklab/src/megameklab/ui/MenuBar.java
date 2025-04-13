@@ -110,6 +110,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createFileMenu());
         add(createEditMenu());
         add(createUnitValidationMenu());
+        add(createForceBuildMenu());
         add(createReportsMenu());
         add(createHelpMenu());
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
@@ -878,6 +879,31 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
+     * Creates the force menu
+     * @return the created force menu
+     */
+    private JMenu createForceBuildMenu() {
+        final JMenu forceMenu = new JMenu(resources.getString("forceBuildMenu.text"));
+        forceMenu.setName("forceBuildMenu");
+        forceMenu.setMnemonic(KeyEvent.VK_B);
+
+        final JMenuItem miAddToForce = new JMenuItem(resources.getString("miAddToForce.text"));
+        miAddToForce.setName("miAddToForce");
+        miAddToForce.setMnemonic(KeyEvent.VK_A);
+        miAddToForce.addActionListener(evt -> addUnitToForce(owner.getEntity()));
+        forceMenu.add(miAddToForce);
+
+        final JMenuItem miViewForce = new JMenuItem(resources.getString("miViewForce.text"));
+        miViewForce.setName("miViewForce");
+        miViewForce.setMnemonic(KeyEvent.VK_V);
+        miViewForce.addActionListener(evt -> viewForce());
+        forceMenu.add(miViewForce);
+
+        return forceMenu;
+
+    }
+
+    /**
      * @return the created Unit Specs Report menu
      */
     private JMenu createUnitSpecsReportMenu() {
@@ -1453,6 +1479,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
         if (entity != null) {
             new BVDisplayDialog(frame, entity).setVisible(true);
+        }
+    }
+
+    public void viewForce() {
+        ForceBuildUI.showWindow();
+    }
+
+    public void addUnitToForce(Entity entity) {
+        if (entity != null) {
+            ForceBuildUI.showAndAddEntity(entity);
         }
     }
 }
