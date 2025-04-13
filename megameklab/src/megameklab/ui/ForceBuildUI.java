@@ -29,7 +29,6 @@ package megameklab.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -76,7 +75,7 @@ public class ForceBuildUI extends JFrame {
     private static final int COL_PILOTING = 3;
     private static final int COL_BV = 4;
 
-    private static final Integer[] SKILL_LEVELS = {null, 0, 1, 2, 3, 4, 5, 6, 7, 8};
+    private static final Integer[] SKILL_LEVELS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
     // Private constructor for Singleton
     private ForceBuildUI() {
@@ -84,8 +83,7 @@ public class ForceBuildUI extends JFrame {
         final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
         setTitle(resourceMap.getString("ForceBuildDialog.windowName.text"));
         setMinimumSize(new Dimension(300, 200));
-        setPreferredSize(new Dimension(450, 400));
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE); // Hide instead of dispose
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         createCenterPane();
         packWindow();
     }
@@ -115,7 +113,7 @@ public class ForceBuildUI extends JFrame {
         view.setVisible(true);
     }
 
-     /**
+    /**
      * Gets/creates the singleton instance and ensures it's visible.
      */
     public static synchronized void showWindow() {
@@ -149,9 +147,9 @@ public class ForceBuildUI extends JFrame {
      */
     public void addEntity(Entity entity) {
         if (entity.getCrew() == null) {
-            Crew crew = new Crew(entity.defaultCrewType());
-            entity.setCrew(crew);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
         }
+        entity.getCrew().setName(null, 0);
         forceList.add(entity);
         updateTableAndTotal();
         packWindow();
@@ -160,7 +158,8 @@ public class ForceBuildUI extends JFrame {
     // Instance method to remove an entity
     public void removeEntity(int index) {
         if (index >= 0 && index < forceList.size()) {
-            forceList.remove(index);
+            Entity entity = forceList.remove(index);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
             tableModel.removeRow(index);
             updateTotalBVLabelOnly();
             packWindow();
@@ -211,15 +210,15 @@ public class ForceBuildUI extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                 if (columnIndex == COL_BV) {
+                if (columnIndex == COL_BV) {
                     return Integer.class;
                 }
                 if (columnIndex == COL_GUNNERY || columnIndex == COL_PILOTING) {
                     return Integer.class;
                 }
-                 if (columnIndex == COL_REMOVE) {
-                     return JButton.class;
-                 }
+                if (columnIndex == COL_REMOVE) {
+                    return JButton.class;
+                }
                 return String.class;
             }
             @Override
@@ -231,10 +230,10 @@ public class ForceBuildUI extends JFrame {
                     Integer skillValue = (Integer) aValue;
 
                     if (column == COL_GUNNERY) {
-                        entity.getCrew().setGunnery(skillValue == null ? -1 : skillValue);
+                        entity.getCrew().setGunnery(skillValue);
                         needsBvUpdate = true;
                     } else if (column == COL_PILOTING) {
-                        entity.getCrew().setPiloting(skillValue == null ? -1 : skillValue);
+                        entity.getCrew().setPiloting(skillValue);
                         needsBvUpdate = true;
                     }
                     super.setValueAt(aValue, row, column);
@@ -244,7 +243,7 @@ public class ForceBuildUI extends JFrame {
                         updateTotalBVLabelOnly();
                     }
                 } else {
-                     super.setValueAt(aValue, row, column);
+                    super.setValueAt(aValue, row, column);
                 }
             }
         };
