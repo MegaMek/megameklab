@@ -56,7 +56,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
-import javax.swing.TransferHandler.TransferSupport;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -143,7 +143,7 @@ public class ForceBuildUI extends JFrame {
         Dimension tablePrefSize = entityTable.getPreferredSize();
         scrollPane.setPreferredSize(new Dimension(
                 Math.max(300, tablePrefSize.width + 20),
-                Math.min(tableHeight, maxWindowHeight - 100)
+                Math.min(tableHeight + 20, maxWindowHeight - 100)
         ));
 
         pack();
@@ -161,9 +161,28 @@ public class ForceBuildUI extends JFrame {
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
         entity.getCrew().setName(null, 0);
+        for (int i = 0; i < forceList.size(); i++) {
+            if (forceList.get(i) == entity) {
+                // Entity already exists, select its row and bring window to front
+                final int rowIndex = i;
+                SwingUtilities.invokeLater(() -> {
+                    entityTable.setRowSelectionInterval(rowIndex, rowIndex);
+                    // Ensure the selected row is visible
+                    entityTable.scrollRectToVisible(entityTable.getCellRect(rowIndex, 0, true));
+                    this.toFront();
+                    this.requestFocus();
+                });
+                return; // Don't add the duplicate
+            }
+        }
         forceList.add(entity);
+        final int newRowIndex = forceList.size() - 1;
         updateTableAndTotal();
         packWindow();
+        SwingUtilities.invokeLater(() -> {
+            entityTable.setRowSelectionInterval(newRowIndex, newRowIndex);
+            entityTable.scrollRectToVisible(entityTable.getCellRect(newRowIndex, 0, true));
+        });
     }
 
     // Instance method to remove an entity
