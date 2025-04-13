@@ -296,16 +296,21 @@ public class ForceBuildUI extends JFrame {
                     Entity entity = forceList.get(row);
                     boolean needsBvUpdate = false;
 
-                    Integer skillValue = (Integer) aValue;
-
-                    if (column == COL_GUNNERY) {
-                        entity.getCrew().setGunnery(skillValue);
-                        needsBvUpdate = true;
-                    } else if (column == COL_PILOTING) {
-                        entity.getCrew().setPiloting(skillValue);
-                        needsBvUpdate = true;
+                    // Only attempt cast if it's a skill column
+                    if (column == COL_GUNNERY || column == COL_PILOTING) {
+                        if (aValue instanceof Integer) {
+                            Integer skillValue = (Integer) aValue;
+                            if (column == COL_GUNNERY) {
+                                entity.getCrew().setGunnery(skillValue);
+                                needsBvUpdate = true;
+                            } else { // Must be COL_PILOTING
+                                entity.getCrew().setPiloting(skillValue);
+                                needsBvUpdate = true;
+                            }
+                        }
                     }
                     super.setValueAt(aValue, row, column);
+
                     if (needsBvUpdate) {
                         int newBv = entity.calculateBattleValue();
                         super.setValueAt(newBv, row, COL_BV);
