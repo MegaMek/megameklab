@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMek.
+ * This file is part of MegaMekLab.
  *
  * MegaMek is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (GPL),
@@ -302,7 +302,7 @@ public class ForceBuildUI extends JFrame {
         bottomPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 
         JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        
+
         // Print Force Button
         JButton printButton = new JButton("Print");
         printButton.addActionListener(e -> {
