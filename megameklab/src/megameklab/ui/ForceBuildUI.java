@@ -321,6 +321,7 @@ public class ForceBuildUI extends JFrame {
         entityTable = new JTable(tableModel);
         entityTable.setFillsViewportHeight(true);
         entityTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        entityTable.getTableHeader().setReorderingAllowed(false);
 
         entityTable.setDragEnabled(true);
         entityTable.setDropMode(DropMode.INSERT_ROWS);
