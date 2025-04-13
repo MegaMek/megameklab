@@ -37,6 +37,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -68,6 +70,7 @@ import javax.swing.table.TableColumnModel;
 
 import megamek.common.Crew;
 import megamek.common.Entity;
+import megameklab.util.CConfig;
 import megameklab.ui.MegaMekLabTabbedUI;
 
 public class ForceBuildUI extends JFrame {
@@ -97,6 +100,22 @@ public class ForceBuildUI extends JFrame {
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         createCenterPane();
         packWindow();
+        setLocationRelativeTo(null);
+        CConfig.getForceBuildPosition().ifPresent(this::setLocation);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if (isVisible()) {
+                    CConfig.writeForceBuildPosition(instance);
+                }
+            }
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (isVisible()) {
+                    CConfig.writeForceBuildPosition(instance);
+                }
+            }
+        });
     }
 
     /**
