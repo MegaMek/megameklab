@@ -72,6 +72,7 @@ import megamek.common.Crew;
 import megamek.common.Entity;
 import megameklab.util.CConfig;
 import megameklab.ui.MegaMekLabTabbedUI;
+import megameklab.ui.dialog.PrintQueueDialog;
 
 public class ForceBuildUI extends JFrame {
 
@@ -256,6 +257,15 @@ public class ForceBuildUI extends JFrame {
         totalBVLabel.setText("Total BV: " + totalBV);
     }
 
+    /**
+     * Gets the list of all entities in the force.
+     * 
+     * @return
+     */
+    public ArrayList<Entity> getAllEntities() {
+        return forceList;
+    }
+
     public void createCenterPane() {
         JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
         centerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -315,7 +325,7 @@ public class ForceBuildUI extends JFrame {
         entityTable.setDragEnabled(true);
         entityTable.setDropMode(DropMode.INSERT_ROWS);
         entityTable.setTransferHandler(new ForceListTransferHandler());
-        entityTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); // Recommended for row reordering
+        entityTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         entityTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -385,14 +395,14 @@ public class ForceBuildUI extends JFrame {
         // Print Force Button
         JButton printButton = new JButton("Print");
         printButton.addActionListener(e -> {
-            System.out.println("Print Force button clicked");
+            new PrintQueueDialog(instance, false, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(printButton, BorderLayout.WEST);
 
         // Print Force Button
         JButton pdfExportbutton = new JButton("Export PDF");
         pdfExportbutton.addActionListener(e -> {
-            System.out.println("PDF Export button clicked");
+            new PrintQueueDialog(instance, true, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(pdfExportbutton, BorderLayout.WEST);
         bottomPanel.add(buttonPanel, BorderLayout.WEST);
