@@ -44,6 +44,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -363,6 +364,27 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     @Deprecated(since = "0.50.05", forRemoval = true)
     public MegaMekLabMainUI currentEditor() {
         return getActiveEditor();
+    }
+
+    /**
+     * Refreshes the display of the given entity.
+     * This method is called when the entity is modified externally.
+     * 
+     * @param entityToFind
+     */
+    public static synchronized void refreshEntity(Entity entityToFind) {
+        if (entityToFind == null) {
+            return;
+        }
+        // Try to find the entity in the open editors
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getEntity() == entityToFind) {
+                SwingUtilities.invokeLater(() -> {
+                    editor.refreshAll();
+                });
+                return; // Found and refreshed
+            }
+        }
     }
 
     /**

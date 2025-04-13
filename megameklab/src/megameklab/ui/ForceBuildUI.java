@@ -223,6 +223,16 @@ public class ForceBuildUI extends JFrame {
         totalBVLabel.setText("Total BV: " + totalBV);
     }
 
+    /**
+     * Updates the table and total BV label.
+     */
+    public static void refresh() {
+        if (instance != null) {
+            instance.updateTableAndTotal();
+            instance.packWindow();
+        }
+    }
+
     private void updateTableAndTotal() {
         // Clear existing rows
         tableModel.setRowCount(0);
@@ -239,7 +249,7 @@ public class ForceBuildUI extends JFrame {
             if (gSkill >= 0) gunnery = gSkill;
             if (pSkill >= 0) piloting = pSkill;
 
-            tableModel.addRow(new Object[]{UIManager.getIcon("InternalFrame.closeIcon"), entity.getDisplayName(), gunnery, piloting, bv});
+            tableModel.addRow(new Object[]{UIManager.getIcon("InternalFrame.closeIcon"), entity.getShortNameRaw(), gunnery, piloting, bv});
             totalBV += bv;
         }
 
@@ -290,6 +300,7 @@ public class ForceBuildUI extends JFrame {
                         int newBv = entity.calculateBattleValue();
                         super.setValueAt(newBv, row, COL_BV);
                         updateTotalBVLabelOnly();
+                        MegaMekLabTabbedUI.refreshEntity(entity);
                     }
                 } else {
                     super.setValueAt(aValue, row, column);

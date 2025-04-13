@@ -448,11 +448,13 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (tabOwner != null) {
             tabOwner.setTabName(this, getEntity().getShortNameRaw());
         }
+        ForceBuildUI.refresh();
     }
 
     @Override
     public void refreshStatus() {
         requestDirtyCheck();
+        ForceBuildUI.refresh();
     }
 
     @Override
