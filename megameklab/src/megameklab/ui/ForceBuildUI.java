@@ -182,8 +182,8 @@ public class ForceBuildUI extends JFrame {
         int totalBV = 0;
         for (Entity entity : forceList) {
             int bv = entity.calculateBattleValue();
-            Integer gunnery = null; // Default to BLANK
-            Integer piloting = null; // Default to BLANK
+            Integer gunnery = null;
+            Integer piloting = null;
 
             ;
             int gSkill = entity.getCrew().getGunnery();
@@ -224,7 +224,6 @@ public class ForceBuildUI extends JFrame {
             }
             @Override
             public void setValueAt(Object aValue, int row, int column) {
-                // Update the underlying Entity when a skill is changed in the table
                 if (row >= 0 && row < forceList.size()) {
                     Entity entity = forceList.get(row);
                     boolean needsBvUpdate = false;
@@ -238,11 +237,7 @@ public class ForceBuildUI extends JFrame {
                         entity.getCrew().setPiloting(skillValue == null ? -1 : skillValue);
                         needsBvUpdate = true;
                     }
-
-                    // Update the value in the table model itself
                     super.setValueAt(aValue, row, column);
-
-                    // If a skill changed, recalculate BV for that row and the total
                     if (needsBvUpdate) {
                         int newBv = entity.calculateBattleValue();
                         super.setValueAt(newBv, row, COL_BV);
@@ -307,12 +302,14 @@ public class ForceBuildUI extends JFrame {
         bottomPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 
         JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        
         // Print Force Button
         JButton printButton = new JButton("Print");
         printButton.addActionListener(e -> {
             System.out.println("Print Force button clicked");
         });
         buttonPanel.add(printButton, BorderLayout.WEST);
+
         // Print Force Button
         JButton pdfExportbutton = new JButton("Export PDF");
         pdfExportbutton.addActionListener(e -> {
