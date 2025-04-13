@@ -32,23 +32,31 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
+import javax.swing.TransferHandler.TransferSupport;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -255,6 +263,11 @@ public class ForceBuildUI extends JFrame {
         entityTable.setFillsViewportHeight(true);
         entityTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
+        entityTable.setDragEnabled(true);
+        entityTable.setDropMode(DropMode.INSERT_ROWS);
+        entityTable.setTransferHandler(new ForceListTransferHandler());
+        entityTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); // Recommended for row reordering
+
         entityTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -367,6 +380,111 @@ public class ForceBuildUI extends JFrame {
                 setBackground(UIManager.getColor("Button.background"));
             }
             return this;
+        }
+    }
+
+    class ForceListTransferHandler extends TransferHandler {
+        private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
+        private int[] rows = null;
+
+        @Override
+        protected Transferable createTransferable(JComponent c) {
+            JTable table = (JTable) c;
+            rows = table.getSelectedRows();
+            if (rows == null || rows.length == 0) {
+                return null;
+            }
+            if (rows.length > 1) {
+                return null;
+            }
+            return new RowTransferable(rows[0]);
+        }
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+            if (!support.isDrop() || !support.isDataFlavorSupported(localObjectFlavor)) {
+                return false;
+            }
+            JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
+            // Do not allow dropping onto the source row
+            if (rows != null && dl.getRow() == rows[0]) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return MOVE;
+        }
+
+        @Override
+        public boolean importData(TransferSupport support) {
+            if (!canImport(support)) {
+                return false;
+            }
+
+            JTable target = (JTable) support.getComponent();
+            JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
+            int index = dl.getRow();
+            int max = tableModel.getRowCount();
+            if (index < 0 || index > max) {
+                index = max;
+            }
+            try {
+                Integer rowFrom = (Integer) support.getTransferable().getTransferData(localObjectFlavor);
+                if (rowFrom != -1 && rowFrom != index) {
+                    // Adjust drop index if dragging downwards
+                    int dropIndex = (rowFrom < index) ? index - 1 : index;
+                    // Reorder the underlying forceList
+                    Entity movedEntity = forceList.remove(rowFrom.intValue());
+                    forceList.add(dropIndex, movedEntity);
+                    updateTableAndTotal();
+                    // Select the moved row after the update
+                    target.setRowSelectionInterval(dropIndex, dropIndex);
+                    return true;
+                }
+            } catch (UnsupportedFlavorException | IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void exportDone(JComponent source, Transferable data, int action) {
+            cleanup(action == MOVE);
+        }
+
+        private void cleanup(boolean move) {
+            rows = null;
+        }
+
+        // Helper Transferable class
+        class RowTransferable implements Transferable {
+            private Integer row;
+
+            public RowTransferable(Integer row) {
+                this.row = row;
+            }
+
+            @Override
+            public DataFlavor[] getTransferDataFlavors() {
+                return new DataFlavor[]{localObjectFlavor};
+            }
+
+            @Override
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
+                return localObjectFlavor.equals(flavor);
+            }
+
+            @Override
+            public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
+                if (!isDataFlavorSupported(flavor)) {
+                    throw new UnsupportedFlavorException(flavor);
+                }
+                return row;
+            }
         }
     }
 
