@@ -48,6 +48,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -85,7 +86,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.CompoundBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -103,6 +103,7 @@ import java.awt.Color;
 
 import megamek.client.Client;
 import megamek.client.ui.Messages;
+import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.lobby.LobbyErrors;
@@ -127,6 +128,7 @@ import megameklab.ui.dialog.PrintQueueDialog;
 
 public class ForceBuildUI extends JFrame implements ListSelectionListener, ActionListener{
     private static final MMLogger logger = MMLogger.create(ForceBuildUI.class);
+    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
 
     private static ForceBuildUI instance; // Singleton instance
 
@@ -413,26 +415,39 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private void populatePopupMenu(List<Entity> selectedEntities) {
         rowPopupMenu.removeAll();
 
-        JMenuItem viewItem = new JMenuItem("Open Editor");
+        // --- Open Editor ---
+        JMenuItem viewItem = new JMenuItem(resources.getString("ForceBuildUI.popup.openEditor.text"));
         Font currentFont = viewItem.getFont();
         viewItem.setFont(currentFont.deriveFont(Font.BOLD));
+        viewItem.setMnemonic(KeyEvent.VK_O);
         viewItem.addActionListener(e -> {
                 openEntityInEditor(selectedEntities.get(0));
         });
         rowPopupMenu.add(viewItem);
 
-        JMenuItem editItem = new JMenuItem("Edit Pilot/Equipment...");
+        // --- Edit Pilot/Equipment/Ammo ---
+        JMenuItem editItem = new JMenuItem(resources.getString("ForceBuildUI.popup.editPilotEquip.text"));
+        editItem.setMnemonic(KeyEvent.VK_E);
         editItem.addActionListener(e -> {
             openEntityConfiguration(selectedEntities.get(0));
         });
         rowPopupMenu.add(editItem);
 
-        rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
         // --- C3 Menu ---
+        rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
+
+        // --- BV Calculations --
+        final JMenuItem miCurrentUnitBVBreakdown = new JMenuItem(resources.getString("ForceBuildUI.popup.BVBreakdown.text"));
+        miCurrentUnitBVBreakdown.setName("miCurrentUnitBVBreakdown");
+        miCurrentUnitBVBreakdown.setMnemonic(KeyEvent.VK_U);
+        miCurrentUnitBVBreakdown.addActionListener(evt -> 
+            new BVDisplayDialog(null, selectedEntities.get(0)).setVisible(true)
+        );
+        rowPopupMenu.add(miCurrentUnitBVBreakdown);
 
         // --- Delete Item ---
         rowPopupMenu.addSeparator();
-        JMenuItem deleteItem = new JMenuItem("Delete");
+        JMenuItem deleteItem = new JMenuItem(resources.getString("ForceBuildUI.popup.delete.text"));
         deleteItem.addActionListener(e -> {
             for (Entity entity : selectedEntities) {
                 removeEntity(entity);

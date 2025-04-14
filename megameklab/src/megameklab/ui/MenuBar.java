@@ -70,6 +70,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final JMenuItem miUndo = new JMenuItem(resources.getString("miUndo.text"));
     private final JMenuItem miRedo = new JMenuItem(resources.getString("miRedo.text"));
     private final JMenuItem miReload = new JMenuItem(resources.getString("miReload.text"));
+    private final JMenuItem miAddToForce = new JMenuItem(resources.getString("miAddToForce.text"));
 
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
@@ -768,6 +769,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miReload.setEnabled(activeEditorCanReload());
     }
 
+    private void refreshForceMenu() {
+        miAddToForce.setEnabled(isUnitGui());
+    }
+
     /**
      * @return the created Edit menu
      */
@@ -887,7 +892,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         forceMenu.setName("forceBuildMenu");
         forceMenu.setMnemonic(KeyEvent.VK_B);
 
-        final JMenuItem miAddToForce = new JMenuItem(resources.getString("miAddToForce.text"));
         miAddToForce.setName("miAddToForce");
         miAddToForce.setMnemonic(KeyEvent.VK_A);
         miAddToForce.addActionListener(evt -> addUnitToForce(owner.getEntity()));
@@ -898,6 +902,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miViewForce.setMnemonic(KeyEvent.VK_V);
         miViewForce.addActionListener(evt -> viewForce());
         forceMenu.add(miViewForce);
+
+        refreshForceMenu();
 
         return forceMenu;
 
@@ -1385,6 +1391,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      */
     public void refreshMenuBar() {
         createFileMenu();
+        refreshEditMenu();
+        refreshForceMenu();
     }
 
     /**

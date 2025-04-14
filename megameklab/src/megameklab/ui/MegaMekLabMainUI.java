@@ -175,7 +175,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (undoStack.size() > MAX_UNDO_HISTORY) {
             undoStack.removeLast();
         }
-        updateUndoRedoMenuItems();
+        refreshMenuBar();
         return true;
     }
 
@@ -217,7 +217,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
             restoreUnitState(previousState);
-            updateUndoRedoMenuItems();
+            refreshMenuBar();
         } catch (Exception e) {
             logger.error("Error during undo operation", e);
         }
@@ -239,7 +239,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
             restoreUnitState(nextState);
-            updateUndoRedoMenuItems();
+            refreshMenuBar();
         } catch (Exception e) {
             logger.error("Error during redo operation", e);
         }
@@ -258,7 +258,7 @@ public abstract class MegaMekLabMainUI extends JPanel
                 return; // No changes to reload
             }
             restoreUnitState(savedUnitSnapshot);
-            updateUndoRedoMenuItems();
+            refreshMenuBar();
             requestDirtyCheck();
         } catch (Exception e) {
             logger.error("Error during reload operation", e);
@@ -268,9 +268,9 @@ public abstract class MegaMekLabMainUI extends JPanel
     /**
      * Updates the undo and redo menu items in the tab owner.
      */
-    private void updateUndoRedoMenuItems() {
+    private void refreshMenuBar() {
         if (tabOwner != null) {
-            SwingUtilities.invokeLater(tabOwner::refreshEditMenu);
+            SwingUtilities.invokeLater(tabOwner::refreshMenuBar);
         }
     }
 

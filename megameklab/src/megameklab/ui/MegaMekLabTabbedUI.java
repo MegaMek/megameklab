@@ -121,7 +121,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 if (selectedComponent != previousComponent) {
                     if (selectedComponent instanceof MegaMekLabMainUI mainUI) {
                         mainUI.onActivated();
-                        refreshEditMenu();
+                        refreshMenuBar();
                     }
                 }
                 lastSelectedComponent = new WeakReference<>(selectedComponent);
@@ -734,12 +734,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public void refreshMenuBar() {
         if (menuBar != null && getActiveEditor() != null) {
             menuBar.refreshMenuBar();
-        }
-    }
-
-    public void refreshEditMenu() {
-        if (menuBar != null && getActiveEditor() != null) {
-            menuBar.refreshEditMenu();
         }
     }
 
