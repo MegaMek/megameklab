@@ -291,6 +291,13 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
         RecordSheetOptions options = recordSheetPanel.getRecordSheetOptions();
+        if (fromMul) {
+            if (adjustedBvCheck.isSelected()) {
+                linkForce();
+            } else {
+                unlinkForce();
+            }
+        }
         options.setIncludeC3inBv(adjustedBvCheck.isSelected());
         CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
