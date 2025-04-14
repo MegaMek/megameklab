@@ -86,8 +86,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     protected boolean showPilotInfo() {
         return options.showPilotData()
-                && (getEntity().getCrew().getName() == null
-                || !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED));
+                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
@@ -323,7 +322,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             final boolean hide = i >= getEntity().getCrew().getSlotCount();
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo() && (getEntity().getCrew().getName() != null) );
+            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && (getEntity().getCrew().getName(i).trim() != "")));
             hideElement(CREW_NAME + i, hide);
             hideElement(GUNNERY_SKILL + i, hide);
             hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());

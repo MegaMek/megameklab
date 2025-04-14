@@ -325,30 +325,40 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             return;
         }
 
-        linkForce();
-
-        var fileChooser = new JFileChooser(".");
-        fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
-        var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
-        fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
-                                                   mulFileName :
-                                                   entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
-
-        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
-            fileChooser.getSelectedFile() == null) {
-            return;
+        // If the first entity has no game, we link them all to a game. This is needed for C3 links.
+        boolean forcedLink = false;
+        if (entities.get(0).getGame() == null) {
+            forcedLink = true;
+            linkForce();
         }
-
-        File file = fileChooser.getSelectedFile();
-        if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
-            file = new File(file + "." + CG_FILEPATHMUL);
-        }
-
         try {
-            EntityListFile.saveTo(file, entities);
-        } catch (IOException e) {
-            logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            var fileChooser = new JFileChooser(".");
+            fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
+            var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+            fileChooser.setFileFilter(filter);
+            fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
+                                                    mulFileName :
+                                                    entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+
+            if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
+                fileChooser.getSelectedFile() == null) {
+                return;
+            }
+
+            File file = fileChooser.getSelectedFile();
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
+                file = new File(file + "." + CG_FILEPATHMUL);
+            }
+
+            try {
+                EntityListFile.saveTo(file, entities);
+            } catch (IOException e) {
+                logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            }
+        } finally {
+            if (forcedLink) {
+                unlinkForce();
+            }
         }
     }
 

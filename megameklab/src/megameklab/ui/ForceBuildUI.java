@@ -27,9 +27,13 @@
  */
 package megameklab.ui;
 
+import static megamek.client.ui.swing.util.UIUtil.menuItem;
+import static megamek.common.util.CollectionUtil.anyOneElement;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -43,7 +47,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.List;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
@@ -53,7 +62,10 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -61,6 +73,8 @@ import javax.swing.TransferHandler;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -68,13 +82,26 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import megamek.client.Client;
+import megamek.client.ui.swing.CustomMekDialog;
+import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.lobby.LobbyErrors;
+import megamek.client.ui.swing.lobby.LobbyUtility;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Crew;
 import megamek.common.Entity;
+import megamek.common.Game;
+import megamek.common.Player;
+import megamek.common.options.OptionsConstants;
+import megamek.common.preference.PreferenceManager;
+import megamek.common.util.C3Util;
+import megamek.common.util.C3Util.C3CapacityException;
+import megamek.common.util.C3Util.MismatchingC3MException;
+import megamek.common.util.C3Util.MissingC3MException;
 import megameklab.util.CConfig;
-import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.dialog.PrintQueueDialog;
 
-public class ForceBuildUI extends JFrame {
+public class ForceBuildUI extends JFrame implements ListSelectionListener, ActionListener{
 
     private static ForceBuildUI instance; // Singleton instance
 
@@ -83,6 +110,11 @@ public class ForceBuildUI extends JFrame {
     private DefaultTableModel tableModel;
     private JLabel totalBVLabel;
     private JScrollPane scrollPane;
+    private JPopupMenu rowPopupMenu = new JPopupMenu();;
+
+    private Client client;
+    private Game   game;
+    private Player player;
     
     private static final int COL_REMOVE = 0;
     private static final int COL_NAME = 1;
@@ -90,8 +122,18 @@ public class ForceBuildUI extends JFrame {
     private static final int COL_PILOTING = 3;
     private static final int COL_BV = 4;
 
-    private static final Integer[] SKILL_LEVELS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    static final String LMP_C3DISCONNECT = "C3DISCONNECT";
+    static final String LMP_C3CONNECT = "C3CONNECT";
+    static final String LMP_C3JOIN = "C3JOIN";
+    static final String LMP_C3FORMNHC3 = "C3FORMNHC3";
+    static final String LMP_C3FORMC3 = "C3FORMC3";
+    static final String LMP_C3LM = "C3LM";
+    static final String LMP_C3CM = "C3CM";
+    private static final String NOINFO = "|-1";
 
+    private static final Integer[] SKILL_LEVELS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    private static int lastPlayerId = 1;
+    
     // Private constructor for Singleton
     private ForceBuildUI() {
         super();
@@ -99,6 +141,7 @@ public class ForceBuildUI extends JFrame {
         setTitle(resourceMap.getString("ForceBuildDialog.windowName.text"));
         setMinimumSize(new Dimension(300, 200));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        createPopupMenu();
         createCenterPane();
         packWindow();
         setLocationRelativeTo(null);
@@ -117,6 +160,13 @@ public class ForceBuildUI extends JFrame {
                 }
             }
         });
+
+        client = new Client("", "", 0);
+        game = client.getGame();
+        game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
+        game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
+        player = new Player(1, "Nobody");
+        game.addPlayer(1, player);
     }
 
     /**
@@ -180,7 +230,7 @@ public class ForceBuildUI extends JFrame {
         if (entity.getCrew() == null) {
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
-        entity.getCrew().setName(null, 0);
+        entity.getCrew().setName("", 0);
         for (int i = 0; i < forceList.size(); i++) {
             if (forceList.get(i) == entity) {
                 // Entity already exists, select its row and bring window to front
@@ -195,7 +245,11 @@ public class ForceBuildUI extends JFrame {
                 return; // Don't add the duplicate
             }
         }
+        entity.setOwner(player);
+        entity.setId(game.getNextEntityId());
+        game.addEntity(entity, false);
         forceList.add(entity);
+        C3Util.wireC3(game, entity);
         final int newRowIndex = forceList.size() - 1;
         updateTableAndTotal();
         packWindow();
@@ -210,6 +264,8 @@ public class ForceBuildUI extends JFrame {
         if (index >= 0 && index < forceList.size()) {
             Entity entity = forceList.remove(index);
             entity.setCrew(new Crew(entity.defaultCrewType()));
+            entity.setGame(null);
+            entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, "Nobody"));
             tableModel.removeRow(index);
             updateTotalBVLabelOnly();
             packWindow();
@@ -235,6 +291,8 @@ public class ForceBuildUI extends JFrame {
     }
 
     private void updateTableAndTotal() {
+        int selectedRow = entityTable.getSelectedRow();
+        int scrollValue = scrollPane.getVerticalScrollBar().getValue();
         // Clear existing rows
         tableModel.setRowCount(0);
 
@@ -255,6 +313,10 @@ public class ForceBuildUI extends JFrame {
         }
 
         totalBVLabel.setText("Total BV: " + totalBV);
+        if (selectedRow >= 0 && selectedRow < tableModel.getRowCount()) {
+            entityTable.setRowSelectionInterval(selectedRow, selectedRow);
+        }
+        SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollValue));
     }
 
     /**
@@ -266,7 +328,45 @@ public class ForceBuildUI extends JFrame {
         return forceList;
     }
 
-    public void createCenterPane() {
+    private void createPopupMenu() {
+        rowPopupMenu.removeAll();
+
+        JMenuItem editItem = new JMenuItem("Edit Pilot/Equipment...");
+        Font currentFont = editItem.getFont();
+        editItem.setFont(currentFont.deriveFont(Font.BOLD));
+        editItem.addActionListener(e -> {
+            int selectedRow = entityTable.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < forceList.size()) {
+                openEntityConfiguration(forceList.get(selectedRow));
+            }
+        });
+        rowPopupMenu.add(editItem);
+
+        JMenuItem viewItem = new JMenuItem("Show Editor");
+        viewItem.addActionListener(e -> {
+            int selectedRow = entityTable.getSelectedRow();
+            if (selectedRow >= 0 && selectedRow < forceList.size()) {
+                openEntityInEditor(forceList.get(selectedRow));
+            }
+        });
+        rowPopupMenu.add(viewItem);
+
+        // --- C3 Menu ---
+        rowPopupMenu.add(c3Menu(true, forceList, client, instance));
+
+        // --- Delete Item ---
+        rowPopupMenu.addSeparator();
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(e -> {
+            int selectedRow = entityTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                removeEntity(selectedRow);
+            }
+        });
+        rowPopupMenu.add(deleteItem);
+    }
+
+    private void createCenterPane() {
         JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
         centerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -339,10 +439,33 @@ public class ForceBuildUI extends JFrame {
                 if (e.getClickCount() == 2) {
                     int row = entityTable.rowAtPoint(e.getPoint());
                     if (row >= 0 && row < forceList.size()) {
-                        Entity entityToFind = forceList.get(row);
-                        MegaMekLabTabbedUI.showEditorForEntity(entityToFind);
-                        getInstance().toFront();
-                        getInstance().requestFocus();
+                        openEntityConfiguration(forceList.get(row));
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+            
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    int row = entityTable.rowAtPoint(e.getPoint());
+                    if (row >= 0) {
+                        // Select the row that was right-clicked
+                        if (entityTable.getSelectedRow() != row) {
+                            entityTable.setRowSelectionInterval(row, row);
+                        }
+                        if (row < forceList.size()) {
+                            Entity selectedEntity = forceList.get(row);
+                            configureAndShowPopupMenu(selectedEntity, e);
+                        }
                     }
                 }
             }
@@ -426,6 +549,11 @@ public class ForceBuildUI extends JFrame {
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    private void openEntityInEditor(Entity entity) {
+        MegaMekLabTabbedUI.showEditorForEntity(entity);
+        getInstance().toFront();
+        getInstance().requestFocus();
+    }
     // Inner class for rendering the button in the table cell
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
@@ -445,6 +573,214 @@ public class ForceBuildUI extends JFrame {
                 setBackground(UIManager.getColor("Button.background"));
             }
             return this;
+        }
+    }
+
+    /**
+     * Returns a command string token containing the IDs of the given entities and a
+     * leading |
+     * E.g. |2,14,44,22
+     */
+    private static String enToken(Collection<Entity> entities) {
+        if (entities.isEmpty()) {
+            return "|-1";
+        }
+        List<String> ids = entities.stream().map(Entity::getId).map(Object::toString).collect(Collectors.toList());
+        return "|" + String.join(",", ids);
+    }
+
+    static String idString(Game game, int id) {
+        if (PreferenceManager.getClientPreferences().getShowUnitId()) {
+            return " <FONT" + UIUtil.colorString(UIUtil.uiGray()) + ">[" + id + "]</FONT>";
+        } else {
+            return "";
+        }
+    }
+
+    /** Returns the C3 computer submenu. */
+    private static JMenu c3Menu(boolean enabled, Collection<Entity> entities, Client client,
+            ActionListener listener) {
+        JMenu menu = new JMenu("C3");
+
+        if (entities.stream().anyMatch(Entity::hasAnyC3System)) {
+
+            menu.add(menuItem("Disconnect", LMP_C3DISCONNECT + NOINFO + enToken(entities), enabled, listener));
+
+            if (entities.stream().anyMatch(e -> e.hasC3MM() || e.hasC3M())) {
+                boolean allCM = entities.stream().allMatch(Entity::isC3CompanyCommander);
+                menu.add(menuItem("Set as C3 Company Master", LMP_C3CM + NOINFO + enToken(entities), !allCM, listener));
+                boolean allLM = entities.stream().allMatch(Entity::isC3IndependentMaster);
+                menu.add(menuItem("Set as C3 Lance Master", LMP_C3LM + NOINFO + enToken(entities), !allLM, listener));
+            }
+
+            // Special treatment if exactly a C3SSSM is selected
+            if (entities.size() == 4) {
+                long countM = entities.stream().filter(Entity::hasC3M).count();
+                long countS = entities.stream().filter(Entity::hasC3S).count();
+                if (countM == 1 && countS == 3) {
+                    Entity master = entities.stream().filter(Entity::hasC3M).findAny().get();
+                    menu.add(menuItem("Form C3 Lance", LMP_C3FORMC3 + "|" + master.getId() + enToken(entities), true,
+                            listener));
+                }
+            }
+
+            // Special treatment if a group of NhC3 is selected
+            if (entities.size() > 1 && entities.size() <= 6) {
+                Entity master = anyOneElement(entities);
+                if (entities.stream().allMatch(e -> C3Util.sameNhC3System(master, e))) {
+                    menu.add(menuItem("Form C3 Lance", LMP_C3FORMNHC3 + "|" + master.getId() + enToken(entities), true,
+                            listener));
+                }
+            }
+
+            Entity entity = entities.stream().filter(Entity::hasAnyC3System).findAny().get();
+            // ideally, find one slave or C3i/NC3/Nova to get some connection options
+            entity = entities.stream().filter(e -> e.hasC3S() || e.hasNhC3()).findAny().orElse(entity);
+            Game game = client.getGame();
+            ArrayList<String> usedNetIds = new ArrayList<>();
+
+            for (Entity other : client.getEntitiesVector()) {
+                // ignore enemies and self; only link the same type of C3
+                if (entity.isEnemyOf(other) || entity.equals(other)
+                        || (entity.hasC3i() != other.hasC3i())
+                        || (entity.hasNavalC3() != other.hasNavalC3())
+                        || (entity.hasNovaCEWS() != other.hasNovaCEWS())
+                        || !other.hasAnyC3System() || other.hasC3S()) {
+                    continue;
+                }
+                // maximum depth of a c3 network is 2 levels.
+                Entity eCompanyMaster = other.getC3Master();
+                if ((eCompanyMaster != null) && (eCompanyMaster.getC3Master() != eCompanyMaster)) {
+                    continue;
+                }
+                int nodes = other.calculateFreeC3Nodes();
+                if (other.hasC3MM() && entity.hasC3M() && other.C3MasterIs(other)) {
+                    nodes = other.calculateFreeC3MNodes();
+                }
+                if (entity.C3MasterIs(other)) {
+                    nodes++;
+                }
+                if ((entity.hasNhC3()) && entity.onSameC3NetworkAs(other)) {
+                    nodes++;
+                }
+
+                if (other.hasNhC3()) {
+                    // Don't add the following checks to the line above
+                    if (!entity.onSameC3NetworkAs(other) && !usedNetIds.contains(other.getC3NetId())) {
+                        String item = "<HTML>Join " + other.getShortNameRaw() + idString(game, other.getId());
+                        item += " (" + other.getC3NetId() + ")";
+                        item += (nodes == 0 ? " - full" : " - " + nodes + " free spots");
+                        menu.add(menuItem(item, LMP_C3JOIN + "|" + other.getId() + enToken(entities), nodes != 0,
+                                listener));
+                        usedNetIds.add(other.getC3NetId());
+                    }
+
+                } else if (other.isC3CompanyCommander() && other.hasC3MM()) {
+                    String item = "<HTML>Connect to " + other.getShortNameRaw() + idString(game, other.getId());
+                    item += " (" + other.getC3NetId() + ")";
+                    item += (nodes == 0 ? " - full" : " - " + nodes + " free spots");
+                    menu.add(menuItem(item, LMP_C3CONNECT + "|" + other.getId() + enToken(entities), nodes != 0,
+                            listener));
+
+                } else if (other.isC3CompanyCommander() == entity.hasC3M()
+                        && !entity.isC3CompanyCommander()) {
+                    String item = "<HTML>Connect to " + other.getShortNameRaw() + idString(game, other.getId());
+                    item += " (" + other.getC3NetId() + ")";
+                    if (entity.C3MasterIs(other)) {
+                        item += " - already connected";
+                        nodes = 0;
+                    } else {
+                        item += (nodes == 0 ? " - full" : " - " + nodes + " free spots");
+                    }
+                    menu.add(menuItem(item, LMP_C3CONNECT + "|" + other.getId() + enToken(entities), nodes != 0,
+                            listener));
+                }
+            }
+        }
+        menu.setEnabled(enabled && menu.getItemCount() > 0);
+        return menu;
+    }
+
+
+    private void configureAndShowPopupMenu(Entity selectedEntity, MouseEvent e) {
+        createPopupMenu();
+        rowPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+    }
+
+    /**
+     * Opens the CustomMekDialog for the given entity.
+     * @param entity The entity to configure.
+     */
+    private void openEntityConfiguration(Entity entity) {
+        CustomMekDialog cmd = new CustomMekDialog(instance, client, List.of(entity), true, false);
+        cmd.setSize(new Dimension(GUIPreferences.getInstance().getCustomUnitWidth(),
+                GUIPreferences.getInstance().getCustomUnitHeight()));
+        cmd.refreshOptions();
+        cmd.refreshQuirks();
+        cmd.refreshPartReps();
+        cmd.setTitle(entity.getShortName());
+        cmd.setVisible(true);
+        // Update table in case of BV or Pilot changes
+        updateTableAndTotal();
+        MegaMekLabTabbedUI.refreshEntity(entity);
+    }
+    
+    @Override
+    public void valueChanged(ListSelectionEvent event) {
+        if (event.getValueIsAdjusting()) {
+            return;
+        }
+        updateTableAndTotal();
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        StringTokenizer st = new StringTokenizer(e.getActionCommand(), "|");
+        String command = st.nextToken();
+        String info = st.nextToken();
+        Set<Entity> entities = LobbyUtility.getEntities(game, st.nextToken());
+        System.out.println(e.getActionCommand());
+        System.out.println(entities);
+        try {
+        switch (command) {
+            case LMP_C3DISCONNECT:
+                C3Util.disconnectFromNetwork(game, forceList);
+                break;
+
+            case LMP_C3CM:
+                C3Util.setCompanyMaster(forceList);
+                break;
+
+            case LMP_C3LM:
+                C3Util.setLanceMaster(entities);
+                break;
+
+            case LMP_C3JOIN:
+                int master = Integer.parseInt(info);
+                C3Util.joinNh(game, entities, master, false);
+                break;
+
+            case LMP_C3CONNECT:
+                master = Integer.parseInt(info);
+                C3Util.connect(game, entities, master, false);
+                break;
+
+            case LMP_C3FORMC3:
+                master = Integer.parseInt(info);
+                C3Util.connect(game, entities, master, true);
+                break;
+
+            case LMP_C3FORMNHC3:
+                master = Integer.parseInt(info);
+                C3Util.joinNh(game, entities, master, true);
+                break;
+        }
+        } catch (MissingC3MException missing) {
+            LobbyErrors.showOnlyC3M(this);
+        } catch (MismatchingC3MException mismatch) {
+            LobbyErrors.showSameC3(this);
+        } catch (C3CapacityException capacity) {
+            LobbyErrors.showExceedC3Capacity(this);
         }
     }
 
