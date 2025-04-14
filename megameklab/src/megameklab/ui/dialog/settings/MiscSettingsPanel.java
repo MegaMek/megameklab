@@ -73,7 +73,11 @@ public class MiscSettingsPanel extends JPanel {
 
         cbMulOpenBehaviour.setRenderer(miscComboBoxRenderer);
         cbMulOpenBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
-        cbMulOpenBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR) ? MulDndBehaviour.EXPORT : MulDndBehaviour.PRINT);
+        int behaviourValue = CConfig.getIntParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR);
+        MulDndBehaviour[] allValues = MulDndBehaviour.values();
+        if (behaviourValue >= 0 && behaviourValue < allValues.length) {
+            cbMulOpenBehaviour.setSelectedItem(allValues[behaviourValue]);
+        }
         JLabel mulOpenLabel = new JLabel(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.text"));
         mulOpenLabel.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
 
@@ -162,7 +166,9 @@ public class MiscSettingsPanel extends JPanel {
                 ? MMLStartUp.SPLASH_SCREEN
                 : startUpMMComboBox.getSelectedItem();
         miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
-        miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR, String.valueOf(cbMulOpenBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
+        MulDndBehaviour selectedMulBehaviour = cbMulOpenBehaviour.getSelectedItem();
+        int ordinalToSave = (selectedMulBehaviour != null) ? selectedMulBehaviour.ordinal() : MulDndBehaviour.LOAD_FORCE.ordinal();
+        miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR, String.valueOf(ordinalToSave));
         // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
         return miscSettings;
     }

@@ -27,8 +27,9 @@
  */
 package megameklab.ui;
 
-import static megamek.client.ui.swing.util.UIUtil.menuItem;
+import static megamek.client.ui.swing.util.UIUtil.*;
 import static megamek.common.util.CollectionUtil.anyOneElement;
+import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,31 +40,41 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TooManyListenersException;
 import java.util.stream.Collectors;
 import java.util.List;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -72,9 +83,12 @@ import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.CompoundBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -82,7 +96,13 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.util.Strings;
+
+import java.awt.Color;
+
 import megamek.client.Client;
+import megamek.client.ui.Messages;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.lobby.LobbyErrors;
@@ -90,6 +110,7 @@ import megamek.client.ui.swing.lobby.LobbyUtility;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Crew;
 import megamek.common.Entity;
+import megamek.common.EntityListFile;
 import megamek.common.Game;
 import megamek.common.Player;
 import megamek.common.options.OptionsConstants;
@@ -98,10 +119,14 @@ import megamek.common.util.C3Util;
 import megamek.common.util.C3Util.C3CapacityException;
 import megamek.common.util.C3Util.MismatchingC3MException;
 import megamek.common.util.C3Util.MissingC3MException;
+import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
+import megameklab.util.MULManager;
+import megameklab.util.UnitMemento;
 import megameklab.ui.dialog.PrintQueueDialog;
 
 public class ForceBuildUI extends JFrame implements ListSelectionListener, ActionListener{
+    private static final MMLogger logger = MMLogger.create(ForceBuildUI.class);
 
     private static ForceBuildUI instance; // Singleton instance
 
@@ -115,6 +140,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private Client client;
     private Game   game;
     private Player player;
+    private final String mulFileName = null;
     
     private static final int COL_REMOVE = 0;
     private static final int COL_NAME = 1;
@@ -122,6 +148,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private static final int COL_PILOTING = 3;
     private static final int COL_BV = 4;
 
+    private static ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
     static final String LMP_C3DISCONNECT = "C3DISCONNECT";
     static final String LMP_C3CONNECT = "C3CONNECT";
     static final String LMP_C3JOIN = "C3JOIN";
@@ -137,11 +164,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     // Private constructor for Singleton
     private ForceBuildUI() {
         super();
-        final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
         setTitle(resourceMap.getString("ForceBuildDialog.windowName.text"));
         setMinimumSize(new Dimension(300, 200));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        createPopupMenu();
         createCenterPane();
         packWindow();
         setLocationRelativeTo(null);
@@ -160,7 +185,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 }
             }
         });
-
         client = new Client("", "", 0);
         game = client.getGame();
         game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
@@ -202,6 +226,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         view.setVisible(true);
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     private void packWindow() {
         int rowHeight = entityTable.getRowHeight();
         int headerHeight = entityTable.getTableHeader().getPreferredSize().height;
@@ -223,30 +251,55 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         }
     }
 
+    public void clear() {
+        forceList.clear();
+        tableModel.setRowCount(0);
+        totalBVLabel.setText("Total BV: 0");
+        packWindow();
+    }
+
     /**
      * Adds an entity to the force list and updates the table.
      */
-    public void addEntity(Entity entity) {
+    public void addEntity(Entity entityToAdd) {
+        int foundIndex = -1;
+        for (int i = 0; i < forceList.size(); i++) {
+            if (forceList.get(i) == entityToAdd) {
+                foundIndex = i;
+                break;
+            }
+        }
+        Entity entity;
+        // Handle duplicates
+        if (foundIndex >= 0) {
+            int choicePrompt = JOptionPane.showConfirmDialog(null,
+                    "The selected unit is already in the force. Do you want to add it again as a new unit?",
+                    "Unit already in the Force",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            if (choicePrompt != JOptionPane.YES_OPTION) {
+                final int foundIndexFinal = foundIndex;
+                SwingUtilities.invokeLater(() -> {
+                    entityTable.setRowSelectionInterval(foundIndexFinal, foundIndexFinal);
+                    entityTable.scrollRectToVisible(entityTable.getCellRect(foundIndexFinal, 0, true));
+                    this.toFront();
+                    this.requestFocus();
+                });
+                return;
+            }
+            UnitMemento unitMemento = new UnitMemento(entityToAdd, MegaMekLabTabbedUI.getEditorForEntity(entityToAdd));
+            entity = unitMemento.createUnit();
+        } else {
+            entity = entityToAdd;
+        }
         if (entity.getCrew() == null) {
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
         entity.getCrew().setName("", 0);
-        for (int i = 0; i < forceList.size(); i++) {
-            if (forceList.get(i) == entity) {
-                // Entity already exists, select its row and bring window to front
-                final int rowIndex = i;
-                SwingUtilities.invokeLater(() -> {
-                    entityTable.setRowSelectionInterval(rowIndex, rowIndex);
-                    // Ensure the selected row is visible
-                    entityTable.scrollRectToVisible(entityTable.getCellRect(rowIndex, 0, true));
-                    this.toFront();
-                    this.requestFocus();
-                });
-                return; // Don't add the duplicate
-            }
-        }
         entity.setOwner(player);
-        entity.setId(game.getNextEntityId());
+        if (entity.getId() == -1) {
+            entity.setId(game.getNextEntityId());
+        }
         game.addEntity(entity, false);
         forceList.add(entity);
         C3Util.wireC3(game, entity);
@@ -260,11 +313,22 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     }
 
     // Instance method to remove an entity
-    public void removeEntity(int index) {
+    public void removeEntity(Entity entity) {
+        for (int i = 0; i < forceList.size(); i++) {
+            if (forceList.get(i) == entity) {
+                removeEntityById(i);
+                return;
+            }
+        }
+    }
+
+    // Instance method to remove an entity
+    public void removeEntityById(int index) {
         if (index >= 0 && index < forceList.size()) {
             Entity entity = forceList.remove(index);
-            entity.setCrew(new Crew(entity.defaultCrewType()));
+            game.removeEntity(entity.getId(), 0);
             entity.setGame(null);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
             entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, "Nobody"));
             tableModel.removeRow(index);
             updateTotalBVLabelOnly();
@@ -308,7 +372,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             if (gSkill >= 0) gunnery = gSkill;
             if (pSkill >= 0) piloting = pSkill;
 
-            tableModel.addRow(new Object[]{UIManager.getIcon("InternalFrame.closeIcon"), entity.getShortNameRaw(), gunnery, piloting, bv});
+            tableModel.addRow(new Object[]{UIManager.getIcon("InternalFrame.closeIcon"),
+            UnitFormatter.getCell(entity),
+            gunnery, piloting, bv});
             totalBV += bv;
         }
 
@@ -328,39 +394,48 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         return forceList;
     }
 
-    private void createPopupMenu() {
+    private void showPopup(Component component, int x, int y) {
+        List<Entity> selectedEntities = new ArrayList<>();
+        int[] selection = entityTable.getSelectedRows();
+        if (selection.length == 0) {
+            return;
+        }
+        for (int i : selection) {
+            if (i >= 0 && i < forceList.size()) {
+                Entity entity = forceList.get(i);
+                selectedEntities.add(entity);
+            }
+        }
+        populatePopupMenu(selectedEntities);
+        rowPopupMenu.show(component, x, y);
+    }
+
+    private void populatePopupMenu(List<Entity> selectedEntities) {
         rowPopupMenu.removeAll();
 
-        JMenuItem editItem = new JMenuItem("Edit Pilot/Equipment...");
-        Font currentFont = editItem.getFont();
-        editItem.setFont(currentFont.deriveFont(Font.BOLD));
-        editItem.addActionListener(e -> {
-            int selectedRow = entityTable.getSelectedRow();
-            if (selectedRow >= 0 && selectedRow < forceList.size()) {
-                openEntityConfiguration(forceList.get(selectedRow));
-            }
-        });
-        rowPopupMenu.add(editItem);
-
-        JMenuItem viewItem = new JMenuItem("Show Editor");
+        JMenuItem viewItem = new JMenuItem("Open Editor");
+        Font currentFont = viewItem.getFont();
+        viewItem.setFont(currentFont.deriveFont(Font.BOLD));
         viewItem.addActionListener(e -> {
-            int selectedRow = entityTable.getSelectedRow();
-            if (selectedRow >= 0 && selectedRow < forceList.size()) {
-                openEntityInEditor(forceList.get(selectedRow));
-            }
+                openEntityInEditor(selectedEntities.get(0));
         });
         rowPopupMenu.add(viewItem);
 
+        JMenuItem editItem = new JMenuItem("Edit Pilot/Equipment...");
+        editItem.addActionListener(e -> {
+            openEntityConfiguration(selectedEntities.get(0));
+        });
+        rowPopupMenu.add(editItem);
+
+        rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
         // --- C3 Menu ---
-        rowPopupMenu.add(c3Menu(true, forceList, client, instance));
 
         // --- Delete Item ---
         rowPopupMenu.addSeparator();
         JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
-            int selectedRow = entityTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                removeEntity(selectedRow);
+            for (Entity entity : selectedEntities) {
+                removeEntity(entity);
             }
         });
         rowPopupMenu.add(deleteItem);
@@ -431,15 +506,19 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         entityTable.setDragEnabled(true);
         entityTable.setDropMode(DropMode.INSERT_ROWS);
         entityTable.setTransferHandler(new ForceListTransferHandler());
-        entityTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        entityTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         entityTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
+                    int col = entityTable.columnAtPoint(e.getPoint());
+                    if (col == COL_REMOVE) {
+                        return;
+                    }
                     int row = entityTable.rowAtPoint(e.getPoint());
                     if (row >= 0 && row < forceList.size()) {
-                        openEntityConfiguration(forceList.get(row));
+                        openEntityInEditor(forceList.get(row));
                     }
                 }
             }
@@ -456,17 +535,23 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             
             private void showPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    int row = entityTable.rowAtPoint(e.getPoint());
-                    if (row >= 0) {
-                        // Select the row that was right-clicked
-                        if (entityTable.getSelectedRow() != row) {
+                    int col = entityTable.columnAtPoint(e.getPoint());
+                    if (col == COL_REMOVE) {
+                        return;
+                    }
+                    if (entityTable.getSelectedRowCount() == 0) {
+                        // Select row under cursor if no selection exists for context menu
+                        int row = entityTable.rowAtPoint(e.getPoint());
+                        if (row >= 0) {
                             entityTable.setRowSelectionInterval(row, row);
-                        }
-                        if (row < forceList.size()) {
-                            Entity selectedEntity = forceList.get(row);
-                            configureAndShowPopupMenu(selectedEntity, e);
+                        } else {
+                            return;
                         }
                     }
+                    if (entityTable.getSelectedRowCount() == 0) {
+                        return;
+                    }
+                    ForceBuildUI.this.showPopup(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -483,8 +568,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         // Name Column
         TableColumn nameColumn = columnModel.getColumn(COL_NAME);
-        nameColumn.setPreferredWidth(200);
-        nameColumn.setMinWidth(150);
+        nameColumn.setPreferredWidth(250);
+        nameColumn.setMinWidth(200);
 
         // Gunnery Column
         TableColumn gunneryColumn = columnModel.getColumn(COL_GUNNERY);
@@ -513,6 +598,73 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         pilotingColumn.setCellRenderer(rightRenderer);
 
         scrollPane = new JScrollPane(entityTable);
+        final Border originalOuterBorder = scrollPane.getBorder();
+        final int highlightThickness = 3;
+        final Border highlightInnerBorder = BorderFactory.createLineBorder(Color.YELLOW, highlightThickness); // Define highlight visual
+        final Border paddingInnerBorder = BorderFactory.createEmptyBorder(highlightThickness, highlightThickness, highlightThickness, highlightThickness); // Padding matching highlight thickness
+
+        // Base border: Original L&F border (if any) + padding for highlight space
+        final Border baseBorder = (originalOuterBorder != null)
+                ? BorderFactory.createCompoundBorder(originalOuterBorder, paddingInnerBorder)
+                : paddingInnerBorder; // Use only padding if no original border
+
+        // Highlighted border: Original L&F border (if any) + actual highlight
+        final Border activeHighlightBorder = (originalOuterBorder != null)
+                ? BorderFactory.createCompoundBorder(originalOuterBorder, highlightInnerBorder)
+                : highlightInnerBorder; // Use only highlight if no original border
+
+        scrollPane.setBorder(baseBorder); // Set initial border which includes padding
+
+        // --- DnD Border Highlighting ---
+        try {
+            entityTable.getDropTarget().addDropTargetListener(new DropTargetAdapter() {
+
+                private boolean isMulDrag(DropTargetDragEvent dtde) {
+                    return dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+                }
+
+                @Override
+                public void dragEnter(DropTargetDragEvent dtde) {
+                    if (isMulDrag(dtde)) {
+                        scrollPane.setBorder(activeHighlightBorder);
+                    } else {
+                        scrollPane.setBorder(baseBorder);
+                    }
+                    scrollPane.repaint();
+                }
+
+                @Override
+                public void dragOver(DropTargetDragEvent dtde) {
+                    if (isMulDrag(dtde)) {
+                        if (scrollPane.getBorder() != activeHighlightBorder) {
+                            scrollPane.setBorder(activeHighlightBorder);
+                            scrollPane.repaint();
+                        }
+                    } else {
+                        if (scrollPane.getBorder() != baseBorder) {
+                            scrollPane.setBorder(baseBorder);
+                            scrollPane.repaint();
+                        }
+                    }
+                }
+
+                @Override
+                public void dragExit(DropTargetEvent dte) {
+                    scrollPane.setBorder(baseBorder);
+                    scrollPane.repaint();
+                }
+
+                @Override
+                public void drop(DropTargetDropEvent dtde) {
+                    scrollPane.setBorder(baseBorder);
+                    scrollPane.repaint();
+                }
+            });
+        } catch (TooManyListenersException e) {
+            logger.error("Could not add custom DropTargetListener for border highlighting.", e);
+        }
+        // --- End DnD Border Highlighting ---
+
         centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         // --- Bottom Panel ---
@@ -534,6 +686,14 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             new PrintQueueDialog(instance, true, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(pdfExportbutton, BorderLayout.WEST);
+        
+        // Export MUL
+        JButton mulExportButton = new JButton("Save as MUL");
+        mulExportButton.addActionListener(e -> {
+            exportAsMul();
+        });
+        buttonPanel.add(mulExportButton, BorderLayout.WEST);
+
         bottomPanel.add(buttonPanel, BorderLayout.WEST);
 
         // Total BV Label
@@ -598,10 +758,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     }
 
     /** Returns the C3 computer submenu. */
-    private static JMenu c3Menu(boolean enabled, Collection<Entity> entities, Client client,
+    private static JMenu c3Menu(boolean enabled, List<Entity> entities, Client client,
             ActionListener listener) {
         JMenu menu = new JMenu("C3");
-
         if (entities.stream().anyMatch(Entity::hasAnyC3System)) {
 
             menu.add(menuItem("Disconnect", LMP_C3DISCONNECT + NOINFO + enToken(entities), enabled, listener));
@@ -701,10 +860,35 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         return menu;
     }
 
+    private void exportAsMul() {
+        if (forceList.isEmpty()) {
+            return;
+        }
+        try {
+            var fileChooser = new JFileChooser(".");
+            fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
+            var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+            fileChooser.setFileFilter(filter);
+            fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
+                                                    mulFileName :
+                                                    forceList.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
 
-    private void configureAndShowPopupMenu(Entity selectedEntity, MouseEvent e) {
-        createPopupMenu();
-        rowPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            if (!(fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) ||
+                fileChooser.getSelectedFile() == null) {
+                return;
+            }
+            File file = fileChooser.getSelectedFile();
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
+                file = new File(file + "." + CG_FILEPATHMUL);
+            }
+
+            try {
+                EntityListFile.saveTo(file, forceList);
+            } catch (IOException e) {
+                logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            }
+        } finally {
+        }
     }
 
     /**
@@ -739,42 +923,41 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         String command = st.nextToken();
         String info = st.nextToken();
         Set<Entity> entities = LobbyUtility.getEntities(game, st.nextToken());
-        System.out.println(e.getActionCommand());
-        System.out.println(entities);
         try {
-        switch (command) {
-            case LMP_C3DISCONNECT:
-                C3Util.disconnectFromNetwork(game, forceList);
-                break;
+            switch (command) {
+                case LMP_C3DISCONNECT:
+                    C3Util.disconnectFromNetwork(game, entities);
+                    break;
 
-            case LMP_C3CM:
-                C3Util.setCompanyMaster(forceList);
-                break;
+                case LMP_C3CM:
+                    C3Util.setCompanyMaster(entities);
+                    break;
 
-            case LMP_C3LM:
-                C3Util.setLanceMaster(entities);
-                break;
+                case LMP_C3LM:
+                    C3Util.setLanceMaster(entities);
+                    break;
 
-            case LMP_C3JOIN:
-                int master = Integer.parseInt(info);
-                C3Util.joinNh(game, entities, master, false);
-                break;
+                case LMP_C3JOIN:
+                    int master = Integer.parseInt(info);
+                    C3Util.joinNh(game, entities, master, false);
+                    break;
 
-            case LMP_C3CONNECT:
-                master = Integer.parseInt(info);
-                C3Util.connect(game, entities, master, false);
-                break;
+                case LMP_C3CONNECT:
+                    master = Integer.parseInt(info);
+                    C3Util.connect(game, entities, master, false);
+                    break;
 
-            case LMP_C3FORMC3:
-                master = Integer.parseInt(info);
-                C3Util.connect(game, entities, master, true);
-                break;
+                case LMP_C3FORMC3:
+                    master = Integer.parseInt(info);
+                    C3Util.connect(game, entities, master, true);
+                    break;
 
-            case LMP_C3FORMNHC3:
-                master = Integer.parseInt(info);
-                C3Util.joinNh(game, entities, master, true);
-                break;
-        }
+                case LMP_C3FORMNHC3:
+                    master = Integer.parseInt(info);
+                    C3Util.joinNh(game, entities, master, true);
+                    break;
+            }
+            updateTableAndTotal();
         } catch (MissingC3MException missing) {
             LobbyErrors.showOnlyC3M(this);
         } catch (MismatchingC3MException mismatch) {
@@ -783,7 +966,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             LobbyErrors.showExceedC3Capacity(this);
         }
     }
-
     class ForceListTransferHandler extends TransferHandler {
         private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
         private int[] rows = null;
@@ -795,6 +977,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             if (rows == null || rows.length == 0) {
                 return null;
             }
+            // Only allow single row drag for reordering
             if (rows.length > 1) {
                 return null;
             }
@@ -803,15 +986,29 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         @Override
         public boolean canImport(TransferSupport support) {
-            if (!support.isDrop() || !support.isDataFlavorSupported(localObjectFlavor)) {
-                return false;
+            // Allow drop if it's our internal row move OR if it's a file list
+            if (support.isDataFlavorSupported(localObjectFlavor)) {
+                if (!support.isDrop()) {
+                    return false;
+                }
+                JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
+                // Do not allow dropping onto the source row
+                if (rows != null && dl.getRow() == rows[0]) {
+                    return false;
+                }
+                // Ensure insertion line is SHOWN for row moves
+                support.setShowDropLocation(true); 
+                return true;
             }
-            JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
-            // Do not allow dropping onto the source row
-            if (rows != null && dl.getRow() == rows[0]) {
-                return false;
+            if (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                // We check if is a file and we allow without showing the insertion line
+                support.setShowDropLocation(false);
+                return true;
             }
-            return true;
+            // Reject other flavors
+            support.setShowDropLocation(false);
+            // Reject other flavors
+            return false;
         }
 
         @Override
@@ -821,32 +1018,56 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         @Override
         public boolean importData(TransferSupport support) {
-            if (!canImport(support)) {
-                return false;
+            // Handle internal row move first
+            if (support.isDataFlavorSupported(localObjectFlavor)) {
+                // Check if the import is valid
+                if (!canImport(support)) {
+                    return false;
+                }
+                JTable target = (JTable) support.getComponent();
+                JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
+                int index = dl.getRow();
+                int max = tableModel.getRowCount();
+                if (index < 0 || index > max) {
+                    index = max;
+                }
+                try {
+                    Integer rowFrom = (Integer) support.getTransferable().getTransferData(localObjectFlavor);
+                    if (rowFrom != -1 && rowFrom != index) {
+                        // Adjust drop index if dragging downwards
+                        int dropIndex = (rowFrom < index) ? index - 1 : index;
+                        // Reorder the underlying forceList
+                        Entity movedEntity = forceList.remove(rowFrom.intValue());
+                        forceList.add(dropIndex, movedEntity);
+                        updateTableAndTotal();
+                        // Select the moved row after the update
+                        target.setRowSelectionInterval(dropIndex, dropIndex);
+                        return true;
+                    }
+                } catch (UnsupportedFlavorException | IOException e) {
+                    logger.error("Error importing row move data: ", e);
+                }
+                return false; // Row move failed or was invalid
             }
 
-            JTable target = (JTable) support.getComponent();
-            JTable.DropLocation dl = (JTable.DropLocation) support.getDropLocation();
-            int index = dl.getRow();
-            int max = tableModel.getRowCount();
-            if (index < 0 || index > max) {
-                index = max;
-            }
-            try {
-                Integer rowFrom = (Integer) support.getTransferable().getTransferData(localObjectFlavor);
-                if (rowFrom != -1 && rowFrom != index) {
-                    // Adjust drop index if dragging downwards
-                    int dropIndex = (rowFrom < index) ? index - 1 : index;
-                    // Reorder the underlying forceList
-                    Entity movedEntity = forceList.remove(rowFrom.intValue());
-                    forceList.add(dropIndex, movedEntity);
-                    updateTableAndTotal();
-                    // Select the moved row after the update
-                    target.setRowSelectionInterval(dropIndex, dropIndex);
-                    return true;
+            // Handle file list drop
+            if (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                try {
+                    @SuppressWarnings("unchecked")
+                    List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    boolean processed = false;
+                    for (File file : files) {
+                        if (file.isFile() && file.getName().toLowerCase().endsWith(".mul")) {
+                            // Process the MUL file using MULManager
+                            MULManager.processMULFile(file, ForceBuildUI.this);
+                            processed = true;
+                        }
+                    }
+                    return processed;
+                } catch (UnsupportedFlavorException | IOException e) {
+                    logger.error("Error importing dropped files: ", e);
                 }
-            } catch (UnsupportedFlavorException | IOException e) {
-                e.printStackTrace();
+                return false; // File import failed
             }
 
             return false;
@@ -854,14 +1075,17 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         @Override
         protected void exportDone(JComponent source, Transferable data, int action) {
-            cleanup(action == MOVE);
+            // Only cleanup if it was a row move
+            if (data instanceof RowTransferable) {
+                cleanup(action == MOVE);
+            }
         }
 
         private void cleanup(boolean move) {
             rows = null;
         }
 
-        // Helper Transferable class
+        // Helper Transferable class for row moves
         class RowTransferable implements Transferable {
             private Integer row;
 
@@ -924,7 +1148,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         @Override
         public void actionPerformed(ActionEvent e) {
             fireEditingStopped();
-            removeEntity(currentRow);
+            removeEntityById(currentRow);
         }
 
         @Override
@@ -935,6 +1159,69 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         @Override
         protected void fireEditingStopped() {
             super.fireEditingStopped();
+        }
+    }
+
+    class UnitFormatter {
+        
+        /**
+         * Returns the formatted internationalized text for the given key in the
+         * resource bundle,
+         * replacing occurrences of {x} in the message with the contents of args.
+         */
+        public static String getString(String key, Object... args) {
+            return MessageFormat.format(resourceMap.getString(key), args);
+        }
+
+        static boolean dotSpacer(StringBuilder current, boolean firstElement) {
+            if (!firstElement) {
+                current.append(DOT_SPACER);
+            }
+            return false;
+        }
+        public static String getCell(Entity entity) {
+            StringBuilder result = new StringBuilder("<HTML><NOBR>" + fontHTML());
+            result.append(entity.getShortNameRaw() + "</FONT>");
+            if (entity.hasC3i() || entity.hasNavalC3()) {
+                result.append(DOT_SPACER + UIUtil.fontHTML(uiC3Color()));
+                String msg_c3i = getString("ForceBuildDialog.cell.C3i");
+                String msg_nc3 = getString("ForceBuildDialog.cell.NC3");
+
+                String c3Name = entity.hasC3i() ? msg_c3i : msg_nc3;
+                if (entity.calculateFreeC3Nodes() >= 5) {
+                    result.append(c3Name + UNCONNECTED_SIGN);
+                } else {
+                    result.append(c3Name + CONNECTED_SIGN + entity.getC3NetId());
+                }
+                result.append("</FONT>");
+            }
+            if (entity.hasC3()) {
+                String msg_c3sabrv = getString("ForceBuildDialog.cell.C3SAbrv");
+                String msg_c3m = getString("ForceBuildDialog.cell.C3M");
+                String msg_c3mcc = getString("ForceBuildDialog.cell.C3MCC");
+
+                result.append(DOT_SPACER + UIUtil.fontHTML(uiC3Color()));
+                if (entity.getC3Master() == null) {
+                    if (entity.hasC3S()) {
+                        result.append(msg_c3sabrv + UNCONNECTED_SIGN);
+                    }
+                    if (entity.hasC3M()) {
+                        result.append(msg_c3m);
+                    }
+                } else if (entity.C3MasterIs(entity)) {
+                    result.append(msg_c3mcc);
+                } else {
+                    if (entity.hasC3S()) {
+                        result.append(msg_c3sabrv + CONNECTED_SIGN);
+                    } else {
+                        result.append(msg_c3m + CONNECTED_SIGN);
+                    }
+                    result.append(entity.getC3Master().getChassis());
+                }
+                result.append("</FONT>");
+            }
+
+            return result.toString();
         }
     }
 }

@@ -288,35 +288,9 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     private void restoreUnitState(UnitMemento state) {
         try {
-            final Entity restoredEntity = new MekFileParser(state.getEntityState()).getEntity();
+            final Entity restoredEntity = state.createUnit();
             if (restoredEntity != null) {
                 entity = restoredEntity;
-                if (state.getArmorTonnage() >= 0) {
-                    entity.setArmorTonnage(state.getArmorTonnage());
-                }
-                // Restore unallocated equipment if available
-                String unallocatedEquipment = state.getUnallocatedEquipment();
-                if (unallocatedEquipment != null && !unallocatedEquipment.isEmpty()) {
-                    try (Scanner sc = new Scanner(unallocatedEquipment)) {
-                        int unallocatedEquipmentCount = Integer.parseInt(sc.nextLine());
-                        for (int i = 0; i < unallocatedEquipmentCount; i++) {
-                            try {
-                                String line = sc.nextLine();
-                                String[] parts = line.split(Pattern.quote(MtfFile.SIZE));
-                                EquipmentType type = EquipmentType.get(parts[0]);
-                                Mounted<?> mounted = Mounted.createMounted(entity, type);
-                                if (parts.length > 1) {
-                                    mounted.setSize(Double.parseDouble(parts[1]));
-                                }
-                                entity.addEquipment(mounted, Entity.LOC_NONE, false);
-                            } catch (Exception e) {
-                                logger.warn("Could not restore unallocated equipment item", e);
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.warn("Could not restore unallocated equipment", e);
-                    }
-                }
                 refreshAll();
             }
         } catch (Exception e) {

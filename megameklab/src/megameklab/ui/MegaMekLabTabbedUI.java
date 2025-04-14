@@ -388,6 +388,24 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
+     * Finds an open editor tab for the given entity
+     *
+     * @param entityToFind The entity
+     */
+    public static synchronized MegaMekLabMainUI getEditorForEntity(Entity entityToFind) {
+        if (entityToFind == null) {
+            return null;
+        }
+        // Try to find the entity in the open editors
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getEntity() == entityToFind) {
+                return editor;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Finds an open editor tab for the given entity, brings its window to the front,
      * and selects the tab. If no editor is found, creates a new tab in the first
      * available window.
@@ -395,21 +413,15 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param entityToFind The entity to show the editor for.
      */
     public static synchronized void showEditorForEntity(Entity entityToFind) {
-        if (entityToFind == null) {
-            return;
-        }
-
-        // Try to find the entity in the open editors
-        for (MegaMekLabMainUI editor : editors) {
-            if (editor.getEntity() == entityToFind) {
-                MegaMekLabTabbedUI owner = editor.getTabOwner();
-                if (owner != null) {
-                    owner.setVisible(true);
-                    owner.toFront();
-                    owner.requestFocus();
-                    owner.tabs.setSelectedComponent(editor);
-                    return; // Found and activated
-                }
+        MegaMekLabMainUI editor = getEditorForEntity(entityToFind);
+        if (editor != null) {
+            MegaMekLabTabbedUI owner = editor.getTabOwner();
+            if (owner != null) {
+                owner.setVisible(true);
+                owner.toFront();
+                owner.requestFocus();
+                owner.tabs.setSelectedComponent(editor);
+                return; // Found and activated
             }
         }
 

@@ -18,7 +18,6 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +45,7 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
+import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -81,6 +81,12 @@ public class StatusBar extends ITab {
         btnRefresh.setToolTipText("Refresh the UI, possibly repairing it if it is in a broken state.");
         btnRefresh.addActionListener(evt -> refresh.refreshAll());
 
+        JButton btnAddToForce = new JButton("Add to Force");
+        btnAddToForce.setToolTipText("Add this your unit to the current force.");
+        btnAddToForce.addActionListener(evt -> {
+            ForceBuildUI.showAndAddEntity(getEntity());
+        });
+
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
 
@@ -91,6 +97,7 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
+        add(btnAddToForce);
         add(btnRefresh);
         add(tons);
         add(bvLabel);
