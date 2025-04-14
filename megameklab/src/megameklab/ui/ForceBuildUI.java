@@ -110,7 +110,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private DefaultTableModel tableModel;
     private JLabel totalBVLabel;
     private JScrollPane scrollPane;
-    private JPopupMenu rowPopupMenu = new JPopupMenu();;
+    private JPopupMenu rowPopupMenu = new JPopupMenu();
 
     private Client client;
     private Game   game;
@@ -133,7 +133,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
     private static final Integer[] SKILL_LEVELS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
     private static int lastPlayerId = 1;
-    
+
     // Private constructor for Singleton
     private ForceBuildUI() {
         super();
