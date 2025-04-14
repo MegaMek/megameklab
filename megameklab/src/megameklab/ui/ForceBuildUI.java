@@ -128,7 +128,8 @@ import megameklab.ui.dialog.PrintQueueDialog;
 
 public class ForceBuildUI extends JFrame implements ListSelectionListener, ActionListener{
     private static final MMLogger logger = MMLogger.create(ForceBuildUI.class);
-    private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+    private final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu");
+    private static ResourceBundle dialogResources = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
     private static ForceBuildUI instance; // Singleton instance
 
@@ -150,7 +151,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private static final int COL_PILOTING = 3;
     private static final int COL_BV = 4;
 
-    private static ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
     static final String LMP_C3DISCONNECT = "C3DISCONNECT";
     static final String LMP_C3CONNECT = "C3CONNECT";
     static final String LMP_C3JOIN = "C3JOIN";
@@ -166,7 +166,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     // Private constructor for Singleton
     private ForceBuildUI() {
         super();
-        setTitle(resourceMap.getString("ForceBuildDialog.windowName.text"));
+        setTitle(dialogResources.getString("ForceBuildDialog.windowName.text"));
         setMinimumSize(new Dimension(300, 200));
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         createCenterPane();
@@ -275,8 +275,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         // Handle duplicates
         if (foundIndex >= 0) {
             int choicePrompt = JOptionPane.showConfirmDialog(null,
-                    "The selected unit is already in the force. Do you want to add it again as a new unit?",
-                    "Unit already in the Force",
+                    dialogResources.getString("ForceBuildDialog.duplicateDialog.body.text"),
+                    dialogResources.getString("ForceBuildDialog.duplicateDialog.title.text"),
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
             if (choicePrompt != JOptionPane.YES_OPTION) {
@@ -416,7 +416,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         rowPopupMenu.removeAll();
 
         // --- Open Editor ---
-        JMenuItem viewItem = new JMenuItem(resources.getString("ForceBuildUI.popup.openEditor.text"));
+        JMenuItem viewItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.openEditor.text"));
         Font currentFont = viewItem.getFont();
         viewItem.setFont(currentFont.deriveFont(Font.BOLD));
         viewItem.setMnemonic(KeyEvent.VK_O);
@@ -426,7 +426,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         rowPopupMenu.add(viewItem);
 
         // --- Edit Pilot/Equipment/Ammo ---
-        JMenuItem editItem = new JMenuItem(resources.getString("ForceBuildUI.popup.editPilotEquip.text"));
+        JMenuItem editItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editPilotEquip.text"));
         editItem.setMnemonic(KeyEvent.VK_E);
         editItem.addActionListener(e -> {
             openEntityConfiguration(selectedEntities.get(0));
@@ -437,7 +437,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
 
         // --- BV Calculations --
-        final JMenuItem miCurrentUnitBVBreakdown = new JMenuItem(resources.getString("ForceBuildUI.popup.BVBreakdown.text"));
+        final JMenuItem miCurrentUnitBVBreakdown = new JMenuItem(menuResources.getString("ForceBuildUI.popup.BVBreakdown.text"));
         miCurrentUnitBVBreakdown.setName("miCurrentUnitBVBreakdown");
         miCurrentUnitBVBreakdown.setMnemonic(KeyEvent.VK_U);
         miCurrentUnitBVBreakdown.addActionListener(evt -> 
@@ -447,7 +447,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         // --- Delete Item ---
         rowPopupMenu.addSeparator();
-        JMenuItem deleteItem = new JMenuItem(resources.getString("ForceBuildUI.popup.delete.text"));
+        JMenuItem deleteItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.delete.text"));
         deleteItem.addActionListener(e -> {
             for (Entity entity : selectedEntities) {
                 removeEntity(entity);
@@ -689,21 +689,21 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JPanel buttonPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         // Print Force Button
-        JButton printButton = new JButton("Print");
+        JButton printButton = new JButton(dialogResources.getString("ForceBuildDialog.print.text"));
         printButton.addActionListener(e -> {
             new PrintQueueDialog(instance, false, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(printButton, BorderLayout.WEST);
 
         // Print Force Button
-        JButton pdfExportbutton = new JButton("Export PDF");
+        JButton pdfExportbutton = new JButton(dialogResources.getString("ForceBuildDialog.exportToPDF.text"));
         pdfExportbutton.addActionListener(e -> {
             new PrintQueueDialog(instance, true, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(pdfExportbutton, BorderLayout.WEST);
         
         // Export MUL
-        JButton mulExportButton = new JButton("Save as MUL");
+        JButton mulExportButton = new JButton(dialogResources.getString("ForceBuildDialog.saveToMul.text"));
         mulExportButton.addActionListener(e -> {
             exportAsMul();
         });
@@ -1179,13 +1179,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
     class UnitFormatter {
         
-        /**
-         * Returns the formatted internationalized text for the given key in the
-         * resource bundle,
-         * replacing occurrences of {x} in the message with the contents of args.
-         */
         public static String getString(String key, Object... args) {
-            return MessageFormat.format(resourceMap.getString(key), args);
+            return MessageFormat.format(dialogResources.getString(key), args);
         }
 
         static boolean dotSpacer(StringBuilder current, boolean firstElement) {
