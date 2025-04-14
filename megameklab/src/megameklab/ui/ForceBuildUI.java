@@ -113,6 +113,7 @@ import megamek.common.Crew;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.Game;
+import megamek.common.IEntityRemovalConditions;
 import megamek.common.Player;
 import megamek.common.options.OptionsConstants;
 import megamek.common.preference.PreferenceManager;
@@ -327,12 +328,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     // Instance method to remove an entity
     public void removeEntityById(int index) {
         if (index >= 0 && index < forceList.size()) {
+            tableModel.removeRow(index);
             Entity entity = forceList.remove(index);
-            game.removeEntity(entity.getId(), 0);
-            entity.setGame(null);
+            C3Util.disconnectFromNetwork(game, List.of(entity));
+            game.removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
             entity.setCrew(new Crew(entity.defaultCrewType()));
             entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, "Nobody"));
-            tableModel.removeRow(index);
             updateTotalBVLabelOnly();
             packWindow();
         }
