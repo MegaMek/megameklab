@@ -90,6 +90,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * When printing from a MUL the C3 data is used in the BV calculation unless the option has been disabled.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showC3() {
+        return options.getIncludeC3inBV();
+    }
+
+    /**
      * @return Whether the total weapon heat and dissipation should be shown on the record sheet
      */
     protected boolean showHeatProfile() {
@@ -215,7 +224,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
         setTextField(BV, NumberFormat.getInstance().format(getEntity()
-                .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
+                .calculateBattleValue(!showC3(), !showPilotInfo())));
         UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);

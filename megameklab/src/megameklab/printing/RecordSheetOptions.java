@@ -26,6 +26,7 @@ public class RecordSheetOptions {
     private PaperSize paperSize;
     private boolean color;
     private boolean quirks;
+    private boolean c3bv;
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
@@ -48,6 +49,7 @@ public class RecordSheetOptions {
         }
         this.color = CConfig.getBooleanParam(CConfig.RS_COLOR);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
+        this.c3bv = CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
@@ -66,6 +68,7 @@ public class RecordSheetOptions {
         paperSize = options.paperSize;
         color = options.color;
         quirks = options.quirks;
+        c3bv = options.c3bv;
         pilotData = options.pilotData;
         eraIcon = options.eraIcon;
         role = options.role;
@@ -84,63 +87,72 @@ public class RecordSheetOptions {
         return paperSize;
     }
 
-    public boolean useColor() {
+    public Boolean useColor() {
         return color;
     }
 
-    public boolean showQuirks() {
+    public Boolean showQuirks() {
         return quirks;
     }
-    public void setQuirks(boolean quirks) {
+    public void setQuirks(Boolean quirks) {
         this.quirks = quirks;
     }
-    public boolean showPilotData() {
+    public Boolean showPilotData() {
         return pilotData;
     }
-    public boolean showRole() {
+
+    public Boolean getIncludeC3inBV() {
+        return c3bv;
+    }
+
+    public Boolean showRole() {
         return role;
     }
-    public boolean showHeatProfile() {
+    public Boolean showHeatProfile() {
         return heatProfile;
     }
 
-    public void setPilotData(boolean pilotData) {
+    public void setIncludeC3inBv(Boolean enable) {
+        this.c3bv = enable;
+    }
+
+    public void setPilotData(Boolean pilotData) {
         this.pilotData = pilotData;
     }
 
-    public boolean showEraIcon() {
+    public Boolean showEraIcon() {
         return eraIcon;
     }
 
-    public boolean useTacOpsHeat() {
+    public Boolean useTacOpsHeat() {
         return tacOpsHeat;
     }
 
-    public boolean useEraBaseProgression() {
+    public Boolean useEraBaseProgression() {
         return eraBasedProgression;
     }
 
-    public boolean showReferenceCharts() {
+    public Boolean showReferenceCharts() {
         return referenceCharts;
     }
 
-    public boolean showCondensedReferenceCharts() {
+    public Boolean showCondensedReferenceCharts() {
         return condensedReferenceCharts;
     }
 
-    public boolean useRowShading() {
+    public Boolean useRowShading() {
         return rowShading;
     }
 
-    public boolean useAlternateArmorGrouping() {
+    public Boolean useAlternateArmorGrouping() {
         return alternateArmorGrouping;
     }
 
-    public boolean isFrameless() {
+    public Boolean isFrameless() {
         return frameless;
     }
 
-    public boolean useBoldType() {
+    public Boolean useBoldType() {
         return boldType;
     }
 
@@ -148,51 +160,51 @@ public class RecordSheetOptions {
         this.paperSize = paperSize;
     }
 
-    public void setColor(boolean color) {
+    public void setColor(Boolean color) {
         this.color = color;
     }
 
-    public void setEraIcon(boolean eraIcon) {
+    public void setEraIcon(Boolean eraIcon) {
         this.eraIcon = eraIcon;
     }
 
-    public void setRole(boolean role) {
+    public void setRole(Boolean role) {
         this.role = role;
     }
 
-    public void setHeatProfile(boolean heatProfile) {
+    public void setHeatProfile(Boolean heatProfile) {
         this.heatProfile = heatProfile;
     }
 
-    public void setTacOpsHeat(boolean tacOpsHeat) {
+    public void setTacOpsHeat(Boolean tacOpsHeat) {
         this.tacOpsHeat = tacOpsHeat;
     }
 
-    public void setEraBasedProgression(boolean eraBased) {
+    public void setEraBasedProgression(Boolean eraBased) {
         eraBasedProgression = eraBased;
     }
 
-    public void setReferenceCharts(boolean charts) {
+    public void setReferenceCharts(Boolean charts) {
         this.referenceCharts = charts;
     }
 
-    public void setCondensedReferenceCharts(boolean charts) {
+    public void setCondensedReferenceCharts(Boolean charts) {
         this.condensedReferenceCharts = charts;
     }
 
-    public void setRowShading(boolean rowShading) {
+    public void setRowShading(Boolean rowShading) {
         this.rowShading = rowShading;
     }
 
-    public void setAlternateArmorGrouping(boolean alternateArmorGrouping) {
+    public void setAlternateArmorGrouping(Boolean alternateArmorGrouping) {
         this.alternateArmorGrouping = alternateArmorGrouping;
     }
 
-    public void setFrameless(boolean frameless) {
+    public void setFrameless(Boolean frameless) {
         this.frameless = frameless;
     }
 
-    public void setBoldType(boolean boldType) {
+    public void setBoldType(Boolean boldType) {
         this.boldType = boldType;
     }
 }

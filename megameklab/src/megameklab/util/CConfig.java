@@ -108,6 +108,7 @@ public final class CConfig {
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
+    public static final String RS_SHOW_C3BV = "rs_show_c3bv";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";

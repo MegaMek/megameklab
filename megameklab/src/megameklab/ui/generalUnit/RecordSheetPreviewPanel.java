@@ -219,6 +219,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
+    private boolean includeC3inBV = false;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -474,6 +475,22 @@ private double constrainPanX(double panX) {
         regenerateAndReset();
     }
 
+    
+    /**
+     * Set to true/false if you want C3 and other special equips to affect the BV
+     * 
+     * @param enable
+     */
+    public void includeC3inBV(boolean enable) {
+        if (this.includeC3inBV == enable) {
+            return;
+        }
+        this.includeC3inBV = enable;
+        updateSheetContentInPlace();
+    }
+
+    
+
     /**
      * Set the entities to be displayed in the record sheet preview.
      * 
@@ -567,6 +584,16 @@ private double constrainPanX(double panX) {
     }
 
     /**
+     * Returns the current RecordSheetOptions based on the current settings.
+     * @return
+     */
+    public RecordSheetOptions getRecordSheetOptions() {
+        RecordSheetOptions options = new RecordSheetOptions();
+        options.setIncludeC3inBv(includeC3inBV);
+        return options;
+    }
+
+    /**
      * Generates the PrintRecordSheet objects and populates the sheetPages list.
      */
     private void generateSheetPages(List<BTObject> entitiesToGenerate) {
@@ -576,7 +603,7 @@ private double constrainPanX(double panX) {
 
         sheetGenerationLock.lock(); // Ensure only one thread generates sheets at a time
         try {
-            RecordSheetOptions options = new RecordSheetOptions();
+            RecordSheetOptions options = getRecordSheetOptions();
             PaperSize pz = options.getPaperSize();
 
             // This is one of the slowest parts
@@ -713,7 +740,7 @@ private double constrainPanX(double panX) {
                 logger.debug("Starting in-place UnitPrintManager.createSheets...");
                 long start = System.nanoTime();
                 // Regenerate sheets based on potentially updated entity state
-                RecordSheetOptions options = new RecordSheetOptions();
+                RecordSheetOptions options = getRecordSheetOptions();
                 newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
@@ -904,7 +931,7 @@ private double constrainPanX(double panX) {
             return MIN_ZOOM;
         }
 
-        RecordSheetOptions options = new RecordSheetOptions();
+        RecordSheetOptions options = getRecordSheetOptions();
         PaperSize pz = options.getPaperSize();
         double maxBaseHeight = 0;
         if (!sheetPages.isEmpty()) {
@@ -1280,7 +1307,7 @@ private double constrainPanX(double panX) {
             return;
         }
 
-        RecordSheetOptions options = new RecordSheetOptions();
+        RecordSheetOptions options = getRecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
         // Calculate total dimensions for the clipboard image

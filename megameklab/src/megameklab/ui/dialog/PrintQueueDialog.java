@@ -57,10 +57,12 @@ import megamek.common.Player;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.fop.render.awt.viewer.PreviewPanel;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -155,14 +157,16 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
               "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
-            oneUnitPerSheetCheck.addActionListener(e -> {
-                recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
-            });
+        oneUnitPerSheetCheck.addActionListener(e -> {
+            recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        });
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
                                        "BV is always adjusted for pilot skill.");
-
+        adjustedBvCheck.addActionListener(e -> {
+            recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+        });
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
@@ -196,10 +200,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
         oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
-        if (fromMul) {
-            checkboxPanel.add(adjustedBvCheck);
-            adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
-        }
+        checkboxPanel.add(adjustedBvCheck);
+        adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         
         Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
@@ -288,15 +290,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
-        if (fromMul) {
-            if (adjustedBvCheck.isSelected()) {
-                linkForce();
-            } else {
-                unlinkForce();
-            }
-            CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
-
-        }
+        RecordSheetOptions options = recordSheetPanel.getRecordSheetOptions();
+        options.setIncludeC3inBv(adjustedBvCheck.isSelected());
+        CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
         CConfig.saveConfig();
 
@@ -309,12 +305,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                       FilenameUtils.removeExtension(mulFileName) + ".pdf");
             }
             if (exportFile != null) {
-                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
+                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected(), options);
             } else {
                 return;
             }
         } else {
-            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected());
+            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected(), options);
         }
         super.okButtonActionPerformed(evt);
     }
