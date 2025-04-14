@@ -87,72 +87,72 @@ public class RecordSheetOptions {
         return paperSize;
     }
 
-    public Boolean useColor() {
+    public boolean useColor() {
         return color;
     }
 
-    public Boolean showQuirks() {
+    public boolean showQuirks() {
         return quirks;
     }
-    public void setQuirks(Boolean quirks) {
+    public void setQuirks(boolean quirks) {
         this.quirks = quirks;
     }
-    public Boolean showPilotData() {
+    public boolean showPilotData() {
         return pilotData;
     }
 
-    public Boolean getIncludeC3inBV() {
+    public boolean getIncludeC3inBV() {
         return c3bv;
     }
 
-    public Boolean showRole() {
+    public boolean showRole() {
         return role;
     }
-    public Boolean showHeatProfile() {
+    public boolean showHeatProfile() {
         return heatProfile;
     }
 
-    public void setIncludeC3inBv(Boolean enable) {
+    public void setIncludeC3inBv(boolean enable) {
         this.c3bv = enable;
     }
 
-    public void setPilotData(Boolean pilotData) {
+    public void setPilotData(boolean pilotData) {
         this.pilotData = pilotData;
     }
 
-    public Boolean showEraIcon() {
+    public boolean showEraIcon() {
         return eraIcon;
     }
 
-    public Boolean useTacOpsHeat() {
+    public boolean useTacOpsHeat() {
         return tacOpsHeat;
     }
 
-    public Boolean useEraBaseProgression() {
+    public boolean useEraBaseProgression() {
         return eraBasedProgression;
     }
 
-    public Boolean showReferenceCharts() {
+    public boolean showReferenceCharts() {
         return referenceCharts;
     }
 
-    public Boolean showCondensedReferenceCharts() {
+    public boolean showCondensedReferenceCharts() {
         return condensedReferenceCharts;
     }
 
-    public Boolean useRowShading() {
+    public boolean useRowShading() {
         return rowShading;
     }
 
-    public Boolean useAlternateArmorGrouping() {
+    public boolean useAlternateArmorGrouping() {
         return alternateArmorGrouping;
     }
 
-    public Boolean isFrameless() {
+    public boolean isFrameless() {
         return frameless;
     }
 
-    public Boolean useBoldType() {
+    public boolean useBoldType() {
         return boldType;
     }
 
@@ -160,51 +160,51 @@ public class RecordSheetOptions {
         this.paperSize = paperSize;
     }
 
-    public void setColor(Boolean color) {
+    public void setColor(boolean color) {
         this.color = color;
     }
 
-    public void setEraIcon(Boolean eraIcon) {
+    public void setEraIcon(boolean eraIcon) {
         this.eraIcon = eraIcon;
     }
 
-    public void setRole(Boolean role) {
+    public void setRole(boolean role) {
         this.role = role;
     }
 
-    public void setHeatProfile(Boolean heatProfile) {
+    public void setHeatProfile(boolean heatProfile) {
         this.heatProfile = heatProfile;
     }
 
-    public void setTacOpsHeat(Boolean tacOpsHeat) {
+    public void setTacOpsHeat(boolean tacOpsHeat) {
         this.tacOpsHeat = tacOpsHeat;
     }
 
-    public void setEraBasedProgression(Boolean eraBased) {
+    public void setEraBasedProgression(boolean eraBased) {
         eraBasedProgression = eraBased;
     }
 
-    public void setReferenceCharts(Boolean charts) {
+    public void setReferenceCharts(boolean charts) {
         this.referenceCharts = charts;
     }
 
-    public void setCondensedReferenceCharts(Boolean charts) {
+    public void setCondensedReferenceCharts(boolean charts) {
         this.condensedReferenceCharts = charts;
     }
 
-    public void setRowShading(Boolean rowShading) {
+    public void setRowShading(boolean rowShading) {
         this.rowShading = rowShading;
     }
 
-    public void setAlternateArmorGrouping(Boolean alternateArmorGrouping) {
+    public void setAlternateArmorGrouping(boolean alternateArmorGrouping) {
         this.alternateArmorGrouping = alternateArmorGrouping;
     }
 
-    public void setFrameless(Boolean frameless) {
+    public void setFrameless(boolean frameless) {
         this.frameless = frameless;
     }
 
-    public void setBoldType(Boolean boldType) {
+    public void setBoldType(boolean boldType) {
         this.boldType = boldType;
     }
 }
