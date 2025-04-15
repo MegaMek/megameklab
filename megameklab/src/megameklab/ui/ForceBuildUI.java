@@ -67,6 +67,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DropMode;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -96,6 +97,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -106,6 +108,7 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.lobby.LobbyErrors;
 import megamek.client.ui.swing.lobby.LobbyUtility;
 import megamek.client.ui.swing.util.UIUtil;
@@ -125,6 +128,7 @@ import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
 import megameklab.util.UnitMemento;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 
 public class ForceBuildUI extends JFrame implements ListSelectionListener, ActionListener{
@@ -691,6 +695,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         // Print Force Button
         JButton printButton = new JButton(dialogResources.getString("ForceBuildDialog.print.text"));
+        printButton.setToolTipText(dialogResources.getString("ForceBuildDialog.print.toolTipText"));
         printButton.addActionListener(e -> {
             new PrintQueueDialog(instance, false, getAllEntities(), false, "").setVisible(true);
         });
@@ -698,17 +703,31 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         // Print Force Button
         JButton pdfExportbutton = new JButton(dialogResources.getString("ForceBuildDialog.exportToPDF.text"));
+        pdfExportbutton.setToolTipText(dialogResources.getString("ForceBuildDialog.exportToPDF.toolTipText"));
         pdfExportbutton.addActionListener(e -> {
             new PrintQueueDialog(instance, true, getAllEntities(), false, "").setVisible(true);
         });
         buttonPanel.add(pdfExportbutton, BorderLayout.WEST);
         
         // Export MUL
-        JButton mulExportButton = new JButton(dialogResources.getString("ForceBuildDialog.saveToMul.text"));
+        Icon saveIcon = UIManager.getIcon("FileView.floppyDriveIcon");
+        JButton mulExportButton = new JButton(saveIcon);
+        mulExportButton.setToolTipText(dialogResources.getString("ForceBuildDialog.saveToMul.toolTipText"));
+        mulExportButton.setFocusable(false);
         mulExportButton.addActionListener(e -> {
             exportAsMul();
         });
         buttonPanel.add(mulExportButton, BorderLayout.WEST);
+
+        // Load from Cache
+        Icon openIcon = UIManager.getIcon("Tree.openIcon");
+        JButton loadFromCacheButton = new JButton(openIcon);
+        loadFromCacheButton.setToolTipText(dialogResources.getString("ForceBuildDialog.loadFromCache.toolTipText"));
+        loadFromCacheButton.setFocusable(false);
+        loadFromCacheButton.addActionListener(e -> {
+            selectAndLoadUnitFromCache();
+        });
+        buttonPanel.add(loadFromCacheButton, BorderLayout.WEST);
 
         bottomPanel.add(buttonPanel, BorderLayout.WEST);
 
@@ -723,6 +742,28 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         updateTableAndTotal();
 
         add(centerPanel, BorderLayout.CENTER);
+    }
+
+    private void addEntities(List<Entity> entities) {
+        for (var entity : entities) {
+            if (entity != null) {
+                addEntity(entity);
+            }
+        }
+        updateTableAndTotal();
+    }
+    
+    public void selectAndLoadUnitFromCache() {
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
+        unitLoadingDialog.setVisible(true);
+        MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null,
+              unitLoadingDialog,
+              dialog -> {
+                addEntities(dialog.getChosenEntities());
+              });
+        addEntities(viewer.getChosenEntities());
+        viewer.dispose();
+        updateTableAndTotal();
     }
 
     private void openEntityInEditor(Entity entity) {
