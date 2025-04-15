@@ -119,7 +119,13 @@ public interface IdConstants {
     String WHEELS = "wheels";
 
     String CRITS = "crits_";
-    String HEAVY_DUTY_GYRO_PIP = "heavyDutyGyroPip";
+    String AVIONICS_HIT = "avionics_hit_";
+    String ENGINE_HIT = "engine_hit_";
+    String GYRO_HIT = "gyro_hit_";
+    String SENSOR_HIT = "sensor_hit_";
+    String LANDING_GEAR_HIT = "landing_gear_hit_";
+    String LIFE_SUPPORT_HIT = "life_support_hit_";
+    String HEAVY_DUTY_GYRO_PIP = "gyro_hit_3";
     String SI_PIPS = "siPips";
     String KF_PIPS = "kfPips";
     String SAIL_PIPS = "sailPips";
