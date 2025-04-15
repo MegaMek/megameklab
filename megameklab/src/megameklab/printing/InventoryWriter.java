@@ -404,7 +404,6 @@ public class InventoryWriter {
         } else {
             yPosition = printColumnHeaders(yPosition);
         }
-
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
         yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
         if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
@@ -668,6 +667,8 @@ public class InventoryWriter {
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
+                            
+                            final boolean isDamaged =  sheet.showDamage() && line.isDamaged();
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
@@ -676,13 +677,13 @@ public class InventoryWriter {
                                 lines = sheet.addMultilineTextElement(canvas, colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', isDamaged);
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', isDamaged);
                             }
                             break;
                         case LOCATION:

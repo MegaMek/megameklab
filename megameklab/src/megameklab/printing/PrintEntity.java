@@ -100,6 +100,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * Show Damage on the record sheet.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showDamage() {
+        return options.showDamage();
+    }
+
+    /**
      * @return Whether the total weapon heat and dissipation should be shown on the record sheet
      */
     protected boolean showHeatProfile() {

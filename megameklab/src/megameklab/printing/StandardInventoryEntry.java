@@ -367,6 +367,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     @Override
+    public boolean isDamaged() {
+        return mount.isHit() || mount.isDestroyed();
+    }
+
+    @Override
     public String getQuantityField(int row) {
         if (row == 0) {
             return String.valueOf(quantity);
