@@ -745,6 +745,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     }
 
     private void addEntities(List<Entity> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return;
+        }
         for (var entity : entities) {
             if (entity != null) {
                 addEntity(entity);
@@ -761,11 +764,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
               dialog -> {
                 addEntities(dialog.getChosenEntities());
               });
-        List<Entity> entities = viewer.getChosenEntities();
-        if (entities != null && !entities.isEmpty()) {
-            addEntities(entities);
-            updateTableAndTotal();
-        }
+        addEntities(viewer.getChosenEntities());
         viewer.dispose();
     }
 
