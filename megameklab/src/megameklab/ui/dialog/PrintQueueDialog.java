@@ -161,21 +161,18 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.addActionListener(e -> {
             recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
         });
-        recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
 
         showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         showPilotDataCheck.setToolTipText("When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
         showPilotDataCheck.addActionListener(e -> {
             recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
         });
-        recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
         adjustedBvCheck.addActionListener(e -> {
             recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
         });
-        recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
@@ -216,6 +213,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         
+        // Set RS settings from initial state of the checkboxes
+        recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+
         Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
         buttonPanelWithCheckboxes.add(buttonPanel);
         buttonPanelWithCheckboxes.add(Box.createHorizontalStrut(30));
