@@ -220,6 +220,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
     private boolean includeC3inBV = false;
+    private boolean showPilotData = false;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -490,6 +491,18 @@ private double constrainPanX(double panX) {
     }
 
     
+    /**
+     * Set to true/false if you want to show the pilot data on the record sheet.
+     * 
+     * @param enable
+     */
+    public void showPilotData(boolean enable) {
+        if (this.showPilotData == enable) {
+            return;
+        }
+        this.showPilotData = enable;
+        updateSheetContentInPlace();
+    }
 
     /**
      * Set the entities to be displayed in the record sheet preview.
@@ -589,7 +602,8 @@ private double constrainPanX(double panX) {
      */
     public RecordSheetOptions getRecordSheetOptions() {
         RecordSheetOptions options = new RecordSheetOptions();
-        options.setIncludeC3inBv(includeC3inBV);
+        options.setC3inBV(includeC3inBV);
+        options.setPilotData(showPilotData);
         return options;
     }
 

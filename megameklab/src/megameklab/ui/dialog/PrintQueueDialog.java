@@ -298,7 +298,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                 unlinkForce();
             }
         }
-        options.setIncludeC3inBv(adjustedBvCheck.isSelected());
+        options.setC3inBV(adjustedBvCheck.isSelected());
         CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
         CConfig.saveConfig();

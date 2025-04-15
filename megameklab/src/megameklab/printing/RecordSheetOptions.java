@@ -101,7 +101,7 @@ public class RecordSheetOptions {
         return pilotData;
     }
 
-    public boolean getIncludeC3inBV() {
+    public boolean showC3inBV() {
         return c3bv;
     }
 
@@ -112,7 +112,7 @@ public class RecordSheetOptions {
         return heatProfile;
     }
 
-    public void setIncludeC3inBv(boolean enable) {
+    public void setC3inBV(boolean enable) {
         this.c3bv = enable;
     }
 

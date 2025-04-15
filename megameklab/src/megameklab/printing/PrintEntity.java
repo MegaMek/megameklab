@@ -96,7 +96,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return Whether the C3 data should be filled in.
      */
     protected boolean showC3() {
-        return options.getIncludeC3inBV();
+        return options.showC3inBV();
     }
 
     /**
@@ -283,7 +283,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         element.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(offset));
                     }
                 }
-                setTextField(PILOT_NAME + i, getEntity().getCrew().getName(i), true);
+                String pilotName = getEntity().getCrew().getName(i);
+                final String pilotNickname = getEntity().getCrew().getNickname(i);
+                if (pilotNickname != null && !pilotNickname.isBlank()) {
+                    pilotName += " ("+pilotNickname+")";
+                }
+                setTextField(PILOT_NAME + i, pilotName, true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
 

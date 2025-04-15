@@ -155,7 +155,7 @@ public class StatusBar extends ITab {
     }
 
     private void refreshBV() {
-        int bv = getEntity().calculateBattleValue(true, false);
+        int bv = getEntity().calculateBattleValue(true, true);
         bvLabel.setText("BV: " + bv);
         bvLabel.setToolTipText("Battle Value 2.0. Click to show the BV calculation.");
     }
