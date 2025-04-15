@@ -87,6 +87,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
+    private final JCheckBox      showPilotDataCheck      = new JCheckBox("Print pilot data if available");
     private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
     private final JFrame         parent;
     private final List<BTObject> units                = new ArrayList<>();
@@ -161,9 +162,14 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
         });
 
+        showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        showPilotDataCheck.setToolTipText("When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
+        showPilotDataCheck.addActionListener(e -> {
+            recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        });
+
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
-                                       "BV is always adjusted for pilot skill.");
+        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
         adjustedBvCheck.addActionListener(e -> {
             recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
         });
@@ -197,9 +203,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         unitsPanel.add(moveButtonPanel);
         unitsPanel.add(queuedUnitListScrollPane);
 
-        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
+        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(3, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
         oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
+        checkboxPanel.add(showPilotDataCheck);
+        showPilotDataCheck.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
         checkboxPanel.add(adjustedBvCheck);
         adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
@@ -299,6 +307,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             }
         }
         options.setC3inBV(adjustedBvCheck.isSelected());
+        options.setPilotData(showPilotDataCheck.isSelected());
+        CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, String.valueOf(showPilotDataCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
         CConfig.saveConfig();

@@ -482,7 +482,7 @@ private double constrainPanX(double panX) {
      * 
      * @param enable
      */
-    public void includeC3inBV(boolean enable) {
+    public void includeC3inBV(Boolean enable) {
         if (this.includeC3inBV == enable) {
             return;
         }
@@ -496,7 +496,7 @@ private double constrainPanX(double panX) {
      * 
      * @param enable
      */
-    public void showPilotData(boolean enable) {
+    public void showPilotData(Boolean enable) {
         if (this.showPilotData == enable) {
             return;
         }
