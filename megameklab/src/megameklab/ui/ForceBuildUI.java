@@ -97,7 +97,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -125,7 +124,6 @@ import megamek.common.util.C3Util;
 import megamek.common.util.C3Util.C3CapacityException;
 import megamek.common.util.C3Util.MismatchingC3MException;
 import megamek.common.util.C3Util.MissingC3MException;
-import megamek.common.util.CollectionUtil;
 import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
