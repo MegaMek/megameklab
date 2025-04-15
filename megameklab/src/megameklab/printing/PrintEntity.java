@@ -705,11 +705,4 @@ public abstract class PrintEntity extends PrintRecordSheet {
         final int remainingStructure = getEntity().getInternal(loc);
         return structure - remainingStructure;
     }
-
-    protected int getEngineHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
-        return getEntity().getEngineHits();
-    }
 }

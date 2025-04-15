@@ -137,6 +137,53 @@ public class PrintMek extends PrintEntity {
         return mek;
     }
 
+    private void applyCoreComponentsCriticalDamage() {
+        final int engineHits = getEngineHits();
+        for (int i = 1; i <= engineHits; i++) {
+            Element el = getSVGDocument().getElementById(ENGINE_HIT + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+            }
+        }
+        final int gyroHits = getGyroHits();
+        for (int i = 1; i <= gyroHits; i++) {
+            Element el = getSVGDocument().getElementById(GYRO_HIT + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+            }
+        }
+        final int sensorHits = getSensorHits();
+        for (int i = 1; i <= sensorHits; i++) {
+            Element el = getSVGDocument().getElementById(SENSOR_HIT + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+            }
+        }
+        final int lifeSupportHits = getLifeSupportHits();
+        for (int i = 1; i <= lifeSupportHits; i++) {
+            Element el = getSVGDocument().getElementById(LIFE_SUPPORT_HIT + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+            }
+        }
+        if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+            final int avionicsHits = getAvionicsHits();
+            for (int i = 1; i <= avionicsHits; i++) {
+                Element el = getSVGDocument().getElementById(AVIONICS_HIT + i);
+                if (el != null) {
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                }
+            }
+            final int landingGearHits = getAvionicsHits();
+            for (int i = 1; i <= landingGearHits; i++) {
+                Element el = getSVGDocument().getElementById(LANDING_GEAR_HIT + i);
+                if (el != null) {
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                }
+            }
+        }
+    }
+
     @Override
     public void processImage(int pageNum, PageFormat pageFormat) {
         printShields();
@@ -151,6 +198,10 @@ public class PrintMek extends PrintEntity {
         }
 
         hideElement(HEAVY_DUTY_GYRO_PIP, mek.getGyroType() != Mek.GYRO_HEAVY_DUTY);
+
+        if (options.showDamage()) {
+            applyCoreComponentsCriticalDamage();
+        }
 
         Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
         if (hsRect instanceof SVGRectElement) {
@@ -941,4 +992,69 @@ public class PrintMek extends PrintEntity {
         }
         return mek.damagedHeatSinks();
     }
+
+    protected int getEngineHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return mek.getEngineHits();
+    }
+    
+    protected int getGyroHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return mek.getGyroHits();
+    }
+    
+    protected int getAvionicsHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        if (!(mek instanceof LandAirMek)) {
+            return 0;
+        }
+        int totalHits = 0;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, LandAirMek.LAM_AVIONICS, loc);
+        }
+        return totalHits;
+    }
+    
+    protected int getSensorHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        int totalHits = 0;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_SENSORS, loc);
+        }
+        return totalHits;
+    }
+    
+    protected int getLifeSupportHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        int totalHits = 0;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_LIFE_SUPPORT, loc);
+        }
+        return totalHits;
+    }
+    
+    protected int getLandingGearHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        if (!(mek instanceof LandAirMek)) {
+            return 0;
+        }
+        int totalHits = 0;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, LandAirMek.LAM_LANDING_GEAR, loc);
+        }
+        return totalHits;
+    }
+    
 }
