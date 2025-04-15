@@ -40,6 +40,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -223,8 +224,20 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
-        setTextField(BV, NumberFormat.getInstance().format(getEntity()
-                .calculateBattleValue(!showC3(), !showPilotInfo())));
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !showPilotInfo());
+        if (showC3()) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !showPilotInfo());
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        setTextField(BV, bvValue);
         UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
