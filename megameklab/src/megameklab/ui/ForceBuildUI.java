@@ -569,8 +569,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     if (col == COL_REMOVE) {
                         return;
                     }
-                    if (entityTable.getSelectedRowCount() == 0) {
-                        // Select row under cursor if no selection exists for context menu
+                    if (entityTable.getSelectedRowCount() <= 1) {
+                        // Select row under cursor if no selection exists or there is only 1 selection (this allows to reselect with right click)
                         int row = entityTable.rowAtPoint(e.getPoint());
                         if (row >= 0) {
                             entityTable.setRowSelectionInterval(row, row);
