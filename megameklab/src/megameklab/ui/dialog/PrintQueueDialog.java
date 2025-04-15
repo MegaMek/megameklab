@@ -62,7 +62,6 @@ import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.fop.render.awt.viewer.PreviewPanel;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -87,8 +86,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
-    private final JCheckBox      showPilotDataCheck      = new JCheckBox("Print pilot data if available");
-    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
+    private final JCheckBox      showPilotDataCheck      = new JCheckBox("Print crew data if available");
+    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV (C3 network)");
     private final JFrame         parent;
     private final List<BTObject> units                = new ArrayList<>();
     private final JList<String>  queuedUnitList       = new JList<>();
