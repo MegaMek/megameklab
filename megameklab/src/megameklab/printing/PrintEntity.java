@@ -431,13 +431,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
+                        PipType.forAT(getEntity().getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), useAlternateArmorGrouping());
             }
 
             element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
+                        PipType.CIRCLE, DEFAULT_PIP_STROKE, structurePipFill(), getStructureDamage(loc), useAlternateArmorGrouping());
             }
         }
     }
@@ -669,5 +669,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
             e = getSVGDocument().getElementById(id);
         }
         return e;
+    }
+
+    protected int getArmorDamage(int loc, boolean rear) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int armor = getEntity().getOArmor(loc, rear);
+        final int remainingArmor = getEntity().getArmor(loc, rear);
+        return armor - remainingArmor;
+    }
+
+    protected int getStructureDamage(int loc) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int structure = getEntity().getOInternal(loc);
+        final int remainingStructure = getEntity().getInternal(loc);
+        return structure - remainingStructure;
     }
 }

@@ -13,15 +13,19 @@
  */
 package megameklab.printing;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -32,7 +36,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.GetSVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.*;
@@ -165,6 +168,15 @@ public class PrintMek extends PrintEntity {
 
     }
 
+    private int getShieldDamage(MiscMounted m) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int totalShield = m.getDamageAbsorption(mek, m.getLocation());
+        final int remainingShield = m.getCurrentDamageCapacity(mek, m.getLocation());
+        return totalShield - remainingShield;
+    }
+
     private void printShields() {
         for (MiscMounted m : mek.getMisc()) {
             if (m.getType().isShield()) {
@@ -179,13 +191,13 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mek, m.getLocation()),
-                            PipType.CIRCLE, useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
+                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND, useAlternateArmorGrouping());
+                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
                 }
             }
         }
@@ -297,7 +309,7 @@ public class PrintMek extends PrintEntity {
         if (null == nl) {
             return false;
         }
-        return copyPipPattern(nl, CANON_ARMOR_PIPS);
+        return copyPipPattern(nl, CANON_ARMOR_PIPS, getArmorDamage(loc, rear));
     }
 
     private boolean loadISPips() {
@@ -307,17 +319,75 @@ public class PrintMek extends PrintEntity {
             return false;
         }
         hideElement(STRUCTURE_PIPS);
-        return copyPipPattern(nl, CANON_STRUCTURE_PIPS);
+        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, 0); //TODO: Add damage to IS pips
     }
 
-    private boolean copyPipPattern(NodeList nl, String parentName) {
+    private static final Pattern FIRST_MOVETO_PATTERN =
+        Pattern.compile("^[Mm]\\s*(-?\\d*\\.?\\d+)\\s*[ ,]?\\s*(-?\\d*\\.?\\d+)");
+
+    private @Nullable Point2D.Float getFirstMoveToCoordinate(Node n) {
+        if (!(n instanceof Element)) {
+            return null;
+        }
+        Element el = (Element) n;
+        String dAttribute = el.getAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE);
+        if (dAttribute == null || dAttribute.trim().isEmpty()) {
+            logger.warn("Node has empty or missing 'd' attribute: " + n);
+            return null;
+        }
+
+        Matcher matcher = FIRST_MOVETO_PATTERN.matcher(dAttribute.trim());
+        if (matcher.find()) {
+            try {
+                float x = Float.parseFloat(matcher.group(1));
+                float y = Float.parseFloat(matcher.group(2));
+                return new Point2D.Float(x, y);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                logger.warn("Failed to parse coordinates from 'd' attribute: '" + dAttribute + "' - " + e.getMessage());
+                return null;
+            }
+        } else {
+            logger.warn("Could not find initial 'moveto' command in 'd' attribute: '" + dAttribute + "'");
+            return null;
+        }
+    }
+    
+    private boolean copyPipPattern(NodeList nl, String parentName, int damage) {
         Element parent = getSVGDocument().getElementById(parentName);
         if (null == parent) {
             return false;
         }
-        for (int node = 0; node < nl.getLength(); node++) {
-            final Node wn = nl.item(node);
-            parent.appendChild(getSVGDocument().importNode(wn, true));
+        // Build temp list for sorting
+        List<Node> tempNodes = new ArrayList<>(nl.getLength());
+        for (int i = 0; i < nl.getLength(); i++) {
+            if (nl.item(i) instanceof Element el) {
+                tempNodes.add(el);
+            }
+        }
+
+        // Sorting the nodes by their coordinates in the 'd' attribute
+        try {
+            tempNodes.sort(Comparator.<Node, Float>comparing(n -> {
+                Point2D.Float coord = getFirstMoveToCoordinate(n);
+                return (coord != null) ? coord.y : Float.MAX_VALUE; // Primary sort: Y coordinate
+            }).thenComparing(n -> {
+                Point2D.Float coord = getFirstMoveToCoordinate(n);
+                return (coord != null) ? coord.x : Float.MAX_VALUE; // Secondary sort: X coordinate
+            }));
+        } catch (Exception e) {
+            logger.error("Error during sorting of pip nodes using 'd' attribute for parent '" + parentName + "': " + e.getMessage(), e);
+        }
+        
+        // Append nodes and apply damage
+        int remainingDamage = damage;
+        for (Node node : tempNodes) {
+            Element sortedElement = (Element) node;
+            if (remainingDamage > 0) {
+                remainingDamage--;
+                // Set the fill attribute to black for damaged pips
+                sortedElement.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+            }
+            parent.appendChild(getSVGDocument().importNode(sortedElement, true)); // Final append
         }
         return true;
     }
@@ -341,9 +411,8 @@ public class PrintMek extends PrintEntity {
         if (doc == null) {
             logger.error("Failed to open pip SVG file! Path: " + f.getName());
             return null;
-        } else {
-            return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
         }
+        return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
     }
 
     // Mek armor and structure pips require special handling for rear armor and
@@ -374,13 +443,12 @@ public class PrintMek extends PrintEntity {
 
             if ((null != element) && !frontComplete) {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
-                        PipType.forAT(mek.getArmorType(loc)), alternateMethod);
-
+                        PipType.forAT(mek.getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), alternateMethod);
             }
             if ((loc > Mek.LOC_HEAD) && !structComplete) {
                 element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), alternateMethod);
+                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod);
                 }
             }
             if (mek.hasRearArmor(loc) && !rearComplete) {
@@ -391,7 +459,7 @@ public class PrintMek extends PrintEntity {
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
-                            PipType.forAT(mek.getArmorType(loc)), alternateMethod);
+                            PipType.forAT(mek.getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, true), alternateMethod);
 
                 }
             }

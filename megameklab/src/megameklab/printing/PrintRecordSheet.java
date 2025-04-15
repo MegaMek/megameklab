@@ -83,6 +83,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     public static final String DEFAULT_TYPEFACE = "Eurostile";
     public static final float DEFAULT_PIP_SIZE = 0.38f;
+    public static final float DEFAULT_PIP_STROKE = 0.5f;
     public static final float FONT_SIZE_LARGE = 7.2f;
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;

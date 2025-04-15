@@ -122,6 +122,7 @@ public final class CConfig {
     public static final String RS_ARMOR_GROUPING = "rs_armor_grouping";
     public static final String RS_FRAMELESS = "rs_frameless";
     public static final String RS_BOLD_TYPE = "rs_bold_type";
+    public static final String RS_DAMAGE = "rs_damage";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -152,9 +153,12 @@ public final class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_C3BV, Boolean.toString(false));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
+        defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));

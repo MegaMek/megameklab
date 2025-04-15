@@ -139,7 +139,7 @@ public class PrintAero extends PrintEntity {
         Element element = getElementById(SI_PIPS);
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.getOSI(),
-                    PipType.CIRCLE, 0.5, FILL_WHITE, useAlternateArmorGrouping());
+                    PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, 0, useAlternateArmorGrouping());
         }
     }
 

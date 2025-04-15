@@ -221,6 +221,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean oneUnitPerSheet = false;
     private Boolean includeC3inBV = false;
     private Boolean showPilotData = false;
+    private Boolean showDamage = false;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -480,13 +481,13 @@ private double constrainPanX(double panX) {
     /**
      * Set to true/false if you want C3 and other special equips to affect the BV
      * 
-     * @param enable
+     * @param enabled
      */
-    public void includeC3inBV(Boolean enable) {
-        if (this.includeC3inBV == enable) {
+    public void includeC3inBV(Boolean enabled) {
+        if (this.includeC3inBV == enabled) {
             return;
         }
-        this.includeC3inBV = enable;
+        this.includeC3inBV = enabled;
         updateSheetContentInPlace();
     }
 
@@ -494,13 +495,26 @@ private double constrainPanX(double panX) {
     /**
      * Set to true/false if you want to show the pilot data on the record sheet.
      * 
-     * @param enable
+     * @param enabled
      */
-    public void showPilotData(Boolean enable) {
-        if (this.showPilotData == enable) {
+    public void showPilotData(Boolean enabled) {
+        if (this.showPilotData == enabled) {
             return;
         }
-        this.showPilotData = enable;
+        this.showPilotData = enabled;
+        updateSheetContentInPlace();
+    }
+
+    /**
+     * Set to true/false if you want to show the damage on the record sheet.
+     * 
+     * @param enabled
+     */
+    public void showDamage(Boolean enabled) {
+        if (this.showDamage == enabled) {
+            return;
+        }
+        this.showDamage = enabled;
         updateSheetContentInPlace();
     }
 
@@ -607,6 +621,9 @@ private double constrainPanX(double panX) {
         }
         if (showPilotData != null) {
             options.setPilotData(showPilotData);
+        }
+        if (showDamage != null) {
+            options.setDamage(showDamage);
         }
         return options;
     }

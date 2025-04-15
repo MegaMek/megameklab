@@ -263,22 +263,22 @@ public class UnitPrintManager {
         }
 
         if (null != tank1) {
-            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
+            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
         }
 
         if (!baList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(baList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(baList, pageCount++, options));
         }
 
         if (!infList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(infList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(infList, pageCount++, options));
         }
 
         if (!protoList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
+            sheets.add(new PrintSmallUnitSheet(protoList, pageCount, options));
         }
         if (!hhwList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount));
+            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount, options));
         }
         return sheets;
     }

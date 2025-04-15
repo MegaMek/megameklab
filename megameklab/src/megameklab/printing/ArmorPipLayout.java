@@ -18,6 +18,7 @@ import static megameklab.printing.PrintRecordSheet.DEFAULT_PIP_SIZE;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -107,11 +108,12 @@ class ArmorPipLayout {
      * @param pipType     The shape of pip to add
      * @param strokeWidth The width of the pip outline stroke
      * @param fill        The color to use for the inside of the pip
+     * @param damage      The amount of damage to show on the pip. 0 for no damage.
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
                         PrintRecordSheet.PipType pipType, double strokeWidth,
-                        String fill, boolean alternateMethod) {
+                        String fill, int damage, boolean alternateMethod) {
         if (pipCount > 0) {
             boolean multi = false;
             final String multiVal = PrintRecordSheet.parseStyle(group, IdConstants.MML_MULTISECTION);
@@ -159,17 +161,37 @@ class ArmorPipLayout {
                 }
                 for (int s = 0; s < sections.size(); s++) {
                     if (pipCounts.get(s) > 0) {
-                        sections.get(s).process(pipCounts.get(s), alternateMethod);
+                        sections.get(s).process(pipCounts.get(s), damage, alternateMethod);
                     }
                 }
             } else {
                 ArmorPipLayout layout = new ArmorPipLayout(sheet, group,
                         pipType, strokeWidth, fill);
                 if (!layout.regions.isEmpty()) {
-                    layout.process(pipCount, alternateMethod);
+                    layout.process(pipCount, damage, alternateMethod);
                 }
             }
         }
+    }
+    /**
+     * Processes the rect elements within a group to find the width of the region
+     * at each marked point and adds pip elements to the group layed out in a
+     * symmetric pattern.
+     *
+     * @param sheet       The record sheet being printed.
+     * @param group       The group element that contains the rect elements that
+     *                    mark the dimensions of the area on the armor or structure
+     *                    diagram.
+     * @param pipCount    The number of armor or structure pips to add
+     * @param pipType     The shape of pip to add
+     * @param strokeWidth The width of the pip outline stroke
+     * @param fill        The color to use for the inside of the pip
+     * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
+     */
+    static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
+                        PrintRecordSheet.PipType pipType, double strokeWidth,
+                        String fill, boolean alternateMethod) {
+        addPips(sheet, group, pipCount, pipType, strokeWidth, fill, 0, alternateMethod);
     }
 
     /**
@@ -186,7 +208,7 @@ class ArmorPipLayout {
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
                         PrintRecordSheet.PipType pipType, boolean alternateMethod) {
-        addPips(sheet, group, pipCount, pipType, 0.55, PrintRecordSheet.FILL_WHITE, alternateMethod);
+        addPips(sheet, group, pipCount, pipType, PrintRecordSheet.DEFAULT_PIP_STROKE, PrintRecordSheet.FILL_WHITE, 0, alternateMethod);
     }
 
     /**
@@ -202,8 +224,8 @@ class ArmorPipLayout {
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount, boolean alternateMethod) {
-        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, 0.5,
-                PrintRecordSheet.FILL_WHITE, alternateMethod);
+        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, PrintRecordSheet.DEFAULT_PIP_STROKE,
+                PrintRecordSheet.FILL_WHITE, 0, alternateMethod);
     }
 
     private ArmorPipLayout(PrintRecordSheet sheet, Element group, PrintRecordSheet.PipType pipType,
@@ -326,9 +348,9 @@ class ArmorPipLayout {
         };
     }
 
-    void process(int pipCount, boolean alternate) {
+    void process(int pipCount, int damage, boolean alternate) {
         if (!alternate) {
-            process(pipCount);
+            process(pipCount, damage);
             return;
         }
         int attempts = 0;
@@ -380,15 +402,20 @@ class ArmorPipLayout {
             if (remaining > 0) {
                 attempts++;
                 if (attempts > 5) {
-                    process(pipCount);
+                    process(pipCount, damage);
                     return;
                 }
                 diameter *= 0.9;
             }
         } while (remaining > 0);
 
+        int remainingDamage = damage;
         for (var pip : pips) {
-            group.appendChild(sheet.createPip(pip.x, pip.y + (originalDiameter / 2 - diameter / 2.2), diameter / 2.2, strokeWidth, pipType, fill));
+            if (remainingDamage > 0) {
+                remainingDamage--;
+            }
+            final String fillColor = (remainingDamage > 0) ? PrintRecordSheet.FILL_BLACK : fill;
+            group.appendChild(sheet.createPip(pip.x, pip.y + (originalDiameter / 2 - diameter / 2.2), diameter / 2.2, strokeWidth, pipType, fillColor));
         }
     }
 
@@ -397,7 +424,7 @@ class ArmorPipLayout {
      *
      * @param pipCount The number of pips to place in the region
      */
-    private void process(int pipCount) {
+    private void process(int pipCount, int damage) {
         /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
@@ -495,7 +522,7 @@ class ArmorPipLayout {
             }
         }
         double xSpacing = adjustCount(pipCount, rows, gaps, rowCount, staggered, spacing);
-        drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing);
+        drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing, damage);
     }
 
     /**
@@ -650,7 +677,7 @@ class ArmorPipLayout {
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
-            boolean staggered, double radius, double xSpacing) {
+            boolean staggered, double radius, double xSpacing, int damage) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
         /*
          * Find the row that takes up the largest percentage of its row. If it's over
@@ -681,22 +708,23 @@ class ArmorPipLayout {
         double centerX = rows.get(0).centerX();
         // The offset needed to center the pip in the cell.
         double xPadding = dx * 0.5 - radius;
+        AtomicInteger remainingDamageCounter = new AtomicInteger(damage);
         for (int r = 0; r < rows.size(); r++) {
             final Bounds row = rows.get(r);
             if (gaps.get(r).width() > 0) {
                 Bounds left = new Bounds(row.left, row.top, gaps.get(r).left, row.bottom);
                 Bounds right = new Bounds(gaps.get(r).right, row.top, row.right, row.bottom);
                 int count = (int) Math.round(rowCount.get(r) * left.width() / (left.width() + right.width()));
-                drawRow(left, count, radius, dx, centerX, xPadding);
-                drawRow(right, rowCount.get(r) - count, radius, dx, centerX, xPadding);
+                drawRow(left, count, radius, dx, centerX, xPadding, remainingDamageCounter);
+                drawRow(right, rowCount.get(r) - count, radius, dx, centerX, xPadding, remainingDamageCounter);
                 centerX = row.centerX();
             } else {
-                centerX = drawRow(row, rowCount.get(r), radius, dx, centerX, xPadding);
+                centerX = drawRow(row, rowCount.get(r), radius, dx, centerX, xPadding, remainingDamageCounter);
             }
         }
     }
 
-    private double drawRow(Bounds row, int count, double radius, double dx, double centerX, double xPadding) {
+    private double drawRow(Bounds row, int count, double radius, double dx, double centerX, double xPadding, AtomicInteger damageCounter) {
         double xpos = calcRowStartX(centerX, count, dx) + xPadding;
         while (xpos < row.left) {
             xpos += dx;
@@ -709,7 +737,14 @@ class ArmorPipLayout {
             xpos = calcRowStartX(centerX, count, dx) + xPadding;
         }
         for (int i = 0; i < count; i++) {
-            Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType, fill);
+            boolean isDamaged = false;
+            if (damageCounter.get() > 0) {
+                if (damageCounter.decrementAndGet() >= 0) {
+                    isDamaged = true;
+                }
+            }
+            final String fillColor = (isDamaged) ? PrintRecordSheet.FILL_BLACK : fill;
+            Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType, fillColor);
             group.appendChild(pip);
             xpos += dx;
         }
