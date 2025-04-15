@@ -161,18 +161,22 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.addActionListener(e -> {
             recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
         });
+        recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
 
         showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         showPilotDataCheck.setToolTipText("When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
         showPilotDataCheck.addActionListener(e -> {
             recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
         });
+        recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
         adjustedBvCheck.addActionListener(e -> {
             recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
         });
+        recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
