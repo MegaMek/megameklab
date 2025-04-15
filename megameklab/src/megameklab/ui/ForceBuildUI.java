@@ -761,9 +761,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
               dialog -> {
                 addEntities(dialog.getChosenEntities());
               });
-        addEntities(viewer.getChosenEntities());
+        List<Entity> entities = viewer.getChosenEntities();
+        if (entities != null && !entities.isEmpty()) {
+            addEntities(entities);
+            updateTableAndTotal();
+        }
         viewer.dispose();
-        updateTableAndTotal();
     }
 
     private void openEntityInEditor(Entity entity) {
