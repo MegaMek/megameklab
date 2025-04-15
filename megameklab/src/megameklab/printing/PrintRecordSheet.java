@@ -660,6 +660,26 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     /**
      * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The width
+     * of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     *
+     * @return The width of the text in the current font size
+     */
+    protected double addTextElement(Element parent, double x, double y, String text,
+            float fontSize, String anchor, String weight, String fill) {
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, FILL_BLACK, false);
+    }
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the
      * parent. The
      * height of the text is returned, to aid in layout.
      *
@@ -672,11 +692,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *                 middle, or end.
      * @param weight   The font weight, either normal or bold.
      * @param fill     The fill color for the text (e.g. foreground color)
+     * @param strikethrough Whether to add a strikethrough line to the text
      *
      * @return The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fill) {
+            float fontSize, String anchor, String weight, String fill, boolean needsStrikethrough) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -686,6 +707,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (needsStrikethrough) {
+            final String style = "text-decoration: line-through;";
+            newText.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style);
+        }
         parent.appendChild(newText);
 
         return weight.equals(SVGConstants.SVG_BOLD_VALUE) ? getBoldTextLength(text, fontSize)

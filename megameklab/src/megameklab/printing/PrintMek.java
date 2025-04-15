@@ -529,7 +529,12 @@ public class PrintMek extends PrintEntity {
                 addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
                         SVGConstants.SVG_START_VALUE, style, fill);
             } else if (crit.isArmored()) {
-                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
+                int damage = 0;
+                final boolean isDamagedPip = damage > 0;
+                if (damage > 0) {
+                    damage--;
+                }
+                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE, isDamagedPip ? FILL_BLACK : FILL_WHITE);
                 canvas.appendChild(pip);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
                         SVGConstants.SVG_START_VALUE, style, fill);
@@ -537,7 +542,8 @@ public class PrintMek extends PrintEntity {
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
-                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill);
+                final boolean isDamaged = options.showDamage() && crit.isDamaged();
+                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill, isDamaged);
                 x = critX + getTextLength(critName, fontSize);
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
@@ -545,18 +551,24 @@ public class PrintMek extends PrintEntity {
                 double y = currY - lineHeight + spacing;
                 double y2 = currY - spacing;
                 x += spacing;
+                int damage = 0;
                 for (int i = 0; i < 10; i++) {
                     if (i == 5) {
                         x -= spacing * 5.5;
                         y = y2;
                     }
-                    Element pip = createPip(x, y, radius, 0.5);
+                    final boolean isDamagedPip = damage > 0;
+                    if (damage > 0) {
+                        damage--;
+                    }
+                    Element pip = createPip(x, y, radius, 0.5, PipType.CIRCLE, isDamagedPip ? FILL_BLACK : FILL_WHITE);
                     canvas.appendChild(pip);
                     x += spacing;
                 }
             } else {
+                final boolean isDamaged = options.showDamage() && crit.isDamaged();
                 addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, style, fill, isDamaged);
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
@@ -634,7 +646,10 @@ public class PrintMek extends PrintEntity {
         int viewY = (int) bbox.getY();
 
         int si = mek.getOInternal(Mek.LOC_CT);
-
+        int damage = 0;
+        if (options.showDamage()) {
+            damage = si - mek.getInternal(Mek.LOC_CT);
+        }
         double size = 9.2;
         double radius = 2.8;
         int width = (int) (viewWidth / size);
@@ -649,7 +664,11 @@ public class PrintMek extends PrintEntity {
                 xPosition = viewX + (viewWidth - size * row2 + size - radius * 2) * 0.5;
                 yPosition += viewHeight * 0.5;
             }
-            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth, PipType.CIRCLE, isDamaged ? FILL_BLACK : FILL_WHITE);
             canvas.appendChild(pip);
             xPosition += size;
         }
