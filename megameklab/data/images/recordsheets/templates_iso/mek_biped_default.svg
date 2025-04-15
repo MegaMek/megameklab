@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.5005284"
-     inkscape:cx="108.37709"
-     inkscape:cy="396.91611"
+     inkscape:cx="108.57705"
+     inkscape:cy="397.31602"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g297"
+     inkscape:current-layer="crewDamage1"
      showgrid="false" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
@@ -1508,7 +1508,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text241">1</text>
+           id="crew_damage_0_1">1</text>
         <text
            fill="#000000"
            x="55.552"
@@ -1522,7 +1522,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text243">2</text>
+           id="crew_damage_0_2">2</text>
         <text
            fill="#000000"
            x="70.009"
@@ -1536,7 +1536,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text245">3</text>
+           id="crew_damage_0_3">3</text>
         <text
            fill="#000000"
            x="84.466"
@@ -1550,7 +1550,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text247">4</text>
+           id="crew_damage_0_4">4</text>
         <text
            fill="#000000"
            x="98.924"
@@ -1564,7 +1564,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text249">5</text>
+           id="crew_damage_0_5">5</text>
         <text
            fill="#000000"
            x="113.381"
@@ -1578,7 +1578,7 @@
            y="39.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text251">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="127.838"
            y="49.000"
@@ -1706,7 +1706,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text255">1</text>
+           id="crew_damage_1_1">1</text>
         <text
            fill="#000000"
            x="55.552"
@@ -1720,7 +1720,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text257">2</text>
+           id="crew_damage_1_2">2</text>
         <text
            fill="#000000"
            x="70.009"
@@ -1734,7 +1734,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text259">3</text>
+           id="crew_damage_1_3">3</text>
         <text
            fill="#000000"
            x="84.466"
@@ -1748,7 +1748,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text261">4</text>
+           id="crew_damage_1_4">4</text>
         <text
            fill="#000000"
            x="98.924"
@@ -1762,7 +1762,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text263">5</text>
+           id="crew_damage_1_5">5</text>
         <text
            fill="#000000"
            x="113.381"
@@ -1776,7 +1776,7 @@
            y="91.000"
            style="font-family:Eurostile;font-size:5.800px;font-weight:bold;font-style:normal"
            text-anchor="middle"
-           id="text265">6</text>
+           id="crew_damage_1_6">6</text>
         <text
            x="127.838"
            y="101.000"

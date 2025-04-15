@@ -166,6 +166,19 @@ public class PrintMek extends PrintEntity {
                 el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
             }
         }
+        if (options.showPilotData()) {
+            final int totalCrewMembers = getEntity().getCrew().getSlotCount(); 
+            for (int crewMemberId = 0; crewMemberId < totalCrewMembers; crewMemberId++) {
+                final int crewHits = getEntity().getCrew().getHits(crewMemberId);
+                for (int k = 1; k <= crewHits; k++) {
+                    final String elementId = CREW_HIT + crewMemberId + "_" + k;
+                    Element el = getSVGDocument().getElementById(elementId);
+                    if (el != null) {
+                        el.setTextContent("X");
+                    }
+                }
+            }
+        }
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             final int avionicsHits = getAvionicsHits();
             for (int i = 1; i <= avionicsHits; i++) {

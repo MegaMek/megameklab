@@ -130,6 +130,7 @@ public interface IdConstants {
     String KF_PIPS = "kfPips";
     String SAIL_PIPS = "sailPips";
     String DC_PIPS = "dcPips";
+    String CREW_HIT = "crew_damage_";
 
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
