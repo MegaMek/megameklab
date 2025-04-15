@@ -549,7 +549,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (damage > 0) {
                 damage--;
             }
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? FILL_BLACK : FILL_WHITE);
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
@@ -587,7 +587,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (damage > 0) {
                 damage--;
             }
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? FILL_BLACK : FILL_WHITE);
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }

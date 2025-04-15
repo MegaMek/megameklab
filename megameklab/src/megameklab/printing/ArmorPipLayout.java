@@ -414,7 +414,7 @@ class ArmorPipLayout {
             if (remainingDamage > 0) {
                 remainingDamage--;
             }
-            final String fillColor = (remainingDamage > 0) ? PrintRecordSheet.FILL_BLACK : fill;
+            final String fillColor = (remainingDamage > 0) ? sheet.getDamageFillColor() : fill;
             group.appendChild(sheet.createPip(pip.x, pip.y + (originalDiameter / 2 - diameter / 2.2), diameter / 2.2, strokeWidth, pipType, fillColor));
         }
     }
@@ -743,7 +743,7 @@ class ArmorPipLayout {
                     isDamaged = true;
                 }
             }
-            final String fillColor = (isDamaged) ? PrintRecordSheet.FILL_BLACK : fill;
+            final String fillColor = (isDamaged) ? sheet.getDamageFillColor() : fill;
             Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType, fillColor);
             group.appendChild(pip);
             xpos += dx;

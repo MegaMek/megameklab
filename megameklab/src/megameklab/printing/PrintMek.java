@@ -142,28 +142,28 @@ public class PrintMek extends PrintEntity {
         for (int i = 1; i <= engineHits; i++) {
             Element el = getSVGDocument().getElementById(ENGINE_HIT + i);
             if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
             }
         }
         final int gyroHits = getGyroHits();
         for (int i = 1; i <= gyroHits; i++) {
             Element el = getSVGDocument().getElementById(GYRO_HIT + i);
             if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
             }
         }
         final int sensorHits = getSensorHits();
         for (int i = 1; i <= sensorHits; i++) {
             Element el = getSVGDocument().getElementById(SENSOR_HIT + i);
             if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
             }
         }
         final int lifeSupportHits = getLifeSupportHits();
         for (int i = 1; i <= lifeSupportHits; i++) {
             Element el = getSVGDocument().getElementById(LIFE_SUPPORT_HIT + i);
             if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
             }
         }
         if (options.showPilotData()) {
@@ -174,7 +174,9 @@ public class PrintMek extends PrintEntity {
                     final String elementId = CREW_HIT + crewMemberId + "_" + k;
                     Element el = getSVGDocument().getElementById(elementId);
                     if (el != null) {
+                        el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, "13pt"); 
                         el.setTextContent("X");
+                        el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
                     }
                 }
             }
@@ -184,14 +186,14 @@ public class PrintMek extends PrintEntity {
             for (int i = 1; i <= avionicsHits; i++) {
                 Element el = getSVGDocument().getElementById(AVIONICS_HIT + i);
                 if (el != null) {
-                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
                 }
             }
             final int landingGearHits = getAvionicsHits();
             for (int i = 1; i <= landingGearHits; i++) {
                 Element el = getSVGDocument().getElementById(LANDING_GEAR_HIT + i);
                 if (el != null) {
-                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
                 }
             }
         }
@@ -449,7 +451,7 @@ public class PrintMek extends PrintEntity {
             if (remainingDamage > 0) {
                 remainingDamage--;
                 // Set the fill attribute to black for damaged pips
-                sortedElement.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                sortedElement.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
             }
             parent.appendChild(getSVGDocument().importNode(sortedElement, true)); // Final append
         }
@@ -598,7 +600,7 @@ public class PrintMek extends PrintEntity {
                 if (damage > 0) {
                     damage--;
                 }
-                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE, isDamagedPip ? FILL_BLACK : FILL_WHITE);
+                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() : FILL_WHITE);
                 canvas.appendChild(pip);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
                         SVGConstants.SVG_START_VALUE, style, fill);
@@ -625,7 +627,7 @@ public class PrintMek extends PrintEntity {
                     if (damage > 0) {
                         damage--;
                     }
-                    Element pip = createPip(x, y, radius, 0.5, PipType.CIRCLE, isDamagedPip ? FILL_BLACK : FILL_WHITE);
+                    Element pip = createPip(x, y, radius, 0.5, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() : FILL_WHITE);
                     canvas.appendChild(pip);
                     x += spacing;
                 }
@@ -732,7 +734,7 @@ public class PrintMek extends PrintEntity {
             if (damage > 0) {
                 damage--;
             }
-            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth, PipType.CIRCLE, isDamaged ? FILL_BLACK : FILL_WHITE);
+            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth, PipType.CIRCLE, isDamaged ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
             xPosition += size;
         }

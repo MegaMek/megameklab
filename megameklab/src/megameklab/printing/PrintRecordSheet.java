@@ -92,6 +92,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";
+    public static final String FILL_RED = "#ff0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
 
@@ -1174,5 +1175,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     table.createTable(x, ypos, width, tableHeight - BORDER));
             ypos += tableHeight;
         }
+    }
+
+    protected String getDamageFillColor() {
+        if (options.useColor()) {
+            return FILL_RED;
+        }
+        return FILL_BLACK;
     }
 }
