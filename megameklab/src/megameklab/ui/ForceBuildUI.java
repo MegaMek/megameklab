@@ -108,6 +108,7 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.UnitEditorDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.lobby.LobbyErrors;
 import megamek.client.ui.swing.lobby.LobbyUtility;
@@ -124,6 +125,7 @@ import megamek.common.util.C3Util;
 import megamek.common.util.C3Util.C3CapacityException;
 import megamek.common.util.C3Util.MismatchingC3MException;
 import megamek.common.util.C3Util.MissingC3MException;
+import megamek.common.util.CollectionUtil;
 import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
@@ -196,7 +198,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         game = client.getGame();
         game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
-        player = new Player(1, "Nobody");
+        player = new Player(1, "");
         game.addPlayer(1, player);
     }
 
@@ -337,7 +339,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             C3Util.disconnectFromNetwork(game, List.of(entity));
             game.removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
             entity.setCrew(new Crew(entity.defaultCrewType()));
-            entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, "Nobody"));
+            entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, ""));
             updateTotalBVLabelOnly();
             packWindow();
         }
@@ -400,7 +402,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     public ArrayList<Entity> getAllEntities() {
         return forceList;
     }
-
+    
     private void showPopup(Component component, int x, int y) {
         List<Entity> selectedEntities = new ArrayList<>();
         int[] selection = entityTable.getSelectedRows();
@@ -437,6 +439,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             openEntityConfiguration(selectedEntities.get(0));
         });
         rowPopupMenu.add(editItem);
+
+
+        // --- Edit Damage ---
+        JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
+        editDamage.setMnemonic(KeyEvent.VK_D);
+        editDamage.addActionListener(e -> {
+            UnitEditorDialog med = new UnitEditorDialog(null, selectedEntities.get(0));
+            med.setVisible(true);
+        });
+        rowPopupMenu.add(editDamage);
 
         // --- C3 Menu ---
         rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
