@@ -154,7 +154,7 @@ public class PrintMek extends PrintEntity {
 
         Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
         if (hsRect instanceof SVGRectElement) {
-            drawHeatSinkPips((SVGRectElement) hsRect, mek.heatSinks());
+            drawHeatSinkPips((SVGRectElement) hsRect, mek.heatSinks(), getHeatsinkDamage());
         }
 
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
@@ -914,5 +914,12 @@ public class PrintMek extends PrintEntity {
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+    }
+
+    protected int getHeatsinkDamage() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return mek.damagedHeatSinks();
     }
 }

@@ -109,7 +109,7 @@ public class PrintAero extends PrintEntity {
         if (aero.tracksHeat()) {
             Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
             if (hsRect instanceof SVGRectElement) {
-                drawHeatSinkPips((SVGRectElement) hsRect, aero.getHeatSinks());
+                drawHeatSinkPips((SVGRectElement) hsRect, aero.getHeatSinks(), getHeatsinkDamage());
             }
         }
         if (aero.isBomber()) {
@@ -332,5 +332,12 @@ public class PrintAero extends PrintEntity {
                     pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
                     height * 0.5 - 3.0));
         }
+    }
+
+    protected int getHeatsinkDamage() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return aero.getHeatSinkHits();
     }
 }

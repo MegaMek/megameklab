@@ -494,7 +494,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @param svgRect The <rect> defining the bounds of the heat sink pip region
      * @param hsCount The number of heat sink pips to draw
      */
-    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
+    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount, int damage) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
         double viewWidth = bbox.getWidth();
@@ -502,7 +502,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         double viewX = bbox.getX();
         double viewY = bbox.getY();
         if (viewWidth > viewHeight) {
-            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight);
+            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
             return;
         }
 
@@ -536,13 +536,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int row = i % rows;
             int col = i / rows;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? FILL_BLACK : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
 
     void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
-                                   double viewWidth, double viewHeight) {
+                                   double viewWidth, double viewHeight, int damage) {
         double size = Math.min(9.66, viewWidth / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
@@ -570,7 +574,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int col = i % cols;
             int row = i / cols;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? FILL_BLACK : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
@@ -687,5 +695,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
         final int structure = getEntity().getOInternal(loc);
         final int remainingStructure = getEntity().getInternal(loc);
         return structure - remainingStructure;
+    }
+
+    protected int getEngineHits() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return getEntity().getEngineHits();
     }
 }
