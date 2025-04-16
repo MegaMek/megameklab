@@ -379,13 +379,29 @@ public class PrintMek extends PrintEntity {
     }
 
     private boolean loadISPips() {
-        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d.svg",
-                (int) mek.getWeight()));
+        boolean result = false;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            if (!loadISPips(loc)) {
+                return false;
+            }
+            if (!result) {
+                result = true;
+            }
+        }
+        if (result) {        
+            hideElement(STRUCTURE_PIPS);
+        }
+        return result;
+    }
+
+    private boolean loadISPips(int loc) {
+        String locAbbr = mek.getLocationAbbr(loc);
+        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d_%s.svg",
+                (int) mek.getWeight(), locAbbr));
         if (null == nl) {
             return false;
         }
-        hideElement(STRUCTURE_PIPS);
-        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, 0); //TODO: Add damage to IS pips
+        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, getStructureDamage(loc));
     }
 
     private static final Pattern FIRST_MOVETO_PATTERN =
