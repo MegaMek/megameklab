@@ -101,7 +101,9 @@ public class UnitPrintManager {
 
     public static File getExportFile(Frame parent, String suggestedFileName) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
-        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        if (parent != null) {
+            f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        }
         f.setDialogTitle("Choose export file name");
         f.setMultiSelectionEnabled(false);
         if (!suggestedFileName.isEmpty()) {

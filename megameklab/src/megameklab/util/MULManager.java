@@ -41,7 +41,7 @@ import megameklab.ui.MulDndBehaviour;
 public class MULManager {
     private static final MMLogger logger = MMLogger.create(MULManager.class);
     
-    public static void processMULFile(File file, JFrame owner) {
+    public static void processMULFile(File file) {
         int behaviourValue = CConfig.getIntParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR);
         MulDndBehaviour[] allValues = MulDndBehaviour.values();
         MulDndBehaviour selectedBehaviour = MulDndBehaviour.PRINT;
@@ -51,11 +51,11 @@ public class MULManager {
         switch (selectedBehaviour) {
             case PRINT:
                 // Print
-                UnitPrintManager.printMUL(owner, false, file);
+                UnitPrintManager.printMUL(null, false, file);
                 break;
             case EXPORT:
                 // Export to PDF
-                UnitPrintManager.printMUL(owner, true, file);
+                UnitPrintManager.printMUL(null, true, file);
                 break;
             case LOAD_FORCE:
                 // Load into Force Builder
