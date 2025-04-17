@@ -105,7 +105,7 @@ jobs:
 
       - name: Build with Gradle
         working-directory: megameklab
-        run: ./gradlew build  -x test
+        run: ./gradlew build -x test -PextraVersion="PR-${{ github.event.number }}-${{ env.COMMIT_SHORT_SHA }}"
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4
