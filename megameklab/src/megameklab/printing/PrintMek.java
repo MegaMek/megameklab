@@ -388,7 +388,7 @@ public class PrintMek extends PrintEntity {
                 result = true;
             }
         }
-        if (result) {        
+        if (result) {
             hideElement(STRUCTURE_PIPS);
         }
         return result;
@@ -404,72 +404,22 @@ public class PrintMek extends PrintEntity {
         return copyPipPattern(nl, CANON_STRUCTURE_PIPS, getStructureDamage(loc));
     }
 
-    private static final Pattern FIRST_MOVETO_PATTERN =
-        Pattern.compile("^[Mm]\\s*(-?\\d*\\.?\\d+)\\s*[ ,]?\\s*(-?\\d*\\.?\\d+)");
-
-    private @Nullable Point2D.Float getFirstMoveToCoordinate(Node n) {
-        if (!(n instanceof Element)) {
-            return null;
-        }
-        Element el = (Element) n;
-        String dAttribute = el.getAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE);
-        if (dAttribute == null || dAttribute.trim().isEmpty()) {
-            logger.warn("Node has empty or missing 'd' attribute: " + n);
-            return null;
-        }
-
-        Matcher matcher = FIRST_MOVETO_PATTERN.matcher(dAttribute.trim());
-        if (matcher.find()) {
-            try {
-                float x = Float.parseFloat(matcher.group(1));
-                float y = Float.parseFloat(matcher.group(2));
-                return new Point2D.Float(x, y);
-            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                logger.warn("Failed to parse coordinates from 'd' attribute: '" + dAttribute + "' - " + e.getMessage());
-                return null;
-            }
-        } else {
-            logger.warn("Could not find initial 'moveto' command in 'd' attribute: '" + dAttribute + "'");
-            return null;
-        }
-    }
-    
     private boolean copyPipPattern(NodeList nl, String parentName, int damage) {
         Element parent = getSVGDocument().getElementById(parentName);
         if (null == parent) {
             return false;
         }
-        // Build temp list for sorting
-        List<Node> tempNodes = new ArrayList<>(nl.getLength());
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element el) {
-                tempNodes.add(el);
-            }
-        }
-
-        // Sorting the nodes by their coordinates in the 'd' attribute
-        try {
-            tempNodes.sort(Comparator.<Node, Float>comparing(n -> {
-                Point2D.Float coord = getFirstMoveToCoordinate(n);
-                return (coord != null) ? coord.y : Float.MAX_VALUE; // Primary sort: Y coordinate
-            }).thenComparing(n -> {
-                Point2D.Float coord = getFirstMoveToCoordinate(n);
-                return (coord != null) ? coord.x : Float.MAX_VALUE; // Secondary sort: X coordinate
-            }));
-        } catch (Exception e) {
-            logger.error("Error during sorting of pip nodes using 'd' attribute for parent '" + parentName + "': " + e.getMessage(), e);
-        }
-        
         // Append nodes and apply damage
         int remainingDamage = damage;
-        for (Node node : tempNodes) {
-            Element sortedElement = (Element) node;
-            if (remainingDamage > 0) {
-                remainingDamage--;
-                // Set the fill attribute to black for damaged pips
-                sortedElement.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+        for (int i = 0; i < nl.getLength(); i++) {
+            if (nl.item(i) instanceof Element el) {
+                if (remainingDamage > 0) {
+                    remainingDamage--;
+                    // Set the fill attribute to black for damaged pips
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                }
+                parent.appendChild(getSVGDocument().importNode(el, true)); // Final append
             }
-            parent.appendChild(getSVGDocument().importNode(sortedElement, true)); // Final append
         }
         return true;
     }
@@ -486,12 +436,12 @@ public class PrintMek extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG " + f.getName() + ": "+ e.getMessage(), e);
             return null;
         }
 
         if (doc == null) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Document is null for svg file: " + f.getName());
             return null;
         }
         return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
