@@ -78,7 +78,7 @@ jobs:
           verbose: true
 
       - name: Build with Gradle
-        working-directory: megamek
+        working-directory: megameklab
         run: ./gradlew build -x test -PextraVersion="nightly-$(date +'%Y-%m-%d')"
 
       - name: Upload TarGZ Release
