@@ -219,9 +219,9 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
-    private Boolean includeC3inBV = false;
-    private Boolean showPilotData = false;
-    private Boolean showDamage = false;
+    private Boolean includeC3inBV = null;
+    private Boolean showPilotData = null;
+    private Boolean showDamage = null;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard

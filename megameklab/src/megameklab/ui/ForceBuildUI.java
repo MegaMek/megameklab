@@ -1130,7 +1130,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     for (File file : files) {
                         if (file.isFile() && file.getName().toLowerCase().endsWith(".mul")) {
                             // Process the MUL file using MULManager
-                            MULManager.processMULFile(file, ForceBuildUI.this);
+                            MULManager.loadForceFromMUL(file);
                             processed = true;
                         }
                     }
