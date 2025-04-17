@@ -443,8 +443,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
         editDamage.setMnemonic(KeyEvent.VK_D);
         editDamage.addActionListener(e -> {
-            UnitEditorDialog med = new UnitEditorDialog(null, selectedEntities.get(0));
+            Entity entity = selectedEntities.get(0);
+            UnitEditorDialog med = new UnitEditorDialog(null, entity);
             med.setVisible(true);
+            MegaMekLabTabbedUI.refreshEntity(entity);
         });
         rowPopupMenu.add(editDamage);
 
@@ -455,9 +457,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         final JMenuItem miCurrentUnitBVBreakdown = new JMenuItem(menuResources.getString("ForceBuildUI.popup.BVBreakdown.text"));
         miCurrentUnitBVBreakdown.setName("miCurrentUnitBVBreakdown");
         miCurrentUnitBVBreakdown.setMnemonic(KeyEvent.VK_U);
-        miCurrentUnitBVBreakdown.addActionListener(evt -> 
-            new BVDisplayDialog(null, selectedEntities.get(0)).setVisible(true)
-        );
+        miCurrentUnitBVBreakdown.addActionListener(evt -> {
+            new BVDisplayDialog(null, selectedEntities.get(0)).setVisible(true);
+        });
         rowPopupMenu.add(miCurrentUnitBVBreakdown);
 
         // --- Delete Item ---
