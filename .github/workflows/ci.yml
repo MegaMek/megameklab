@@ -54,7 +54,7 @@ jobs:
         run: |
           cd megamek
           calculatedSha=$(git rev-parse --short HEAD)
-          echo "$calculatedSha" >> megamek/mm-revision.txt
+          echo "$calculatedSha" >> ../megameklab/megameklab/docs/mm-revision.txt
 
       - name: Set short git commit SHA
         id: vars
