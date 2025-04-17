@@ -53,7 +53,7 @@ jobs:
       - name: Add MM Hash
         run: |
           cd megamek
-          calculatedSha=$(git rev-parse --short HEAD)
+          calculatedSha=$(git rev-parse HEAD)
           echo "$calculatedSha" >> ../megameklab/megameklab/docs/mm-revision.txt
 
       - name: Set short git commit SHA

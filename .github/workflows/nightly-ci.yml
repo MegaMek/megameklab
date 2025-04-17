@@ -34,8 +34,8 @@ jobs:
       - name: Add MM Hash
         run: |
           cd megamek
-          calculatedSha=$(git rev-parse --short HEAD)
-          echo "$calculatedSha" >> megamek/megamek/mm-revision.txt
+          calculatedSha=$(git rev-parse HEAD)
+          echo "$calculatedSha" >> ../megameklab/megameklab/docs/mm-revision.txt
 
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v4
