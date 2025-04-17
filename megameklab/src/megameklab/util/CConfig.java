@@ -133,6 +133,8 @@ public final class CConfig {
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
     public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
+    public static final String PQ_DAMAGE = "pqDamage";
+    public static final String PQ_SHOW_PILOT_DATA = "pqShowPilotData";
 
     private static final Properties config = getDefaults();
 
@@ -167,6 +169,7 @@ public final class CConfig {
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
+        defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
         return defaults;
     }
 

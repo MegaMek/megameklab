@@ -214,11 +214,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         checkboxPanel.add(oneUnitPerSheetCheck);
         oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
         checkboxPanel.add(showPilotDataCheck);
-        showPilotDataCheck.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+        showPilotDataCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SHOW_PILOT_DATA));
         checkboxPanel.add(adjustedBvCheck);
         adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         checkboxPanel.add(showDamageCheck);
-        showDamageCheck.setSelected(CConfig.getBooleanParam(CConfig.RS_DAMAGE));
+        showDamageCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_DAMAGE));
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         
         // Set RS settings from initial state of the checkboxes
@@ -324,9 +324,10 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         options.setC3inBV(adjustedBvCheck.isSelected());
         options.setPilotData(showPilotDataCheck.isSelected());
         options.setDamage(showDamageCheck.isSelected());
-        CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, String.valueOf(showPilotDataCheck.isSelected()));
-        CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_SHOW_PILOT_DATA, String.valueOf(showPilotDataCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_DAMAGE, String.valueOf(showDamageCheck.isSelected()));
         CConfig.saveConfig();
 
         if (printToPdf) {
