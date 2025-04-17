@@ -44,13 +44,18 @@ jobs:
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
 
+      - name: "Output branch information to Version file"
+        run: |
+          echo "branch=nightly" >> megamek/megamek/resources/extraVersion.properties
+          echo "gitHash=$(date +'%Y-%m-%d')" >> megamek/megamek/resources/extraVersion.properties 
+
       - name: Add MMLRevision file
         run: |
           echo ${{ github.sha }} >> megameklab/megameklab/mml-revision.txt
 
-      - name: Build with Gradle
+      - name: Testing Nightly
         working-directory: megameklab
-        run: ./gradlew clean build --stacktrace --scan
+        run: ./gradlew test
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v4
@@ -59,14 +64,20 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}-ci-failure-logs
           path: megameklab/megameklab/build/reports/
 
-      #      - name: Upload Zip Release
-      #        uses: actions/upload-artifact@v4
-      #        with:
-      #          name: mml-release-zip-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-      #          path: ./megameklab/megameklab/build/distributions/*.zip
+      - name: CodeCov.io Coverage Report
+        uses: codecov/codecov-action@v5
+        with:
+          directory: megameklab/megameklab/build/reports/jacoco/test
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Build with Gradle
+        working-directory: megamek
+        run: ./gradlew build -x test -PextraVersion="nightly-$(date +'%Y-%m-%d')"
+
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4
         with:
           name: mml-release-tgz-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
-          path: ./megameklab/megameklab/build/distributions/*.tar.gz
+          path: megameklab/megameklab/build/distributions/*.tar.gz

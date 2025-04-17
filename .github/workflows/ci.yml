@@ -50,6 +50,18 @@ jobs:
           ref: ${{ steps.find_mm.outputs.mmBranch }}
           path: megamek
 
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          cd megameklab
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: "Output branch information to Version file"
+        run: |
+          echo "branch=PR-${{ github.event.number }}" >> megamek/megamek/resources/extraVersion.properties
+          echo "gitHash=${{ env.COMMIT_SHORT_SHA }}" >> megamek/megamek/resources/extraVersion.properties 
+
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
