@@ -1029,6 +1029,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     break;
             }
             updateTableAndTotal();
+            for (Entity entity : entities) {
+                MegaMekLabTabbedUI.refreshEntity(entity);
+            }
         } catch (MissingC3MException missing) {
             LobbyErrors.showOnlyC3M(this);
         } catch (MismatchingC3MException mismatch) {

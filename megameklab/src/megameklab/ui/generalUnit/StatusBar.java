@@ -22,6 +22,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -35,6 +36,7 @@ import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.calculationReport.CalculationReport;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -49,6 +51,7 @@ import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 public class StatusBar extends ITab {
@@ -155,8 +158,20 @@ public class StatusBar extends ITab {
     }
 
     private void refreshBV() {
-        int bv = getEntity().calculateBattleValue(true, true);
-        bvLabel.setText("BV: " + bv);
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+        if (CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV)) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        bvLabel.setText("BV: " + bvValue);
         bvLabel.setToolTipText("Battle Value 2.0. Click to show the BV calculation.");
     }
 
