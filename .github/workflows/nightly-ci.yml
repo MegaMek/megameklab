@@ -31,6 +31,12 @@ jobs:
           repository: MegaMek/megamek
           path: megamek
 
+      - name: Add MM Hash
+        run: |
+          cd megamek
+          calculatedSha=$(git rev-parse --short HEAD)
+          echo "$calculatedSha" >> megamek/megamek/mm-revision.txt
+
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
@@ -55,7 +61,7 @@ jobs:
 
       - name: Testing Nightly
         working-directory: megameklab
-        run: ./gradlew test
+        run: ./gradlew testAll --stacktrace --scan
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v4
@@ -74,7 +80,6 @@ jobs:
       - name: Build with Gradle
         working-directory: megamek
         run: ./gradlew build -x test -PextraVersion="nightly-$(date +'%Y-%m-%d')"
-
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4

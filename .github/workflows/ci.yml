@@ -50,6 +50,12 @@ jobs:
           ref: ${{ steps.find_mm.outputs.mmBranch }}
           path: megamek
 
+      - name: Add MM Hash
+        run: |
+          cd megamek
+          calculatedSha=$(git rev-parse --short HEAD)
+          echo "$calculatedSha" >> megamek/megamek/mm-revision.txt
+
       - name: Set short git commit SHA
         id: vars
         run: |
@@ -77,7 +83,7 @@ jobs:
 
       - name: Add MMLRevision file
         run: |
-          echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
+          echo ${{ github.sha }} >> megameklab/megameklab/mml-revision.txt
 
       - name: Test All
         working-directory: megameklab
