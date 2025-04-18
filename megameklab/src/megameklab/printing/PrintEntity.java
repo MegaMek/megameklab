@@ -219,9 +219,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
         setTextField(UNIT_TYPE, UnitType.getTypeDisplayableName(getEntity().getUnitType()).toUpperCase());
-        setTextField(MP_WALK, formatWalk());
-        setTextField(MP_RUN, formatRun());
-        setTextField(MP_JUMP, formatJump());
+        setTextField(MP_WALK, options.showDamage() ? formatWalk() : formatOriginalWalk());
+        setTextField(MP_RUN, options.showDamage() ? formatRun() : formatOriginalRun());
+        setTextField(MP_JUMP, options.showDamage() ? formatJump() : formatOriginalJump());
         if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             setTextField(TONNAGE, NumberFormat.getInstance()
                     .format((int) (getEntity().getWeight() * 1000)) + " kg");
@@ -623,12 +623,29 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    protected String formatOriginalWalk() {
+        return formatMovement(getEntity().getOriginalWalkMP());
+    }
+
     protected String formatWalk() {
         return formatMovement(getEntity().getWalkMP());
     }
 
+    protected String formatOriginalRun() {
+        return formatMovement(getEntity().getOriginalWalkMP() * 1.5);
+    }
+
     protected String formatRun() {
         return formatMovement(getEntity().getWalkMP() * 1.5);
+    }
+
+    protected String formatOriginalJump() {
+        if (getEntity().getOriginalJumpMP() > 0 && getEntity().getMechanicalJumpBoosterMP() > 0) {
+            return formatMovement(getEntity().getOriginalJumpMP())
+                  + " (%d)".formatted(getEntity().getMechanicalJumpBoosterMP());
+        } else {
+            return formatMovement(Math.max(getEntity().getOriginalJumpMP(), getEntity().getMechanicalJumpBoosterMP()));
+        }
     }
 
     protected String formatJump() {

@@ -708,16 +708,29 @@ public class PrintMek extends PrintEntity {
 
     @Override
     protected String formatWalk() {
-        if (mek.hasTSM(false)) {
-            return formatMovement(mek.getWalkMP(), mek.getWalkMP() + 1);
+        if (options.showDamage()) {
+            if (mek.hasTSM(false)) {
+                return formatMovement(mek.getOriginalWalkMP(), mek.getOriginalWalkMP() + 1);
+            } else {
+                return super.formatOriginalWalk();
+            }
         } else {
-            return super.formatWalk();
+            if (mek.hasTSM(false)) {
+                return formatMovement(mek.getWalkMP(), mek.getWalkMP() + 1);
+            } else {
+                return super.formatWalk();
+            }
         }
     }
 
     @Override
     protected String formatRun() {
-        double baseRun = mek.getWalkMP();
+        double baseRun;
+        if (options.showDamage()) {
+            baseRun = mek.getOriginalWalkMP();
+        } else {
+            baseRun = mek.getWalkMP();
+        }
         double fullRun = baseRun;
         baseRun *= 1.5;
         if (mek.hasTSM(false)) {
