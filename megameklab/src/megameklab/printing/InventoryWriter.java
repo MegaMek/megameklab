@@ -254,7 +254,15 @@ public class InventoryWriter {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
-            StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+            StandardInventoryEntry same;
+            if (sheet.showDamage()) {
+                same = equipment.stream()
+                    .filter(e -> entry.equals(e) && e.isDamaged() == entry.isDamaged())
+                    .findFirst()
+                    .orElse(null);
+            } else {
+                same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+            }
             if (null == same) {
                 equipment.add(entry);
             } else {
