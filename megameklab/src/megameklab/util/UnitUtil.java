@@ -19,7 +19,11 @@
 package megameklab.util;
 
 import java.awt.Font;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -2098,6 +2102,50 @@ public class UnitUtil {
             }
             return unitAsString;
         } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Clone an entity. This method creates a deep copy of the entity, including all its properties and references.
+     * @param entity The entity to copy
+     * @param keepDamage Whether to keep the damage of the original entity
+     * @return The copied entity
+     */
+    static public Entity cloneUnit(Entity entity, boolean keepDamage) {
+        try {
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+                    // Serialize the entities
+                    objectOutputStream.writeObject(entity);
+                    objectOutputStream.flush();
+                    byte[] serializedData = byteArrayOutputStream.toByteArray();
+
+                    Entity newEntity = null;
+                    // Deserialize to create new instances
+                    try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedData)) {
+                        try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
+                            newEntity = (Entity) objectInputStream.readObject();
+                        }
+                    }
+                    if (newEntity == null) {
+                        return null;
+                    }
+                    if (!keepDamage) {
+                        for (Mounted<?> mounted : newEntity.getEquipment()) {
+                            mounted.setHit(false);
+                            mounted.setDestroyed(false);
+                            mounted.setMissing(false);
+                            mounted.setJammed(false);
+                            mounted.setBreached(false);
+                            mounted.setFired(false);
+                        }
+                    }
+                    return newEntity;
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e, "Failed to break references for entity {}", entity);
             return null;
         }
     }
