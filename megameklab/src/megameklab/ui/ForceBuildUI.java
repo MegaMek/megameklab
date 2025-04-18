@@ -128,6 +128,7 @@ import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
 import megameklab.util.UnitMemento;
+import megameklab.util.UnitUtil;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 
@@ -294,8 +295,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 });
                 return;
             }
-            UnitMemento unitMemento = new UnitMemento(entityToAdd, MegaMekLabTabbedUI.getEditorForEntity(entityToAdd));
-            entity = unitMemento.createUnit();
+            entity = UnitUtil.cloneUnit(entityToAdd, false, false);
         } else {
             entity = entityToAdd;
         }
