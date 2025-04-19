@@ -55,6 +55,7 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
+import megameklab.util.MULManager;
 import megameklab.util.SingleInstanceService;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -330,10 +331,9 @@ public class MegaMekLab {
                 }
                 UiLoader.loadUi(e, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
-                LOGGER.info("Printing file: {}", filePath);
                 Runnable printMul = () -> {
                     var frame = new JFrame();
-                    UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
+                    MULManager.processMULFile(file, frame);
                     frame.dispose();
                 };
                 if (noStartup) {

@@ -40,6 +40,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -87,6 +88,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected boolean showPilotInfo() {
         return options.showPilotData()
                 && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
+    }
+
+    /**
+     * When printing from a MUL the C3 data is used in the BV calculation unless the option has been disabled.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showC3() {
+        return options.showC3inBV();
     }
 
     /**
@@ -214,8 +224,20 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
-        setTextField(BV, NumberFormat.getInstance().format(getEntity()
-                .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !showPilotInfo());
+        if (showC3()) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !showPilotInfo());
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        setTextField(BV, bvValue);
         UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
@@ -261,7 +283,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         element.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(offset));
                     }
                 }
-                setTextField(PILOT_NAME + i, getEntity().getCrew().getName(i), true);
+                String pilotName = getEntity().getCrew().getName(i);
+                final String pilotNickname = getEntity().getCrew().getNickname(i);
+                if (pilotNickname != null && !pilotNickname.isBlank()) {
+                    pilotName += " ("+pilotNickname+")";
+                }
+                setTextField(PILOT_NAME + i, pilotName, true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
 
@@ -322,7 +349,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             final boolean hide = i >= getEntity().getCrew().getSlotCount();
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo());
+            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && (getEntity().getCrew().getName(i).trim() != "")));
             hideElement(CREW_NAME + i, hide);
             hideElement(GUNNERY_SKILL + i, hide);
             hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());

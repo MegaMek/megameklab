@@ -284,7 +284,10 @@ public class UnitPrintManager {
     }
 
     public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {
-        RecordSheetOptions options = new RecordSheetOptions();
+        exportUnits(units, exportFile, singlePrint, new RecordSheetOptions());
+    }
+
+    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint, RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());

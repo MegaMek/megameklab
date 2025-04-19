@@ -70,6 +70,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private final JMenuItem miUndo = new JMenuItem(resources.getString("miUndo.text"));
     private final JMenuItem miRedo = new JMenuItem(resources.getString("miRedo.text"));
     private final JMenuItem miReload = new JMenuItem(resources.getString("miReload.text"));
+    private final JMenuItem miAddToForce = new JMenuItem(resources.getString("miAddToForce.text"));
 
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
@@ -110,6 +111,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createFileMenu());
         add(createEditMenu());
         add(createUnitValidationMenu());
+        add(createForceBuildMenu());
         add(createReportsMenu());
         add(createHelpMenu());
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
@@ -767,6 +769,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miReload.setEnabled(activeEditorCanReload());
     }
 
+    private void refreshForceMenu() {
+        miAddToForce.setEnabled(isUnitGui());
+    }
+
     /**
      * @return the created Edit menu
      */
@@ -875,6 +881,32 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         reportsMenu.add(createUnitWeightBreakdownMenu());
 
         return reportsMenu;
+    }
+
+    /**
+     * Creates the force menu
+     * @return the created force menu
+     */
+    private JMenu createForceBuildMenu() {
+        final JMenu forceMenu = new JMenu(resources.getString("forceBuildMenu.text"));
+        forceMenu.setName("forceBuildMenu");
+        forceMenu.setMnemonic(KeyEvent.VK_B);
+
+        miAddToForce.setName("miAddToForce");
+        miAddToForce.setMnemonic(KeyEvent.VK_A);
+        miAddToForce.addActionListener(evt -> addUnitToForce(owner.getEntity()));
+        forceMenu.add(miAddToForce);
+
+        final JMenuItem miViewForce = new JMenuItem(resources.getString("miViewForce.text"));
+        miViewForce.setName("miViewForce");
+        miViewForce.setMnemonic(KeyEvent.VK_V);
+        miViewForce.addActionListener(evt -> viewForce());
+        forceMenu.add(miViewForce);
+
+        refreshForceMenu();
+
+        return forceMenu;
+
     }
 
     /**
@@ -1359,6 +1391,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      */
     public void refreshMenuBar() {
         createFileMenu();
+        refreshEditMenu();
+        refreshForceMenu();
     }
 
     /**
@@ -1453,6 +1487,16 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public static void showBVCalculations(final JFrame frame, final @Nullable Entity entity) {
         if (entity != null) {
             new BVDisplayDialog(frame, entity).setVisible(true);
+        }
+    }
+
+    public void viewForce() {
+        ForceBuildUI.showWindow();
+    }
+
+    public void addUnitToForce(Entity entity) {
+        if (entity != null) {
+            ForceBuildUI.showAndAddEntity(entity);
         }
     }
 }
