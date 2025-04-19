@@ -40,6 +40,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -87,6 +88,24 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected boolean showPilotInfo() {
         return options.showPilotData()
                 && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
+    }
+
+    /**
+     * When printing from a MUL the C3 data is used in the BV calculation unless the option has been disabled.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showC3() {
+        return options.showC3inBV();
+    }
+
+    /**
+     * Show Damage on the record sheet.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showDamage() {
+        return options.showDamage();
     }
 
     /**
@@ -200,9 +219,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
         setTextField(UNIT_TYPE, UnitType.getTypeDisplayableName(getEntity().getUnitType()).toUpperCase());
-        setTextField(MP_WALK, formatWalk());
-        setTextField(MP_RUN, formatRun());
-        setTextField(MP_JUMP, formatJump());
+        setTextField(MP_WALK, options.showDamage() ? formatWalk() : formatOriginalWalk());
+        setTextField(MP_RUN, options.showDamage() ? formatRun() : formatOriginalRun());
+        setTextField(MP_JUMP, options.showDamage() ? formatJump() : formatOriginalJump());
         if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             setTextField(TONNAGE, NumberFormat.getInstance()
                     .format((int) (getEntity().getWeight() * 1000)) + " kg");
@@ -214,8 +233,20 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
-        setTextField(BV, NumberFormat.getInstance().format(getEntity()
-                .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !showPilotInfo());
+        if (showC3()) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !showPilotInfo());
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        setTextField(BV, bvValue);
         UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
@@ -261,7 +292,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         element.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(offset));
                     }
                 }
-                setTextField(PILOT_NAME + i, getEntity().getCrew().getName(i), true);
+                String pilotName = getEntity().getCrew().getName(i);
+                final String pilotNickname = getEntity().getCrew().getNickname(i);
+                if (pilotNickname != null && !pilotNickname.isBlank()) {
+                    pilotName += " ("+pilotNickname+")";
+                }
+                setTextField(PILOT_NAME + i, pilotName, true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
 
@@ -322,7 +358,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             final boolean hide = i >= getEntity().getCrew().getSlotCount();
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo());
+            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && (getEntity().getCrew().getName(i).trim() != "")));
             hideElement(CREW_NAME + i, hide);
             hideElement(GUNNERY_SKILL + i, hide);
             hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());
@@ -404,13 +440,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
+                        PipType.forAT(getEntity().getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), useAlternateArmorGrouping());
             }
 
             element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
+                        PipType.CIRCLE, DEFAULT_PIP_STROKE, structurePipFill(), getStructureDamage(loc), useAlternateArmorGrouping());
             }
         }
     }
@@ -467,7 +503,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @param svgRect The <rect> defining the bounds of the heat sink pip region
      * @param hsCount The number of heat sink pips to draw
      */
-    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
+    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount, int damage) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
         double viewWidth = bbox.getWidth();
@@ -475,7 +511,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         double viewX = bbox.getX();
         double viewY = bbox.getY();
         if (viewWidth > viewHeight) {
-            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight);
+            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
             return;
         }
 
@@ -509,13 +545,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int row = i % rows;
             int col = i / rows;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
 
     void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
-                                   double viewWidth, double viewHeight) {
+                                   double viewWidth, double viewHeight, int damage) {
         double size = Math.min(9.66, viewWidth / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
@@ -543,7 +583,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int col = i % cols;
             int row = i / cols;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
@@ -579,12 +623,29 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    protected String formatOriginalWalk() {
+        return formatMovement(getEntity().getOriginalWalkMP());
+    }
+
     protected String formatWalk() {
         return formatMovement(getEntity().getWalkMP());
     }
 
+    protected String formatOriginalRun() {
+        return formatMovement(getEntity().getOriginalWalkMP() * 1.5);
+    }
+
     protected String formatRun() {
         return formatMovement(getEntity().getWalkMP() * 1.5);
+    }
+
+    protected String formatOriginalJump() {
+        if (getEntity().getOriginalJumpMP() > 0 && getEntity().getMechanicalJumpBoosterMP() > 0) {
+            return formatMovement(getEntity().getOriginalJumpMP())
+                  + " (%d)".formatted(getEntity().getMechanicalJumpBoosterMP());
+        } else {
+            return formatMovement(Math.max(getEntity().getOriginalJumpMP(), getEntity().getMechanicalJumpBoosterMP()));
+        }
     }
 
     protected String formatJump() {
@@ -642,5 +703,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
             e = getSVGDocument().getElementById(id);
         }
         return e;
+    }
+
+    protected int getArmorDamage(int loc, boolean rear) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int armor = getEntity().getOArmor(loc, rear);
+        final int remainingArmor = getEntity().getArmor(loc, rear);
+        return armor - remainingArmor;
+    }
+
+    protected int getStructureDamage(int loc) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int structure = getEntity().getOInternal(loc);
+        final int remainingStructure = getEntity().getInternal(loc);
+        return structure - remainingStructure;
     }
 }

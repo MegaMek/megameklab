@@ -22,7 +22,8 @@ import java.util.ResourceBundle;
 
 public enum MulDndBehaviour {
     PRINT,
-    EXPORT;
+    EXPORT,
+    LOAD_FORCE;
 
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
 

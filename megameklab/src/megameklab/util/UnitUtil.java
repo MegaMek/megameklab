@@ -19,7 +19,11 @@
 package megameklab.util;
 
 import java.awt.Font;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +34,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import megamek.client.generator.RandomNameGenerator;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
@@ -2098,6 +2103,82 @@ public class UnitUtil {
             }
             return unitAsString;
         } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Clone an entity. This method creates a deep copy of the entity, including all its properties and references.
+     * @param entity The entity to copy
+     * @param keepDamage Whether to keep the damage of the original entity
+     * @return The copied entity
+     */
+    static public Entity cloneUnit(Entity entity, boolean keepDamage, boolean keepCrew) {
+        try {
+            Entity newEntity = null;
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+                    // Serialize the entities
+                    objectOutputStream.writeObject(entity);
+                    objectOutputStream.flush();
+                    byte[] serializedData = byteArrayOutputStream.toByteArray();
+
+                    // Deserialize to create new instances
+                    try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedData)) {
+                        try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
+                            newEntity = (Entity) objectInputStream.readObject();
+                        }
+                    }
+                }
+            }
+            if (newEntity == null) {
+                return newEntity;
+            }
+            // we remove all damage and status from the new entity
+            if (!keepDamage) {
+                for (Mounted<?> mounted : newEntity.getEquipment()) {
+                    if (mounted instanceof MiscMounted misc) {
+                        misc.setDamageTaken(0);
+                    }
+                    mounted.setHit(false);
+                    mounted.setDestroyed(false);
+                    mounted.setMissing(false);
+                    mounted.setJammed(false);
+                    mounted.setBreached(false);
+                    mounted.setFired(false);
+                    mounted.setDumping(false);
+                }
+                for (int loc = 0; loc < newEntity.locations(); loc++) {
+                    for (int slot = 0; slot < newEntity.getNumberOfCriticals(loc); slot++) {
+                        CriticalSlot cs = newEntity.getCritical(loc, slot);
+                        if (cs != null) {
+                            cs.setDestroyed(false);
+                            cs.setMissing(false);
+                            cs.setBreached(false);
+                            cs.setHit(false);
+                        }
+                    }
+                    newEntity.setInternal(newEntity.getOInternal(loc), loc);
+                    newEntity.setArmor(newEntity.getOArmor(loc), loc);
+                    if (newEntity.hasRearArmor(loc)) {
+                        newEntity.setArmor(newEntity.getOArmor(loc, true), loc, true);
+                    }
+                }
+                if (keepCrew) {
+                    for (int i = 0; i < newEntity.getCrew().getSlotCount(); i++) {
+                        Crew crew = newEntity.getCrew();
+                        crew.setName(RandomNameGenerator.UNNAMED, i);
+                        crew.setHits(0, i);
+                        crew.setDead(false, i);
+                    }
+                }
+            }
+            if (!keepCrew) {
+                newEntity.setCrew(new Crew(newEntity.defaultCrewType()));
+            }
+            return newEntity;
+        } catch (Exception e) {
+            logger.error(e, "Failed to break references for entity {}", entity);
             return null;
         }
     }

@@ -83,6 +83,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     public static final String DEFAULT_TYPEFACE = "Eurostile";
     public static final float DEFAULT_PIP_SIZE = 0.38f;
+    public static final float DEFAULT_PIP_STROKE = 0.5f;
     public static final float FONT_SIZE_LARGE = 7.2f;
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;
@@ -91,6 +92,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";
+    public static final String FILL_RED = "#ff0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
 
@@ -659,6 +661,26 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     /**
      * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The width
+     * of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     *
+     * @return The width of the text in the current font size
+     */
+    protected double addTextElement(Element parent, double x, double y, String text,
+            float fontSize, String anchor, String weight, String fill) {
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, FILL_BLACK, false);
+    }
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the
      * parent. The
      * height of the text is returned, to aid in layout.
      *
@@ -671,11 +693,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *                 middle, or end.
      * @param weight   The font weight, either normal or bold.
      * @param fill     The fill color for the text (e.g. foreground color)
+     * @param strikethrough Whether to add a strikethrough line to the text
      *
      * @return The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fill) {
+            float fontSize, String anchor, String weight, String fill, boolean needsStrikethrough) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -685,6 +708,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (needsStrikethrough) {
+            final String style = "text-decoration: line-through;";
+            newText.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style);
+        }
         parent.appendChild(newText);
 
         return weight.equals(SVGConstants.SVG_BOLD_VALUE) ? getBoldTextLength(text, fontSize)
@@ -774,7 +801,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 text, fontSize, anchor, weight, FILL_BLACK, ' ');
     }
 
-    /**
+        /**
      * Adds a text element to a region with limited width. If there are multiple
      * lines, the text
      * will be split over multiple lines, broken on the provided character. The line
@@ -800,6 +827,37 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
+        return addMultilineTextElement(canvas, x, y, width, lineHeight,
+                text, fontSize, anchor, weight, fill, delimiter, false);
+    }
+
+    /**
+     * Adds a text element to a region with limited width. If there are multiple
+     * lines, the text
+     * will be split over multiple lines, broken on the provided character. The line
+     * break character
+     * will be included on the next line.
+     *
+     * @param canvas     The parent <code>SVGElement</code> to the new
+     *                   <code>Text</code>.
+     * @param x          The x coordinate of the upper left corner of the text
+     *                   region
+     * @param y          The y coordinate of the upper left corner of the text
+     *                   region
+     * @param width      The allowable width of the text element.
+     * @param lineHeight The amount to increase the y coordinate for a new line
+     * @param text       The text to add
+     * @param fontSize   The font-size attribute
+     * @param anchor     The text-anchor attribute
+     * @param weight     The font-weight attribute
+     * @param fill       The fill color for the text (e.g. foreground color)
+     * @param delimiter  The character to use as an acceptable line ending
+     * @param strikethrough Whether to add a strikethrough line to the text
+     *
+     * @return The number of lines of text added
+     */
+    protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
+            String text, float fontSize, String anchor, String weight, String fill, char delimiter, boolean strikethrough) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
         // in text
@@ -808,7 +866,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         while (!text.isBlank()) {
             // If the remaining text fits, add a line and exit.
             if (getTextLength(text, fontSize) <= width) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill, strikethrough);
                 lines++;
                 return lines;
             }
@@ -817,7 +875,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             int index = text.substring(pos).indexOf(delimiter);
             // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill);
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill, strikethrough);
                 lines++;
                 return lines;
             }
@@ -827,7 +885,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             if ((index < 0)
                     || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
                             && (pos > 0))) {
-                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill);
+                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill, strikethrough);
                 lines++;
                 y += lineHeight;
                 text = text.substring(pos);
@@ -1117,5 +1175,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     table.createTable(x, ypos, width, tableHeight - BORDER));
             ypos += tableHeight;
         }
+    }
+
+    protected String getDamageFillColor() {
+        if (options.useColor()) {
+            return FILL_RED;
+        }
+        return FILL_BLACK;
     }
 }

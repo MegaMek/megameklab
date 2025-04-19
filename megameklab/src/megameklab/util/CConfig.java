@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import megamek.common.Configuration;
 import megamek.logging.MMLogger;
@@ -92,6 +93,7 @@ public final class CConfig {
     public static final String FILE_RECENT_PREFIX = "Save_File_";
     public static final String FILE_LAST_DIRECTORY = "Last_directory";
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
+    public static final String FORCE_BUILD_WINDOW = "Force_Build_Window";
 
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
@@ -106,6 +108,7 @@ public final class CConfig {
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
+    public static final String RS_SHOW_C3BV = "rs_show_c3bv";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
@@ -119,6 +122,7 @@ public final class CConfig {
     public static final String RS_ARMOR_GROUPING = "rs_armor_grouping";
     public static final String RS_FRAMELESS = "rs_frameless";
     public static final String RS_BOLD_TYPE = "rs_bold_type";
+    public static final String RS_DAMAGE = "rs_damage";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -129,6 +133,8 @@ public final class CConfig {
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
     public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
+    public static final String PQ_DAMAGE = "pqDamage";
+    public static final String PQ_SHOW_PILOT_DATA = "pqShowPilotData";
 
     private static final Properties config = getDefaults();
 
@@ -149,9 +155,12 @@ public final class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_C3BV, Boolean.toString(false));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
+        defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
@@ -160,6 +169,7 @@ public final class CConfig {
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
+        defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
         return defaults;
     }
 
@@ -433,6 +443,14 @@ public final class CConfig {
 
     public static void writeFileChooserSettings(JDialog dialog) {
         writeWindowSettings(FILE_CHOOSER_WINDOW, dialog);
+    }
+
+    public static Optional<Point> getForceBuildPosition() {
+        return getWindowPosition(FORCE_BUILD_WINDOW);
+    }
+    
+    public static void writeForceBuildPosition(JFrame frame) {
+        writeWindowSettings(FORCE_BUILD_WINDOW, frame);
     }
 
     public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi) {

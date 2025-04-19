@@ -66,9 +66,7 @@ public class MMLFileDropTransferHandler extends TransferHandler {
                 owner.getMMLMenuBar().loadFile(file);
                 return true;
             } else if (name.toLowerCase().endsWith(".mul")) {
-                UnitPrintManager.printMUL(owner.getFrame(),
-                      CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR),
-                      file);
+                MULManager.processMULFile(file, owner.getFrame());
                 return true;
             } else {
                 logger.errorDialog("Import error", "Can only open files of type .mtf, .blk, and .mul");

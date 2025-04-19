@@ -26,6 +26,7 @@ public class RecordSheetOptions {
     private PaperSize paperSize;
     private boolean color;
     private boolean quirks;
+    private boolean c3bv;
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
@@ -38,6 +39,7 @@ public class RecordSheetOptions {
     private boolean alternateArmorGrouping;
     private boolean frameless;
     private boolean boldType;
+    private boolean damage;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -48,6 +50,7 @@ public class RecordSheetOptions {
         }
         this.color = CConfig.getBooleanParam(CConfig.RS_COLOR);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
+        this.c3bv = CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
@@ -60,12 +63,14 @@ public class RecordSheetOptions {
         this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
+        this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
         paperSize = options.paperSize;
         color = options.color;
         quirks = options.quirks;
+        c3bv = options.c3bv;
         pilotData = options.pilotData;
         eraIcon = options.eraIcon;
         role = options.role;
@@ -78,6 +83,7 @@ public class RecordSheetOptions {
         alternateArmorGrouping = options.alternateArmorGrouping;
         frameless = options.frameless;
         boldType = options.boldType;
+        damage = options.damage;
     }
 
     public PaperSize getPaperSize() {
@@ -91,21 +97,41 @@ public class RecordSheetOptions {
     public boolean showQuirks() {
         return quirks;
     }
-    public void setQuirks(boolean quirks) {
-        this.quirks = quirks;
+
+    public void setQuirks(boolean enabled) {
+        this.quirks = enabled;
     }
+
     public boolean showPilotData() {
         return pilotData;
     }
+
+    public boolean showDamage() {
+        return damage;
+    }
+
+    public boolean showC3inBV() {
+        return c3bv;
+    }
+
     public boolean showRole() {
         return role;
     }
+    
     public boolean showHeatProfile() {
         return heatProfile;
     }
 
-    public void setPilotData(boolean pilotData) {
-        this.pilotData = pilotData;
+    public void setC3inBV(boolean enabled) {
+        this.c3bv = enabled;
+    }
+
+    public void setPilotData(boolean enabled) {
+        this.pilotData = enabled;
+    }
+
+    public void setDamage(boolean enabled) {
+        this.damage = enabled;
     }
 
     public boolean showEraIcon() {
@@ -192,7 +218,7 @@ public class RecordSheetOptions {
         this.frameless = frameless;
     }
 
-    public void setBoldType(boolean boldType) {
-        this.boldType = boldType;
+    public void setBoldType(boolean enabled) {
+        this.boldType = enabled;
     }
 }

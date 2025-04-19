@@ -52,6 +52,11 @@ public interface InventoryEntry {
     String getNameField(int row);
 
     /**
+     * @return    If is damaged
+     */
+    boolean isDamaged();
+
+    /**
      * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The location/firing arc
      */

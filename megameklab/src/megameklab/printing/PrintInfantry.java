@@ -81,8 +81,9 @@ public class PrintInfantry extends PrintEntity {
         }
         writeFieldGuns();
 
+        int infantrySize = options.showDamage() ? infantry.getShootingStrength() : infantry.getOInternal(0);
         for (int j = 1; j <= 30; j++) {
-            if (j > infantry.getShootingStrength()) {
+            if (j > infantrySize) {
                 hideElement(SOLDIER + j, true);
                 hideElement(NO_SOLDIER + j, false);
             } else {

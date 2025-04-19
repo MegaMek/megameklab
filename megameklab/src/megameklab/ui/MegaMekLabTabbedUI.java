@@ -44,6 +44,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -120,7 +121,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 if (selectedComponent != previousComponent) {
                     if (selectedComponent instanceof MegaMekLabMainUI mainUI) {
                         mainUI.onActivated();
-                        refreshEditMenu();
+                        refreshMenuBar();
                     }
                 }
                 lastSelectedComponent = new WeakReference<>(selectedComponent);
@@ -363,6 +364,82 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     @Deprecated(since = "0.50.05", forRemoval = true)
     public MegaMekLabMainUI currentEditor() {
         return getActiveEditor();
+    }
+
+    /**
+     * Refreshes the display of the given entity.
+     * This method is called when the entity is modified externally.
+     * 
+     * @param entityToFind
+     */
+    public static synchronized void refreshEntity(Entity entityToFind) {
+        if (entityToFind == null) {
+            return;
+        }
+        // Try to find the entity in the open editors
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getEntity() == entityToFind) {
+                SwingUtilities.invokeLater(() -> {
+                    editor.refreshAll();
+                });
+                return; // Found and refreshed
+            }
+        }
+    }
+
+    /**
+     * Finds an open editor tab for the given entity
+     *
+     * @param entityToFind The entity
+     */
+    public static synchronized MegaMekLabMainUI getEditorForEntity(Entity entityToFind) {
+        if (entityToFind == null) {
+            return null;
+        }
+        // Try to find the entity in the open editors
+        for (MegaMekLabMainUI editor : editors) {
+            if (editor.getEntity() == entityToFind) {
+                return editor;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds an open editor tab for the given entity, brings its window to the front,
+     * and selects the tab. If no editor is found, creates a new tab in the first
+     * available window.
+     *
+     * @param entityToFind The entity to show the editor for.
+     */
+    public static synchronized void showEditorForEntity(Entity entityToFind) {
+        MegaMekLabMainUI editor = getEditorForEntity(entityToFind);
+        if (editor != null) {
+            MegaMekLabTabbedUI owner = editor.getTabOwner();
+            if (owner != null) {
+                owner.setVisible(true);
+                owner.toFront();
+                owner.requestFocus();
+                owner.tabs.setSelectedComponent(editor);
+                return; // Found and activated
+            }
+        }
+
+        // If not found, create a new tab in the first available window
+        MegaMekLabTabbedUI targetWindow = openWindows.stream().findFirst().orElse(null);
+        if (targetWindow == null) {
+            // If no windows are open, create a new one
+            targetWindow = new MegaMekLabTabbedUI();
+            targetWindow.setVisible(true);
+        }
+
+        UnitUtil.updateLoadedUnit(entityToFind);
+        MegaMekLabMainUI newUi = UiLoader.getUI(entityToFind, "");
+        targetWindow.addTab(newUi, true);
+
+        targetWindow.setVisible(true);
+        targetWindow.toFront();
+        targetWindow.requestFocus();
     }
 
     /**
@@ -657,12 +734,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     public void refreshMenuBar() {
         if (menuBar != null && getActiveEditor() != null) {
             menuBar.refreshMenuBar();
-        }
-    }
-
-    public void refreshEditMenu() {
-        if (menuBar != null && getActiveEditor() != null) {
-            menuBar.refreshEditMenu();
         }
     }
 
