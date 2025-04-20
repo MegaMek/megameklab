@@ -339,7 +339,7 @@ public class MegaMekLab {
             }
 
             if (!file.exists()) {
-                throw new IllegalArgumentException("File not found: " + filePath);
+                throw new IllegalArgumentException("Error processing file:: " + filePath);
             }
 
             if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
@@ -366,9 +366,6 @@ public class MegaMekLab {
                     return false;
                 }
             }
-        } catch (java.nio.file.NoSuchFileException fileNotFound) {
-            LOGGER.error("File not found: {}", fileNotFound.getMessage());
-            return false;
         } catch (Exception ex) {
             LOGGER.error(ex, "Error processing file: {}", filePath);
         }
