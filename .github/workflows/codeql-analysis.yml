@@ -36,6 +36,7 @@ jobs:
           languages: java-kotlin
           queries: security-and-quality
           build-mode: none
+          source-root: megameklab
           config: |
             paths:
               - megameklab
