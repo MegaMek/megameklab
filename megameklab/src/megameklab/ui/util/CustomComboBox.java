@@ -1,38 +1,56 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.util.Objects;
 import java.util.function.Function;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /**
  * Version of JComboBox that simplifies rendering custom data types by taking a toString method in its contructors.
- * 
+ * <p>
  * This class could use a more descriptive name.
- * 
+ *
  * @author Neoancient
  */
 public class CustomComboBox<T> extends JComboBox<T> {
     private String nullValue = "-error-";
-    
+
     protected CustomComboBox() {
         super();
         setRenderer(new Renderer<>(Object::toString));
     }
 
+    @SafeVarargs
     protected CustomComboBox(T... values) {
         super(values);
         setRenderer(new Renderer<>(Object::toString));
@@ -47,22 +65,22 @@ public class CustomComboBox<T> extends JComboBox<T> {
         super(values);
         setRenderer(new Renderer<>(renderer));
     }
-    
+
     public void setNullValue(String val) {
         nullValue = Objects.requireNonNullElse(val, "null");
     }
-    
+
     class Renderer<U> extends JLabel implements ListCellRenderer<U> {
-        private Function<U, String> toString;
-        
+        private final Function<U, String> toString;
+
         protected Renderer(Function<U, String> toString) {
             super();
             this.toString = toString;
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<? extends U> list, U value, int index,
-                                                      boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<? extends U> list, U value, int index, boolean isSelected,
+              boolean cellHasFocus) {
             setOpaque(list.isOpaque());
             if (isSelected) {
                 setBackground(list.getSelectionBackground());

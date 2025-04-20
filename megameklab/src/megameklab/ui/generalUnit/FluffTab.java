@@ -1,17 +1,48 @@
 /*
- * MegaMekLab - Copyright (C) 2018, 2024 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.FluffImageHelper;
@@ -25,18 +56,6 @@ import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
-import java.util.ResourceBundle;
 
 /**
  * Panel for editing unit fluff
@@ -73,8 +92,8 @@ public class FluffTab extends ITab implements FocusListener {
 
     private RefreshListener refresh;
 
-    public FluffTab(EntitySource esource) {
-        super(esource);
+    public FluffTab(EntitySource entitySource) {
+        super(entitySource);
         initUi();
     }
 
@@ -91,8 +110,8 @@ public class FluffTab extends ITab implements FocusListener {
         Insets elementInsets = new Insets(2, 5, 2, 5);
         Insets panelInsets = new Insets(5, 5, 5, 5);
 
-        final boolean hasRightPanelEntries = !getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
-                || getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
+        final boolean hasRightPanelEntries = !getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY) ||
+                                                   getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         GridBagConstraints mainGbc = new GridBagConstraints();
@@ -165,7 +184,7 @@ public class FluffTab extends ITab implements FocusListener {
 
         // Add a filler component at the bottom of panLeft to push content up
         gbcLeft.gridy++;
-        gbcLeft.weighty = 1.0; // Takes up remaining vertical space
+        gbcLeft.weighty = 1.0; // Takes up the remaining vertical space
         gbcLeft.fill = GridBagConstraints.VERTICAL;
         panLeft.add(new JPanel(), gbcLeft); // Invisible spacer
 
@@ -188,8 +207,6 @@ public class FluffTab extends ITab implements FocusListener {
         imgScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         imgScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        gbcRight.gridx = 0;
-        gbcRight.gridy = 0;
         gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Image spans all columns initially
         gbcRight.weightx = 1.0;
         gbcRight.weighty = 0.0; // Image area doesn't stretch vertically initially
@@ -206,7 +223,7 @@ public class FluffTab extends ITab implements FocusListener {
             panRight.add(new JSeparator(), gbcRight);
             gbcRight.gridy++;
             gbcRight.insets = elementInsets; // Reset insets
-            gbcRight.gridwidth = 1; // Reset gridwidth for subsequent rows
+            gbcRight.gridwidth = 1; // Reset grid width for later rows
             gbcRight.anchor = GridBagConstraints.WEST; // Reset anchor for labels
 
             // Helper to add Label + TextField pairs
@@ -217,14 +234,14 @@ public class FluffTab extends ITab implements FocusListener {
                 panRight.add(new JLabel(labelText), gbcRight);
 
                 gbcRight.gridx = 1;
-                gbcRight.weightx = 1.0; // TextField takes available width
+                gbcRight.weightx = 1.0; // TextField takes the available width
                 gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Span remaining columns
                 gbcRight.fill = GridBagConstraints.HORIZONTAL;
                 panRight.add(textField, gbcRight);
                 textField.addFocusListener(this);
 
                 gbcRight.gridy++;
-                gbcRight.gridwidth = 1; // Reset gridwidth
+                gbcRight.gridwidth = 1; // Reset grid width
             };
 
             addLabeledTextField.accept(resourceMap.getString("FluffTab.txtManufacturer"), txtManufacturer);
@@ -233,8 +250,8 @@ public class FluffTab extends ITab implements FocusListener {
             addLabeledTextField.accept(resourceMap.getString("FluffTab.txtPrimaryFactory"), txtPrimaryFactory);
             txtPrimaryFactory.setText(getFluff().getPrimaryFactory());
 
-            if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+            if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT) ||
+                      eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
 
                 addLabeledTextField.accept(resourceMap.getString("FluffTab.txtUse"), txtUse);
                 txtUse.setText(getFluff().getUse());
@@ -255,9 +272,11 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.gridx = 2;
                 gbcRight.weightx = 0.0;
                 gbcRight.fill = GridBagConstraints.NONE;
-                // Add small gap before Width label
-                gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
-                        elementInsets.right);
+                // Add a small gap before the Width label
+                gbcRight.insets = new Insets(elementInsets.top,
+                      elementInsets.left + 10,
+                      elementInsets.bottom,
+                      elementInsets.right);
                 panRight.add(new JLabel(resourceMap.getString("FluffTab.txtWidth")), gbcRight);
                 gbcRight.insets = elementInsets; // Reset insets
 
@@ -271,9 +290,11 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.gridx = 4;
                 gbcRight.weightx = 0.0;
                 gbcRight.fill = GridBagConstraints.NONE;
-                // Add small gap before Height label
-                gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
-                        elementInsets.right);
+                // Add a small gap before the Height label
+                gbcRight.insets = new Insets(elementInsets.top,
+                      elementInsets.left + 10,
+                      elementInsets.bottom,
+                      elementInsets.right);
                 panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbcRight);
                 gbcRight.insets = elementInsets; // Reset insets
 
@@ -292,7 +313,7 @@ public class FluffTab extends ITab implements FocusListener {
             gbcRight.gridwidth = GridBagConstraints.REMAINDER;
             gbcRight.insets = new Insets(10, 5, 2, 5);
             panRight.add(new JSeparator(), gbcRight); // Separator line
-            gbcRight.gridwidth = 1; // Reset gridwidth
+            gbcRight.gridwidth = 1; // Reset grid width
             gbcRight.insets = elementInsets; // Reset insets
             gbcRight.gridy++;
 
@@ -302,19 +323,18 @@ public class FluffTab extends ITab implements FocusListener {
             gbcRight.anchor = GridBagConstraints.WEST;
             panRight.add(new JLabel(resourceMap.getString("FluffTab.System")), gbcRight);
             gbcRight.gridx = 1;
-            gbcRight.weightx = 0.5; // Give Manufacturer column some weight
+            gbcRight.weightx = 0.5; // Give the Manufacturer column some weight
             panRight.add(new JLabel(resourceMap.getString("FluffTab.Manufacturer")), gbcRight);
             gbcRight.gridx = 2;
-            gbcRight.weightx = 0.5; // Give Model column some weight
+            gbcRight.weightx = 0.5; // Give the Model column some weight
             gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Ensure it takes rest of line
             panRight.add(new JLabel(resourceMap.getString("FluffTab.Model")), gbcRight);
             gbcRight.gridy++;
-            gbcRight.gridwidth = 1; // Reset gridwidth
+            gbcRight.gridwidth = 1; // Reset grid width
 
             // Loop through Systems
             for (EntityFluff.System system : EntityFluff.System.values()) {
-                if ((system == EntityFluff.System.JUMPJET)
-                        && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
+                if ((system == EntityFluff.System.JUMPJET) && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
                     continue;
                 }
 
@@ -346,7 +366,7 @@ public class FluffTab extends ITab implements FocusListener {
                 panRight.add(txtMod, gbcRight);
 
                 gbcRight.gridy++;
-                gbcRight.gridwidth = 1; // Reset gridwidth
+                gbcRight.gridwidth = 1; // Reset grid width
             }
         }
 
@@ -360,7 +380,7 @@ public class FluffTab extends ITab implements FocusListener {
         // --- Add Panels to Main Layout ---
         mainGbc.gridx = 0;
         mainGbc.gridy = 0;
-        mainGbc.weightx = 0.6; // Give left panel slightly more weight
+        mainGbc.weightx = 0.6; // Give the left panel slightly more weight
         mainGbc.weighty = 1.0;
         mainGbc.fill = GridBagConstraints.BOTH;
         mainGbc.anchor = GridBagConstraints.NORTHWEST;
@@ -368,7 +388,7 @@ public class FluffTab extends ITab implements FocusListener {
         contentPanel.add(panLeft, mainGbc);
 
         mainGbc.gridx = 1;
-        mainGbc.weightx = 0.4; // Give right panel less weight
+        mainGbc.weightx = 0.4; // Give right a panel less weight
         mainGbc.insets = new Insets(0, 2, 0, 0); // Gap between panels
         contentPanel.add(panRight, mainGbc);
 
@@ -544,7 +564,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     /**
-     * Scales an image while maintaining aspect ratio to fit within max dimensions.
+     * Scales an image while maintaining an aspect ratio to fit within max dimensions.
      */
     private Image scaleImage(Image originalImage, int maxWidth, int maxHeight) {
         int originalWidth = originalImage.getWidth(null);
@@ -592,8 +612,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     /**
-     * Refreshes all fields from the entity data.
-     * This should be called when the entity is changed externally.
+     * Refreshes all fields from the entity data. This should be called when the entity is changed externally.
      */
     public void refresh() {
         if (eSource == null || eSource.getEntity() == null) {
@@ -629,8 +648,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     /**
-     * Helper method to recursively update text fields in panels based on their
-     * names.
+     * Helper method to recursively update text fields in panels based on their names.
      */
     private void updatePanelTextFields(Container container, EntityFluff fluff) {
         for (Component component : container.getComponents()) {

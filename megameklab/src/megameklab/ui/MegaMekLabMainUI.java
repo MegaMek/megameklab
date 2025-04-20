@@ -1,19 +1,44 @@
 /*
- * MegaMekLab - Copyright (C) 2011
+ * Copyright (C) 2011-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui;
+
+import java.awt.BorderLayout;
+import java.awt.Window;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -29,16 +54,8 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
 import megameklab.util.UnitMemento;
 import megameklab.util.UnitUtil;
-import javax.swing.*;
-import java.awt.*;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
-public abstract class MegaMekLabMainUI extends JPanel
-        implements RefreshListener, EntitySource, FileNameManager {
+public abstract class MegaMekLabMainUI extends JPanel implements RefreshListener, EntitySource, FileNameManager {
     private static final int MAX_UNDO_HISTORY = 1000;
 
     private static final MMLogger logger = MMLogger.create(MegaMekLabMainUI.class);
@@ -55,8 +72,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean forceDirtyUntilNextSave = false;
     private UnitMemento savedUnitSnapshot = null;
     private UnitMemento currentSnapshot = null;
-    private Deque<UnitMemento> undoStack = new LinkedList<>();
-    private Deque<UnitMemento> redoStack = new LinkedList<>();
+    private final Deque<UnitMemento> undoStack = new LinkedList<>();
+    private final Deque<UnitMemento> redoStack = new LinkedList<>();
     private boolean ignoreNextStateChange = false;
 
     public MegaMekLabMainUI() {
@@ -73,8 +90,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Called when the panel is activated or shown for the first initialization
-     * (lazy tab loading)
+     * Called when the panel is activated or shown for the first initialization (lazy tab loading)
      */
     public void onActivated() {
         if (!initializedTabs) {
@@ -97,8 +113,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Requests a dirty check on the unit. This is done by scheduling a
-     * dirtyCheck() call to be run on the event dispatch thread.
+     * Requests a dirty check on the unit. This is done by scheduling a dirtyCheck() call to be run on the event
+     * dispatch thread.
      */
     public void requestDirtyCheck() {
         if (!dirtyCheckPending) {
@@ -108,34 +124,32 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Checks if the unit has been modified since it was last saved. If the unit
-     * has been modified, it updates the dirty state and refreshes the header.
+     * Checks if the unit has been modified since it was last saved. If the unit has been modified, it updates the dirty
+     * state and refreshes the header.
      */
     private void dirtyCheck() {
         dirtyCheckPending = false;
         final UnitMemento newSnapshot = new UnitMemento(entity, this);
-        final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
+        final boolean dirtyState = !newSnapshot.equals(savedUnitSnapshot);
 
         if (ignoreNextStateChange) {
             ignoreNextStateChange = false;
         } else
-        // If we have a previous currentSnapshot, we need to push it to the undo stack
-        // before overwriting it.
-        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))) {
-            pushUndoState(currentSnapshot);
-        } else
-        // If we don't have a currentSnapshot, the undoStack is empty and we have a
-        // savedUnitSnapshot, this is the first undo point
-        if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
-            pushUndoState(savedUnitSnapshot);
-        }
+            // If we have a previous currentSnapshot, we need to push it to the undo stack before overwriting it.
+            if (currentSnapshot != null && !newSnapshot.equals(currentSnapshot)) {
+                pushUndoState(currentSnapshot);
+            } else if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
+                // If we don't have a currentSnapshot, the undoStack is empty, and we have a savedUnitSnapshot, this
+                // is the first undo point.
+                pushUndoState(savedUnitSnapshot);
+            }
         currentSnapshot = newSnapshot;
         if (dirty != dirtyState) {
             dirty = dirtyState;
             refreshHeader();
         }
     }
-    
+
     /**
      * Resets the dirty state of the unit.
      */
@@ -158,17 +172,14 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     /**
      * Pushes the state of the unit to the undo stack.
-     * 
+     *
      * @param state The state to push to the undo stack.
-     * @return true if the state was pushed, false if it was not (e.g., if it was
-     *         the
-     *         same as the previous state).
      */
-    private boolean pushUndoState(UnitMemento state) {
+    private void pushUndoState(UnitMemento state) {
         if (!undoStack.isEmpty() && undoStack.peek().equals(state)) {
-            return false; // Avoid pushing the same state multiple times
+            return; // Avoid pushing the same state multiple times
         }
-        // Clear redo stack when a new action is performed
+        // Clear the redo stack when a new action is performed
         redoStack.clear();
         undoStack.push(state);
         // Limit stack size
@@ -176,12 +187,11 @@ public abstract class MegaMekLabMainUI extends JPanel
             undoStack.removeLast();
         }
         updateUndoRedoMenuItems();
-        return true;
     }
 
     /**
      * Checks if there is an undo operation available.
-     * 
+     *
      * @return
      */
     public boolean hasUndo() {
@@ -190,7 +200,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     /**
      * Checks if there is a redo operation available.
-     * 
+     *
      * @return
      */
     public boolean hasRedo() {
@@ -212,7 +222,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             // Push current state to redo stack
             final UnitMemento currentState = new UnitMemento(entity, this);
             redoStack.push(currentState);
-            // Pop and apply state from undo stack
+            // Pop and apply state from the undo stack
             final UnitMemento previousState = undoStack.pop();
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
@@ -234,7 +244,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             // Push current state to undo stack
             final UnitMemento currentState = new UnitMemento(entity, this);
             undoStack.push(currentState);
-            // Pop and apply state from redo stack
+            // Pop and apply state from the redo stack
             final UnitMemento nextState = redoStack.pop();
             // Apply the state, ensuring we don't capture this as a new state
             ignoreNextStateChange = true;
@@ -276,7 +286,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     /**
      * Returns true if the unit has been modified since it was last saved.
-     * 
+     *
      * @return
      */
     public boolean isDirty() {
@@ -326,7 +336,10 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     /**
      * Clears the undo and redo history stacks.
+     *
+     * @deprecated no indicated uses
      */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void clearUndoRedoHistory() {
         undoStack.clear();
         redoStack.clear();
@@ -348,13 +361,12 @@ public abstract class MegaMekLabMainUI extends JPanel
             return true;
         } else {
             int savePrompt = JOptionPane.showConfirmDialog(this,
-                    "All unsaved changes in the current unit will be discarded. Save the unit first?",
-                    "Save Unit Before Proceeding?",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.WARNING_MESSAGE);
-            // When the user did not actually save the unit, return as if CANCEL was pressed
-            return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION) && saveUnit());
+                  "All unsaved changes in the current unit will be discarded. Save the unit first?",
+                  "Save Unit Before Proceeding?",
+                  JOptionPane.YES_NO_CANCEL_OPTION,
+                  JOptionPane.WARNING_MESSAGE);
+            // When the user did not save the unit, return as if CANCEL was pressed
+            return (savePrompt == JOptionPane.NO_OPTION) || ((savePrompt == JOptionPane.YES_OPTION) && saveUnit());
         }
     }
 
@@ -371,7 +383,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
-                resources.getString("dialog.saveAs.title"));
+              resources.getString("dialog.saveAs.title"));
         String file = fileSaver.saveUnitAs(getParentFrame(), entity);
         if (file == null) {
             return false;
@@ -393,7 +405,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         UnitUtil.compactCriticals(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
-                resources.getString("dialog.saveAs.title"));
+              resources.getString("dialog.saveAs.title"));
         refreshAll(); // The crits may have moved
         String file = fileSaver.saveUnit(getParentFrame(), this, getEntity());
         if (file == null) {
@@ -542,9 +554,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     /**
-     * Retrieves a list of mounted components that are currently not assigned to a
-     * location.
-     * Such equipment would be deleted on save and reload.
+     * Retrieves a list of mounted components that are currently not assigned to a location. Such equipment would be
+     * deleted on save and reload.
      *
      * @return a List containing unallocated Mounted objects.
      */

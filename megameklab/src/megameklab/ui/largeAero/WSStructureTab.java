@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.largeAero;
 
@@ -18,7 +32,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -90,27 +103,27 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panCrew = new LACrewView(panInfo);
         panGravityDecks = new WSGravDeckView();
         iconView = new IconView();
-        panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
+        panArmorAllocation = new ArmorAllocationView(Entity.ETYPE_AERO);
         panSummary = new SummaryView(eSource,
-                new UnitTypeSummaryItem(),
-                new StructureSummaryItem(),
-                new EngineSummaryItem(),
-                new FuelSummaryItem(),
-                new HeatSinkSummaryItem(),
-                new ControlsSummaryItem(),
-                new LfBatterySummaryItem(),
-                new KfDriveSummaryItem(),
-                new SailSummaryItem(),
-                new ArmorSummaryItem(),
-                new WeaponsSummaryItem(),
-                new AmmoSummaryItem(),
-                new MiscEquipmentSummaryItem(),
-                new CrewSummaryItem(),
-                new TransportSummaryItem(),
-                new HardpointSummaryItem(),
-                new GravDeckSummaryItem(),
-                new LifeBoatSummaryItem(),
-                new SpecialsSummaryItem());
+              new UnitTypeSummaryItem(),
+              new StructureSummaryItem(),
+              new EngineSummaryItem(),
+              new FuelSummaryItem(),
+              new HeatSinkSummaryItem(),
+              new ControlsSummaryItem(),
+              new LfBatterySummaryItem(),
+              new KfDriveSummaryItem(),
+              new SailSummaryItem(),
+              new ArmorSummaryItem(),
+              new WeaponsSummaryItem(),
+              new AmmoSummaryItem(),
+              new MiscEquipmentSummaryItem(),
+              new CrewSummaryItem(),
+              new TransportSummaryItem(),
+              new HardpointSummaryItem(),
+              new GravDeckSummaryItem(),
+              new LifeBoatSummaryItem(),
+              new SpecialsSummaryItem());
 
         GridBagConstraints gbc;
 
@@ -363,15 +376,14 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void useRemainingTonnageArmor() {
-        double currentTonnage = UnitUtil.getEntityVerifier(getJumpship())
-                .calculateWeight();
+        double currentTonnage = UnitUtil.getEntityVerifier(getJumpship()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
         double totalTonnage = getJumpship().getWeight();
-        double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
 
-        double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
-                UnitUtil.getMaximumArmorTonnage(getJumpship()));
+        double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage,
+              0,
+              UnitUtil.getMaximumArmorTonnage(getJumpship()));
         getJumpship().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getJumpship());
@@ -460,8 +472,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void baseTypeChanged(int type) {
         switch (type) {
             case WSChassisView.TYPE_JUMPSHIP:
-                if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP)
-                        && !getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
+                if (!getJumpship().hasETypeFlag(Entity.ETYPE_WARSHIP) &&
+                          !getJumpship().hasETypeFlag(Entity.ETYPE_SPACE_STATION)) {
                     return;
                 }
                 eSource.createNewUnit(Entity.ETYPE_JUMPSHIP, getJumpship());
@@ -551,23 +563,23 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void autoAllocateArmor() {
         // ignore unarmored system-wide location and warship broadsides
         final int ARMOR_FACINGS = getJumpship() instanceof Warship ?
-                getJumpship().locations() - 3 : getJumpship().locations() - 1;
+                                        getJumpship().locations() - 3 :
+                                        getJumpship().locations() - 1;
         for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
             getJumpship().initializeArmor(0, loc);
         }
 
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
         int bonusPerFacing = (int) Math.floor(TestEntity.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
-        int points = TestEntity.getArmorPoints(getJumpship())
-                - bonusPerFacing * 6;
-        int nose = (int)Math.floor(points * 0.22);
-        int foreSides = (int)Math.floor(points * 0.18);
+        int points = TestEntity.getArmorPoints(getJumpship()) - bonusPerFacing * 6;
+        int nose = (int) Math.floor(points * 0.22);
+        int foreSides = (int) Math.floor(points * 0.18);
         int aftSides = (int) Math.floor(points * 0.16);
-        int aft = (int)Math.floor(points * 0.10);
+        int aft = (int) Math.floor(points * 0.10);
         int remainder = points - nose - foreSides * 2 - aftSides * 2 - aft;
 
-        // spread remainder among nose and fore sides
-        switch(remainder % 6) {
+        // spread the remainder among nose and fore sides
+        switch (remainder % 6) {
             case 1:
                 nose++;
                 break;
@@ -610,7 +622,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void baseCrewChanged(int nCrew) {
         getJumpship().setNCrew(nCrew + getJumpship().getNGunners() + getJumpship().getBayPersonnel());
-        // May need to adjust number of officers
+        // May need to adjust the number of officers
         panCrew.setFromEntity(getJumpship());
         refresh.refreshPreview();
     }

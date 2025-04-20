@@ -1,22 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later  version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.fighterAero;
 
 import java.util.ArrayList;
 import java.util.Vector;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -39,7 +51,7 @@ import megameklab.util.UnitUtil;
 
 /**
  * The Crit Slots view for a Fighter (Aerospace and Conventional)
- *
+ * <p>
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * @author arlith
@@ -60,29 +72,21 @@ public class ASCriticalView extends IView {
     private final JLabel rightSpace = new JLabel();
     private final JLabel aftSpace = new JLabel();
 
-    private final JButton btnCopyLW = new JButton("Copy from Left Wing");
-    private final JButton btnCopyRW = new JButton("Copy from Right Wing");
-
     private RefreshListener refreshListener;
 
     public ASCriticalView(EntitySource eSource, RefreshListener refreshListener) {
         super(eSource);
         this.refreshListener = refreshListener;
 
-        noseCrits = new BAASBMDropTargetCriticalList<>(
-                new ArrayList<>(), eSource, refreshListener, true, this);
+        noseCrits = new BAASBMDropTargetCriticalList<>(new ArrayList<>(), eSource, refreshListener, true, this);
         noseCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
-        leftWingCrits = new BAASBMDropTargetCriticalList<>(
-                new ArrayList<>(), eSource, refreshListener, true, this);
+        leftWingCrits = new BAASBMDropTargetCriticalList<>(new ArrayList<>(), eSource, refreshListener, true, this);
         leftWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
-        rightWingCrits = new BAASBMDropTargetCriticalList<>(
-                new ArrayList<>(), eSource, refreshListener, true, this);
+        rightWingCrits = new BAASBMDropTargetCriticalList<>(new ArrayList<>(), eSource, refreshListener, true, this);
         rightWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
-        aftCrits = new BAASBMDropTargetCriticalList<>(
-                new ArrayList<>(), eSource, refreshListener, true, this);
+        aftCrits = new BAASBMDropTargetCriticalList<>(new ArrayList<>(), eSource, refreshListener, true, this);
         aftCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
-        fuselageCrits = new BAASBMDropTargetCriticalList<>(
-                new ArrayList<>(), eSource, refreshListener, true, this);
+        fuselageCrits = new BAASBMDropTargetCriticalList<>(new ArrayList<>(), eSource, refreshListener, true, this);
         fuselageCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
 
         Box mainPanel = Box.createHorizontalBox();
@@ -110,9 +114,11 @@ public class ASCriticalView extends IView {
         nosePanel.add(noseSpace);
         leftWingPanel.add(leftWingCrits);
         leftWingPanel.add(leftSpace);
+        JButton btnCopyRW = new JButton("Copy from Right Wing");
         leftWingPanel.add(btnCopyRW);
         rightWingPanel.add(rightWingCrits);
         rightWingPanel.add(rightSpace);
+        JButton btnCopyLW = new JButton("Copy from Left Wing");
         rightWingPanel.add(btnCopyLW);
         aftPanel.add(aftCrits);
         aftPanel.add(aftSpace);
@@ -158,8 +164,9 @@ public class ASCriticalView extends IView {
                     if (mounted == null) {
                         // Critical didn't get removed. Remove it now.
                         getAero().setCritical(location, slot, null);
-                        logger.warn(getAero().getLocationName(location) +
-                                " equipment in slot " + slot + " had not been cleanly removed!");
+                        logger.warn("{} equipment in slot {} had not been cleanly removed!",
+                              getAero().getLocationName(location),
+                              slot);
                         continue;
                     }
                     if (mounted.isWeaponGroup()) {
@@ -199,27 +206,23 @@ public class ASCriticalView extends IView {
             return "unlimited";
         }
         int[] availSpace = TestAero.availableSpace(getAero());
-        try {
-            return availSpace[location] + "";
-        } catch (Exception ex) {
-            logger.error("Couldn't determine available crit space!", ex);
+
+        if (availSpace != null && availSpace.length > location) {
+            return String.valueOf(availSpace[location]);
+        } else {
+            logger.error("Couldn't determine available crit space!");
             return "?";
         }
     }
 
     private BAASBMDropTargetCriticalList<String> critListFor(int location) {
-        switch (location) {
-            case Aero.LOC_NOSE:
-                return noseCrits;
-            case Aero.LOC_LWING:
-                return leftWingCrits;
-            case Aero.LOC_RWING:
-                return rightWingCrits;
-            case Aero.LOC_AFT:
-                return aftCrits;
-            default:
-                return fuselageCrits;
-        }
+        return switch (location) {
+            case Aero.LOC_NOSE -> noseCrits;
+            case Aero.LOC_LWING -> leftWingCrits;
+            case Aero.LOC_RWING -> rightWingCrits;
+            case Aero.LOC_AFT -> aftCrits;
+            default -> fuselageCrits;
+        };
     }
 
     private void copyLocation(int from, int to) {

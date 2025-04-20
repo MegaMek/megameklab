@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -28,8 +37,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -49,24 +61,27 @@ import megameklab.ui.util.TechComboBox;
  */
 public class MovementView extends BuildView implements ActionListener, ChangeListener {
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
 
-    private final static int LABEL_INDEX_MEK  = 0;
+    private final static int LABEL_INDEX_MEK = 0;
     private final static int LABEL_INDEX_TANK = 1;
     private final static int LABEL_INDEX_AERO = 2;
-    private final static int LABEL_INDEX_BA   = 3;
+    private final static int LABEL_INDEX_BA = 3;
 
     private final SpinnerNumberModel spnWalkModel = new SpinnerNumberModel(1, 1, null, 1);
     private final SpinnerNumberModel spnJumpModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnWalk = new JSpinner(spnWalkModel);
     private final JSpinner spnJump = new JSpinner(spnJumpModel);
-    private final TechComboBox<EquipmentType> cbJumpType =
-                new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]",  ""));
+    private final TechComboBox<EquipmentType> cbJumpType = new TechComboBox<>(eq -> eq.getName()
+                                                                                          .replaceAll("\\s+\\[.*?]",
+                                                                                                ""));
 
     private final JLabel lblWalk = createLabel("lblWalk", "");
     private final JLabel lblRun = createLabel("lblRun", "");
@@ -193,48 +208,51 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         industrial = (en instanceof Mek mek) && mek.isIndustrial();
         refresh();
 
-        Optional<MiscType> jj = en.getMisc().stream().map(Mounted::getType)
-                .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU)).findAny();
+        Optional<MiscType> jj = en.getMisc()
+                                      .stream()
+                                      .map(Mounted::getType)
+                                      .filter(eq -> eq.hasFlag(MiscType.F_JUMP_JET) || eq.hasFlag(MiscType.F_UMU))
+                                      .findAny();
         if (jj.isPresent()) {
             cbJumpType.removeActionListener(this);
             cbJumpType.setSelectedItem(jj.get());
             cbJumpType.addActionListener(this);
         }
         // LAMs have a minimum jump MP of 3, which implies a minimum walk
-        int minWalk = en.isTrailer()? 0 : 1;
+        int minWalk = en.isTrailer() ? 0 : 1;
         Integer maxWalk = null;
         int minJump = 0;
         Integer maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
         } else if (en instanceof Mek) {
-            maxJump = TestMek.maxJumpMP((Mek)en);
+            maxJump = TestMek.maxJumpMP((Mek) en);
         } else if (en instanceof ProtoMek) {
             maxJump = TestProtoMek.maxJumpMP((ProtoMek) en);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle() && !en.isTrailer()) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
-            minWalk = Math.max(1, (int)(minRating / en.getWeight()));
+            minWalk = Math.max(1, (int) (minRating / en.getWeight()));
         } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             minJump = minWalk = 3;
-            // If the unit has improved JJs the walk can be 2 and still meet the minimum jump MP requirement of 3.
+            // If the unit has improved JJs, the walk can be 2 and still meet the minimum jump MP requirement of 3.
             int jumpType = en.getJumpType();
             if ((jumpType == Mek.JUMP_IMPROVED) || (jumpType == Mek.JUMP_PROTOTYPE_IMPROVED)) {
                 minWalk = 2;
             }
         } else if (en instanceof BattleArmor) {
             cbJumpType.removeActionListener(this);
-            maxWalk = TestBattleArmor.maxWalkMP((BattleArmor)en);
-            if (((BattleArmor)en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+            maxWalk = TestBattleArmor.maxWalkMP((BattleArmor) en);
+            if (((BattleArmor) en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
                 minWalk = 2;
             }
             cbJumpType.setSelectedItem(TestBattleArmor.BAMotiveSystems.getEquipment(en.getMovementMode()));
             if (en.getMovementMode() == EntityMovementMode.VTOL) {
-                maxJump = TestBattleArmor.maxVtolMP((BattleArmor)en);
+                maxJump = TestBattleArmor.maxVtolMP((BattleArmor) en);
             } else if (en.getMovementMode() == EntityMovementMode.INF_UMU) {
-                maxJump = TestBattleArmor.maxUmuMP((BattleArmor)en);
+                maxJump = TestBattleArmor.maxUmuMP((BattleArmor) en);
             } else {
-                maxJump = TestBattleArmor.maxJumpMP((BattleArmor)en);
+                maxJump = TestBattleArmor.maxJumpMP((BattleArmor) en);
             }
             cbJumpType.addActionListener(this);
         } else if (en instanceof ProtoMek) {
@@ -261,8 +279,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             }
         }
         // Trailers with no engine have a max speed of zero.
-        if (en.isTrailer() && ((en.getEngine() == null)
-                    || (en.getEngine().getEngineType() == Engine.NONE))) {
+        if (en.isTrailer() && ((en.getEngine() == null) || (en.getEngine().getEngineType() == Engine.NONE))) {
             maxWalk = 0;
         }
         spnWalkModel.setMinimum(minWalk);
@@ -288,10 +305,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             showJump = showJumpType = false;
         } else if (en.hasETypeFlag(Entity.ETYPE_TANK)) {
             labelIndex = LABEL_INDEX_TANK;
-            showJump = showJumpType = (en.getMovementMode() == EntityMovementMode.TRACKED)
-                    || (en.getMovementMode() == EntityMovementMode.WHEELED)
-                    || (en.getMovementMode() == EntityMovementMode.HOVER)
-                    || (en.getMovementMode() == EntityMovementMode.WIGE);
+            showJump = showJumpType = (en.getMovementMode() == EntityMovementMode.TRACKED) ||
+                                            (en.getMovementMode() == EntityMovementMode.WHEELED) ||
+                                            (en.getMovementMode() == EntityMovementMode.HOVER) ||
+                                            (en.getMovementMode() == EntityMovementMode.WIGE);
         } else if (en.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             labelIndex = LABEL_INDEX_BA;
             showRun = false;
@@ -333,9 +350,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         lblMekMechanicalJumpMP.setVisible(en.isMek());
         // adapt the Mek Mechanical Jump Booster MP value to the equipment size
         spnMekMechanicalJumpMP.removeChangeListener(this);
-        Optional<MiscMounted> mekMechanicalJumpBooster = en.getMisc().stream()
-              .filter(m -> m.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER))
-              .findFirst();
+        Optional<MiscMounted> mekMechanicalJumpBooster = en.getMisc()
+                                                               .stream()
+                                                               .filter(m -> m.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER))
+                                                               .findFirst();
         if (mekMechanicalJumpBooster.isEmpty()) {
             spnMekMechanicalJumpMP.setValue(0);
         } else if (getMekMechanicalJump() != mekMechanicalJumpBooster.get().getSize()) {
@@ -365,8 +383,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             if (cbJumpType.getModel().getSize() > 0) {
                 spnJump.setEnabled(true);
                 cbJumpType.setEnabled(true);
-                if ((cbJumpType.getSelectedIndex() < 0)
-                        || !Objects.equals(cbJumpType.getSelectedItem(), prev)) {
+                if ((cbJumpType.getSelectedIndex() < 0) || !Objects.equals(cbJumpType.getSelectedItem(), prev)) {
                     cbJumpType.setSelectedIndex(0);
                 }
             } else {
@@ -421,8 +438,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         } else if (en.hasWorkingMisc(MiscType.F_JET_BOOSTER)) {
             runTooltip.add("Jet Booster");
         }
-        Optional<MiscMounted> partialWing = en.getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
+        Optional<MiscMounted> partialWing = en.getMisc()
+                                                  .stream()
+                                                  .filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING))
+                                                  .findAny();
         if (partialWing.isPresent()) {
             int bonus = 2;
             if (en instanceof Mek) {
@@ -434,8 +453,9 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         }
         txtWalkFinal.setToolTipText((walkTooltip.length() > 0) ? walkTooltip.toString() : null);
         txtRunFinal.setToolTipText((runTooltip.length() > 0) ? runTooltip.toString() : null);
-        txtJumpFinal.setToolTipText(((jumpTooltip.length() > 0) && (en.getOriginalJumpMP(false) > 0))
-                ? jumpTooltip.toString() : null);
+        txtJumpFinal.setToolTipText(((jumpTooltip.length() > 0) && (en.getOriginalJumpMP(false) > 0)) ?
+                                          jumpTooltip.toString() :
+                                          null);
     }
 
     public int getWalk() {
@@ -451,7 +471,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     }
 
     public EquipmentType getJumpJet() {
-        return (EquipmentType)cbJumpType.getSelectedItem();
+        return (EquipmentType) cbJumpType.getSelectedItem();
     }
 
     @Override

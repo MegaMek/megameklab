@@ -1,18 +1,49 @@
 /*
- * MegaMekLab
- * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
+
+import java.awt.Component;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
 
 import megamek.common.*;
 import megamek.common.equipment.AmmoMounted;
@@ -22,20 +53,6 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
-import java.awt.*;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CriticalTableModel extends AbstractTableModel {
     private final List<Mounted<?>> crits = new ArrayList<>();
@@ -61,8 +78,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
     private final String[] columnNames = { "Name", "Tons", "Slots", "Heat", "Loc", "Size" };
 
-    private final String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX",
-            "XXXXXXXXX", "XXX", "XXXX" };
+    private final String[] longValues = { "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "XXX", "XXXX" };
 
     @Override
     public int getColumnCount() {
@@ -107,8 +123,7 @@ public class CriticalTableModel extends AbstractTableModel {
         for (int i = 0; i < getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
             comp = table.getDefaultRenderer(model.getColumnClass(i))
-                    .getTableCellRendererComponent(table, longValues[i], false,
-                            false, 0, i);
+                         .getTableCellRendererComponent(table, longValues[i], false, false, 0, i);
             cellWidth = comp.getPreferredSize().width;
             column.setPreferredWidth(Math.max(headerWidth, cellWidth));
         }
@@ -135,10 +150,11 @@ public class CriticalTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int row, int col) {
         if (col == SIZE) {
-            return (row >= 0) && (row < crits.size())
-                    && (crits.get(row).getType().isVariableSize()
-                            || (crits.get(row).getType() instanceof InfantryWeapon)
-                            || (unit instanceof HandheldWeapon && crits.get(row) instanceof AmmoMounted));
+            return (row >= 0) &&
+                         (row < crits.size()) &&
+                         (crits.get(row).getType().isVariableSize() ||
+                                (crits.get(row).getType() instanceof InfantryWeapon) ||
+                                (unit instanceof HandheldWeapon && crits.get(row) instanceof AmmoMounted));
         } else {
             return false;
         }
@@ -158,17 +174,15 @@ public class CriticalTableModel extends AbstractTableModel {
                 return UnitUtil.getCritName(unit, crit.getType());
             case TONNAGE:
                 double tonnage;
-                if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                        || unit.hasETypeFlag(Entity.ETYPE_PROTOMEK))
-                        && (crit.getType() instanceof AmmoType)) {
-                    tonnage = ((AmmoType) crit.getType()).getKgPerShot() *
-                            crit.getBaseShotsLeft() / 1000;
+                if ((unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR) || unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)) &&
+                          (crit.getType() instanceof AmmoType)) {
+                    tonnage = ((AmmoType) crit.getType()).getKgPerShot() * crit.getBaseShotsLeft() / 1000;
                 } else if (crit.is(EquipmentTypeLookup.BA_DWP) && (crit.getLinked() != null)) {
                     tonnage = crit.getLinked().getTonnage() * 0.75;
                 } else if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
-                    // Round up to the next half ton
-                    tonnage = Math.ceil((crit.getTonnage() * crit.getUsableShotsLeft()
-                            / ((AmmoType) crit.getType()).getShots()) * 2.0) * 0.5;
+                    // Round up to the next half-ton
+                    tonnage = Math.ceil((crit.getTonnage() * crit.getUsableShotsLeft() /
+                                               ((AmmoType) crit.getType()).getShots()) * 2.0) * 0.5;
                 } else {
                     tonnage = crit.getTonnage();
                 }
@@ -208,7 +222,8 @@ public class CriticalTableModel extends AbstractTableModel {
                     return unit.joinLocationAbbr(crit.allLocations(), 2);
                 }
             case SIZE:
-                if (crit.getType().isVariableSize() ||  (unit instanceof HandheldWeapon && crit instanceof AmmoMounted)) {
+                if (crit.getType().isVariableSize() ||
+                          (unit instanceof HandheldWeapon && crit instanceof AmmoMounted)) {
                     return NumberFormat.getInstance().format(crit.getSize());
                 } else if (crit.getType() instanceof InfantryWeapon) {
                     return (int) (crit.getSize() * ((InfantryWeapon) crit.getType()).getShots());
@@ -264,14 +279,12 @@ public class CriticalTableModel extends AbstractTableModel {
     /*
      * Rendered cannot be static because it uses parent data structs.
      */
-    private class Renderer extends DefaultTableCellRenderer {
+    public class Renderer extends DefaultTableCellRenderer {
         @Override
-        public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus, int row,
-                int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+              int row, int column) {
 
-            JLabel c = (JLabel) super.getTableCellRendererComponent(table,
-                    value, isSelected, hasFocus, row, column);
+            JLabel c = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             if ((crits.size() < row) || (row < 0)) {
                 return c;
@@ -297,19 +310,17 @@ public class CriticalTableModel extends AbstractTableModel {
                 if (mount.isSquadSupportWeapon()) {
                     modifier += " (Squad Support Weapon)";
                 }
-                if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                        || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                        && mount.getLinked() != null) {
-                    modifier += " (attached " + mount.getLinked().getName()
-                            + ")";
+                if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) ||
+                           mount.getType().hasFlag(MiscType.F_AP_MOUNT)) && mount.getLinked() != null) {
+                    modifier += " (attached " + mount.getLinked().getName() + ")";
                 }
-                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
-                        mount.getLinkedBy() == null) {
+                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) && mount.getLinkedBy() == null) {
                     modifier += "*";
                 }
                 c.setText(c.getText() + modifier);
-            } else if ((column == NAME) && unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)
-                    && (mount.getType() instanceof AmmoType)) {
+            } else if ((column == NAME) &&
+                             unit.hasETypeFlag(Entity.ETYPE_PROTOMEK) &&
+                             (mount.getType() instanceof AmmoType)) {
                 c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");
             }
             c.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, mount));
@@ -358,20 +369,23 @@ public class CriticalTableModel extends AbstractTableModel {
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-                int column) {
+              int column) {
             this.rowIndex = row;
             Mounted<?> mounted = (Mounted<?>) getValueAt(row, EQUIPMENT);
             spinner.removeChangeListener(this);
             if (mounted.getType() instanceof InfantryWeapon) {
                 final int clipSize = ((InfantryWeapon) mounted.getType()).getShots();
                 spinner.setModel(new SpinnerNumberModel((int) ((mounted.getSize() * clipSize)),
-                        clipSize, null, clipSize));
+                      clipSize,
+                      null,
+                      clipSize));
             } else if (unit instanceof HandheldWeapon && (mounted instanceof AmmoMounted am)) {
                 spinner.setModel(new SpinnerNumberModel((int) am.getSize(), 0, null, 1));
             } else {
                 spinner.setModel(new SpinnerNumberModel(Double.valueOf(mounted.getSize()),
-                        mounted.getType().variableStepSize(), mounted.getType().variableMaxSize(),
-                        mounted.getType().variableStepSize()));
+                      mounted.getType().variableStepSize(),
+                      mounted.getType().variableMaxSize(),
+                      mounted.getType().variableStepSize()));
             }
             spinner.addChangeListener(this);
             return spinner;
@@ -392,9 +406,7 @@ public class CriticalTableModel extends AbstractTableModel {
      * @param locs An array of indices that specifies the crits to remove
      */
     public void removeCrits(int... locs) {
-        crits.removeAll(Arrays.stream(locs)
-                .mapToObj(crits::get)
-                .collect(Collectors.toList()));
+        crits.removeAll(Arrays.stream(locs).mapToObj(crits::get).toList());
     }
 
     public void removeAllCrits() {
@@ -402,8 +414,7 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     public void removeMounted(int row) {
-        UnitUtil.removeMounted(unit,
-                (Mounted<?>) getValueAt(row, CriticalTableModel.EQUIPMENT));
+        UnitUtil.removeMounted(unit, (Mounted<?>) getValueAt(row, CriticalTableModel.EQUIPMENT));
     }
 
     public List<Mounted<?>> getCrits() {
@@ -411,13 +422,10 @@ public class CriticalTableModel extends AbstractTableModel {
     }
 
     private int getAlignment(int col) {
-        switch (col) {
-            case NAME:
-                return SwingConstants.LEFT;
-            case TONNAGE:
-                return SwingConstants.RIGHT;
-            default:
-                return SwingConstants.CENTER;
-        }
+        return switch (col) {
+            case NAME -> SwingConstants.LEFT;
+            case TONNAGE -> SwingConstants.RIGHT;
+            default -> SwingConstants.CENTER;
+        };
     }
 }

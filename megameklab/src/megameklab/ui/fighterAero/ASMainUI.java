@@ -1,26 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.fighterAero;
 
 import java.awt.BorderLayout;
 import java.util.List;
-
 import javax.swing.JDialog;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 
 import megamek.common.*;
 import megamek.logging.MMLogger;
@@ -88,7 +97,7 @@ public class ASMainUI extends MegaMekLabMainUI {
             floatingEquipmentDatabase.setVisible(false);
         }
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
-                new ASFloatingEquipmentDatabaseView(this));
+              new ASFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();
@@ -135,11 +144,11 @@ public class ASMainUI extends MegaMekLabMainUI {
             newUnit.setChassis(oldEntity.getChassis());
             newUnit.setModel(oldEntity.getModel());
             newUnit.setYear(Math.max(oldEntity.getYear(),
-                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
             newUnit.setSource(oldEntity.getSource());
             newUnit.setManualBV(oldEntity.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
-                    SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
+                  SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
             newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
             newUnit.setMixedTech(oldEntity.isMixedTech());
         }

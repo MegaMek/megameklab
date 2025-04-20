@@ -1,15 +1,29 @@
 /*
- * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -21,7 +35,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -45,16 +58,10 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * The base class for Equipment Tabs for all unit types. It shows the equipment
- * database and the
- * current load out list.
- * The load out list is obtained through the abstract method getLoadOut() and
- * may be either the full
- * equipment of the unit or filtered somehow so that equipment controlled in the
- * Structure tab cannot
- * be removed in the Equipment Tab.
- * An EquipmentDatabaseView must be provided through the abstract method
- * getEquipmentDatabaseView.
+ * The base class for Equipment Tabs for all unit types. It shows the equipment database and the current load out list.
+ * The load out list is obtained through the abstract method {@link #getLoadOut()} and may be either the full equipment
+ * of the unit or filtered somehow so that equipment controlled in the Structure tab cannot be removed in the Equipment
+ * Tab. An EquipmentDatabaseView must be provided through the abstract method getEquipmentDatabaseView.
  *
  * @author jtighe (torren@users.sourceforge.net)
  * @author arlith
@@ -141,16 +148,12 @@ public abstract class AbstractEquipmentTab extends ITab {
     }
 
     /**
-     * This method is called for all of a unit's equipment to determine if it is to
-     * be shown
-     * in the load out view. It may be overridden to hide some equipment in the
-     * Equipment Tab's
-     * load out view to prevent it from being removed here. Use to hide equipment
-     * that is
-     * controlled from the Structure Tab.
-     * By default, this method returns true.
+     * This method is called for all of a unit's equipment to determine if it is to be shown in the load out view. It
+     * may be overridden to hide some equipment in the Equipment Tab's load out view to prevent it from being removed
+     * here. Use to hide equipment that is controlled from the Structure Tab. By default, this method returns true.
      *
      * @param mount the mounted to be checked
+     *
      * @return true when the given mounted may be shown in the load out view
      */
     protected boolean showInLoadOut(Mounted<?> mount) {
@@ -160,7 +163,7 @@ public abstract class AbstractEquipmentTab extends ITab {
     protected abstract AbstractEquipmentDatabaseView getEquipmentDatabaseView();
 
     private void removeHeatSinks() {
-        for (int location = 0; location < loadOutModel.getRowCount();) {
+        for (int location = 0; location < loadOutModel.getRowCount(); ) {
             Mounted<?> mount = (Mounted<?>) loadOutModel.getValueAt(location, CriticalTableModel.EQUIPMENT);
             EquipmentType eq = mount.getType();
             if ((eq instanceof MiscType) && (UnitUtil.isHeatSink(mount))) {

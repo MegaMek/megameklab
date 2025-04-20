@@ -1,27 +1,45 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
-import megamek.common.*;
+import java.awt.geom.Rectangle2D;
+import java.util.StringJoiner;
+
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.MPCalculationSetting;
+import megamek.common.MiscType;
 import megamek.common.battlevalue.BattleArmorBVCalculator;
 import megameklab.util.BattleArmorUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
-
-import java.awt.geom.Rectangle2D;
-import java.util.StringJoiner;
 
 /**
  * Lays out a record sheet block for a single BattleArmor unit
@@ -34,10 +52,10 @@ public class PrintBattleArmor extends PrintEntity {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param battleArmor  The battlearmor to print
-     * @param squadIndex   The index of this unit on the page
-     * @param startPage    The print job page number for this sheet
-     * @param options      Overrides the global options for which elements are printed
+     * @param battleArmor The battlearmor to print
+     * @param squadIndex  The index of this unit on the page
+     * @param startPage   The print job page number for this sheet
+     * @param options     Overrides the global options for which elements are printed
      */
     public PrintBattleArmor(BattleArmor battleArmor, int squadIndex, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -90,8 +108,10 @@ public class PrintBattleArmor extends PrintEntity {
         hideElement(CHECK_LEG, !BattleArmorUtil.canLegAttack(battleArmor));
         hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
 
-        setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo())
-            + "/" + ((BattleArmorBVCalculator)battleArmor.getBvCalculator()).singleTrooperBattleValue());
+        setTextField(BV,
+              battleArmor.calculateBattleValue(true, !showPilotInfo()) +
+                    "/" +
+                    ((BattleArmorBVCalculator) battleArmor.getBvCalculator()).singleTrooperBattleValue());
     }
 
     @Override
@@ -104,10 +124,10 @@ public class PrintBattleArmor extends PrintEntity {
                 if (element instanceof SVGRectElement) {
                     Rectangle2D bbox = getRectBBox((SVGRectElement) element);
                     Element canvas = (Element) element.getParentNode();
-                    int viewWidth = (int)bbox.getWidth();
-                    int viewHeight = (int)bbox.getHeight();
-                    int viewX = (int)bbox.getX();
-                    int viewY = (int)bbox.getY();
+                    int viewWidth = (int) bbox.getWidth();
+                    int viewHeight = (int) bbox.getHeight();
+                    int viewX = (int) bbox.getX();
+                    int viewY = (int) bbox.getY();
                     // Extra pip for trooper
                     final int pipCount = battleArmor.getOArmor(BattleArmor.LOC_TROOPER_1 + i) + 1;
 
@@ -133,8 +153,7 @@ public class PrintBattleArmor extends PrintEntity {
     @Override
     protected String formatWalk() {
         if (battleArmor.hasDWP()) {
-            return formatMovement(battleArmor.getWalkMP(),
-                    battleArmor.getWalkMP(MPCalculationSetting.BA_UNBURDENED));
+            return formatMovement(battleArmor.getWalkMP(), battleArmor.getWalkMP(MPCalculationSetting.BA_UNBURDENED));
         } else {
             return super.formatWalk();
         }
@@ -148,8 +167,10 @@ public class PrintBattleArmor extends PrintEntity {
     @Override
     public String formatMiscNotes() {
         final StringJoiner sj = new StringJoiner(" ");
-        if (battleArmor.isBurdened() && ((battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0)
-                || BattleArmorUtil.canLegAttack(battleArmor) || BattleArmorUtil.canSwarm(battleArmor))) {
+        if (battleArmor.isBurdened() &&
+                  ((battleArmor.getJumpMP(MPCalculationSetting.BA_UNBURDENED) > 0) ||
+                         BattleArmorUtil.canLegAttack(battleArmor) ||
+                         BattleArmorUtil.canSwarm(battleArmor))) {
             sj.add("Must detach missiles before jumping or swarm/leg attacks.");
         }
         if (battleArmor.hasDWP()) {
@@ -164,27 +185,22 @@ public class PrintBattleArmor extends PrintEntity {
         }
         return sj.toString();
     }
-   /*
-    * Battle Armor troopers use different names based on faction and tech base. Any unaccounted-for squad configurations will be called "SQUAD".
-    * 1 Trooper: Trooper (NIU suits, The Bounty Hunter)
-    * 3 Troopers: Un (Society)
-    * 4 Troopers: Squad (Inner Sphere)
-    * 5 Troopers: Point (Clans), Maniple (Taurian Concordat)
-    * 6 Troopers: Level I (ComStar, Word of Blake)
-    */
+
+    /*
+     * Battle Armor troopers use different names based on faction and tech base. Any unaccounted-for squad configurations will be called "SQUAD".
+     * 1 Trooper: Trooper (NIU suits, The Bounty Hunter)
+     * 3 Troopers: Un (Society)
+     * 4 Troopers: Squad (Inner Sphere)
+     * 5 Troopers: Point (Clans), Maniple (Taurian Concordat)
+     * 6 Troopers: Level I (ComStar, Word of Blake)
+     */
     private String squadName() {
-        switch (battleArmor.getTroopers()) {
-            case 1:
-                return "SUIT";
-            case 3:
-                return "UN";
-            case 5:
-                return "POINT";
-            case 6:
-                return "LEVEL I";
-            default:
-            case 4:
-                return "SQUAD";
-        }
+        return switch (battleArmor.getTroopers()) {
+            case 1 -> "SUIT";
+            case 3 -> "UN";
+            case 5 -> "POINT";
+            case 6 -> "LEVEL I";
+            default -> "SQUAD";
+        };
     }
 }

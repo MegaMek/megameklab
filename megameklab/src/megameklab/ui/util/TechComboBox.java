@@ -1,26 +1,40 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
-import megamek.common.ITechnology;
-
 import java.util.function.Function;
 
+import megamek.common.ITechnology;
+
 /**
- * ComboBox for equipment that implement ITechnology.
- * Has a boolean flag that can toggle prefixing "Clan" or "IS" to the equipment name.
- * 
+ * ComboBox for equipment that implement ITechnology. Has a boolean flag that can toggle prefixing "Clan" or "IS" to the
+ * equipment name.
+ *
  * @author Neoancient
  */
 public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
@@ -30,11 +44,11 @@ public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
         super();
         setRenderer(new Renderer<>(t -> getTechName(toString.apply(t), t.getTechBase())));
     }
-    
+
     public void showTechBase(boolean show) {
         showTechBase = show;
     }
-    
+
     private String getTechName(String name, int techBase) {
         StringBuilder sb = new StringBuilder();
         if (showTechBase) {

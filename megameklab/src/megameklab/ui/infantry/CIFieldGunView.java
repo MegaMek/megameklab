@@ -1,15 +1,29 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.infantry;
 
@@ -23,7 +37,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.event.DocumentEvent;
@@ -55,43 +68,36 @@ import megameklab.util.InfantryUtil;
  * @author Neoancient
  */
 public class CIFieldGunView extends IView implements ActionListener {
-    private final static int T_ALL       = 0;
-    private final static int T_GUN       = 1;
+    private final static int T_ALL = 0;
+    private final static int T_GUN = 1;
     private final static int T_ARTILLERY = 2;
     private final static int T_ARTILLERY_CANNON = 3;
-    private final static int T_NUM       = 4;
+    private final static int T_NUM = 4;
 
     private RefreshListener refresh;
 
-    private JButton btnSetGun = new JButton("Set Field Gun");
-    private JButton btnRemoveGun = new JButton("Remove Field Gun");
+    private final JButton btnSetGun = new JButton("Set Field Gun");
+    private final JButton btnRemoveGun = new JButton("Remove Field Gun");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private JComboBox<String> choiceType = new JComboBox<>();
-    private JTextField txtFilter = new JTextField();
+    private final JComboBox<String> choiceType = new JComboBox<>();
+    private final JTextField txtFilter = new JTextField();
 
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton radioBtnStats = new JRadioButton("Stats");
 
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
 
     public static String getTypeName(int type) {
-        switch (type) {
-            case T_ALL:
-                return "All Weapons";
-            case T_GUN:
-                return "Field Gun";
-            case T_ARTILLERY:
-                return "Artillery";
-            case T_ARTILLERY_CANNON:
-                return "Artillery Cannon";
-            default:
-                return "?";
-        }
+        return switch (type) {
+            case T_ALL -> "All Weapons";
+            case T_GUN -> "Field Gun";
+            case T_ARTILLERY -> "Artillery";
+            case T_ARTILLERY_CANNON -> "Artillery Cannon";
+            default -> "?";
+        };
     }
 
     public CIFieldGunView(EntitySource eSource, ITechManager techManager) {
@@ -129,13 +135,14 @@ public class CIFieldGunView extends IView implements ActionListener {
             btnSetGun.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         });
         masterEquipmentTable.setDoubleBuffered(true);
+        JScrollPane masterEquipmentScroll = new JScrollPane();
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
         masterEquipmentTable.getSelectionModel().addListSelectionListener(evt -> {
             int view = masterEquipmentTable.getSelectedRow();
             btnSetGun.setEnabled(view >= 0);
         });
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -145,8 +152,10 @@ public class CIFieldGunView extends IView implements ActionListener {
                 continue;
             }
 
-            if ((eq instanceof ACWeapon) || (eq instanceof UACWeapon)
-                    || (eq instanceof RifleWeapon) || (eq instanceof ArtilleryCannonWeapon)) {
+            if ((eq instanceof ACWeapon) ||
+                      (eq instanceof UACWeapon) ||
+                      (eq instanceof RifleWeapon) ||
+                      (eq instanceof ArtilleryCannonWeapon)) {
                 allTypes.add(eq);
             }
 
@@ -154,16 +163,17 @@ public class CIFieldGunView extends IView implements ActionListener {
                 allTypes.add(eq);
             }
 
-            if ((eq instanceof GaussWeapon)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_GAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_IGAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_MAGSHOT)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_HAG)) {
+            if ((eq instanceof GaussWeapon) &&
+                      (((WeaponType) eq).getAmmoType() != AmmoType.T_GAUSS_HEAVY) &&
+                      (((WeaponType) eq).getAmmoType() != AmmoType.T_IGAUSS_HEAVY) &&
+                      (((WeaponType) eq).getAmmoType() != AmmoType.T_MAGSHOT) &&
+                      (((WeaponType) eq).getAmmoType() != AmmoType.T_HAG)) {
                 allTypes.add(eq);
             }
 
-            if ((eq instanceof ArtilleryWeapon) && !eq.hasFlag(WeaponType.F_BA_WEAPON)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_CRUISE_MISSILE)) {
+            if ((eq instanceof ArtilleryWeapon) &&
+                      !eq.hasFlag(WeaponType.F_BA_WEAPON) &&
+                      (((WeaponType) eq).getAmmoType() != AmmoType.T_CRUISE_MISSILE)) {
                 allTypes.add(eq);
             }
         }
@@ -198,21 +208,22 @@ public class CIFieldGunView extends IView implements ActionListener {
             }
         });
 
-        ButtonGroup bgroupView = new ButtonGroup();
-        bgroupView.add(rbtnStats);
-        bgroupView.add(rbtnFluff);
+        ButtonGroup buttonGroupView = new ButtonGroup();
+        buttonGroupView.add(radioBtnStats);
+        JRadioButton radioBtnFluff = new JRadioButton("Fluff");
+        buttonGroupView.add(radioBtnFluff);
 
-        rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(evt -> setEquipmentView());
-        rbtnFluff.addActionListener(evt -> setEquipmentView());
+        radioBtnStats.setSelected(true);
+        radioBtnStats.addActionListener(evt -> setEquipmentView());
+        radioBtnFluff.addActionListener(evt -> setEquipmentView());
         chkShowAll.addActionListener(evt -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
-        viewPanel.add(rbtnStats);
-        viewPanel.add(rbtnFluff);
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
+        viewPanel.add(radioBtnStats);
+        viewPanel.add(radioBtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0,2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(btnSetGun);
         btnPanel.add(btnRemoveGun);
 
@@ -241,7 +252,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         gbc.weightx = 1.0;
         databasePanel.add(viewPanel, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -286,8 +297,7 @@ public class CIFieldGunView extends IView implements ActionListener {
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
             int num;
-            if ((equip instanceof ArtilleryWeapon)
-                    || (equip instanceof ArtilleryCannonWeapon)) {
+            if ((equip instanceof ArtilleryWeapon) || (equip instanceof ArtilleryCannonWeapon)) {
                 num = 1;
             } else {
                 int crewReq = Math.max(2, (int) Math.ceil(equip.getTonnage(getInfantry())));
@@ -309,16 +319,17 @@ public class CIFieldGunView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if ((nType == T_ALL)
-                        || ((nType == T_GUN)
-                                && !(etype instanceof ArtilleryWeapon)
-                                && !(etype instanceof ArtilleryCannonWeapon))
-                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon && !(etype.hasFlag(AmmoType.F_SPACE_BOMB)))
-                        || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
-                        ) {
-                    if (null != eSource.getTechManager()
-                            && !eSource.getTechManager().isLegal(etype)
-                            && !chkShowAll.isSelected()) {
+                if ((nType == T_ALL) ||
+                          ((nType == T_GUN) &&
+                                 !(etype instanceof ArtilleryWeapon) &&
+                                 !(etype instanceof ArtilleryCannonWeapon)) ||
+                          ((nType == T_ARTILLERY) &&
+                                 etype instanceof ArtilleryWeapon &&
+                                 !(etype.hasFlag(AmmoType.F_SPACE_BOMB))) ||
+                          ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)) {
+                    if (null != eSource.getTechManager() &&
+                              !eSource.getTechManager().isLegal(etype) &&
+                              !chkShowAll.isSelected()) {
                         return false;
                     }
 
@@ -336,8 +347,8 @@ public class CIFieldGunView extends IView implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if (rbtnStats.isSelected()) {
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
+        if (radioBtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);

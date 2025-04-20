@@ -1,13 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 /*
@@ -35,17 +51,18 @@ import megameklab.util.UnitUtil;
 
 public class CritListCellRenderer extends DefaultListCellRenderer {
 
-    private       JList<?> list = null;
-    private final Entity   unit;
-    private final boolean  useColor;
+    private JList<?> list = null;
+    private final Entity unit;
+    private final boolean useColor;
 
     public CritListCellRenderer(Entity unit, boolean useColor) {
-        this.unit     = unit;
+        this.unit = unit;
         this.useColor = useColor;
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+          boolean hasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
@@ -96,8 +113,8 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
 
         int loc = getCritLocation();
         if ((cs != null) &&
-            UnitUtil.isLastCrit(unit, cs, index, loc) &&
-            UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
+                  UnitUtil.isLastCrit(unit, cs, index, loc) &&
+                  UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
@@ -117,13 +134,13 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     }
 
     private CriticalSlot getCrit(int slot) {
-        int          location     = getCritLocation();
+        int location = getCritLocation();
         CriticalSlot criticalSlot = null;
 
         if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
             criticalSlot = unit.getCritical(location, slot);
         }
-        
+
         return criticalSlot;
     }
 

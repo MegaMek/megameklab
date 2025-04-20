@@ -1,20 +1,29 @@
 /*
- * MegaMekLab - unit design companion of MegaMek
- * Copyright (C) 2020 The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -32,56 +41,52 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.WeaponMounted;
+import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.*;
-import megamek.common.equipment.WeaponMounted;
-import megameklab.util.UnitUtil;
-
 /**
- * Formats text for the record sheet's "Weapons and Equipment Inventory" section. For most units,
- * an instance is created for the sheet using {@link #InventoryWriter(PrintEntity, SVGRectElement)},
- * then the text is added to the SVG document using {@link #writeEquipment()}. This adds the appropriate
- * header, for the unit, equipment table, and quirks/features/ammo at the bottom of the space. Large
- * craft can have multiple sections and should invoke the appropriate section writers, using each return value
- * for the vertical placement of the next section. Multi-page record sheets can instantiate using
- * {@link #InventoryWriter(PrintEntity)} to process the equipment and find the size of each section,
- * then call {@link #setRegion(SVGRectElement)} for each page before calling the section writers.
+ * Formats text for the record sheet's "Weapons and Equipment Inventory" section. For most units, an instance is created
+ * for the sheet using {@link #InventoryWriter(PrintEntity, SVGRectElement)}, then the text is added to the SVG document
+ * using {@link #writeEquipment()}. This adds the appropriate header, for the unit, equipment table, and
+ * quirks/features/ammo at the bottom of the space. Large craft can have multiple sections and should invoke the
+ * appropriate section writers, using each return value for the vertical placement of the next section. Multipage record
+ * sheets can instantiate using {@link #InventoryWriter(PrintEntity)} to process the equipment and find the size of each
+ * section, then call {@link #setRegion(SVGRectElement)} for each page before calling the section writers.
  */
 public class InventoryWriter {
 
-    // Proportion of the region width to indent subsequent lines of the same equipment entry
+    // Proportion of the region width to indent later lines of the same equipment entry
     private static final double INDENT = 0.02;
     /**
-     * The minimum font size to use when scaling inventory text to fit into
-     * available space
+     * The minimum font size to use when scaling inventory text to fit into available space
      */
     private static final float MIN_FONT_SIZE = 4.5f;
     /**
-     * The amount of space between lines, as a factor of the font height determined
-     * by {@link java.awt.FontMetrics}
+     * The amount of space between lines, as a factor of the font height determined by {@link java.awt.FontMetrics}
      */
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
-        QUANTITY ("Qty", 0.037),
-        NAME ("Type", 0.075),
-        BAY ("Bay", 0.02),
-        LOCATION ("Loc", 0.41, 0.5),
-        LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
-        HEAT ("Ht", 0.48, 0.6),
-        DAMAGE ("Dmg", 0.53, 0.53, 0.47),
-        MIN ("Min", 0.75, 0.75, 0.69),
-        SHORT ("Sht", 0.82, 0.82, 0.78),
-        MEDIUM ("Med", 0.89, 0.89, 0.87),
-        LONG ("Lng", 0.96),
-        SRV ("SRV", 0.68),
-        MRV ("MRV", 0.76),
-        LRV ("LRV", 0.84),
-        ERV ("ERV", 0.92);
+        QUANTITY("Qty", 0.037),
+        NAME("Type", 0.075),
+        BAY("Bay", 0.02),
+        LOCATION("Loc", 0.41, 0.5),
+        LOCATION_NO_HEAT("Loc", 0.46, 0.55),
+        HEAT("Ht", 0.48, 0.6),
+        DAMAGE("Dmg", 0.53, 0.53, 0.47),
+        MIN("Min", 0.75, 0.75, 0.69),
+        SHORT("Sht", 0.82, 0.82, 0.78),
+        MEDIUM("Med", 0.89, 0.89, 0.87),
+        LONG("Lng", 0.96),
+        SRV("SRV", 0.68),
+        MRV("MRV", 0.76),
+        LRV("LRV", 0.84),
+        ERV("ERV", 0.92);
 
         final String header;
         final double groundX;
@@ -116,17 +121,17 @@ public class InventoryWriter {
         static Column[] colsFor(Entity en) {
             if (en.isAero()) {
                 if (en.tracksHeat() || en.isLargeCraft()) {
-                    return new Column[]{QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV};
+                    return new Column[] { QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV };
                 } else {
-                    return new Column[]{QUANTITY, NAME, LOCATION_NO_HEAT, SRV, MRV, LRV, ERV};
+                    return new Column[] { QUANTITY, NAME, LOCATION_NO_HEAT, SRV, MRV, LRV, ERV };
                 }
             } else if (en instanceof BattleArmor) {
-                return new Column[]{QUANTITY, NAME, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                return new Column[] { QUANTITY, NAME, DAMAGE, MIN, SHORT, MEDIUM, LONG };
             } else {
                 if (en.tracksHeat()) {
-                    return new Column[] {QUANTITY, NAME, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    return new Column[] { QUANTITY, NAME, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG };
                 } else {
-                    return new Column[]{QUANTITY, NAME, LOCATION_NO_HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    return new Column[] { QUANTITY, NAME, LOCATION_NO_HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG };
                 }
             }
         }
@@ -134,7 +139,7 @@ public class InventoryWriter {
         /**
          * Column types when printing weapon bays
          */
-        final static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
+        final static Column[] BAY_COLUMNS = { BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV };
     }
 
     private final List<StandardInventoryEntry> equipment;
@@ -175,19 +180,25 @@ public class InventoryWriter {
         this.standardBays = new ArrayList<>();
         this.bayFootnotes = new ArrayList<>();
         this.ammo = new TreeMap<>();
-        this.transportBays = sheet.getEntity().getTransports().stream().filter(t -> t instanceof Bay)
-                .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
+        this.transportBays = sheet.getEntity()
+                                   .getTransports()
+                                   .stream()
+                                   .filter(t -> t instanceof Bay)
+                                   .map(t -> (Bay) t)
+                                   .filter(b -> !b.isQuarters())
+                                   .collect(Collectors.toList());
         if (sheet.getEntity().usesWeaponBays()) {
             parseBays();
         } else {
             parseEquipment();
         }
-        String str = ammo.entrySet().stream()
-                .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
-                .collect(Collectors.joining(", "));
+        String str = ammo.entrySet()
+                           .stream()
+                           .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
+                           .collect(Collectors.joining(", "));
         String ammoPrefix = "Ammo: ";
-        if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
-                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MEK) == 0)) {
+        if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE) &&
+                  ((sheet.getEntity().getEntityType() & Entity.ETYPE_MEK) == 0)) {
             ammoPrefix = "Ammo (CASE): ";
         }
         ammoText = str.isEmpty() ? str : ammoPrefix + str;
@@ -206,6 +217,7 @@ public class InventoryWriter {
 
     /**
      * Recalculates column positions for a new page
+     *
      * @param svgRect The bounding rectangle of the print region
      */
     public void setRegion(SVGRectElement svgRect) {
@@ -228,15 +240,15 @@ public class InventoryWriter {
             if (m.isWeaponGroup()) {
                 continue;
             }
-            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+            if ((m.getType() instanceof AmmoType) &&
+                      (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
-                } else if ((sheet.getEntity() instanceof ProtoMek)
-                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
-                    // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
-                    // instead of iATM3
+                } else if ((sheet.getEntity() instanceof ProtoMek) &&
+                                 (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
+                    // A bit of an ugly hack to get fusillade ammo to show up and identify as fusillade instead of iATM3
                     ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);
                 }
                 continue;
@@ -244,13 +256,13 @@ public class InventoryWriter {
             if (UnitUtil.isMineDispenser(m.getType()) || UnitUtil.isRemoteSensorDispenser(m.getType())) {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
-            if ((m.getLocation() == Entity.LOC_NONE)
-                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
+            if ((m.getLocation() == Entity.LOC_NONE) ||
+                      !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
                 continue;
             }
-            if ((sheet.getEntity() instanceof QuadVee)
-                    && (m.getType() instanceof MiscType)
-                    && m.getType().hasFlag(MiscType.F_TRACKS)) {
+            if ((sheet.getEntity() instanceof QuadVee) &&
+                      (m.getType() instanceof MiscType) &&
+                      m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
@@ -309,11 +321,11 @@ public class InventoryWriter {
     }
 
     /**
-     * Iterate through a list of weapons and create information about what weapons
-     * belong in what bays, how many, the bay damage, and also condense entries when
-     * possible.
+     * Iterate through a list of weapons and create information about what weapons belong in what bays, how many, the
+     * bay damage, and also condense entries when possible.
      *
      * @param weapons A list of weapon bays
+     *
      * @return A list of bays condensed by weapon type and symmetric location
      */
     private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
@@ -350,22 +362,24 @@ public class InventoryWriter {
     }
 
     /**
-     * Calculates the number of additional lines required to print the capital scale weapon bay block due
-     * to wrapping long names to another line.
+     * Calculates the number of additional lines required to print the capital scale weapon bay block due to wrapping
+     * long names to another line.
      *
      * @param fontSize The font size used to print
-     * @return         The number of extra lines required by the table
+     *
+     * @return The number of extra lines required by the table
      */
     public int extraCapitalBayLines(float fontSize) {
         return extraLines(equipment, bayColX, fontSize, 0);
     }
 
     /**
-     * Calculates the number of additional lines required to print the standard scale weapon bay block due
-     * to wrapping long names to another line.
+     * Calculates the number of additional lines required to print the standard scale weapon bay block due to wrapping
+     * long names to another line.
      *
      * @param fontSize The font size used to print
-     * @return         The number of extra lines required by the table
+     *
+     * @return The number of extra lines required by the table
      */
     public int extraStandardBayLines(float fontSize) {
         return extraLines(standardBays, bayColX, fontSize, 0);
@@ -386,15 +400,14 @@ public class InventoryWriter {
     }
 
     /**
-     * @return The size of the transport bay block, not including header
+     * @return The size of the transport bay block, not including the header
      */
     public int transportBayLines() {
         return transportBays.size();
     }
 
     public int standardBayLines() {
-        return standardBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum()
-                + bayFootnotes.size();
+        return standardBays.stream().mapToInt(WeaponBayInventoryEntry::nRows).sum() + bayFootnotes.size();
     }
 
     public void writeEquipment() {
@@ -407,13 +420,18 @@ public class InventoryWriter {
 
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
         yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
-        if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
+        if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) &&
+                  !transportBays.isEmpty()) {
             yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
-            sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
-                    yPosition, sheet.heatProfileText(),
-                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            sheet.addTextElement(canvas,
+                  viewX + viewWidth * 0.025,
+                  yPosition,
+                  sheet.heatProfileText(),
+                  FONT_SIZE_MEDIUM,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE);
         }
         writeFooterBlock(metrics[0], metrics[1]);
     }
@@ -421,17 +439,23 @@ public class InventoryWriter {
     /**
      * Adds the text for the standard scale weapon bays.
      *
-     * @param fontSize The size of font to size for the table text
+     * @param fontSize   The size of the font to size for the table text
      * @param lineHeight The amount to increase the y coordinate for each line
-     * @param currY The starting y coordinate
+     * @param currY      The starting y coordinate
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double writeStandardBays(float fontSize, double lineHeight, double currY) {
         currY = printAeroStandardHeader(currY, Column.BAY_COLUMNS, bayColX);
         currY = printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
         for (String note : bayFootnotes) {
-            sheet.addTextElement(canvas, bayColX[0], currY, note, fontSize,
-                    SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            sheet.addTextElement(canvas,
+                  bayColX[0],
+                  currY,
+                  note,
+                  fontSize,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE);
             currY += lineHeight;
         }
         return currY;
@@ -440,9 +464,10 @@ public class InventoryWriter {
     /**
      * Adds the text for the capital scale weapon bays.
      *
-     * @param fontSize The size of font to size for the table text
+     * @param fontSize   The size of the font to size for the table text
      * @param lineHeight The amount to increase the y coordinate for each line
-     * @param currY The starting y coordinate
+     * @param currY      The starting y coordinate
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double writeCapitalBays(float fontSize, double lineHeight, double currY) {
@@ -451,11 +476,12 @@ public class InventoryWriter {
     }
 
     /**
-     * Rescales text to allow space for a fixed number of lines using the entire region. Used for large
-     * craft, which have a number of possible block types and may need a second page.
+     * Rescales text to allow space for a fixed number of lines using the entire region. Used for large craft, which
+     * have a number of possible block types and may need a second page.
      *
-     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
-     *                  lines, the supplier gives an opportunity to recalculate after each resizing.
+     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer lines, the
+     *                  supplier gives an opportunity to recalculate after each resizing.
+     *
      * @return A tuple of the new font height and line height, in that order
      */
     public float[] scaleText(Function<Float, Integer> calcLines) {
@@ -463,15 +489,15 @@ public class InventoryWriter {
     }
 
     /**
-     * If the lines do not fit in the available space, we will need to reduce the font size
-     * and possible the amount of space between lines. We take it in steps of -0.5 instead of
-     * scaling proportionately because not only is the relationship between font size and height
-     * not directly proportional, but a smaller reduction may be sufficient to reduce the number
-     * of line required for longer fields.
+     * If the lines do not fit in the available space, we will need to reduce the font size and possibly the amount of
+     * space between lines. We take it in steps of -0.5 instead of scaling proportionately because not only is the
+     * relationship between font size and height not directly proportional, but a smaller reduction may be enough to
+     * reduce the number of lines required for longer fields.
      *
-     * @param height The height of the region the text needs to fit in
-     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
-     *                  lines, the supplier gives an opportunity to recalculate after each resizing.
+     * @param height    The height of the region the text needs to fit in
+     * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer lines, the
+     *                  supplier gives an opportunity to recalculate after each resizing.
+     *
      * @return A tuple of the new font height and line height, in that order
      */
     public float[] scaleText(double height, Function<Float, Integer> calcLines) {
@@ -499,40 +525,69 @@ public class InventoryWriter {
      */
     public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-        if (ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() > 0) {
+        if (ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() >
+                  0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
-                        ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines = sheet.addMultilineTextElement(svgGroup,
+                      viewX + viewWidth * 0.025,
+                      0,
+                      viewWidth * 0.95,
+                      lineHeight,
+                      ammoText,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
-                        fuelText, fontSize,
-                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup,
+                      viewX + viewWidth * 0.025,
+                      lines * lineHeight,
+                      viewWidth * 0.95,
+                      lineHeight,
+                      fuelText,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
-                        featuresText, fontSize,
-                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup,
+                      viewX + viewWidth * 0.025,
+                      lines * lineHeight,
+                      viewWidth * 0.95,
+                      lineHeight,
+                      featuresText,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
-                        miscNotesText, fontSize,
-                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup,
+                      viewX + viewWidth * 0.025,
+                      lines * lineHeight,
+                      viewWidth * 0.95,
+                      lineHeight,
+                      miscNotesText,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
-                        viewWidth * 0.95, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup,
+                      viewX + viewWidth * 0.025,
+                      lines * lineHeight,
+                      viewWidth * 0.95,
+                      lineHeight,
+                      quirksText,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
             }
-            svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - lines * lineHeight));
+            svgGroup.setAttributeNS(null,
+                  SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                  String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE, viewY + viewHeight - lines * lineHeight));
         }
     }
 
@@ -543,25 +598,31 @@ public class InventoryWriter {
     private double printColumnHeaders(double currY, Column[] columnTypes, double[] colX) {
         for (int i = 0; i < columnTypes.length; i++) {
             String anchor;
-            if (Column.NAME.equals(columnTypes[i])
-                    || Column.BAY.equals(columnTypes[i])
-                    || Column.DAMAGE.equals(columnTypes[i])) {
+            if (Column.NAME.equals(columnTypes[i]) ||
+                      Column.BAY.equals(columnTypes[i]) ||
+                      Column.DAMAGE.equals(columnTypes[i])) {
                 anchor = SVGConstants.SVG_START_VALUE;
             } else {
                 anchor = SVGConstants.SVG_MIDDLE_VALUE;
             }
-            sheet.addTextElement(canvas, colX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
-                    anchor, SVGConstants.SVG_BOLD_VALUE);
+            sheet.addTextElement(canvas,
+                  colX[i],
+                  currY,
+                  columnTypes[i].header,
+                  FONT_SIZE_MEDIUM,
+                  anchor,
+                  SVGConstants.SVG_BOLD_VALUE);
         }
         return currY + sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.1;
     }
 
     /**
-     * Calculates the total line height at the given font size for units that have a single equipment
-     * block and possible footer, e.g. those other than large craft. Because lines breaks are inserted between
-     * words, it's possible that the number of lines may be more.
+     * Calculates the total line height at the given font size for units that have a single equipment block and possible
+     * footer, e.g., those other than large craft. Because lines breaks are inserted between words, it's possible that
+     * the number of lines may be greater.
      *
      * @param fontSize The size of the font
+     *
      * @return The estimated line count.
      */
     private int calcLineCount(float fontSize) {
@@ -580,8 +641,8 @@ public class InventoryWriter {
             int rows = line.nRows();
             // If the name or damage field is too long to fit in the space, make sure there is a second row
             if ((rows == 1) &&
-                    ((sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) ||
-                        sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
+                      ((sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) ||
+                             sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
                 rows++;
             }
             lines += rows;
@@ -597,60 +658,46 @@ public class InventoryWriter {
     }
 
     public int footerLines(float fontSize) {
-        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
+        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth) +
+                     (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth) +
+                     (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth) +
+                     (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth) +
+                     (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
     }
 
     /**
-     * Adds a section to the inventory section. An entry that does not fit into the
-     * allocated space
-     * will wrap to the next line. This is tracked using the repurposed lines local
-     * variable. Some
-     * entries are already given multiple lines (such as missile launchers with
-     * Artemis), which
-     * will be handled in the inner loop. We need to compare the two to make sure we
-     * don't add
-     * extra line feeds. This algorithm works on the assumption that pre-splitting
-     * values into multiple
-     * rows ensures that they will fit and not need to wrap.
+     * Adds a section to the inventory section. An entry that does not fit into the allocated space will wrap to the
+     * next line. This is tracked using the repurposed lines local variable. Some entries are already given multiple
+     * lines (such as missile launchers with Artemis), which will be handled in the inner loop. We need to compare the
+     * two to make sure we don't add extra line feeds. This algorithm works on the assumption that pre-splitting values
+     * into multiple rows ensures that they will fit and not need to wrap.
      *
      * @param list       The list of entries for this table
-     * @param fontSize   The size of font to use for printing the table
+     * @param fontSize   The size of the font to use for printing the table
      * @param yPosition  The starting y coordinate relative to the parent element
      * @param lineHeight The amount to add to the y coordinate for each line
      */
-    private double printEquipmentTable(List<? extends InventoryEntry> list,
-                                       double yPosition, float fontSize, double lineHeight) {
+    private double printEquipmentTable(List<? extends InventoryEntry> list, double yPosition, float fontSize,
+          double lineHeight) {
         return printEquipmentTable(list, yPosition, fontSize, lineHeight, columnTypes, colX);
     }
 
     /**
-     * Adds a section to the inventory section. An entry that does not fit into the
-     * allocated space
-     * will wrap to the next line. This is tracked using the repurposed lines local
-     * variable. Some
-     * entries are already given multiple lines (such as missile launchers with
-     * Artemis), which
-     * will be handled in the inner loop. We need to compare the two to make sure we
-     * don't add
-     * extra line feeds. This algorithm works on the assumption that pre-splitting
-     * values into multiple
-     * rows ensures that they will fit and not need to wrap.
+     * Adds a section to the inventory section. An entry that does not fit into the allocated space will wrap to the
+     * next line. This is tracked using the repurposed lines local variable. Some entries are already given multiple
+     * lines (such as missile launchers with Artemis), which will be handled in the inner loop. We need to compare the
+     * two to make sure we don't add extra line feeds. This algorithm works on the assumption that pre-splitting values
+     * into multiple rows ensures that they will fit and not need to wrap.
      *
      * @param list        The list of entries for this table
-     * @param fontSize    The size of font to use for printing the table
+     * @param fontSize    The size of the font to use for printing the table
      * @param yPosition   The starting y coordinate relative to the parent element
      * @param lineHeight  The amount to add to the y coordinate for each line
-     * @param columnTypes The columns to include in the table. Used for overriding
-     *                    when printing bays.
-     * @param colX        The x coordinate of each column, corresponding to the same
-     *                    index in <code>columnTypes</code>
+     * @param columnTypes The columns to include in the table. Used for overriding when printing bays.
+     * @param colX        The x coordinate of each column, corresponding to the same index in <code>columnTypes</code>
      */
-    private double printEquipmentTable(List<? extends InventoryEntry> list,
-                                       double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
+    private double printEquipmentTable(List<? extends InventoryEntry> list, double yPosition, float fontSize,
+          double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
@@ -658,9 +705,13 @@ public class InventoryWriter {
                     switch (columnTypes[i]) {
                         case QUANTITY:
                             if (row == 0) {
-                                sheet.addTextElement(canvas, colX[i],
-                                        yPosition, line.getQuantityField(row),
-                                        fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                sheet.addTextElement(canvas,
+                                      colX[i],
+                                      yPosition,
+                                      line.getQuantityField(row),
+                                      fontSize,
+                                      SVGConstants.SVG_MIDDLE_VALUE,
+                                      SVGConstants.SVG_NORMAL_VALUE);
                             }
                             break;
                         case NAME:
@@ -673,66 +724,109 @@ public class InventoryWriter {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                             }
                             if (row == 0) {
-                                lines = sheet.addMultilineTextElement(canvas, colX[i],
-                                        yPosition, width, lineHeight,
-                                        line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                lines = sheet.addMultilineTextElement(canvas,
+                                      colX[i],
+                                      yPosition,
+                                      width,
+                                      lineHeight,
+                                      line.getNameField(row),
+                                      fontSize,
+                                      SVGConstants.SVG_START_VALUE,
+                                      SVGConstants.SVG_NORMAL_VALUE);
                             } else {
-                                lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
-                                        colX[i] + indent : colX[i],
-                                        yPosition, width, lineHeight,
-                                        line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                lines = sheet.addMultilineTextElement(canvas,
+                                      line.indentMultiline() ? colX[i] + indent : colX[i],
+                                      yPosition,
+                                      width,
+                                      lineHeight,
+                                      line.getNameField(row),
+                                      fontSize,
+                                      SVGConstants.SVG_START_VALUE,
+                                      SVGConstants.SVG_NORMAL_VALUE);
                             }
                             break;
                         case LOCATION:
                         case LOCATION_NO_HEAT:
-                            sheet.addTextElement(canvas, colX[i],
-                                    yPosition, line.getLocationField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElement(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  line.getLocationField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case HEAT:
-                            sheet.addTextElement(canvas, colX[i],
-                                    yPosition, line.getHeatField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElement(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  line.getHeatField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
-                            lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
-                                    yPosition,
-                                    colX[i + 1] - colX[i] - fontSize, lineHeight, line.getDamageField(row),
-                                    fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
+                            lines = Math.max(lines,
+                                  sheet.addMultilineTextElement(canvas,
+                                        colX[i],
+                                        yPosition,
+                                        colX[i + 1] - colX[i] - fontSize,
+                                        lineHeight,
+                                        line.getDamageField(row),
+                                        fontSize,
+                                        SVGConstants.SVG_START_VALUE,
+                                        SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
-                            sheet.addTextElement(canvas, colX[i],
-                                    yPosition, line.getMinField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElement(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  line.getMinField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case SHORT:
                         case SRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
-                                    yPosition, colX[i + 1] - colX[i] - 1,
-                                    line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  colX[i + 1] - colX[i] - 1,
+                                  line.getShortField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case MEDIUM:
                         case MRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
-                                    yPosition, colX[i + 1] - colX[i] - 1,
-                                    line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  colX[i + 1] - colX[i] - 1,
+                                  line.getMediumField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case LONG:
                         case LRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
-                                    yPosition, colX[i] - colX[i - 1] - 1,
-                                    line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  colX[i] - colX[i - 1] - 1,
+                                  line.getLongField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case ERV:
-                            sheet.addTextElementToFit(canvas, colX[i],
-                                    yPosition, colX[i] - colX[i - 1] - 1,
-                                    line.getExtremeField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                            sheet.addTextElementToFit(canvas,
+                                  colX[i],
+                                  yPosition,
+                                  colX[i] - colX[i - 1] - 1,
+                                  line.getExtremeField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE);
                             break;
                     }
                 }
@@ -747,28 +841,53 @@ public class InventoryWriter {
             switch (Column.BAY_COLUMNS[i]) {
                 case NAME:
                 case BAY:
-                    sheet.addTextElement(canvas, bayColX[i], currY, "Capital Scale", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                    sheet.addTextElement(canvas,
+                          bayColX[i],
+                          currY,
+                          "Capital Scale",
+                          FONT_SIZE_MEDIUM,
+                          SVGConstants.SVG_START_VALUE,
+                          SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case SRV:
-                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                            "(1-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          bayColX[i],
+                          currY,
+                          bayColX[i + 1] - bayColX[i] - 1,
+                          "(1-12)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
-                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                            "(13-24)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          bayColX[i],
+                          currY,
+                          bayColX[i + 1] - bayColX[i] - 1,
+                          "(13-24)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
-                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                            "(25-40)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          bayColX[i],
+                          currY,
+                          bayColX[i + 1] - bayColX[i] - 1,
+                          "(25-40)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
-                    sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i] - bayColX[i - 1] - 1,
-                            "(41-50)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          bayColX[i],
+                          currY,
+                          bayColX[i] - bayColX[i - 1] - 1,
+                          "(41-50)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:
                     break;
@@ -788,28 +907,53 @@ public class InventoryWriter {
                 case NAME:
                 case BAY:
                     // Use first bay field to left-justify whether this unit uses bays or not
-                    sheet.addTextElement(canvas, bayColX[0], currY, "Standard Scale", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                    sheet.addTextElement(canvas,
+                          bayColX[0],
+                          currY,
+                          "Standard Scale",
+                          FONT_SIZE_MEDIUM,
+                          SVGConstants.SVG_START_VALUE,
+                          SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case SRV:
-                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                            "(1-6)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          colX[i],
+                          currY,
+                          colX[i + 1] - colX[i] - 1,
+                          "(1-6)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
-                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                            "(7-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          colX[i],
+                          currY,
+                          colX[i + 1] - colX[i] - 1,
+                          "(7-12)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
-                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                            "(13-20)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          colX[i],
+                          currY,
+                          colX[i + 1] - colX[i] - 1,
+                          "(13-20)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
-                    sheet.addTextElementToFit(canvas, colX[i], currY, colX[i] - colX[i - 1] - 1,
-                            "(21-25)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                    sheet.addTextElementToFit(canvas,
+                          colX[i],
+                          currY,
+                          colX[i] - colX[i - 1] - 1,
+                          "(21-25)",
+                          FONT_SIZE_VSMALL,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:
                     break;
@@ -822,55 +966,80 @@ public class InventoryWriter {
     /**
      * Adds a static table showing the details of the types of AR10 missiles.
      *
-     * @param fontSize The font size to use for the table rows
+     * @param fontSize   The font size to use for the table rows
      * @param lineHeight The height of each table row
-     * @param currY The y coordinate of the top of the table
+     * @param currY      The y coordinate of the top of the table
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double printAR10Block(float fontSize, double lineHeight, double currY) {
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             switch (Column.BAY_COLUMNS[i]) {
                 case BAY:
-                    sheet.addTextElement(canvas, bayColX[i], currY, "AR10 Munitions", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                    sheet.addTextElement(canvas,
+                          bayColX[i],
+                          currY,
+                          "AR10 Munitions",
+                          FONT_SIZE_MEDIUM,
+                          SVGConstants.SVG_START_VALUE,
+                          SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case LOCATION:
-                    sheet.addTextElement(canvas, bayColX[i], currY, "Tons", FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                    sheet.addTextElement(canvas,
+                          bayColX[i],
+                          currY,
+                          "Tons",
+                          FONT_SIZE_MEDIUM,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_BOLD_VALUE);
                     break;
                 case HEAT:
                 case SRV:
                 case MRV:
                 case LRV:
                 case ERV:
-                    sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
-                            SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
+                    sheet.addTextElement(canvas,
+                          bayColX[i],
+                          currY,
+                          columnTypes[i].header,
+                          FONT_SIZE_MEDIUM,
+                          SVGConstants.SVG_MIDDLE_VALUE,
+                          SVGConstants.SVG_BOLD_VALUE);
                     break;
                 default:
                     break;
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
-        currY = printEquipmentTable(Collections.singletonList(new AR10InventoryEntry()), currY,
-                fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
+        currY = printEquipmentTable(Collections.singletonList(new AR10InventoryEntry()),
+              currY,
+              fontSize,
+              lineHeight,
+              Column.BAY_COLUMNS,
+              bayColX);
         return currY;
-   }
+    }
 
     /**
      * Prints the gravity deck block
-     * @param ship The jumpship, warship, or space station
-     * @param fontSize The font size to use for the table rows
+     *
+     * @param ship       The jumpship, warship, or space station
+     * @param fontSize   The font size to use for the table rows
      * @param lineHeight The height of each table row
-     * @param currY The y coordinate of the top of the table
+     * @param currY      The y coordinate of the top of the table
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double printGravityDecks(Jumpship ship, float fontSize, double lineHeight, double currY) {
         if (ship.getTotalGravDeck() > 0) {
             double xPosition = bayColX[0];
             sheet.addTextElement(canvas,
-                    xPosition, currY, "Grav Decks:",
-                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE,
-                    SVGConstants.SVG_BOLD_VALUE);
+                  xPosition,
+                  currY,
+                  "Grav Decks:",
+                  FONT_SIZE_MEDIUM,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_BOLD_VALUE);
             currY += lineHeight;
             double yPosition = currY;
             int count = 1;
@@ -892,15 +1061,21 @@ public class InventoryWriter {
     /**
      * Convenience method for printing information related to cargo and transport bays.
      *
-     * @param fontSize The font size to use for the table rows
+     * @param fontSize   The font size to use for the table rows
      * @param lineHeight The height of each table row
-     * @param currY The y coordinate of the top of the table
+     * @param currY      The y coordinate of the top of the table
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double printBayInfo(float fontSize, double lineHeight, double currY) {
         if (!transportBays.isEmpty()) {
-            sheet.addTextElement(canvas, bayColX[0], currY, "Cargo:", FONT_SIZE_MEDIUM,
-                    SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+            sheet.addTextElement(canvas,
+                  bayColX[0],
+                  currY,
+                  "Cargo:",
+                  FONT_SIZE_MEDIUM,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_BOLD_VALUE);
             currY += lineHeight;
             // We can have multiple Bay instances within one conceptual bay on the ship
             // We need to gather all bays with the same ID to print out the string
@@ -938,7 +1113,7 @@ public class InventoryWriter {
                             capacity *= 4;
                         }
                     } else if (b instanceof InfantryBay) {
-                        // Divide total weight by weight required by platoon to get platoon capacity
+                        // Divide total weight by weight required by the platoon to get platoon capacity
                         capacity /= ((InfantryBay) b).getPlatoonType().getWeight();
                     }
                     bayCapacityString.append(NumberFormat.getInstance().format(capacity));
@@ -949,10 +1124,21 @@ public class InventoryWriter {
                     doors = Math.max(doors, b.getDoors());
                 }
                 bayCapacityString.append(')');
-                String bayString = "Bay " + bayNum + ": " + bayTypeString
-                        + bayCapacityString + " (" + doors + (doors == 1 ? " Door)" : " Doors)");
-                sheet.addTextElement(canvas, bayColX[0], currY, bayString, fontSize,
-                        SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                String bayString = "Bay " +
+                                         bayNum +
+                                         ": " +
+                                         bayTypeString +
+                                         bayCapacityString +
+                                         " (" +
+                                         doors +
+                                         (doors == 1 ? " Door)" : " Doors)");
+                sheet.addTextElement(canvas,
+                      bayColX[0],
+                      currY,
+                      bayString,
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE);
                 currY += lineHeight;
             }
             currY += lineHeight;
@@ -961,17 +1147,22 @@ public class InventoryWriter {
     }
 
     /**
-     * Add single line of text explaining where to find the standard scale bays for ships that
-     * cannot fit both capital and standard on the obverse.
+     * Add a single line of text explaining where to find the standard scale bays for ships that cannot fit both capital
+     * and standard on the obverse.
      *
      * @param lineHeight The height of each table row
-     * @param currY The y coordinate of the top of the table
+     * @param currY      The y coordinate of the top of the table
+     *
      * @return The y coordinate of the bottom of the table
      */
     public double printReverseSideMessage(double lineHeight, double currY) {
-        sheet.addTextElement(canvas, bayColX[0],
-                currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM,
-                SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
+        sheet.addTextElement(canvas,
+              bayColX[0],
+              currY,
+              "Standard Scale on Reverse",
+              FONT_SIZE_MEDIUM,
+              SVGConstants.SVG_START_VALUE,
+              SVGConstants.SVG_BOLD_VALUE);
         return currY + lineHeight * 2;
     }
 }

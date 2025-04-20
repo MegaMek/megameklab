@@ -1,33 +1,45 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui;
 
-import megamek.common.Entity;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.ResourceBundle;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import megamek.common.Entity;
 
 /**
- * This class contains static methods that each show a commonly used popup message, such as the
- * "unit is invalid" warning or common errors. The parent frame should ideally be not null.
+ * This class contains static methods that each show a commonly used popup message, such as the "unit is invalid"
+ * warning or common errors. The parent frame should ideally be not null.
  */
 public final class PopupMessages {
 
@@ -49,6 +61,10 @@ public final class PopupMessages {
         showInfoMessage(parent, resources.getString("importSettingsHelp"));
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public static void showUiLoadError(Component parent) {
         showErrorMessage(parent, resources.getString("loadUiError"));
     }
@@ -73,6 +89,10 @@ public final class PopupMessages {
         showErrorMessage(parent, String.format(resources.getString("locationFull"), "equipment"));
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public static void showUnitInvalidWarning(Component parent) {
         showWarningMessage(parent, resources.getString("invalidUnit"));
     }
@@ -90,14 +110,18 @@ public final class PopupMessages {
     }
 
     public static void showUnitSavedMessage(Component parent, Entity entity, File file) {
-        showInfoMessage(parent, String.format(resources.getString("unitSaved"),
-                entity.getChassis(), entity.getModel(), file));
+        showInfoMessage(parent,
+              String.format(resources.getString("unitSaved"), entity.getChassis(), entity.getModel(), file));
     }
 
     public static void showLookAndFeelError(Component parent, String errorMessage) {
         showErrorMessage(parent, String.format(resources.getString("lookAndFeelError"), errorMessage));
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public static void showUncaughtException(Component parent, Throwable throwable) {
         final String name = throwable.getClass().getName();
         showErrorMessage(parent, String.format(resources.getString("uncaughtException"), name));
@@ -118,18 +142,21 @@ public final class PopupMessages {
     // ############ Internal message handlers
 
     private static void showErrorMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
-                "MML encountered a problem", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent,
+              possiblyWrapInScrollBar(message),
+              "MML encountered a problem",
+              JOptionPane.ERROR_MESSAGE);
     }
 
     private static void showWarningMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
-                "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message), "Warning", JOptionPane.WARNING_MESSAGE);
     }
 
     private static void showInfoMessage(Component parent, String message) {
-        JOptionPane.showMessageDialog(parent, possiblyWrapInScrollBar(message),
-                "Information", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(parent,
+              possiblyWrapInScrollBar(message),
+              "Information",
+              JOptionPane.INFORMATION_MESSAGE);
     }
 
     private static Object possiblyWrapInScrollBar(String message) {
@@ -145,5 +172,6 @@ public final class PopupMessages {
         }
     }
 
-    private PopupMessages() { }
+    private PopupMessages() {
+    }
 }

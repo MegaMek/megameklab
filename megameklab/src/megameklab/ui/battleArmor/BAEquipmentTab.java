@@ -1,17 +1,29 @@
 /*
- * MegaMekLab
- * Copyright (c) 2008
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.battleArmor;
 
@@ -47,14 +59,14 @@ public class BAEquipmentTab extends AbstractEquipmentTab {
     @Override
     protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType eType = mount.getType();
-        return ((eType instanceof WeaponType) && showWeaponInLoadOut(mount))
-                || ((eType instanceof AmmoType) && showAmmoInLoadOut(mount))
-                || ((eType instanceof MiscType) && showMiscInLoadOut(mount));
+        return ((eType instanceof WeaponType) && showWeaponInLoadOut(mount)) ||
+                     ((eType instanceof AmmoType) && showAmmoInLoadOut(mount)) ||
+                     ((eType instanceof MiscType) && showMiscInLoadOut(mount));
     }
 
     private boolean showWeaponInLoadOut(Mounted<?> mount) {
-        return BattleArmorUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor())
-                || BattleArmorUtil.isBattleArmorAPWeapon(mount.getType());
+        return BattleArmorUtil.isBattleArmorWeapon(mount.getType(), getBattleArmor()) ||
+                     BattleArmorUtil.isBattleArmorAPWeapon(mount.getType());
     }
 
     private boolean showAmmoInLoadOut(Mounted<?> mount) {
@@ -64,13 +76,13 @@ public class BAEquipmentTab extends AbstractEquipmentTab {
     private boolean showMiscInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
-                !(etype.hasFlag(MiscType.F_JUMP_JET)
-                || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
-                || etype.hasFlag(MiscType.F_MASC)
-                || etype.hasFlag(MiscType.F_BA_MANIPULATOR)
-                || etype.hasFlag(MiscType.F_PARTIAL_WING)
-                || UnitUtil.isArmorOrStructure(etype));
+                     !(etype.hasFlag(MiscType.F_JUMP_JET) ||
+                             etype.hasFlag(MiscType.F_JUMP_BOOSTER) ||
+                             etype.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER) ||
+                             etype.hasFlag(MiscType.F_MASC) ||
+                             etype.hasFlag(MiscType.F_BA_MANIPULATOR) ||
+                             etype.hasFlag(MiscType.F_PARTIAL_WING) ||
+                             UnitUtil.isArmorOrStructure(etype));
     }
 
 }

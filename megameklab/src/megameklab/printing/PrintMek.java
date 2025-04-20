@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -23,6 +37,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import megamek.common.*;
+import megamek.common.annotations.Nullable;
+import megamek.common.equipment.MiscMounted;
+import megamek.logging.MMLogger;
+import megameklab.printing.reference.*;
+import megameklab.util.CConfig;
+import megameklab.util.RSScale;
+import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -32,17 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.GetSVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
-
-import megamek.common.*;
-import megamek.common.annotations.Nullable;
-import megamek.common.equipment.MiscMounted;
-import megamek.logging.MMLogger;
-import megameklab.printing.reference.*;
-import megameklab.util.CConfig;
-import megameklab.util.RSScale;
-import megameklab.util.UnitUtil;
 
 /**
  * Lays out a record sheet for a Mek
@@ -104,8 +116,7 @@ public class PrintMek extends PrintEntity {
             sb.append("Bimodal ");
         }
         // Leg configuration
-        if (mek.hasETypeFlag(Entity.ETYPE_QUAD_MEK)
-                && !mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
+        if (mek.hasETypeFlag(Entity.ETYPE_QUAD_MEK) && !mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             sb.append("Four-Legged ");
         } else if (mek.hasETypeFlag(Entity.ETYPE_TRIPOD_MEK)) {
             sb.append("Three-Legged ");
@@ -179,13 +190,19 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mek, m.getLocation()),
-                            PipType.CIRCLE, useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this,
+                          element,
+                          m.getCurrentDamageCapacity(mek, m.getLocation()),
+                          PipType.CIRCLE,
+                          useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND, useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this,
+                          element,
+                          m.getDamageAbsorption(mek, m.getLocation()),
+                          PipType.DIAMOND,
+                          useAlternateArmorGrouping());
                 }
             }
         }
@@ -245,8 +262,7 @@ public class PrintMek extends PrintEntity {
             setTextField(MP_FLANK, formatQuadVeeFlank());
             setTextField(LBL_VEE_MODE, ((QuadVee) mek).getMotiveTypeString() + "s");
         }
-        setTextField(ENGINE_TYPE, mek.getEngine().getShortEngineName()
-                .replaceAll("\\[.*]", "").trim());
+        setTextField(ENGINE_TYPE, mek.getEngine().getShortEngineName().replaceAll("\\[.*]", "").trim());
     }
 
     @Override
@@ -265,23 +281,12 @@ public class PrintMek extends PrintEntity {
     }
 
     private boolean loadArmorPips(int loc, boolean rear) {
-        String locAbbr;
-        switch (loc) {
-            case Mek.LOC_HEAD:
-                locAbbr = "Head";
-                break;
-            case Mek.LOC_RARM:
-            case Mek.LOC_LARM:
-                locAbbr = mek.getLocationAbbr(loc) + "rm";
-                break;
-            case Mek.LOC_RLEG:
-            case Mek.LOC_LLEG:
-                locAbbr = mek.getLocationAbbr(loc) + "eg";
-                break;
-            default:
-                locAbbr = mek.getLocationAbbr(loc);
-                break;
-        }
+        String locAbbr = switch (loc) {
+            case Mek.LOC_HEAD -> "Head";
+            case Mek.LOC_RARM, Mek.LOC_LARM -> mek.getLocationAbbr(loc) + "rm";
+            case Mek.LOC_RLEG, Mek.LOC_LLEG -> mek.getLocationAbbr(loc) + "eg";
+            default -> mek.getLocationAbbr(loc);
+        };
         if (rear) {
             locAbbr += "_R";
         }
@@ -293,7 +298,8 @@ public class PrintMek extends PrintEntity {
         }
 
         NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/Armor_%s_%d_Humanoid.svg",
-                locAbbr, mek.getOArmor(loc, rear)));
+              locAbbr,
+              mek.getOArmor(loc, rear)));
         if (null == nl) {
             return false;
         }
@@ -302,7 +308,7 @@ public class PrintMek extends PrintEntity {
 
     private boolean loadISPips() {
         NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d.svg",
-                (int) mek.getWeight()));
+              (int) mek.getWeight()));
         if (null == nl) {
             return false;
         }
@@ -334,12 +340,12 @@ public class PrintMek extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG file! Path: {}", f.getName());
             return null;
         }
 
         if (doc == null) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG file! Path: {}", f.getName());
             return null;
         } else {
             return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
@@ -361,7 +367,7 @@ public class PrintMek extends PrintEntity {
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH");
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
-                // Otherwise superheavies may get a mix of pattern types.
+                // Otherwise, superheavies may get a mix of pattern types.
                 if (!mek.isSuperHeavy() && (mek instanceof BipedMek) && !alternateMethod) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mek.hasRearArmor(loc) || loadArmorPips(loc, true);
@@ -373,8 +379,11 @@ public class PrintMek extends PrintEntity {
             }
 
             if ((null != element) && !frontComplete) {
-                ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
-                        PipType.forAT(mek.getArmorType(loc)), alternateMethod);
+                ArmorPipLayout.addPips(this,
+                      element,
+                      mek.getOArmor(loc),
+                      PipType.forAT(mek.getArmorType(loc)),
+                      alternateMethod);
 
             }
             if ((loc > Mek.LOC_HEAD) && !structComplete) {
@@ -390,8 +399,11 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
-                            PipType.forAT(mek.getArmorType(loc)), alternateMethod);
+                    ArmorPipLayout.addPips(this,
+                          element,
+                          mek.getOArmor(loc, true),
+                          PipType.forAT(mek.getArmorType(loc)),
+                          alternateMethod);
 
                 }
             }
@@ -434,13 +446,23 @@ public class PrintMek extends PrintEntity {
         double connWidth = viewWidth * 0.02;
 
         double x = viewX + viewWidth * 0.075;
-        x += addTextElement(canvas, x, viewY - 1, mek.getLocationName(loc),
-                fontSize * 1.25f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
-        if ((mek.isClan() && UnitUtil.hasAmmo(mek, loc))
-                || (!mek.isClan() && (mek.hasCASEII(loc) || mek.locationHasCase(loc)))) {
+        x += addTextElement(canvas,
+              x,
+              viewY - 1,
+              mek.getLocationName(loc),
+              fontSize * 1.25f,
+              SVGConstants.SVG_START_VALUE,
+              SVGConstants.SVG_BOLD_VALUE);
+        if ((mek.isClan() && UnitUtil.hasAmmo(mek, loc)) ||
+                  (!mek.isClan() && (mek.hasCASEII(loc) || mek.locationHasCase(loc)))) {
             String text = "(CASE" + (mek.hasCASEII(loc) ? " II)" : ")");
-            addTextElement(canvas, x + fontSize / 2, viewY - 1, text, fontSize,
-                    SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+            addTextElement(canvas,
+                  x + fontSize / 2,
+                  viewY - 1,
+                  text,
+                  fontSize,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE);
         }
 
         for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
@@ -448,26 +470,43 @@ public class PrintMek extends PrintEntity {
             if (slot == 6) {
                 currY += gap;
             }
-            addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
-                    SVGConstants.SVG_BOLD_VALUE);
+            addTextElement(canvas,
+                  viewX,
+                  currY,
+                  ((slot % 6) + 1) + ".",
+                  fontSize,
+                  SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_BOLD_VALUE);
             CriticalSlot crit = mek.getCritical(loc, slot);
             String style = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
-            if ((null == crit)
-                    || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                            && (!crit.getMount().getType().isHittable()))) {
+            if ((null == crit) ||
+                      ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT) && (!crit.getMount().getType().isHittable()))) {
                 style = SVGConstants.SVG_NORMAL_VALUE;
                 fill = FILL_GREY;
-                addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                addTextElementToFit(canvas,
+                      critX,
+                      currY,
+                      critWidth,
+                      formatCritName(crit),
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      style,
+                      fill);
             } else if (crit.isArmored()) {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
                 canvas.appendChild(pip);
-                addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
-            } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && (crit.getMount().getType() instanceof MiscType)
-                    && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
+                addTextElement(canvas,
+                      critX + fontSize,
+                      currY,
+                      formatCritName(crit),
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      style,
+                      fill);
+            } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
+                             (crit.getMount().getType() instanceof MiscType) &&
+                             (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
                 addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill);
                 x = critX + getTextLength(critName, fontSize);
@@ -487,12 +526,19 @@ public class PrintMek extends PrintEntity {
                     x += spacing;
                 }
             } else {
-                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                addTextElement(canvas,
+                      critX,
+                      currY,
+                      formatCritName(crit),
+                      fontSize,
+                      SVGConstants.SVG_START_VALUE,
+                      style,
+                      fill);
             }
             Mounted<?> m = null;
-            if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
-                    && (crit.getMount().getType().isHittable())) {
+            if ((null != crit) &&
+                      (crit.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
+                      (crit.getMount().getType().isHittable())) {
                 m = crit.getMount();
             }
             if ((startingMount != null) && (startingMount != m) && (slot - startingSlotIndex > 1)) {
@@ -514,14 +560,9 @@ public class PrintMek extends PrintEntity {
         }
     }
 
-    private void connectSlots(Element canvas, double x, double y, double w,
-            double h) {
+    private void connectSlots(Element canvas, double x, double y, double w, double h) {
         Element p = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-        p.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                "M " + x + " " + y
-                        + " h " + (-w)
-                        + " v " + h
-                        + " h " + w);
+        p.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, "M " + x + " " + y + " h " + (-w) + " v " + h + " h " + w);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
         p.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "0.72");
         p.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, SVGConstants.SVG_NONE_VALUE);
@@ -543,16 +584,19 @@ public class PrintMek extends PrintEntity {
                 List<ReferenceTable> tables = new ArrayList<>();
                 tables.add(new MekLocationAndClusterTable(this));
                 // Multi-crew cockpits and LAMs have a larger crew panel that doesn't leave room
-                // for two tables so we leave off the punch/kick.
+                // for two tables, so we leave off the punch/kick.
                 if ((mek.getCrew().getSlotCount() == 1) && !(mek instanceof LandAirMek)) {
                     tables.add(new PunchKickLocation(this));
                 }
                 Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
-                placeReferenceCharts(tables, rect.getParentNode(), bbox.getX(), bbox.getY(),
-                        bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
+                placeReferenceCharts(tables,
+                      rect.getParentNode(),
+                      bbox.getX(),
+                      bbox.getY(),
+                      bbox.getWidth() + 6.0,
+                      bbox.getHeight() + 6.0);
             } else {
-                embedImage(getFluffImage(),
-                        (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                embedImage(getFluffImage(), (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
             }
         }
     }
@@ -681,54 +725,26 @@ public class PrintMek extends PrintEntity {
             return "Roll Again";
         } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
             if (cs.getIndex() == Mek.SYSTEM_ENGINE) {
-                StringBuilder sb = new StringBuilder();
-                if (mek.isPrimitive()) {
-                    sb.append("Primitive ");
-                }
-                switch (mek.getEngine().getEngineType()) {
-                    case Engine.COMBUSTION_ENGINE:
-                        sb.append("I.C.E.");
-                        break;
-                    case Engine.NORMAL_ENGINE:
-                        sb.append("Fusion");
-                        break;
-                    case Engine.XL_ENGINE:
-                        sb.append("XL Fusion");
-                        break;
-                    case Engine.LIGHT_ENGINE:
-                        sb.append("Light Fusion");
-                        break;
-                    case Engine.XXL_ENGINE:
-                        sb.append("XXL Fusion");
-                        break;
-                    case Engine.COMPACT_ENGINE:
-                        sb.append("Compact Fusion");
-                        break;
-                    case Engine.FUEL_CELL:
-                        sb.append("Fuel Cell");
-                        break;
-                    case Engine.FISSION:
-                        sb.append("Fission");
-                        break;
-                }
-                sb.append(" Engine");
+                StringBuilder sb = getEngineName();
                 return sb.toString();
             } else {
                 String name = mek.getSystemName(cs.getIndex());
-                if (((cs.getIndex() >= Mek.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mek.ACTUATOR_HAND))
-                        || ((cs.getIndex() >= Mek.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mek.ACTUATOR_FOOT))) {
+                if (((cs.getIndex() >= Mek.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mek.ACTUATOR_HAND)) ||
+                          ((cs.getIndex() >= Mek.ACTUATOR_UPPER_LEG) && (cs.getIndex() <= Mek.ACTUATOR_FOOT))) {
                     name += " Actuator";
                 } else if (cs.getIndex() == Mek.SYSTEM_COCKPIT) {
-                    Optional<MiscMounted> robotics = mek.getMisc().stream()
-                            .filter(m -> m.getType().hasFlag(MiscType.F_SRCS)).findAny();
+                    Optional<MiscMounted> robotics = mek.getMisc()
+                                                           .stream()
+                                                           .filter(m -> m.getType().hasFlag(MiscType.F_SRCS))
+                                                           .findAny();
                     if (robotics.isPresent()) {
                         name = robotics.get().getType().getShortName();
                     } else if (mek.getCockpitType() == Mek.COCKPIT_COMMAND_CONSOLE) {
                         if (mek.getCrewForCockpitSlot(Mek.LOC_HEAD, cs) == 0) {
                             name = EquipmentMessages.getString("SystemType.Cockpit.COCKPIT_STANDARD");
                         }
-                    } else if ((mek.getCockpitType() == Mek.COCKPIT_DUAL)
-                            || (mek.getCockpitType() == Mek.COCKPIT_QUADVEE)) {
+                    } else if ((mek.getCockpitType() == Mek.COCKPIT_DUAL) ||
+                                     (mek.getCockpitType() == Mek.COCKPIT_QUADVEE)) {
                         name = mek.getCrew().getCrewType().getRoleName(mek.getCrewForCockpitSlot(Mek.LOC_HEAD, cs));
                     }
                 }
@@ -739,11 +755,11 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)
-                        && (critName.indexOf("[IS]") < 0)) {
+                if (mek.isClan() &&
+                          (m.getType().getTechBase() == ITechnology.TECH_BASE_IS) &&
+                          (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
-                } else if (!mek.isClan() && m.getType().isClan()
-                        && (critName.indexOf("[Clan]") < 0)) {
+                } else if (!mek.isClan() && m.getType().isClan() && (critName.indexOf("[Clan]") < 0)) {
                     critName.append(" [Clan]");
                 }
             }
@@ -757,9 +773,8 @@ public class PrintMek extends PrintEntity {
                 critName.append(" (R)");
             } else if (m.isMekTurretMounted()) {
                 critName.append(" (T)");
-            } else if ((m.getType() instanceof AmmoType)
-                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
-                AmmoType ammo = (AmmoType) m.getType();
+            } else if ((m.getType() instanceof AmmoType ammo) &&
+                             (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
 
                 critName = new StringBuffer("Ammo (");
                 appendAmmoCritName(critName, ammo);
@@ -769,14 +784,16 @@ public class PrintMek extends PrintEntity {
                     shots += cs.getMount2().getBaseShotsLeft();
                 }
                 critName.append(shots);
-            } else if ((cs.getMount2() != null)
-                    && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_HEAT_SINK))
-                    && (m.getType().equals(cs.getMount2().getType()))) {
+            } else if ((cs.getMount2() != null) &&
+                             (m.getType() instanceof MiscType) &&
+                             (m.getType().hasFlag(MiscType.F_HEAT_SINK)) &&
+                             (m.getType().equals(cs.getMount2().getType()))) {
                 critName.insert(0, "2 ").append("s");
-            } else if ((cs.getMount2() != null)
-                    && (m.getType() instanceof MiscType) && (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))
-                    && (cs.getMount2().getType() instanceof MiscType)
-                    && (cs.getMount2().getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))) {
+            } else if ((cs.getMount2() != null) &&
+                             (m.getType() instanceof MiscType) &&
+                             (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)) &&
+                             (cs.getMount2().getType() instanceof MiscType) &&
+                             (cs.getMount2().getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK))) {
                 int hs = 2;
                 if (m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) {
                     hs++;
@@ -801,6 +818,41 @@ public class PrintMek extends PrintEntity {
             }
             return critName.toString();
         }
+    }
+
+    private StringBuilder getEngineName() {
+        StringBuilder sb = new StringBuilder();
+        if (mek.isPrimitive()) {
+            sb.append("Primitive ");
+        }
+        switch (mek.getEngine().getEngineType()) {
+            case Engine.COMBUSTION_ENGINE:
+                sb.append("I.C.E.");
+                break;
+            case Engine.NORMAL_ENGINE:
+                sb.append("Fusion");
+                break;
+            case Engine.XL_ENGINE:
+                sb.append("XL Fusion");
+                break;
+            case Engine.LIGHT_ENGINE:
+                sb.append("Light Fusion");
+                break;
+            case Engine.XXL_ENGINE:
+                sb.append("XXL Fusion");
+                break;
+            case Engine.COMPACT_ENGINE:
+                sb.append("Compact Fusion");
+                break;
+            case Engine.FUEL_CELL:
+                sb.append("Fuel Cell");
+                break;
+            case Engine.FISSION:
+                sb.append("Fission");
+                break;
+        }
+        sb.append(" Engine");
+        return sb;
     }
 
     private void appendAmmoCritName(StringBuffer buffer, AmmoType ammo) {
@@ -843,8 +895,10 @@ public class PrintMek extends PrintEntity {
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
         GroundMovementRecord table = new GroundMovementRecord(this, true, true);
-        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        getSVGDocument().getDocumentElement()
+              .appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO,
+                    pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

@@ -1,22 +1,42 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
+
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 
 import megamek.client.ui.panels.EntityImagePanel;
 import megamek.client.ui.swing.UnitLoadingDialog;
@@ -31,22 +51,11 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
-
 /**
- * This view displays the icon that the unit will use in MM and MHQ and allows
- * selecting a different icon
- * from file or from another unit from the cache. If an icon is selected, it
- * will be stored as part of the
- * unit file in base64 encoding when saved. Note that this is for custom units,
- * as canon units will
- * use the mekset to identify and load icons and will not store them in the unit
- * file.
+ * This view displays the icon that the unit will use in MM and MHQ and allows selecting a different icon from a file or
+ * from another unit from the cache. If an icon is selected, it will be stored as part of the unit file in base64
+ * encoding when saved. Note that this is for custom units, as canon units will use the mekset to identify and load
+ * icons and will not store them in the unit file.
  */
 public class IconView extends BuildView {
     private static final MMLogger logger = MMLogger.create(IconView.class);
@@ -70,13 +79,13 @@ public class IconView extends BuildView {
 
         fileIconButton.addActionListener(e -> chooseIconFromFile());
         fileIconButton.setToolTipText("Choose an image to use as the icon for the present unit. The chosen image will" +
-                " be saved in the unit file and the icon is shown with a gold camo in MML.");
+                                            " be saved in the unit file and the icon is shown with a gold camo in MML.");
         cacheIconButton.addActionListener(e -> chooseIconFromUnitCache());
         cacheIconButton.setToolTipText("Choose another unit from the unit cache to use that unit's icon for the " +
-                "present unit. The chosen image will be saved in the unit file and the icon is shown with a gold camo in MML.");
+                                             "present unit. The chosen image will be saved in the unit file and the icon is shown with a gold camo in MML.");
         removeIconButton.addActionListener(e -> removeIcon());
         removeIconButton.setToolTipText("Removes the current icon from this unit, reverting to the standard " +
-                "icon shown for its type and name; this icon is shown in gray.");
+                                              "icon shown for its type and name; this icon is shown in gray.");
 
         var iconButtonPanel = new JPanel(new GridLayout(3, 1, 0, 4));
         iconButtonPanel.add(fileIconButton);
@@ -104,11 +113,10 @@ public class IconView extends BuildView {
             entityImage.updateDisplayedEntity(entity, entity.hasEmbeddedIcon() ? CAMO_EMBEDDED : CAMO_MEKSET);
             if (entity.hasEmbeddedIcon()) {
                 entityImage.setToolTipText("This icon will be saved with the unit. The unit will use this icon in MM " +
-                        "and MHQ. The original image file, if this was chosen from file, is not needed.");
+                                                 "and MHQ. The original image file, if this was chosen from file, is not needed.");
             } else {
-                entityImage
-                        .setToolTipText("This icon will not be saved with the unit but the unit will use this icon " +
-                                "automatically in MM or MHQ.");
+                entityImage.setToolTipText("This icon will not be saved with the unit but the unit will use this icon " +
+                                                 "automatically in MM or MHQ.");
             }
         }
         fileIconButton.setEnabled(entity != null);

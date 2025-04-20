@@ -1,22 +1,51 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All rights reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab.  If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 
 import megamek.client.ui.Messages;
 import megamek.client.ui.WrapLayout;
@@ -25,20 +54,12 @@ import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
 import megamek.client.ui.swing.tileset.EntityImage;
 import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.swing.util.PlayerColour;
-import megamek.common.BTObject;
 import megamek.common.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     // region Variable Declarations
@@ -47,21 +68,17 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private final boolean allowPickWithoutClose;
     private Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback;
     private RecordSheetPreviewPanel recordSheetPanel;
-    private JPanel recordSheetContainer;
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
 
     // endregion Variable Declarations
 
     /**
-     * Constructs a Unit Selector Dialog that only allows choosing with closing the
-     * dialog.
+     * Constructs a Unit Selector Dialog that only allows choosing with closing the dialog.
      *
      * @param parent            The parent window of this dialog
-     * @param unitLoadingDialog A {@link UnitLoadingDialog} likely
-     *                          {@code new UnitLoadingDialog(parent)}.
-     * @param multiselect       Set this to {@code true} to allow multiple units to
-     *                          be selected at once.
+     * @param unitLoadingDialog A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
+     * @param multiselect       Set this to {@code true} to allow multiple units to be selected at once.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect) {
         super(parent, unitLoadingDialog, multiselect);
@@ -79,18 +96,16 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     }
 
     /**
-     * Constructs a Unit Selector Dialog that allows choosing a Unit while keeping
-     * the dialog open by pressing Enter or the "Select" button. The
-     * entityPickCallback method will be called when units are selected in this way.
+     * Constructs a Unit Selector Dialog that allows choosing a Unit while keeping the dialog open by pressing Enter or
+     * the "Select" button. The entityPickCallback method will be called when units are selected in this way.
      * Multiselect is always enabled.
      *
      * @param parent             The parent window of this dialog
-     * @param unitLoadingDialog  A {@link UnitLoadingDialog} likely
-     *                           {@code new UnitLoadingDialog(parent)}.
+     * @param unitLoadingDialog  A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
      * @param entityPickCallback This will be called when the user presses Select.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog,
-            Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback) {
+          Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback) {
         super(parent, unitLoadingDialog, true);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
@@ -123,7 +138,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     if (evt.getClickCount() == 2) {
-                        // Double click detected - select and close
+                        // Double-click detected - select and close
                         select(true);
                     }
                 }
@@ -136,7 +151,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             // Create the record sheet panel
             recordSheetPanel = new RecordSheetPreviewPanel();
 
-            // Create a toolbar panel with print button
+            // Create a toolbar panel with a print button
             JPanel toolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 10));
             toolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolbarPanel.getPreferredSize().height));
 
@@ -177,7 +192,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             toolbarPanel.add(exportToPDFRecordSheetButton);
 
             // Create a container panel for the record sheet and toolbar
-            recordSheetContainer = new JPanel(new BorderLayout());
+            JPanel recordSheetContainer = new JPanel(new BorderLayout());
             recordSheetContainer.add(toolbarPanel, BorderLayout.NORTH);
             recordSheetContainer.add(recordSheetPanel);
 
@@ -186,7 +201,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
     }
 
-    // Only necessary to override the default close behavior, see constructor
+    // Only necessary to override the default close behavior, sees constructor
     Action closeAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -277,7 +292,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
 
         ArrayList<Entity> selectedEntities = getSelectedEntities();
-        if (selectedEntities.size() > 0) {
+        if (!selectedEntities.isEmpty()) {
             recordSheetPanel.setEntities(selectedEntities);
             printRecordSheetButton.setEnabled(true);
             exportToPDFRecordSheetButton.setEnabled(true);

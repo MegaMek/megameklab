@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.util;
 
@@ -36,6 +45,7 @@ public final class BattleArmorUtil {
     /**
      * @param eq A {@link WeaponType} or {@link MiscType}
      * @param ba The BattleArmor instance
+     *
      * @return Whether the BA can use the equipment
      */
     public static boolean isBAEquipment(EquipmentType eq, BattleArmor ba) {
@@ -44,26 +54,24 @@ public final class BattleArmorUtil {
         } else if (eq instanceof WeaponType) {
             return isBattleArmorWeapon(eq, ba);
         }
-        // This leaves ammotype, which is filtered according to having a weapon that can
+        // This leaves ammo type, which is filtered according to having a weapon that can
         // use it
         return false;
     }
 
     public static boolean isBattleArmorAPWeapon(@Nullable EquipmentType etype) {
-        if (!(etype instanceof InfantryWeapon)) {
+        if (!(etype instanceof InfantryWeapon infWeapon)) {
             return false;
         } else {
-            InfantryWeapon infWeap = (InfantryWeapon) etype;
-            return infWeap.hasFlag(WeaponType.F_INFANTRY)
-                    && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
-                    && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
-                    && (infWeap.getCrew() < 2);
+            return infWeapon.hasFlag(WeaponType.F_INFANTRY) &&
+                         !infWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK) &&
+                         !infWeapon.hasFlag(WeaponType.F_INF_ARCHAIC) &&
+                         (infWeapon.getCrew() < 2);
         }
     }
 
     public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
-        if (eq instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) eq;
+        if (eq instanceof WeaponType weapon) {
 
             if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
                 return false;
@@ -77,29 +85,24 @@ public final class BattleArmorUtil {
                 return false;
             }
 
-            if ((eq instanceof SwarmAttack) || (eq instanceof StopSwarmAttack)
-                    || (eq instanceof LegAttack)) {
+            if ((eq instanceof SwarmAttack) || (eq instanceof StopSwarmAttack) || (eq instanceof LegAttack)) {
                 return false;
             }
 
-            if (weapon.hasFlag(WeaponType.F_ENERGY)
-                    || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                            .getAmmoType() == AmmoType.T_PLASMA))) {
+            if (weapon.hasFlag(WeaponType.F_ENERGY) ||
+                      (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
                 return true;
             }
 
-            if (weapon.hasFlag(WeaponType.F_ENERGY) && (weapon.hasFlag(WeaponType.F_PLASMA))
-                    && (weapon.hasFlag(WeaponType.F_BA_WEAPON))) {
+            if (weapon.hasFlag(WeaponType.F_ENERGY) &&
+                      (weapon.hasFlag(WeaponType.F_PLASMA)) &&
+                      (weapon.hasFlag(WeaponType.F_BA_WEAPON))) {
                 return true;
             }
 
-            if (weapon.hasFlag(WeaponType.F_ENERGY)
-                    && weapon.hasFlag(WeaponType.F_PLASMA)
-                    && (weapon.getAmmoType() == AmmoType.T_NA)) {
-                return false;
-            }
-
-            return true;
+            return !weapon.hasFlag(WeaponType.F_ENERGY) ||
+                         !weapon.hasFlag(WeaponType.F_PLASMA) ||
+                         (weapon.getAmmoType() != AmmoType.T_NA);
         }
 
         return false;
@@ -107,8 +110,7 @@ public final class BattleArmorUtil {
 
     public static boolean canSwarm(BattleArmor ba) {
         for (Mounted<?> eq : ba.getEquipment()) {
-            if ((eq.getType() instanceof SwarmAttack)
-                    || (eq.getType() instanceof StopSwarmAttack)) {
+            if ((eq.getType() instanceof SwarmAttack) || (eq.getType() instanceof StopSwarmAttack)) {
                 return true;
             }
         }
@@ -125,8 +127,8 @@ public final class BattleArmorUtil {
     }
 
     public static boolean isBAMultiMount(EquipmentType equip) {
-        return (equip instanceof WeaponType)
-                && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
+        return (equip instanceof WeaponType) &&
+                     (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
     }
 
     private BattleArmorUtil() {

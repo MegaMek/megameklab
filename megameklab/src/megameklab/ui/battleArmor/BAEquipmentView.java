@@ -1,16 +1,29 @@
 /*
- * MegaMekLab
- * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.battleArmor;
 
@@ -20,7 +33,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -46,37 +58,36 @@ import megameklab.util.UnitUtil;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
+ * @deprecated No indicated uses.
  */
+@Deprecated(since = "0.50.06", forRemoval = true)
 public class BAEquipmentView extends IView implements ActionListener {
-    @SuppressWarnings("unused")
-    private RefreshListener refresh;
 
-    private JPanel mainPanel = new JPanel();
-    private JPanel topPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
-    private JPanel buttonPanel = new JPanel();
+    private final JButton addButton = new JButton("Add");
+    private final JButton removeButton = new JButton("Remove");
+    private final JButton removeAllButton = new JButton("Remove All");
 
-    private JButton addButton = new JButton("Add");
-    private JButton removeButton = new JButton("Remove");
-    private JButton removeAllButton = new JButton("Remove All");
-
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
-    private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
+    private final CriticalTableModel equipmentList;
+    private final Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
+    private final JScrollPane equipmentScroll = new JScrollPane();
     private Vector<EquipmentType> equipmentTypes;
 
-    private String ADD_COMMAND = "ADD";
-    private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVEALL_COMMAND = "REMOVEALL";
+    private final String ADD_COMMAND = "ADD";
+    private final String REMOVE_COMMAND = "REMOVE";
+    private final String REMOVEALL_COMMAND = "REMOVEALL";
 
     public BAEquipmentView(EntitySource eSource) {
         super(eSource);
 
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+        JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
@@ -126,7 +137,6 @@ public class BAEquipmentView extends IView implements ActionListener {
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        refresh = l;
     }
 
     private void loadEquipmentCombo() {
@@ -182,32 +192,37 @@ public class BAEquipmentView extends IView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(ADD_COMMAND)) {
-            boolean success = false;
-            Mounted<?> mount = null;
-            try {
-                mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()), Entity.LOC_NONE, false);
-                success = mount != null;
-            } catch (LocationFullException ignored) {
-                // this can't happen, we add to Entity.LOC_NONE
-            }
-            if (success) {
-                equipmentList.addCrit(mount);
-            }
-        } else if (evt.getActionCommand().equals(REMOVE_COMMAND)) {
-            int startRow = equipmentTable.getSelectedRow();
-            int count = equipmentTable.getSelectedRowCount();
-
-            for (; count > 0; count--) {
-                if (startRow > -1) {
-                    equipmentList.removeMounted(startRow);
-                    equipmentList.removeCrit(startRow);
+        switch (evt.getActionCommand()) {
+            case ADD_COMMAND -> {
+                boolean success = false;
+                Mounted<?> mount = null;
+                try {
+                    mount = getBattleArmor().addEquipment(equipmentTypes.elementAt(equipmentCombo.getSelectedIndex()),
+                          Entity.LOC_NONE,
+                          false);
+                    success = mount != null;
+                } catch (LocationFullException ignored) {
+                    // this can't happen, we add to Entity.LOC_NONE
+                }
+                if (success) {
+                    equipmentList.addCrit(mount);
                 }
             }
-        } else if (evt.getActionCommand().equals(REMOVEALL_COMMAND)) {
-            removeAllEquipment();
-        } else {
-            return;
+            case REMOVE_COMMAND -> {
+                int startRow = equipmentTable.getSelectedRow();
+                int count = equipmentTable.getSelectedRowCount();
+
+                for (; count > 0; count--) {
+                    if (startRow > -1) {
+                        equipmentList.removeMounted(startRow);
+                        equipmentList.removeCrit(startRow);
+                    }
+                }
+            }
+            case REMOVEALL_COMMAND -> removeAllEquipment();
+            default -> {
+                return;
+            }
         }
         fireTableRefresh();
     }

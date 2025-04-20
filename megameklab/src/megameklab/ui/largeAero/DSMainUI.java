@@ -1,24 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.largeAero;
 
 import java.awt.BorderLayout;
 import java.util.List;
-
 import javax.swing.JDialog;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 
 import megamek.common.*;
 import megamek.logging.MMLogger;
@@ -47,7 +58,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private StatusBar statusbar;
     private QuirksTab quirksTab;
-    private FluffTab  fluffTab;
+    private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public DSMainUI(Entity entity, String filename) {
@@ -82,12 +93,12 @@ public class DSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         SmallCraft newUnit;
-        if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
+        if (entityType == Entity.ETYPE_SMALL_CRAFT) {
             newUnit = new SmallCraft();
             newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else if (entitytype == Entity.ETYPE_DROPSHIP) {
+        } else if (entityType == Entity.ETYPE_DROPSHIP) {
             newUnit = new Dropship();
             newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
@@ -120,7 +131,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         }
         if (null == oldUnit) {
             newUnit.setChassis("New");
-            if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
+            if (entityType == Entity.ETYPE_SMALL_CRAFT) {
                 newUnit.setModel("Small Craft");
             } else {
                 newUnit.setModel("Dropship");
@@ -131,11 +142,11 @@ public class DSMainUI extends MegaMekLabMainUI {
             newUnit.setChassis(oldUnit.getChassis());
             newUnit.setModel(oldUnit.getModel());
             newUnit.setYear(Math.max(oldUnit.getYear(),
-                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
             newUnit.setSource(oldUnit.getSource());
             newUnit.setManualBV(oldUnit.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
-                    SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
+                  SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
             newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
             newUnit.setMixedTech(oldUnit.isMixedTech());
             newUnit.setSpheroid(oldUnit.isSpheroid());
@@ -188,7 +199,7 @@ public class DSMainUI extends MegaMekLabMainUI {
             floatingEquipmentDatabase.setVisible(false);
         }
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
-                new LAFloatingEquipmentDatabaseView(this));
+              new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

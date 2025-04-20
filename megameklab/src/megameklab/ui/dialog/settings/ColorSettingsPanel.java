@@ -1,32 +1,46 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog.settings;
+
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import javax.swing.border.EmptyBorder;
 
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A panel allowing to change MML's color preferences
@@ -57,15 +71,13 @@ public class ColorSettingsPanel extends JPanel {
         coloredExample.setOpaque(true);
         coloredExample.setBackground(CConfig.getBackgroundColor(colorType));
         coloredExample.setForeground(CConfig.getForegroundColor(colorType));
-        coloredExample.setBorder(new EmptyBorder(0,10,0,25));
+        coloredExample.setBorder(new EmptyBorder(0, 10, 0, 25));
 
         JButton foregroundButton = new JButton("Foreground");
-        foregroundButton.addActionListener(e ->
-                callColorChooser(colorType, CConfig.GUI_FOREGROUND, coloredExample));
+        foregroundButton.addActionListener(e -> callColorChooser(colorType, CConfig.GUI_FOREGROUND, coloredExample));
 
         JButton backgroundButton = new JButton("Background");
-        backgroundButton.addActionListener(e ->
-                callColorChooser(colorType, CConfig.GUI_BACKGROUND, coloredExample));
+        backgroundButton.addActionListener(e -> callColorChooser(colorType, CConfig.GUI_BACKGROUND, coloredExample));
 
         gridPanel.add(typeLabel);
         gridPanel.add(foregroundButton);
@@ -74,24 +86,20 @@ public class ColorSettingsPanel extends JPanel {
     }
 
     private String exampleText(String colorType) {
-        switch (colorType) {
-            case CConfig.GUI_COLOR_WEAPONS:
-                return "Medium Pulse Laser";
-            case CConfig.GUI_COLOR_EQUIPMENT:
-                return "Heat Sink";
-            case CConfig.GUI_COLOR_AMMO:
-                return "AC/5 Ammo";
-            case CConfig.GUI_COLOR_SYSTEMS:
-                return "XL Engine";
-            case CConfig.GUI_COLOR_NONHITTABLE:
-                return "Endo Steel";
-            default:
-                return CritCellUtil.EMPTY_CRITCELL_TEXT;
-        }
+        return switch (colorType) {
+            case CConfig.GUI_COLOR_WEAPONS -> "Medium Pulse Laser";
+            case CConfig.GUI_COLOR_EQUIPMENT -> "Heat Sink";
+            case CConfig.GUI_COLOR_AMMO -> "AC/5 Ammo";
+            case CConfig.GUI_COLOR_SYSTEMS -> "XL Engine";
+            case CConfig.GUI_COLOR_NONHITTABLE -> "Endo Steel";
+            default -> CritCellUtil.EMPTY_CRITCELL_TEXT;
+        };
     }
 
     private void callColorChooser(String type, String fgOrBg, JLabel exampleLabel) {
-        Color preset = fgOrBg.equals(CConfig.GUI_BACKGROUND) ? exampleLabel.getBackground() : exampleLabel.getForeground();
+        Color preset = fgOrBg.equals(CConfig.GUI_BACKGROUND) ?
+                             exampleLabel.getBackground() :
+                             exampleLabel.getForeground();
         Color newColor = JColorChooser.showDialog(this, "Choose a color", preset);
         if (newColor != null) {
             if (fgOrBg.equals(CConfig.GUI_BACKGROUND)) {
@@ -104,8 +112,8 @@ public class ColorSettingsPanel extends JPanel {
     }
 
     /**
-     * @return a mapping of a String representing the type of color to an RGB Color string.
-     * The type string is CConfig.COLOR_XYZ+CConfig.CONFIG_FOREGROUND or BACKGROUND.
+     * @return a mapping of a String representing the type of color to an RGB Color string. The type string is
+     *       CConfig.COLOR_XYZ+CConfig.CONFIG_FOREGROUND or BACKGROUND.
      */
     Map<String, String> getAllColors() {
         return allColors;

@@ -1,22 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.protoMek;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -41,27 +54,27 @@ import megameklab.util.UnitUtil;
  */
 public class PMBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh;
-    private PMCriticalView critView;
+    private final PMCriticalView critView;
 
     public PMBuildView getBuildView() {
         return buildView;
     }
 
-    private PMBuildView buildView;
-    private JPanel buttonPanel = new JPanel();
-    private JPanel mainPanel = new JPanel();
+    private final PMBuildView buildView;
 
-    private JButton autoFillButton = new JButton("Auto Fill");
-    private JButton resetButton = new JButton("Reset");
+    private final JButton autoFillButton = new JButton("Auto Fill");
+    private final JButton resetButton = new JButton("Reset");
 
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
-    private String RESETCOMMAND = "resetbuttoncommand";
+    private final String AUTOFILL_COMMAND = "autofillbuttoncommand";
+    private final String RESET_COMMAND = "resetbuttoncommand";
 
     public PMBuildTab(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
         this.refresh = refresh;
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new PMCriticalView(eSource, refresh);
@@ -70,9 +83,9 @@ public class PMBuildTab extends ITab implements ActionListener {
         mainPanel.add(buildView);
 
         autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
+        autoFillButton.setActionCommand(AUTOFILL_COMMAND);
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
+        resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
@@ -83,6 +96,10 @@ public class PMBuildTab extends ITab implements ActionListener {
         refresh();
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public JPanel availableCritsPanel() {
         JPanel masterPanel = new JPanel(new SpringLayout());
         Dimension maxSize = new Dimension();
@@ -114,9 +131,9 @@ public class PMBuildTab extends ITab implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
+        if (evt.getActionCommand().equals(AUTOFILL_COMMAND)) {
             autoFillCrits();
-        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESET_COMMAND)) {
             resetCrits();
         }
     }

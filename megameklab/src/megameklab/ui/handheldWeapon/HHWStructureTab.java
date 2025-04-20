@@ -1,32 +1,61 @@
 /*
- * MegaMekLab - Copyright (C) 2025 The MegaMek Team
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.handheldWeapon;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+
+import megamek.common.EquipmentType;
+import megamek.common.HandheldWeapon;
+import megamek.common.ITechManager;
+import megamek.common.SimpleTechLevel;
+import megamek.common.UnitRole;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
-import megameklab.ui.generalUnit.summary.*;
+import megameklab.ui.generalUnit.summary.AmmoSummaryItem;
+import megameklab.ui.generalUnit.summary.ArmorSummaryItem;
+import megameklab.ui.generalUnit.summary.HeatSinkSummaryItem;
+import megameklab.ui.generalUnit.summary.MiscEquipmentSummaryItem;
+import megameklab.ui.generalUnit.summary.SummaryView;
+import megameklab.ui.generalUnit.summary.UnitTypeSummaryItem;
+import megameklab.ui.generalUnit.summary.WeaponsSummaryItem;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class HHWStructureTab extends ITab implements HHWBuildListener, BuildListener {
     private BasicInfoView panBasicInfo;
@@ -35,7 +64,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     private SummaryView panSummary;
     private IconView panIcon;
 
-    RefreshListener refresh = null;
+    RefreshListener refresh;
     JPanel masterPanel;
 
     public HHWStructureTab(EntitySource eSource, RefreshListener refresh) {
@@ -53,13 +82,12 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panChassisView = new HHWChassisView();
         panEquipmentView = new HHWEquipmentView(eSource, refresh);
         panSummary = new SummaryView(eSource,
-            new UnitTypeSummaryItem(),
-            new ArmorSummaryItem(),
-            new WeaponsSummaryItem(),
-            new HeatSinkSummaryItem(),
-            new AmmoSummaryItem(),
-            new MiscEquipmentSummaryItem()
-        );
+              new UnitTypeSummaryItem(),
+              new ArmorSummaryItem(),
+              new WeaponsSummaryItem(),
+              new HeatSinkSummaryItem(),
+              new AmmoSummaryItem(),
+              new MiscEquipmentSummaryItem());
         panIcon = new IconView();
 
 
@@ -67,7 +95,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         panChassisView.setFromEntity(getEntity());
         panIcon.setFromEntity(getEntity());
 
-        JPanel leftPanel = new JPanel(), centerPanel = new JPanel(),  rightPanel = new JPanel();
+        JPanel leftPanel = new JPanel(), centerPanel = new JPanel(), rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -80,21 +108,21 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         rightPanel.add(panEquipmentView);
         rightPanel.add(panSummary);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        masterPanel.add(leftPanel, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        masterPanel.add(centerPanel, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        masterPanel.add(rightPanel, gbc);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.NONE;
+        gridBagConstraints.weightx = 0;
+        gridBagConstraints.weighty = 1;
+        gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        masterPanel.add(leftPanel, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        masterPanel.add(centerPanel, gridBagConstraints);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        masterPanel.add(rightPanel, gridBagConstraints);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassisView.setBorder(BorderFactory.createTitledBorder("Structure"));
@@ -231,11 +259,14 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     }
 
     @Override
-    public void walkChanged(int walkMP) { }
+    public void walkChanged(int walkMP) {
+    }
 
     @Override
-    public void jumpChanged(int jumpMP, EquipmentType jumpJet) { }
+    public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
+    }
 
     @Override
-    public void jumpTypeChanged(EquipmentType jumpJet) { }
+    public void jumpTypeChanged(EquipmentType jumpJet) {
+    }
 }

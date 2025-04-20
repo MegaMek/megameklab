@@ -1,33 +1,39 @@
 /*
- * MegaMekLab - unit design companion of MegaMek
- * Copyright (C) 2020 The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.printing;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import megamek.common.*;
 import megamek.common.equipment.WeaponMounted;
@@ -40,12 +46,11 @@ import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
 
 /**
- * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
- * This is for single pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
+ * Formats text for an entry in the weapons and equipment inventory section of the record sheet. This is for single
+ * pieces of equipment. WeaponBays should use {@link WeaponBayInventoryEntry}.
  */
 public class StandardInventoryEntry implements InventoryEntry, Comparable<StandardInventoryEntry> {
-    // Cache for whether equipment on a mixed tech unit needs to state explicitly whether
-    // it's IS or Clan
+    // Cache for whether equipment on a mixed tech unit needs to state explicitly whether it is IS or Clan
     private static final Map<EquipmentType, Boolean> showMixedTechBase = new HashMap<>();
 
     private final Mounted<?> mount;
@@ -78,32 +83,22 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     private final static String[] SPHEROID_ARCS = { "NOS", "FLS", "FRS", "AFT", "HULL", "ALS", "ARS" };
     private final static String[] AERODYNE_ARCS = { "NOS", "LWG", "RWG", "AFT", "HULL" };
-    private final static String[][] MML_RANGE = {
-            {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
-    };
-    private final static String[][] MML_ARTEMIS_RANGE = { {"", "", "", "", ""},
-            {"", "", "", "", ""}, formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9)
-    };
-    private final static String[][] ATM_RANGE = {
-            {"", "", "", "", ""}, formatRange(4, 5, 10, 15),
-            formatRange(4, 9, 18, 27), formatRange(0, 3, 6, 9)
-    };
+    private final static String[][] MML_RANGE = { { "", "", "", "", "" }, formatRange(6, 7, 14, 21),
+                                                  formatRange(0, 3, 6, 9) };
+    private final static String[][] MML_ARTEMIS_RANGE = { { "", "", "", "", "" }, { "", "", "", "", "" },
+                                                          formatRange(6, 7, 14, 21), formatRange(0, 3, 6, 9) };
+    private final static String[][] ATM_RANGE = { { "", "", "", "", "" }, formatRange(4, 5, 10, 15),
+                                                  formatRange(4, 9, 18, 27), formatRange(0, 3, 6, 9) };
     private final static String[][] CENTURION_RANGE = {
-            {"", formatCenturion(6, 1), formatCenturion(12, 2), formatCenturion(18, 3)}
-    };
+          { "", formatCenturion(6, 1), formatCenturion(12, 2), formatCenturion(18, 3) } };
 
     private static String[] formatRange(int min, int sht, int med, int lng) {
-        return new String[] {
-                (min > 0) ? CConfig.formatScale(min, false) : DASH,
-                CConfig.formatScale(sht, false),
-                CConfig.formatScale(med, false),
-                CConfig.formatScale(lng, false),
-        };
+        return new String[] { (min > 0) ? CConfig.formatScale(min, false) : DASH, CConfig.formatScale(sht, false),
+                              CConfig.formatScale(med, false), CConfig.formatScale(lng, false), };
     }
 
     private static String formatCenturion(int susceptible, int resistant) {
-        return String.format("%s(%s)", CConfig.formatScale(susceptible, false),
-                CConfig.formatScale(resistant, false));
+        return String.format("%s(%s)", CConfig.formatScale(susceptible, false), CConfig.formatScale(resistant, false));
     }
 
     public StandardInventoryEntry(Mounted<?> m) {
@@ -139,20 +134,18 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else {
             String[] r = new String[4];
             Arrays.fill(r, DASH);
-            if (mount.getType() instanceof InfantryWeapon) {
-                final InfantryWeapon weapon = (InfantryWeapon) mount.getType();
+            if (mount.getType() instanceof InfantryWeapon weapon) {
                 r[RangeType.RANGE_SHORT] = CConfig.formatScale(weapon.getInfantryRange(), false);
                 if (weapon.getInfantryRange() > 0) {
                     r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weapon.getInfantryRange() * 2, false);
                     r[RangeType.RANGE_LONG] = CConfig.formatScale(weapon.getInfantryRange() * 3, false);
                 }
-            } else if (mount.getType() instanceof WeaponType) {
-                final WeaponType weaponType = (WeaponType) mount.getType();
+            } else if (mount.getType() instanceof WeaponType weaponType) {
                 if (weaponType.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
-                if ((weaponType.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                        || (weaponType.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                if ((weaponType.getAmmoType() == AmmoType.T_LRM_TORPEDO) ||
+                          (weaponType.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
                     r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getWShortRange(), false);
                     if (weaponType.getWMediumRange() > weaponType.getWShortRange()) {
                         r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getWMediumRange(), false);
@@ -169,8 +162,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                         r[RangeType.RANGE_LONG] = CConfig.formatScale(weaponType.getLongRange(), false);
                     }
                 }
-            } else if ((mount.getType() instanceof MiscType)
-                    && (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
+            } else if ((mount.getType() instanceof MiscType) &&
+                             (mount.getType().hasFlag(MiscType.F_ECM) || mount.getType().hasFlag(MiscType.F_BAP))) {
                 r[RangeType.RANGE_SHORT] = DASH;
                 r[RangeType.RANGE_MEDIUM] = DASH;
                 r[RangeType.RANGE_LONG] = ewMaxRange();
@@ -184,9 +177,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private String ewMaxRange() {
         if (mount.getType().hasFlag(MiscType.F_ANGEL_ECM) && mount.getType().hasFlag(MiscType.F_BA_EQUIPMENT)) {
             return "2";
-        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT)
-                || mount.getType().hasFlag(MiscType.F_WATCHDOG)
-                || mount.getType().hasFlag(MiscType.F_NOVA)) {
+        } else if (mount.getType().hasFlag(MiscType.F_EW_EQUIPMENT) ||
+                         mount.getType().hasFlag(MiscType.F_WATCHDOG) ||
+                         mount.getType().hasFlag(MiscType.F_NOVA)) {
             return CConfig.formatScale(3, false);
         } else if (mount.getType().hasFlag(MiscType.F_SINGLE_HEX_ECM)) {
             return "0";
@@ -195,12 +188,12 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return CConfig.formatScale(6, false);
         } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
             return CConfig.formatScale(8, false);
-        } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)
-                || mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP)
-                || mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
+        } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP) ||
+                         mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP) ||
+                         mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
             return CConfig.formatScale(3, false);
-        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED)
-                || mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED) ||
+                         mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
             return CConfig.formatScale(2, false);
         } else if (mount.getType().isClan()) {
             return CConfig.formatScale(5, false); // Clan active probe
@@ -230,6 +223,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     /**
      * For AV for various ATM munitions, see footnote on TW, p. 304.
+     *
      * @return The AV values for each ATM munition type
      */
     private String[][] atmAV() {
@@ -262,14 +256,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
         }
         StringBuilder name = new StringBuilder(eqName);
-        // For mixed tech units, we want to append the tech base if there is ambiguity
-        // and it isn't already part of the name.
+        // For mixed tech units, we want to append the tech base if there is ambiguity, and it isn't yet part of the
+        // name.
         if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (C)" : " (IS)");
         }
         // Spheroid Small Craft / DropShips use a different location name for aft side weapons
-        if (mount.isRearMounted()
-                && !(mount.getEntity() instanceof SmallCraft && ((Aero) mount.getEntity()).isSpheroid())) {
+        if (mount.isRearMounted() && !(mount.getEntity() instanceof SmallCraft && mount.getEntity().isSpheroid())) {
             name.append(" (R)");
         }
         if (mount.isMekTurretMounted()) {
@@ -292,22 +285,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
         if (mount.getEntity().isSupportVehicle() && mount.getType() instanceof InfantryWeapon) {
             name.append(" [")
-                    .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
-                    .append(" shots]");
+                  .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
+                  .append(" shots]");
         }
         return name.toString().trim();
     }
 
     /**
-     * Determines whether we should indicate whether the equipment is IS or Clan for
-     * units with a mixed tech base. Only specify when there is another piece of equipment
-     * with the same name but different tech base.
+     * Determines whether we should indicate whether the equipment is IS or Clan for units with a mixed tech base. Only
+     * specify when there is another piece of equipment with the same name but different tech base.
      *
      * @return Whether the tech base should be shown for the equipment
      */
     private boolean showTechBase() {
-        if (!mount.getEntity().isMixedTech()
-                || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
+        if (!mount.getEntity().isMixedTech() || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
             return false;
         }
         if (showMixedTechBase.containsKey(mount.getType())) {
@@ -316,9 +307,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         final Enumeration<EquipmentType> e = EquipmentType.getAllTypes();
         while (e.hasMoreElements()) {
             final EquipmentType et = e.nextElement();
-            if ((et.getTechBase() != mount.getType().getTechBase())
-                    && et.getName().equals(mount.getType().getName())
-                    && !et.isUnofficial()) {
+            if ((et.getTechBase() != mount.getType().getTechBase()) &&
+                      et.getName().equals(mount.getType().getName()) &&
+                      !et.isUnofficial()) {
                 showMixedTechBase.put(mount.getType(), true);
                 showMixedTechBase.put(et, true);
                 return true;
@@ -332,13 +323,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount.getLocation() == Entity.LOC_NONE) {
             return DASH;
         }
-        if ((mount.getEntity() instanceof Tank)
-                && mount.getLocation() == Tank.LOC_TURRET
-                && !((Tank) mount.getEntity()).hasNoDualTurret()) {
+        if ((mount.getEntity() instanceof Tank) &&
+                  mount.getLocation() == Tank.LOC_TURRET &&
+                  !((Tank) mount.getEntity()).hasNoDualTurret()) {
             return "RT";
         }
         if (mount.getEntity() instanceof SmallCraft) {
-            if (((Aero) mount.getEntity()).isSpheroid()) {
+            if (mount.getEntity().isSpheroid()) {
                 return SPHEROID_ARCS[mount.isRearMounted() ? mount.getLocation() + 4 : mount.getLocation()];
             } else {
                 return AERODYNE_ARCS[mount.getLocation()];
@@ -348,16 +339,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     /**
-     * Handles some special conditions where equipment occupying three or more locations can be
-     * abbreviated to conserve space.
+     * Handles some special conditions where equipment occupying three or more locations can be abbreviated to conserve
+     * space.
      *
      * @param locations The list of locations the equipment occupies
+     *
      * @return The abbreviated location string
+     *
+     * @deprecated no indicated uses
      */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     private String formatMekLocations(List<Integer> locations) {
         if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
-            if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
-                   || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
+            if ((mount.getEntity().entityIsQuad() && (locations.size() == 4)) ||
+                      ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
                 return "Legs";
             }
         } else if (locations.stream().allMatch(l -> ((Mek) mount.getEntity()).locationIsTorso(l))) {
@@ -433,7 +428,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             } else {
                 return DASH;
             }
-        } else if(row == 1) {
+        } else if (row == 1) {
             if (hasPulseModule) {
                 return Integer.toString(mount.getType().getHeat() + 2);
             } else if (hasCapacitor) {
@@ -445,8 +440,6 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "";
         }
     }
-
-    private static final Pattern digits = Pattern.compile("\\d+");
 
     @Override
     public String getDamageField(int row) {
@@ -512,8 +505,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getMediumField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount instanceof WeaponMounted)
-                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_MED) {
+            if ((row == 0) &&
+                      (mount instanceof WeaponMounted) &&
+                      ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_MED) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundMedAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
@@ -530,8 +524,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getLongField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount instanceof WeaponMounted)
-                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_LONG) {
+            if ((row == 0) &&
+                      (mount instanceof WeaponMounted) &&
+                      ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_LONG) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundLongAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
@@ -548,8 +543,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public String getExtremeField(int row) {
         if (mount.getEntity().isAero() && !isMML && !isATM) {
-            if ((row == 0) && (mount instanceof WeaponMounted)
-                    && ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_EXT) {
+            if ((row == 0) &&
+                      (mount instanceof WeaponMounted) &&
+                      ((WeaponType) mount.getType()).getMaxRange((WeaponMounted) mount) >= WeaponType.RANGE_EXT) {
                 return String.valueOf(((WeaponType) mount.getType()).getRoundExtAV() + aeroAVMod(mount));
             } else if (row == 0) {
                 return DASH;
@@ -569,7 +565,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return 3 + mmlArtemisRowDelta();
         } else if (isATM) {
             return 4;
-        } else if (hasArtemis || hasArtemisV || hasApollo || hasArtemisProto || hasCapacitor || hasPulseModule || hasInsulator) {
+        } else if (hasArtemis ||
+                         hasArtemisV ||
+                         hasApollo ||
+                         hasArtemisProto ||
+                         hasCapacitor ||
+                         hasPulseModule ||
+                         hasInsulator) {
             return 2;
         }
         return 1;
@@ -581,8 +583,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private boolean hasLinkedEquipment(Mounted<?> eq, EquipmentFlag flag) {
-        return (eq.getLinkedBy() != null) && (eq.getLinkedBy().getType() instanceof MiscType)
-                && eq.getLinkedBy().getType().hasFlag(flag);
+        return (eq.getLinkedBy() != null) &&
+                     (eq.getLinkedBy().getType() instanceof MiscType) &&
+                     eq.getLinkedBy().getType().hasFlag(flag);
     }
 
     @Override
@@ -594,13 +597,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
         StandardInventoryEntry that = (StandardInventoryEntry) o;
         return isRear == that.isRear &&
-                isTurret == that.isTurret &&
-                isSquadSupport == that.isSquadSupport &&
-                name.equals(that.name) &&
-                location.equals(that.location) &&
-                hasInsulator == that.hasInsulator &&
-                hasPulseModule == that.hasPulseModule &&
-                hasCapacitor == that.hasCapacitor;
+                     isTurret == that.isTurret &&
+                     isSquadSupport == that.isSquadSupport &&
+                     name.equals(that.name) &&
+                     location.equals(that.location) &&
+                     hasInsulator == that.hasInsulator &&
+                     hasPulseModule == that.hasPulseModule &&
+                     hasCapacitor == that.hasCapacitor;
     }
 
     @Override

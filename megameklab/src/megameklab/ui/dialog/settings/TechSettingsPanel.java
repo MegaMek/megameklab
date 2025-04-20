@@ -1,34 +1,46 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog.settings;
+
+import java.awt.FlowLayout;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import javax.swing.border.EmptyBorder;
 
 import megamek.common.ITechnology;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  * A panel allowing to change MML's Tech Level preferences
@@ -46,8 +58,7 @@ public class TechSettingsPanel extends JPanel {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
         chkTechProgression.addActionListener(e -> {
             chkTechUseYear.setEnabled(chkTechProgression.isSelected());
-            txtTechYear.setEnabled(chkTechProgression.isSelected()
-                    && chkTechUseYear.isSelected());
+            txtTechYear.setEnabled(chkTechProgression.isSelected() && chkTechUseYear.isSelected());
         });
         chkTechProgression.setText(resourceMap.getString("ConfigurationDialog.chkTechProgression.text"));
         chkTechProgression.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTechProgression.tooltip"));
@@ -82,7 +93,8 @@ public class TechSettingsPanel extends JPanel {
         chkShowExtinct.setSelected(CConfig.getBooleanParam(CConfig.TECH_EXTINCT));
 
         chkUnofficialIgnoreYear.setText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.text"));
-        chkUnofficialIgnoreYear.setToolTipText(resourceMap.getString("ConfigurationDialog.chkUnofficialIgnoreYear.tooltip"));
+        chkUnofficialIgnoreYear.setToolTipText(resourceMap.getString(
+              "ConfigurationDialog.chkUnofficialIgnoreYear.tooltip"));
         chkUnofficialIgnoreYear.setSelected(CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR));
 
         JPanel gridPanel = new JPanel(new SpringLayout());

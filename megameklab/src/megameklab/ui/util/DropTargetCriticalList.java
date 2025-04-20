@@ -1,17 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
@@ -19,12 +31,17 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
-
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.MekFileParser;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.Tank;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;
@@ -39,12 +56,11 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private static final MMLogger logger = MMLogger.create(DropTargetCriticalList.class);
 
-    private EntitySource eSource;
-    private RefreshListener refresh;
-    private boolean buildView;
+    private final EntitySource eSource;
+    private final RefreshListener refresh;
+    private final boolean buildView;
 
-    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh,
-            boolean buildView) {
+    public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh, boolean buildView) {
         super(vector);
         this.eSource = eSource;
         this.refresh = refresh;
@@ -67,16 +83,20 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     @Override
-    public void mouseClicked(MouseEvent evt) { }
+    public void mouseClicked(MouseEvent evt) {
+    }
 
     @Override
-    public void mouseEntered(MouseEvent evt) { }
+    public void mouseEntered(MouseEvent evt) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent evt) { }
+    public void mouseExited(MouseEvent evt) {
+    }
 
     @Override
-    public void mouseReleased(MouseEvent evt) { }
+    public void mouseReleased(MouseEvent evt) {
+    }
 
     @Override
     public void mousePressed(MouseEvent evt) {
@@ -133,7 +153,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
                         }
                     }
 
-                    if (!mount.isTurret() && getUnit().hasMisc(EquipmentTypeLookup.PINTLE_TURRET, mount.getLocation())) {
+                    if (!mount.isTurret() &&
+                              getUnit().hasMisc(EquipmentTypeLookup.PINTLE_TURRET, mount.getLocation())) {
                         if (!mount.isPintleTurretMounted()) {
                             info = new JMenuItem("Mount " + mount.getName() + " in Pintle Turret");
                             info.addActionListener(evt2 -> changePintleTurretMount(true));
@@ -213,9 +234,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changeSponsonTurretMount(boolean turret) {
-        getMounted().setSponsonTurretMounted(turret);
-        if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setSponsonTurretMounted(turret);
+        Mounted<?> mount = getMounted();
+
+        if (mount != null) {
+            mount.setSponsonTurretMounted(turret);
+            if (mount.getLinkedBy() != null) {
+                mount.getLinkedBy().setSponsonTurretMounted(turret);
+            }
         }
 
         if (refresh != null) {
@@ -224,9 +249,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changePintleTurretMount(boolean turret) {
-        getMounted().setPintleTurretMounted(turret);
-        if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setPintleTurretMounted(turret);
+        Mounted<?> mount = getMounted();
+
+        if (mount != null) {
+            mount.setPintleTurretMounted(turret);
+            if (mount.getLinkedBy() != null) {
+                mount.getLinkedBy().setPintleTurretMounted(turret);
+            }
         }
 
         if (refresh != null) {
@@ -236,7 +265,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private void changeOmniMounting(boolean pod) {
         Mounted<?> mount = getMounted();
-        if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
+        if (mount != null && (!pod || UnitUtil.canPodMount(getUnit(), mount))) {
             mount.setOmniPodMounted(pod);
         }
 
@@ -258,7 +287,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         UnitUtil.removeMounted(getUnit(), mounted);
         UnitUtil.compactCriticals(getUnit());
         try {
-            // Check linkings after you remove anything
+            // Check links after you remove anything
             MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
             // do nothing.
@@ -271,14 +300,16 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private boolean isRemovable(@Nullable Mounted<?> mounted) {
-        return (mounted != null) && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
-            && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET)
-            && !((mounted instanceof MiscMounted) && mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION));
+        return (mounted != null) &&
+                     !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType()) &&
+                     !mounted.is(EquipmentTypeLookup.PINTLE_TURRET) &&
+                     !((mounted instanceof MiscMounted) && mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION));
     }
 
     private boolean isDeletable(@Nullable Mounted<?> mounted) {
-        return (mounted != null) && !UnitUtil.isArmorOrStructure(mounted.getType())
-                   && !mounted.is(EquipmentTypeLookup.OMNI_CHASSIS_MOD);
+        return (mounted != null) &&
+                     !UnitUtil.isArmorOrStructure(mounted.getType()) &&
+                     !mounted.is(EquipmentTypeLookup.OMNI_CHASSIS_MOD);
     }
 
     private Entity getUnit() {

@@ -1,19 +1,41 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMekTeam
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.supportVehicle;
+
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -22,25 +44,18 @@ import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
 
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * Panel for selecting support vehicle chassis modifcations
+ * Panel for selecting support vehicle chassis modifications
  */
 
 public class SVChassisModView extends BuildView implements ItemListener {
 
     private final List<SVBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(SVBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(SVBuildListener l) {
         listeners.remove(l);
     }
@@ -86,8 +101,7 @@ public class SVChassisModView extends BuildView implements ItemListener {
     }
 
     /**
-     * Checks for compatibility with selected modifications and disables the checkbox for any that are
-     * not compatible.
+     * Checks for compatibility with selected modifications and disables the checkbox for any that are not compatible.
      */
     public void refresh() {
         // Build a list of all selected mods

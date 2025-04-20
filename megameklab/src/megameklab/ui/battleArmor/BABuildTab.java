@@ -1,23 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.battleArmor;
 
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -31,13 +42,11 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * A component that creates a table for building the criticals of a unit.  This
- * tab shows a table of the un-allocated equipment and displays criticals for
- * the whole <code>BattleArmor</code> squad.
+ * A component that creates a table for building the critical slots of a unit.  This tab shows a table of the
+ * unallocated equipment and displays critical slots for the whole <code>BattleArmor</code> squad.
  *
  * @author Taharqa
  * @author arlith
- *
  */
 public class BABuildTab extends ITab {
 
@@ -79,12 +88,11 @@ public class BABuildTab extends ITab {
     }
 
     /**
-     * Unlike other units, BattleArmor have multiple suits in the squad that
-     * have crits that can be assigned.  Different types of BattleArmor squads
-     * have different numbers of troops, so instead of one
+     * Unlike other units, BattleArmor have multiple suits in the squad that have crits that can be assigned.  Different
+     * types of BattleArmor squads have different numbers of troops, so instead of one
      * <code>CriticalView</code> we have several.  If the squad size changes,
-     * we will need to adjust the number of <code>CriticalView</code>s.  This
-     * method will create the proper number of <code>CriticalView</code>s.
+     * we will need to adjust the number of <code>CriticalView</code>s. This method will create the proper number of
+     * <code>CriticalView</code>s.
      */
     private void createCriticalViews() {
         critViews.clear();
@@ -113,14 +121,12 @@ public class BABuildTab extends ITab {
         BACriticalSuit crits = new BACriticalSuit(getBattleArmor());
         // Populate with equipment that is already installed
         for (Mounted<?> m : getBattleArmor().getEquipment()) {
-            if ((m.getLocation() == BattleArmor.LOC_SQUAD)
-                    && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE)) {
+            if ((m.getLocation() == BattleArmor.LOC_SQUAD) && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE)) {
                 crits.addMounted(m.getBaMountLoc(), m);
             }
         }
         for (Mounted<?> mount : buildView.getTableModel().getCrits()) {
-            for (int location = BattleArmor.MOUNT_LOC_BODY;
-                    location < BattleArmor.MOUNT_NUM_LOCS; location++) {
+            for (int location = BattleArmor.MOUNT_LOC_BODY; location < BattleArmor.MOUNT_NUM_LOCS; location++) {
                 if (!UnitUtil.isValidLocation(getBattleArmor(), mount.getType(), location)) {
                     continue;
                 }

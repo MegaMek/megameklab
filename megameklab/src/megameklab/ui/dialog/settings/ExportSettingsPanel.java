@@ -1,22 +1,50 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog.settings;
+
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SpringLayout;
+import javax.swing.border.EmptyBorder;
 
 import megamek.client.ui.baseComponents.MMComboBox;
 import megameklab.printing.MekChassisArrangement;
@@ -26,14 +54,6 @@ import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 /**
  * A panel allowing to change MML's export (record sheet and clipboard) preferences
@@ -55,8 +75,8 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkTacOpsHeat = new JCheckBox();
     private final JComboBox<String> cbRSScale = new JComboBox<>();
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
-    private final MMComboBox<MekChassisArrangement> mekChassis =
-            new MMComboBox<>("Mek Names", MekChassisArrangement.values());
+    private final MMComboBox<MekChassisArrangement> mekChassis = new MMComboBox<>("Mek Names",
+          MekChassisArrangement.values());
     private final JCheckBox chkRowShading = new JCheckBox();
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
@@ -107,7 +127,8 @@ class ExportSettingsPanel extends JPanel {
         chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
 
         chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
-        chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
+        chkAlternateArmorGrouping.setToolTipText(resourceMap.getString(
+              "ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
         chkAlternateArmorGrouping.setSelected(CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING));
 
         chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
@@ -233,7 +254,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
         recordSheetSettings.put(CConfig.RS_MEK_NAMES,
-                Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+              Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
@@ -257,7 +278,8 @@ class ExportSettingsPanel extends JPanel {
 
     DefaultListCellRenderer mekNameArrangementRenderer = new DefaultListCellRenderer() {
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+              boolean cellHasFocus) {
             return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
         }
     };

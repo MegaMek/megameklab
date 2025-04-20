@@ -1,26 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
@@ -39,8 +47,7 @@ import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 /**
- * Contains constants and utils for a unified crit cell display across unit
- * types.
+ * Contains constants and utils for a unified crit cell display across unit types.
  */
 public final class CritCellUtil {
 
@@ -55,45 +62,38 @@ public final class CritCellUtil {
 
     /**
      * @param title the title for this component
-     * @return a titled border using the given string as title placed centered atop
-     *         the
-     *         Component and using a {@link LocationBorder} as a border. To be used
-     *         for crit
-     *         location blocks, especially when they have additional information
-     *         ("Slots: 0/2")
-     *         above or below the crits to group them visually.
+     *
+     * @return a titled border using the given string as title placed centered atop the Component and using a
+     *       {@link LocationBorder} as a border. To be used for crit location blocks, especially when they have
+     *       additional information ("Slots: 0/2") above or below the crits to group them visually.
      */
     public static Border locationBorder(String title) {
-        return BorderFactory.createTitledBorder(
-                new LocationBorder(CRITCELL_BORDER_COLOR, 2f),
-                " " + title + " ",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION);
+        return BorderFactory.createTitledBorder(new LocationBorder(CRITCELL_BORDER_COLOR, 2f),
+              " " + title + " ",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION);
     }
 
     /**
      * @param title the title for this Component
-     * @return a titled but otherwise empty border using the given string as the
-     *         title placed
-     *         centered atop the Component.
+     *
+     * @return a titled but otherwise empty border using the given string as the title placed centered atop the
+     *       Component.
      */
     public static Border locationBorderNoLine(String title) {
-        return BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(),
-                " " + title + " ",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION);
+        return BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+              " " + title + " ",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION);
     }
 
     /**
-     * Applies crit cell formatting to the given JLabel cell, which is assumed to
-     * display
-     * the given mounted in the given entity at the given crit cell index.
-     * The JLabel cell should be a ListCellRenderer or TreeCellRenderer return
+     * Applies crit cell formatting to the given JLabel cell, which is assumed to display the given mounted in the given
+     * entity at the given crit cell index. The JLabel cell should be a ListCellRenderer or TreeCellRenderer return
      * value.
      */
-    public static void formatCell(JLabel cell, @Nullable Mounted<?> mounted, boolean useColor,
-            Entity entity, int index) {
+    public static void formatCell(JLabel cell, @Nullable Mounted<?> mounted, boolean useColor, Entity entity,
+          int index) {
         if (useColor) {
             if (mounted == null) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EMPTY));
@@ -135,19 +135,18 @@ public final class CritCellUtil {
                     cell.setFont(cell.getFont().deriveFont(Font.ITALIC));
                 }
             }
-            if (mounted instanceof MiscMounted
-                && (mounted.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) || mounted.getType().hasFlag(MiscType.F_AP_MOUNT))
-                    && mounted.getLinked() != null) {
+            if (mounted instanceof MiscMounted &&
+                      (mounted.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) ||
+                             mounted.getType().hasFlag(MiscType.F_AP_MOUNT)) &&
+                      mounted.getLinked() != null) {
                 name += " (attached " + mounted.getLinked().getName() + ")";
             }
 
             cell.setText(" " + name);
 
             String toolTipText = EquipmentToolTip.getToolTipInfo(entity, mounted);
-            // distinguish tooltips of equal adjacent one-slot equipment (e.g. ammo) to make
-            // the tip renew itself
-            // when crossing from one such slot to the next (avoids them feeling like a
-            // single equipment)
+            // distinguish tooltips of equal adjacent one-slot equipment (e.g., ammo) to make the tip renew itself
+            // when crossing from one such slot to the next (avoids them feeling like single equipment)
             if (mounted.getCriticals() == 1) {
                 toolTipText += " ".repeat(index);
             }

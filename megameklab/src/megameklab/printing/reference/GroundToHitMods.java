@@ -1,19 +1,31 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing.reference;
-
-import org.apache.batik.util.SVGConstants;
 
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -26,6 +38,7 @@ import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * To-Hit modifiers for all Meks and vehicles
@@ -34,7 +47,7 @@ public class GroundToHitMods extends ReferenceTable {
     private final Entity entity;
 
     /** The beginning of each range of hex counts for target movement mods */
-    private static final int[] TARGET_MOVEMENT_RANGES = {0, 3, 5, 7, 10, 18, 25};
+    private static final int[] TARGET_MOVEMENT_RANGES = { 0, 3, 5, 7, 10, 18, 25 };
 
     public GroundToHitMods(PrintEntity sheet) {
         this(sheet, sheet.getEntity());
@@ -63,7 +76,7 @@ public class GroundToHitMods extends ReferenceTable {
         addRow("", bundle.getString("walked"), "+1");
         addRow("", bundle.getString("ran"), "+2");
         if (entity.getOriginalJumpMP() > 0 ||
-              ((entity instanceof Mek mek) && (mek.getOriginalMechanicalJumpBoosterMP() > 0))) {
+                  ((entity instanceof Mek mek) && (mek.getOriginalMechanicalJumpBoosterMP() > 0))) {
             addRow("", bundle.getString("jumped"), "+3");
         }
         if (!(entity instanceof QuadMek)) {
@@ -101,8 +114,7 @@ public class GroundToHitMods extends ReferenceTable {
         if (CConfig.scaleUnits().equals(RSScale.HEXES)) {
             hexName = "hex";
         } else {
-            hexName = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR)
-                    + CConfig.scaleUnits().abbreviation;
+            hexName = CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation;
         }
         addRow("", bundle.getString("lightWoods"), "+1/" + hexName);
         addRow("", bundle.getString("heavyWoods"), "+2/" + hexName);
@@ -124,12 +136,16 @@ public class GroundToHitMods extends ReferenceTable {
         final String units = CConfig.scaleUnits().shortName();
         for (int i = 0; i < TARGET_MOVEMENT_RANGES.length; i++) {
             if (i < TARGET_MOVEMENT_RANGES.length - 1) {
-                addRow("", String.format(bundle.getString("movedRange"),
-                        TARGET_MOVEMENT_RANGES[i] * scale, TARGET_MOVEMENT_RANGES[i + 1] * scale - 1,
-                        units), String.format("%+d", i));
+                addRow("",
+                      String.format(bundle.getString("movedRange"),
+                            TARGET_MOVEMENT_RANGES[i] * scale,
+                            TARGET_MOVEMENT_RANGES[i + 1] * scale - 1,
+                            units),
+                      String.format("%+d", i));
             } else {
-                addRow("", String.format(bundle.getString("movedFinal"),
-                        TARGET_MOVEMENT_RANGES[i] * scale, units), String.format("%+d", i));
+                addRow("",
+                      String.format(bundle.getString("movedFinal"), TARGET_MOVEMENT_RANGES[i] * scale, units),
+                      String.format("%+d", i));
             }
         }
         addRow("", bundle.getString("jumped"), "+1");

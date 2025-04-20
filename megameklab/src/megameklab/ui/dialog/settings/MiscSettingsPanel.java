@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog.settings;
 
@@ -23,7 +32,10 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -40,8 +52,6 @@ import megameklab.ui.MulDndBehaviour;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
 
-import java.util.*;
-
 /**
  * A panel allowing to change MML's general preferences
  */
@@ -56,7 +66,8 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
-    private final MMComboBox<MulDndBehaviour> cbMulOpenBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour", MulDndBehaviour.values());
+    private final MMComboBox<MulDndBehaviour> cbMulOpenBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour",
+          MulDndBehaviour.values());
 
     MiscSettingsPanel(JFrame parent) {
         startUpMMComboBox.setRenderer(miscComboBoxRenderer);
@@ -73,7 +84,9 @@ public class MiscSettingsPanel extends JPanel {
 
         cbMulOpenBehaviour.setRenderer(miscComboBoxRenderer);
         cbMulOpenBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
-        cbMulOpenBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR) ? MulDndBehaviour.EXPORT : MulDndBehaviour.PRINT);
+        cbMulOpenBehaviour.setSelectedItem(CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR) ?
+                                                 MulDndBehaviour.EXPORT :
+                                                 MulDndBehaviour.PRINT);
         JLabel mulOpenLabel = new JLabel(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.text"));
         mulOpenLabel.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
 
@@ -95,8 +108,7 @@ public class MiscSettingsPanel extends JPanel {
             URL helpFile = new File(MMConstants.USER_DIR_README_FILE).toURI().toURL();
             userDirHelp.addActionListener(e -> new HelpDialog(helpTitle, helpFile, parent).setVisible(true));
         } catch (MalformedURLException e) {
-            logger.error("Could not find the user data directory readme file at "
-                    + MMConstants.USER_DIR_README_FILE);
+            logger.error("Could not find the user data directory readme file at {}", MMConstants.USER_DIR_README_FILE);
         }
         JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         userDirLine.add(userDirLabel);
@@ -108,7 +120,8 @@ public class MiscSettingsPanel extends JPanel {
         userDirLine.add(userDirHelp);
 
         chkApplicationExitPrompt.setText(resources.getString("ConfigurationDialog.chkApplicationExitPrompt.text"));
-        chkApplicationExitPrompt.setToolTipText(resources.getString("ConfigurationDialog.chkApplicationExitPrompt.tooltip"));
+        chkApplicationExitPrompt.setToolTipText(resources.getString(
+              "ConfigurationDialog.chkApplicationExitPrompt.tooltip"));
         chkApplicationExitPrompt.setSelected(CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT));
 
         chkSummaryFormatTRO.setText(resourceMap.getString("ConfigurationDialog.chkSummaryFormatTRO.text"));
@@ -158,12 +171,13 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.MISC_APPLICATION_EXIT_PROMPT, String.valueOf(chkApplicationExitPrompt.isSelected()));
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
-        MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null
-                ? MMLStartUp.SPLASH_SCREEN
-                : startUpMMComboBox.getSelectedItem();
+        MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null ?
+                                   MMLStartUp.SPLASH_SCREEN :
+                                   startUpMMComboBox.getSelectedItem();
         miscSettings.put(CConfig.MISC_STARTUP, startUp.name());
-        miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR, String.valueOf(cbMulOpenBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
-        // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore not added here
+        miscSettings.put(CConfig.MISC_MUL_OPEN_BEHAVIOUR,
+              String.valueOf(cbMulOpenBehaviour.getSelectedItem() == MulDndBehaviour.EXPORT));
+        // User directory and gui scale are stored in MM's client settings, not in CConfig, therefore, not added here
         return miscSettings;
     }
 
@@ -178,7 +192,7 @@ public class MiscSettingsPanel extends JPanel {
     DefaultListCellRenderer miscComboBoxRenderer = new DefaultListCellRenderer() {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                boolean cellHasFocus) {
+              boolean cellHasFocus) {
             return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
         }
     };

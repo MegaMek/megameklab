@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -19,7 +33,6 @@ import megameklab.util.CConfig;
  * A set of options for controlling what is displayed on the record sheet
  *
  * @author neoancient
- *
  */
 public class RecordSheetOptions {
 
@@ -91,19 +104,27 @@ public class RecordSheetOptions {
     public boolean showQuirks() {
         return quirks;
     }
+
     public void setQuirks(boolean quirks) {
         this.quirks = quirks;
     }
+
     public boolean showPilotData() {
         return pilotData;
     }
+
     public boolean showRole() {
         return role;
     }
+
     public boolean showHeatProfile() {
         return heatProfile;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setPilotData(boolean pilotData) {
         this.pilotData = pilotData;
     }
@@ -152,6 +173,10 @@ public class RecordSheetOptions {
         this.color = color;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setEraIcon(boolean eraIcon) {
         this.eraIcon = eraIcon;
     }
@@ -160,14 +185,26 @@ public class RecordSheetOptions {
         this.role = role;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setHeatProfile(boolean heatProfile) {
         this.heatProfile = heatProfile;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setTacOpsHeat(boolean tacOpsHeat) {
         this.tacOpsHeat = tacOpsHeat;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setEraBasedProgression(boolean eraBased) {
         eraBasedProgression = eraBased;
     }
@@ -176,22 +213,42 @@ public class RecordSheetOptions {
         this.referenceCharts = charts;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setCondensedReferenceCharts(boolean charts) {
         this.condensedReferenceCharts = charts;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setRowShading(boolean rowShading) {
         this.rowShading = rowShading;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setAlternateArmorGrouping(boolean alternateArmorGrouping) {
         this.alternateArmorGrouping = alternateArmorGrouping;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setFrameless(boolean frameless) {
         this.frameless = frameless;
     }
 
+    /**
+     * @deprecated no indicated uses
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setBoldType(boolean boldType) {
         this.boldType = boldType;
     }

@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -27,10 +36,6 @@ import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import megamek.common.BattleArmor;
 import megamek.common.Dropship;
 import megamek.common.Entity;
@@ -38,6 +43,9 @@ import megamek.common.Infantry;
 import megamek.common.ProtoMek;
 import megamek.common.SupportTank;
 import megameklab.testing.util.InitializeTypes;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(value = InitializeTypes.class)
 class PrintSmallUnitSheetTest {
@@ -63,8 +71,10 @@ class PrintSmallUnitSheetTest {
 
     @Test
     void fillsSheetBA() {
-        var entities = new ArrayList<>(
-                List.of(new BattleArmor(), new BattleArmor(), new BattleArmor(), new BattleArmor()));
+        var entities = new ArrayList<>(List.of(new BattleArmor(),
+              new BattleArmor(),
+              new BattleArmor(),
+              new BattleArmor()));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
         entities.add(new BattleArmor());
@@ -96,16 +106,15 @@ class PrintSmallUnitSheetTest {
     void fillsSheetIllegal() {
         var heterogeneousEntities = List.of(new Infantry(), new BattleArmor());
         assertThrows(IllegalArgumentException.class,
-                () -> PrintSmallUnitSheet.fillsSheet(heterogeneousEntities, noTables));
+              () -> PrintSmallUnitSheet.fillsSheet(heterogeneousEntities, noTables));
 
         var unsupportedEntities = List.of(new SupportTank());
         assertThrows(IllegalArgumentException.class,
-                () -> PrintSmallUnitSheet.fillsSheet(unsupportedEntities, noTables));
+              () -> PrintSmallUnitSheet.fillsSheet(unsupportedEntities, noTables));
     }
 
     /**
-     * Verify that we can process the image (basically, create the record sheet
-     * output) for an Aero with a null Engine object
+     * Verify that we can process the image (create the record sheet output) for an Aero with a null Engine object
      * without throwing an NPE.
      */
     @Test
@@ -114,7 +123,7 @@ class PrintSmallUnitSheetTest {
         PageFormat pf = new PageFormat();
         RecordSheetOptions rso = new RecordSheetOptions();
 
-        // Set up DS entity with required attributes
+        // Set up a DS entity with required attributes
         Dropship testDS = new Dropship();
         testDS.setChassis("Test Dropship");
         testDS.setModel("TDS-999");

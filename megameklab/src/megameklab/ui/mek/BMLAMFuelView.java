@@ -1,39 +1,59 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.mek;
 
-import megamek.common.*;
-import megameklab.ui.EntitySource;
-import megameklab.ui.listeners.MekBuildListener;
-import megameklab.ui.util.IView;
-import megameklab.util.UnitUtil;
+import static megamek.common.EquipmentTypeLookup.LAM_FUEL_TANK;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import static megamek.common.EquipmentTypeLookup.LAM_FUEL_TANK;
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.LandAirMek;
+import megamek.common.LocationFullException;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megameklab.ui.EntitySource;
+import megameklab.ui.listeners.MekBuildListener;
+import megameklab.ui.util.IView;
+import megameklab.util.UnitUtil;
 
 /**
  * This view block allows entering additional fuel tanks for LandAirMeks
@@ -84,11 +104,10 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     }
 
     /**
-     * Returns the current number of LAM Fuel Tanks on the Mek, including
-     * unallocated.
-     * Always returns 0 for non-LAM.
+     * Returns the current number of LAM Fuel Tanks on the Mek, including unallocated. Always returns 0 for non-LAM.
      *
      * @param mek The Mek unit
+     *
      * @return The Mek's current LAM Fuel Tank count
      */
     private int fuelTanks(Mek mek) {
@@ -96,8 +115,8 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     }
 
     private void updateFuelPointsLabel() {
-        totalFuelPointsLabel.setText(resourceMap.getString("BMLAMFuelView.totalFuelLabel.text")
-                + (80 * (1 + fuelTanks(getMek()))));
+        totalFuelPointsLabel.setText(resourceMap.getString("BMLAMFuelView.totalFuelLabel.text") +
+                                           (80 * (1 + fuelTanks(getMek()))));
     }
 
     @Override
@@ -117,10 +136,11 @@ public class BMLAMFuelView extends IView implements ChangeListener {
 
     private void deleteTanks(int number) {
         // Remove unallocated fuel tanks first
-        List<Mounted<?>> fuelTanks = getMek().getMisc().stream()
-                .filter(mounted -> mounted.getType().equals(FUEL_TANK))
-                .filter(mounted -> mounted.getLocation() == Entity.LOC_NONE)
-                .collect(Collectors.toList());
+        List<Mounted<?>> fuelTanks = getMek().getMisc()
+                                           .stream()
+                                           .filter(mounted -> mounted.getType().equals(FUEL_TANK))
+                                           .filter(mounted -> mounted.getLocation() == Entity.LOC_NONE)
+                                           .collect(Collectors.toList());
         for (Mounted<?> fuelTank : fuelTanks) {
             if (number > 0) {
                 UnitUtil.removeMounted(getMek(), fuelTank);
@@ -130,9 +150,10 @@ public class BMLAMFuelView extends IView implements ChangeListener {
             }
         }
         // Must remove more, so take allocated fuel tanks
-        fuelTanks = getMek().getMisc().stream()
-                .filter(mounted -> mounted.getType().equals(FUEL_TANK))
-                .collect(Collectors.toList());
+        fuelTanks = getMek().getMisc()
+                          .stream()
+                          .filter(mounted -> mounted.getType().equals(FUEL_TANK))
+                          .collect(Collectors.toList());
         for (Mounted<?> fuelTank : fuelTanks) {
             if (number > 0) {
                 UnitUtil.removeMounted(getMek(), fuelTank);

@@ -1,40 +1,57 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
-import megamek.common.EntityMovementMode;
-import megamek.common.Tank;
-import megamek.common.VTOL;
-import megamek.common.annotations.Nullable;
-import megameklab.printing.reference.*;
-import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import megamek.common.EntityMovementMode;
+import megamek.common.Tank;
+import megamek.common.VTOL;
+import megamek.common.annotations.Nullable;
+import megameklab.printing.reference.ClusterHitsTable;
+import megameklab.printing.reference.DrivingSkillRollMods;
+import megameklab.printing.reference.GroundMovementRecord;
+import megameklab.printing.reference.GroundToHitMods;
+import megameklab.printing.reference.MovementCost;
+import megameklab.printing.reference.NotesTable;
+import megameklab.printing.reference.ReferenceTable;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
- * Creates a single-page record sheet for two vehicles. If only one vehicle is provided,
- * the bottom half of the sheet contains tables.
+ * Creates a single-page record sheet for two vehicles. If only one vehicle is provided, the bottom half of the sheet
+ * contains tables.
  */
 public class PrintCompositeTankSheet extends PrintRecordSheet {
 
@@ -44,11 +61,10 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     /**
      * Create a record sheet for two vehicles, or one vehicle and tables.
      *
-     * @param tank1      The first vehicle
-     * @param tank2      The second vehicle; if {@code null}, fills the bottom half of the page
-     *                   with tables.
-     * @param startPage  The index of this page in the print job
-     * @param options    Options for printing
+     * @param tank1     The first vehicle
+     * @param tank2     The second vehicle; if {@code null}, fills the bottom half of the page with tables.
+     * @param startPage The index of this page in the print job
+     * @param options   Options for printing
      */
     public PrintCompositeTankSheet(Tank tank1, @Nullable Tank tank2, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -57,13 +73,11 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     }
 
     /**
-     * Create a record sheet for two vehicles, or one vehicle and tables, with default
-     * options
+     * Create a record sheet for two vehicles, or one vehicle and tables, with default options
      *
-     * @param tank1      The first vehicle
-     * @param tank2      The second vehicle; if {@code null}, fills the bottom half of the page
-     *                   with tables.
-     * @param startPage  The index of this page in the print job
+     * @param tank1     The first vehicle
+     * @param tank2     The second vehicle; if {@code null}, fills the bottom half of the page with tables.
+     * @param startPage The index of this page in the print job
      */
     public PrintCompositeTankSheet(Tank tank1, @Nullable Tank tank2, int startPage) {
         this(tank1, tank2, startPage, new RecordSheetOptions());
@@ -100,9 +114,14 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         PrintRecordSheet sheet = new PrintTank(tank1, getFirstPage(), subOptions);
         if (sheet.createDocument(startPage, pageFormat, false)) {
             g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE, ratio,
-                            ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+            g.setAttributeNS(null,
+                  SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                  String.format("%s(%f 0 0 %f %f %f)",
+                        SVGConstants.SVG_MATRIX_VALUE,
+                        ratio,
+                        ratio,
+                        pageFormat.getImageableX(),
+                        pageFormat.getImageableY()));
             sheet.hideElement(FOOTER);
             g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
             getSVGDocument().getDocumentElement().appendChild(g);
@@ -119,10 +138,14 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
         if (sheet.createDocument(startPage, pageFormat, false)) {
             g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-            g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE, ratio,
-                            ratio, pageFormat.getImageableX(),
-                            pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.5 * ratio));
+            g.setAttributeNS(null,
+                  SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+                  String.format("%s(%f 0 0 %f %f %f)",
+                        SVGConstants.SVG_MATRIX_VALUE,
+                        ratio,
+                        ratio,
+                        pageFormat.getImageableX(),
+                        pageFormat.getImageableY() + pageFormat.getImageableHeight() * 0.5 * ratio));
             g.appendChild(getSVGDocument().importNode(sheet.getSVGDocument().getDocumentElement(), true));
             getSVGDocument().getDocumentElement().appendChild(g);
         }
@@ -135,13 +158,13 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
-        // Not used by composite sheet
+        // Not used by a composite sheet
         return "";
     }
 
     @Override
     protected String getRecordSheetTitle() {
-        // Not used by composite sheet
+        // Not used by a composite sheet
         return "";
     }
 
@@ -199,8 +222,8 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         List<ReferenceTable> list = new ArrayList<>();
         list.add(new GroundToHitMods(this, tank1));
         list.add(new MovementCost(this, tank1));
-        if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL)
-                && !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
+        if (!tank1.getMovementMode().equals(EntityMovementMode.RAIL) &&
+                  !tank1.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
             list.add(new DrivingSkillRollMods(this, tank1));
         } else {
             list.add(new NotesTable(this, 12));
@@ -216,8 +239,10 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
         GroundMovementRecord table = new GroundMovementRecord(this, false, true);
-        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        getSVGDocument().getDocumentElement()
+              .appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO,
+                    pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

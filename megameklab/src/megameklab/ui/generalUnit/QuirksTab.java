@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -37,12 +46,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 
 import megamek.client.ui.swing.DialogOptionComponent;
 import megamek.client.ui.swing.DialogOptionListener;
@@ -65,14 +72,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
-    private static class GroupInfo {
-        final String title;
-        final List<DialogOptionComponent> quirks;
-
-        GroupInfo(String title, List<DialogOptionComponent> quirks) {
-            this.title = title;
-            this.quirks = quirks;
-        }
+    private record GroupInfo(String title, List<DialogOptionComponent> quirks) {
     }
 
     public QuirksTab(EntitySource eSource) {
@@ -92,7 +92,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Refreshes the quirks tab
+     * Refreshes the quirk tab
      */
     public void refresh() {
         refreshQuirks();
@@ -142,9 +142,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Collects general quirks
      */
-    private void collectGeneralQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponent> quirksList) {
-        for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements();) {
+    private void collectGeneralQuirksInfo(List<GroupInfo> groupsToDisplay, List<DialogOptionComponent> quirksList) {
+        for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
             List<DialogOptionComponent> quirks = collecQuirksForOptionGroup(group, quirksList);
             if (!quirks.isEmpty()) {
@@ -156,8 +155,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Collect weapon quirks
      */
-    private void collectWeaponQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponent> quirksList) {
+    private void collectWeaponQuirksInfo(List<GroupInfo> groupsToDisplay, List<DialogOptionComponent> quirksList) {
         List<Mounted<?>> equipmentList = new ArrayList<>(getEntity().getWeaponList());
         for (Mounted<?> miscItem : getEntity().getMisc()) {
             if (miscItem.getType().hasFlag(MiscType.F_CLUB)) {
@@ -177,12 +175,13 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects and optionally sorts quirks for a general group
      */
     private List<DialogOptionComponent> collecQuirksForOptionGroup(IOptionGroup group,
-            List<DialogOptionComponent> quirksList) {
+          List<DialogOptionComponent> quirksList) {
         List<DialogOptionComponent> quirksInGroup = new ArrayList<>();
-        for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
+        for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
             IOption option = j.nextElement();
-            if (null == option || Quirks.isQuirkDisallowed(option, getEntity()))
+            if (null == option || Quirks.isQuirkDisallowed(option, getEntity())) {
                 continue;
+            }
             addQuirkInfo(option, quirksInGroup, quirksList);
         }
         if (SORT_QUIRKS_ALPHABETICALLY && !quirksInGroup.isEmpty()) {
@@ -195,18 +194,20 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects and optionally sorts quirks for a specific weapon
      */
     private List<DialogOptionComponent> collectQuirksForWeapon(Mounted<?> m,
-            List<DialogOptionComponent> allQuirksList) {
+          List<DialogOptionComponent> allQuirksList) {
         WeaponQuirks wq = m.getQuirks();
-        if (wq == null)
+        if (wq == null) {
             return Collections.emptyList();
+        }
 
         List<DialogOptionComponent> weaponComps = new ArrayList<>();
-        for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements();) {
+        for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
-            for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
+            for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                 IOption option = j.nextElement();
-                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType()))
+                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType())) {
                     continue;
+                }
                 addQuirkInfo(option, weaponComps, allQuirksList);
             }
         }
@@ -238,7 +239,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Creates a quirk entry, stores its info, and adds it to lists.
      */
     private void addQuirkInfo(IOption option, List<DialogOptionComponent> groupList,
-            List<DialogOptionComponent> allList) {
+          List<DialogOptionComponent> allList) {
         DialogOptionComponent comp = new DialogOptionComponent(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
         updateQuirkFontStyle(comp, option.booleanValue());
@@ -254,10 +255,11 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         for (DialogOptionComponent comp : allQuirks) {
             Dimension originalSize = originalPreferredSizes.get(comp);
             globalMaxItemWidth = Math.max(globalMaxItemWidth,
-                    (originalSize != null) ? originalSize.width : comp.getPreferredSize().width);
+                  (originalSize != null) ? originalSize.width : comp.getPreferredSize().width);
         }
-        if (globalMaxItemWidth <= 0)
+        if (globalMaxItemWidth <= 0) {
             globalMaxItemWidth = 150; // Fallback width
+        }
     }
 
     /**
@@ -292,14 +294,14 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Calculates the number of columns based on available width and max item width.
      */
     private int calculateNumberOfColumns(int containerWidth, int maxItemWidth) {
-        if (containerWidth <= 0 || maxItemWidth <= 0)
+        if (containerWidth <= 0 || maxItemWidth <= 0) {
             return 1;
+        }
         return Math.max(1, containerWidth / (maxItemWidth + 8));
     }
 
     /**
-     * Checks if relayout is needed based on width changes (number of columns
-     * drawable) and triggers it.
+     * Checks if relayout is needed based on width changes (number of columns drawable) and triggers it.
      */
     private void triggerRelayoutCheck() {
         if (!isShowing() || groupLayoutMap.isEmpty() || globalMaxItemWidth <= 0) {
@@ -360,8 +362,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Arranges quirks within a single group panel and makes them fixed-width
-     * from globalMaxItemWidth
+     * Arranges quirks within a single group panel and makes them fixed-width from globalMaxItemWidth
      */
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponent> quirks, int numCols) {
         groupPanel.removeAll();
@@ -373,14 +374,15 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
         int totalItems = quirks.size();
         int itemsPerCol = (int) Math.ceil((double) totalItems / numCols);
-        if (itemsPerCol <= 0)
+        if (itemsPerCol <= 0) {
             itemsPerCol = 1;
+        }
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = new Insets(1, 4, 1, 4);
         gbc.weighty = 0;
-        gbc.weightx = 1; // We auto-space them horizontally (if we put 0 they stay aligned to the left)
+        gbc.weightx = 1; // We auto-space them horizontally (if we put 0, they stay aligned to the left)
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Add quirks to the group panel in a grid layout
@@ -394,7 +396,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             }
 
             DialogOptionComponent comp = quirks.get(i);
-            // Set preferred width so we match the width of the widest item
+            // Set the preferred width so we match the width of the widest item
             Dimension originalSize = originalPreferredSizes.get(comp);
             int currentHeight = (originalSize != null) ? originalSize.height : comp.getPreferredSize().height;
             comp.setPreferredSize(new Dimension(globalMaxItemWidth, currentHeight));

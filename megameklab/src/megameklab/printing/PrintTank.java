@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -24,21 +38,19 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import megamek.common.*;
-import megameklab.util.CConfig;
-import megameklab.util.RSScale;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
+import megamek.common.equipment.MiscMounted;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;
 import megameklab.printing.reference.GroundToHitMods;
 import megameklab.printing.reference.MovementCost;
 import megameklab.printing.reference.ReferenceTable;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
- * Configures record sheet for ground combat and support vehicles. When two units are printed
- * on a single page, this is responsible for one half of the page. Vehicles which are printed
- * two per page should not use this class directly, but instead use {@link PrintCompositeTankSheet}
+ * Configures record sheet for ground combat and support vehicles. When two units are printed on a single page, this is
+ * responsible for one half of the page. Vehicles which are printed two per page should not use this class directly, but
+ * instead use {@link PrintCompositeTankSheet}
  */
 public class PrintTank extends PrintEntity {
 
@@ -50,9 +62,9 @@ public class PrintTank extends PrintEntity {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param tank The tank to print
+     * @param tank      The tank to print
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintTank(Tank tank, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -139,8 +151,7 @@ public class PrintTank extends PrintEntity {
     protected void writeTextFields() {
         super.writeTextFields();
         setTextField(MOVEMENT_TYPE, tank.getMovementModeAsString());
-        setTextField(ENGINE_TYPE, tank.getEngine().getShortEngineName()
-                .replaceAll("\\[.*]", "").trim());
+        setTextField(ENGINE_TYPE, tank.getEngine().getShortEngineName().replaceAll("\\[.*]", "").trim());
         if (tank.getOriginalJumpMP() > 0) {
             setTextField(MP_JUMP, formatJump());
         } else {
@@ -168,23 +179,13 @@ public class PrintTank extends PrintEntity {
         if (tank.isSuperHeavy() && !(tank instanceof VTOL)) {
             return false;
         }
-        if (tank.isNaval() && !tank.hasNoDualTurret()) {
-            return false;
-        }
-        return true;
+        return !tank.isNaval() || tank.hasNoDualTurret();
     }
 
     @Override
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
-        List<String> chassisMods = tank.getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
-                .map(m -> m.getType().getShortName())
-                .collect(Collectors.toList());
-        if (!chassisMods.isEmpty()) {
-            sj.add(String.join(", ", chassisMods)
-                    + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
-        }
+        getChassisMods(sj, tank.getMisc());
         if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
             sj.add("Advanced Fire Control");
         } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
@@ -197,19 +198,28 @@ public class PrintTank extends PrintEntity {
                 transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
             } else if (t instanceof StandardSeatCargoBay) {
                 seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
-            // SVs have separate Bay handling similar to Small Craft, with doors. CVs just have bulk cargo space.
+                // SVs have separate Bay handling similar to Small Craft, with doors. CVs just have bulk cargo space.
             } else if (t instanceof Bay && !(tank instanceof SupportTank)) {
                 transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
             }
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {
-            sj.add(e.getValue() + " " + ((e.getValue() == 1) ?
-                    e.getKey().replace("Seats", "Seat") : e.getKey()));
+            sj.add(e.getValue() + " " + ((e.getValue() == 1) ? e.getKey().replace("Seats", "Seat") : e.getKey()));
         }
         for (Map.Entry<String, Double> e : transport.entrySet()) {
             sj.add(e.getKey() + " (" + formatWeight(e.getValue()) + ")");
         }
         return sj.toString();
+    }
+
+    static void getChassisMods(StringJoiner sj, List<MiscMounted> misc) {
+        List<String> chassisMods = misc.stream()
+                                         .filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+                                         .map(m -> m.getType().getShortName())
+                                         .collect(Collectors.toList());
+        if (!chassisMods.isEmpty()) {
+            sj.add(String.join(", ", chassisMods) + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
+        }
     }
 
     @Override
@@ -228,10 +238,12 @@ public class PrintTank extends PrintEntity {
                     return;
                 }
                 Rectangle2D bindingBox = getRectBBox((SVGRectElement) rect);
-                placeReferenceCharts(
-                        List.of(table),
-                        rect.getParentNode(), bindingBox.getX() - 3.0, bindingBox.getY() - 6.0,
-                        bindingBox.getWidth() + 6.0, bindingBox.getHeight() + 12.0);
+                placeReferenceCharts(List.of(table),
+                      rect.getParentNode(),
+                      bindingBox.getX() - 3.0,
+                      bindingBox.getY() - 6.0,
+                      bindingBox.getWidth() + 6.0,
+                      bindingBox.getHeight() + 12.0);
                 hideElement(getSVGDocument().getElementById(NOTES));
             }
         }
@@ -258,8 +270,10 @@ public class PrintTank extends PrintEntity {
     protected void addReferenceCharts(PageFormat pageFormat) {
         super.addReferenceCharts(pageFormat);
         GroundMovementRecord table = new GroundMovementRecord(this, false, true);
-        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        getSVGDocument().getDocumentElement()
+              .appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO,
+                    pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 }

@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -22,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
@@ -39,16 +52,18 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
 
 /**
- * Displays a list of comboboxes with labels that displays the current armor type per location for
- * patchwork armor and allows it to be changed.
+ * Displays a list of ComboBoxes with labels that displays the current armor type per location for patchwork armor and
+ * allows it to be changed.
  *
  * @author Neoancient
  */
 public class PatchworkArmorView extends BuildView implements ActionListener {
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
@@ -70,10 +85,10 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         setLayout(new GridBagLayout());
 
-        setBorder(BorderFactory.createTitledBorder(
-                null, resourceMap.getString("ArmorAllocationView.panPatwork.title"),
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(null,
+              resourceMap.getString("ArmorAllocationView.panPatwork.title"),
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -99,22 +114,23 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
 
     public void setFromEntity(Entity en) {
         List<ArmorType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
-                (en instanceof Mek) && ((Mek)en).isIndustrial(),
-                en.isPrimitive(),
-                en.getMovementMode(), techManager);
+              (en instanceof Mek) && ((Mek) en).isIndustrial(),
+              en.isPrimitive(),
+              en.getMovementMode(),
+              techManager);
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {
-            if ((loc < en.locations())
-                    && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
-                    && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc >= Aero.LOC_WINGS)))) {
+            if ((loc < en.locations()) &&
+                      !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY))) &&
+                      !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc >= Aero.LOC_WINGS)))) {
                 labels.get(loc).setText(en.getLocationName(loc));
                 combos.get(loc).removeAllItems();
                 for (ArmorType armor : armors) {
                     // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
-                    if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
-                            && ((armor.getSVWeightPerPoint(en.getArmorTechRating()) == 0.0)
-                            || (!en.hasMisc(MiscType.F_ARMORED_CHASSIS)
-                                && armor.getSVWeightPerPoint(en.getArmorTechRating()) >= 0.050))) {
+                    if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR) &&
+                              ((armor.getSVWeightPerPoint(en.getArmorTechRating()) == 0.0) ||
+                                     (!en.hasMisc(MiscType.F_ARMORED_CHASSIS) &&
+                                            armor.getSVWeightPerPoint(en.getArmorTechRating()) >= 0.050))) {
                         continue;
                     }
                     combos.get(loc).addItem(armor);

@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
@@ -31,10 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MekFileParser;
@@ -45,6 +50,9 @@ import megameklab.testing.util.InitializeTypes;
 import megameklab.ui.EntitySource;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.generalUnit.BasicInfoView;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(value = InitializeTypes.class)
 class EquipmentTableModelTest {
@@ -59,15 +67,15 @@ class EquipmentTableModelTest {
         eSource = mock(ASMainUI.class);
     }
 
-    private Entity configureFromFilename(String fname) throws EntityLoadingException {
+    private Entity configureFromFilename(String fileName) throws EntityLoadingException {
         // Load as InputStream
-        // testresources and Classpath are not working together in this project somehow.
+        // test resources and Classpath are not working together in this project somehow.
         // This only works if the file is in the test resources root
-        InputStream is = getClass().getResourceAsStream(fname);
+        InputStream is = getClass().getResourceAsStream(fileName);
         assertNotNull(is);
 
         // Read InputStream into Entity
-        Entity testEntity = new MekFileParser(is, fname).getEntity();
+        Entity testEntity = new MekFileParser(is, fileName).getEntity();
         doReturn(testEntity).when(eSource).getEntity();
 
         // Set up EquipmentTypeModel instance
@@ -80,29 +88,28 @@ class EquipmentTableModelTest {
     @Test
     void testGetValueAtForAll() throws EntityLoadingException {
         // Test getValue() in EquipmentTableModel; the exercises conversions and lookups
-        ArrayList<String> testItems = new ArrayList<>(Arrays.asList(
-                "/Kirghiz C.blk", // ASF
-                "/Beast Infantry (Elephant)(Laser Rifle_Support PPC).blk", // Beast Inf
-                "/Black Wolf BA (ER Pulse) (Sqd5).blk", // BA, Clan
-                "/Fusilier BA (Sqd4).blk", // BA, IS
-                "/Raubvogel Aerobomber AB-18C.blk", // ConventionalFighter
-                "/Union 'Pocket Warship'.blk", // DropShip
-                "/Clan Field Artillery (Thumper).blk", // Field Gun/Artillery CI
-                "/Long Tom Cannon Turret (Quad).blk", // Generic Clan Turret
-                "/Explorer JumpShip (HPG).blk", // JumpShip
-                "/Jump Squad (LRM).blk", // Jump CI
-                "/Siren 4.blk", // ProtoMek
-                "/Aquarius Escort.blk", // Small Craft
-                "/Olympus Recharge Station (3072).blk", // SpaceStation
-                "/Harpagos.mtf", // QuadMek
-                "/Sleipnir APC.blk", // Vehicle
-                "/Peregrine Corvette.blk" // WarShip
+        ArrayList<String> testItems = new ArrayList<>(Arrays.asList("/Kirghiz C.blk", // ASF
+              "/Beast Infantry (Elephant)(Laser Rifle_Support PPC).blk", // Beast Inf
+              "/Black Wolf BA (ER Pulse) (Sqd5).blk", // BA, Clan
+              "/Fusilier BA (Sqd4).blk", // BA, IS
+              "/Raubvogel Aerobomber AB-18C.blk", // ConventionalFighter
+              "/Union 'Pocket Warship'.blk", // DropShip
+              "/Clan Field Artillery (Thumper).blk", // Field Gun/Artillery CI
+              "/Long Tom Cannon Turret (Quad).blk", // Generic Clan Turret
+              "/Explorer JumpShip (HPG).blk", // JumpShip
+              "/Jump Squad (LRM).blk", // Jump CI
+              "/Siren 4.blk", // ProtoMek
+              "/Aquarius Escort.blk", // Small Craft
+              "/Olympus Recharge Station (3072).blk", // SpaceStation
+              "/Harpagos.mtf", // QuadMek
+              "/Sleipnir APC.blk", // Vehicle
+              "/Peregrine Corvette.blk" // WarShip
         ));
-        Entity e;
+        Entity entity;
 
-        for (String fname : testItems) {
-            e = configureFromFilename(fname);
-            assertNotNull(e);
+        for (String fileName : testItems) {
+            entity = configureFromFilename(fileName);
+            assertNotNull(entity);
             for (int i = 0; i < etm.getColumnCount(); i++) {
                 etm.getValueAt(0, i);
             }
@@ -112,10 +119,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForAero() throws EntityLoadingException {
         // Test reading damage strings for ASF weapons
-        String fname = "/Kirghiz C.blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Kirghiz C.blk";
+        Entity te = configureFromFilename(fileName);
         assertTrue(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             if (dString.contains("/")) {
@@ -132,10 +139,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForCI() throws EntityLoadingException {
         // Test reading damage strings for CI weapons
-        String fname = "/Jump Squad (LRM).blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Jump Squad (LRM).blk";
+        Entity te = configureFromFilename(fileName);
         assertFalse(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double
@@ -148,10 +155,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForGEArty() throws EntityLoadingException {
         // Test reading damage strings for CI weapons
-        String fname = "/Long Tom Cannon Turret (Quad).blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Long Tom Cannon Turret (Quad).blk";
+        Entity te = configureFromFilename(fileName);
         assertFalse(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double

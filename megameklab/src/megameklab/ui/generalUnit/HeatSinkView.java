@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -27,8 +36,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -46,7 +57,7 @@ import megameklab.ui.util.CustomComboBox;
 import megameklab.util.UnitUtil;
 
 /**
- * Controls for selecting type and number of heat sinks for Meks and asfs.
+ * Controls for selecting type and number of heat sinks for Meks and Aerospace Fighters.
  *
  * @author Neoancient
  */
@@ -72,12 +83,11 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     public static final int TYPE_DOUBLE_AERO = 1;
     public static final int TYPE_PROTOTYPE_AERO = 2;
 
-    private static final String[] LOOKUP_NAMES = {
-            EquipmentTypeLookup.SINGLE_HS, EquipmentTypeLookup.IS_DOUBLE_HS,
-            EquipmentTypeLookup.CLAN_DOUBLE_HS, EquipmentTypeLookup.COMPACT_HS_1,
-            EquipmentTypeLookup.LASER_HS, EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE,
-            EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
-    };
+    private static final String[] LOOKUP_NAMES = { EquipmentTypeLookup.SINGLE_HS, EquipmentTypeLookup.IS_DOUBLE_HS,
+                                                   EquipmentTypeLookup.CLAN_DOUBLE_HS, EquipmentTypeLookup.COMPACT_HS_1,
+                                                   EquipmentTypeLookup.LASER_HS,
+                                                   EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE,
+                                                   EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER };
     private final List<EquipmentType> heatSinks;
     private String[] MekDisplayNames;
     private String[] aeroDisplayNames;
@@ -124,8 +134,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text",
-                "HeatSinkView.cbHSType.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text", "HeatSinkView.cbHSType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 4;
         cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip"));
@@ -136,8 +145,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text",
-                "HeatSinkView.spnCount.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text", "HeatSinkView.spnCount.tooltip"), gbc);
         gbc.gridx = 1;
         spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));
         add(spnCount, gbc);
@@ -214,11 +222,13 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         refresh();
         // If there are prototype doubles, we want to skip any singles and select that
         // as the base type.
-        Optional<MiscType> hs = mek.getMisc().stream().map(Mounted::getType)
-                .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
+        Optional<MiscType> hs = mek.getMisc()
+                                      .stream()
+                                      .map(Mounted::getType)
+                                      .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE))
+                                      .findAny();
         if (hs.isEmpty()) {
-            hs = mek.getMisc().stream().map(Mounted::getType)
-                    .filter(UnitUtil::isHeatSink).findAny();
+            hs = mek.getMisc().stream().map(Mounted::getType).filter(UnitUtil::isHeatSink).findAny();
         }
         if (hs.isPresent()) {
             if (hs.get().is(EquipmentTypeLookup.COMPACT_HS_2)) {
@@ -234,8 +244,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         countModel.setValue(totalSinks);
         countModel.setMinimum(mek.getEngine().getWeightFreeEngineHeatSinks());
         spnCount.addChangeListener(this);
-        boolean isCompact = cbHSType.getSelectedItem() != null
-                && ((Integer) cbHSType.getSelectedItem()) == TYPE_COMPACT;
+        boolean isCompact = cbHSType.getSelectedItem() != null &&
+                                  ((Integer) cbHSType.getSelectedItem()) == TYPE_COMPACT;
         int capacity = mek.getEngine().integralHeatSinkCapacity(isCompact);
         lblBaseCount.setVisible(mek.isOmni());
         spnBaseCount.setVisible(mek.isOmni());
@@ -265,10 +275,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         refresh();
         cbHSType.removeActionListener(this);
         // Roundabout way to make it show "Double (Prototype)"
-        if (aero.getHeatType() == Aero.HEAT_DOUBLE
-                && !techManager.isLegal(heatSinks.get(TYPE_DOUBLE_AERO))
-                && (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE))
-                        || techManager.isLegal(heatSinks.get(TYPE_FREEZER)))) {
+        if (aero.getHeatType() == Aero.HEAT_DOUBLE &&
+                  !techManager.isLegal(heatSinks.get(TYPE_DOUBLE_AERO)) &&
+                  (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE)) ||
+                         techManager.isLegal(heatSinks.get(TYPE_FREEZER)))) {
             setHeatSinkIndex(TYPE_PROTOTYPE_AERO);
         } else {
             setHeatSinkIndex(aero.getHeatType());
@@ -301,11 +311,11 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         cbHSType.removeAllItems();
         if (isAero) {
             cbHSType.addItem(TYPE_SINGLE);
-            if (techManager.isLegal(heatSinks.get(TYPE_DOUBLE_IS))
-                    || techManager.isLegal(heatSinks.get(TYPE_DOUBLE_CLAN))) {
+            if (techManager.isLegal(heatSinks.get(TYPE_DOUBLE_IS)) ||
+                      techManager.isLegal(heatSinks.get(TYPE_DOUBLE_CLAN))) {
                 cbHSType.addItem(TYPE_DOUBLE_AERO);
-            } else if (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE))
-                    || techManager.isLegal(heatSinks.get(TYPE_FREEZER))) {
+            } else if (techManager.isLegal(heatSinks.get(TYPE_PROTOTYPE)) ||
+                             techManager.isLegal(heatSinks.get(TYPE_FREEZER))) {
                 cbHSType.addItem(TYPE_PROTOTYPE_AERO);
             }
         } else if (isPrimitive) {
@@ -355,8 +365,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
 
     /**
-     * @return The number of heat sinks out of the total that are prototype double
-     *         heat sinks.
+     * @return The number of heat sinks out of the total that are prototype double heat sinks.
      */
     public int getPrototypeCount() {
         if (hasPrototypeDoubles) {

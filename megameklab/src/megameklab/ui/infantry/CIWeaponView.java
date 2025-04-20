@@ -1,19 +1,55 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.infantry;
 
-import megamek.common.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import megamek.common.EntityMovementMode;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.Infantry;
+import megamek.common.Mounted;
+import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
@@ -21,33 +57,26 @@ import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.util.InfantryUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
 /**
- * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable
- * controls are for changing the number of secondary weapons and field guns.
- * 
+ * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable controls are for changing
+ * the number of secondary weapons and field guns.
+ *
  * @author Neoancient
  */
 public class CIWeaponView extends BuildView implements ActionListener {
-    private List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
 
-    private final EnumSet<EntityMovementMode> FIELD_GUN_MODES = EnumSet.of(
-            EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.INF_MOTORIZED);
+    private final EnumSet<EntityMovementMode> FIELD_GUN_MODES = EnumSet.of(EntityMovementMode.TRACKED,
+          EntityMovementMode.WHEELED,
+          EntityMovementMode.INF_MOTORIZED);
 
     private final JTextField txtPrimary = new JTextField();
     private final JTextField txtSecondary = new JTextField();
@@ -56,7 +85,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
     private final JComboBox<Integer> cbNumGuns = new JComboBox<>();
     private final JCheckBox chkAntiMek = new JCheckBox();
 
-    private ITechManager techManager;
+    private final ITechManager techManager;
     private String fgMotiveMsg;
     private String noneMsg;
 
@@ -151,7 +180,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         } else {
             txtSecondary.setText(noneMsg);
         }
-        
+
         cbNumSecondary.removeActionListener(this);
         cbNumSecondary.removeAllItems();
         cbNumSecondary.addItem(0);
@@ -167,12 +196,13 @@ public class CIWeaponView extends BuildView implements ActionListener {
         if (cbNumSecondary.getSelectedIndex() < 0) {
             cbNumSecondary.setSelectedIndex(0);
         }
-        
-        List<EquipmentType> fieldGuns = inf.getWeaponList().stream()
-                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(Mounted::getType)
-                .filter(et -> et instanceof WeaponType)
-                .collect(Collectors.toList());
+
+        List<EquipmentType> fieldGuns = inf.getWeaponList()
+                                              .stream()
+                                              .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                                              .map(Mounted::getType)
+                                              .filter(Objects::nonNull)
+                                              .collect(Collectors.toList());
         if (fieldGuns.isEmpty()) {
             cbNumGuns.setEnabled(false);
             if (!FIELD_GUN_MODES.contains(inf.getMovementMode())) {
@@ -183,10 +213,9 @@ public class CIWeaponView extends BuildView implements ActionListener {
         } else {
             cbNumGuns.setEnabled(true);
             int maxNum = 1;
-            if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
-                    || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
+            if (!(fieldGuns.get(0) instanceof ArtilleryWeapon || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
                 int crewReq = Math.max(2, (int) Math.ceil(fieldGuns.get(0).getTonnage(inf)));
-                maxNum = inf.getShootingStrength() / crewReq;                
+                maxNum = inf.getShootingStrength() / crewReq;
             }
             cbNumGuns.removeActionListener(this);
             cbNumGuns.removeAllItems();
@@ -214,9 +243,17 @@ public class CIWeaponView extends BuildView implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbNumSecondary) {
-            listeners.forEach(l -> l.numSecondaryChanged((Integer) cbNumSecondary.getSelectedItem()));
+            Object item = cbNumSecondary.getSelectedItem();
+
+            if (item instanceof Integer value) {
+                listeners.forEach(l -> l.numSecondaryChanged(value));
+            }
         } else if (e.getSource() == cbNumGuns) {
-            listeners.forEach(l -> l.numFieldGunsChanged((Integer) cbNumGuns.getSelectedItem()));
+            Object item = cbNumGuns.getSelectedItem();
+
+            if (item instanceof Integer value) {
+                listeners.forEach(l -> l.numFieldGunsChanged(value));
+            }
         } else if (e.getSource() == chkAntiMek) {
             listeners.forEach(l -> l.antiMekChanged(chkAntiMek.isSelected()));
         }

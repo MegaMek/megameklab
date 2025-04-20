@@ -1,17 +1,29 @@
 /*
- * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later  version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.fighterAero;
 
@@ -24,7 +36,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -60,15 +71,14 @@ import megameklab.util.UnitUtil;
 public class ASBuildView extends IView implements ActionListener, MouseListener {
     private static final MMLogger logger = MMLogger.create(ASBuildView.class);
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
     private int engineHeatSinkCount = 0;
 
     CriticalTransferHandler cth;
@@ -82,7 +92,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setDragEnabled(true);
         cth = new CriticalTransferHandler(eSource, refresh);
         equipmentTable.setTransferHandler(cth);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -95,6 +105,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new Dimension(400, 400));
         equipmentScroll.setPreferredSize(new Dimension(400, 400));
@@ -104,9 +115,10 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
-        setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Unallocated Equipment",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
+              "Unallocated Equipment",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -117,8 +129,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentList.removeAllCrits();
         masterEquipmentList.clear();
         for (Mounted<?> mount : getAero().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) &&
-                    !isEngineHeatSink(mount)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -136,7 +147,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
-        // HeatSinks first
+        // heat sinks first
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if (UnitUtil.isHeatSink(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
@@ -158,7 +169,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
-                    (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+                      (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -172,8 +183,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof MiscType) &&
-                    !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) &&
-                    !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
+                      !UnitUtil.isArmor(masterEquipmentList.get(pos).getType()) &&
+                      !UnitUtil.isTSM(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -208,16 +219,17 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // TSM
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted<?> mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
     }
 
     private boolean isEngineHeatSink(Mounted<?> mount) {
-        if ((mount.getLocation() == Entity.LOC_NONE)
-                && UnitUtil.isHeatSink(mount) && (engineHeatSinkCount > 0)
-                && !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
-                        && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
+        if ((mount.getLocation() == Entity.LOC_NONE) &&
+                  UnitUtil.isHeatSink(mount) &&
+                  (engineHeatSinkCount > 0) &&
+                  !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) &&
+                          mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))) {
             engineHeatSinkCount--;
             return true;
         } else {
@@ -250,6 +262,10 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentList.refreshModel();
     }
 
+    /**
+     * @deprecated no indicated uses.
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public CriticalTableModel getTableModel() {
         return equipmentList;
     }
@@ -276,14 +292,14 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     @Override
     public void mousePressed(MouseEvent evt) {
         // On right-click, we want to generate menu items to add to specific
-        // locations, but only if those locations are make sense
+        // locations, but only if those locations make sense
         if (evt.getButton() == MouseEvent.BUTTON3) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
-            Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(
-                    selectedRow, CriticalTableModel.EQUIPMENT);
+            Mounted<?> eq = (Mounted<?>) equipmentTable.getModel()
+                                               .getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
@@ -311,7 +327,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                         }
                     }
                 }
-                // If it's not a weapon there are no space requirements
+                // If it's not a weapon, there are no space requirements
             } else {
                 for (int loc = 0; loc < numLocs; loc++) {
                     validLocs.add(loc);
@@ -342,17 +358,15 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     /**
-     * When the user right-clicks on the equipment table, a context menu is
-     * generated that his menu items for each possible location that is clicked.
-     * When the location is clicked, this is the method that adds the selected
+     * When the user right-clicks on the equipment table, a context menu is generated that his menu items for each
+     * possible location that is clicked. When the location is clicked, this is the method that adds the selected
      * equipment to the desired location.
      *
      * @param location
      * @param selectedRow
      */
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
-                CriticalTableModel.EQUIPMENT);
+        Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         try {
             getAero().addEquipment(eq, location, false);
         } catch (Exception ex) {
@@ -360,7 +374,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         }
         UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
 
-        // go back up to grandparent build tab and fire a full refresh.
+        // go back up to the grandparent build tab and fire a full refresh.
         ((ASBuildTab) getParent().getParent()).refreshAll();
     }
 }

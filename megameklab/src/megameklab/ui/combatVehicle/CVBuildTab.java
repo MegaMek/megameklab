@@ -1,24 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.combatVehicle;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -40,19 +51,19 @@ public class CVBuildTab extends ITab implements ActionListener {
     private static final MMLogger logger = MMLogger.create(CVBuildTab.class);
 
     private RefreshListener refresh = null;
-    private CVCriticalView critView;
+    private final CVCriticalView critView;
 
     public UnallocatedView getUnallocatedView() {
         return unallocatedView;
     }
 
-    private UnallocatedView unallocatedView;
+    private final UnallocatedView unallocatedView;
 
-    private JButton autoFillButton = new JButton("Auto Fill");
-    private JButton resetButton = new JButton("Reset");
+    private final JButton autoFillButton = new JButton("Auto Fill");
+    private final JButton resetButton = new JButton("Reset");
 
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
-    private String RESETCOMMAND = "resetbuttoncommand";
+    private final String AUTO_FILL_COMMAND = "autofillbuttoncommand";
+    private final String RESET_COMMAND = "resetbuttoncommand";
 
     public CVBuildTab(EntitySource eSource) {
         super(eSource);
@@ -68,9 +79,9 @@ public class CVBuildTab extends ITab implements ActionListener {
         mainPanel.add(unallocatedView);
 
         autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
+        autoFillButton.setActionCommand(AUTO_FILL_COMMAND);
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
+        resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
@@ -101,9 +112,9 @@ public class CVBuildTab extends ITab implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
+        if (evt.getActionCommand().equals(AUTO_FILL_COMMAND)) {
             autoFillCrits();
-        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESET_COMMAND)) {
             resetCrits();
         }
     }

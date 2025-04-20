@@ -1,18 +1,38 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.largeAero;
+
+import java.util.ResourceBundle;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.border.TitledBorder;
 
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.Jumpship;
@@ -32,24 +52,20 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.util.ResourceBundle;
-
 /**
- * The Crit Slots view for Large Craft (including Small Craft)
- * Aft side arcs on spheroid small craft and DropShips are implemented as rear-mounted weapons in the
- * left/right side locations but here they are shown as separate locations both to make it less confusing
- * to the user and for the need to maintain a separate count of the number of slots filled in that arc.
- * 
+ * The Crit Slots view for Large Craft (including Small Craft) Aft side arcs on spheroid small craft and DropShips are
+ * implemented as rear-mounted weapons in the left/right side locations, but here they are shown as separate locations
+ * both to make it less confusing to the user and for the need to maintain a separate count of the number of slots
+ * filled in that arc.
+ *
  * @author Neoancient
  * @author Simon (Juliez)
  */
 public class LACriticalView extends IView {
-    // Maximum number of arcs for small craft / DropShip; aerodyne only use four, spheroid
+    // Maximum number of arcs for small craft / drop-ship; aerodyne only uses four, spheroid
     // and non-WarShip capital ships use 6, plus one for system-wide
     private static final int MAX_ARCS = 9;
-    
+
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private final JComponent fwdLeftPanel;
@@ -60,12 +76,15 @@ public class LACriticalView extends IView {
     private final JComponent aftRightPanel;
 
     private final BayWeaponCriticalTree[] arcTrees = new BayWeaponCriticalTree[MAX_ARCS];
-    private final String[] aerodyneArcNames = resourceMap.getString("DropshipCriticalView.aerodyneArcs.values").split(",");
-    private final String[] spheroidArcNames = resourceMap.getString("DropshipCriticalView.spheroidArcs.values").split(",");
-    private final String[] capitalArcNames = resourceMap.getString("DropshipCriticalView.capitalArcs.values").split(",");
+    private final String[] aerodyneArcNames = resourceMap.getString("DropshipCriticalView.aerodyneArcs.values")
+                                                    .split(",");
+    private final String[] spheroidArcNames = resourceMap.getString("DropshipCriticalView.spheroidArcs.values")
+                                                    .split(",");
+    private final String[] capitalArcNames = resourceMap.getString("DropshipCriticalView.capitalArcs.values")
+                                                   .split(",");
     private final JLabel[] lblSlotCount = new JLabel[MAX_ARCS];
     private final JLabel[] lblExtraTonnage = new JLabel[MAX_ARCS];
-    
+
     private final JButton btnCopyFLS = new JButton();
     private final JButton btnCopyFRS = new JButton();
     private final JButton btnCopyALS = new JButton();
@@ -85,11 +104,9 @@ public class LACriticalView extends IView {
         // These locations do not have the same indices for SC/DS and JS/WS/SS
         final int aftLeft = isJumpShip() ? Jumpship.LOC_ALS : TestSmallCraft.ARC_AFT_LEFT;
         final int aftRight = isJumpShip() ? Jumpship.LOC_ARS : TestSmallCraft.ARC_AFT_RIGHT;
-        
+
         for (int arc = 0; arc < MAX_ARCS; arc++) {
-            if (isSmallCraft()
-                    && ((arc == TestSmallCraft.ARC_AFT_LEFT)
-                            || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
+            if (isSmallCraft() && ((arc == TestSmallCraft.ARC_AFT_LEFT) || (arc == TestSmallCraft.ARC_AFT_RIGHT))) {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc - 4, eSource, refresh, BayWeaponCriticalTree.AFT);
             } else {
                 arcTrees[arc] = new BayWeaponCriticalTree(arc, eSource, refresh);
@@ -98,8 +115,10 @@ public class LACriticalView extends IView {
 
         leftColumn.add(Box.createVerticalGlue());
         fwdLeftPanel = createArcPanel(TestSmallCraft.ARC_FWD_LEFT, resourceMap, true, btnCopyFRS);
-        btnCopyFRS.setText("Copy from " + (isJumpShip() ?
-                capitalArcNames[TestSmallCraft.ARC_FWD_RIGHT] : spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]));
+        btnCopyFRS.setText("Copy from " +
+                                 (isJumpShip() ?
+                                        capitalArcNames[TestSmallCraft.ARC_FWD_RIGHT] :
+                                        spheroidArcNames[TestSmallCraft.ARC_FWD_RIGHT]));
         leftColumn.add(fwdLeftPanel);
         leftColumn.add(Box.createVerticalGlue());
         JButton btnCopyRBS = new JButton();
@@ -121,11 +140,13 @@ public class LACriticalView extends IView {
         midColumn.add(Box.createVerticalGlue());
         JComponent aftPanel = createArcPanel(TestSmallCraft.ARC_AFT, resourceMap, true, null);
         midColumn.add(aftPanel);
-        
+
         rightColumn.add(Box.createVerticalGlue());
         rightPanel = createArcPanel(TestSmallCraft.ARC_FWD_RIGHT, resourceMap, true, btnCopyFLS);
-        btnCopyFLS.setText("Copy from " + (isJumpShip() ?
-                capitalArcNames[TestSmallCraft.ARC_FWD_LEFT] : spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]));
+        btnCopyFLS.setText("Copy from " +
+                                 (isJumpShip() ?
+                                        capitalArcNames[TestSmallCraft.ARC_FWD_LEFT] :
+                                        spheroidArcNames[TestSmallCraft.ARC_FWD_LEFT]));
         rightColumn.add(rightPanel);
         rightColumn.add(Box.createVerticalGlue());
         JButton btnCopyLBS = new JButton();
@@ -142,7 +163,7 @@ public class LACriticalView extends IView {
         mainPanel.add(midColumn);
         mainPanel.add(rightColumn);
         add(mainPanel);
-        
+
         btnCopyFLS.addActionListener(ev -> {
             if (getAero() instanceof Jumpship) {
                 copyLocation(Jumpship.LOC_FLS, Jumpship.LOC_FRS);
@@ -177,7 +198,8 @@ public class LACriticalView extends IView {
         refresh();
     }
 
-    private JComponent createArcPanel(int arc, ResourceBundle resourceMap, boolean isWeaponArc, @Nullable JButton copyButton) {
+    private JComponent createArcPanel(int arc, ResourceBundle resourceMap, boolean isWeaponArc,
+          @Nullable JButton copyButton) {
         Box arcPanel = Box.createVerticalBox();
         String arcTitle = isJumpShip() ? capitalArcNames[arc] : spheroidArcNames[arc];
         arcPanel.setBorder(CritCellUtil.locationBorder(arcTitle));
@@ -201,7 +223,7 @@ public class LACriticalView extends IView {
         }
         return arcPanel;
     }
-    
+
     public void addAllocationListeners(LABuildView abv) {
         for (BayWeaponCriticalTree tree : arcTrees) {
             abv.addArcView(tree);
@@ -243,24 +265,28 @@ public class LACriticalView extends IView {
         bsLeftPanel.setVisible(isWarShip());
         bsRightPanel.setVisible(isWarShip());
 
-        double[] extra = isSmallCraft()
-                ? TestSmallCraft.extraSlotCost(getSmallCraft())
-                : TestAdvancedAerospace.extraSlotCost(getJumpship());
+        double[] extra = isSmallCraft() ?
+                               TestSmallCraft.extraSlotCost(getSmallCraft()) :
+                               TestAdvancedAerospace.extraSlotCost(getJumpship());
         for (int arc = 0; arc < extra.length; arc++) {
             arcTrees[arc].rebuild();
-            lblSlotCount[arc].setText(resourceMap.getString("DropshipCriticalView.lblSlotCount.text")
-                    + " " + arcTrees[arc].getSlotCount() + " / " + TestAero.slotsPerArc(getAero()));
+            lblSlotCount[arc].setText(resourceMap.getString("DropshipCriticalView.lblSlotCount.text") +
+                                            " " +
+                                            arcTrees[arc].getSlotCount() +
+                                            " / " +
+                                            TestAero.slotsPerArc(getAero()));
 
-            lblExtraTonnage[arc].setText(resourceMap.getString("DropshipCriticalView.lblExtraWeight.text")
-                    + " " + (extra[arc] > 0 ? extra[arc] : "--"));
+            lblExtraTonnage[arc].setText(resourceMap.getString("DropshipCriticalView.lblExtraWeight.text") +
+                                               " " +
+                                               (extra[arc] > 0 ? extra[arc] : "--"));
             lblExtraTonnage[arc].setForeground(extra[arc] > 0 ? null : UIUtil.uiGray());
         }
     }
-    
+
     private void copyLocation(int from, int to) {
         copyLocation(from, to, true, true);
     }
-    
+
     private void copyLocation(int from, int to, boolean forward, boolean rear) {
         try {
             UnitUtil.copyLocationEquipment(getAero(), from, to, forward, rear);

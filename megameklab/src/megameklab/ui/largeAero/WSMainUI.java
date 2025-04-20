@@ -1,25 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.largeAero;
 
 import java.awt.BorderLayout;
 import java.util.List;
-
 import javax.swing.JDialog;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import megamek.common.*;
 import megamek.common.verifier.TestAdvancedAerospace;
@@ -47,7 +57,6 @@ public class WSMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private LABuildTab buildTab;
     private TransportTab transportTab;
-    private FluffTab fluffTab;
     private QuirksTab quirksTab;
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
@@ -88,17 +97,16 @@ public class WSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         Jumpship newUnit;
-        if (entitytype == Entity.ETYPE_JUMPSHIP) {
+        if (entityType == Entity.ETYPE_JUMPSHIP) {
             newUnit = new Jumpship();
-        } else if (entitytype == Entity.ETYPE_WARSHIP) {
+        } else if (entityType == Entity.ETYPE_WARSHIP) {
             newUnit = new Warship();
-            if ((null != oldUnit)
-                    && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
+            if ((null != oldUnit) && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
                 newUnit.setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
             }
-        } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+        } else if (entityType == Entity.ETYPE_SPACE_STATION) {
             newUnit = new SpaceStation();
         } else {
             logger.error("Received incorrect entityType!");
@@ -119,7 +127,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             newUnit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         }
         newUnit.setWeight(TestAdvancedAerospace.getMinTonnage(newUnit));
-        if (entitytype == Entity.ETYPE_WARSHIP) {
+        if (entityType == Entity.ETYPE_WARSHIP) {
             newUnit.setOriginalWalkMP(2); // Start at 1G
             newUnit.setOSI(3);
         } else {
@@ -140,9 +148,9 @@ public class WSMainUI extends MegaMekLabMainUI {
         }
         if (null == oldUnit) {
             newUnit.setChassis("New");
-            if ((entitytype == Entity.ETYPE_WARSHIP) && !isPrimitive) {
+            if ((entityType == Entity.ETYPE_WARSHIP) && !isPrimitive) {
                 newUnit.setModel("Warship");
-            } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+            } else if (entityType == Entity.ETYPE_SPACE_STATION) {
                 newUnit.setModel("Station");
             } else {
                 newUnit.setModel("Jumpship");
@@ -151,11 +159,11 @@ public class WSMainUI extends MegaMekLabMainUI {
             newUnit.setChassis(oldUnit.getChassis());
             newUnit.setModel(oldUnit.getModel());
             newUnit.setYear(Math.max(oldUnit.getYear(),
-                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
             newUnit.setSource(oldUnit.getSource());
             newUnit.setManualBV(oldUnit.getManualBV());
             SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
-                    SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
+                  SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
             newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
             newUnit.setMixedTech(oldUnit.isMixedTech());
         }
@@ -178,7 +186,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(this);
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
-        fluffTab = new FluffTab(this);
+        FluffTab fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);
@@ -204,7 +212,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             floatingEquipmentDatabase.setVisible(false);
         }
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
-                new LAFloatingEquipmentDatabaseView(this));
+              new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

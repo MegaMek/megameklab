@@ -1,17 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.util;
 
@@ -31,13 +43,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
-
 import javax.swing.JDialog;
 
 import megamek.common.Configuration;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
-import megameklab.ui.*;
+import megameklab.ui.MMLStartUp;
+import megameklab.ui.MegaMekLabTabbedUI;
+import megameklab.ui.MenuBarOwner;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -133,9 +147,8 @@ public final class CConfig {
     private static final Properties config = getDefaults();
 
     /**
-     * Private method that loads hardcoded defaults. These are loaded before the
-     * players config values, adding any new configs in their default position
-     * and ensuring that no config value is even missing.
+     * Private method that loads hardcoded defaults. These are loaded before the players config values, adding any new
+     * configs in their default position and ensuring that no config value is even missing.
      */
     private static Properties getDefaults() {
         Properties defaults = new Properties();
@@ -172,13 +185,11 @@ public final class CConfig {
     }
 
     /**
-     * Tries to import settings from the given properties file. When successful,
-     * also applies
-     * some of the settings and shows a popup message.
+     * Tries to import settings from the given properties file. When successful, it also applies some settings and shows
+     * a popup message.
      *
      * @param menuBarOwner The MenuBar owner frame calling this
-     * @param settingsFile The file (should always be megameklab.properties in
-     *                     another MML install)
+     * @param settingsFile The file (should always be megameklab.properties in another MML installation)
      */
     public static void importSettings(MenuBarOwner menuBarOwner, File settingsFile) {
         try (FileInputStream fis = new FileInputStream(settingsFile)) {
@@ -220,7 +231,7 @@ public final class CConfig {
      * Creates a new Config file, and directories, if it is missing.
      */
     public static void ensureConfigFileExists() {
-        // Check to see if a config is present. if not, make one.
+        // Check to see if a config is present. If not, make one.
         final File configurationFile = new File(CONFIG_FILE);
         if (!configurationFile.exists() && !new File(CONFIG_BACKUP_FILE).exists()) {
             final File configurationDirectory = new File(CONFIG_DIR);
@@ -244,30 +255,30 @@ public final class CConfig {
     }
 
     /**
-     * Get a config value, with a default value to be used if the value is not
-     * found.
+     * Get a config value, with a default value to be used if the value is not found.
      *
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
+     *
      * @return The value associated with the key
      */
     public static String getParam(String param, String defaultVal) {
         if (param.endsWith(":")) {
             param = param.substring(0, param.lastIndexOf(":"));
         }
-        String tparam = config.getProperty(param);
-        if (tparam == null) {
-            tparam = defaultVal;
+        String secondaryParam = config.getProperty(param);
+        if (secondaryParam == null) {
+            secondaryParam = defaultVal;
         }
-        return tparam;
+        return secondaryParam;
     }
 
     /**
      * Get a config value.
      *
      * @param param The key
-     * @return The value associated with the key. If not found, an empty String is
-     *         returned
+     *
+     * @return The value associated with the key. If not found, an empty String is returned
      */
     public static String getParam(String param) {
         return getParam(param, "");
@@ -284,14 +295,13 @@ public final class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return the provided default
-     * value if the
-     * property is a non-number.
+     * Return the int value of a given config property. Return the provided default value if the property is a
+     * non-number.
      *
      * @param param      The parameter name
-     * @param defaultVal The value to return if the property does not exist or is
-     *                   not a valid string
-     *                   representation of the integer
+     * @param defaultVal The value to return if the property does not exist or is not a valid string representation of
+     *                   the integer
+     *
      * @return The integer value of the property
      */
     public static int getIntParam(String param, int defaultVal) {
@@ -303,10 +313,10 @@ public final class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return a 0 if the
-     * property is a non-number.
+     * Return the int value of a given config property. Return a 0 if the property is a non-number.
      *
      * @param param The parameter name
+     *
      * @return The integer value of the property
      */
     public static int getIntParam(String param) {
@@ -315,8 +325,8 @@ public final class CConfig {
 
     /**
      * @param param the parameter's name
-     * @return the boolean value of a given config property. Return a false if the
-     *         property does not exist.
+     *
+     * @return the boolean value of a given config property. Return a false if the property does not exist.
      */
     public static boolean getBooleanParam(String param) {
         boolean toReturn;
@@ -332,8 +342,7 @@ public final class CConfig {
      * Write the config file out to ./data/mwconfig.txt.
      */
     public synchronized static void saveConfig() {
-        try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
-                PrintStream ps = new PrintStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE); PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
         } catch (FileNotFoundException ignored) {
 
@@ -341,8 +350,7 @@ public final class CConfig {
             logger.error("", ex);
             return;
         }
-        try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-                PrintStream ps = new PrintStream(fos)) {
+        try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE); PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config");
         } catch (FileNotFoundException ignored) {
 
@@ -412,6 +420,7 @@ public final class CConfig {
      *
      * @param val       The base distance (standard hexes)
      * @param showUnits Whether to append the unit abbreviation
+     *
      * @return A String representation of the scaled value
      */
     public static String formatScale(double val, boolean showUnits) {
@@ -485,9 +494,9 @@ public final class CConfig {
 
     // Internals ####################
 
-    private static Optional<Dimension> getWindowSize(String cconfigSetting) {
+    private static Optional<Dimension> getWindowSize(String configSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
+            String[] fileChooserSettings = getParam(configSetting).split(";");
             int sizeX = Integer.parseInt(fileChooserSettings[2]);
             int sizeY = Integer.parseInt(fileChooserSettings[3]);
             return Optional.of(new Dimension(sizeX, sizeY));
@@ -496,9 +505,9 @@ public final class CConfig {
         }
     }
 
-    private static Optional<Point> getWindowPosition(String cconfigSetting) {
+    private static Optional<Point> getWindowPosition(String configSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
+            String[] fileChooserSettings = getParam(configSetting).split(";");
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
             return Optional.of(new Point(posX, posY));
@@ -507,10 +516,10 @@ public final class CConfig {
         }
     }
 
-    private static void writeWindowSettings(String cconfigSetting, Component component) {
+    private static void writeWindowSettings(String configSetting, Component component) {
         Dimension size = component.getSize();
         Point pos = component.getLocation();
-        setParam(cconfigSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
+        setParam(configSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
         saveConfig();
     }
 

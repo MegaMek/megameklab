@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -31,7 +40,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -57,8 +65,7 @@ import megameklab.ui.util.IntRangeTextField;
 import megameklab.util.CConfig;
 
 /**
- * A panel for basic information common to all unit types: name, year, tech
- * level and others.
+ * A panel for basic information common to all unit types: name, year, tech level and others.
  *
  * @author Neoancient
  */
@@ -82,8 +89,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private final JTextField txtChassis = new JTextField(5);
     private final JTextField txtClanName = new JTextField(5);
-    private final JLabel lblClanName = createLabel(resourceMap, "lblClanName", "BasicInfoView.txtClanName.text",
-            "BasicInfoView.txtClanName.tooltip");
+    private final JLabel lblClanName = createLabel(resourceMap,
+          "lblClanName",
+          "BasicInfoView.txtClanName.text",
+          "BasicInfoView.txtClanName.tooltip");
     private final JTextField txtModel = new JTextField(5);
     private final IntRangeTextField txtYear = new IntRangeTextField(3);
     private final FactionComboBox cbFaction = new FactionComboBox();
@@ -119,8 +128,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.insets = STANDARD_INSETS;
-        add(createLabel(resourceMap, "lblChassis", "BasicInfoView.txtChassis.text",
-                "BasicInfoView.txtChassis.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblChassis", "BasicInfoView.txtChassis.text", "BasicInfoView.txtChassis.tooltip"),
+              gbc);
         gbc.gridx = 1;
         txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip"));
         add(txtChassis, gbc);
@@ -136,8 +145,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblModel", "BasicInfoView.txtModel.text",
-                "BasicInfoView.txtModel.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblModel", "BasicInfoView.txtModel.text", "BasicInfoView.txtModel.tooltip"), gbc);
         gbc.gridx = 1;
         txtModel.setToolTipText(resourceMap.getString("BasicInfoView.txtModel.tooltip"));
         add(txtModel, gbc);
@@ -164,8 +172,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblYear", "BasicInfoView.txtYear.text",
-                "BasicInfoView.txtYear.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblYear", "BasicInfoView.txtYear.text", "BasicInfoView.txtYear.tooltip"), gbc);
         gbc.gridx = 1;
         add(txtYear, gbc);
         txtYear.setToolTipText(resourceMap.getString("BasicInfoView.txtYear.tooltip"));
@@ -184,8 +191,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblSource", "BasicInfoView.txtSource.text",
-                "BasicInfoView.txtSource.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblSource", "BasicInfoView.txtSource.text", "BasicInfoView.txtSource.tooltip"),
+              gbc);
         gbc.gridx = 1;
         txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip"));
         add(txtSource, gbc);
@@ -193,8 +200,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblTechBase", "BasicInfoView.cbTechBase.text",
-                "BasicInfoView.cbTechBase.tooltip"), gbc);
+        add(createLabel(resourceMap,
+              "lblTechBase",
+              "BasicInfoView.cbTechBase.text",
+              "BasicInfoView.cbTechBase.tooltip"), gbc);
         gbc.gridx = 1;
         cbTechBase.setToolTipText(resourceMap.getString("BasicInfoView.cbTechBase.tooltip"));
         add(cbTechBase, gbc);
@@ -203,8 +212,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblTechLevel", "BasicInfoView.cbTechLevel.text",
-                "BasicInfoView.cbTechLevel.tooltip"), gbc);
+        add(createLabel(resourceMap,
+              "lblTechLevel",
+              "BasicInfoView.cbTechLevel.text",
+              "BasicInfoView.cbTechLevel.tooltip"), gbc);
         gbc.gridx = 1;
         cbTechLevel.setToolTipText(resourceMap.getString("BasicInfoView.cbTechLevel.tooltip"));
         add(cbTechLevel, gbc);
@@ -214,8 +225,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblManualBV", "BasicInfoView.txtManualBV.text",
-                "BasicInfoView.txtManualBV.tooltip"), gbc);
+        add(createLabel(resourceMap,
+              "lblManualBV",
+              "BasicInfoView.txtManualBV.text",
+              "BasicInfoView.txtManualBV.tooltip"), gbc);
         gbc.gridx = 1;
         txtManualBV.setToolTipText(resourceMap.getString("BasicInfoView.txtManualBV.tooltip"));
         add(txtManualBV, gbc);
@@ -223,8 +236,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblRole", "BasicInfoView.txtRole.text",
-                "BasicInfoView.txtRole.tooltip"), gbc);
+        add(createLabel(resourceMap, "lblRole", "BasicInfoView.txtRole.text", "BasicInfoView.txtRole.tooltip"), gbc);
         gbc.gridx = 1;
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
         add(cbRole, gbc);
@@ -235,7 +247,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbRole.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                    boolean cellHasFocus) {
+                  boolean cellHasFocus) {
                 if (value == UnitRole.UNDETERMINED) {
                     value = " ";
                 }
@@ -267,8 +279,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbTechBase.addActionListener(this);
         cbTechLevel.removeActionListener(this);
         SimpleTechLevel lvl = useTP ? en.getSimpleLevel(getGameYear()) : en.getStaticTechLevel();
-        setTechLevel(SimpleTechLevel.max(lvl,
-                SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
+        setTechLevel(SimpleTechLevel.max(lvl, SimpleTechLevel.convertCompoundToSimple(en.getTechLevel())));
         cbTechLevel.addActionListener(this);
         setManualBV(en.getManualBV());
         cbRole.removeActionListener(this);
@@ -376,8 +387,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             return false;
         } else {
             Integer selected = (Integer) cbTechBase.getSelectedItem();
-            return ((null != selected)
-                    && ((selected == BASE_CLAN) || (selected == BASE_CLAN_MIXED)));
+            return ((null != selected) && ((selected == BASE_CLAN) || (selected == BASE_CLAN_MIXED)));
         }
     }
 
@@ -387,8 +397,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             return false;
         }
         Integer selected = (Integer) cbTechBase.getSelectedItem();
-        return ((null != selected)
-                && ((selected == BASE_IS_MIXED) || (selected == BASE_CLAN_MIXED)));
+        return ((null != selected) && ((selected == BASE_IS_MIXED) || (selected == BASE_CLAN_MIXED)));
     }
 
     public void setTechBase(boolean clan, boolean mixed) {
@@ -421,18 +430,16 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         Integer prev = (Integer) cbTechBase.getSelectedItem();
         cbTechBase.removeActionListener(this);
         cbTechBase.removeAllItems();
-        // IS is available to anything that doesn't require a Clan tech base (e.g.
-        // QuadVee, ProtoMek).
-        // Clan is available to anything that doesn't require an IS tech base, is built
-        // after the Clans
-        // are formed, and not built by an IS faction before the Clan invasion.
+        // IS is available to anything that doesn't require a Clan tech base (e.g., QuadVee, ProtoMek). Clan is
+        // available to anything that doesn't require an IS tech base, is built after the Clans are formed, and not
+        // built by an IS faction before the Clan invasion.
         final boolean clanFaction = (getTechFaction() >= ITechnology.F_CLAN) || (getTechFaction() < 0);
         final boolean sphereAvailable = baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN;
-        final boolean clanAvailable = (getTechIntroYear() >= CLAN_START)
-                && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)
-                && (clanFaction || (getTechIntroYear() >= IS_MIXED_START));
-        final boolean mixedTechAvailable = (getTechIntroYear() >= IS_MIXED_START)
-                || ((getTechIntroYear() >= CLAN_MIXED_START) && clanFaction);
+        final boolean clanAvailable = (getTechIntroYear() >= CLAN_START) &&
+                                            (baseTA.getTechBase() != ITechnology.TECH_BASE_IS) &&
+                                            (clanFaction || (getTechIntroYear() >= IS_MIXED_START));
+        final boolean mixedTechAvailable = (getTechIntroYear() >= IS_MIXED_START) ||
+                                                 ((getTechIntroYear() >= CLAN_MIXED_START) && clanFaction);
         if (sphereAvailable) {
             cbTechBase.addItem(BASE_IS);
         }
@@ -467,20 +474,20 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         SimpleTechLevel baseLevel;
         if (CConfig.getBooleanParam(CConfig.TECH_PROGRESSION)) {
             baseLevel = baseTA.getSimpleLevel(getGameYear());
-            if (useMixedTech()
-                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear())
-                            .ordinal())) {
+            if (useMixedTech() &&
+                      (baseLevel.ordinal() <
+                             Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear()).ordinal())) {
                 baseLevel = Entity.getMixedTechAdvancement().getSimpleLevel(getGameYear());
             }
         } else {
             baseLevel = baseTA.getStaticTechLevel();
-            if (useMixedTech()
-                    && (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getStaticTechLevel().ordinal())) {
+            if (useMixedTech() &&
+                      (baseLevel.ordinal() < Entity.getMixedTechAdvancement().getStaticTechLevel().ordinal())) {
                 baseLevel = Entity.getMixedTechAdvancement().getStaticTechLevel();
             }
         }
 
-        if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal())) {
+        if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() == baseLevel.ordinal())) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO.toString());
         }
 
@@ -545,8 +552,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 listeners.forEach(l -> l.yearChanged(year));
                 prevYear = year;
             } catch (Exception ex) {
-                // If text is not a legal integer value, reset to the previous value
-                logger.error("", ex);
+                // If a text is not a legal integer value, reset to the previous value
+                logger.error(ex, "focusLost");
             } finally {
                 setYear(prevYear);
             }
@@ -593,15 +600,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
-     * The MUL button should be shown when the current MUL ID field has a valid MUL
-     * (> 0) and the
-     * system seems to support calling a standard browser.
+     * The MUL button should be shown when the current MUL ID field has a valid MUL (> 0), and the system seems to
+     * support calling a standard browser.
      *
      * @return true when the "Open MUL in Browser" Button can be used
      */
     private boolean shouldShowMULButton() {
-        return (txtMulId.getIntVal(-1) > 0) && Desktop.isDesktopSupported()
-                && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
+        return (txtMulId.getIntVal(-1) > 0) &&
+                     Desktop.isDesktopSupported() &&
+                     Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
     }
 
     /**

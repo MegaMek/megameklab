@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog.settings;
 
@@ -52,21 +61,29 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
     @Override
     protected Container createCenterPane() {
         JTabbedPane panMain = new JTabbedPane();
-        panMain.addTab(resources.getString("ConfigurationDialog.misc.title"), new SettingsScrollPane(miscSettingsPanel));
-        panMain.addTab(resources.getString("ConfigurationDialog.colorCodes.title"), new SettingsScrollPane(colorPreferences));
-        panMain.addTab(resources.getString("ConfigurationDialog.techProgression.title"), new SettingsScrollPane(techSettings));
-        panMain.addTab(resources.getString("ConfigurationDialog.printing.title"), new SettingsScrollPane(exportSettingsPanel));
+        panMain.addTab(resources.getString("ConfigurationDialog.misc.title"),
+              new SettingsScrollPane(miscSettingsPanel));
+        panMain.addTab(resources.getString("ConfigurationDialog.colorCodes.title"),
+              new SettingsScrollPane(colorPreferences));
+        panMain.addTab(resources.getString("ConfigurationDialog.techProgression.title"),
+              new SettingsScrollPane(techSettings));
+        panMain.addTab(resources.getString("ConfigurationDialog.printing.title"),
+              new SettingsScrollPane(exportSettingsPanel));
         return panMain;
     }
 
     @Override
     protected JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        var okButton = new MMButton("okButton", resources.getString("ConfigurationDialog.Ok.text"),
-                resources.getString("ConfigurationDialog.Ok.toolTipText"), this::okButtonActionPerformed);
+        var okButton = new MMButton("okButton",
+              resources.getString("ConfigurationDialog.Ok.text"),
+              resources.getString("ConfigurationDialog.Ok.toolTipText"),
+              this::okButtonActionPerformed);
         panel.add(okButton);
-        panel.add(new MMButton("cancelButton", resources.getString("ConfigurationDialog.Cancel.text"),
-                resources.getString("ConfigurationDialog.Cancel.toolTipText"), this::cancelActionPerformed));
+        panel.add(new MMButton("cancelButton",
+              resources.getString("ConfigurationDialog.Cancel.text"),
+              resources.getString("ConfigurationDialog.Cancel.toolTipText"),
+              this::cancelActionPerformed));
         getRootPane().setDefaultButton(okButton);
         return panel;
     }

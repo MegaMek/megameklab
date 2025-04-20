@@ -1,35 +1,46 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
+
+import java.awt.Insets;
+import java.util.ResourceBundle;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.EquipmentTypeLookup;
 import megamek.common.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.ResourceBundle;
-
 /**
  * Base class that has some common layout methods for main ui component views.
- * 
+ *
  * @author Neoancient
  */
 public abstract class BuildView extends JPanel {
@@ -44,8 +55,9 @@ public abstract class BuildView extends JPanel {
     }
 
     public JLabel createLabel(ResourceBundle resources, String name, String text, @Nullable String toolTipText) {
-        return createLabel(name, resources.getString(text),
-                (toolTipText == null) ? null : resources.getString(toolTipText));
+        return createLabel(name,
+              resources.getString(text),
+              (toolTipText == null) ? null : resources.getString(toolTipText));
     }
 
     public JLabel createLabel(String name, String text) {

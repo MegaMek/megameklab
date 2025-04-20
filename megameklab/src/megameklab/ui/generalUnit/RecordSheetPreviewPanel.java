@@ -1,32 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.generalUnit;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -34,16 +36,11 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
-import java.awt.GraphicsEnvironment;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsConfiguration;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -58,18 +55,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.atomic.AtomicReference;
-
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import org.apache.batik.gvt.GraphicsNode;
-import org.apache.batik.ext.awt.RenderingHintsKeyExt;
-import org.apache.batik.ext.awt.image.GraphicsUtil;
 
 import megamek.common.BTObject;
 import megamek.common.Entity;
@@ -79,13 +71,14 @@ import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.PrintSmallUnitSheet;
 import megameklab.printing.RecordSheetOptions;
 import megameklab.util.UnitPrintManager;
+import org.apache.batik.ext.awt.RenderingHintsKeyExt;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * @author pavelbraginskiy
- * @author drake
- *         Simply fills itself with the record sheet for the given unit.
- *         Uses background rendering for performance, rendering each page
- *         independently.
+ * @author drake Simply fills itself with the record sheet for the given unit. Uses background rendering for
+ *       performance, rendering each page independently.
  */
 public class RecordSheetPreviewPanel extends JPanel {
     private static final MMLogger logger = MMLogger.create(RecordSheetPreviewPanel.class);
@@ -122,17 +115,13 @@ public class RecordSheetPreviewPanel extends JPanel {
         }, "RecordSheetRenderer-ShutdownHook"));
     }
 
-    private static class RenderResult {
-        final BufferedImage image;
-        final double zoomFactor; // The zoom used to render this image
-    
-        RenderResult(BufferedImage image, double zoomFactor) {
-            this.image = image;
-            this.zoomFactor = zoomFactor;
-        }
+    /**
+     * @param zoomFactor The zoom used to render this image
+     */
+    private record RenderResult(BufferedImage image, double zoomFactor) {
     }
 
-    private class SheetPageInfo {
+    private static class SheetPageInfo {
         GraphicsNode graphicsNode; // The raw Batik node for this page
         final int originalSheetIndex; // Index of the PrintRecordSheet this page belongs to
         final int pageIndexInSheet; // Index of this page within its PrintRecordSheet
@@ -161,7 +150,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         synchronized void cancelPendingRender() {
             if (pendingRenderTask != null) {
-                pendingRenderTask.cancel(false); // Don't interrupt, just mark as cancelled
+                pendingRenderTask.cancel(false); // Don't interrupt, just mark as canceled
                 pendingRenderTask = null;
             }
             renderVersion++; // Invalidate any render currently finishing
@@ -178,6 +167,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private class RightClickListener extends MouseAdapter {
         private final JPopupMenu popup = new JPopupMenu();
+
         {
             var copyItem = new JMenuItem("Copy to clipboard");
             copyItem.addActionListener(l -> copyRecordSheetToClipboard());
@@ -211,7 +201,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private volatile double minFitZoom = 1.0; // Minimum zoom to fit content
     private volatile double zoomFactor = 1.0; // Current view zoom
-    private Point2D panOffset = new Point2D.Double(0, 0);
+    private final Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
     private boolean isPanning = false;
     private volatile boolean isHighQualityPaint = true;
@@ -220,7 +210,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
     private List<BTObject> currentEntities = Collections.emptyList();
-    private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
+    private final List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
     private final ReentrantLock sheetGenerationLock = new ReentrantLock(); // Lock for sheet generation
 
@@ -235,7 +225,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
-    
+
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
@@ -268,11 +258,9 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (isShowing()) {
                     if (needsViewReset) {
                         regenerateAndReset();
-                    } else
-                    if (pendingInPlaceUpdate) {
+                    } else if (pendingInPlaceUpdate) {
                         updateSheetContentInPlace();
-                    } else
-                    if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
+                    } else if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
                         // Maybe entities were set while hidden, trigger generation/render
                         regenerateAndReset();
                     } else {
@@ -282,8 +270,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 } else {
                     // Became hidden
-                    if (resetViewTimer != null) resetViewTimer.stop();
-                    if (zoomRenderDebounceTimer != null) zoomRenderDebounceTimer.stop();
+                    if (resetViewTimer != null) {
+                        resetViewTimer.stop();
+                    }
+                    if (zoomRenderDebounceTimer != null) {
+                        zoomRenderDebounceTimer.stop();
+                    }
                 }
             }
         });
@@ -293,7 +285,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             public void componentResized(java.awt.event.ComponentEvent e) {
                 double oldMinFitZoom = minFitZoom;
                 minFitZoom = calculateMinimumFitZoom();
-                // If we were fitted or zoomed out further, reset view to re-fit
+                // If we were fitted or zoomed out further, reset the view to re-fit
                 if (zoomFactor <= oldMinFitZoom + 0.01) {
                     scheduleResetView();
                 }
@@ -306,37 +298,32 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private void setupMouseHandlers() {
         // Zoom
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (sheetPages.isEmpty())
-                    return;
+        addMouseWheelListener(e -> {
+            if (sheetPages.isEmpty()) {
+                return;
+            }
 
-                Point mousePoint = e.getPoint();
-                double oldZoom = zoomFactor;
+            Point mousePoint = e.getPoint();
+            double oldZoom = zoomFactor;
 
-                double scroll = e.getPreciseWheelRotation();
-                double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
+            double scroll = e.getPreciseWheelRotation();
+            double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
 
-                newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
+            newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
 
-                if (Math.abs(oldZoom - newZoom) > 0.001) {
-                    double zoomRatio = newZoom / oldZoom;
-                    panOffset.setLocation(
-                            mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
-                            mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
+            if (Math.abs(oldZoom - newZoom) > 0.001) {
+                double zoomRatio = newZoom / oldZoom;
+                panOffset.setLocation(mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
+                      mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
 
-                    zoomFactor = newZoom;
+                zoomFactor = newZoom;
 
-                    // Constrain pan offset to keep content visible
-                    panOffset.setLocation(
-                        constrainPanX(panOffset.getX()),
-                        constrainPanY(panOffset.getY()));
-                        
-                    isHighQualityPaint = false;
-                    repaint();
-                    zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
-                }
+                // Constrain pan offset to keep content visible
+                panOffset.setLocation(constrainPanX(panOffset.getX()), constrainPanY(panOffset.getY()));
+
+                isHighQualityPaint = false;
+                repaint();
+                zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
             }
         });
 
@@ -345,8 +332,9 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (sheetPages.isEmpty())
+                    if (sheetPages.isEmpty()) {
                         return;
+                    }
                     lastMousePoint = e.getPoint();
                     setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                     isPanning = true;
@@ -383,7 +371,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (isPanning && lastMousePoint != null) {
                     int dx = e.getX() - lastMousePoint.x;
                     int dy = e.getY() - lastMousePoint.y;
-                    
+
                     double newPanX = panOffset.getX() + dx;
                     double newPanY = panOffset.getY() + dy;
                     newPanX = constrainPanX(newPanX);
@@ -396,74 +384,79 @@ public class RecordSheetPreviewPanel extends JPanel {
             }
         });
     }
-/**
- * Constrains horizontal panning to keep content visible.
- * @param panX The proposed X pan coordinate
- * @return Constrained X coordinate
- */
-private double constrainPanX(double panX) {
-    if (sheetPages.isEmpty()) {
-        return 0;
+
+    /**
+     * Constrains horizontal panning to keep content visible.
+     *
+     * @param panX The proposed X pan coordinate
+     *
+     * @return Constrained X coordinate
+     */
+    private double constrainPanX(double panX) {
+        if (sheetPages.isEmpty()) {
+            return 0;
+        }
+
+        // Calculate leftmost and rightmost content bounds
+        double leftmostX = Double.MAX_VALUE;
+        double rightmostX = Double.MIN_VALUE;
+
+        for (SheetPageInfo page : sheetPages) {
+            double pageLeft = page.layoutPosition.x * zoomFactor;
+            double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+
+            leftmostX = Math.min(leftmostX, pageLeft);
+            rightmostX = Math.max(rightmostX, pageRight);
+        }
+
+        // Left constraint: don't allow content to move right of viewport left edge
+        double minPanX = getWidth() - rightmostX;
+        // Right constraint: don't allow content to move left of viewport right edge
+        double maxPanX = -leftmostX;
+
+        // If content is narrower than viewport, center it
+        if (rightmostX - leftmostX < getWidth()) {
+            double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
+            return centerOffset - leftmostX;
+        }
+
+        return Math.min(maxPanX, Math.max(minPanX, panX));
     }
-    
-    // Calculate leftmost and rightmost content bounds
-    double leftmostX = Double.MAX_VALUE;
-    double rightmostX = Double.MIN_VALUE;
-    
-    for (SheetPageInfo page : sheetPages) {
-        double pageLeft = page.layoutPosition.x * zoomFactor;
-        double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
-        
-        leftmostX = Math.min(leftmostX, pageLeft);
-        rightmostX = Math.max(rightmostX, pageRight);
-    }
-    
-    // Left constraint: don't allow content to move right of viewport left edge
-    double minPanX = getWidth() - rightmostX;
-    // Right constraint: don't allow content to move left of viewport right edge
-    double maxPanX = -leftmostX;
-    
-    // If content is narrower than viewport, center it
-    if (rightmostX - leftmostX < getWidth()) {
-        double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
-        return centerOffset - leftmostX;
-    }
-    
-    return Math.min(maxPanX, Math.max(minPanX, panX));
-}
 
     /**
      * Constrains vertical panning to keep content visible.
+     *
      * @param panY The proposed Y pan coordinate
+     *
      * @return Constrained Y coordinate
      */
     private double constrainPanY(double panY) {
         if (sheetPages.isEmpty()) {
             return 0;
         }
-        
+
         // Get the tallest page height
         double maxPageHeight = 0;
         for (SheetPageInfo page : sheetPages) {
             maxPageHeight = Math.max(maxPageHeight, page.baseHeightPx * zoomFactor);
         }
-        
-        // Top constraint: don't allow content to move below viewport top edge
+
+        // Top constraint: don't allow content to move below the viewport top edge
         double minPanY = getHeight() - maxPageHeight;
-        // Bottom constraint: don't allow content to move above viewport bottom edge
+        // Bottom constraint: don't allow content to move above the viewport bottom edge
         double maxPanY = 0;
-        
+
         // If content is shorter than viewport, center it
         if (maxPageHeight < getHeight()) {
             return (getHeight() - maxPageHeight) / 2.0;
         }
-        
+
         return Math.min(maxPanY, Math.max(minPanY, panY));
     }
 
     /**
      * Set to true if only one unit should be printed per sheet.
-     * 
+     *
      * @param oneUnitPerSheet
      */
     public void setOneUnitPerSheet(boolean oneUnitPerSheet) {
@@ -476,7 +469,7 @@ private double constrainPanX(double panX) {
 
     /**
      * Set the entities to be displayed in the record sheet preview.
-     * 
+     *
      * @param selectedEntities The list of entities to display.
      */
     public void setEntities(List<? extends BTObject> selectedEntities) {
@@ -498,7 +491,7 @@ private double constrainPanX(double panX) {
 
     /**
      * Set a single entity to be displayed in the record sheet preview.
-     * 
+     *
      * @param entity
      */
     public void setEntity(Entity entity) {
@@ -507,12 +500,15 @@ private double constrainPanX(double panX) {
 
     // Helper to compare entity lists
     private boolean areEntityListsEffectivelyEqual(List<BTObject> list1, List<BTObject> list2) {
-        if (list1 == list2)
+        if (list1 == list2) {
             return true;
-        if (list1 == null || list2 == null)
+        }
+        if (list1 == null || list2 == null) {
             return false;
-        if (list1.size() != list2.size())
+        }
+        if (list1.size() != list2.size()) {
             return false;
+        }
         for (int i = 0; i < list1.size(); i++) {
             if (list1.get(i) != list2.get(i)) {
                 return false;
@@ -534,11 +530,10 @@ private double constrainPanX(double panX) {
     }
 
     /**
-     * Clears current state, regenerates sheets and pages, then schedules a view
-     * reset.
+     * Clears the current state, regenerates sheets and pages, then schedules a view reset.
      */
     private void performRegenerateAndReset() {
-        cleanupPageTasksAndData(); // Cancel tasks, clear page list
+        cleanupPageTasksAndData(); // Cancel tasks, clear the page list
         generatedSheets = null; // Clear cached sheets
 
         if (currentEntities.isEmpty()) {
@@ -556,7 +551,7 @@ private double constrainPanX(double panX) {
         if (isShowing()) {
             // Generate sheets and pages in the background to avoid blocking EDT
             // Display a "Loading..." message while generating
-            repaint(); // Show empty state or loading message immediately
+            repaint(); // Show an empty state or loading a message immediately
             renderExecutor.submit(() -> {
                 generateSheetPages(currentEntities);
                 SwingUtilities.invokeLater(this::scheduleResetView); // Reset view once pages are generated
@@ -582,13 +577,12 @@ private double constrainPanX(double panX) {
             // This is one of the slowest parts
             logger.debug("Starting UnitPrintManager.createSheets...");
             long start = System.nanoTime();
-            List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(
-                    entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
-                    oneUnitPerSheet, options, true);
+            List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(entitiesToGenerate.subList(0,
+                  Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options, true);
             long end = System.nanoTime();
             logger.debug("Finished UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
-            if (tempGeneratedSheets == null || tempGeneratedSheets.isEmpty()) {
+            if (tempGeneratedSheets.isEmpty()) {
                 logger.warn("UnitPrintManager.createSheets returned no sheets.");
                 this.generatedSheets = Collections.emptyList();
                 // Clear existing pages safely on EDT
@@ -611,13 +605,17 @@ private double constrainPanX(double panX) {
             start = System.nanoTime();
             for (int sheetIndex = 0; sheetIndex < generatedSheets.size(); sheetIndex++) {
                 PrintRecordSheet sheet = generatedSheets.get(sheetIndex);
-                if (sheet == null)
+                if (sheet == null) {
                     continue;
+                }
 
                 if (sheet instanceof PrintSmallUnitSheet) {
                     pf.setPaper(paperDef.createPaper());
                 } else {
-                    pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                    pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS,
+                          DEFAULT_MARGINS,
+                          DEFAULT_MARGINS,
+                          DEFAULT_MARGINS));
                 }
 
                 int pageCount = sheet.getPageCount();
@@ -631,21 +629,27 @@ private double constrainPanX(double panX) {
                             double baseWidth = pz.pxWidth;
                             double baseHeight = pz.pxHeight;
 
-                            SheetPageInfo pageInfo = new SheetPageInfo(node, sheetIndex, pageIndexInSheet,
-                                    globalPageIndex, baseWidth, baseHeight);
+                            SheetPageInfo pageInfo = new SheetPageInfo(node,
+                                  sheetIndex,
+                                  pageIndexInSheet,
+                                  globalPageIndex,
+                                  baseWidth,
+                                  baseHeight);
                             pageInfo.layoutPosition.setLocation(currentXOffset, 0); // Simple horizontal layout
                             newPages.add(pageInfo);
 
                             currentXOffset += baseWidth + SPACE_BETWEEN_PAGES; // Add spacing between pages
                             globalPageIndex++;
                         } else {
-                            logger.warn("Failed to build GraphicsNode for sheet {}, page {}", sheetIndex,
-                                    pageIndexInSheet);
+                            logger.warn("Failed to build GraphicsNode for sheet {}, page {}",
+                                  sheetIndex,
+                                  pageIndexInSheet);
                         }
                     } catch (Exception e) {
-                        logger.error(
-                                "Error generating GraphicsNode for sheet " + sheetIndex + ", page " + pageIndexInSheet,
-                                e);
+                        logger.error(e,
+                              "Error generating GraphicsNode for sheet {}, page {}",
+                              sheetIndex,
+                              pageIndexInSheet);
                     }
                 }
             }
@@ -653,7 +657,7 @@ private double constrainPanX(double panX) {
             logger.debug("Finished generating {} GraphicsNodes in {} ms", globalPageIndex, (end - start) / 1_000_000);
 
             // Update the main list on the EDT or ensure thread-safety
-            // Here we replace the whole list which is okay since sheetPages is synchronized
+            // Here we replace the whole list, which is okay since sheetPages is synchronized
             sheetPages.clear(); // Clear old pages before adding new ones
             sheetPages.addAll(newPages);
 
@@ -668,26 +672,25 @@ private double constrainPanX(double panX) {
             return;
         }
         regenerateTimer.stop();
-        updateTimer.restart(); // Restart update timer to debounce
+        updateTimer.restart(); // Restart the update timer to debounce
     }
 
     private List<PrintRecordSheet> createSheetsInEDT(List<BTObject> entitiesToGenerate, boolean singlePrint,
-            RecordSheetOptions options) {
+          RecordSheetOptions options) {
         if (!SwingUtilities.isEventDispatchThread()) {
             // If not, use invokeAndWait to call this method on the EDT
             final AtomicReference<List<PrintRecordSheet>> resultHolder = new AtomicReference<>();
             try {
-                SwingUtilities.invokeAndWait(() -> 
-                    resultHolder.set(createSheetsInEDT(entitiesToGenerate, singlePrint, options))
-                );
+                SwingUtilities.invokeAndWait(() -> resultHolder.set(createSheetsInEDT(entitiesToGenerate,
+                      singlePrint,
+                      options)));
                 return resultHolder.get();
             } catch (Exception e) {
                 logger.error("Error dispatching createSheets to EDT", e);
                 return Collections.emptyList();
             }
         }
-        List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(entitiesToGenerate, singlePrint, options, true);
-        return tempGeneratedSheets;
+        return UnitPrintManager.createSheets(entitiesToGenerate, singlePrint, options, true);
     }
 
     private void performUpdateSheetContentInPlace() {
@@ -703,7 +706,7 @@ private double constrainPanX(double panX) {
         repaint(); // Ensure placeholders might show if needed
 
         renderExecutor.submit(() -> {
-            List<PrintRecordSheet> newGeneratedSheets = null;
+            List<PrintRecordSheet> newGeneratedSheets;
             List<SheetPageInfo> newPageInfos = new ArrayList<>();
             boolean structureChanged = false;
 
@@ -712,9 +715,10 @@ private double constrainPanX(double panX) {
             try {
                 logger.debug("Starting in-place UnitPrintManager.createSheets...");
                 long start = System.nanoTime();
-                // Regenerate sheets based on potentially updated entity state
+                // Regenerate sheets based on a potentially updated entity state
                 RecordSheetOptions options = new RecordSheetOptions();
-                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0,
+                      Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -735,13 +739,17 @@ private double constrainPanX(double panX) {
                     start = System.nanoTime();
                     for (int sheetIndex = 0; sheetIndex < newGeneratedSheets.size(); sheetIndex++) {
                         PrintRecordSheet sheet = newGeneratedSheets.get(sheetIndex);
-                        if (sheet == null)
+                        if (sheet == null) {
                             continue;
+                        }
 
                         if (sheet instanceof PrintSmallUnitSheet) {
                             pf.setPaper(paperDef.createPaper());
                         } else {
-                            pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                            pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS,
+                                  DEFAULT_MARGINS,
+                                  DEFAULT_MARGINS,
+                                  DEFAULT_MARGINS));
                         }
 
                         int pageCount = sheet.getPageCount();
@@ -752,25 +760,33 @@ private double constrainPanX(double panX) {
                                 if (node != null) {
                                     double baseWidth = pz.pxWidth;
                                     double baseHeight = pz.pxHeight;
-                                    SheetPageInfo pageInfo = new SheetPageInfo(node, sheetIndex, pageIndexInSheet,
-                                            globalPageIndex, baseWidth, baseHeight);
+                                    SheetPageInfo pageInfo = new SheetPageInfo(node,
+                                          sheetIndex,
+                                          pageIndexInSheet,
+                                          globalPageIndex,
+                                          baseWidth,
+                                          baseHeight);
                                     pageInfo.layoutPosition.setLocation(currentXOffset, 0);
                                     newPageInfos.add(pageInfo);
                                     currentXOffset += baseWidth + SPACE_BETWEEN_PAGES;
                                     globalPageIndex++;
                                 } else {
                                     logger.warn("Failed to build GraphicsNode (in-place) for sheet {}, page {}",
-                                            sheetIndex, pageIndexInSheet);
+                                          sheetIndex,
+                                          pageIndexInSheet);
                                 }
                             } catch (Exception e) {
-                                logger.error("Error generating GraphicsNode (in-place) for sheet " + sheetIndex
-                                        + ", page " + pageIndexInSheet, e);
+                                logger.error(e,
+                                      "Error generating GraphicsNode (in-place) for sheet {}, page {}",
+                                      sheetIndex,
+                                      pageIndexInSheet);
                             }
                         }
                     }
                     end = System.nanoTime();
-                    logger.debug("Finished generating {} GraphicsNodes in-place in {} ms", globalPageIndex,
-                            (end - start) / 1_000_000);
+                    logger.debug("Finished generating {} GraphicsNodes in-place in {} ms",
+                          globalPageIndex,
+                          (end - start) / 1_000_000);
                 }
 
             } catch (Exception ex) {
@@ -790,10 +806,10 @@ private double constrainPanX(double panX) {
                     return;
                 }
                 if (finalStructureChanged) {
-                    // If structure changed (or error occurred), fall back to full reset.
-                    // It can happen when the tab is re-attached
+                    // If the structure changed (or an error occurred), fall back to full reset. It can happen when
+                    // the tab is re-attached
                     logger.debug(
-                            "Sheet structure changed during in-place update or error occurred. Performing full reset.");
+                          "Sheet structure changed during in-place update or error occurred. Performing full reset.");
                     regenerateAndReset(); // Use the full reset logic
                     return;
                 }
@@ -814,9 +830,11 @@ private double constrainPanX(double panX) {
                         // Sanity check indices (optional but good)
                         if (oldPageInfo.globalPageIndex != newPageInfo.globalPageIndex) {
                             logger.warn(
-                                    "Page index mismatch during in-place update ({}/{} vs {}/{}). Falling back to reset.",
-                                    oldPageInfo.originalSheetIndex, oldPageInfo.pageIndexInSheet,
-                                    newPageInfo.originalSheetIndex, newPageInfo.pageIndexInSheet);
+                                  "Page index mismatch during in-place update ({}/{} vs {}/{}). Falling back to reset.",
+                                  oldPageInfo.originalSheetIndex,
+                                  oldPageInfo.pageIndexInSheet,
+                                  newPageInfo.originalSheetIndex,
+                                  newPageInfo.pageIndexInSheet);
                             regenerateAndReset();
                             return; // Exit the lambda
                         }
@@ -906,7 +924,7 @@ private double constrainPanX(double panX) {
 
         RecordSheetOptions options = new RecordSheetOptions();
         PaperSize pz = options.getPaperSize();
-        double maxBaseHeight = 0;
+        double maxBaseHeight;
         if (!sheetPages.isEmpty()) {
             SheetPageInfo firstPage = sheetPages.get(0);
             maxBaseHeight = firstPage.baseHeightPx;
@@ -915,8 +933,9 @@ private double constrainPanX(double panX) {
             maxBaseHeight = pz.pxHeight;
         }
 
-        if (maxBaseHeight <= 0)
+        if (maxBaseHeight <= 0) {
             return MIN_ZOOM;
+        }
 
         double availableHeight = getHeight() - VERTICAL_PADDING;
         double zoomY = (availableHeight > 0) ? availableHeight / maxBaseHeight : 1.0;
@@ -924,8 +943,7 @@ private double constrainPanX(double panX) {
     }
 
     /**
-     * Request background rendering for all pages if their cache is invalid
-     * for the current zoom factor.
+     * Request background rendering for all pages if their cache is invalid for the current zoom factor.
      */
     private synchronized void requestRenderForAllPages() {
         final double targetZoom = this.zoomFactor;
@@ -944,29 +962,33 @@ private double constrainPanX(double panX) {
      * Submits a rendering task for a specific page at a specific zoom level.
      */
     private synchronized void requestRenderForPage(SheetPageInfo pageInfo, double targetZoom) {
-        pageInfo.cancelPendingRender(); // Cancel previous render task for this page
+        pageInfo.cancelPendingRender(); // Cancel a previous render task for this page
 
         final int currentRenderVersion = pageInfo.renderVersion; // Capture version for this task
 
         Callable<RenderResult> renderTask = () -> {
             // Background Thread
-            if (Thread.currentThread().isInterrupted())
-                return new RenderResult(null, targetZoom); 
+            if (Thread.currentThread().isInterrupted()) {
+                return new RenderResult(null, targetZoom);
+            }
 
             GraphicsNode node = pageInfo.graphicsNode;
-            if (node == null)
-                return new RenderResult(null, targetZoom); 
+            if (node == null) {
+                return new RenderResult(null, targetZoom);
+            }
 
             int renderWidth = (int) Math.ceil(pageInfo.baseWidthPx * targetZoom);
             int renderHeight = (int) Math.ceil(pageInfo.baseHeightPx * targetZoom);
 
             if (renderWidth <= 0 || renderHeight <= 0) {
-                logger.warn("Invalid render dimensions for page {}: {}x{}", pageInfo.globalPageIndex, renderWidth,
-                        renderHeight);
+                logger.warn("Invalid render dimensions for page {}: {}x{}",
+                      pageInfo.globalPageIndex,
+                      renderWidth,
+                      renderHeight);
                 return new RenderResult(null, targetZoom); // Cannot render
             }
 
-            BufferedImage img = null;
+            BufferedImage img;
             Graphics2D g = null;
             AffineTransform originalTransform = null;
             boolean success = false;
@@ -1003,7 +1025,7 @@ private double constrainPanX(double panX) {
                 node.setTransform(workTransform);
 
                 node.paint(g); // Render the node
-                success = true; // Mark as successful render
+                success = true; // Mark as a successful render
             } catch (OutOfMemoryError oom) {
                 logger.error("OOM rendering page {} at zoom {}", pageInfo.globalPageIndex, targetZoom, oom);
                 img = null; // Discard partial image
@@ -1011,10 +1033,11 @@ private double constrainPanX(double panX) {
                 logger.error("Error rendering page {}", pageInfo.globalPageIndex, ex);
                 img = null; // Discard on error
             } finally {
-                if (g != null)
+                if (g != null) {
                     g.dispose();
+                }
                 // Restore original transform
-                if (node != null && originalTransform != null) {
+                if (originalTransform != null) {
                     try {
                         node.setTransform(originalTransform);
                     } catch (Exception e) {
@@ -1046,64 +1069,77 @@ private double constrainPanX(double panX) {
 
         // Process the result asynchronously on the EDT
         completableRenderFuture.thenAcceptAsync(result -> {
-            // ---- EDT Thread ----
-            synchronized (pageInfo) { // Synchronize access to pageInfo state
-                boolean isCancelled = completableRenderFuture.isDone() && completableRenderFuture.isCancelled(); // Check cancellation status
+                  // ---- EDT Thread ----
+                  synchronized (pageInfo) { // Synchronize access to pageInfo state
+                      boolean isCancelled = completableRenderFuture.isDone() &&
+                                                  completableRenderFuture.isCancelled(); // Check cancellation status
 
-                // Check if this result is still valid (correct version AND this task hasn't been cancelled/replaced)
-                if (pageInfo.renderVersion == currentRenderVersion && pageInfo.pendingRenderTask == completableRenderFuture && !isCancelled) {
+                      // Check if this result is still valid (correct version, AND this task hasn't been canceled/replaced)
+                      if (pageInfo.renderVersion == currentRenderVersion &&
+                                pageInfo.pendingRenderTask == completableRenderFuture &&
+                                !isCancelled) {
 
-                    if (result != null && result.image != null) {
-                        // SUCCESS: Use image and the zoom FROM THE RESULT
-                        pageInfo.cachedImage = new SoftReference<>(result.image);
-                        pageInfo.imageRenderZoom = result.zoomFactor;
-                    } else {
-                        // Render failed, was interrupted, or produced null image
-                        pageInfo.cachedImage = new SoftReference<>(null);
-                        pageInfo.imageRenderZoom = -1.0; // Mark as invalid
-                    }
-                    // Mark task as completed ONLY IF IT IS STILL THE CURRENT TASK reference
-                    if (pageInfo.pendingRenderTask == completableRenderFuture) {
-                        pageInfo.pendingRenderTask = null;
-                    }
-                    repaint(); // Repaint the panel to show the new image or clear old one
+                          if (result != null && result.image != null) {
+                              // SUCCESS: Use image and the zoom FROM THE RESULT
+                              pageInfo.cachedImage = new SoftReference<>(result.image);
+                              pageInfo.imageRenderZoom = result.zoomFactor;
+                          } else {
+                              // Render failed, was interrupted, or produced a null image
+                              pageInfo.cachedImage = new SoftReference<>(null);
+                              pageInfo.imageRenderZoom = -1.0; // Mark as invalid
+                          }
+                          // Mark the task as completed ONLY IF IT IS STILL THE CURRENT TASK reference
+                          if (pageInfo.pendingRenderTask == completableRenderFuture) {
+                              pageInfo.pendingRenderTask = null;
+                          }
+                          repaint(); // Repaint the panel to show the new image or clear the old one
 
-                } else {
-                    // Discarding stale/cancelled result
-                    if (result != null && result.image != null) {
-                        result.image.flush();
-                    }
-                    // Clear if a cancelled task somehow lingered as pending
-                    if (isCancelled && pageInfo.pendingRenderTask == completableRenderFuture) {
-                        pageInfo.pendingRenderTask = null;
-                    }
-                }
-            }
-        }, SwingUtilities::invokeLater) // Ensure execution on EDT
-        .exceptionally(ex -> { // Handle exceptions during task execution or completion stage
-            // ---- EDT Thread ----
-            Throwable cause = (ex instanceof CompletionException) ? ex.getCause() : ex; // Unwrap CompletionException
+                      } else {
+                          // Discarding stale/cancelled result
+                          if (result != null && result.image != null) {
+                              result.image.flush();
+                          }
+                          // Clear if a canceled task somehow lingered as pending
+                          if (isCancelled && pageInfo.pendingRenderTask == completableRenderFuture) {
+                              pageInfo.pendingRenderTask = null;
+                          }
+                      }
+                  }
+              }, SwingUtilities::invokeLater) // Ensure execution on EDT
+              .exceptionally(ex -> { // Handle exceptions during the task execution or completion stage
+                  // ---- EDT Thread ----
+                  Throwable cause = (ex instanceof CompletionException) ?
+                                          ex.getCause() :
+                                          ex; // Unwrap CompletionException
 
-            if (cause instanceof java.util.concurrent.CancellationException) {
-                logger.trace("Render task v{} page {} explicitly cancelled (exceptionally).", currentRenderVersion, pageInfo.globalPageIndex);
-            } else if (cause instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-                logger.trace("Render task v{} page {} interrupted (exceptionally).", currentRenderVersion, pageInfo.globalPageIndex);
-            } else {
-                logger.error("Exception completing render task v{} page {}", currentRenderVersion, pageInfo.globalPageIndex, cause);
-            }
+                  if (cause instanceof java.util.concurrent.CancellationException) {
+                      logger.trace("Render task v{} page {} explicitly cancelled (exceptionally).",
+                            currentRenderVersion,
+                            pageInfo.globalPageIndex);
+                  } else if (cause instanceof InterruptedException) {
+                      Thread.currentThread().interrupt();
+                      logger.trace("Render task v{} page {} interrupted (exceptionally).",
+                            currentRenderVersion,
+                            pageInfo.globalPageIndex);
+                  } else {
+                      logger.error("Exception completing render task v{} page {}",
+                            currentRenderVersion,
+                            pageInfo.globalPageIndex,
+                            cause);
+                  }
 
-            // Ensure task state is cleared correctly on error/cancellation
-            synchronized (pageInfo) {
-                if (pageInfo.renderVersion == currentRenderVersion && pageInfo.pendingRenderTask == completableRenderFuture) {
-                    pageInfo.pendingRenderTask = null;
-                    pageInfo.cachedImage = new SoftReference<>(null);
-                    pageInfo.imageRenderZoom = -1.0;
-                    repaint(); // Repaint to show placeholder
-                }
-            }
-            return null;
-        });
+                  // Ensure the task state is cleared correctly on error/cancellation
+                  synchronized (pageInfo) {
+                      if (pageInfo.renderVersion == currentRenderVersion &&
+                                pageInfo.pendingRenderTask == completableRenderFuture) {
+                          pageInfo.pendingRenderTask = null;
+                          pageInfo.cachedImage = new SoftReference<>(null);
+                          pageInfo.imageRenderZoom = -1.0;
+                          repaint(); // Repaint to show placeholder
+                      }
+                  }
+                  return null;
+              });
 
     }
 
@@ -1116,7 +1152,7 @@ private double constrainPanX(double panX) {
             GraphicsDevice gs = ge.getDefaultScreenDevice();
             GraphicsConfiguration gc = gs.getDefaultConfiguration();
             BufferedImage img = gc.createCompatibleImage(width, height, java.awt.Transparency.OPAQUE);
-            if (img == null) { // Fallback if compatible image fails
+            if (img == null) { // Fallback if a compatible image fails
                 img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             }
             return img;
@@ -1130,30 +1166,33 @@ private double constrainPanX(double panX) {
 
     /** Helper to set rendering hints for Graphics2D */
     private void setupRenderingHints(Graphics2D g, boolean highQuality, boolean forPrinting,
-            BufferedImage targetImage) {
+          BufferedImage targetImage) {
         RenderingHints rh = new RenderingHints(null);
 
         rh.put(RenderingHints.KEY_RENDERING,
-                highQuality ? RenderingHints.VALUE_RENDER_QUALITY : RenderingHints.VALUE_RENDER_SPEED);
+              highQuality ? RenderingHints.VALUE_RENDER_QUALITY : RenderingHints.VALUE_RENDER_SPEED);
         rh.put(RenderingHints.KEY_COLOR_RENDERING,
-                highQuality ? RenderingHints.VALUE_COLOR_RENDER_QUALITY : RenderingHints.VALUE_COLOR_RENDER_SPEED);
-        rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION, highQuality ? RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
-                : RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+              highQuality ? RenderingHints.VALUE_COLOR_RENDER_QUALITY : RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        rh.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
+              highQuality ?
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY :
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
         rh.put(RenderingHints.KEY_ANTIALIASING,
-                highQuality ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
+              highQuality ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
         rh.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-                highQuality ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+              highQuality ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         rh.put(RenderingHints.KEY_INTERPOLATION,
-                highQuality ? RenderingHints.VALUE_INTERPOLATION_BICUBIC
-                        : RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+              highQuality ? RenderingHints.VALUE_INTERPOLATION_BICUBIC : RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE); // Or STROKE_NORMALIZE
         rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
-                highQuality ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+              highQuality ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
         rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
 
         // Batik specific hints
-        rh.put(RenderingHintsKeyExt.KEY_TRANSCODING, forPrinting ? RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING
-                : RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
+        rh.put(RenderingHintsKeyExt.KEY_TRANSCODING,
+              forPrinting ?
+                    RenderingHintsKeyExt.VALUE_TRANSCODING_PRINTING :
+                    RenderingHintsKeyExt.VALUE_TRANSCODING_VECTOR);
         if (targetImage != null) {
             rh.put(RenderingHintsKeyExt.KEY_BUFFERED_IMAGE, new WeakReference<>(targetImage));
         }
@@ -1211,29 +1250,36 @@ private double constrainPanX(double panX) {
                 int targetY = (int) Math.round(targetDrawY);
                 int targetW = (int) Math.round(targetDrawWidth);
                 int targetH = (int) Math.round(targetDrawHeight);
-                
-                // Clip drawing to visible area for efficiency
+
+                // Clip drawing to a visible area for efficiency
                 Rectangle targetBoundsInt = new Rectangle(targetX, targetY, targetW, targetH);
                 if (!g2d.getClipBounds().intersects(targetBoundsInt)) {
-                    continue; // Skip drawing if page is entirely off-screen (creates issues)
+                    continue; // Skip drawing if the page is entirely off-screen (creates issues)
                 }
 
-                if (pageImage != null && cachedZoom > 0 && targetW > 0 && targetH > 0 && pageImage.getWidth() > 0 && pageImage.getHeight() > 0) {
+                if (pageImage != null &&
+                          cachedZoom > 0 &&
+                          targetW > 0 &&
+                          targetH > 0 &&
+                          pageImage.getWidth() > 0 &&
+                          pageImage.getHeight() > 0) {
                     // We have a cached image
-                    boolean zoomsMatch = Math.abs(currentZoom - cachedZoom) < 0.005; // Allow small tolerance for zoom match
-                    
+                    boolean zoomsMatch = Math.abs(currentZoom - cachedZoom) <
+                                               0.005; // Allow small tolerance for zoom match
+
                     if (zoomsMatch && highQuality) {
                         setupRenderingHints(g2d, true, false, null);
                         int drawPosX = (int) Math.round(currentPan.getX() + pageInfo.layoutPosition.x * cachedZoom);
                         int drawPosY = (int) Math.round(currentPan.getY() + pageInfo.layoutPosition.y * cachedZoom);
-                        // Draw image at its native size at the calculated position
+                        // Draw an image at its native size at the calculated position
                         g2d.drawImage(pageImage, drawPosX, drawPosY, null);
                     } else {
                         setupRenderingHints(g2d, false, false, null);
-                        g2d.drawImage(pageImage,
-                            targetX, targetY, targetX + targetW, targetY + targetH,     // Destination rect (target area)
-                            0, 0, pageImage.getWidth(), pageImage.getHeight(),  // Source rect (full cached image)
-                            null);
+                        g2d.drawImage(pageImage, targetX, targetY, targetX + targetW, targetY + targetH,
+                              // Destination rect (target area)
+                              0, 0, pageImage.getWidth(), pageImage.getHeight(),
+                              // Source rect (full cached image)
+                              null);
                     }
                 } else {
                     // No cached image available, draw placeholder
@@ -1247,16 +1293,18 @@ private double constrainPanX(double panX) {
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Rendering...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
-                                (int) Math.round(targetY + targetH / 2));
+                        g2d.drawString(msg,
+                              (int) Math.round(targetX + (targetW - sw) / 2.0),
+                              (int) Math.round(targetY + targetH / 2.0));
                     } else if (pageInfo.graphicsNode != null) {
                         // Has node but no image and no task
                         g2d.setColor(Color.DARK_GRAY);
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Waiting...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
-                                (int) Math.round(targetY + targetH / 2));
+                        g2d.drawString(msg,
+                              (int) Math.round(targetX + (targetW - sw) / 2.0),
+                              (int) Math.round(targetY + targetH / 2.0));
                     }
                 }
             } // End loop over pages
@@ -1289,7 +1337,7 @@ private double constrainPanX(double panX) {
         int pageImgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
         int totalWidth = pageImgWidth * numPages;
 
-        BufferedImage img = null;
+        BufferedImage img;
         Graphics2D g = null;
         try {
             img = new BufferedImage(totalWidth, pageImgHeight, BufferedImage.TYPE_INT_RGB);
@@ -1303,8 +1351,9 @@ private double constrainPanX(double panX) {
             int k = 0;
             for (SheetPageInfo pageInfo : pagesToCopy) {
                 GraphicsNode gn = pageInfo.graphicsNode;
-                if (gn == null)
+                if (gn == null) {
                     continue;
+                }
 
                 AffineTransform originalTransform = null;
                 try {
@@ -1313,7 +1362,7 @@ private double constrainPanX(double panX) {
                     Rectangle2D bounds = gn.getBounds();
                     if (bounds == null || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
                         logger.warn("Skipping page {} for clipboard due to invalid node bounds.",
-                                pageInfo.globalPageIndex);
+                              pageInfo.globalPageIndex);
                         continue;
                     }
 
@@ -1346,12 +1395,13 @@ private double constrainPanX(double panX) {
                     logger.error("Error painting node for page {} to clipboard", pageInfo.globalPageIndex, ex);
                 } finally {
                     // Restore original transform
-                    if (gn != null && originalTransform != null) {
+                    if (originalTransform != null) {
                         try {
                             gn.setTransform(originalTransform);
                         } catch (Exception e) {
                             logger.error("Failed to restore transform for page {} after clipboard render",
-                                    pageInfo.globalPageIndex, e);
+                                  pageInfo.globalPageIndex,
+                                  e);
                         }
                     }
                 }
@@ -1374,12 +1424,7 @@ private double constrainPanX(double panX) {
     }
 
     // Helper class for Transferable Image
-    private static class TransferableImage implements Transferable {
-        private final BufferedImage image;
-
-        public TransferableImage(BufferedImage image) {
-            this.image = image;
-        }
+    private record TransferableImage(BufferedImage image) implements Transferable {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
@@ -1400,7 +1445,7 @@ private double constrainPanX(double panX) {
         }
     }
 
-    /** 
+    /**
      * Cancels all pending page render tasks and clears caches.
      */
     private void cleanupPageTasksAndData() {
@@ -1419,12 +1464,15 @@ private double constrainPanX(double panX) {
      * Cleans up resources and references to help with garbage collection.
      */
     public void cleanup() {
-        if (resetViewTimer != null && resetViewTimer.isRunning())
+        if (resetViewTimer != null && resetViewTimer.isRunning()) {
             resetViewTimer.stop();
-        if (zoomRenderDebounceTimer != null && zoomRenderDebounceTimer.isRunning())
+        }
+        if (zoomRenderDebounceTimer != null && zoomRenderDebounceTimer.isRunning()) {
             zoomRenderDebounceTimer.stop();
-        if (updateTimer != null && updateTimer.isRunning())
+        }
+        if (updateTimer != null && updateTimer.isRunning()) {
             updateTimer.stop();
+        }
 
         cleanupPageTasksAndData();
         generatedSheets = null;

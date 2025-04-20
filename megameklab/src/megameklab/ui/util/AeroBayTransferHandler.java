@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
 
@@ -22,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
-
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTree;
@@ -41,24 +54,21 @@ import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
 
 /**
- * Handles drag-and-drop for aerospace units that use weapon bays. Most of the
- * work of adding, removing,
- * and changing equipment locations is done by the JTree for the weapon arc.
+ * Handles drag-and-drop for aerospace units that use weapon bays. Most of the work of adding, removing, and changing
+ * equipment locations is done by the JTree for the weapon arc.
  *
  * @author Neoancient
  */
 public class AeroBayTransferHandler extends TransferHandler {
     private static final MMLogger logger = MMLogger.create(AeroBayTransferHandler.class);
 
-    private EntitySource eSource;
+    private final EntitySource eSource;
 
     public static final String EMTPYSLOT = "EmptySlot";
 
     /*
-     * Aliases for local usage.
-     * When moving ammo, the default is to move a single ton (or whatever the atomic
-     * value is) at a time.
-     * Holding the ctrl key will move all ammo of that type in that location.
+     * Aliases for local usage. When moving ammo, the default is to move a single ton (or whatever the atomic value
+     * is) at a time. Holding the ctrl key will move all ammo of that type in that location.
      */
     public static final int AMMO_SINGLE = MOVE;
     public static final int AMMO_ALL = COPY;
@@ -94,25 +104,21 @@ public class AeroBayTransferHandler extends TransferHandler {
             return false;
         }
 
-        if ((support.getComponent() instanceof BayWeaponCriticalTree)) {
-            final BayWeaponCriticalTree tree = (BayWeaponCriticalTree) support.getComponent();
+        if ((support.getComponent() instanceof BayWeaponCriticalTree tree)) {
             if (eSource.getEntity().usesWeaponBays() && (eqList.size() == 1)) {
-                // If it's a bay we move it and its entire contents. Otherwise we find the bay
-                // that was
-                // dropped on and add it there. A weapon dropped on an illegal bay will create a
-                // new one
-                // and non-bay equipment will be added at the top level regardless of the drop
-                // location.
-                // Non-weapon bay equipment cannot be dropped on an illegal bay.
+                // If it's a bay, we move it and its entire contents. Otherwise, we find the bay that was dropped on
+                // and add it there. A weapon dropped on an illegal bay will create a new one, and non-bay equipment
+                // will be added at the top level regardless of the drop location. Non-weapon bay equipment cannot be
+                // dropped on an illegal bay.
                 final Mounted<?> mount = eqList.get(0);
                 if (mount.getType() instanceof BayWeapon) {
                     tree.addBay((WeaponMounted) mount);
                 } else if ((mount instanceof AmmoMounted) && (support.getUserDropAction() == AMMO_SINGLE)) {
-                    // Default action for ammo is to move a single slot. Holding the ctrl key when
-                    // dropping
-                    // will create a AMMO_ALL command, which adds all the ammo of the type.
-                    tree.addAmmo((AmmoMounted) mount, ((AmmoMounted) mount).getType().getShots(),
-                            ((JTree.DropLocation) support.getDropLocation()).getPath());
+                    // The default action for ammo is to move a single slot. Holding the ctrl key when dropping will
+                    // create a AMMO_ALL command, which adds all the ammo of the type.
+                    tree.addAmmo((AmmoMounted) mount,
+                          ((AmmoMounted) mount).getType().getShots(),
+                          ((JTree.DropLocation) support.getDropLocation()).getPath());
                 } else {
                     tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
                 }
@@ -121,10 +127,9 @@ public class AeroBayTransferHandler extends TransferHandler {
                 tree.addToLocation(eqList);
             }
         } else {
-            // Target is unallocated bay table.
+            // Target is an unallocated bay table.
             for (Mounted<?> mount : eqList) {
-                if (mount.getType() instanceof AmmoType) {
-                    AmmoType at = (AmmoType) mount.getType();
+                if (mount.getType() instanceof AmmoType at) {
                     // Check whether we are moving one of multiple slots.
                     if ((support.getUserDropAction() == AMMO_SINGLE) && (mount.getUsableShotsLeft() > at.getShots())) {
                         mount.setShotsLeft(mount.getUsableShotsLeft() - at.getShots());
@@ -168,8 +173,11 @@ public class AeroBayTransferHandler extends TransferHandler {
                         UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         if ((mount.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
                             UnitUtil.removeCriticals(eSource.getEntity(), m.getLinkedBy());
-                            UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
-                                    Entity.LOC_NONE, Entity.LOC_NONE, false);
+                            UnitUtil.changeMountStatus(eSource.getEntity(),
+                                  m.getLinkedBy(),
+                                  Entity.LOC_NONE,
+                                  Entity.LOC_NONE,
+                                  false);
                             m.getLinkedBy().setLinked(null);
                             m.setLinkedBy(null);
                         }
@@ -192,7 +200,7 @@ public class AeroBayTransferHandler extends TransferHandler {
         if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
             return false;
         }
-        // check if the dragged mounted should be transferrable
+        // check if the dragged mounted should be transferable
         List<Mounted<?>> mounted = new ArrayList<>();
         try {
             String str = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
@@ -209,7 +217,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             logger.error("", e);
         }
 
-        // not actually dragged a Mounted? not transferable
+        // not dragged a Mounted? not transferable
         if (mounted.isEmpty()) {
             return false;
         }
@@ -217,8 +225,8 @@ public class AeroBayTransferHandler extends TransferHandler {
         // If allocating to an arc, make sure the bay can receive it
         if (support.getComponent() instanceof BayWeaponCriticalTree) {
             for (Mounted<?> m : mounted) {
-                if (((BayWeaponCriticalTree) support.getComponent())
-                        .isValidDropLocation((JTree.DropLocation) support.getDropLocation(), m)) {
+                if (((BayWeaponCriticalTree) support.getComponent()).isValidDropLocation((JTree.DropLocation) support.getDropLocation(),
+                      m)) {
                     return true;
                 }
             }
@@ -252,7 +260,7 @@ public class AeroBayTransferHandler extends TransferHandler {
         if (((action == MOVE) || (action == COPY)) && (source instanceof BayWeaponCriticalTree)) {
             try {
                 ((BayWeaponCriticalTree) source).removeExported((String) data.getTransferData(DataFlavor.stringFlavor),
-                        action);
+                      action);
             } catch (Exception ex) {
                 logger.error("", ex);
             }

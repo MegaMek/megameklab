@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMekLab
+ * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.battleArmor;
 
@@ -24,12 +33,10 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 
 /**
- * Since BattleArmor is setup in a squad, the standard CriticalSlot system
- * isn't used. For construction purposes, we keep track of criticals. In MM,
- * for purposes and dealing with hits, the "locations" for BattleArmor must
- * correspond to the troopers in the squad. This means that the standard
- * Mounted.location can't really be used, and it causes problems with the
- * criticals as well. Since these really only matter for constructions, a
+ * Since BattleArmor is set up in a squad, the standard CriticalSlot system isn't used. For construction purposes, we
+ * keep track of critical slots. In MM, for purposes and dealing with hits, the "locations" for BattleArmor must
+ * correspond to the troopers in the squad. This means that the standard <code>Mounted.location</code> can't really be
+ * used, and it causes problems with the critical slots as well. Since these really only matter for constructions, a
  * separate critical system is tracked in MML only for construction purposes.
  **/
 public class BACriticalSuit {
@@ -104,8 +111,7 @@ public class BACriticalSuit {
         }
 
         // AP Weapons that are mounted in an AP Mount don't take up slots
-        if (m.isAPMMounted() && m.getLinkedBy() != null
-                && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
+        if (m.isAPMMounted() && m.getLinkedBy() != null && m.getLinkedBy().getType().hasFlag(MiscType.F_AP_MOUNT)) {
             return;
         }
 

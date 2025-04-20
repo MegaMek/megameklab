@@ -1,19 +1,38 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
+import megamek.common.ConvFighter;
+import megamek.common.Dropship;
+import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.Jumpship;
+import megamek.common.SmallCraft;
 import megameklab.printing.PrintAero;
 import org.apache.batik.util.SVGConstants;
 
@@ -46,14 +65,14 @@ public class ControlRollTable extends ReferenceTable {
             if (atmosphereOnly) {
                 addRow("", "", bundle.getString("exceedCeiling"), "");
             }
-            addRow("", "", bundle.getString("rollMoreThanOnce") + "", "");
+            addRow("", "", bundle.getString("rollMoreThanOnce"), "");
             if (entity.getWalkMP() > 0) {
-                addRow("", "", bundle.getString("thrustExceedsSI") + "", "");
+                addRow("", "", bundle.getString("thrustExceedsSI"), "");
             }
             if (!spaceOnly) {
-                addRow("", "", bundle.getString("velocityOver2xThrust") + "", "");
-                addRow("", "", bundle.getString("stalling") + "", "");
-                addRow("", "", bundle.getString("descending3plus") + "", "");
+                addRow("", "", bundle.getString("velocityOver2xThrust"), "");
+                addRow("", "", bundle.getString("stalling"), "");
+                addRow("", "", bundle.getString("descending3plus"), "");
             }
         }
         addRow(NO_SHADE, bundle.getString("damage"), "", "");
@@ -64,8 +83,7 @@ public class ControlRollTable extends ReferenceTable {
         }
 
         addRow(SECTION_HEADER + bundle.getString("modifiers"), "", "", "");
-        if ((entity instanceof SmallCraft) || (entity instanceof Jumpship)
-                || entity.isSupportVehicle()) {
+        if ((entity instanceof SmallCraft) || (entity instanceof Jumpship) || entity.isSupportVehicle()) {
             addRow("", bundle.getString("crewDamage"), "", "+1" + bundle.getString("perHit"));
         } else {
             addRow("", bundle.getString("pilotDamage"), "", "+1" + bundle.getString("perHit"));
@@ -79,7 +97,7 @@ public class ControlRollTable extends ReferenceTable {
         if (!spaceOnly) {
             // Combining +2 atmospheric mod with the unit type adjustment
             if (entity instanceof Dropship) {
-                addRow("", bundle.getString("atmosphericOperations"), "", ((Dropship) entity).isSpheroid() ? "+3" : "+2");
+                addRow("", bundle.getString("atmosphericOperations"), "", entity.isSpheroid() ? "+3" : "+2");
             } else {
                 addRow("", bundle.getString("atmosphericOperations"), "", "+1");
             }

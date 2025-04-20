@@ -1,16 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later  version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.mek;
 
@@ -18,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -57,9 +69,24 @@ public class BMCriticalView extends IView {
     private final JPanel hdPanel = new JPanel();
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> mekPanels = Map.of(Mek.LOC_HEAD, hdPanel, Mek.LOC_LARM, laPanel,
-            Mek.LOC_RARM, raPanel, Mek.LOC_CT, ctPanel, Mek.LOC_LT, ltPanel, Mek.LOC_RT, rtPanel,
-            Mek.LOC_LLEG, llPanel, Mek.LOC_RLEG, rlPanel, Mek.LOC_CLEG, clPanel);
+    private final Map<Integer, JComponent> mekPanels = Map.of(Mek.LOC_HEAD,
+          hdPanel,
+          Mek.LOC_LARM,
+          laPanel,
+          Mek.LOC_RARM,
+          raPanel,
+          Mek.LOC_CT,
+          ctPanel,
+          Mek.LOC_LT,
+          ltPanel,
+          Mek.LOC_RT,
+          rtPanel,
+          Mek.LOC_LLEG,
+          llPanel,
+          Mek.LOC_RLEG,
+          rlPanel,
+          Mek.LOC_CLEG,
+          clPanel);
 
     private final List<BAASBMDropTargetCriticalList<String>> currentCritBlocks = new ArrayList<>();
 
@@ -158,13 +185,8 @@ public class BMCriticalView extends IView {
                     }
                 }
 
-                BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, true, this);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                BAASBMDropTargetCriticalList<String> criticalSlotList = getStringBAASBMDropTargetCriticalList(critNames,
+                      location);
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
                     currentCritBlocks.add(criticalSlotList);
@@ -173,6 +195,21 @@ public class BMCriticalView extends IView {
 
             validate();
         }
+    }
+
+    private BAASBMDropTargetCriticalList<String> getStringBAASBMDropTargetCriticalList(Vector<String> critNames,
+          int location) {
+        BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(critNames,
+              eSource,
+              refresh,
+              true,
+              this);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + "");
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        return criticalSlotList;
     }
 
     private void setTitles() {
@@ -210,23 +247,21 @@ public class BMCriticalView extends IView {
      * Darkens all crit blocks other than the one for the given location
      */
     public void markUnavailableLocations(int location) {
-        currentCritBlocks.stream()
-            .filter(b -> b.getCritLocation() != location)
-            .forEach(b -> b.setDarkened(true));
+        currentCritBlocks.stream().filter(b -> b.getCritLocation() != location).forEach(b -> b.setDarkened(true));
     }
 
     /**
-     * Darkens all crit blocks that are unavailable to the given equipment, e.g. all but Torsos for CASE.
+     * Darkens all crit blocks that are unavailable to the given equipment, e.g., all but Torsos for CASE.
      */
     public void markUnavailableLocations(@Nullable Mounted<?> equipment) {
         if (equipment != null) {
             currentCritBlocks.stream()
-                    .filter(b -> !UnitUtil.isValidLocation(getMek(), equipment.getType(), b.getCritLocation()))
-                    .forEach(b -> b.setDarkened(true));
+                  .filter(b -> !UnitUtil.isValidLocation(getMek(), equipment.getType(), b.getCritLocation()))
+                  .forEach(b -> b.setDarkened(true));
         }
     }
 
-    /** Resets all crit blocks to not darkened. */
+    /** Resets all crit blocks to not darken. */
     public void unMarkAllLocations() {
         currentCritBlocks.forEach(b -> b.setDarkened(false));
     }

@@ -1,29 +1,36 @@
 /*
- * Copyright (c) 2023, 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.Event;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -56,12 +63,12 @@ public class StatusBar extends ITab {
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
     private final MegaMekLabMainUI parent;
-    private final JLabel bvLabel = new ClickableLabel(
-            e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
-    protected final JLabel tons = new ClickableLabel(
-            e -> new WeightDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
-    private final JLabel cost = new ClickableLabel(
-            e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
+    private final JLabel bvLabel = new ClickableLabel(e -> new BVDisplayDialog(getParentFrame(),
+          getEntity()).setVisible(true));
+    protected final JLabel tons = new ClickableLabel(e -> new WeightDisplayDialog(getParentFrame(),
+          getEntity()).setVisible(true));
+    private final JLabel cost = new ClickableLabel(e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(
+          true));
     private final JLabel invalid = new JLabel("Invalid");
     private final DecimalFormat formatter;
     private TestEntity testEntity;
@@ -75,6 +82,13 @@ public class StatusBar extends ITab {
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
+        ActionListener validationListener = e -> {
+            if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
+                DebugEntity.copyEquipmentState(getEntity());
+            } else {
+                UnitUtil.showValidation(getEntity(), getParentFrame());
+            }
+        };
         btnValidate.addActionListener(validationListener);
 
         JButton btnRefresh = new JButton("Refresh UI");
@@ -115,14 +129,15 @@ public class StatusBar extends ITab {
     }
 
     /**
-     * This method is called whenever the status bar is refreshed. When additional type-specific information
-     * is shown in a subclassed status bar, this method should be overridden to refresh that information.
+     * This method is called whenever the status bar is refreshed. When additional type-specific information is shown in
+     * a subclassed status bar, this method should be overridden to refresh that information.
      */
-    protected void additionalRefresh() { }
+    protected void additionalRefresh() {
+    }
 
     /**
-     * Refreshes the weight display. This may be overridden; when doing so, the
-     * {@link #tons} JLabel should be updated to reflect the weight.
+     * Refreshes the weight display. This may be overridden; when doing so, the {@link #tons} JLabel should be updated
+     * to reflect the weight.
      */
     protected void refreshWeight() {
         double tonnage = getEntity().getWeight();
@@ -143,7 +158,8 @@ public class StatusBar extends ITab {
         }
         String remainingText = ((currentTonnage < tonnage) ? " (" + remaining + " " + unit + " Remaining)" : "");
         tons.setText(String.format(WEIGHT_LABEL, current, unit, full, unit, remainingText).trim());
-        tons.setToolTipText("Current Weight / Max Weight (Remaining Weight, if any). Click to show the weight calculation.");
+        tons.setToolTipText(
+              "Current Weight / Max Weight (Remaining Weight, if any). Click to show the weight calculation.");
         tons.setForeground((currentTonnage > tonnage) ? GUIPreferences.getInstance().getWarningColor() : null);
     }
 
@@ -155,9 +171,10 @@ public class StatusBar extends ITab {
 
     private void refreshCost() {
         cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
-        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-                + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills. "
-                + "Click to show the cost calculation.");
+        cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is " +
+                                  formatter.format(Math.round(getEntity().getCost(false))) +
+                                  " C-bills. " +
+                                  "Click to show the cost calculation.");
     }
 
     private void refreshInvalid() {
@@ -174,18 +191,10 @@ public class StatusBar extends ITab {
         refresh = refreshListener;
     }
 
-    private final ActionListener validationListener = e -> {
-        if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
-            DebugEntity.copyEquipmentState(getEntity());
-        } else {
-            UnitUtil.showValidation(getEntity(), getParentFrame());
-        }
-    };
-
     /**
-     * Returns an estimated value of the total heat generation for Meks and Aeros (0 for other types).
-     * This method is very specific to this use and cannot be generalized. It shouldn't be used elsewhere. It is
-     * here in StatusBar to avoid duplication in BMStatusBar and ASStatusBar.
+     * Returns an estimated value of the total heat generation for Meks and Aerospace (0 for other types). This method
+     * is very specific to this use and cannot be generalized. It shouldn't be used elsewhere. It is here in StatusBar
+     * to avoid duplication in BMStatusBar and ASStatusBar.
      *
      * @return An estimated value of the total heat generation.
      */
@@ -224,7 +233,8 @@ public class StatusBar extends ITab {
                 weaponHeat *= 0.25;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((weaponType.getAmmoType() == AmmoType.T_AC_ULTRA) ||
+                      (weaponType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
@@ -232,7 +242,8 @@ public class StatusBar extends ITab {
                 weaponHeat *= 6;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((weaponType.getAmmoType() == AmmoType.T_SRM_STREAK) ||
+                      (weaponType.getAmmoType() == AmmoType.T_LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;

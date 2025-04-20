@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017-2022 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.infantry;
 
@@ -21,7 +35,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -33,23 +46,26 @@ import megamek.common.ITechManager;
 import megamek.common.Infantry;
 import megamek.common.InfantryMount;
 import megamek.common.verifier.TestInfantry;
-import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.InfantryBuildListener;
+import megameklab.ui.util.CustomComboBox;
 
 /**
  * Infantry structure tab panel for selecting platoon movement type and number/size of squads.
- * 
+ *
  * @author Neoancient
  */
 public class CIPlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
     List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
+
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private enum InfantryMotiveType {
@@ -79,16 +95,15 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
     private final SpinnerNumberModel spnNumSquadsModel = new SpinnerNumberModel(4, 1, null, 1);
     private final SpinnerNumberModel spnSquadSizeModel = new SpinnerNumberModel(7, 1, 10, 1);
-    
-    private final CustomComboBox<InfantryMotiveType> cbMotiveType = new CustomComboBox<>
-        (i -> resourceMap.getString(i.resourceId));
+
+    private final CustomComboBox<InfantryMotiveType> cbMotiveType = new CustomComboBox<>(i -> resourceMap.getString(i.resourceId));
     private final JSpinner spnNumSquads = new JSpinner(spnNumSquadsModel);
     private final JSpinner spnSquadSize = new JSpinner(spnSquadSizeModel);
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
     private final JLabel lblBeastMountLabel = new JLabel();
     private final JLabel lblBeastMountType = new JLabel();
-    
+
     private final ITechManager techManager;
 
     private int specialization = 0;
@@ -99,11 +114,11 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         this.techManager = techManager;
         initUI();
     }
-    
+
     private void initUI() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -134,7 +149,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         spnNumSquads.setToolTipText(resourceMap.getString("PlatoonTypeView.spnNumSquads.tooltip"));
         add(spnNumSquads, gbc);
         spnNumSquads.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -153,7 +168,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.gridx = 1;
         lblMaxSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSize.tooltip"));
         add(lblMaxSize, gbc);
-        
+
         gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -161,9 +176,9 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         gbc.gridx = 3;
         lblMaxSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.lblMaxSquadSize.tooltip"));
         add(lblMaxSquadSize, gbc);
-        
+
     }
-    
+
     public void setFromEntity(Infantry inf) {
         specialization = inf.getSpecializations();
         isFieldGunner = inf.hasFieldWeapon();
@@ -173,12 +188,12 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         if (inf.getMount() != null) {
             cbMotiveType.setSelectedItem(InfantryMotiveType.BEAST_MOUNTED);
         } else if (inf.getMovementMode() == EntityMovementMode.VTOL) {
-            cbMotiveType.setSelectedItem(inf.hasMicrolite() ?
-                    InfantryMotiveType.MICROLITE : InfantryMotiveType.VTOL);
+            cbMotiveType.setSelectedItem(inf.hasMicrolite() ? InfantryMotiveType.MICROLITE : InfantryMotiveType.VTOL);
         } else if (inf.getMovementMode() == EntityMovementMode.INF_UMU) {
             cbMotiveType.setSelectedItem((inf.getOriginalJumpMP() > 1) ?
-                    InfantryMotiveType.UMU_MOTORIZED : InfantryMotiveType.UMU);
-       } else {
+                                               InfantryMotiveType.UMU_MOTORIZED :
+                                               InfantryMotiveType.UMU);
+        } else {
             for (var type : InfantryMotiveType.values()) {
                 if (type.mode == inf.getMovementMode()) {
                     cbMotiveType.setSelectedItem(type);
@@ -186,7 +201,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
             }
         }
         cbMotiveType.addActionListener(this);
-        
+
         if (inf.getSquadCount() <= (Integer) spnNumSquadsModel.getMaximum()) {
             spnNumSquads.removeChangeListener(this);
             spnNumSquads.setValue(inf.getSquadCount());
@@ -207,8 +222,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         if ((specialization & (Infantry.MOUNTAIN_TROOPS | Infantry.PARATROOPS)) != 0) {
             return motiveType == InfantryMotiveType.FOOT;
         } else {
-            return techManager.isLegal(Infantry.getMotiveTechAdvancement(motiveType.mode))
-                    && (!isFieldGunner || motiveType.legalFieldGun);
+            return techManager.isLegal(Infantry.getMotiveTechAdvancement(motiveType.mode)) &&
+                         (!isFieldGunner || motiveType.legalFieldGun);
         }
     }
 
@@ -226,9 +241,11 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         if (cbMotiveType.getSelectedIndex() < 0) {
             cbMotiveType.setSelectedIndex(0);
         }
-        
-        int maxSize = TestInfantry.maxUnitSize(getMovementMode(), isAltMode(),
-            (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0, mount);
+
+        int maxSize = TestInfantry.maxUnitSize(getMovementMode(),
+              isAltMode(),
+              (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0,
+              mount);
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
@@ -236,7 +253,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         spnSquadSizeModel.setMaximum(maxSquad);
         spnNumSquads.addChangeListener(this);
         spnSquadSize.addChangeListener(this);
-        
+
         lblMaxSize.setText(String.valueOf(maxSize));
         lblMaxSquadSize.setText(String.valueOf(maxSquad));
         if (getMovementMode().isNone()) {
@@ -248,7 +265,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
             lblBeastMountType.setVisible(false);
         }
     }
-    
+
     public EntityMovementMode getMovementMode() {
         InfantryMotiveType type = (InfantryMotiveType) cbMotiveType.getSelectedItem();
         if (type == null) {
@@ -257,7 +274,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
             return type.mode;
         }
     }
-    
+
     public boolean isAltMode() {
         InfantryMotiveType type = (InfantryMotiveType) cbMotiveType.getSelectedItem();
         return (type == InfantryMotiveType.MICROLITE) || (type == InfantryMotiveType.UMU_MOTORIZED);
@@ -265,12 +282,12 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if ((e.getSource() == spnNumSquads) ||
-                (e.getSource() == spnSquadSize)) {
+        if ((e.getSource() == spnNumSquads) || (e.getSource() == spnSquadSize)) {
             listeners.forEach(l -> l.platoonSizeChanged(spnNumSquadsModel.getNumber().intValue(),
-                    spnSquadSizeModel.getNumber().intValue()));
+                  spnSquadSizeModel.getNumber().intValue()));
         }
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbMotiveType) {

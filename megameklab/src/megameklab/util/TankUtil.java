@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMekLab.ab.
+ * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.util;
 
@@ -44,8 +53,7 @@ public final class TankUtil {
             return false;
         }
 
-        if (eq instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) eq;
+        if (eq instanceof WeaponType weapon) {
             if (!weapon.hasFlag(WeaponType.F_TANK_WEAPON) || UnitUtil.isNonMekOrTankWeapon(unit, weapon)) {
                 return false;
             }
@@ -55,12 +63,12 @@ public final class TankUtil {
     }
 
     /**
-     * Tests whether equipment should be shown on the equipment tab for the unit.
-     * This is
-     * used for both combat vehicles and non-aerospace support vehicles.
+     * Tests whether equipment should be shown on the equipment tab for the unit. This is used for both combat vehicles
+     * and non-aerospace support vehicles.
      *
      * @param eq   The equipment to show
      * @param tank The tank
+     *
      * @return Whether the equipment should show on the table
      */
     public static boolean isTankEquipment(EquipmentType eq, Tank tank) {
@@ -68,13 +76,12 @@ public final class TankUtil {
     }
 
     /**
-     * Tests whether equipment should be shown on the equipment tab for the unit as
-     * non-weapon
-     * equipment. This is used for both combat vehicles and non-aerospace support
-     * vehicles.
+     * Tests whether equipment should be shown on the equipment tab for the unit as non-weapon equipment. This is used
+     * for both combat vehicles and non-aerospace support vehicles.
      *
      * @param eq   The equipment to show
      * @param tank The tank
+     *
      * @return Whether the equipment should show on the table
      */
     public static boolean isTankMiscEquipment(EquipmentType eq, Entity tank) {
@@ -87,8 +94,11 @@ public final class TankUtil {
             return true;
         }
 
-        if ((eq instanceof CLTAG) || (eq instanceof ISC3M) || (eq instanceof ISC3MBS)
-                || (eq instanceof ISTAG) || (eq instanceof CLLightTAG)) {
+        if ((eq instanceof CLTAG) ||
+                  (eq instanceof ISC3M) ||
+                  (eq instanceof ISC3MBS) ||
+                  (eq instanceof ISTAG) ||
+                  (eq instanceof CLLightTAG)) {
             return true;
         }
 
@@ -97,15 +107,17 @@ public final class TankUtil {
                 return false;
             }
             // Can't use supercharger with solar or external power pickup
-            if (eq.hasFlag(MiscType.F_MASC) && (!tank.hasEngine()
-                    || tank.getEngine().getEngineType() == Engine.SOLAR
-                    || tank.getEngine().getEngineType() == Engine.EXTERNAL)) {
+            if (eq.hasFlag(MiscType.F_MASC) &&
+                      (!tank.hasEngine() ||
+                             tank.getEngine().getEngineType() == Engine.SOLAR ||
+                             tank.getEngine().getEngineType() == Engine.EXTERNAL)) {
                 return false;
             }
             // External fuel tanks are only allowed on ICE and fuel cell engines
-            if (eq.hasFlag(MiscType.F_FUEL) && (!tank.hasEngine()
-                    || (tank.getEngine().getEngineType() != Engine.COMBUSTION_ENGINE
-                            && tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
+            if (eq.hasFlag(MiscType.F_FUEL) &&
+                      (!tank.hasEngine() ||
+                             (tank.getEngine().getEngineType() != Engine.COMBUSTION_ENGINE &&
+                                    tank.getEngine().getEngineType() != Engine.FUEL_CELL))) {
                 return false;
             }
             if (eq.hasFlag(MiscType.F_VTOL_EQUIPMENT) && (tank instanceof VTOL)) {

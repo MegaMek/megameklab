@@ -1,21 +1,41 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.util;
 
-import megamek.common.*;
+import java.util.Comparator;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.Mek;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.equipment.MiscMounted;
@@ -24,7 +44,12 @@ import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.LBXACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.battlearmor.*;
+import megamek.common.weapons.battlearmor.CLBAERPulseLaserSmall;
+import megamek.common.weapons.battlearmor.CLBALBX;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
+import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
+import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
+import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3RemoteSensorLauncher;
 import megamek.common.weapons.defensivepods.BPodWeapon;
@@ -38,7 +63,15 @@ import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
-import megamek.common.weapons.missiles.*;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.ISThunderBolt10;
+import megamek.common.weapons.missiles.ISThunderBolt15;
+import megamek.common.weapons.missiles.ISThunderBolt20;
+import megamek.common.weapons.missiles.ISThunderBolt5;
+import megamek.common.weapons.missiles.MMLWeapon;
+import megamek.common.weapons.missiles.MRMWeapon;
+import megamek.common.weapons.missiles.RLWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megamek.common.weapons.other.NarcWeapon;
@@ -51,8 +84,6 @@ import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
 import megamek.common.weapons.tag.TAGWeapon;
-
-import java.util.Comparator;
 
 public class StringUtils {
 
@@ -79,31 +110,10 @@ public class StringUtils {
     public static String getEquipmentInfo(Entity unit, Mounted<?> mount, boolean capacitor) {
         String info = "";
 
-        if (mount.getType() instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) mount.getType();
+        if (mount.getType() instanceof WeaponType weapon) {
             if (weapon instanceof InfantryWeapon) {
                 info = Integer.toString((int) Math.round(((InfantryWeapon) weapon).getInfantryDamage()));
-                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
-                    info += " (B)";
-                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
-                    info += " (E)";
-                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
-                    info += " (M)";
-                } else if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
-                    info += " (P)";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_BURST)) {
-                    info += "B";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_AA)) {
-                    info += "A";
-                }
-                if (weapon.hasFlag(WeaponType.F_FLAMER)) {
-                    info += "F";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
-                    info += "N";
-                }
+                info = getWeaponFlagString(info, weapon);
             } else if (weapon.hasFlag(WeaponType.F_MGA)) {
                 info = "  [T]";
             } else if (weapon instanceof TAGWeapon) {
@@ -113,23 +123,25 @@ public class StringUtils {
             } else if (weapon.getDamage() < 0) {
                 if (weapon instanceof StreakSRMWeapon) {
                     info = "2/Msl [M,C]";
-                } else if ((weapon instanceof SRMWeapon) || (weapon instanceof MekMortarWeapon)
-                        || (weapon instanceof SRTWeapon)) {
+                } else if ((weapon instanceof SRMWeapon) ||
+                                 (weapon instanceof MekMortarWeapon) ||
+                                 (weapon instanceof SRTWeapon)) {
                     info = "2/Msl [M,C,S]";
                 } else if ((weapon instanceof StreakLRMWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if ((weapon instanceof LRMWeapon) || (weapon instanceof LRTWeapon)) {
                     info = "1/Msl [M,C,S]";
-                } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)
-                        || (weapon instanceof PrototypeRLWeapon)) {
+                } else if ((weapon instanceof MRMWeapon) ||
+                                 (weapon instanceof RLWeapon) ||
+                                 (weapon instanceof PrototypeRLWeapon)) {
                     info = "1/Msl [M,C]";
                 } else if (weapon instanceof ISSnubNosePPC) {
                     info = capacitor ? "15/13/10 [DE,V,X]" : "10/8/5 [DE,V]";
                 } else if (weapon instanceof VariableSpeedPulseLaserWeapon) {
                     info = String.format("%d/%d/%d [P,V]",
-                            weapon.getDamage(weapon.getShortRange()),
-                            weapon.getDamage(weapon.getMediumRange()),
-                            weapon.getDamage(weapon.getLongRange()));
+                          weapon.getDamage(weapon.getShortRange()),
+                          weapon.getDamage(weapon.getMediumRange()),
+                          weapon.getDamage(weapon.getLongRange()));
                 } else if (weapon instanceof ISHGaussRifle) {
                     info = "25/20/10 [DB,X]";
                 } else if (weapon instanceof ISPlasmaRifle) {
@@ -171,8 +183,10 @@ public class StringUtils {
             } else {
                 if (!UnitUtil.isAMS(weapon)) {
                     if (capacitor) {
-                        if (!(weapon instanceof PPCWeapon) || !mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
-                            throw new IllegalArgumentException("Don't ask for the statline of a weapon with its capacitor charged if it's not a PPC with a capacitor");
+                        if (!(weapon instanceof PPCWeapon) ||
+                                  !mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+                            throw new IllegalArgumentException(
+                                  "Don't ask for the statline of a weapon with its capacitor charged if it's not a PPC with a capacitor");
                         }
                         info = Integer.toString(weapon.getDamage() + 5);
                     } else {
@@ -208,23 +222,22 @@ public class StringUtils {
                 if (weapon.hasFlag(WeaponType.F_FLAMER) || weapon.hasFlag(WeaponType.F_PLASMA)) {
                     info += "H,";
                 }
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERPulseLaserSmall) ||
-                        (weapon instanceof CLBAERPulseLaserSmall) ||
-                        (weapon instanceof ISXPulseLaserSmall) ||
-                        (weapon instanceof ISPulseLaserSmall) ||
-                        (weapon instanceof ISBALaserPulseSmall) ||
-                        (weapon instanceof CLPulseLaserSmall) ||
-                        (weapon instanceof CLBAPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserMicro) ||
-                        (weapon instanceof CLBAPulseLaserMicro) ||
-                        (weapon.hasFlag(WeaponType.F_FLAMER) ||
-                                (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
+                if ((weapon instanceof MGWeapon) ||
+                          (weapon instanceof BPodWeapon) ||
+                          (weapon instanceof CLERPulseLaserSmall) ||
+                          (weapon instanceof CLBAERPulseLaserSmall) ||
+                          (weapon instanceof ISXPulseLaserSmall) ||
+                          (weapon instanceof ISPulseLaserSmall) ||
+                          (weapon instanceof ISBALaserPulseSmall) ||
+                          (weapon instanceof CLPulseLaserSmall) ||
+                          (weapon instanceof CLBAPulseLaserSmall) ||
+                          (weapon instanceof CLPulseLaserMicro) ||
+                          (weapon instanceof CLBAPulseLaserMicro) ||
+                          (weapon.hasFlag(WeaponType.F_FLAMER) || (weapon.hasFlag(WeaponType.F_BURST_FIRE)))) {
                     info += "AI,";
                 }
 
-                if (weapon.isExplosive(mount, capacitor) && !(weapon instanceof ACWeapon)
-                ) {
+                if (weapon.isExplosive(mount, capacitor) && !(weapon instanceof ACWeapon)) {
                     info += "X,";
                 }
 
@@ -235,8 +248,9 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
-        } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
-                || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+        } else if ((mount instanceof MiscMounted) &&
+                         (mount.getType().hasFlag(MiscType.F_CLUB) ||
+                                mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibros to active to get correct damage
                 mount.setMode(1);
@@ -258,42 +272,48 @@ public class StringUtils {
         return info.trim();
     }
 
+    private static String getWeaponFlagString(String info, WeaponType weapon) {
+        if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
+            info += " (B)";
+        } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
+            info += " (E)";
+        } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
+            info += " (M)";
+        } else if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
+            info += " (P)";
+        }
+        if (weapon.hasFlag(WeaponType.F_INF_BURST)) {
+            info += "B";
+        }
+        if (weapon.hasFlag(WeaponType.F_INF_AA)) {
+            info += "A";
+        }
+        if (weapon.hasFlag(WeaponType.F_FLAMER)) {
+            info += "F";
+        }
+        if (weapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
+            info += "N";
+        }
+        return info;
+    }
+
     public static String getAeroEquipmentInfo(Mounted<?> mount) {
         String info;
 
-        if (mount.getType() instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) mount.getType();
+        if (mount.getType() instanceof WeaponType weapon) {
             if (weapon instanceof InfantryWeapon) {
                 info = "";
-                if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
-                    info += " (B)";
-                } else if (weapon.hasFlag(WeaponType.F_ENERGY)) {
-                    info += " (E)";
-                } else if (weapon.hasFlag(WeaponType.F_MISSILE)) {
-                    info += " (M)";
-                } else if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)) {
-                    info += " (P)";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_BURST)) {
-                    info += "B";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_AA)) {
-                    info += "A";
-                }
-                if (weapon.hasFlag(WeaponType.F_FLAMER)) {
-                    info += "F";
-                }
-                if (weapon.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
-                    info += "N";
-                }
+                info = getWeaponFlagString(info, weapon);
             } else if (weapon.hasFlag(WeaponType.F_MGA)) {
                 info = "[T]";
             } else if (weapon instanceof ISC3M) {
                 info = "[E]";
             } else if (weapon.getDamage() < 0) {
-                if ((weapon instanceof SRMWeapon) || (weapon instanceof LRMWeapon)
-                        || (weapon instanceof MekMortarWeapon) || (weapon instanceof MMLWeapon)
-                        || (weapon instanceof ATMWeapon)) {
+                if ((weapon instanceof SRMWeapon) ||
+                          (weapon instanceof LRMWeapon) ||
+                          (weapon instanceof MekMortarWeapon) ||
+                          (weapon instanceof MMLWeapon) ||
+                          (weapon instanceof ATMWeapon)) {
                     info = "[M,C,S]";
                 } else if ((weapon instanceof MRMWeapon) || (weapon instanceof RLWeapon)) {
                     info = "[M,C]";
@@ -350,12 +370,13 @@ public class StringUtils {
                     info += "S,";
                 }
 
-                if ((weapon instanceof MGWeapon) || (weapon instanceof BPodWeapon) ||
-                        (weapon instanceof CLERPulseLaserSmall) ||
-                        (weapon instanceof ISXPulseLaserSmall) ||
-                        (weapon instanceof ISPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserSmall) ||
-                        (weapon instanceof CLPulseLaserMicro)) {
+                if ((weapon instanceof MGWeapon) ||
+                          (weapon instanceof BPodWeapon) ||
+                          (weapon instanceof CLERPulseLaserSmall) ||
+                          (weapon instanceof ISXPulseLaserSmall) ||
+                          (weapon instanceof ISPulseLaserSmall) ||
+                          (weapon instanceof CLPulseLaserSmall) ||
+                          (weapon instanceof CLPulseLaserMicro)) {
                     info += "AI,";
                 }
 
@@ -363,9 +384,11 @@ public class StringUtils {
                     info += "H,AI,";
                 }
 
-                if (weapon.isExplosive(mount) && !(weapon instanceof ACWeapon)
-                        && (!(weapon instanceof PPCWeapon) || ((mount.getLinkedBy() != null)
-                                && mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
+                if (weapon.isExplosive(mount) &&
+                          !(weapon instanceof ACWeapon) &&
+                          (!(weapon instanceof PPCWeapon) ||
+                                 ((mount.getLinkedBy() != null) &&
+                                        mount.getLinkedBy().getType().hasFlag(MiscType.F_PPC_CAPACITOR)))) {
                     info += "X,";
                 }
 

@@ -1,21 +1,31 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
-
-import org.apache.batik.anim.dom.SVGLocatableSupport;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
 
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -24,6 +34,9 @@ import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.TechConstants;
 import megamek.logging.MMLogger;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
 
 /**
  * Lays out a record sheet block for a single ProtoMek
@@ -91,9 +104,8 @@ public class PrintProtoMek extends PrintEntity {
     }
 
     /**
-     * Checks whether the unit name is too large to fit into the primary field
-     * without kerning.
-     * If so, looks for a break point and puts the remainder on a second line.
+     * Checks whether the unit name is too large to fit into the primary field without kerning. If so, looks for a break
+     * point and puts the remainder on a second line.
      */
     private void splitName() {
         Element element = getSVGDocument().getElementById(TYPE);
@@ -102,20 +114,17 @@ public class PrintProtoMek extends PrintEntity {
             if (null != fieldWidth) {
                 try {
                     double width = Double.parseDouble(fieldWidth);
-                    // Clear any kerning that has already been applied so we can measure the full
-                    // text length
+                    // Clear any kerning that has already been applied so we can measure the full-text length
                     element.removeAttribute(SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE);
                     element.removeAttribute(SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                     build();
                     double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
                     if (textWidth > width) {
                         String name = element.getTextContent();
-                        // The goal is a 2:1 split, but we start back a little to avoid just missing a
-                        // break point
+                        // The goal is a 2:1 split, but we start back a little to avoid just missing a break point
                         int pos = name.indexOf(" ", (int) (name.length() * 0.6));
                         if (pos < 0) {
-                            // If we don't find a break point, give up and assign the text again to reset
-                            // the kerning
+                            // If we don't find a break point, give up and assign the text again to reset the kerning
                             setTextField(TYPE, name);
                         } else {
                             setTextField(TYPE, name.substring(0, pos));
@@ -123,7 +132,7 @@ public class PrintProtoMek extends PrintEntity {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    logger.warn("Could not parse fieldWidth: " + fieldWidth);
+                    logger.warn("Could not parse fieldWidth: {}", fieldWidth);
                 }
             }
         }
@@ -179,7 +188,7 @@ public class PrintProtoMek extends PrintEntity {
     protected void drawArmor() {
         super.drawArmor();
         String armorName = EquipmentType.getArmorTypeName(proto.getArmorType(ProtoMek.LOC_TORSO),
-                TechConstants.isClan(proto.getArmorTechLevel(ProtoMek.LOC_TORSO)));
+              TechConstants.isClan(proto.getArmorTechLevel(ProtoMek.LOC_TORSO)));
         EquipmentType armor = EquipmentType.get(armorName);
         if (armor != null) {
             setTextField(ARMOR_TYPE, armor.getShortName(), true);

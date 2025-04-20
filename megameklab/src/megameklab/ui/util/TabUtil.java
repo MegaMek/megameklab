@@ -1,25 +1,54 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.util;
 
-import megamek.common.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.Mek;
+import megamek.common.MekFileParser;
+import megamek.common.Mounted;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
@@ -35,16 +64,6 @@ import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.commons.io.FileUtils;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Pattern;
 
 public class TabUtil {
     private final static MMLogger logger = MMLogger.create(TabUtil.class);
@@ -63,7 +82,9 @@ public class TabUtil {
             }
         }
 
-        FileUtils.cleanDirectory(dir);
+        if (dir != null) {
+            FileUtils.cleanDirectory(dir);
+        }
 
         Map<File, String> filenameAssociations = new LinkedHashMap<>();
 
@@ -71,10 +92,7 @@ public class TabUtil {
             File unitFile;
             if (editor.getEntity() instanceof Mek) {
                 unitFile = File.createTempFile("mml_unit_", ".mtf.tmp", dir);
-                try (
-                    var fos = new FileOutputStream(unitFile);
-                    var ps = new PrintStream(fos)
-                    ) {
+                try (var fos = new FileOutputStream(unitFile); var ps = new PrintStream(fos)) {
                     ps.println(((Mek) editor.getEntity()).getMtf());
                 } catch (Exception e) {
                     logger.fatal("Failed to write unit while saving tab state.", e);
@@ -94,10 +112,7 @@ public class TabUtil {
             // First line: an integer n
             // Next n lines: equipment added to the unit but not allocated to a location
             var metaFile = new File(unitFile.getAbsolutePath().replaceFirst("\\.tmp$", ".meta"));
-            try (
-                var fos = new FileOutputStream(metaFile);
-                var ps = new PrintStream(fos);
-                ) {
+            try (var fos = new FileOutputStream(metaFile); var ps = new PrintStream(fos)) {
                 var unallocatedEquipment = editor.getUnallocatedMounted();
                 ps.println(unallocatedEquipment.size());
                 for (var m : unallocatedEquipment) {
@@ -122,10 +137,7 @@ public class TabUtil {
         }
 
         File filenameAssociationsFile = new File(dir, FILENAME_ASSOCIATIONS);
-        try (
-            var fos = new FileOutputStream(filenameAssociationsFile);
-            var ps = new PrintStream(fos)
-        ) {
+        try (var fos = new FileOutputStream(filenameAssociationsFile); var ps = new PrintStream(fos)) {
             for (var entry : filenameAssociations.entrySet()) {
                 ps.print(entry.getKey().getPath() + '\0' + entry.getValue() + '\0');
             }
@@ -185,17 +197,17 @@ public class TabUtil {
                             loadedUnit.addEquipment(mounted, Entity.LOC_NONE, false);
                         }
                     } catch (Exception e) {
-                        logger.warn("Could not read meta file for entity file %s:%s".formatted(entityFile, fileName), e);
+                        logger.warn(e, "Could not read meta file for entity file {}:{}", entityFile, fileName);
                     }
                 }
 
                 var editor = UiLoader.getUI(loadedUnit, fileName);
                 editors.add(editor);
             } catch (EntityLoadingException e) {
-                logger.warn("Could not restore tab for entity file %s:%s".formatted(entityFile, fileName), e);
+                logger.warn(e, "Could not restore tab for entity file {}:{}", entityFile, fileName);
             } finally {
                 if (!newFile.delete()) {
-                    logger.warn("Could not delete temporary file %s".formatted(newFile));
+                    logger.warn("Could not delete temporary file {}", newFile);
                 }
             }
         }
@@ -235,40 +247,47 @@ public class TabUtil {
     }
 
     public static void loadMany(List<File> files, MenuBarOwner owner) {
-        loadMany(
-            files.stream().map( f -> {
-                try {
-                    return new MekFileParser(f).getEntity();
-                } catch (EntityLoadingException e) {
-                    logger.errorDialog(e, "Failed to load entity.", "Entity load error.");
-                    return null;
-                }
-            }).filter(Objects::nonNull).toList(),
+        loadMany(files.stream().map(f -> {
+                  try {
+                      return new MekFileParser(f).getEntity();
+                  } catch (EntityLoadingException e) {
+                      logger.errorDialog(e, "Failed to load entity.", "Entity load error.");
+                      return null;
+                  }
+              }).filter(Objects::nonNull).toList(),
 
-            files.stream().map(String::valueOf).toList(),
+              files.stream().map(String::valueOf).toList(),
 
-            owner
-        );
+              owner);
     }
 
     public static void loadMany(List<Entity> entities, List<String> fileNames, MenuBarOwner owner) {
         if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
-            ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
+            ProgressMonitor progress = new ProgressMonitor(tabbedUI,
+                  "Loading units...",
+                  "Loaded 0 / %d".formatted(entities.size()),
+                  0,
+                  entities.size());
             SwingUtilities.invokeLater(() -> insertTabs(0, entities, fileNames, tabbedUI, progress));
         } else if (owner instanceof StartupGUI) {
             owner.getFrame().dispose();
             UiLoader.initializeFromBlankUI((tabbedUI) -> {
-                ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
+                ProgressMonitor progress = new ProgressMonitor(tabbedUI,
+                      "Loading units...",
+                      "Loaded 0 / %d".formatted(entities.size()),
+                      0,
+                      entities.size());
                 insertTabs(0, entities, fileNames, tabbedUI, progress);
             });
         }
 
     }
 
-    private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI, ProgressMonitor progress) {
+    private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI,
+          ProgressMonitor progress) {
         var newUnit = entities.get(i);
         try {
-            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0 ? true : false);
+            tabbedUI.addUnit(newUnit, fileNames.get(i), i == 0);
             String validationResult = UnitUtil.validateUnit(newUnit);
             if (!validationResult.isBlank()) {
                 PopupMessages.showUnitInvalidWarning(tabbedUI.getFrame(), validationResult);
@@ -276,7 +295,11 @@ public class TabUtil {
 
             CConfig.setMostRecentFile(fileNames.get(i));
         } catch (Exception e) {
-            logger.errorDialog(e, "Failed to load the unit %s.", "Entity load error.", newUnit.getDisplayName());
+            logger.errorDialog(e,
+                  "Failed to load the unit {} due to {}.",
+                  "Entity load error.",
+                  newUnit.getDisplayName(),
+                  e.getMessage());
         }
 
         progress.setProgress(i + 1);
@@ -287,5 +310,6 @@ public class TabUtil {
         SwingUtilities.invokeLater(() -> insertTabs(i + 1, entities, fileNames, tabbedUI, progress));
     }
 
-    private TabUtil() {}
+    private TabUtil() {
+    }
 }

@@ -1,15 +1,29 @@
 /*
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.supportVehicle;
 
@@ -17,7 +31,6 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 
 import java.util.Collection;
 import java.util.List;
-
 import javax.swing.JOptionPane;
 
 import megamek.common.Aero;
@@ -36,36 +49,34 @@ import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
 
 /**
- * An Equipment Database for Support Vehicles. This table shows many columns
- * and is suitable for use in the Equipment Tab.
+ * An Equipment Database for Support Vehicles. This table shows many columns and is suitable for use in the Equipment
+ * Tab.
  */
 class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     private static final MMLogger logger = MMLogger.create(SVEquipmentDatabaseView.class);
 
-    private final List<Integer> fluffColumns = List.of(
-            COL_NAME,
-            COL_TECH,
-            COL_TLEVEL,
-            COL_TRATING,
-            COL_DPROTOTYPE,
-            COL_DPRODUCTION,
-            COL_DCOMMON,
-            COL_DEXTINCT,
-            COL_DREINTRO,
-            COL_COST);
+    private final List<Integer> fluffColumns = List.of(COL_NAME,
+          COL_TECH,
+          COL_TLEVEL,
+          COL_TRATING,
+          COL_DPROTOTYPE,
+          COL_DPRODUCTION,
+          COL_DCOMMON,
+          COL_DEXTINCT,
+          COL_DREINTRO,
+          COL_COST);
 
-    private final List<Integer> statsColumns = List.of(
-            COL_NAME,
-            COL_DAMAGE,
-            COL_HEAT,
-            COL_MRANGE,
-            COL_RANGE,
-            COL_SHOTS,
-            COL_TECH,
-            COL_BV,
-            COL_TON,
-            COL_CRIT,
-            COL_REF);
+    private final List<Integer> statsColumns = List.of(COL_NAME,
+          COL_DAMAGE,
+          COL_HEAT,
+          COL_MRANGE,
+          COL_RANGE,
+          COL_SHOTS,
+          COL_TECH,
+          COL_BV,
+          COL_TON,
+          COL_CRIT,
+          COL_REF);
 
     public SVEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -104,8 +115,8 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 for (int i = 0; i < count; i++) {
                     mount = Mounted.createMounted(getEntity(), equip);
                     UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
-                    if ((getEntity().isFighter()
-                            && (equip instanceof MiscType)) && equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
+                    if ((getEntity().isFighter() && (equip instanceof MiscType)) &&
+                              equip.hasFlag(MiscType.F_BLUE_SHIELD)) {
                         getAero().addEquipment(mount, Aero.LOC_FUSELAGE, false);
                     } else {
                         getEntity().addEquipment(mount, Entity.LOC_NONE, false);
@@ -114,10 +125,11 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 }
             }
         } catch (LocationFullException ex) {
-            logger.error("Location full while trying to add " + equip.getName());
-            JOptionPane.showMessageDialog(
-                    this, "Could not add " + equip.getName(),
-                    "Location Full", JOptionPane.ERROR_MESSAGE);
+            logger.error("Location full while trying to add {}", equip.getName());
+            JOptionPane.showMessageDialog(this,
+                  "Could not add " + equip.getName(),
+                  "Location Full",
+                  JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -138,6 +150,7 @@ class SVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
      * @param equip The {@link AmmoType} to add
      * @param count The number of slots of ammo (usually tons)
      * @param loc   The location to add it
+     *
      * @throws LocationFullException If the location is full.
      */
     private void addBodyAmmo(EquipmentType equip, int count, int loc) throws LocationFullException {

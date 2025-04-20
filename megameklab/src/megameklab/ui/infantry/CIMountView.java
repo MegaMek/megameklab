@@ -1,38 +1,61 @@
 /*
- * MegaMekLab
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.infantry;
 
-import megamek.common.*;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.CustomComboBox;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+
+import megamek.common.EntityMovementMode;
+import megamek.common.Infantry;
+import megamek.common.InfantryMount;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.CustomComboBox;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
 
 public class CIMountView extends IView implements ActionListener, ChangeListener {
 
@@ -42,8 +65,8 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     private final static String CARD_CUSTOM = "custom";
 
     private final JButton btnSetMount = new JButton("Set Mount");
-    private final JRadioButton rbtnStats = new JRadioButton("Stats");
-    private final JRadioButton rbtnCustom = new JRadioButton("Custom");
+    private final JRadioButton radioBtnStats = new JRadioButton("Stats");
+    private final JRadioButton radioBtnCustom = new JRadioButton("Custom");
     private final CreatureTableModel tableModel = new CreatureTableModel();
     private final JTable creatureTable = new JTable();
     private final JPanel creatureView = new JPanel();
@@ -81,12 +104,12 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         }
         creatureTable.getSelectionModel().addListSelectionListener(ev -> checkValid());
 
-        ButtonGroup bgroupView = new ButtonGroup();
-        bgroupView.add(rbtnStats);
-        bgroupView.add(rbtnCustom);
+        ButtonGroup buttonGroupView = new ButtonGroup();
+        buttonGroupView.add(radioBtnStats);
+        buttonGroupView.add(radioBtnCustom);
 
         setUpPanels();
-        rbtnStats.setSelected(true);
+        radioBtnStats.setSelected(true);
         refresh();
     }
 
@@ -101,16 +124,16 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
         btnSetMount.addActionListener(this);
 
         JPanel btnPanel = new JPanel();
-        rbtnStats.addActionListener(ev ->  {
+        radioBtnStats.addActionListener(ev -> {
             equipmentLayout.show(creatureView, CARD_TABLE);
             checkValid();
         });
-        rbtnCustom.addActionListener(ev -> {
+        radioBtnCustom.addActionListener(ev -> {
             equipmentLayout.show(creatureView, CARD_CUSTOM);
             checkValid();
         });
-        btnPanel.add(rbtnStats);
-        btnPanel.add(rbtnCustom);
+        btnPanel.add(radioBtnStats);
+        btnPanel.add(radioBtnCustom);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -118,7 +141,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         creatureView.setLayout(equipmentLayout);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -314,13 +337,13 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
     private void checkValid() {
         boolean valid;
-        if (rbtnStats.isSelected()) {
+        if (radioBtnStats.isSelected()) {
             valid = creatureTable.getSelectedRow() >= 0;
         } else {
             valid = !txtMountName.getText().isEmpty();
             try {
                 valid &= Double.parseDouble(txtWeight.getText()) > 0;
-            } catch(NumberFormatException ignored) {
+            } catch (NumberFormatException ignored) {
                 valid = false;
             }
         }
@@ -347,26 +370,24 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
     private InfantryMount customMount() {
         EntityMovementMode mode = (EntityMovementMode) Objects.requireNonNull(cbMovementMode.getSelectedItem());
-        return new InfantryMount(
-                txtMountName.getText(),
-                (InfantryMount.BeastSize) cbSize.getSelectedItem(),
-                getCustomWeight(),
-                (Integer) spnMovementPoints.getValue(),
-                (EntityMovementMode) cbMovementMode.getSelectedItem(),
-                (Integer) spnInfantryBonus.getValue(),
-                (Integer) spnVehicleBonus.getValue(),
-                (Double) spnDamageDivisor.getValue(),
-                mode.isSubmarine() ? Integer.MAX_VALUE : (Integer) spnMaxWaterDepth.getValue(),
-                mode.isLegInfantry() ? 0 : (Integer) spnSecondaryGround.getValue(),
-                mode.isSubmarine() ? (Integer) spnUWEndurance.getValue() : 0
-        );
+        return new InfantryMount(txtMountName.getText(),
+              (InfantryMount.BeastSize) cbSize.getSelectedItem(),
+              getCustomWeight(),
+              (Integer) spnMovementPoints.getValue(),
+              (EntityMovementMode) cbMovementMode.getSelectedItem(),
+              (Integer) spnInfantryBonus.getValue(),
+              (Integer) spnVehicleBonus.getValue(),
+              (Double) spnDamageDivisor.getValue(),
+              mode.isSubmarine() ? Integer.MAX_VALUE : (Integer) spnMaxWaterDepth.getValue(),
+              mode.isLegInfantry() ? 0 : (Integer) spnSecondaryGround.getValue(),
+              mode.isSubmarine() ? (Integer) spnUWEndurance.getValue() : 0);
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
         removeAllListeners();
         if (evt.getSource().equals(btnSetMount)) {
-            if (rbtnStats.isSelected()) {
+            if (radioBtnStats.isSelected()) {
                 int view = creatureTable.getSelectedRow();
                 if (view < 0) {
                     // Nothing is selected
@@ -374,8 +395,9 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 }
                 int selected = creatureTable.convertRowIndexToModel(view);
                 InfantryMount newMount = selectedMount(selected);
-                if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
-                        && ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
+                if ((getInfantry().getMount() != null) &&
+                          (getInfantry().getMount().getMovementMode().isSubmarine()) &&
+                          ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
                 }
                 getInfantry().setMount(selectedMount(selected));
@@ -472,8 +494,10 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                 case MP:
                     return String.format("%d (%s)", creature.getMP(), creature.getMovementMode().toString());
                 case BONUS_DAMAGE:
-                    return String.format("%+d%s (%d)", creature.getBurstDamageDice(),
-                            creature.getBurstDamageDice() > 0 ? "D6" : "", creature.getVehicleDamage());
+                    return String.format("%+d%s (%d)",
+                          creature.getBurstDamageDice(),
+                          creature.getBurstDamageDice() > 0 ? "D6" : "",
+                          creature.getVehicleDamage());
                 case DIVISOR:
                     return NumberFormat.getInstance().format(creature.getDamageDivisor());
                 case TERRAIN:
@@ -485,7 +509,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
                         return resourceMap.getString("CIMountView.asVTOL");
                     } else {
                         return String.format(resourceMap.getString("CIMountView.waterDepth.format"),
-                                creature.getMaxWaterDepth() + 1);
+                              creature.getMaxWaterDepth() + 1);
                     }
             }
             return "?";
@@ -516,11 +540,9 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
 
         public class Renderer extends DefaultTableCellRenderer {
             @Override
-            public Component getTableCellRendererComponent(JTable table,
-                                                           Object value, boolean isSelected, boolean hasFocus, int row,
-                                                           int column) {
-                super.getTableCellRendererComponent(table, value, isSelected,
-                        hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                  boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 int actualCol = table.convertColumnIndexToModel(column);
                 setHorizontalAlignment(getAlignment(actualCol));
                 setToolTipText(getTooltip(actualCol));

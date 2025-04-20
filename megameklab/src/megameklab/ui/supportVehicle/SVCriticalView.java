@@ -1,26 +1,35 @@
 /*
- * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.supportVehicle;
 
 import java.awt.Color;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -35,7 +44,6 @@ import megamek.common.SuperHeavyTank;
 import megamek.common.Tank;
 import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
-import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
@@ -49,7 +57,6 @@ import megameklab.ui.util.RefreshListener;
  * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
-    private static final MMLogger logger = MMLogger.create(SVCriticalView.class);
 
     private final JPanel leftPanel = new JPanel();
     private final JPanel rightPanel = new JPanel();
@@ -64,25 +71,65 @@ public class SVCriticalView extends IView {
     private final JPanel rotorPanel = new FixedYPanel();
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel,
-            FixedWingSupport.LOC_LWING, leftPanel,
-            FixedWingSupport.LOC_RWING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT,
-            rearPanel);
+    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE,
+          frontPanel,
+          FixedWingSupport.LOC_LWING,
+          leftPanel,
+          FixedWingSupport.LOC_RWING,
+          rightPanel,
+          FixedWingSupport.LOC_BODY,
+          bodyPanel,
+          FixedWingSupport.LOC_AFT,
+          rearPanel);
 
-    private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
-            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, VTOL.LOC_ROTOR, rotorPanel,
-            VTOL.LOC_TURRET, turretPanel);
+    private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT,
+          frontPanel,
+          Tank.LOC_LEFT,
+          leftPanel,
+          Tank.LOC_RIGHT,
+          rightPanel,
+          Tank.LOC_BODY,
+          bodyPanel,
+          Tank.LOC_REAR,
+          rearPanel,
+          VTOL.LOC_ROTOR,
+          rotorPanel,
+          VTOL.LOC_TURRET,
+          turretPanel);
 
-    private final Map<Integer, JComponent> tankLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
-            Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, Tank.LOC_TURRET,
-            turretPanel,
-            Tank.LOC_TURRET_2, dualTurretPanel);
+    private final Map<Integer, JComponent> tankLocations = Map.of(Tank.LOC_FRONT,
+          frontPanel,
+          Tank.LOC_LEFT,
+          leftPanel,
+          Tank.LOC_RIGHT,
+          rightPanel,
+          Tank.LOC_BODY,
+          bodyPanel,
+          Tank.LOC_REAR,
+          rearPanel,
+          Tank.LOC_TURRET,
+          turretPanel,
+          Tank.LOC_TURRET_2,
+          dualTurretPanel);
 
-    private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT, frontPanel,
-            SuperHeavyTank.LOC_FRONTLEFT, leftPanel, SuperHeavyTank.LOC_FRONTRIGHT, rightPanel,
-            Tank.LOC_BODY, bodyPanel, SuperHeavyTank.LOC_REAR, rearPanel, SuperHeavyTank.LOC_TURRET, turretPanel,
-            SuperHeavyTank.LOC_TURRET_2, dualTurretPanel,
-            SuperHeavyTank.LOC_REARLEFT, rearLeftPanel, SuperHeavyTank.LOC_REARRIGHT, rearRightPanel);
+    private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT,
+          frontPanel,
+          SuperHeavyTank.LOC_FRONTLEFT,
+          leftPanel,
+          SuperHeavyTank.LOC_FRONTRIGHT,
+          rightPanel,
+          Tank.LOC_BODY,
+          bodyPanel,
+          SuperHeavyTank.LOC_REAR,
+          rearPanel,
+          SuperHeavyTank.LOC_TURRET,
+          turretPanel,
+          SuperHeavyTank.LOC_TURRET_2,
+          dualTurretPanel,
+          SuperHeavyTank.LOC_REARLEFT,
+          rearLeftPanel,
+          SuperHeavyTank.LOC_REARRIGHT,
+          rearRightPanel);
 
     SVCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -179,20 +226,7 @@ public class SVCriticalView extends IView {
                             getEntity().setCritical(location, slot, null);
                             continue;
                         }
-                        StringBuilder critName = new StringBuilder(m.getName());
-                        if (critName.length() > 25) {
-                            critName.setLength(25);
-                            critName.append("...");
-                        }
-                        if (m.isRearMounted()) {
-                            critName.append(" (R)");
-                        }
-                        if (m.isSponsonTurretMounted()) {
-                            critName.append(" (ST)");
-                        }
-                        if (m.isPintleTurretMounted()) {
-                            critName.append(" (PT)");
-                        }
+                        StringBuilder critName = getCritName(m);
                         critNames.add(critName.toString());
                     }
                 }
@@ -200,19 +234,44 @@ public class SVCriticalView extends IView {
                 if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource,
-                        refresh, true);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                DropTargetCriticalList<String> criticalSlotList = getStringDropTargetCriticalList(critNames, location);
                 if (panelForLocation(location) != null) {
                     panelForLocation(location).add(criticalSlotList);
                 }
             }
             validate();
         }
+    }
+
+    private DropTargetCriticalList<String> getStringDropTargetCriticalList(Vector<String> critNames, int location) {
+        DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames,
+              eSource,
+              refresh,
+              true);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + "");
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        return criticalSlotList;
+    }
+
+    private static StringBuilder getCritName(Mounted<?> m) {
+        StringBuilder critName = new StringBuilder(m.getName());
+        if (critName.length() > 25) {
+            critName.setLength(25);
+            critName.append("...");
+        }
+        if (m.isRearMounted()) {
+            critName.append(" (R)");
+        }
+        if (m.isSponsonTurretMounted()) {
+            critName.append(" (ST)");
+        }
+        if (m.isPintleTurretMounted()) {
+            critName.append(" (PT)");
+        }
+        return critName;
     }
 
     private @Nullable JComponent panelForLocation(int location) {

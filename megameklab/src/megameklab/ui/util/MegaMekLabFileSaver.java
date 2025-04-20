@@ -1,17 +1,38 @@
 /*
- * MegaMek - Copyright (C) 2024 - The MegaMek Team
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.util;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.common.Entity;
 import megamek.common.Mek;
@@ -19,16 +40,9 @@ import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
 import megamek.logging.MMLogger;
 import megameklab.ui.FileNameManager;
-import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 public class MegaMekLabFileSaver {
 
@@ -41,13 +55,11 @@ public class MegaMekLabFileSaver {
     }
 
     /**
-     * Constructs a file name for the current Entity using the chassis and model
-     * name and the
-     * correct extension for the unit type. Any character that is not legal for a
-     * Windows filename
-     * is replaced by an underscore.
+     * Constructs a file name for the current Entity using the chassis and model name and the correct extension for the
+     * unit type. An underscore replaces any character that is not legal for a Windows filename.
      *
      * @param entity The Entity
+     *
      * @return A default filename for the Entity
      */
     public static String createUnitFilename(Entity entity) {
@@ -57,19 +69,16 @@ public class MegaMekLabFileSaver {
     }
 
     /**
-     * Tries to save the unit directly to its file, if it has a filename already. If
-     * it hasn't, it performs a Save As... Returns true when it successfully saves
-     * the
-     * unit, false if not.
+     * Tries to save the unit directly to its file if it has a filename already. If it hasn't, it performs Save As...
      *
-     * @return True when the unit was actually saved, false otherwise
+     * @return File path or null of the file.
      */
     public String saveUnit(JFrame ownerFrame, FileNameManager fileNameManager, Entity entity) {
         String filePathName = fileNameManager.getFileName();
         // For safety, save automatically only to .mtf or .blk files, otherwise ask
-        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk"))
-            || !new File(filePathName).exists()
-            || fileNameManager.hasEntityNameChanged()) {
+        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk")) ||
+                  !new File(filePathName).exists() ||
+                  fileNameManager.hasEntityNameChanged()) {
             File selectedFile = chooseSaveFile(ownerFrame, entity);
             if (selectedFile == null) {
                 return null;
@@ -91,7 +100,7 @@ public class MegaMekLabFileSaver {
         return null;
     }
 
-    // Replace owner class with EntitySource... somehow.
+    // Replace the owner class with EntitySource... somehow.
     private @Nullable File chooseSaveFile(JFrame ownerFrame, Entity entity) {
         if (entity instanceof Mek) {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
@@ -113,8 +122,7 @@ public class MegaMekLabFileSaver {
         }
         try {
             if (entity instanceof Mek) {
-                try (FileOutputStream fos = new FileOutputStream(file);
-                     PrintStream ps = new PrintStream(fos)) {
+                try (FileOutputStream fos = new FileOutputStream(file); PrintStream ps = new PrintStream(fos)) {
                     ps.println(((Mek) entity).getMtf());
                 }
             } else {

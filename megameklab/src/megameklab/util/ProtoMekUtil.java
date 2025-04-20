@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.util;
 
@@ -53,12 +62,10 @@ public final class ProtoMekUtil {
     }
 
     /**
-     * Adds the given number of shots to the already present given ammo on the given
-     * ProtoMek.
+     * Adds the given number of shots to the already present given ammo on the given ProtoMek.
      */
     public static void addProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) throws LocationFullException {
-        Mounted<?> aMount = entity.getAmmo().stream()
-                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        Mounted<?> aMount = entity.getAmmo().stream().filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (null != aMount) {
             aMount.setShotsLeft(aMount.getUsableShotsLeft() + shots);
         } else {
@@ -69,13 +76,11 @@ public final class ProtoMekUtil {
     }
 
     /**
-     * Subtracts the given number of shots from the given ammo on the given
-     * ProtoMek.
-     * May remove the entire Mounted from the ProtoMek.
+     * Subtracts the given number of shots from the given ammo on the given ProtoMek. May remove the entire Mounted from
+     * the ProtoMek.
      */
     public static void reduceProtoMekAmmo(ProtoMek entity, EquipmentType ammo, int shots) {
-        Mounted<?> aMount = entity.getAmmo().stream()
-                .filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
+        Mounted<?> aMount = entity.getAmmo().stream().filter(m -> ammo.equals(m.getType())).findFirst().orElse(null);
         if (aMount != null) {
             if (aMount.getUsableShotsLeft() <= shots) {
                 UnitUtil.removeMounted(entity, aMount);
@@ -86,11 +91,11 @@ public final class ProtoMekUtil {
     }
 
     /**
-     * Checks whether the space has room for the equipment within the slot and
-     * weight limits.
+     * Checks whether the space has room for the equipment within the slot and weight limits.
      *
      * @param location A ProtoMek location
      * @param mount    The equipment to be added to the location
+     *
      * @return Whether the equipment can be added without exceeding the limits.
      */
     public static boolean protoMekHasRoom(ProtoMek proto, int location, Mounted<?> mount) {
@@ -98,8 +103,7 @@ public final class ProtoMekUtil {
             return true;
         }
         int slots = TestProtoMek.maxSlotsByLocation(location, proto) - 1;
-        double weight = TestProtoMek.maxWeightByLocation(location, proto)
-                - mount.getTonnage();
+        double weight = TestProtoMek.maxWeightByLocation(location, proto) - mount.getTonnage();
         if ((slots < 0) || (weight < 0)) {
             return false;
         }

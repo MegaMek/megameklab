@@ -1,25 +1,44 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing.reference;
+
+import static megameklab.printing.PrintRecordSheet.svgNS;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import megameklab.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
-
-import java.util.*;
-
-import static megameklab.printing.PrintRecordSheet.svgNS;
 
 /**
  * Base class for reference tables that format contents into a grid, with optional footnotes
@@ -77,6 +96,10 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         data.add(new ArrayList<>(row));
     }
 
+    /**
+     * @deprecated no indicated uses.
+     */
+    @Deprecated(since = "0.50.05", forRemoval = true)
     public void setDefaultAnchor(String defaultAnchor) {
         this.defaultAnchor = defaultAnchor;
     }
@@ -85,6 +108,10 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         this.anchor.put(column, anchor);
     }
 
+    /**
+     * @deprecated no indicated uses.
+     */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public void setColumnWeight(int column, String weight) {
         fontWeight.put(column, weight);
     }
@@ -117,35 +144,42 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         double rowSpacing = height / (lineCount() + 2);
         double lineHeight = sheet.getFontHeight(fontSize);
         while ((fontSize >= 5.0f) && (rowSpacing < lineHeight)) {
-            fontSize -= 0.1;
+            fontSize -= 0.1F;
             lineHeight = sheet.getFontHeight(fontSize);
         }
-        double ypos = 0.0;
+        double yPos = 0.0;
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-        g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
+        g.setAttributeNS(null,
+              SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
+              String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         if (!headers.isEmpty()) {
             Element text = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
             text.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, "0");
             text.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, "0");
             text.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
-            text.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                    formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
+            text.setAttributeNS(null,
+                  SVGConstants.SVG_STYLE_ATTRIBUTE,
+                  formatStyle(fontSize, SVGConstants.SVG_BOLD_VALUE));
             text.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, defaultAnchor);
             int lineCount = lineCount(headers);
             for (int col = 0; col < headers.size(); col++) {
                 String[] lines = headers.get(col).split("\\n");
-                double useY = ypos + lineHeight * (lineCount - lines.length);
+                double useY = yPos + lineHeight * (lineCount - lines.length);
                 for (String line : lines) {
-                    g.appendChild(createTextElement(width * colOffsets.get(col), useY,
-                            line, fontSize, SVGConstants.SVG_BOLD_VALUE,
-                            PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(col, defaultAnchor),
-                            false, null));
+                    g.appendChild(createTextElement(width * colOffsets.get(col),
+                          useY,
+                          line,
+                          fontSize,
+                          SVGConstants.SVG_BOLD_VALUE,
+                          PrintRecordSheet.FILL_BLACK,
+                          anchor.getOrDefault(col, defaultAnchor),
+                          false,
+                          null));
                     useY += lineHeight;
                 }
             }
             g.appendChild(text);
-            ypos += rowSpacing + lineHeight * (lineCount - 1);
+            yPos += rowSpacing + lineHeight * (lineCount - 1);
         }
 
         int rowParity = 0;
@@ -168,7 +202,10 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 rowParity = (i + 1) % 2;
             } else {
                 if (i % 2 == rowParity) {
-                    g.appendChild(createShadeElement(1, ypos - fontSize / 3 - rowSpacing / 2, width - 5, rowSpacing * lineCount(row)));
+                    g.appendChild(createShadeElement(1,
+                          yPos - fontSize / 3 - rowSpacing / 2,
+                          width - 5,
+                          rowSpacing * lineCount(row)));
                 }
             }
 
@@ -178,22 +215,35 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 }
                 String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
-                    g.appendChild(createTextElement(width * colOffsets.get(c), ypos + rowSpacing * l,
-                            lines[l], fontSize, fontWeight.getOrDefault(c, sectionHeader ? SVGConstants.SVG_BOLD_VALUE : SVGConstants.SVG_NORMAL_VALUE),
-                            PrintRecordSheet.FILL_BLACK, anchor.getOrDefault(c, defaultAnchor), false, null));
+                    g.appendChild(createTextElement(width * colOffsets.get(c),
+                          yPos + rowSpacing * l,
+                          lines[l],
+                          fontSize,
+                          fontWeight.getOrDefault(c,
+                                sectionHeader ? SVGConstants.SVG_BOLD_VALUE : SVGConstants.SVG_NORMAL_VALUE),
+                          PrintRecordSheet.FILL_BLACK,
+                          anchor.getOrDefault(c, defaultAnchor),
+                          false,
+                          null));
                 }
             }
-            ypos += rowSpacing * lineCount(row);
+            yPos += rowSpacing * lineCount(row);
         }
         for (String note : notes) {
             String[] lines = note.split("\\n");
             for (String line : lines) {
-                g.appendChild(createTextElement(PADDING, ypos, line, fontSize,
-                        SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                        PrintRecordSheet.FILL_BLACK, false, width - PADDING));
-                ypos += lineHeight;
+                g.appendChild(createTextElement(PADDING,
+                      yPos,
+                      line,
+                      fontSize,
+                      SVGConstants.SVG_NORMAL_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE,
+                      PrintRecordSheet.FILL_BLACK,
+                      false,
+                      width - PADDING));
+                yPos += lineHeight;
             }
-            ypos += rowSpacing - lineHeight;
+            yPos += rowSpacing - lineHeight;
         }
         return g;
     }

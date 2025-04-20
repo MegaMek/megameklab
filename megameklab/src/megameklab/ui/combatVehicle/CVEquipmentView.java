@@ -1,17 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.combatVehicle;
 
@@ -22,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -46,35 +57,35 @@ import megameklab.util.StringUtils;
 import megameklab.util.TankUtil;
 import megameklab.util.UnitUtil;
 
+/**
+ * @deprecated No indicated uses.
+ */
+@Deprecated(since = "0.50.06", forRemoval = true)
 public class CVEquipmentView extends IView implements ActionListener {
     private static final MMLogger logger = MMLogger.create(CVEquipmentView.class);
 
     private RefreshListener refresh;
 
-    private JPanel topPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
-    private JPanel buttonPanel = new JPanel();
+    private final JButton addButton = new JButton("Add");
+    private final JButton removeButton = new JButton("Remove");
+    private final JButton removeAllButton = new JButton("Remove All");
 
-    private JButton addButton = new JButton("Add");
-    private JButton removeButton = new JButton("Remove");
-    private JButton removeAllButton = new JButton("Remove All");
+    private final JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
+    private final CriticalTableModel equipmentList;
+    private final Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
-    private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
-    private Vector<EquipmentType> equipmentTypes;
-
-    private String ADD_COMMAND = "ADD";
-    private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVEALL_COMMAND = "REMOVEALL";
+    private final String ADD_COMMAND = "ADD";
+    private final String REMOVE_COMMAND = "REMOVE";
+    private final String REMOVE_ALL_COMMAND = "REMOVEALL";
 
     public CVEquipmentView(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
 
+        JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        JPanel rightPanel = new JPanel();
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
         equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.EQUIPMENT);
@@ -88,12 +99,14 @@ public class CVEquipmentView extends IView implements ActionListener {
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         equipmentTable.setMaximumSize(new Dimension(800, 500));
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
         topPanel.add(equipmentCombo, BorderLayout.CENTER);
         topPanel.add(addButton, BorderLayout.EAST);
 
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
 
@@ -126,11 +139,9 @@ public class CVEquipmentView extends IView implements ActionListener {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(getTank()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
-        equipmentTypes = new Vector<>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(getTank(), eq)) {
-                equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
         }
@@ -162,7 +173,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     private void removeHeatSinks() {
         int location = 0;
-        for (; location < equipmentList.getRowCount();) {
+        while (location < equipmentList.getRowCount()) {
             Mounted<?> mount = (Mounted<?>) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if (UnitUtil.isHeatSink(mount)) {
                 try {
@@ -205,7 +216,7 @@ public class CVEquipmentView extends IView implements ActionListener {
         removeAllButton.addActionListener(this);
         addButton.setActionCommand(ADD_COMMAND);
         removeButton.setActionCommand(REMOVE_COMMAND);
-        removeAllButton.setActionCommand(REMOVEALL_COMMAND);
+        removeAllButton.setActionCommand(REMOVE_ALL_COMMAND);
         addButton.setMnemonic('A');
         removeButton.setMnemonic('R');
         removeAllButton.setMnemonic('L');
@@ -213,36 +224,39 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(ADD_COMMAND)) {
-            EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
-            Mounted<?> mount = null;
-            boolean isMisc = equip instanceof MiscType;
-            if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
-                if (!UnitUtil.hasTargComp(getTank())) {
-                    mount = UnitUtil.updateTC(getTank(), equip);
+        switch (e.getActionCommand()) {
+            case ADD_COMMAND -> {
+                EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
+                Mounted<?> mount = null;
+                boolean isMisc = equip instanceof MiscType;
+                if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+                    if (!UnitUtil.hasTargComp(getTank())) {
+                        mount = UnitUtil.updateTC(getTank(), equip);
+                    }
+                } else {
+                    try {
+                        mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
+                    } catch (Exception ex) {
+                        logger.error("", ex);
+                    }
                 }
-            } else {
-                try {
-                    mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    logger.error("", ex);
-                }
+                equipmentList.addCrit(mount);
             }
-            equipmentList.addCrit(mount);
-        } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-            int startRow = equipmentTable.getSelectedRow();
-            int count = equipmentTable.getSelectedRowCount();
+            case REMOVE_COMMAND -> {
+                int startRow = equipmentTable.getSelectedRow();
+                int count = equipmentTable.getSelectedRowCount();
 
-            for (; count > 0; count--) {
-                if (startRow > -1) {
-                    equipmentList.removeMounted(startRow);
-                    equipmentList.removeCrit(startRow);
+                for (; count > 0; count--) {
+                    if (startRow > -1) {
+                        equipmentList.removeMounted(startRow);
+                        equipmentList.removeCrit(startRow);
+                    }
                 }
             }
-        } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
-            removeAllEquipment();
-        } else {
-            return;
+            case REMOVE_ALL_COMMAND -> removeAllEquipment();
+            default -> {
+                return;
+            }
         }
         fireTableRefresh();
     }

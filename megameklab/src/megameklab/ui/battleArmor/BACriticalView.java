@@ -1,23 +1,35 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.battleArmor;
 
 import java.io.File;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -41,7 +53,7 @@ import megameklab.ui.util.RefreshListener;
 
 /**
  * The Crit Slots view for a single suit of BattleArmor
- *
+ * <p>
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * @author arlith
@@ -74,11 +86,14 @@ public class BACriticalView extends IView {
         Box middlePanel = Box.createVerticalBox();
         Box rightPanel = Box.createVerticalBox();
 
-        mainPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR),
-                " Trooper " + trooper + " ",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(2,
+                    0,
+                    0,
+                    0,
+                    CritCellUtil.CRITCELL_BORDER_COLOR),
+              " Trooper " + trooper + " ",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION));
 
         leftArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM]));
         bodyPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY]));
@@ -152,14 +167,8 @@ public class BACriticalView extends IView {
                     }
                 }
 
-                BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, showEmpty, this);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + ":" + trooper);
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                BAASBMDropTargetCriticalList<String> criticalSlotList = getStringBAASBMDropTargetCriticalList(critNames,
+                      location);
                 switch (location) {
                     case BattleArmor.MOUNT_LOC_LARM:
                         leftArmPanel.add(criticalSlotList);
@@ -179,10 +188,14 @@ public class BACriticalView extends IView {
             String[] amTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             String[] apTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
-                amTxt[loc] = "Anti-Mek Weapons: " + numAMWeapons[loc] + "/"
-                        + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
-                apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/"
-                        + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
+                amTxt[loc] = "Anti-Mek Weapons: " +
+                                   numAMWeapons[loc] +
+                                   "/" +
+                                   getBattleArmor().getNumAllowedAntiMekWeapons(loc);
+                apTxt[loc] = "Anti-Personnel Weapons: " +
+                                   numAPWeapons[loc] +
+                                   "/" +
+                                   getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
                 if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] + "</font></html>";
                 }
@@ -206,20 +219,41 @@ public class BACriticalView extends IView {
             rightArmPanel.setVisible(!isQuad);
             turretPanel.setVisible(isQuad && (getBattleArmor().getTurretCapacity() > 0));
 
-            EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                    "data/mekfiles/UnitVerifierOptions.xml"));
-            TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
-
-            String weightTxt = "Weight: "
-                    + String.format("%1$.3f", testBA.calculateWeight(trooper))
-                    + "/" + getBattleArmor().getTrooperWeight();
-            if (testBA.calculateWeight(trooper) > getBattleArmor().getTrooperWeight()) {
-                weightTxt = "<html><font color='C00000'>" + weightTxt + "</font></html>";
-            }
+            EntityVerifier entityVerifier = EntityVerifier.getInstance(new File("data/mekfiles/UnitVerifierOptions.xml"));
+            String weightTxt = getTextForBattleArmor(entityVerifier);
             weightLabel.setText(weightTxt);
 
             validate();
         }
+    }
+
+    private String getTextForBattleArmor(EntityVerifier entityVerifier) {
+        TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
+
+        String weightTxt = "Weight: " +
+                                 String.format("%1$.3f", testBA.calculateWeight(trooper)) +
+                                 "/" +
+                                 getBattleArmor().getTrooperWeight();
+        if (testBA.calculateWeight(trooper) > getBattleArmor().getTrooperWeight()) {
+            weightTxt = "<html><font color='C00000'>" + weightTxt + "</font></html>";
+        }
+        return weightTxt;
+    }
+
+    private BAASBMDropTargetCriticalList<String> getStringBAASBMDropTargetCriticalList(Vector<String> critNames,
+          int location) {
+        BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(critNames,
+              eSource,
+              refresh,
+              showEmpty,
+              this);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + ":" + trooper);
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        return criticalSlotList;
     }
 
     private JLabel makeLabel(String text) {

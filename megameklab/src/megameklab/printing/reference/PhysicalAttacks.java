@@ -1,20 +1,31 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing.reference;
-
-import megamek.logging.MMLogger;
-import org.apache.batik.util.SVGConstants;
 
 import megamek.common.Entity;
 import megamek.common.Mek;
@@ -22,10 +33,12 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.QuadMek;
 import megamek.common.actions.ClubAttackAction;
+import megamek.logging.MMLogger;
 import megameklab.printing.PrintMek;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.StringUtils;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * Attack mods and damage for Mek physical attacks
@@ -50,8 +63,8 @@ public class PhysicalAttacks extends ReferenceTable {
         }
         boolean hasTorsoSpikes = false;
         for (Mounted<?> mounted : sheet.getEntity().getMisc()) {
-            if (mounted.getType().hasFlag(MiscType.F_SPIKES)
-                    && ((Mek) sheet.getEntity()).locationIsTorso(mounted.getLocation())) {
+            if (mounted.getType().hasFlag(MiscType.F_SPIKES) &&
+                      ((Mek) sheet.getEntity()).locationIsTorso(mounted.getLocation())) {
                 hasTorsoSpikes = true;
                 break;
             }
@@ -61,16 +74,19 @@ public class PhysicalAttacks extends ReferenceTable {
         if (!(sheet.getEntity() instanceof QuadMek)) {
             addRow(bundle.getString("push"), "-1", "\u2014");
         }
-        if (sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LARM)
-               && sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RARM)) {
-            addRow(bundle.getString("club"), "-1", String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
+        if (sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LARM) &&
+                  sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RARM)) {
+            addRow(bundle.getString("club"),
+                  "-1",
+                  String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
         }
-        addRow(bundle.getString("charge"), "+0*", String.format(hasTorsoSpikes ?
-                        "%.0f/%s\u2020" : "%.0f/%s",
-                Math.floor(sheet.getEntity().getWeight() / 10.0),
-                CConfig.scaleUnits().equals(RSScale.HEXES) ?
-                        bundle.getString("hex") :
-                        CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation));
+        addRow(bundle.getString("charge"),
+              "+0*",
+              String.format(hasTorsoSpikes ? "%.0f/%s\u2020" : "%.0f/%s",
+                    Math.floor(sheet.getEntity().getWeight() / 10.0),
+                    CConfig.scaleUnits().equals(RSScale.HEXES) ?
+                          bundle.getString("hex") :
+                          CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) + CConfig.scaleUnits().abbreviation));
         if (sheet.getEntity().getOriginalJumpMP() > 0) {
             addRow(bundle.getString("dfa"), "+0*", String.valueOf(dfaDamage));
         }
@@ -125,13 +141,13 @@ public class PhysicalAttacks extends ReferenceTable {
         for (Mounted<?> mounted : entity.getMisc()) {
             if (mounted.getType().hasFlag(MiscType.F_CLUB)) {
                 addRow(mounted.getName(),
-                        String.format("%+d", ClubAttackAction.getHitModFor((MiscType) mounted.getType())),
-                        StringUtils.getEquipmentInfo(entity, mounted));
+                      String.format("%+d", ClubAttackAction.getHitModFor((MiscType) mounted.getType())),
+                      StringUtils.getEquipmentInfo(entity, mounted));
             } else if (mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
                 if (mounted.getType().hasSubType(MiscType.S_CLAW)) {
                     addRow(mounted.getName(), "+1", StringUtils.getEquipmentInfo(entity, mounted));
                 } else {
-                    logger.error("Unknown hand weapon %s!".formatted(mounted.getName()));
+                    logger.error("Unknown hand weapon {}!", mounted.getName());
                     addRow(mounted.getName(), "???", StringUtils.getEquipmentInfo(entity, mounted));
                 }
             }

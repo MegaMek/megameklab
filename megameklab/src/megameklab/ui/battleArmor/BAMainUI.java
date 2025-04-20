@@ -1,31 +1,49 @@
 /*
- * MegaMekLab - Copyright (C) 2010
+ * Copyright (C) 2010-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.battleArmor;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+import java.util.List;
+import javax.swing.JDialog;
+
+import megamek.common.BattleArmor;
+import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
+import megamek.common.EquipmentType;
+import megamek.common.ITechManager;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 public class BAMainUI extends MegaMekLabMainUI {
 
@@ -78,7 +96,8 @@ public class BAMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
+              new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
         statusbar.refresh();

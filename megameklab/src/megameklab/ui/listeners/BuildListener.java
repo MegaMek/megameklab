@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.listeners;
 
@@ -19,13 +33,10 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.UnitRole;
 
 /**
- * Combined listener interface for the various subviews of the structure tab.
- * Includes callbacks
- * used by multiple unit types. Listeners for specific unit types extend this
- * one.
+ * Combined listener interface for the various subviews of the structure tab. Includes callbacks used by multiple unit
+ * types. Listeners for specific unit types extend this one.
  *
  * @author Neoancient
- *
  */
 public interface BuildListener {
 
@@ -53,9 +64,8 @@ public interface BuildListener {
     void roleChanged(UnitRole role);
 
     /**
-     * Notifies of a change of the manually entered BV. When manualBV is 0 or less,
-     * the unit
-     * should be set to not use a manual BV value and the manual BV set to -1.
+     * Notifies of a change of the manually entered BV. When manualBV is 0 or less, the unit should be set to not use a
+     * manual BV value and the manual BV set to -1.
      *
      * @param manualBV The entered manual BV; may be invalid (0 or less)
      */
@@ -76,8 +86,7 @@ public interface BuildListener {
     /**
      * Notifies of a change in heat sink type or count for aerospace units
      *
-     * @param index Either
-     *              {@link megameklab.ui.generalUnit.HeatSinkView#TYPE_SINGLE} or
+     * @param index Either {@link megameklab.ui.generalUnit.HeatSinkView#TYPE_SINGLE} or
      *              {@link megameklab.ui.generalUnit.HeatSinkView#TYPE_DOUBLE_AERO}
      * @param count The number of heat sinks
      */
@@ -94,9 +103,8 @@ public interface BuildListener {
     }
 
     /**
-     * Notifies of a change in the distribution between single and double heat sinks
-     * on a unit with
-     * prototype double heat sinks.
+     * Notifies of a change in the distribution between single and double heat sinks on a unit with prototype double
+     * heat sinks.
      *
      * @param prototype The number of prototype double heat sinks
      */
@@ -104,8 +112,7 @@ public interface BuildListener {
     }
 
     /**
-     * Notifies of a change in the number of heat sinks that are part of the base
-     * chassis of an omni unit
+     * Notifies of a change in the number of heat sinks that are part of the base chassis of an omni unit
      *
      * @param count The number of fixed heat sinks
      */
@@ -114,6 +121,7 @@ public interface BuildListener {
 
     /**
      * Notifies of a change in the presence of a RISC Heat Sink Override Kit
+     *
      * @param hasKit True if the unit now has the kit
      */
     default void riscHeatSinkOverrideKitChanged(boolean hasKit) {
@@ -124,12 +132,10 @@ public interface BuildListener {
     }
 
     /**
-     * Notify of a change in the amount of fuel. For aerospace this is number of
-     * fuel points.
-     * For ground support vehicles this is the range in km.
+     * Notify of a change in the amount of fuel. For aerospace this is a number of fuel points. For ground support
+     * vehicles this is the range in km.
      *
-     * @param capacity The number of fuel points or range as appropriate to the unit
-     *                 type
+     * @param capacity The number of fuel points or range as appropriate to the unit type
      */
     default void fuelCapacityChanged(int capacity) {
     }

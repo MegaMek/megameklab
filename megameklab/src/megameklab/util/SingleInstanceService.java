@@ -76,7 +76,7 @@ public class SingleInstanceService {
     }
 
     /**
-     * Creates a new single instance service with specific port
+     * Creates a new single instance service with a specific port
      *
      * @param applicationId Unique identifier for this application
      * @param port          Port to use for communication
@@ -131,16 +131,14 @@ public class SingleInstanceService {
      * Send a message to the running instance
      *
      * @param message Message to send
-     *
-     * @return true if successful, false otherwise
      */
-    public boolean sendMessage(String message) {
+    public void sendMessage(String message) {
         Path portFile = getPortFilePath();
 
         try {
             // Check if the port file exists
             if (!Files.exists(portFile)) {
-                return false;
+                return;
             }
 
             // Read the port number from the port file (not the lock file)
@@ -153,12 +151,10 @@ public class SingleInstanceService {
 
                 // Send the message
                 out.println(message);
-                return true;
             }
 
         } catch (Exception e) {
             logger.error("Error sending message to running instance", e);
-            return false;
         }
     }
 
@@ -289,16 +285,14 @@ public class SingleInstanceService {
             logger.error("Error deleting port file", e);
         }
         // Shut down the executor service
-        if (connectionExecutor != null) {
-            connectionExecutor.shutdown();
-            try {
-                if (!connectionExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                    connectionExecutor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
+        connectionExecutor.shutdown();
+        try {
+            if (!connectionExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
                 connectionExecutor.shutdownNow();
-                Thread.currentThread().interrupt();
             }
+        } catch (InterruptedException e) {
+            connectionExecutor.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 

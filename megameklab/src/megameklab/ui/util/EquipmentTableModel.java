@@ -1,20 +1,47 @@
 /*
- * MegaMekLab - Copyright (C) 2011
+ * Copyright (C) 2011-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 
 package megameklab.ui.util;
+
+import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
@@ -29,22 +56,9 @@ import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.util.CConfig;
 import megameklab.util.InfantryUtil;
 
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
-
 /**
- * this model was not being used by anything, so I totally redid so that it can
- * be used as the model for the equipment tab. It will be a sortable, filterable
- * table of equipment, similar to the tables in MHQ
+ * This model was not being used by anything, so I totally redid so that it can be used as the model for the equipment
+ * tab. It will be a sortable, filterable table of equipment, similar to the tables in MHQ
  *
  * @author Jay lawson
  */
@@ -98,80 +112,51 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        switch (column) {
-            case COL_NAME:
-                return "Name";
-            case COL_DAMAGE:
-                return "Damage";
-            case COL_DIVISOR:
-                return "Divisor";
-            case COL_SPECIAL:
-                return "Special";
-            case COL_HEAT:
-                return "Heat";
-            case COL_MRANGE:
-                return "Min R";
-            case COL_RANGE:
-                return "Range";
-            case COL_TON:
-                return "Weight";
-            case COL_CRIT:
+        return switch (column) {
+            case COL_NAME -> "Name";
+            case COL_DAMAGE -> "Damage";
+            case COL_DIVISOR -> "Divisor";
+            case COL_SPECIAL -> "Special";
+            case COL_HEAT -> "Heat";
+            case COL_MRANGE -> "Min R";
+            case COL_RANGE -> "Range";
+            case COL_TON -> "Weight";
+            case COL_CRIT -> {
                 if (entity instanceof Tank) {
-                    return "Slots";
+                    yield "Slots";
                 }
-                return "Crit";
-            case COL_CREW:
-                return "Crew";
-            case COL_TECH:
-                return "Base";
-            case COL_TLEVEL:
-                return "Level";
-            case COL_TRATING:
-                return "Rating";
-            case COL_COST:
-                return "Cost";
-            case COL_SHOTS:
-                return "Shots";
-            case COL_BV:
-                return "BV";
-            case COL_DPROTOTYPE:
-                return "Prototype";
-            case COL_DPRODUCTION:
-                return "Production";
-            case COL_DCOMMON:
-                return "Common";
-            case COL_DEXTINCT:
-                return "Extinct";
-            case COL_DREINTRO:
-                return "Re-intro";
-            case COL_REF:
-                return "Reference";
-            default:
-                return "?";
-        }
+                yield "Crit";
+            }
+            case COL_CREW -> "Crew";
+            case COL_TECH -> "Base";
+            case COL_TLEVEL -> "Level";
+            case COL_TRATING -> "Rating";
+            case COL_COST -> "Cost";
+            case COL_SHOTS -> "Shots";
+            case COL_BV -> "BV";
+            case COL_DPROTOTYPE -> "Prototype";
+            case COL_DPRODUCTION -> "Production";
+            case COL_DCOMMON -> "Common";
+            case COL_DEXTINCT -> "Extinct";
+            case COL_DREINTRO -> "Re-intro";
+            case COL_REF -> "Reference";
+            default -> "?";
+        };
     }
 
     public int getColumnWidth(int c) {
-        switch (c) {
-            case COL_NAME:
-                return 120;
-                /*
-                 * case COL_DATES: return 100;
-                 */
-            case COL_RANGE:
-            case COL_COST:
-            case COL_TRATING:
-                return 50;
-                /*
-                 * case COL_TRATING: case COL_COST: return 20;
-                 */
-            case COL_TON:
-            case COL_CRIT:
-            case COL_MRANGE:
-                return 5;
-            default:
-                return 30;
-        }
+        return switch (c) {
+            case COL_NAME -> 120;
+            /*
+             * case COL_DATES: return 100;
+             */
+            case COL_RANGE, COL_COST, COL_TRATING -> 50;
+            /*
+             * case COL_TRATING: case COL_COST: return 20;
+             */
+            case COL_TON, COL_CRIT, COL_MRANGE -> 5;
+            default -> 30;
+        };
     }
 
     private int getAlignment(int col) {
@@ -182,39 +167,19 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     public Comparator<?> getSorter(int col) {
-        switch(col) {
-            case COL_DAMAGE:
-            case COL_RANGE:
-                return RANGE_DAMAGE_SORTER;
-            case COL_HEAT:
-            case COL_MRANGE:
-            case COL_TON:
-            case COL_CRIT:
-            case COL_COST:
-            case COL_SHOTS:
-            case COL_BV:
-                return NUMBER_SORTER;
-            case COL_DPROTOTYPE:
-            case COL_DPRODUCTION:
-            case COL_DCOMMON:
-            case COL_DEXTINCT:
-            case COL_DREINTRO:
-                return Comparator.comparingInt(EquipmentTableModel::parseDate);
-            case COL_REF:
-                return REFERENCE_SORTER;
-            default:
-                return Comparator.naturalOrder();
-        }
+        return switch (col) {
+            case COL_DAMAGE, COL_RANGE -> RANGE_DAMAGE_SORTER;
+            case COL_HEAT, COL_MRANGE, COL_TON, COL_CRIT, COL_COST, COL_SHOTS, COL_BV -> NUMBER_SORTER;
+            case COL_DPROTOTYPE, COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO ->
+                  Comparator.comparingInt(EquipmentTableModel::parseDate);
+            case COL_REF -> REFERENCE_SORTER;
+            default -> Comparator.naturalOrder();
+        };
     }
 
     @Override
     public Class<?> getColumnClass(int c) {
         return getValueAt(0, c).getClass();
-    }
-
-    @Override
-    public boolean isCellEditable(int row, int col) {
-        return false;
     }
 
     public EquipmentType getType(int i) {
@@ -237,38 +202,38 @@ public class EquipmentTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int row, int col) {
         EquipmentType type;
-        WeaponType wtype = null;
-        AmmoType atype = null;
-        MiscType mtype = null;
+        WeaponType weaponType = null;
+        AmmoType ammoType = null;
+        MiscType miscType = null;
         if (data.isEmpty()) {
             return "";
         } else {
             type = data.get(row);
         }
         if (type instanceof WeaponType) {
-            wtype = (WeaponType) type;
+            weaponType = (WeaponType) type;
         }
         if (type instanceof AmmoType) {
-            atype = (AmmoType) type;
+            ammoType = (AmmoType) type;
         }
         if (type instanceof MiscType) {
-            mtype = (MiscType) type;
+            miscType = (MiscType) type;
         }
 
         if (col == COL_NAME) {
             return type.getSortingName();
         } else if (col == COL_DAMAGE) {
-            if (null != wtype) {
-                return getDamageString(wtype, entity instanceof Aero);
+            if (null != weaponType) {
+                return getDamageString(weaponType, entity instanceof Aero);
             } else {
                 return "-";
             }
         } else if (col == COL_DIVISOR) {
-            if (mtype != null && mtype.hasFlag(MiscType.F_ARMOR_KIT)) {
-                if ((mtype.getSubType() & MiscType.S_ENCUMBERING) == 0) {
-                    return String.valueOf(mtype.getDamageDivisor());
+            if (miscType != null && miscType.hasFlag(MiscType.F_ARMOR_KIT)) {
+                if ((miscType.getSubType() & MiscType.S_ENCUMBERING) == 0) {
+                    return String.valueOf(miscType.getDamageDivisor());
                 } else {
-                    return mtype.getDamageDivisor() + "E";
+                    return miscType.getDamageDivisor() + "E";
                 }
             } else {
                 return "-";
@@ -288,10 +253,10 @@ public class EquipmentTableModel extends AbstractTableModel {
                 if (type.hasFlag(WeaponType.F_INF_NONPENETRATING)) {
                     special += "N";
                 }
-                if (type.hasFlag(WeaponType.F_PLASMA)
-                        || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
-                        || type.hasFlag(WeaponType.F_INFERNO)
-                        || type.hasFlag(WeaponType.F_FLAMER)) {
+                if (type.hasFlag(WeaponType.F_PLASMA) ||
+                          type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES) ||
+                          type.hasFlag(WeaponType.F_INFERNO) ||
+                          type.hasFlag(WeaponType.F_FLAMER)) {
                     special += "F";
                 }
             }
@@ -322,13 +287,13 @@ public class EquipmentTableModel extends AbstractTableModel {
                 }
             } else if (type instanceof WeaponType) {
                 // Field gun crew size
-                special += Math.max(2, (int)Math.ceil(type.getTonnage(entity)));
+                special += Math.max(2, (int) Math.ceil(type.getTonnage(entity)));
             }
             return special;
         } else if (col == COL_HEAT) {
             int heat = type.getHeat();
-            if ((null != wtype) && (entity instanceof Aero)) {
-                heat *= Mounted.getNumShots(wtype,  null,  true);
+            if ((null != weaponType) && (entity instanceof Aero)) {
+                heat *= Mounted.getNumShots(weaponType, null, true);
             }
             if (heat == 0) {
                 return "-";
@@ -336,15 +301,15 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return Integer.toString(heat);
             }
         } else if (col == COL_SHOTS) {
-            if (null != atype) {
-                return Integer.toString(atype.getShots());
+            if (null != ammoType) {
+                return Integer.toString(ammoType.getShots());
             } else {
                 return "-";
             }
         } else if (col == COL_RANGE) {
-            if (null != wtype) {
+            if (null != weaponType) {
                 if (entity instanceof Aero) {
-                    switch (wtype.getMaxRange()) {
+                    switch (weaponType.getMaxRange()) {
                         case RangeType.RANGE_SHORT:
                             return "Short";
                         case RangeType.RANGE_MEDIUM:
@@ -355,20 +320,19 @@ public class EquipmentTableModel extends AbstractTableModel {
                             return "Extreme";
                     }
                 }
-                if (wtype instanceof InfantryWeapon) {
-                    return ((InfantryWeapon) wtype).getInfantryRange() + "";
+                if (weaponType instanceof InfantryWeapon) {
+                    return ((InfantryWeapon) weaponType).getInfantryRange() + "";
                 }
-                return wtype.getShortRange() + "/" + wtype.getMediumRange()
-                        + "/" + wtype.getLongRange();
+                return weaponType.getShortRange() + "/" + weaponType.getMediumRange() + "/" + weaponType.getLongRange();
             } else {
                 return "-";
             }
         } else if (col == COL_MRANGE) {
-            if (null != wtype) {
+            if (null != weaponType) {
                 if (entity instanceof Aero) {
                     return "-";
                 }
-                int minRange = wtype.getMinimumRange();
+                int minRange = weaponType.getMinimumRange();
                 if (minRange < 0) {
                     minRange = 0;
                 }
@@ -378,9 +342,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         } else if (col == COL_TON) {
             final double weight = type.getTonnage(entity);
-            if ((atype != null) && (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)
-                    || entity.hasETypeFlag(Entity.ETYPE_PROTOMEK))) {
-                return String.format("%.2f kg/shot", atype.getKgPerShot());
+            if ((ammoType != null) &&
+                      (entity.hasETypeFlag(Entity.ETYPE_BATTLEARMOR) || entity.hasETypeFlag(Entity.ETYPE_PROTOMEK))) {
+                return String.format("%.2f kg/shot", ammoType.getKgPerShot());
             } else if (type.isVariableTonnage()) {
                 return VARIABLE;
             } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
@@ -391,8 +355,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return defaultDecimalFormatter.format(weight);
             }
         } else if (col == COL_CRIT) {
-            if (type.isVariableCriticals()
-                    && (entity.isSupportVehicle() || (entity instanceof Mek))) {
+            if (type.isVariableCriticals() && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
                 return "variable";
             } else if (entity.isSupportVehicle()) {
@@ -400,7 +363,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity instanceof Tank) {
                 return type.getTankSlots(entity);
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
-                return TestProtoMek.requiresSlot(type)? 1 : 0;
+                return TestProtoMek.requiresSlot(type) ? 1 : 0;
             }
             return type.getCriticals(entity);
         } else if (col == COL_TRATING) {
@@ -409,32 +372,37 @@ public class EquipmentTableModel extends AbstractTableModel {
             if (type.isVariableCost()) {
                 return "variable";
             }
-            return defaultDecimalFormatter.format(type
-                    .getCost(entity, false, Entity.LOC_NONE));
+            return defaultDecimalFormatter.format(type.getCost(entity, false, Entity.LOC_NONE));
         } else if (col == COL_BV) {
             if (type.isVariableBV()) {
                 return "variable";
             }
             return type.getBV(entity);
         } else if (col == COL_DPROTOTYPE) {
-            return entity.isMixedTech()? type.getTechAdvancement().getPrototypeDateName() :
-                    type.getTechAdvancement().getPrototypeDateName(entity.isClan());
+            return entity.isMixedTech() ?
+                         type.getTechAdvancement().getPrototypeDateName() :
+                         type.getTechAdvancement().getPrototypeDateName(entity.isClan());
         } else if (col == COL_DPRODUCTION) {
-            return entity.isMixedTech()? type.getTechAdvancement().getProductionDateName() :
-                type.getTechAdvancement().getProductionDateName(entity.isClan());
+            return entity.isMixedTech() ?
+                         type.getTechAdvancement().getProductionDateName() :
+                         type.getTechAdvancement().getProductionDateName(entity.isClan());
         } else if (col == COL_DCOMMON) {
-            return entity.isMixedTech()? type.getTechAdvancement().getCommonDateName() :
-                type.getTechAdvancement().getCommonDateName(entity.isClan());
+            return entity.isMixedTech() ?
+                         type.getTechAdvancement().getCommonDateName() :
+                         type.getTechAdvancement().getCommonDateName(entity.isClan());
         } else if (col == COL_DEXTINCT) {
-            return entity.isMixedTech()? type.getTechAdvancement().getExtinctionDateName() :
-                type.getTechAdvancement().getExtinctionDateName(entity.isClan());
+            return entity.isMixedTech() ?
+                         type.getTechAdvancement().getExtinctionDateName() :
+                         type.getTechAdvancement().getExtinctionDateName(entity.isClan());
         } else if (col == COL_DREINTRO) {
-            return entity.isMixedTech()? type.getTechAdvancement().getReintroductionDateName() :
-                type.getTechAdvancement().getReintroductionDateName(entity.isClan());
+            return entity.isMixedTech() ?
+                         type.getTechAdvancement().getReintroductionDateName() :
+                         type.getTechAdvancement().getReintroductionDateName(entity.isClan());
         } else if (col == COL_TLEVEL) {
             if ((null != techManager) && CConfig.getBooleanParam(CConfig.TECH_PROGRESSION)) {
-                return type.getSimpleLevel(techManager.getGameYear(), techManager.useClanTechBase(),
-                        techManager.getTechFaction()).toString();
+                return type.getSimpleLevel(techManager.getGameYear(),
+                      techManager.useClanTechBase(),
+                      techManager.getTechFaction()).toString();
             } else {
                 return type.getStaticTechLevel().toString();
             }
@@ -448,24 +416,21 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     /**
      * @param equipment The equipment in question; must not be null
-     * @return a String representation of the Tech Base of the given equipment, i.e.
-     * "All", "IS" or "Clan" - or "Unknown" if the Tech Base is not one of the standard values.
+     *
+     * @return a String representation of the Tech Base of the given equipment, i.e. "All", "IS" or "Clan" - or
+     *       "Unknown" if the Tech Base is not one of the standard values.
      */
     public static String getTechBaseAsString(EquipmentType equipment) {
-        switch(equipment.getTechBase()) {
-            case TechAdvancement.TECH_BASE_ALL:
-                return "All";
-            case TechAdvancement.TECH_BASE_IS:
-                return "IS";
-            case TechAdvancement.TECH_BASE_CLAN:
-                return "Clan";
-            default:
-                return "Unknown";
-        }
+        return switch (equipment.getTechBase()) {
+            case TechAdvancement.TECH_BASE_ALL -> "All";
+            case TechAdvancement.TECH_BASE_IS -> "IS";
+            case TechAdvancement.TECH_BASE_CLAN -> "Clan";
+            default -> "Unknown";
+        };
     }
 
     static String getDamageString(WeaponType wtype, boolean isAero) {
-        // Aeros should print AV instead
+        // Aerospace should print AV instead
         if (isAero) {
             int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
             attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
@@ -490,14 +455,15 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         // Damage for non-Aeros
         if (wtype instanceof InfantryWeapon) {
-            return Double
-                    .toString(((InfantryWeapon) wtype).getInfantryDamage());
+            return Double.toString(((InfantryWeapon) wtype).getInfantryDamage());
         }
 
         if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
-            return wtype.getDamage(wtype.getShortRange()) + "/"
-                    + wtype.getDamage(wtype.getMediumRange()) + "/"
-                    + wtype.getDamage(wtype.getLongRange());
+            return wtype.getDamage(wtype.getShortRange()) +
+                         "/" +
+                         wtype.getDamage(wtype.getMediumRange()) +
+                         "/" +
+                         wtype.getDamage(wtype.getLongRange());
         } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
             if (wtype instanceof HAGWeapon) {
                 return wtype.getRackSize() + "";
@@ -506,25 +472,20 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (wtype instanceof MissileWeapon) {
                 int dmg;
                 if (wtype instanceof ThunderBoltWeapon) {
-                    switch (wtype.getAmmoType()) {
-                        case AmmoType.T_TBOLT_5:
-                            return "5";
-                        case AmmoType.T_TBOLT_10:
-                            return "10";
-                        case AmmoType.T_TBOLT_15:
-                            return "15";
-                        case AmmoType.T_TBOLT_20:
-                            return "20";
-                        default :
-                            return "0";
-                    }
-                } else if ((wtype instanceof ATMWeapon)
-                        ||(wtype.getAmmoType() == AmmoType.T_SRM)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_PRIMITIVE)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                    return switch (wtype.getAmmoType()) {
+                        case AmmoType.T_TBOLT_5 -> "5";
+                        case AmmoType.T_TBOLT_10 -> "10";
+                        case AmmoType.T_TBOLT_15 -> "15";
+                        case AmmoType.T_TBOLT_20 -> "20";
+                        default -> "0";
+                    };
+                } else if ((wtype instanceof ATMWeapon) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM_STREAK) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM_IMP) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM_PRIMITIVE) ||
+                                 (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
                     dmg = 2;
                 } else {
                     dmg = 1;
@@ -550,9 +511,8 @@ public class EquipmentTableModel extends AbstractTableModel {
     public class Renderer extends DefaultTableCellRenderer {
 
         @Override
-        public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus, int row,
-                int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+              int row, int column) {
             int actualCol = table.convertColumnIndexToModel(column);
             int actualRow = table.convertRowIndexToModel(row);
             EquipmentType etype = ((EquipmentTableModel) table.getModel()).getType(actualRow);
@@ -560,8 +520,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 // Reinstate the real name, as the value will be the sorting-optimized name
                 value = InfantryUtil.trimInfantryWeaponNames(etype.getName());
             }
-            super.getTableCellRendererComponent(table, value, isSelected,
-                    hasFocus, row, column);
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             setHorizontalAlignment(getAlignment(actualCol));
             if (null != techManager && !techManager.isLegal(etype)) {
                 setForeground(UIManager.getColor("Label.disabledForeground"));
@@ -582,9 +541,8 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     /**
-     * Comparator for numeric columns. Non-numeric values such as "variable" or "special" are sorted
-     * alphabetically and placed at the end (if in descending order). Strings ending in "kg" are parsed
-     * as numbers and converted to tons.
+     * Comparator for numeric columns. Non-numeric values such as "variable" or "special" are sorted alphabetically and
+     * placed at the end (if in descending order). Strings ending in "kg" are parsed as numbers and converted to tons.
      */
     private static final Comparator<Object> NUMBER_SORTER = (o1, o2) -> {
         double d1 = -1.0;
@@ -597,7 +555,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 // Convert kg values to tons
                 d1 = Double.parseDouble(o1.toString().replace("kg", "").trim()) / 1000.0;
             } else {
-                // Handle potentially commafied number
+                // Handle potentially comma'd number
                 d1 = NumberFormat.getInstance().parse(o1.toString()).doubleValue();
             }
         } catch (NumberFormatException | ParseException ignored) {
@@ -622,8 +580,8 @@ public class EquipmentTableModel extends AbstractTableModel {
     };
 
     /**
-     * Sorter for a series of one or more values separated by slashes. This handles weapon ranges
-     * and also deals with multiple damage values.
+     * Sorter for a series of one or more values separated by slashes. This handles weapon ranges and also deals with
+     * multiple damage values.
      */
     private static final Comparator<String> RANGE_DAMAGE_SORTER = (s1, s2) -> {
         String[] r1 = s1.split("/");
@@ -639,8 +597,8 @@ public class EquipmentTableModel extends AbstractTableModel {
     };
 
     /**
-     * Sorter for reference column. References give the page number then the work separated by a comma.
-     * Sorts by the work first, then the page number.
+     * Sorter for reference column. References give the page number, then the work is separated by a comma. Sorts by the
+     * work first, then the page number.
      */
     private static final Comparator<String> REFERENCE_SORTER = (s1, s2) -> {
         String[] r1 = s1.split(",\\s*");
@@ -655,7 +613,8 @@ public class EquipmentTableModel extends AbstractTableModel {
      * Converts an entry in the tech advancement table to an integer year for sorting.
      *
      * @param date The date entry
-     * @return     The year represented
+     *
+     * @return The year represented
      */
     private static int parseDate(String date) {
         if (date.startsWith("PS")) {

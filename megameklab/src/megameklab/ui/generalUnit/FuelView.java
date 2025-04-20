@@ -1,44 +1,71 @@
 /*
- * MegaMekLab - Copyright (C) 2017, 2022 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
-import megamek.common.*;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestEntity;
-import megameklab.ui.listeners.BuildListener;
-import megameklab.ui.util.CustomComboBox;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.Aero;
+import megamek.common.Engine;
+import megamek.common.Entity;
+import megamek.common.FixedWingSupport;
+import megamek.common.FuelType;
+import megamek.common.Jumpship;
+import megamek.common.Tank;
+import megamek.common.Warship;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestEntity;
+import megameklab.ui.listeners.BuildListener;
+import megameklab.ui.util.CustomComboBox;
 
 /**
  * The fuel settings view for aerospace and support vehicles.
- * 
+ *
  * @author Neoancient
  */
 public class FuelView extends BuildView implements ActionListener, ChangeListener {
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BuildListener l) {
         listeners.remove(l);
     }
@@ -56,10 +83,10 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     private final JLabel lblBurnDaysMax = new JLabel();
     private final JLabel lblBurnDays1GText = new JLabel(resourceMap.getString("FuelView.lblBurnDays1G.text"));
     private final JLabel lblBurnDaysMaxText = new JLabel(resourceMap.getString("FuelView.lblBurnDaysMax.text"));
-    private final CustomComboBox<FuelType> cbFuelType = new CustomComboBox<>(
-            new FuelType[] {FuelType.PETROCHEMICALS, FuelType.ALCOHOL, FuelType.NATURAL_GAS},
-            ft -> resourceMap.getString("FuelView.FuelType." + ft)
-    );
+    private final CustomComboBox<FuelType> cbFuelType = new CustomComboBox<>(new FuelType[] { FuelType.PETROCHEMICALS,
+                                                                                              FuelType.ALCOHOL,
+                                                                                              FuelType.NATURAL_GAS },
+          ft -> resourceMap.getString("FuelView.FuelType." + ft));
     private final Box panInfoTurns = Box.createHorizontalBox();
     private final Box panBurnDays = Box.createHorizontalBox();
     private final Box panFuelType = Box.createHorizontalBox();
@@ -69,7 +96,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     public FuelView() {
         initUI();
     }
-    
+
     private void initUI() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -220,7 +247,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         panBurnDays.setVisible(false);
         panFuelType.setVisible(tank.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE);
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnFuel) {
@@ -239,7 +266,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         }
     }
 
-    /** @return The maximum turns at maximum thrust that the aero's fuel allows or -1 if no value can be computed. */
+    /** @return The maximum turns at the maximum thrust that the aero's fuel allows or -1 if no value can be computed. */
     private int maxTurnsAtMaxThrust(Aero aero) {
         return maxTurnsAtThrust(aero, aero.getRunMP());
     }

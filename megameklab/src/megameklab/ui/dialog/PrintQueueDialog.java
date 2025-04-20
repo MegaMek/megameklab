@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2010, 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2010-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.dialog;
 
@@ -57,9 +66,9 @@ import megamek.common.Player;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
+import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
-import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -73,36 +82,37 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private static final MMLogger logger = MMLogger.create(PrintQueueDialog.class);
 
     private final boolean printToPdf;
-    private final JButton addFromFileButton  = new JButton("Add From File");
+    private final JButton addFromFileButton = new JButton("Add From File");
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
-    private final JButton removeButton       = new JButton("Remove Selected");
-    private final JButton saveButton         = new JButton("Save Unit List");
+    private final JButton removeButton = new JButton("Remove Selected");
+    private final JButton saveButton = new JButton("Save Unit List");
 
-    private final JButton moveTopButton    = new JButton(icon("moveTop.png"));
-    private final JButton moveUpButton     = new JButton(icon("moveUp.png"));
-    private final JButton moveDownButton   = new JButton(icon("moveDown.png"));
+    private final JButton moveTopButton = new JButton(icon("moveTop.png"));
+    private final JButton moveUpButton = new JButton(icon("moveUp.png"));
+    private final JButton moveDownButton = new JButton(icon("moveDown.png"));
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
-    private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
-    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
-    private final JFrame         parent;
-    private final List<BTObject> units                = new ArrayList<>();
-    private final JList<String>  queuedUnitList       = new JList<>();
+    private final JCheckBox oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
+    private final JCheckBox adjustedBvCheck = new JCheckBox("Print force-adjusted BV");
+    private final JFrame parent;
+    private final List<BTObject> units = new ArrayList<>();
+    private final JList<String> queuedUnitList = new JList<>();
     private final RecordSheetPreviewPanel recordSheetPanel = new RecordSheetPreviewPanel();
 
     private final boolean fromMul;
 
     private final String mulFileName;
 
-    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul, String mulFileName) {
+    public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul,
+          String mulFileName) {
         super(parent,
               true,
               "PrintQueueDialog",
               printToPdf ? "PrintQueueDialog.windowNameExport.text" : "PrintQueueDialog.windowNamePrint.text");
-        this.parent      = parent;
-        this.printToPdf  = printToPdf;
-        this.fromMul     = fromMul;
+        this.parent = parent;
+        this.printToPdf = printToPdf;
+        this.fromMul = fromMul;
         this.mulFileName = mulFileName;
         initialize();
         if (units != null) {
@@ -154,14 +164,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
-              "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
-            oneUnitPerSheetCheck.addActionListener(e -> {
-                recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
-            });
+                    "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+        oneUnitPerSheetCheck.addActionListener(e -> recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected()));
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
-                                       "BV is always adjusted for pilot skill.");
+                                             "BV is always adjusted for pilot skill.");
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
@@ -201,7 +209,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         }
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
-        
+
         Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
         buttonPanelWithCheckboxes.add(buttonPanel);
         buttonPanelWithCheckboxes.add(Box.createHorizontalStrut(30));
@@ -217,7 +225,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         recordSheetContainer.add(recordSheetPanel, BorderLayout.CENTER);
         recordSheetContainer.setMinimumSize(new Dimension(400, 200));
         recordSheetContainer.setPreferredSize(new Dimension(600, 200));
-        
+
         Box centerPanel = Box.createHorizontalBox();
         centerPanel.add(leftPanel);
         centerPanel.add(Box.createHorizontalStrut(15));
@@ -267,7 +275,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void linkForce() {
-        Game   g = new Game();
+        Game g = new Game();
         Player p = new Player(1, "Nobody");
         for (Entity e : getEntities()) {
             if (e.getId() == -1) {
@@ -336,7 +344,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                                                    entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
 
         if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
-            fileChooser.getSelectedFile() == null) {
+                  fileChooser.getSelectedFile() == null) {
             return;
         }
 
@@ -424,9 +432,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void moveTop() {
-        List<BTObject> newListTop    = new ArrayList<>();
+        List<BTObject> newListTop = new ArrayList<>();
         List<BTObject> newListBottom = new ArrayList<>();
-        boolean        state         = false;
+        boolean state = false;
         for (int i = 0; i < units.size(); i++) {
             if (i == topSelectedIndex()) {
                 state = true;
@@ -444,8 +452,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private void moveBottom() {
         List<BTObject> newListBottom = new ArrayList<>();
-        List<BTObject> newListTop    = new ArrayList<>();
-        boolean        state         = false;
+        List<BTObject> newListTop = new ArrayList<>();
+        boolean state = false;
         for (int i = 0; i < units.size(); i++) {
             if (i == topSelectedIndex()) {
                 state = true;
@@ -530,7 +538,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             }
 
             var start = indices[0];
-            var end   = indices[indices.length - 1];
+            var end = indices[indices.length - 1];
             return end - start == indices.length - 1;
         }
     }

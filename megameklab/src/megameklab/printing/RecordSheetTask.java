@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -27,7 +41,6 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
-
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,24 +49,19 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
+import megamek.logging.MMLogger;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
-import megamek.logging.MMLogger;
-
 /**
- * Renders one or more record sheets as a background task. The task is created
- * using
- * {@link #createPrintTask(List, PrinterJob, PrintRequestAttributeSet, PageFormat)}
- * for output
- * to a printer and {@link #createExportTask(List, PageFormat, String)} for
- * export to a PDF file.
- *
- * Executing the task with {@link #execute(boolean)} allows showing a popup
- * dialog with a progress bar.
+ * Renders one or more record sheets as a background task. The task is created using
+ * {@link #createPrintTask(List, PrinterJob, PrintRequestAttributeSet, PageFormat)} for output to a printer and
+ * {@link #createExportTask(List, PageFormat, String)} for export to a PDF file.
+ * <p>
+ * Executing the task with {@link #execute(boolean)} allows showing a popup dialog with a progress bar.
  */
 public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     private static final MMLogger logger = MMLogger.create(RecordSheetTask.class);
@@ -74,31 +82,31 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     /**
      * Creates a task for rendering a list of record sheets as a print job
      *
-     * @param sheets     The sheets to render The contents are removed as each sheet
-     *                   is
-     *                   processed to avoid running out of memory on large jobs.
-     * @param job        The print job
-     * @param aset       A set of attributes to use for printing
-     * @param pageFormat The page format
+     * @param sheets                 The sheets to render The contents are removed as each sheet is processed to avoid
+     *                               running out of memory on large jobs.
+     * @param job                    The print job
+     * @param printRequestAttributes A set of attributes to use for printing
+     * @param pageFormat             The page format
+     *
      * @return A {@link SwingWorker} task
      */
     public static RecordSheetTask createPrintTask(List<PrintRecordSheet> sheets, PrinterJob job,
-            PrintRequestAttributeSet aset, PageFormat pageFormat) {
-        return new PrintTask(sheets, job, aset, pageFormat);
+          PrintRequestAttributeSet printRequestAttributes, PageFormat pageFormat) {
+        return new PrintTask(sheets, job, printRequestAttributes, pageFormat);
     }
 
     /**
      * Creates a task for rendering a list of record sheets as a print job.
      *
-     * @param sheets     The sheets to render. The contents are removed as each
-     *                   sheet is
-     *                   processed to avoid running out of memory on large jobs.
+     * @param sheets     The sheets to render. The contents are removed as each sheet is processed to avoid running out
+     *                   of memory on large jobs.
      * @param pageFormat The page format
      * @param pathName   The path to the PDF output file
+     *
      * @return A {@link SwingWorker} task
      */
     public static RecordSheetTask createExportTask(List<PrintRecordSheet> sheets, PageFormat pageFormat,
-            String pathName) {
+          String pathName) {
         return new ExportTask(sheets, pageFormat, pathName);
     }
 
@@ -126,8 +134,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
         try {
             get();
         } catch (ExecutionException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(),
-                    "A problem has occurred", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getMessage(), "A problem has occurred", JOptionPane.ERROR_MESSAGE);
             logger.error("", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -155,13 +162,13 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
     private static class PrintTask extends RecordSheetTask {
         private final PrinterJob job;
-        private final PrintRequestAttributeSet aset;
+        private final PrintRequestAttributeSet printRequestAttributes;
 
-        public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job, PrintRequestAttributeSet aset,
-                PageFormat pageFormat) {
+        public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job, PrintRequestAttributeSet printRequestAttributes,
+              PageFormat pageFormat) {
             super(sheets);
             this.job = job;
-            this.aset = aset;
+            this.printRequestAttributes = printRequestAttributes;
 
             RSBook book = new RSBook(sheets, pageFormat);
             sheets.clear();
@@ -176,7 +183,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         public Void doInBackground() throws Exception {
-            job.print(aset);
+            job.print(printRequestAttributes);
             return null;
         }
     }
@@ -216,7 +223,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
             }
             merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
 
-            // Load newly created document, add an outline, then write back to the file.
+            // Load a newly created document, add an outline, then write back to the file.
             File file = new File(fileName);
             try (PDDocument doc = PDDocument.load(file)) {
                 PDDocumentOutline outline = new PDDocumentOutline();
@@ -237,9 +244,8 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     }
 
     /**
-     * Implementation of Pageable that removes the record sheet objects as they are
-     * processed
-     * (when the next one is accessed) to conserve memory.
+     * Implementation of Pageable that removes the record sheet objects as they are processed (when the next one is
+     * accessed) to conserve memory.
      */
     private static class RSBook implements Pageable {
         private final TreeMap<Integer, PrintRecordSheet> pages = new TreeMap<>();

@@ -1,17 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.infantry;
 
@@ -22,7 +34,6 @@ import java.awt.Insets;
 import java.util.Enumeration;
 import java.util.Optional;
 import java.util.StringJoiner;
-
 import javax.swing.*;
 
 import megamek.common.*;
@@ -50,25 +61,26 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public static final int T_AUGMENTATION = 5;
     private static final EquipmentType antiMekGear = EquipmentType.get(EquipmentTypeLookup.ANTI_MEK_GEAR);
 
-    private BasicInfoView panBasicInfo;
-    private CIPlatoonTypeView panPlatoonType;
-    private CIWeaponView panWeapons;
-    private IconView iconView;
+    private final BasicInfoView panBasicInfo;
+    private final CIPlatoonTypeView panPlatoonType;
+    private final CIWeaponView panWeapons;
+    private final IconView iconView;
 
-    private String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation" };
+    private final String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount",
+                                        "Augmentation" };
 
-    private JTextField txtArmor = new JTextField("None");
-    private JTextPane txtSpecializations = new JTextPane();
-    private JTextPane txtAugmentations = new JTextPane();
+    private final JTextField txtArmor = new JTextField("None");
+    private final JTextPane txtSpecializations = new JTextPane();
+    private final JTextPane txtAugmentations = new JTextPane();
 
     private JTabbedPane equipmentPane;
 
-    private CIEquipmentView weaponView;
-    private CIFieldGunView fieldGunView;
-    private CIArmorView armorView;
-    private CISpecializationView specializationView;
-    private CIMountView mountView;
-    private CIAugmentationView augmentationView;
+    private final CIEquipmentView weaponView;
+    private final CIFieldGunView fieldGunView;
+    private final CIArmorView armorView;
+    private final CISpecializationView specializationView;
+    private final CIMountView mountView;
+    private final CIAugmentationView augmentationView;
 
     public CIStructureTab(EntitySource eSource) {
         super(eSource);
@@ -209,8 +221,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         updateSpecializations();
         StringJoiner sj = new StringJoiner("<br/>");
-        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES); e
-                .hasMoreElements();) {
+        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
+              e.hasMoreElements(); ) {
             final IOption opt = e.nextElement();
             if (getInfantry().getCrew().getOptions().booleanOption(opt.getName())) {
                 sj.add(opt.getDisplayableName());
@@ -273,12 +285,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             }
             txtSpecializations.setText(sj.toString());
         }
-        if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
-                && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
-                        || (getInfantry().getSecondaryWeapon() == null)
-                        || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
+        if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS) &&
+                  ((getInfantry().getSecondaryWeaponsPerSquad() < 2) ||
+                         (getInfantry().getSecondaryWeapon() == null) ||
+                         !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
             InfantryUtil.replaceMainWeapon(getInfantry(),
-                    (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
+                  (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG),
+                  true);
             getInfantry().setSecondaryWeaponsPerSquad(2);
         }
     }
@@ -289,9 +302,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             txtArmor.setEnabled(true);
             txtSpecializations.setEnabled(true);
             equipmentPane.setEnabledAt(T_FIELD_GUNS,
-                    getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
-                            || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
-                            || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
+                  getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED ||
+                        getInfantry().getMovementMode() == EntityMovementMode.TRACKED ||
+                        getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
             equipmentPane.setEnabledAt(T_MOUNT, getInfantry().getMount() != null);
@@ -404,9 +417,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         getInfantry().setMicrolite(alt && (movementMode == EntityMovementMode.VTOL));
 
-        if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
-                && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
-                && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
+        if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED &&
+                  getInfantry().getMovementMode() != EntityMovementMode.TRACKED &&
+                  getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         }
         enableTabs();
@@ -457,10 +470,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void numFieldGunsChanged(final int count) {
         Optional<WeaponType> fieldGun = getInfantry().getWeaponList()
-                .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(Mounted::getType).findAny();
-        InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) fieldGun.orElse(null),
-                count);
+                                              .stream()
+                                              .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+                                              .map(Mounted::getType)
+                                              .findAny();
+        InfantryUtil.replaceFieldGun(getInfantry(), fieldGun.orElse(null), count);
         refresh.refreshStatus();
         refresh.refreshPreview();
     }

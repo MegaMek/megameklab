@@ -1,21 +1,30 @@
 /*
  * Copyright (c) 2008 - jtighe (torren@users.sourceforge.net)
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -24,7 +33,6 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -49,7 +57,7 @@ public class PreviewTab extends ITab {
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
-    private JTabbedPane panPreview;
+    private final JTabbedPane panPreview;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
@@ -101,7 +109,7 @@ public class PreviewTab extends ITab {
 
     /**
      * Sets the preferred width of this component and its child components
-     * 
+     *
      * @param width The desired width
      */
     public void setPreferredWidth(int width) {
@@ -126,8 +134,8 @@ public class PreviewTab extends ITab {
         try {
             troView = TROView.createView(selectedUnit, ViewFormatting.HTML);
         } catch (Exception e) {
-            logger.error("", e);
-            // error unit didn't load right. this is bad news.
+            logger.error(e, "update");
+            // the error unit didn't load right. this is bad news.
             populateTextFields = false;
         }
         if (populateTextFields) {
@@ -148,9 +156,8 @@ public class PreviewTab extends ITab {
     }
 
     public void refresh() {
-        // This active refresh is needed for the few cases where the unit can be changed
-        // when the preview is
-        // active, e.g. setting the fluff image.
+        // This active refresh is needed for the few cases where the unit can be changed when the preview is active,
+        // e.g., setting the fluff image.
         if (isVisible()) {
             update();
         }

@@ -1,18 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2019
- * The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -23,7 +34,6 @@ import java.awt.event.MouseListener;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.Supplier;
-
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -52,14 +62,14 @@ import megameklab.util.UnitUtil;
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
     private static final MMLogger logger = MMLogger.create(UnallocatedView.class);
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
     private final CriticalTransferHandler cth;
     private final Supplier<RefreshListener> refresh;
@@ -121,7 +131,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         masterEquipmentList.sort(StringUtils.mountedComparator());
 
         // Time to Sort
-        // HeatSinks first
+        // heat sinks first
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if (UnitUtil.isHeatSink(masterEquipmentList.get(pos))) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
@@ -142,8 +152,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
         // weapons and ammo
         Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof Weapon)
-                    || (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
+                      (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -156,8 +166,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         // Equipment
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
-                    && UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) &&
+                      UnitUtil.isArmor(masterEquipmentList.get(pos).getType())) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -166,8 +176,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         // structure
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            if ((masterEquipmentList.get(pos).getType() instanceof MiscType)
-                    && masterEquipmentList.get(pos).getType().hasFlag(MiscType.F_ENDO_STEEL)) {
+            if ((masterEquipmentList.get(pos).getType() instanceof MiscType) &&
+                      masterEquipmentList.get(pos).getType().hasFlag(MiscType.F_ENDO_STEEL)) {
                 equipmentList.addCrit(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -244,8 +254,8 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
-            Mounted<?> mount = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
-                    CriticalTableModel.EQUIPMENT);
+            Mounted<?> mount = (Mounted<?>) equipmentTable.getModel()
+                                                  .getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             String[] locations = getEntity().getLocationNames();
 

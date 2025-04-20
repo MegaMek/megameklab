@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.generalUnit;
 
@@ -18,7 +32,6 @@ import java.awt.GridBagLayout;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -30,45 +43,45 @@ import javax.swing.event.ChangeListener;
 import megamek.common.annotations.Nullable;
 
 /**
- * Panel used to set armor value for a single location. Optionally used for rear location as well,
- * and can be used to set the armor type for units with patchwork armor.
- * 
+ * Panel used to set armor value for a single location. Optionally used for rear location as well, and can be used to
+ * set the armor type for units with patchwork armor.
+ *
  * @author Neoancient
  */
 public class ArmorLocationView extends BuildView implements ChangeListener {
     public interface ArmorLocationListener {
         void armorPointsChanged(int location, int front, int rear);
     }
+
     private final List<ArmorLocationListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(ArmorLocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorLocationListener l) {
         listeners.remove(l);
     }
-    
+
     private final SpinnerNumberModel spnPointsModel = new SpinnerNumberModel(0, 0, null, 1);
     private final SpinnerNumberModel spnPointsRearModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnPoints = new JSpinner(spnPointsModel);
     private final JSpinner spnPointsRear = new JSpinner(spnPointsRearModel);
     private final JLabel lblRear = new JLabel();
     private final JLabel lblMaxPoints = new JLabel();
-    
+
     private final int location;
     private final String maxFormat;
     private Integer maxPoints;
     private boolean hasRear = false;
-    
+
     ArmorLocationView(int location) {
         this.location = location;
-        
+
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         lblRear.setText(resourceMap.getString("ArmorLocationView.lblRear.text"));
         maxFormat = resourceMap.getString("ArmorLocationView.lblMax.format");
-        setBorder(BorderFactory.createTitledBorder(
-                null, "",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+        setBorder(BorderFactory.createTitledBorder(null, "", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -80,17 +93,17 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
         add(spnPointsRear, gbc);
         gbc.gridy++;
         gbc.weighty = 1.0;
-        add(lblMaxPoints, gbc);        
+        add(lblMaxPoints, gbc);
     }
-    
+
     /**
      * Changes the location name in the title and whether it has a rear armor location.
-     * 
+     *
      * @param locName
      * @param rear
      */
     public void updateLocation(String locName, boolean rear) {
-        ((TitledBorder)getBorder()).setTitle(locName);
+        ((TitledBorder) getBorder()).setTitle(locName);
         hasRear = rear;
         lblRear.setVisible(rear);
         spnPointsRear.setVisible(rear);
@@ -98,18 +111,18 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
             spnPointsRear.setValue(0);
         }
     }
-    
+
     /**
      * @return The index (LOC_* constant) of the location managed by this view.
      */
     public int getLocationIndex() {
         return location;
     }
-    
+
     /**
-     * Sets the maximum number of armor points that can be assigned to this location.
-     * A value of null indicates that there is no maximum.
-     * 
+     * Sets the maximum number of armor points that can be assigned to this location. A value of null indicates that
+     * there is no maximum.
+     *
      * @param max
      */
     public void setMaxPoints(@Nullable Integer max) {
@@ -123,17 +136,17 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
             lblMaxPoints.setText(String.format(maxFormat, max));
         }
     }
-    
+
     public void setMinimum(int minimum) {
         spnPointsModel.setMinimum(minimum);
         if (getPoints() < minimum) {
             spnPointsModel.setValue(minimum);
         }
     }
-    
+
     /**
      * Sets the number of points for this location. If the location has rear armor, this sets only the front.
-     * 
+     *
      * @param points
      */
     public void setPoints(int points) {
@@ -148,7 +161,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
         }
         spnPoints.addChangeListener(this);
     }
-    
+
     /**
      * @return The number of points of armor for this location (front).
      */
@@ -158,7 +171,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
 
     /**
      * Sets the number of points of armor for this location in the rear.
-     * 
+     *
      * @param points
      */
     public void setPointsRear(int points) {
@@ -173,14 +186,14 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
         }
         spnPointsRear.addChangeListener(this);
     }
-    
+
     /**
      * @return The number of points of rear armor in this location.
      */
     public int getPointsRear() {
         return spnPointsRearModel.getNumber().intValue();
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         listeners.forEach(l -> l.armorPointsChanged(location, getPoints(), getPointsRear()));

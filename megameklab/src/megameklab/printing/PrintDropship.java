@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -20,18 +34,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
-import megamek.common.UnitType;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
 import megamek.common.Mounted;
+import megamek.common.UnitType;
 import megamek.common.Warship;
-import megamek.common.WeaponType;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Record sheet layout for Dropships, base class for other large craft
@@ -39,17 +51,15 @@ import megamek.common.WeaponType;
 public class PrintDropship extends PrintAero {
 
     /**
-     * The maximum number of inventory lines to print as a single page. Ideally this
-     * would be determined by the space allocated by the svg template, but we need
-     * to determine how many pages we are printing before the template is loaded so
-     * we predetermine the value.
+     * The maximum number of inventory lines to print as a single page. Ideally, this would be determined by the space
+     * allocated by the svg template, but we need to determine how many pages we are printing before the template is
+     * loaded so we predetermine the value.
      */
     public static final int MAX_SINGLE_PAGE_LINES = 42;
 
     /**
-     * The maximum number of lines to put on the first page if there has to be a second. This
-     * is lower than the maximum to avoid having to scale down the text too much on the first page
-     * while having empty space on the second.
+     * The maximum number of lines to put on the first page if there has to be a second. This is lower than the maximum
+     * to avoid having to scale down the text too much on the first page while having empty space on the second.
      */
     public static final int PREFERRED_SINGLE_PAGE_LINES = 36;
 
@@ -63,7 +73,8 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAVITY_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAVITY_DECK, BLOCK_BAYS, BLOCK_FOOTER,
+                                                     BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -94,7 +105,10 @@ public class PrintDropship extends PrintAero {
      *
      * @param ship      The ship to print
      * @param startPage The print job page number for this sheet
+     *
+     * @deprecated Use {@link #PrintDropship(Aero, int, RecordSheetOptions)} instead.
      */
+    @Deprecated(since = "0.50.06", forRemoval = true)
     public PrintDropship(Aero ship, int startPage) {
         this(ship, startPage, new RecordSheetOptions());
     }
@@ -166,8 +180,7 @@ public class PrintDropship extends PrintAero {
         }
         Element element = getSVGDocument().getElementById(LIFE_BOATS);
         if (null != element) {
-            element.setTextContent(String.format(element.getTextContent(),
-                    ship.getLifeBoats(), ship.getEscapePods()));
+            element.setTextContent(String.format(element.getTextContent(), ship.getLifeBoats(), ship.getEscapePods()));
         }
         setTextField(HS_COUNT, ship.getHeatSinks());
         if (ship.getHeatType() == Aero.HEAT_DOUBLE) {
@@ -219,8 +232,8 @@ public class PrintDropship extends PrintAero {
     private void distributeEquipmentBlocks() {
         linesPerBlock[BLOCK_CAPITAL] = inventory.capitalBayLines();
         linesPerBlock[BLOCK_STANDARD] = inventory.standardBayLines();
-        // Most units will have 1-2 lines in the footer for fuel and non-weapon equipment.
-        // This is always at the bottom so we don't need to account for a following empty line.
+        // Most units will have 1-2 lines in the footer for fuel and non-weapon equipment. This is always at the
+        // bottom, so we don't need to account for the following empty line.
         linesPerBlock[BLOCK_FOOTER] = 2;
         if (linesPerBlock[BLOCK_CAPITAL] > 0) {
             linesPerBlock[BLOCK_CAPITAL] += 3;
@@ -228,17 +241,16 @@ public class PrintDropship extends PrintAero {
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
             linesPerBlock[BLOCK_STANDARD] += 3;
         }
-        if (ship.getTotalWeaponList().stream()
-                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
+        if (ship.getTotalWeaponList().stream().anyMatch(w -> w.getType().getAmmoType() == AmmoType.T_AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
-        // Add lines equal to half the gravity decks (rounded up) and one each for section
-        // title and following empty line
+        // Add lines equal to half the gravity decks (rounded up) and one each for section title and the following
+        // empty line
         if (ship instanceof Jumpship && !((Jumpship) ship).getGravDecks().isEmpty()) {
             linesPerBlock[BLOCK_GRAVITY_DECK] = ((((Jumpship) ship).getGravDecks().size() + 1) / 2) + 2;
         }
-        // Add lines equal to number of transport bays and one each for section title
-        // and following empty line
+        // Add lines equal to the number of transport bays and one each for the section title and the following empty
+        // line
         if (inventory.transportBayLines() > 0) {
             linesPerBlock[BLOCK_BAYS] = inventory.transportBayLines() + 2;
         }
@@ -255,16 +267,13 @@ public class PrintDropship extends PrintAero {
                 blockOnReverse[SWITCH_PAGE_ORDER[toSwitch]] = true;
                 linesOnFront -= linesPerBlock[SWITCH_PAGE_ORDER[toSwitch]];
                 if (SWITCH_PAGE_ORDER[toSwitch] == BLOCK_STANDARD) {
-                    linesOnFront += 2; // account for message about standard weapons on reverse
+                    linesOnFront += 2; // account for a message about standard weapons on reverse
                 }
                 toSwitch++;
             } while ((linesOnFront > PREFERRED_SINGLE_PAGE_LINES) && (toSwitch < SWITCH_PAGE_ORDER.length));
-            // Another tweak for situations where there are no capital weapons. If only the
-            // gravity decks
-            // are moved to page two, move bays as well to prevent a second page with only
-            // one or two lines
-            if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
-                    && blockOnReverse[BLOCK_GRAVITY_DECK]) {
+            // Another tweak for situations where there are no capital weapons. If only the gravity decks are moved
+            // to page two, move bays as well to prevent a second page with only one or two lines
+            if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS] && blockOnReverse[BLOCK_GRAVITY_DECK]) {
                 blockOnReverse[BLOCK_BAYS] = true;
             }
         }
@@ -298,12 +307,11 @@ public class PrintDropship extends PrintAero {
     }
 
     /**
-     * Prints up to four equipment sections: capital weapons, standard scale, gravity
-     * decks, and bays. If there is too much to fit on a single page, the standard
-     * scale weapons are moved to the second page (which is considered the reverse).
+     * Prints up to four equipment sections: capital weapons, standard scale, gravity decks, and bays. If there is too
+     * much to fit on a single page, the standard scale weapons are moved to the second page (which is considered the
+     * reverse).
      *
-     * @param svgRect The rectangle element that provides the dimensions of the space to
-     *                print
+     * @param svgRect The rectangle element that provides the dimensions of the space to print
      * @param reverse Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
@@ -315,8 +323,7 @@ public class PrintDropship extends PrintAero {
         if ((linesPerBlock[BLOCK_CAPITAL] > 0) && (blockOnReverse[BLOCK_CAPITAL] == reverse)) {
             currY = inventory.writeCapitalBays(fontSize, lineHeight, currY) + lineHeight;
         }
-        if ((linesPerBlock[BLOCK_AR10_AMMO] > 0)
-                && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
+        if ((linesPerBlock[BLOCK_AR10_AMMO] > 0) && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
             currY = inventory.printAR10Block(fontSize, lineHeight, currY) + lineHeight;
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {

@@ -1,19 +1,29 @@
 /*
- * Copyright (c) 2020-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -74,8 +84,10 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 double av = Math.ceil(weaponType.getShortAV() * numWeapons * 0.5);
                 baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
                 bayMRV += Math.round(av / 10.0);
-                bayLRV += Math.round(Math.ceil(av * 0.5) / 10.0);
-                bayERV += Math.round(Math.ceil(av * 0.5) / 10.0);
+
+                long roundedAV = Math.round(Math.ceil(av * 0.5) / 10.0);
+                bayLRV += roundedAV;
+                bayERV += roundedAV;
                 standardBaySRV += Math.ceil(av * 1.5);
                 standardBayMRV += av;
                 standardBayLRV += Math.ceil(av * 0.5);
@@ -83,9 +95,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             } else {
                 int bonus = 0;
                 if (bay.augmentations.containsKey(weaponType)) {
-                    bonus = bay.augmentations.get(
-                            weaponType).entrySet().stream()
-                        .mapToInt(e -> aeroAVMod(weaponType, e.getKey(), true) * e.getValue()).sum();
+                    bonus = bay.augmentations.get(weaponType)
+                                  .entrySet()
+                                  .stream()
+                                  .mapToInt(e -> aeroAVMod(weaponType, e.getKey(), true) * e.getValue())
+                                  .sum();
                 }
                 if (weaponType.getShortAV() > 0) {
                     double av = weaponType.getShortAV() * numWeapons + bonus;
@@ -109,30 +123,30 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 }
             }
         }
-        // PPC capacitors in bays are considered alway charged
+        // PPC capacitors in bays are considered always charged
         if (!isCapital) {
             for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
-                heat += entry.entrySet().stream()
-                        .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
-                        .mapToInt(e -> e.getValue() * 5).sum();
+                heat += entry.entrySet()
+                              .stream()
+                              .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
+                              .mapToInt(e -> e.getValue() * 5)
+                              .sum();
             }
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
-        /* Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types
-         * can't be mixed. But it's no great effort to accommodate illegal designs. Based on precedents elsewhere
-         * in the rules, every weapon in the bay would require Artemis V or Apollo to get the to-hit bonus.
-         */
+        // Per the rules, if any have artemis or apollo, all eligible launchers must have it, and the types can't be
+        // mixed. But it's no great effort to accommodate illegal designs. Based on precedents elsewhere in the
+        // rules, every weapon in the bay would require Artemis V or Apollo to get the to-hit bonus.
         artemisV = bay.allHaveAugmentation(MiscType.F_ARTEMIS_V);
         apollo = bay.allHaveAugmentation((MiscType.F_APOLLO));
 
         for (WeaponType weaponType : bay.weapons.keySet()) {
             StringJoiner locString = new StringJoiner("/");
             for (int i = 0; i < bay.loc.size(); i++) {
-                // Show official names of DropShip side arcs. Rear-mounted wing bays
+                // Show official names of drop-ship side arcs. Rear-mounted wing bays
                 // are indicated by (R) appended to the name field.
-                if (ship instanceof Dropship
-                        && (bay.loc.get(i) == Dropship.LOC_LWING
-                            || bay.loc.get(i) == Dropship.LOC_RWING)) {
+                if (ship instanceof Dropship &&
+                          (bay.loc.get(i) == Dropship.LOC_LWING || bay.loc.get(i) == Dropship.LOC_RWING)) {
                     if (ship.isSpheroid()) {
                         if (bay.loc.get(i) == Dropship.LOC_LWING) {
                             locString.add(bay.rear ? "ALS" : "FLS");
@@ -241,7 +255,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     private String formatAV(double av, double stdAV) {
         if (isAR10) {
-            return "*"; // depends on missile type loaded
+            return "*"; // depends on a missile type loaded
         }
         if (av + stdAV == 0) {
             return DASH;

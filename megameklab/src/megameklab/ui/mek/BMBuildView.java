@@ -1,20 +1,29 @@
 /*
- * Copyright (c) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.mek;
 
@@ -26,7 +35,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -93,7 +101,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         setLayout(new BorderLayout());
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(),
-                "Unallocated Equipment", TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+              "Unallocated Equipment",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -110,14 +120,16 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 masterEquipmentList.add(mount);
             }
         }
-        getMek().getWeaponList().stream()
-                .filter(m -> m.getLocation() == Entity.LOC_NONE)
-                .forEach(masterEquipmentList::add);
+        getMek().getWeaponList()
+              .stream()
+              .filter(m -> m.getLocation() == Entity.LOC_NONE)
+              .forEach(masterEquipmentList::add);
 
-        getMek().getAmmo().stream()
-                .filter(m -> m.getLocation() == Entity.LOC_NONE)
-                .filter(m -> !m.isOneShotAmmo())
-                .forEach(masterEquipmentList::add);
+        getMek().getAmmo()
+              .stream()
+              .filter(m -> m.getLocation() == Entity.LOC_NONE)
+              .filter(m -> !m.isOneShotAmmo())
+              .forEach(masterEquipmentList::add);
 
         masterEquipmentList.sort(new MekUtil.MekMountedSorter(getMek()));
         masterEquipmentList.forEach(equipmentList::addCrit);
@@ -129,13 +141,13 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
     private boolean isEngineHeatSink(Mounted<?> mount) {
         // Note: prototype DHS and compact DHS cannot be used as engine HS
-        if ((mount.getType() instanceof MiscType)
-                && (mount.getLocation() == Entity.LOC_NONE)
-                && UnitUtil.isHeatSink(mount)
-                && (engineHeatSinkCount > 0)
-                && !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
-                        && mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK))
-                && !mount.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
+        if ((mount.getType() instanceof MiscType) &&
+                  (mount.getLocation() == Entity.LOC_NONE) &&
+                  UnitUtil.isHeatSink(mount) &&
+                  (engineHeatSinkCount > 0) &&
+                  !(mount.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK) &&
+                          mount.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)) &&
+                  !mount.getType().hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) {
             engineHeatSinkCount--;
             return true;
         } else {
@@ -189,17 +201,17 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             JMenuItem item;
 
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
-            Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
-                    CriticalTableModel.EQUIPMENT);
+            Mounted<?> eq = (Mounted<?>) equipmentTable.getModel()
+                                               .getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
 
             final int totalCrits = UnitUtil.getCritsUsed(eq);
             String[] locations = getMek().getLocationNames();
             String[] abbrLocations = getMek().getLocationAbbrs();
 
-            if ((eq.getType().isSpreadable() || eq.isSplitable())
-                    && (totalCrits > 1)
-                    && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
-                    && !(getMek() instanceof LandAirMek)) {
+            if ((eq.getType().isSpreadable() || eq.isSplitable()) &&
+                      (totalCrits > 1) &&
+                      !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP)) &&
+                      !(getMek() instanceof LandAirMek)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMek());
                 // Superheavy Meks may have enough space in the CT for the whole thing.
                 if ((critSpace[Mek.LOC_CT] >= 1) && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_CT)) {
@@ -207,24 +219,32 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
                     if (critSpace[Mek.LOC_CT] >= totalCrits) {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_CT]));
-                        item.addActionListener(
-                                ev -> addSplitEquipment(Mek.LOC_CT, Mek.LOC_NONE, totalCrits, selectedRow));
+                        item.addActionListener(ev -> addSplitEquipment(Mek.LOC_CT,
+                              Mek.LOC_NONE,
+                              totalCrits,
+                              selectedRow));
                         ctMenu.add(item);
                     }
 
                     if (UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_HEAD)) {
-                        JMenu subMenu = new JMenu(
-                                String.format("%1$s/%2$s", abbrLocations[Mek.LOC_CT], abbrLocations[Mek.LOC_HEAD]));
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s",
+                              abbrLocations[Mek.LOC_CT],
+                              abbrLocations[Mek.LOC_HEAD]));
                         int subCrits = critSpace[Mek.LOC_HEAD];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
                             if (primarySlots <= critSpace[Mek.LOC_CT]) {
                                 item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
-                                        abbrLocations[Mek.LOC_CT], primarySlots, abbrLocations[Mek.LOC_HEAD], slots));
+                                      abbrLocations[Mek.LOC_CT],
+                                      primarySlots,
+                                      abbrLocations[Mek.LOC_HEAD],
+                                      slots));
 
                                 final int secondaryLocation = Mek.LOC_HEAD;
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_CT, secondaryLocation,
-                                        primarySlots, selectedRow));
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_CT,
+                                      secondaryLocation,
+                                      primarySlots,
+                                      selectedRow));
                                 subMenu.add(item);
                             }
                         }
@@ -239,8 +259,10 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
                     if (critSpace[Mek.LOC_RT] >= totalCrits) {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RT]));
-                        item.addActionListener(
-                                ev -> addSplitEquipment(Mek.LOC_RT, Mek.LOC_NONE, totalCrits, selectedRow));
+                        item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RT,
+                              Mek.LOC_NONE,
+                              totalCrits,
+                              selectedRow));
                         rtMenu.add(item);
                     }
 
@@ -250,18 +272,24 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                         if (!UnitUtil.isValidLocation(getMek(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
-                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_RT],
-                                abbrLocations[splitLocations[location]]));
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s",
+                              abbrLocations[Mek.LOC_RT],
+                              abbrLocations[splitLocations[location]]));
                         int subCrits = critSpace[splitLocations[location]];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
                             if (primarySlots <= critSpace[Mek.LOC_RT]) {
-                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mek.LOC_RT],
-                                        primarySlots, abbrLocations[splitLocations[location]], slots));
+                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
+                                      abbrLocations[Mek.LOC_RT],
+                                      primarySlots,
+                                      abbrLocations[splitLocations[location]],
+                                      slots));
 
                                 final int secondaryLocation = splitLocations[location];
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RT, secondaryLocation,
-                                        primarySlots, selectedRow));
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RT,
+                                      secondaryLocation,
+                                      primarySlots,
+                                      selectedRow));
                                 subMenu.add(item);
                             }
                         }
@@ -270,11 +298,13 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(rtMenu);
                 }
 
-                if ((critSpace[Mek.LOC_RARM] >= totalCrits)
-                        && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_RARM)) {
+                if ((critSpace[Mek.LOC_RARM] >= totalCrits) &&
+                          UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_RARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RARM]));
-                    item.addActionListener(
-                            ev -> addSplitEquipment(Mek.LOC_RARM, Mek.LOC_RARM, totalCrits, selectedRow));
+                    item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RARM,
+                          Mek.LOC_RARM,
+                          totalCrits,
+                          selectedRow));
                     popup.add(item);
                 }
 
@@ -283,8 +313,10 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
                     if (critSpace[Mek.LOC_LT] >= totalCrits) {
                         item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LT]));
-                        item.addActionListener(
-                                ev -> addSplitEquipment(Mek.LOC_LT, Mek.LOC_NONE, totalCrits, selectedRow));
+                        item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LT,
+                              Mek.LOC_NONE,
+                              totalCrits,
+                              selectedRow));
                         ltMenu.add(item);
                     }
 
@@ -294,18 +326,24 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                         if (!UnitUtil.isValidLocation(getMek(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
-                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_LT],
-                                abbrLocations[splitLocations[location]]));
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s",
+                              abbrLocations[Mek.LOC_LT],
+                              abbrLocations[splitLocations[location]]));
                         int subCrits = critSpace[splitLocations[location]];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
                             if (primarySlots <= critSpace[Mek.LOC_LT]) {
-                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mek.LOC_LT],
-                                        primarySlots, abbrLocations[splitLocations[location]], slots));
+                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
+                                      abbrLocations[Mek.LOC_LT],
+                                      primarySlots,
+                                      abbrLocations[splitLocations[location]],
+                                      slots));
 
                                 final int secondaryLocation = splitLocations[location];
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LT, secondaryLocation,
-                                        primarySlots, selectedRow));
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LT,
+                                      secondaryLocation,
+                                      primarySlots,
+                                      selectedRow));
                                 subMenu.add(item);
                             }
                         }
@@ -314,11 +352,13 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(ltMenu);
                 }
 
-                if ((critSpace[Mek.LOC_LARM] >= totalCrits)
-                        && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_LARM)) {
+                if ((critSpace[Mek.LOC_LARM] >= totalCrits) &&
+                          UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_LARM)) {
                     item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LARM]));
-                    item.addActionListener(
-                            ev -> addSplitEquipment(Mek.LOC_LARM, Mek.LOC_LARM, totalCrits, selectedRow));
+                    item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LARM,
+                          Mek.LOC_LARM,
+                          totalCrits,
+                          selectedRow));
                     popup.add(item);
                 }
 
@@ -327,8 +367,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     if (!UnitUtil.isValidLocation(getMek(), eq.getType(), location)) {
                         continue;
                     }
-                    if ((UnitUtil.getHighestContinuousNumberOfCrits(getMek(), location) >= totalCrits)
-                            && UnitUtil.isValidLocation(getMek(), eq.getType(), location)) {
+                    if ((UnitUtil.getHighestContinuousNumberOfCrits(getMek(), location) >= totalCrits) &&
+                              UnitUtil.isValidLocation(getMek(), eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locations[location]);
                         final int loc = location;
                         item.addActionListener(ev -> addEquipment(loc, selectedRow));
@@ -379,10 +419,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
                 addSplitEquipment(location, Entity.LOC_NONE, 1, selectedRow);
             } else {
-                // Targetting computer is flagged as spreadable so the slots will be added one
-                // at a time when loaded,
-                // since we don't have a way of indicating the number of slots until we know all
-                // the weapons. But
+                // Targeting computer is flagged as spreadable, so the slots will be added one at a time when loaded,
+                // since we don't have a way of indicating the number of slots until we know all the weapons. But
                 // it's not really splittable, so we need to put add all the slots at once.
                 addSplitEquipment(location, Entity.LOC_NONE, eq.getCriticals(), selectedRow);
             }
@@ -390,8 +428,9 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         }
         try {
             if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
-                int slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(getMek(), location,
-                        UnitUtil.getCritsUsed(eq));
+                int slotNumber = MekUtil.findSlotWithContiguousNumOfCrits(getMek(),
+                      location,
+                      UnitUtil.getCritsUsed(eq));
                 MekUtil.addVGL(getMek(), eq, location, slotNumber);
             } else {
                 UnitUtil.addMounted(getMek(), eq, location, false);

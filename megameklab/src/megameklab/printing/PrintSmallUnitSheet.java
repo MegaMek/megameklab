@@ -1,15 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.printing;
 
@@ -21,14 +35,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.batik.anim.dom.SVGLocatableSupport;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.client.ui.swing.util.FluffImageHelper;
 import megamek.common.BattleArmor;
@@ -46,6 +52,13 @@ import megameklab.printing.reference.ProtoMekSpecialHitLocation;
 import megameklab.printing.reference.ReferenceTable;
 import megameklab.printing.reference.ReferenceTableBase;
 import megameklab.printing.reference.SwarmAttackHitLocation;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Lays out a record sheet for infantry, BA, or protoMeks
@@ -67,9 +80,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     /**
-     * Create a record sheet for two vehicles, or one vehicle and tables, with
-     * default
-     * options
+     * Create a record sheet for two vehicles, or one vehicle and tables, with default options
      *
      * @param entities  The units to print
      * @param startPage The index of this page in the print job
@@ -111,8 +122,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         drawFluffImage();
         if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
-        } else if (options.showCondensedReferenceCharts()
-                && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
+        } else if (options.showCondensedReferenceCharts() &&
+                         !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
             addClusterChart(clusterTableBlocksSize, index);
         }
     }
@@ -127,8 +138,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         } else if (entity instanceof HandheldWeapon) {
             return new PrintHandheldWeapon((HandheldWeapon) entity, getFirstPage(), options);
         }
-        throw new IllegalArgumentException("Cannot create block for "
-                + UnitType.getTypeDisplayableName(entity.getUnitType()));
+        throw new IllegalArgumentException("Cannot create block for " +
+                                                 UnitType.getTypeDisplayableName(entity.getUnitType()));
     }
 
     @Override
@@ -151,7 +162,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     @Override
     protected String getRecordSheetTitle() {
-        // Not used by composite sheet
+        // Not used by a composite sheet
         return "";
     }
 
@@ -208,15 +219,16 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (clusterTable.columnCount() > 10) {
             printBottomTable(clusterTable, pageFormat);
         } else {
-            printBottomTable(new GroundMovementRecord(this, false,
-                    entities.get(0) instanceof ProtoMek), pageFormat);
+            printBottomTable(new GroundMovementRecord(this, false, entities.get(0) instanceof ProtoMek), pageFormat);
         }
     }
 
     private void printBottomTable(ReferenceTableBase table, PageFormat pageFormat) {
-        getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+        getSVGDocument().getDocumentElement()
+              .appendChild(table.createTable(pageFormat.getImageableX(),
+                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                    pageFormat.getImageableWidth() * TABLE_RATIO,
+                    pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 
     private void addClusterChart(int blocksSize, int index) {
@@ -248,16 +260,15 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     /**
-     * Determines if the supplied list of units fills the sheet or if there's room
-     * for more
-     * 
+     * Determines if the supplied list of units fills the sheet or if there's room for more
+     *
      * @param entities The list of entities to place on the sheet
-     * @param options  The record sheet options, as reference tables can reduce
-     *                 available space
+     * @param options  The record sheet options, as reference tables, can reduce available space
+     *
      * @return {@code true} if no more entities can be printed on a single sheet
      */
     public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options,
-            int desiredExtraEmptySlots) {
+          int desiredExtraEmptySlots) {
         var numTypes = entities.stream().map(Entity::getClass).distinct().count();
         if (numTypes == 0) {
             return false;
@@ -274,8 +285,9 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (entities.get(0) instanceof HandheldWeapon) {
             int fillSize = 0;
             for (Entity entity : entities) {
-                final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) entity, 0,
-                        null);
+                final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) entity,
+                      0,
+                      null);
                 fillSize += printHandheldWeapon.isLargeLayout() ? 2 : 1;
             }
             return fillSize > (8 - desiredExtraEmptySlots);

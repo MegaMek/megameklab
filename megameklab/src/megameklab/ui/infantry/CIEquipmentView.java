@@ -1,19 +1,48 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.infantry;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.EquipmentType;
@@ -28,19 +57,6 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.InfantryUtil;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
-
 public class CIEquipmentView extends IView implements ActionListener {
     private static final int T_ARCHAIC = 0;
     private static final int T_PERSONAL = 1;
@@ -50,37 +66,30 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JButton addPrimaryButton = new JButton("Add Primary");
-    private JButton addSecondaryButton = new JButton("Add Secondary");
-    private JComboBox<String> choiceType = new JComboBox<>();
-    private JTextField txtFilter = new JTextField();
+    private final JButton addPrimaryButton = new JButton("Add Primary");
+    private final JButton addSecondaryButton = new JButton("Add Secondary");
+    private final JComboBox<String> choiceType = new JComboBox<>();
+    private final JTextField txtFilter = new JTextField();
 
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton radioBtnStats = new JRadioButton("Stats");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
 
-    private String ADDP_COMMAND = "ADDPRIMARY";
-    private String ADDS_COMMAND = "ADDSECONDARY";
+    private final String ADD_PRIMARY_COMMAND = "ADDPRIMARY";
+    private final String ADD_SECONDARY_COMMAND = "ADDSECONDARY";
 
     public static String getTypeName(int type) {
-        switch (type) {
-            case T_WEAPON:
-                return "All Weapons";
-            case T_ARCHAIC:
-                return "Archaic Weapons";
-            case T_PERSONAL:
-                return "Personal Weapons";
-            case T_SUPPORT:
-                return "Support Weapons";
-            default:
-                return "?";
-        }
+        return switch (type) {
+            case T_WEAPON -> "All Weapons";
+            case T_ARCHAIC -> "Archaic Weapons";
+            case T_PERSONAL -> "Personal Weapons";
+            case T_SUPPORT -> "Support Weapons";
+            default -> "?";
+        };
     }
 
     public CIEquipmentView(EntitySource eSource, ITechManager techManager) {
@@ -100,7 +109,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
             column = masterEquipmentTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
@@ -109,11 +118,25 @@ public class CIEquipmentView extends IView implements ActionListener {
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
         masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSelectionListener selectionListener = evt -> {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            addPrimaryButton.setEnabled((null != etype) &&
+                                              eSource.getTechManager().isLegal(etype) &&
+                                              !etype.hasFlag(WeaponType.F_INF_SUPPORT));
+            addSecondaryButton.setEnabled((null != etype) &&
+                                                eSource.getTechManager().isLegal(etype) &&
+                                                (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
+        };
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
+        JScrollPane masterEquipmentScroll = new JScrollPane();
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -154,21 +177,22 @@ public class CIEquipmentView extends IView implements ActionListener {
             }
         });
 
-        ButtonGroup bgroupView = new ButtonGroup();
-        bgroupView.add(rbtnStats);
-        bgroupView.add(rbtnFluff);
+        ButtonGroup buttonGroupView = new ButtonGroup();
+        buttonGroupView.add(radioBtnStats);
+        JRadioButton radioBtnFluff = new JRadioButton("Fluff");
+        buttonGroupView.add(radioBtnFluff);
 
-        rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(ev -> setEquipmentView());
-        rbtnFluff.addActionListener(ev -> setEquipmentView());
+        radioBtnStats.setSelected(true);
+        radioBtnStats.addActionListener(ev -> setEquipmentView());
+        radioBtnFluff.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
-        viewPanel.add(rbtnStats);
-        viewPanel.add(rbtnFluff);
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
+        viewPanel.add(radioBtnStats);
+        viewPanel.add(radioBtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0,2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(addPrimaryButton);
         btnPanel.add(addSecondaryButton);
 
@@ -197,7 +221,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         gbc.weightx = 1.0;
         databasePanel.add(viewPanel, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -229,15 +253,15 @@ public class CIEquipmentView extends IView implements ActionListener {
     private void addAllListeners() {
         addPrimaryButton.addActionListener(this);
         addSecondaryButton.addActionListener(this);
-        addPrimaryButton.setActionCommand(ADDP_COMMAND);
-        addSecondaryButton.setActionCommand(ADDS_COMMAND);
+        addPrimaryButton.setActionCommand(ADD_PRIMARY_COMMAND);
+        addSecondaryButton.setActionCommand(ADD_SECONDARY_COMMAND);
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(ADDP_COMMAND) ||
-                evt.getActionCommand().equals(ADDS_COMMAND)) {
-            boolean isSecondary = evt.getActionCommand().equals(ADDS_COMMAND);
+        if (evt.getActionCommand().equals(ADD_PRIMARY_COMMAND) ||
+                  evt.getActionCommand().equals(ADD_SECONDARY_COMMAND)) {
+            boolean isSecondary = evt.getActionCommand().equals(ADD_SECONDARY_COMMAND);
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
                 // selection got filtered away
@@ -267,21 +291,21 @@ public class CIEquipmentView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if (!(etype instanceof InfantryWeapon)) {
+                if (!(etype instanceof InfantryWeapon weapon)) {
                     return false;
                 }
-                InfantryWeapon weapon = (InfantryWeapon)etype;
                 if (getInfantry().getSquadSize() < (getInfantry().getSecondaryWeaponsPerSquad() * weapon.getCrew())) {
                     return false;
                 }
-                if ((nType == T_WEAPON)
-                        || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
-                        || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        ) {
-                    if (null != eSource.getTechManager()
-                            && !eSource.getTechManager().isLegal(etype)
-                            && !chkShowAll.isSelected()) {
+                if ((nType == T_WEAPON) ||
+                          ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC)) ||
+                          ((nType == T_PERSONAL) &&
+                                 !etype.hasFlag(WeaponType.F_INF_ARCHAIC) &&
+                                 !etype.hasFlag(WeaponType.F_INF_SUPPORT)) ||
+                          ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))) {
+                    if (null != eSource.getTechManager() &&
+                              !eSource.getTechManager().isLegal(etype) &&
+                              !chkShowAll.isSelected()) {
                         return false;
                     }
 
@@ -299,8 +323,8 @@ public class CIEquipmentView extends IView implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if (rbtnStats.isSelected()) {
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
+        if (radioBtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
@@ -349,20 +373,4 @@ public class CIEquipmentView extends IView implements ActionListener {
         }
     }
 
-    private ListSelectionListener selectionListener = new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent evt) {
-            int selected = masterEquipmentTable.getSelectedRow();
-            EquipmentType etype = null;
-            if (selected >= 0) {
-                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
-            }
-            addPrimaryButton.setEnabled((null != etype)
-                    && eSource.getTechManager().isLegal(etype)
-                    && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
-            addSecondaryButton.setEnabled((null != etype)
-                    && eSource.getTechManager().isLegal(etype)
-                    && (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
-        }
-    };
 }

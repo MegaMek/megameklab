@@ -1,32 +1,47 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.protoMek;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.swing.Box;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
-import megameklab.ui.util.ProtoMekMountList;
 import megameklab.ui.util.IView;
+import megameklab.ui.util.ProtoMekMountList;
 import megameklab.ui.util.RefreshListener;
-
-import javax.swing.*;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * The Crit Slots view for a ProtoMek
@@ -131,8 +146,9 @@ public class PMCriticalView extends IView {
         rightList.refreshContents();
         bodyList.refreshContents();
 
-        Map<Integer, List<Mounted<?>>> eqByLocation = getProtoMek().getEquipment().stream()
-                .collect(Collectors.groupingBy(Mounted::getLocation));
+        Map<Integer, List<Mounted<?>>> eqByLocation = getProtoMek().getEquipment()
+                                                            .stream()
+                                                            .collect(Collectors.groupingBy(Mounted::getLocation));
         for (int location = 0; location < getProtoMek().locations(); location++) {
             int slotsUsed = 0;
             double weightUsed = 0.0;
@@ -147,26 +163,37 @@ public class PMCriticalView extends IView {
 
             switch (location) {
                 case ProtoMek.LOC_TORSO:
-                    torsoSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
-                    torsoWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
+                    torsoSpace.setText("Slots: " +
+                                             slotsUsed +
+                                             "/" +
+                                             TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
+                    torsoWeight.setText(String.format("Weight: %3.0f/%3.0f",
+                          weightUsed * 1000,
+                          TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
                 case ProtoMek.LOC_LARM:
-                    leftSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
-                    leftWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
+                    leftSpace.setText("Slots: " +
+                                            slotsUsed +
+                                            "/" +
+                                            TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
+                    leftWeight.setText(String.format("Weight: %3.0f/%3.0f",
+                          weightUsed * 1000,
+                          TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
                 case ProtoMek.LOC_RARM:
-                    rightSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
-                    rightWeight.setText(String.format("Weight: %3.0f/%3.0f", weightUsed * 1000,
-                            TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
+                    rightSpace.setText("Slots: " +
+                                             slotsUsed +
+                                             "/" +
+                                             TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
+                    rightWeight.setText(String.format("Weight: %3.0f/%3.0f",
+                          weightUsed * 1000,
+                          TestProtoMek.maxWeightByLocation(location, getProtoMek()) * 1000));
                     break;
                 case ProtoMek.LOC_MAINGUN:
-                    mainGunSpace.setText("Slots: " + slotsUsed
-                            + "/" + TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
+                    mainGunSpace.setText("Slots: " +
+                                               slotsUsed +
+                                               "/" +
+                                               TestProtoMek.maxSlotsByLocation(location, getProtoMek()));
                     break;
             }
         }

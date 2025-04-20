@@ -1,17 +1,29 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
  */
 package megameklab.ui.combatVehicle;
 
@@ -29,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.*;
 
 import megamek.common.AmmoType;
@@ -50,91 +61,74 @@ import megameklab.ui.util.WeaponListCellRenderer;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
 
+/**
+ * @deprecated no indicated uses
+ */
+@Deprecated(since = "0.50.06", forRemoval = true)
 public class CVWeaponView extends IView implements ActionListener, MouseListener, KeyListener {
     private static final MMLogger logger = MMLogger.create(CVWeaponView.class);
 
     private RefreshListener refresh;
 
-    private JPanel mainPanel = new JPanel();
-    private JTabbedPane leftPanel = new JTabbedPane(SwingConstants.RIGHT);
-    private JPanel rightPanel = new JPanel();
-    private JPanel buttonPanel = new JPanel();
+    private final JButton laserWeaponAddButton = new JButton("Add");
+    private final JButton laserAmmoAddButton = new JButton("Add");
+    private final JButton missileWeaponAddButton = new JButton("Add");
+    private final JButton missileAmmoAddButton = new JButton("Add");
+    private final JButton ballisticWeaponAddButton = new JButton("Add");
+    private final JButton ballisticAmmoAddButton = new JButton("Add");
+    private final JButton artilleryWeaponAddButton = new JButton("Add");
+    private final JButton artilleryAmmoAddButton = new JButton("Add");
+    private final JButton removeButton = new JButton("Remove");
+    private final JButton removeAllButton = new JButton("Remove All");
 
-    private JButton laserWeaponAddButton = new JButton("Add");
-    private JButton laserAmmoAddButton = new JButton("Add");
-    private JButton missileWeaponAddButton = new JButton("Add");
-    private JButton missileAmmoAddButton = new JButton("Add");
-    private JButton ballisticWeaponAddButton = new JButton("Add");
-    private JButton ballisticAmmoAddButton = new JButton("Add");
-    private JButton artilleryWeaponAddButton = new JButton("Add");
-    private JButton artilleryAmmoAddButton = new JButton("Add");
-    private JButton removeButton = new JButton("Remove");
-    private JButton removeAllButton = new JButton("Remove All");
+    private final JList<String> laserWeaponCombo = new JList<>();
+    private final JList<String> laserAmmoCombo = new JList<>();
+    private final JList<String> missileWeaponCombo = new JList<>();
+    private final JList<String> missileAmmoCombo = new JList<>();
+    private final JList<String> ballisticWeaponCombo = new JList<>();
+    private final JList<String> ballisticAmmoCombo = new JList<>();
+    private final JList<String> artilleryWeaponCombo = new JList<>();
+    private final JList<String> artilleryAmmoCombo = new JList<>();
 
-    private JScrollPane laserWeaponScroll = new JScrollPane();
-    private JScrollPane laserAmmoScroll = new JScrollPane();
-    private JScrollPane missileWeaponScroll = new JScrollPane();
-    private JScrollPane missileAmmoScroll = new JScrollPane();
-    private JScrollPane ballisticWeaponScroll = new JScrollPane();
-    private JScrollPane ballisticAmmoScroll = new JScrollPane();
-    private JScrollPane artilleryWeaponScroll = new JScrollPane();
-    private JScrollPane artilleryAmmoScroll = new JScrollPane();
+    private final CriticalTableModel weaponList;
+    private final Vector<EquipmentType> masterLaserWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> masterMissileWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> masterBallisticWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> masterArtilleryWeaponList = new Vector<>(10, 1);
 
-    private JPanel laserPane = new JPanel();
-    private JPanel laserAmmoPane = new JPanel();
-    private JPanel missilePane = new JPanel();
-    private JPanel missileAmmoPane = new JPanel();
-    private JPanel ballisticPane = new JPanel();
-    private JPanel ballisticAmmoPane = new JPanel();
-    private JPanel artilleryPane = new JPanel();
-    private JPanel artilleryAmmoPane = new JPanel();
+    private final Vector<EquipmentType> subLaserWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subLaserAmmoList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subMissileWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subMissileAmmoList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subBallisticWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subBallisticAmmoList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subArtilleryWeaponList = new Vector<>(10, 1);
+    private final Vector<EquipmentType> subArtilleryAmmoList = new Vector<>(10, 1);
 
-    private JList<String> laserWeaponCombo = new JList<>();
-    private JList<String> laserAmmoCombo = new JList<>();
-    private JList<String> missileWeaponCombo = new JList<>();
-    private JList<String> missileAmmoCombo = new JList<>();
-    private JList<String> ballisticWeaponCombo = new JList<>();
-    private JList<String> ballisticAmmoCombo = new JList<>();
-    private JList<String> artilleryWeaponCombo = new JList<>();
-    private JList<String> artilleryAmmoCombo = new JList<>();
+    private final JTable equipmentTable = new JTable();
 
-    private CriticalTableModel weaponList;
-    private Vector<EquipmentType> masterLaserWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> masterMissileWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> masterBallisticWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> masterArtilleryWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> masterPhysicalWeaponList = new Vector<>(10, 1);
-
-    private Vector<EquipmentType> subLaserWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subLaserAmmoList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subMissileWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subMissileAmmoList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subBallisticWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subBallisticAmmoList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subArtilleryWeaponList = new Vector<>(10, 1);
-    private Vector<EquipmentType> subArtilleryAmmoList = new Vector<>(10, 1);
-
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
-
-    private String LASER_WEAPON_ADD_COMMAND = "ADDLASERWEAPON";
-    private String LASER_AMMO_ADD_COMMAND = "ADDLASERAMMO";
-    private String MISSILE_WEAPON_ADD_COMMAND = "ADDMISSILEWEAPON";
-    private String MISSILE_AMMO_ADD_COMMAND = "ADDMISSILEAMMO";
-    private String BALLISTIC_WEAPON_ADD_COMMAND = "ADDBALLISTICWEAPON";
-    private String BALLISTIC_AMMO_ADD_COMMAND = "ADDBALLISTICAMMO";
-    private String ARTILLERY_WEAPON_ADD_COMMAND = "ADDARTILLERYWEAPON";
-    private String ARTILLERY_AMMO_ADD_COMMAND = "ADDARTILLERYAMMO";
-    private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVE_ALL_COMMAND = "REMOVEALL";
+    private final String LASER_WEAPON_ADD_COMMAND = "ADDLASERWEAPON";
+    private final String LASER_AMMO_ADD_COMMAND = "ADDLASERAMMO";
+    private final String MISSILE_WEAPON_ADD_COMMAND = "ADDMISSILEWEAPON";
+    private final String MISSILE_AMMO_ADD_COMMAND = "ADDMISSILEAMMO";
+    private final String BALLISTIC_WEAPON_ADD_COMMAND = "ADDBALLISTICWEAPON";
+    private final String BALLISTIC_AMMO_ADD_COMMAND = "ADDBALLISTICAMMO";
+    private final String ARTILLERY_WEAPON_ADD_COMMAND = "ADDARTILLERYWEAPON";
+    private final String ARTILLERY_AMMO_ADD_COMMAND = "ADDARTILLERYAMMO";
+    private final String REMOVE_COMMAND = "REMOVE";
+    private final String REMOVE_ALL_COMMAND = "REMOVEALL";
 
     public CVWeaponView(EntitySource eSource) {
         super(eSource);
 
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new SpringLayout());
+        JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new SpringLayout());
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new SpringLayout());
 
+        JTabbedPane leftPanel = new JTabbedPane(SwingConstants.RIGHT);
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
@@ -148,29 +142,46 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
 
         Dimension size = new Dimension(180, 150);
         List<JPanel> tPanels = new ArrayList<>();
         List<JScrollPane> tScrollPanes = new ArrayList<>();
+        JPanel laserPane = new JPanel();
         tPanels.add(laserPane);
+        JPanel laserAmmoPane = new JPanel();
         tPanels.add(laserAmmoPane);
+        JPanel missilePane = new JPanel();
         tPanels.add(missilePane);
+        JPanel missileAmmoPane = new JPanel();
         tPanels.add(missileAmmoPane);
+        JPanel ballisticPane = new JPanel();
         tPanels.add(ballisticPane);
+        JPanel ballisticAmmoPane = new JPanel();
         tPanels.add(ballisticAmmoPane);
+        JPanel artilleryPane = new JPanel();
         tPanels.add(artilleryPane);
+        JPanel artilleryAmmoPane = new JPanel();
         tPanels.add(artilleryAmmoPane);
+        JScrollPane laserWeaponScroll = new JScrollPane();
         tScrollPanes.add(laserWeaponScroll);
+        JScrollPane laserAmmoScroll = new JScrollPane();
         tScrollPanes.add(laserAmmoScroll);
+        JScrollPane missileWeaponScroll = new JScrollPane();
         tScrollPanes.add(missileWeaponScroll);
+        JScrollPane missileAmmoScroll = new JScrollPane();
         tScrollPanes.add(missileAmmoScroll);
+        JScrollPane ballisticWeaponScroll = new JScrollPane();
         tScrollPanes.add(ballisticWeaponScroll);
+        JScrollPane ballisticAmmoScroll = new JScrollPane();
         tScrollPanes.add(ballisticAmmoScroll);
+        JScrollPane artilleryWeaponScroll = new JScrollPane();
         tScrollPanes.add(artilleryWeaponScroll);
+        JScrollPane artilleryAmmoScroll = new JScrollPane();
         tScrollPanes.add(artilleryAmmoScroll);
 
-        // match JPanels to JScrollPanes, and set ScrollPane properties
+        // match JPanels to JScrollPanes and set ScrollPane properties
         for (JScrollPane tScrollPane : tScrollPanes) {
             tScrollPane.setWheelScrollingEnabled(true);
             tScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -272,6 +283,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         this.add(mainPanel);
 
         Enumeration<EquipmentType> weaponTypes = EquipmentType.getAllTypes();
+        Vector<EquipmentType> masterPhysicalWeaponList = new Vector<>(10, 1);
         while (weaponTypes.hasMoreElements()) {
             EquipmentType eq = weaponTypes.nextElement();
 
@@ -279,10 +291,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 continue;
             }
 
-            if (eq instanceof WeaponType) {
-                WeaponType weapon = (WeaponType) eq;
-                if (weapon.hasFlag(WeaponType.F_ENERGY)
-                        || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+            if (eq instanceof WeaponType weapon) {
+                if (weapon.hasFlag(WeaponType.F_ENERGY) ||
+                          (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
                     masterLaserWeaponList.add(eq);
                 } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
                     masterBallisticWeaponList.add(eq);
@@ -291,10 +302,11 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
                 }
-            } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))
-                    && eq.hasFlag(MiscType.F_TALON)) {
-                if (eq.hasFlag(MiscType.F_CLUB)
-                        && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
+            } else if ((eq instanceof MiscType) &&
+                             (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON)) &&
+                             eq.hasFlag(MiscType.F_TALON)) {
+                if (eq.hasFlag(MiscType.F_CLUB) &&
+                          (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);
@@ -463,8 +475,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
-                        Mounted<?> mount = getTank().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                        Mounted<?> mount = getTank().addEquipment(subLaserWeaponList.elementAt(index),
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -475,8 +488,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             try {
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
-                        Mounted<?> mount = getTank().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                        Mounted<?> mount = getTank().addEquipment(subLaserAmmoList.elementAt(index),
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -488,11 +502,12 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subMissileWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
 
-                        // MegaMek automatically adds a ton of ammo for one shots
-                        // for tracking. We do not need this in MLab
+                        // MegaMek automatically adds a ton of ammo for one shot for tracking. We do not need this in
+                        // MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
                             getTank().getAmmo().remove(getTank().getAmmo().size() - 1);
@@ -506,8 +521,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             try {
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
-                        Mounted<?> mount = getTank().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                        Mounted<?> mount = getTank().addEquipment(subMissileAmmoList.elementAt(index),
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -519,10 +535,11 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subBallisticWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
-                        // MegaMek automatically adds a ton of ammo for one shots
-                        // for tracking. We do not need this in MLab
+                        // MegaMek automatically adds a ton of ammo for one shot for tracking. We do not need this in
+                        // MLab
                         if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
                             getTank().getAmmo().remove(getTank().getAmmo().size() - 1);
@@ -537,7 +554,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subBallisticAmmoList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -549,7 +567,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subArtilleryWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -561,7 +580,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subArtilleryAmmoList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE,
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -643,8 +663,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
     }
 
     private void loadAmmo(Component o) {
-        if (o instanceof JList) {
-            JList<?> list = (JList<?>) o;
+        if (o instanceof JList<?> list) {
             if (list.equals(laserWeaponCombo)) {
                 subLaserAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subLaserWeaponList.elementAt(list.getSelectedIndex());
@@ -655,8 +674,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 Vector<String> equipmentList = new Vector<>();
                 if (weapon.getAmmoType() != AmmoType.T_NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                        if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo)
-                                && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                        if ((ammo.getRackSize() == weapon.getRackSize()) &&
+                                  UnitUtil.isLegal(getTank(), ammo) &&
+                                  !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                             subLaserAmmoList.add(ammo);
                             equipmentList.add(ammo.getInternalName());
                         }
@@ -672,10 +692,10 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 }
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)
-                            && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) &&
+                              UnitUtil.isLegal(getTank(), ammo) &&
+                              !ammo.hasFlag(AmmoType.F_BATTLEARMOR) &&
+                              !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                         subMissileAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -689,9 +709,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 }
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) &&
+                              UnitUtil.isLegal(getTank(), ammo) &&
+                              !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subBallisticAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -705,9 +725,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 }
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
-                    if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                    if ((ammo.getRackSize() == weapon.getRackSize()) &&
+                              UnitUtil.isLegal(getTank(), ammo) &&
+                              !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subArtilleryAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
