@@ -13,8 +13,6 @@ on:
 jobs:
   analyze:
     name: Analyze
-    strategy:
-      fail-fast: false
     runs-on: [ ubuntu-latest ]
 
     steps:
@@ -36,6 +34,7 @@ jobs:
           languages: java-kotlin
           queries: security-and-quality
           build-mode: none
+          source-root: megameklab
           config: |
             paths:
               - megameklab
