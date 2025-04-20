@@ -324,6 +324,11 @@ public class MegaMekLab {
             return false;
         }
 
+        if (filePath.contains("..") || filePath.contains("/") || filePath.contains("\\")) {
+            LOGGER.error("Security Violation: Invalid filename: {}", filePath);
+            return false;
+        }
+
         try {
             final File file = new File(filePath).getCanonicalFile();
 
@@ -334,12 +339,15 @@ public class MegaMekLab {
             if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
                 LOGGER.info("Opening file: {}", filePath);
                 Entity entity = new MekFileParser(file).getEntity();
+
                 if (!UnitUtil.validateUnit(entity).isBlank()) {
                     PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(entity));
                 }
+
                 UiLoader.loadUi(entity, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 LOGGER.info("Printing file: {}", filePath);
+
                 Runnable printMul = () -> {
                     var frame = new JFrame();
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
