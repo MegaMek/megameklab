@@ -202,6 +202,7 @@ public class SVCriticalView extends IView {
         turretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoTurret());
         dualTurretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoDualTurret());
         middlePanel2.setVisible((getEntity() instanceof Tank) && getTank().isSuperHeavy() && !isVTOL());
+
         if ((getEntity() instanceof Tank) && getTank().hasNoDualTurret()) {
             turretPanel.setBorder(CritCellUtil.locationBorderNoLine("Turret"));
         } else {
@@ -213,37 +214,42 @@ public class SVCriticalView extends IView {
                 Vector<String> critNames = new Vector<>(1, 1);
 
                 for (int slot = 0; slot < getEntity().getNumberOfCriticals(location); slot++) {
-                    CriticalSlot cs = getEntity().getCritical(location, slot);
-                    if (cs == null) {
+                    CriticalSlot criticalSlot = getEntity().getCritical(location, slot);
+                    if (criticalSlot == null) {
                         continue;
                     }
-                    if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
-                        critNames.add(getMek().getSystemName(cs.getIndex()));
-                    } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted<?> m = cs.getMount();
+
+                    if (criticalSlot.getType() == CriticalSlot.TYPE_SYSTEM) {
+                        critNames.add(getMek().getSystemName(criticalSlot.getIndex()));
+                    } else if (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                        Mounted<?> mounted = criticalSlot.getMount();
                         // Critical didn't get removed. Remove it now.
-                        if (m == null) {
+                        if (mounted == null) {
                             getEntity().setCritical(location, slot, null);
                             continue;
                         }
-                        StringBuilder critName = getCritName(m);
+
+                        StringBuilder critName = getCritName(mounted);
                         critNames.add(critName.toString());
                     }
                 }
-
-                if (critNames.isEmpty()) {
-                    critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
-                }
+                
                 DropTargetCriticalList<String> criticalSlotList = getStringDropTargetCriticalList(critNames, location);
                 if (panelForLocation(location) != null) {
                     panelForLocation(location).add(criticalSlotList);
                 }
             }
+
             validate();
         }
     }
 
     private DropTargetCriticalList<String> getStringDropTargetCriticalList(Vector<String> critNames, int location) {
+
+        if (critNames.isEmpty()) {
+            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+        }
+
         DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames,
               eSource,
               refresh,

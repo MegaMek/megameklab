@@ -231,10 +231,7 @@ public final class CVCriticalView extends IView {
                         critNames.add(critName.toString());
                     }
                 }
-
-                if (critNames.isEmpty()) {
-                    critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
-                }
+                
                 DropTargetCriticalList<String> criticalSlotList = getStringDropTargetCriticalList(critNames, location);
                 if (isVTOL()) {
                     if (vtolLocations.containsKey(location)) {
@@ -256,6 +253,10 @@ public final class CVCriticalView extends IView {
     }
 
     private DropTargetCriticalList<String> getStringDropTargetCriticalList(Vector<String> critNames, int location) {
+        if (critNames.isEmpty()) {
+            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+        }
+
         DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames,
               eSource,
               refresh,
