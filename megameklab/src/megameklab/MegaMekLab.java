@@ -317,29 +317,34 @@ public class MegaMekLab {
      * @param noStartup for .mul files
      */
     private static boolean openUnitFile(String filePath, boolean noStartup) {
-        if (!filePath.toLowerCase().endsWith(".blk") ||
-                  !filePath.toLowerCase().endsWith(".mtf") ||
-                  !filePath.toLowerCase().endsWith(".mul")) {
-            LOGGER.info("Non-supported file extension: {}", filePath);
-            return false;
-        }
-
-        if (filePath.contains("..") || filePath.contains("/") || filePath.contains("\\")) {
-            LOGGER.error("Security Violation: Invalid filename: {}", filePath);
-            return false;
-        }
-
         try {
             final File file = new File(filePath).getCanonicalFile();
+
+            if (!file.toString().toLowerCase().endsWith(".blk") &&
+                      !file.toString().toLowerCase().endsWith(".mtf") &&
+                      !file.toString().toLowerCase().endsWith(".mul")) {
+                LOGGER.info("Non-supported file extension: {}", file);
+                return false;
+            }
+
+            if (file.toString().toLowerCase().startsWith("/etc") ||
+                      file.toString().toLowerCase().startsWith("/system")) {
+                LOGGER.error("Attempting to load from System folders.");
+                return false;
+            }
+
             if (!file.exists()) {
                 throw new IllegalArgumentException("File not found: " + filePath);
             }
+
             if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
                 LOGGER.info("Opening file: {}", filePath);
                 Entity e = new MekFileParser(file).getEntity();
+
                 if (!UnitUtil.validateUnit(e).isBlank()) {
                     PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
                 }
+
                 UiLoader.loadUi(e, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 LOGGER.info("Printing file: {}", filePath);
@@ -348,6 +353,7 @@ public class MegaMekLab {
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
                     frame.dispose();
                 };
+
                 if (noStartup) {
                     printMul.run();
                 } else {
@@ -358,6 +364,7 @@ public class MegaMekLab {
         } catch (Exception ex) {
             LOGGER.error(ex, "Error processing file: {}", filePath);
         }
+
         return true;
     }
 
