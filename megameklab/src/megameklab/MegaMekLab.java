@@ -82,7 +82,7 @@ public class MegaMekLab {
 
         // Skip single instance check if in multi-instance mode
         if (!multiInstanceMode) {
-            // Initialize single instance service
+            // Initialize a single instance service
             singleInstanceService = new SingleInstanceService(APPLICATION_ID);
 
             boolean isFirstInstance = singleInstanceService.register();
@@ -117,7 +117,7 @@ public class MegaMekLab {
                 });
             });
 
-            // Add shutdown hook to clean up resources
+            // Add a shutdown hook to clean up resources
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 if (singleInstanceService != null) {
                     singleInstanceService.cleanup();
@@ -161,7 +161,7 @@ public class MegaMekLab {
     }
 
     /**
-     * Check if arguments contains specific argument
+     * Check if arguments contain specific argument
      *
      * @param args Command line arguments
      * @param arg  Argument to check for
@@ -311,12 +311,24 @@ public class MegaMekLab {
     }
 
     /**
-     * Opens a unit file. This is called from command line
+     * Opens a unit file. This is called from the command line
      *
      * @param filePath  The path to the file to open
      * @param noStartup for .mul files
      */
     private static boolean openUnitFile(String filePath, boolean noStartup) {
+        if (!filePath.toLowerCase().endsWith(".blk") ||
+                  !filePath.toLowerCase().endsWith(".mtf") ||
+                  !filePath.toLowerCase().endsWith(".mul")) {
+            LOGGER.info("Non-supported file extension: {}", filePath);
+            return false;
+        }
+
+        if (filePath.contains("..") || filePath.contains("/") || filePath.contains("\\")) {
+            LOGGER.error("Security Violation: Invalid filename: {}", filePath);
+            return false;
+        }
+
         try {
             final File file = new File(filePath).getCanonicalFile();
             if (!file.exists()) {
