@@ -31,6 +31,7 @@ import java.awt.Window;
 import java.io.File;
 import java.io.ObjectInputFilter;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Path;
 import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -319,17 +320,21 @@ public class MegaMekLab {
     private static boolean openUnitFile(String filePath, boolean noStartup) {
         try {
             final File file = new File(filePath).getCanonicalFile();
+            final Path fullPath = file.toPath().toRealPath();
 
-            if (!file.toString().toLowerCase().endsWith(".blk") &&
-                      !file.toString().toLowerCase().endsWith(".mtf") &&
-                      !file.toString().toLowerCase().endsWith(".mul")) {
-                LOGGER.info("Non-supported file extension: {}", file);
+            if (!fullPath.toString().toLowerCase().endsWith(".blk") &&
+                      !fullPath.toString().toLowerCase().endsWith(".mtf") &&
+                      !fullPath.toString().toLowerCase().endsWith(".mul")) {
+                LOGGER.info("Non-supported file extension: {}", fullPath);
                 return false;
             }
 
-            if (file.toString().toLowerCase().startsWith("/etc") ||
-                      file.toString().toLowerCase().startsWith("/system")) {
-                LOGGER.error("Attempting to load from System folders.");
+            LOGGER.info("Opening file: {}", fullPath);
+
+            if (fullPath.toString().toLowerCase().startsWith("/etc") ||
+                      fullPath.toString().toLowerCase().startsWith("/private") ||
+                      fullPath.toString().toLowerCase().startsWith("/system")) {
+                LOGGER.error("Attempting to load from protected system folders.");
                 return false;
             }
 
@@ -361,6 +366,9 @@ public class MegaMekLab {
                     return false;
                 }
             }
+        } catch (java.nio.file.NoSuchFileException fileNotFound) {
+            LOGGER.error("File not found: {}", fileNotFound.getMessage());
+            return false;
         } catch (Exception ex) {
             LOGGER.error(ex, "Error processing file: {}", filePath);
         }
