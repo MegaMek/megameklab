@@ -317,18 +317,27 @@ public class MegaMekLab {
      * @param noStartup for .mul files
      */
     private static boolean openUnitFile(String filePath, boolean noStartup) {
+        if (!filePath.toLowerCase().endsWith(".blk") ||
+                  !filePath.toLowerCase().endsWith(".mtf") ||
+                  !filePath.toLowerCase().endsWith(".mul")) {
+            LOGGER.info("Non-supported file extension: {}", filePath);
+            return false;
+        }
+
         try {
             final File file = new File(filePath).getCanonicalFile();
+
             if (!file.exists()) {
                 throw new IllegalArgumentException("File not found: " + filePath);
             }
+
             if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
                 LOGGER.info("Opening file: {}", filePath);
-                Entity e = new MekFileParser(file).getEntity();
-                if (!UnitUtil.validateUnit(e).isBlank()) {
-                    PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(e));
+                Entity entity = new MekFileParser(file).getEntity();
+                if (!UnitUtil.validateUnit(entity).isBlank()) {
+                    PopupMessages.showUnitInvalidWarning(null, UnitUtil.validateUnit(entity));
                 }
-                UiLoader.loadUi(e, file.toString());
+                UiLoader.loadUi(entity, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 LOGGER.info("Printing file: {}", filePath);
                 Runnable printMul = () -> {
@@ -336,6 +345,7 @@ public class MegaMekLab {
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
                     frame.dispose();
                 };
+
                 if (noStartup) {
                     printMul.run();
                 } else {
@@ -346,6 +356,7 @@ public class MegaMekLab {
         } catch (Exception ex) {
             LOGGER.error(ex, "Error processing file: {}", filePath);
         }
+
         return true;
     }
 
