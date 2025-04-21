@@ -2234,7 +2234,7 @@ public class UnitUtil {
         for (int loc = 0; loc < entity.locations(); loc++) {
             for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = entity.getCritical(loc, slot);
-                if (cs != null && cs.isDamaged()) {
+                if (cs != null && (cs.isDamaged() || cs.isMissing())) {
                     return true;
                 }
             }
