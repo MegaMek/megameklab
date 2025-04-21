@@ -354,7 +354,7 @@ public class PrintCapitalShip extends PrintDropship {
             for (int col = 0; col < numRowPips; col++) {
                 boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
                 if (shadow) {
-                    parent.appendChild(createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : FILL_SHADOW, currX + shadowOffsetX,
+                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
                             currY + shadowOffsetY, false));
                 }
                 parent.appendChild(createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX, currY, true));
