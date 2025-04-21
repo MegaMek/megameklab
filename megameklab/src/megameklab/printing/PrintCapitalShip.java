@@ -14,12 +14,15 @@
 package megameklab.printing;
 
 import java.awt.geom.Rectangle2D;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
+import megamek.common.DockingCollar;
 import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
 import megamek.common.UnitType;
@@ -160,11 +163,19 @@ public class PrintCapitalShip extends PrintDropship {
         setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
         if (ship instanceof Warship) {
-            printInternalRegion(SI_PIPS, ship.getOSI(), 100);
+            printInternalRegion(SI_PIPS, ship.getOSI(), (ship.getOSI() - ship.getSI()), 100);
         }
-        printInternalRegion(KF_PIPS, ship.getKFIntegrity(), 30);
-        printInternalRegion(SAIL_PIPS, ship.getSailIntegrity(), 10);
-        printInternalRegion(DC_PIPS, ship.getDockingCollars().size(), 10);
+        printInternalRegion(KF_PIPS, ship.getOKFIntegrity(), (ship.getOKFIntegrity() - ship.getKFIntegrity()), 30);
+        printInternalRegion(SAIL_PIPS, ship.getOSailIntegrity(), (ship.getOSailIntegrity() - ship.getSailIntegrity()), 10);
+        List<DockingCollar> collars = ship.getDockingCollars();
+        int collarDamage = 0;
+        for (int i = 0; i < collars.size(); i++) {
+            final DockingCollar collar = collars.get(i);
+            if (collar.isDamaged()) {
+                collarDamage += 1;
+            }
+        }
+        printInternalRegion(DC_PIPS, collars.size(), collarDamage, 10);
     }
 
     @Override
@@ -173,7 +184,7 @@ public class PrintCapitalShip extends PrintDropship {
             final String id = ARMOR_PIPS + ship.getLocationAbbr(loc);
             Element element = getSVGDocument().getElementById(id);
             if (element instanceof SVGRectElement) {
-                printArmorRegion((SVGRectElement) element, ship.getOArmor(loc));
+                printArmorRegion((SVGRectElement) element, ship.getOArmor(loc), (ship.getOArmor(loc) - ship.getArmor(loc)));
             } else {
                 logger.error("No SVGRectElement found with id " + id);
             }
@@ -192,10 +203,10 @@ public class PrintCapitalShip extends PrintDropship {
      * @param pipsPerBlock
      *                     The maximum number of pips to draw in a single block
      */
-    private void printInternalRegion(String rectId, int structure, int pipsPerBlock) {
+    private void printInternalRegion(String rectId, int structure, int damage, int pipsPerBlock) {
         Element element = getSVGDocument().getElementById(rectId);
         if (element instanceof SVGRectElement) {
-            printInternalRegion((SVGRectElement) element, structure, pipsPerBlock);
+            printInternalRegion((SVGRectElement) element, structure, damage, pipsPerBlock);
         }
     }
 
@@ -211,7 +222,7 @@ public class PrintCapitalShip extends PrintDropship {
      * @param pipsPerBlock
      *                     The maximum number of pips to draw in a single block
      */
-    private void printInternalRegion(SVGRectElement svgRect, int structure, int pipsPerBlock) {
+    private void printInternalRegion(SVGRectElement svgRect, int structure, int damage, int pipsPerBlock) {
         Rectangle2D bbox = getRectBBox(svgRect);
         final double blockWidth = PIPS_PER_ROW * IS_PIP_WIDTH;
         int pips;
@@ -223,11 +234,12 @@ public class PrintCapitalShip extends PrintDropship {
             pips = structure;
             startX = bbox.getCenterX() - blockWidth * 0.5;
         }
+        AtomicInteger remainingDamage = new AtomicInteger(damage);
         printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
-                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
+                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage);
         if (structure > pips) {
             printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
-                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false);
+                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage);
         }
     }
 
@@ -241,7 +253,7 @@ public class PrintCapitalShip extends PrintDropship {
      * @param armor
      *                The amount of armor in the location
      */
-    private void printArmorRegion(SVGRectElement svgRect, int armor) {
+    private void printArmorRegion(SVGRectElement svgRect, int armor, int damage) {
         Rectangle2D bbox = getRectBBox(svgRect);
 
         double pipWidth = ARMOR_PIP_WIDTH;
@@ -295,10 +307,11 @@ public class PrintCapitalShip extends PrintDropship {
         double xpos = startX;
         double ypos = startY;
         int remainingBlocks = numBlocks;
+        AtomicInteger remainingDamage = new AtomicInteger(damage);
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight, "#ffffff", true);
+                        armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage);
                 remainingBlocks--;
                 xpos += blockWidth;
             }
@@ -328,7 +341,7 @@ public class PrintCapitalShip extends PrintDropship {
      * @return The Y location of the end of the block
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
-            double pipHeight, String fillColor, boolean shadow) {
+            double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage) {
 
         final double shadowOffsetX = pipWidth * SHADOW_OFFSET;
         final double shadowOffsetY = pipHeight * SHADOW_OFFSET;
@@ -339,11 +352,12 @@ public class PrintCapitalShip extends PrintDropship {
             // Adjust row start if it's not a complete row
             currX = startX + ((((PIPS_PER_ROW - numRowPips) / 2f) * pipWidth) + 0.5);
             for (int col = 0; col < numRowPips; col++) {
+                boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
                 if (shadow) {
-                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
+                    parent.appendChild(createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : FILL_SHADOW, currX + shadowOffsetX,
                             currY + shadowOffsetY, false));
                 }
-                parent.appendChild(createPip(pipWidth, pipHeight, fillColor, currX, currY, true));
+                parent.appendChild(createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX, currY, true));
 
                 currX += pipWidth;
                 numPips--;
