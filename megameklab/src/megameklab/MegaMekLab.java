@@ -332,9 +332,7 @@ public class MegaMekLab {
                 UiLoader.loadUi(e, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 Runnable printMul = () -> {
-                    var frame = new JFrame();
-                    MULManager.processMULFile(file, frame);
-                    frame.dispose();
+                    MULManager.processMULFile(file, null);
                 };
                 if (noStartup) {
                     printMul.run();
