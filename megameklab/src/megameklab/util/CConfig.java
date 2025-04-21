@@ -524,8 +524,8 @@ public final class CConfig {
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int clampedX = Math.max(0, Math.min(posX, screen.width-50)); // -50 to avoid the right edge
-            int clampedY = Math.max(0, Math.min(posY, screen.height-50)); // -50 to avoid the taskbar
+            int clampedX = Math.max(0, Math.min(posX, screen.width-100)); // -100 to avoid the right edge
+            int clampedY = Math.max(0, Math.min(posY, screen.height-100)); // -100 to avoid the taskbar
             return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();
