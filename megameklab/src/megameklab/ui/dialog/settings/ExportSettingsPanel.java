@@ -51,6 +51,7 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkShowPilotData = new JCheckBox();
     private final JCheckBox chkShowForceData = new JCheckBox();
     private final JCheckBox chkShowDamage = new JCheckBox();
+    private final JButton btnDamageColor = new JButton();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
@@ -148,6 +149,20 @@ class ExportSettingsPanel extends JPanel {
         chkShowDamage.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowDamage.tooltip"));
         chkShowDamage.setSelected(CConfig.getBooleanParam(CConfig.RS_DAMAGE));
 
+        btnDamageColor.setText(resourceMap.getString("ConfigurationDialog.btnDamageColor.text"));
+        btnDamageColor.setToolTipText(resourceMap.getString("ConfigurationDialog.btnDamageColor.tooltip"));
+        Color initial = CConfig.getColorParam(CConfig.RS_DAMAGE_COLOR, Color.RED);
+        btnDamageColor.setBackground(initial);
+        btnDamageColor.addActionListener(ev -> {
+            Color chosen = JColorChooser.showDialog(
+                ExportSettingsPanel.this,
+                resourceMap.getString("ConfigurationDialog.btnDamageColor.text"),
+                btnDamageColor.getBackground());
+            if (chosen != null) {
+                btnDamageColor.setBackground(chosen);
+            }
+        });
+
         chkShowEraIcon.setText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.text"));
         chkShowEraIcon.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.tooltip"));
         chkShowEraIcon.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_ERA));
@@ -195,6 +210,16 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(txtScale);
         scalePanel.add(cbRSScale);
 
+        JPanel damagePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.weightx = 0.8;
+        damagePanel.add(chkShowDamage, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.2;
+        damagePanel.add(btnDamageColor, gbc);
+
         JPanel gridPanel = new JPanel(new SpringLayout());
         JPanel innerGridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkProgressBar);
@@ -209,7 +234,7 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkShowQuirks);
         innerGridPanel.add(chkShowPilotData);
         innerGridPanel.add(chkShowForceData);
-        innerGridPanel.add(chkShowDamage);
+        innerGridPanel.add(damagePanel);
         innerGridPanel.add(chkShowEraIcon);
         innerGridPanel.add(chkShowRole);
         innerGridPanel.add(chkHeatProfile);
@@ -241,6 +266,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_C3BV, Boolean.toString(chkShowForceData.isSelected()));
         recordSheetSettings.put(CConfig.RS_DAMAGE, Boolean.toString(chkShowDamage.isSelected()));
+        recordSheetSettings.put(CConfig.RS_DAMAGE_COLOR, String.format("#%06X", btnDamageColor.getBackground().getRGB() & 0xFFFFFF));
         recordSheetSettings.put(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));

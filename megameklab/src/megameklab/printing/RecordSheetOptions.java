@@ -13,6 +13,10 @@
  */
 package megameklab.printing;
 
+import static megameklab.printing.PrintRecordSheet.*;
+
+import java.awt.Color;
+
 import megameklab.util.CConfig;
 
 /**
@@ -40,6 +44,7 @@ public class RecordSheetOptions {
     private boolean frameless;
     private boolean boldType;
     private boolean damage;
+    private String damageColor;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -64,6 +69,7 @@ public class RecordSheetOptions {
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
+        this.damageColor = String.format("#%06X", CConfig.getColorParam(CConfig.RS_DAMAGE_COLOR, Color.RED).getRGB() & 0xFFFFFF);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -220,5 +226,9 @@ public class RecordSheetOptions {
 
     public void setBoldType(boolean enabled) {
         this.boldType = enabled;
+    }
+
+    public String getDamageColor() {
+        return damageColor;
     }
 }

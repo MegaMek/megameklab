@@ -124,6 +124,7 @@ public final class CConfig {
     public static final String RS_FRAMELESS = "rs_frameless";
     public static final String RS_BOLD_TYPE = "rs_bold_type";
     public static final String RS_DAMAGE = "rs_damage";
+    public static final String RS_DAMAGE_COLOR = "rs_damage_color";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -162,6 +163,7 @@ public final class CConfig {
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
         defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
         defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE_COLOR, String.format("#%06X", Color.RED.getRGB() & 0xFFFFFF));
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
@@ -337,6 +339,28 @@ public final class CConfig {
             return false;
         }
         return toReturn;
+    }
+
+    
+    /**
+     * Read a hex‐string color (“#RRGGBB”) from config, or return defaultColor if missing/invalid.
+     */
+    public static Color getColorParam(String key, Color defaultColor) {
+        // getParam(key, default) returns a String
+        String hex = getParam(key, String.format("#%06X", defaultColor.getRGB() & 0xFFFFFF));
+        try {
+            // Color.decode accepts both "#rrggbb" and "0xrrggbb"
+            return Color.decode(hex.startsWith("#") ? hex : "#" + hex);
+        } catch (NumberFormatException ex) {
+            return defaultColor;
+        }
+    }
+
+    /**
+     * Store a color as “#RRGGBB” in config.
+     */
+    public static void setColorParam(String key, Color c) {
+        setParam(key, String.format("#%06X", c.getRGB() & 0xFFFFFF));
     }
 
     /**
