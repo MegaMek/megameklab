@@ -254,15 +254,7 @@ public class InventoryWriter {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
-            StandardInventoryEntry same;
-            if (sheet.showDamage()) {
-                same = equipment.stream()
-                    .filter(e -> entry.equals(e) && e.isDamaged() == entry.isDamaged())
-                    .findFirst()
-                    .orElse(null);
-            } else {
-                same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
-            }
+            StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
             if (null == same) {
                 equipment.add(entry);
             } else {
@@ -676,7 +668,6 @@ public class InventoryWriter {
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
                             
-                            final boolean isDamaged =  sheet.showDamage() && line.isDamaged();
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
@@ -685,13 +676,13 @@ public class InventoryWriter {
                                 lines = sheet.addMultilineTextElement(canvas, colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', isDamaged);
+                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', line.isDamaged());
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', isDamaged);
+                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', line.isDamaged());
                             }
                             break;
                         case LOCATION:

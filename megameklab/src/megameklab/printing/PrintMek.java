@@ -189,7 +189,7 @@ public class PrintMek extends PrintEntity {
                     el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
                 }
             }
-            final int landingGearHits = getAvionicsHits();
+            final int landingGearHits = getLandingGearHits();
             for (int i = 1; i <= landingGearHits; i++) {
                 Element el = getSVGDocument().getElementById(LANDING_GEAR_HIT + i);
                 if (el != null) {
@@ -574,8 +574,7 @@ public class PrintMek extends PrintEntity {
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
-                final boolean isDamaged = options.showDamage() && crit.isDamaged();
-                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill, isDamaged);
+                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill, crit.isDamaged());
                 x = critX + getTextLength(critName, fontSize);
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
@@ -598,9 +597,8 @@ public class PrintMek extends PrintEntity {
                     x += spacing;
                 }
             } else {
-                final boolean isDamaged = options.showDamage() && crit.isDamaged();
                 addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill, isDamaged);
+                        SVGConstants.SVG_START_VALUE, style, fill, crit.isDamaged());
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
@@ -708,29 +706,16 @@ public class PrintMek extends PrintEntity {
 
     @Override
     protected String formatWalk() {
-        if (options.showDamage()) {
-            if (mek.hasTSM(false)) {
-                return formatMovement(mek.getOriginalWalkMP(), mek.getOriginalWalkMP() + 1);
-            } else {
-                return super.formatOriginalWalk();
-            }
+        if (mek.hasTSM(false)) {
+            return formatMovement(mek.getWalkMP(), mek.getWalkMP() + 1);
         } else {
-            if (mek.hasTSM(false)) {
-                return formatMovement(mek.getWalkMP(), mek.getWalkMP() + 1);
-            } else {
-                return super.formatWalk();
-            }
+            return super.formatWalk();
         }
     }
 
     @Override
     protected String formatRun() {
-        double baseRun;
-        if (options.showDamage()) {
-            baseRun = mek.getOriginalWalkMP();
-        } else {
-            baseRun = mek.getWalkMP();
-        }
+        double baseRun = mek.getWalkMP();
         double fullRun = baseRun;
         baseRun *= 1.5;
         if (mek.hasTSM(false)) {
@@ -988,23 +973,14 @@ public class PrintMek extends PrintEntity {
     }
 
     protected int getEngineHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         return mek.getEngineHits();
     }
     
     protected int getGyroHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         return mek.getGyroHits();
     }
     
     protected int getAvionicsHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         if (!(mek instanceof LandAirMek)) {
             return 0;
         }
@@ -1016,9 +992,6 @@ public class PrintMek extends PrintEntity {
     }
     
     protected int getSensorHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         int totalHits = 0;
         for (int loc = 0; loc < mek.locations(); loc++) {
             totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_SENSORS, loc);
@@ -1027,9 +1000,6 @@ public class PrintMek extends PrintEntity {
     }
     
     protected int getLifeSupportHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         int totalHits = 0;
         for (int loc = 0; loc < mek.locations(); loc++) {
             totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_LIFE_SUPPORT, loc);
@@ -1038,9 +1008,6 @@ public class PrintMek extends PrintEntity {
     }
     
     protected int getLandingGearHits() {
-        if (!options.showDamage()) {
-            return 0;
-        }
         if (!(mek instanceof LandAirMek)) {
             return 0;
         }

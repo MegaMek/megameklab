@@ -146,8 +146,15 @@ public class UnitPrintManager {
 
         int pageCount = 0;
         for (BTObject object : entities) {
-            if (object instanceof Entity) {
-                Entity unit = (Entity) object;
+            if (object instanceof Entity entity) {
+                Entity unit;
+                // assign base unit and override only if damage should be hidden and entity is damaged
+                if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
+                    unit = UnitUtil.cloneUnit(entity);
+                    UnitUtil.resetUnit(unit);
+                } else {
+                    unit = entity;
+                }
                 if (unit instanceof Mek) {
                     UnitUtil.removeOneShotAmmo(unit);
                     MekUtil.expandUnitMounts((Mek) unit);

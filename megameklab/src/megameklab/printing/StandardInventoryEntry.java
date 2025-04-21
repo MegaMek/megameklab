@@ -368,7 +368,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public boolean isDamaged() {
-        return mount.isHit() || mount.isDestroyed();
+        return mount.isHit() || mount.isDestroyed() || mount.isMissing();
     }
 
     @Override
@@ -605,7 +605,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 location.equals(that.location) &&
                 hasInsulator == that.hasInsulator &&
                 hasPulseModule == that.hasPulseModule &&
-                hasCapacitor == that.hasCapacitor;
+                hasCapacitor == that.hasCapacitor &&
+                isDamaged() == that.isDamaged();
     }
 
     @Override

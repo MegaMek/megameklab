@@ -127,7 +127,6 @@ import megamek.common.util.C3Util.MissingC3MException;
 import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
-import megameklab.util.UnitMemento;
 import megameklab.util.UnitUtil;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
@@ -295,7 +294,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 });
                 return;
             }
-            entity = UnitUtil.cloneUnit(entityToAdd, false, false);
+            entity = UnitUtil.cloneUnit(entityToAdd);
+            UnitUtil.resetUnit(entity);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
         } else {
             entity = entityToAdd;
         }
