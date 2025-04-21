@@ -4090,7 +4090,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path280" />
+           id="avionics_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -4106,7 +4106,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path281" />
+           id="avionics_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -4122,7 +4122,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path282" />
+           id="avionics_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -4151,7 +4151,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path284" />
+           id="life_support_hit" />
         <text
            x="51.317001"
            y="7.5999999"
@@ -4180,7 +4180,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path286" />
+           id="cic_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -4196,7 +4196,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path287" />
+           id="cic_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -4212,7 +4212,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path288" />
+           id="cic_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -4241,7 +4241,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path290" />
+           id="sensor_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -4257,7 +4257,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path291" />
+           id="sensor_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -4273,7 +4273,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path292" />
+           id="sensor_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -4309,7 +4309,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path295" />
+           id="thruster_left_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
@@ -4325,7 +4325,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path296" />
+           id="thruster_left_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
@@ -4341,7 +4341,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path297" />
+           id="thruster_left_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
@@ -4357,7 +4357,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path298" />
+           id="thruster_left_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
@@ -4386,7 +4386,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path300" />
+           id="thruster_right_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
@@ -4402,7 +4402,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path301" />
+           id="thruster_right_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
@@ -4418,7 +4418,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path302" />
+           id="thruster_right_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
@@ -4434,7 +4434,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path303" />
+           id="thruster_right_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
@@ -4463,7 +4463,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path305" />
+           id="engine_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -4479,7 +4479,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path306" />
+           id="engine_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -4495,7 +4495,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path307" />
+           id="engine_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -4511,7 +4511,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path308" />
+           id="engine_hit_4" />
         <text
            x="104.23"
            y="7.5999999"
@@ -4527,7 +4527,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path309" />
+           id="engine_hit_5" />
         <text
            x="119.23"
            y="7.5999999"
@@ -4543,7 +4543,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path310" />
+           id="engine_hit_6" />
         <text
            x="134.23"
            y="7.5999999"

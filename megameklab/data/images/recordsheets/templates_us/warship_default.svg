@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.3902116"
-     inkscape:cx="365.03044"
-     inkscape:cy="378.00001"
-     inkscape:window-width="1916"
-     inkscape:window-height="2041"
-     inkscape:window-x="156"
-     inkscape:window-y="37"
+     inkscape:cx="427.78639"
+     inkscape:cy="545.76758"
+     inkscape:window-width="1906"
+     inkscape:window-height="1161"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g277" />
+     inkscape:current-layer="g311" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -4091,7 +4091,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path280" />
+           id="avionics_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4107,7 +4107,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path281" />
+           id="avionics_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4123,7 +4123,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path282" />
+           id="avionics_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4152,7 +4152,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path284" />
+           id="life_support_hit" />
         <text
            x="53.299999"
            y="7.5999999"
@@ -4181,7 +4181,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path286" />
+           id="cic_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4197,7 +4197,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path287" />
+           id="cic_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4213,7 +4213,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path288" />
+           id="cic_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4242,7 +4242,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path290" />
+           id="sensor_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4258,7 +4258,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path291" />
+           id="sensor_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4274,7 +4274,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path292" />
+           id="sensor_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4310,7 +4310,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path295" />
+           id="thruster_left_hit_1" />
         <text
            x="50.459999"
            y="7.5999999"
@@ -4326,7 +4326,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path296" />
+           id="thruster_left_hit_2" />
         <text
            x="65.459999"
            y="7.5999999"
@@ -4342,7 +4342,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path297" />
+           id="thruster_left_hit_3" />
         <text
            x="80.459999"
            y="7.5999999"
@@ -4358,7 +4358,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path298" />
+           id="thruster_left_hit_4" />
         <text
            x="95.459999"
            y="7.5999999"
@@ -4387,7 +4387,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path300" />
+           id="thruster_right_hit_1" />
         <text
            x="50.459999"
            y="7.5999999"
@@ -4403,7 +4403,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path301" />
+           id="thruster_right_hit_2" />
         <text
            x="65.459999"
            y="7.5999999"
@@ -4419,7 +4419,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path302" />
+           id="thruster_right_hit_3" />
         <text
            x="80.459999"
            y="7.5999999"
@@ -4435,7 +4435,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path303" />
+           id="thruster_right_hit_4" />
         <text
            x="95.459999"
            y="7.5999999"
@@ -4464,7 +4464,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path305" />
+           id="engine_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4480,7 +4480,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path306" />
+           id="engine_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4496,7 +4496,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path307" />
+           id="engine_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4512,7 +4512,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path308" />
+           id="engine_hit_4" />
         <text
            x="107.46"
            y="7.5999999"
@@ -4528,7 +4528,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path309" />
+           id="engine_hit_5" />
         <text
            x="122.46"
            y="7.5999999"
@@ -4544,7 +4544,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path310" />
+           id="engine_hit_6" />
         <text
            x="137.46001"
            y="7.5999999"
