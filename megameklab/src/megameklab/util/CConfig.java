@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
@@ -508,7 +509,10 @@ public final class CConfig {
             String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int sizeX = Integer.parseInt(fileChooserSettings[2]);
             int sizeY = Integer.parseInt(fileChooserSettings[3]);
-            return Optional.of(new Dimension(sizeX, sizeY));
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedWidth  = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
+            int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
+            return Optional.of(new Dimension(clampedWidth, clampedHeight));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -519,7 +523,10 @@ public final class CConfig {
             String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
-            return Optional.of(new Point(posX, posY));
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedX = Math.max(0, Math.min(posX, screen.width-50)); // -50 to avoid the right edge
+            int clampedY = Math.max(0, Math.min(posY, screen.height-50)); // -50 to avoid the taskbar
+            return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();
         }
