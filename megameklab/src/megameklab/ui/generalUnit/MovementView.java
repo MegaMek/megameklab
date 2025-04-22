@@ -247,13 +247,24 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             }
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
+        } else if (en instanceof ConvFighter asf) { // ConvFighter is a subclass of AeroSpaceFighter so should be checked first
+            if (asf.getWeight() <= 5) {
+                minWalk = 2;
+            } else {
+                minWalk = 1;
+            }
+        } else if (en instanceof AeroSpaceFighter asf) {
+            if (asf.getWeight() <= 5) {
+                minWalk = 4;
+            } else {
+                minWalk = 3;
+            }
         }
         // Trailers with no engine have a max speed of zero.
         if (en.isTrailer() && ((en.getEngine() == null)
                     || (en.getEngine().getEngineType() == Engine.NONE))) {
             maxWalk = 0;
         }
-
         spnWalkModel.setMinimum(minWalk);
         spnWalkModel.setMaximum(maxWalk);
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
