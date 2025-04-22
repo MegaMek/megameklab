@@ -2503,7 +2503,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path269" />
+           id="avionics_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -2519,7 +2519,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path270" />
+           id="avionics_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -2535,7 +2535,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path271" />
+           id="avionics_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -2564,7 +2564,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path273" />
+           id="life_support_hit_1" />
         <text
            x="51.317001"
            y="7.5999999"
@@ -2593,7 +2593,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path275" />
+           id="cic_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -2609,7 +2609,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path276" />
+           id="cic_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -2625,7 +2625,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path277" />
+           id="cic_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -2654,7 +2654,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path279" />
+           id="sensor_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
@@ -2670,7 +2670,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path280" />
+           id="sensor_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
@@ -2686,7 +2686,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path281" />
+           id="sensor_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
@@ -2722,7 +2722,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path284" />
+           id="thruster_left_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
@@ -2738,7 +2738,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path285" />
+           id="thruster_left_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
@@ -2754,7 +2754,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path286" />
+           id="thruster_left_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
@@ -2770,7 +2770,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path287" />
+           id="thruster_left_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
@@ -2799,7 +2799,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path289" />
+           id="thruster_right_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
@@ -2815,7 +2815,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path290" />
+           id="thruster_right_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
@@ -2831,7 +2831,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path291" />
+           id="thruster_right_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
@@ -2847,7 +2847,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path292" />
+           id="thruster_right_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
@@ -2963,7 +2963,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text298">1</text>
+           id="crew_damage_0_1">1</text>
         <text
            fill="#000000"
            x="54.339001"
@@ -2977,7 +2977,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text300">2</text>
+           id="crew_damage_0_2">2</text>
         <text
            fill="#000000"
            x="68.472"
@@ -2991,7 +2991,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text302">3</text>
+           id="crew_damage_0_3">3</text>
         <text
            fill="#000000"
            x="82.603996"
@@ -3005,7 +3005,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text304">4</text>
+           id="crew_damage_0_4">4</text>
         <text
            fill="#000000"
            x="96.736"
@@ -3019,7 +3019,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text306">5</text>
+           id="crew_damage_0_5">5</text>
         <text
            fill="#000000"
            x="110.868"
@@ -3033,7 +3033,7 @@
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text308">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="125.001"
            y="54.907001"
