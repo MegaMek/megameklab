@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import megamek.client.generator.RandomNameGenerator;
+import megamek.client.Client;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -47,6 +47,7 @@ import megamek.common.EquipmentFlag;
 import megamek.common.EquipmentType;
 import megamek.common.EquipmentTypeLookup;
 import megamek.common.FixedWingSupport;
+import megamek.common.Game;
 import megamek.common.GunEmplacement;
 import megamek.common.HandheldWeapon;
 import megamek.common.ITechManager;
@@ -58,6 +59,7 @@ import megamek.common.Mek;
 import megamek.common.MekFileParser;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
+import megamek.common.Player;
 import megamek.common.ProtoMek;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SmallCraft;
@@ -73,6 +75,7 @@ import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.loaders.BLKFile;
+import megamek.common.options.OptionsConstants;
 import megamek.common.util.BuildingBlock;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestAdvancedAerospace;
@@ -118,6 +121,25 @@ public class UnitUtil {
 
     private static Font rsFont     = null;
     private static Font rsBoldFont = null;
+    private static Client dummyClient = new Client("", "", 0);
+    private static Player dummyPlayer = new Player(1, "");
+
+    static {
+        final Game game = dummyClient.getGame();
+        game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
+        game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
+        game.addPlayer(1, dummyPlayer);
+        dummyClient.setLocalPlayerNumber(1);
+    }
+
+    /**
+     * Returns a Client object that is used for internal calculations of the units.
+     * 
+     * @return A Client object
+     */
+    public static Client getDummyClient() {
+        return dummyClient;
+    }
 
     /**
      * Tells us if the passed in {@link EquipmentType} is equipment that uses critical slots/mounted and is spread
@@ -1352,6 +1374,10 @@ public class UnitUtil {
     }
 
     public static void updateLoadedUnit(Entity unit) {
+        // Add Entity to a dummy game
+        unit.setGame(getDummyClient().getGame());
+        unit.setOwner(getDummyClient().getLocalPlayer());
+
         // Check for illegal armor tech levels and set to the tech level of the unit.
         for (int loc = 0; loc < unit.locations(); loc++) {
             if (unit.getArmorType(loc) >= 0) {

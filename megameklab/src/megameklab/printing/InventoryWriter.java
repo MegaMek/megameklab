@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.*;
+import megamek.common.enums.WeaponSortOrder;
 import megamek.common.equipment.WeaponMounted;
 import megameklab.util.UnitUtil;
 
@@ -224,7 +225,25 @@ public class InventoryWriter {
     }
 
     private void parseEquipment() {
-        for (Mounted<?> m : sheet.getEntity().getEquipment()) {
+        WeaponSortOrder sortOrder = sheet.options.getWeaponsOrder();
+        List<Mounted<?>> sortedMounted = sheet.getEntity().getEquipment();
+        if (sortOrder != WeaponSortOrder.DEFAULT) {
+            sortedMounted = new ArrayList<>(sortedMounted); // Copy to sort without affecting the original
+            Comparator<WeaponMounted> weaponSortComparator = sortOrder.getWeaponSortComparator(sheet.getEntity());
+            sortedMounted.sort((m1, m2) -> {
+                boolean w1 = m1 instanceof WeaponMounted;
+                boolean w2 = m2 instanceof WeaponMounted;
+                if (w1 && w2) {
+                    return weaponSortComparator.compare((WeaponMounted)m1, (WeaponMounted)m2);
+                } else if (w1) {
+                    return -1;
+                } else if (w2) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        for (Mounted<?> m : sortedMounted) {
             if (m.isWeaponGroup()) {
                 continue;
             }

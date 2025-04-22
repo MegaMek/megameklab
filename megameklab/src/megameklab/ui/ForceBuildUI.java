@@ -145,10 +145,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private JScrollPane scrollPane;
     private JPopupMenu rowPopupMenu = new JPopupMenu();
 
-    private Client client;
-    private Game   game;
-    private Player player;
     private final String mulFileName = null;
+    private final Client client = UnitUtil.getDummyClient();
     
     private static final int COL_REMOVE = 0;
     private static final int COL_NAME = 1;
@@ -192,12 +190,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 }
             }
         });
-        client = new Client("", "", 0);
-        game = client.getGame();
-        game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
-        game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
-        player = new Player(1, "");
-        game.addPlayer(1, player);
     }
 
     /**
@@ -234,7 +226,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     }
 
     public Game getGame() {
-        return game;
+        return client.getGame();
     }
 
     private void packWindow() {
@@ -304,13 +296,13 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
         entity.getCrew().setName("", 0);
-        entity.setOwner(player);
+        // entity.setOwner(player);
         if (entity.getId() == -1) {
-            entity.setId(game.getNextEntityId());
+            entity.setId(client.getGame().getNextEntityId());
         }
-        game.addEntity(entity, false);
+        client.getGame().addEntity(entity, false);
         forceList.add(entity);
-        C3Util.wireC3(game, entity);
+        C3Util.wireC3(client.getGame(), entity);
         final int newRowIndex = forceList.size() - 1;
         updateTableAndTotal();
         packWindow();
@@ -335,8 +327,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         if (index >= 0 && index < forceList.size()) {
             tableModel.removeRow(index);
             Entity entity = forceList.remove(index);
-            C3Util.disconnectFromNetwork(game, List.of(entity));
-            game.removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
+            C3Util.disconnectFromNetwork(client.getGame(), List.of(entity));
+            client.getGame().removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
             entity.setCrew(new Crew(entity.defaultCrewType()));
             entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, ""));
             updateTotalBVLabelOnly();
@@ -991,10 +983,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        Game game = UnitUtil.getDummyClient().getGame();
         StringTokenizer st = new StringTokenizer(e.getActionCommand(), "|");
         String command = st.nextToken();
         String info = st.nextToken();
         Set<Entity> entities = LobbyUtility.getEntities(game, st.nextToken());
+        int master = -1;
         try {
             switch (command) {
                 case LMP_C3DISCONNECT:
@@ -1010,7 +1004,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     break;
 
                 case LMP_C3JOIN:
-                    int master = Integer.parseInt(info);
+                    master = Integer.parseInt(info);
                     C3Util.joinNh(game, entities, master, false);
                     break;
 
@@ -1032,6 +1026,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             updateTableAndTotal();
             for (Entity entity : entities) {
                 MegaMekLabTabbedUI.refreshEntity(entity);
+            }
+            if (master > -1) {
+                Entity masterUnit = game.getEntity(master);
+                if (masterUnit != null && (!entities.contains(masterUnit))) {
+                    MegaMekLabTabbedUI.refreshEntity(masterUnit);
+                }
             }
         } catch (MissingC3MException missing) {
             LobbyErrors.showOnlyC3M(this);
