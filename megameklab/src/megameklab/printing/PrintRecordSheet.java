@@ -1178,9 +1178,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     protected String getDamageFillColor() {
-        if (options.useColor()) {
-            return options.getDamageColor();
-        }
-        return FILL_BLACK;
+        return options.getDamageColor();
     }
 }
