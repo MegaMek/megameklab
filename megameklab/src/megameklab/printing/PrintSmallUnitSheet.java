@@ -66,18 +66,6 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         this.entities = new ArrayList<>(entities);
     }
 
-    /**
-     * Create a record sheet for two vehicles, or one vehicle and tables, with
-     * default
-     * options
-     *
-     * @param entities  The units to print
-     * @param startPage The index of this page in the print job
-     */
-    public PrintSmallUnitSheet(Collection<? extends Entity> entities, int startPage) {
-        this(entities, startPage, new RecordSheetOptions());
-    }
-
     @Override
     public List<String> getBookmarkNames() {
         return entities.stream().map(Entity::getShortNameRaw).distinct().collect(Collectors.toList());

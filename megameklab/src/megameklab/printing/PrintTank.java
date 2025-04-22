@@ -24,8 +24,6 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import megamek.common.*;
-import megameklab.util.CConfig;
-import megameklab.util.RSScale;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 

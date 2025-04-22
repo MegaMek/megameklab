@@ -89,16 +89,6 @@ public class PrintDropship extends PrintAero {
         distributeEquipmentBlocks();
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param ship      The ship to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintDropship(Aero ship, int startPage) {
-        this(ship, startPage, new RecordSheetOptions());
-    }
-
     @Override
     public Entity getEntity() {
         return ship;

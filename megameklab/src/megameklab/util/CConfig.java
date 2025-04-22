@@ -37,6 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import megamek.common.Configuration;
+import megamek.common.enums.WeaponSortOrder;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.ui.*;
@@ -125,6 +126,7 @@ public final class CConfig {
     public static final String RS_BOLD_TYPE = "rs_bold_type";
     public static final String RS_DAMAGE = "rs_damage";
     public static final String RS_DAMAGE_COLOR = "rs_damage_color";
+    public static final String RS_WEAPONS_ORDER = "rs_weapons_order";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -173,6 +175,7 @@ public final class CConfig {
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
         defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_WEAPONS_ORDER, WeaponSortOrder.DEFAULT.name());
         return defaults;
     }
 
@@ -324,6 +327,32 @@ public final class CConfig {
      */
     public static int getIntParam(String param) {
         return getIntParam(param, 0);
+    }
+
+    /**
+     * Return the enum value of a given config property.
+     * @param key
+     * @param enumClass
+     * @param defaultVal
+     * @return
+     */
+    public static <E extends Enum<E>> E getEnumParam(String key, Class<E> enumClass, E defaultVal) {
+        String name = getParam(key, defaultVal.name());
+        try {
+            return Enum.valueOf(enumClass, name);
+        } catch (IllegalArgumentException ex) {
+            return defaultVal;
+        }
+    }
+    
+    /**
+     * Set a config value to the name of the enum.
+     *
+     * @param key   the name of the parameter
+     * @param value the value to set the parameter to
+     */
+    public static <E extends Enum<E>> void setEnumParam(String key, E value) {
+        setParam(key, value.name());
     }
 
     /**

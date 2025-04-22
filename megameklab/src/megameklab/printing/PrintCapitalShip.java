@@ -78,18 +78,6 @@ public class PrintCapitalShip extends PrintDropship {
         this.ship = ship;
     }
 
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param ship
-     *                  The ship to print
-     * @param startPage
-     *                  The print job page number for this sheet
-     */
-    public PrintCapitalShip(Jumpship ship, int startPage) {
-        this(ship, startPage, new RecordSheetOptions());
-    }
-
     @Override
     protected String getSVGFileName(int pageNumber) {
         if (pageNumber > 0) {

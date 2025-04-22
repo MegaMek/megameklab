@@ -13,10 +13,9 @@
  */
 package megameklab.printing;
 
-import static megameklab.printing.PrintRecordSheet.*;
-
 import java.awt.Color;
 
+import megamek.common.enums.WeaponSortOrder;
 import megameklab.util.CConfig;
 
 /**
@@ -45,6 +44,7 @@ public class RecordSheetOptions {
     private boolean boldType;
     private boolean damage;
     private String damageColor;
+    private WeaponSortOrder weaponsOrder;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -70,6 +70,7 @@ public class RecordSheetOptions {
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
         this.damageColor = String.format("#%06X", CConfig.getColorParam(CConfig.RS_DAMAGE_COLOR, Color.RED).getRGB() & 0xFFFFFF);
+        this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -90,6 +91,8 @@ public class RecordSheetOptions {
         frameless = options.frameless;
         boldType = options.boldType;
         damage = options.damage;
+        damageColor = options.damageColor;
+        weaponsOrder = options.weaponsOrder;
     }
 
     public PaperSize getPaperSize() {
@@ -230,5 +233,13 @@ public class RecordSheetOptions {
 
     public String getDamageColor() {
         return damageColor;
+    }
+    
+    public WeaponSortOrder getWeaponsOrder() {
+        return weaponsOrder;
+    }
+    
+    public void setWeaponsOrder(WeaponSortOrder order) {
+        this.weaponsOrder = order;
     }
 }

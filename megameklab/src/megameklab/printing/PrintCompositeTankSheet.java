@@ -56,19 +56,6 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         this.tank2 = tank2;
     }
 
-    /**
-     * Create a record sheet for two vehicles, or one vehicle and tables, with default
-     * options
-     *
-     * @param tank1      The first vehicle
-     * @param tank2      The second vehicle; if {@code null}, fills the bottom half of the page
-     *                   with tables.
-     * @param startPage  The index of this page in the print job
-     */
-    public PrintCompositeTankSheet(Tank tank1, @Nullable Tank tank2, int startPage) {
-        this(tank1, tank2, startPage, new RecordSheetOptions());
-    }
-
     @Override
     public List<String> getBookmarkNames() {
         List<String> retVal = new ArrayList<>();
