@@ -440,15 +440,15 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
 
         // --- Edit Damage ---
-        JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
-        editDamage.setMnemonic(KeyEvent.VK_D);
-        editDamage.addActionListener(e -> {
-            Entity entity = selectedEntities.get(0);
-            UnitEditorDialog med = new UnitEditorDialog(null, entity);
-            med.setVisible(true);
-            MegaMekLabTabbedUI.refreshEntity(entity);
-        });
-        rowPopupMenu.add(editDamage);
+        // JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
+        // editDamage.setMnemonic(KeyEvent.VK_D);
+        // editDamage.addActionListener(e -> {
+        //     Entity entity = selectedEntities.get(0);
+        //     UnitEditorDialog med = new UnitEditorDialog(null, entity);
+        //     med.setVisible(true);
+        //     MegaMekLabTabbedUI.refreshEntity(entity);
+        // });
+        // rowPopupMenu.add(editDamage);
 
         // --- C3 Menu ---
         rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
