@@ -296,7 +296,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
         entity.getCrew().setName("", 0);
-        // entity.setOwner(player);
         if (entity.getId() == -1) {
             entity.setId(client.getGame().getNextEntityId());
         }
