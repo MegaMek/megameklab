@@ -18,7 +18,9 @@
  */
 package megameklab.ui.dialog.settings;
 
+import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
 import megameklab.ui.util.IntRangeTextField;
@@ -30,6 +32,7 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -64,6 +67,7 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
     private final JCheckBox chkBoldType = new JCheckBox();
+    private MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -100,6 +104,23 @@ class ExportSettingsPanel extends JPanel {
         fontPanel.add(cbFont);
         fontPanel.add(Box.createHorizontalStrut(25));
         fontPanel.add(txtFontDisplay);
+
+        
+        JLabel defaultSortOrderLabel = new JLabel(resourceMap.getString("ConfigurationDialog.weaponsOrder.text"));
+        String toolTip = resourceMap.getString("ConfigurationDialog.weaponsOrder.tooltip");
+        defaultSortOrderLabel.setToolTipText(toolTip);
+
+        final DefaultComboBoxModel<WeaponSortOrder> defaultWeaponSortOrderModel = new DefaultComboBoxModel<>(
+                WeaponSortOrder.values());
+        defaultWeaponSortOrderModel.removeElement(WeaponSortOrder.CUSTOM); // Custom makes no sense as a default
+        comboDefaultWeaponSortOrder = new MMComboBox<>("comboDefaultWeaponSortOrder", defaultWeaponSortOrderModel);
+        comboDefaultWeaponSortOrder.setToolTipText(toolTip);
+        comboDefaultWeaponSortOrder.setSelectedItem(CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT));
+
+        JPanel weaponSortOrderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        weaponSortOrderPanel.add(defaultSortOrderLabel);
+        weaponSortOrderPanel.add(Box.createHorizontalStrut(25));
+        weaponSortOrderPanel.add(comboDefaultWeaponSortOrder);
 
         chkProgressBar.setText(resourceMap.getString("ConfigurationDialog.chkProgressBar.text"));
         chkProgressBar.setToolTipText(resourceMap.getString("ConfigurationDialog.chkProgressBar.tooltip"));
@@ -225,6 +246,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(chkProgressBar);
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
+        gridPanel.add(weaponSortOrderPanel);
         gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
         innerGridPanel.add(chkColor);
         innerGridPanel.add(chkBoldType);
@@ -273,11 +295,11 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
-        recordSheetSettings.put(CConfig.RS_MEK_NAMES,
-                Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+        recordSheetSettings.put(CConfig.RS_MEK_NAMES, Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
+        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, comboDefaultWeaponSortOrder.getSelectedItem().name());
         return recordSheetSettings;
     }
 
