@@ -312,7 +312,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         forceList.add(entity);
         C3Util.wireC3(client.getGame(), entity);
         final int newRowIndex = forceList.size() - 1;
-        updateTableAndTotal();
+        rebuildTable();
         packWindow();
         SwingUtilities.invokeLater(() -> {
             entityTable.setRowSelectionInterval(newRowIndex, newRowIndex);
@@ -338,8 +338,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             C3Util.disconnectFromNetwork(client.getGame(), List.of(entity));
             client.getGame().removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
             entity.setCrew(new Crew(entity.defaultCrewType()));
-            updateTotalBVLabelOnly();
-            packWindow();
+            refreshTableContent();
         }
     }
 
@@ -356,12 +355,32 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
      */
     public static void refresh() {
         if (instance != null) {
-            instance.updateTableAndTotal();
+            instance.rebuildTable();
             instance.packWindow();
         }
     }
 
-    private void updateTableAndTotal() {
+    private void refreshTableContent() {
+        int totalBV = 0;
+        for (int i = 0; i < forceList.size(); i++) {
+            Entity entity = forceList.get(i);
+            int bv = entity.calculateBattleValue();
+            Integer gunnery = null;
+            Integer piloting = null;
+            int gSkill = entity.getCrew().getGunnery();
+            int pSkill = entity.getCrew().getPiloting();
+            if (gSkill >= 0) gunnery = gSkill;
+            if (pSkill >= 0) piloting = pSkill;
+            tableModel.setValueAt(UnitFormatter.getCell(entity), i, COL_NAME);
+            tableModel.setValueAt(gunnery, i, COL_GUNNERY);
+            tableModel.setValueAt(piloting, i, COL_PILOTING);
+            tableModel.setValueAt(bv, i, COL_BV);
+            totalBV += bv;
+        }
+        totalBVLabel.setText("Total BV: " + totalBV);
+    }
+
+    private void rebuildTable() {
         int selectedRow = entityTable.getSelectedRow();
         int scrollValue = scrollPane.getVerticalScrollBar().getValue();
         // Clear existing rows
@@ -438,17 +457,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         });
         rowPopupMenu.add(editItem);
 
-
         // --- Edit Damage ---
-        // JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
-        // editDamage.setMnemonic(KeyEvent.VK_D);
-        // editDamage.addActionListener(e -> {
-        //     Entity entity = selectedEntities.get(0);
-        //     UnitEditorDialog med = new UnitEditorDialog(null, entity);
-        //     med.setVisible(true);
-        //     MegaMekLabTabbedUI.refreshEntity(entity);
-        // });
-        // rowPopupMenu.add(editDamage);
+        JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
+        editDamage.setMnemonic(KeyEvent.VK_D);
+        editDamage.addActionListener(e -> {
+            Entity entity = selectedEntities.get(0);
+            UnitEditorDialog med = new UnitEditorDialog(null, entity);
+            med.setVisible(true);
+            MegaMekLabTabbedUI.refreshEntity(entity);
+        });
+        rowPopupMenu.add(editDamage);
 
         // --- C3 Menu ---
         rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
@@ -763,7 +781,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
 
-        updateTableAndTotal();
+        rebuildTable();
 
         add(centerPanel, BorderLayout.CENTER);
     }
@@ -795,7 +813,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 addEntity(entity);
             }
         }
-        updateTableAndTotal();
+        rebuildTable();
     }
     
     public void selectAndLoadUnitFromCache() {
@@ -1047,7 +1065,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         cmd.setTitle(entity.getShortName());
         cmd.setVisible(true);
         // Update table in case of BV or Pilot changes
-        updateTableAndTotal();
+        refreshTableContent();
         MegaMekLabTabbedUI.refreshEntity(entity);
     }
     
@@ -1056,7 +1074,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         if (event.getValueIsAdjusting()) {
             return;
         }
-        updateTableAndTotal();
+        refreshTableContent();
     }
     
     @Override
@@ -1101,7 +1119,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     C3Util.joinNh(game, entities, master, true);
                     break;
             }
-            updateTableAndTotal();
+            refreshTableContent();
             for (Entity entity : entities) {
                 MegaMekLabTabbedUI.refreshEntity(entity);
             }
@@ -1192,7 +1210,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                         // Reorder the underlying forceList
                         Entity movedEntity = forceList.remove(rowFrom.intValue());
                         forceList.add(dropIndex, movedEntity);
-                        updateTableAndTotal();
+                        rebuildTable();
                         // Select the moved row after the update
                         target.setRowSelectionInterval(dropIndex, dropIndex);
                         return true;
