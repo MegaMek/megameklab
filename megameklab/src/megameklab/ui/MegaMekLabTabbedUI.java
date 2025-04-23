@@ -210,6 +210,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     }
 
+    public static boolean isOpen() {
+        return !openWindows.isEmpty();
+    }
+
     /**
      * Checks if the given editor is the currently selected tab in the tabbed UI.
      * 
@@ -607,7 +611,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     private void cleanupAndDispose() {
         openWindows.remove(this);
-        if (openWindows.size() == 0) {
+        final boolean willTerminate = (openWindows.isEmpty() 
+        && (!ForceBuildUI.hasInstance() || !ForceBuildUI.getInstance().isShowing()));
+        if (willTerminate) {
             saveConfig(); // Save settings before closing
         }
         // We dispose all tabs, we already prompted the user for saving
@@ -621,7 +627,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             editors.remove(editor);
             closedEditors.push(editor);
         }
-        if (openWindows.isEmpty()) {
+        if (willTerminate) {
             System.exit(0);
         } else {
             dispose();
