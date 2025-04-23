@@ -433,6 +433,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             targetWindow.setVisible(true);
         }
 
+        if (StartupGUI.hasInstance()) {
+            StartupGUI.getInstance().getFrame().setVisible(false);
+            StartupGUI.getInstance().getFrame().dispose();
+        }
+        
         UnitUtil.updateLoadedUnit(entityToFind);
         MegaMekLabMainUI newUi = UiLoader.getUI(entityToFind, "");
         targetWindow.addTab(newUi, true);
@@ -440,10 +445,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         targetWindow.setVisible(true);
         targetWindow.toFront();
         targetWindow.requestFocus();
-        if (StartupGUI.hasInstance()) {
-            StartupGUI.getInstance().getFrame().setVisible(false);
-            StartupGUI.getInstance().getFrame().dispose();
-        }
     }
 
     /**
