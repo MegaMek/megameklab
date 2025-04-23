@@ -258,11 +258,11 @@ public class MegaMekLab {
             case NEW_CONVINFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
             case RECENT_UNIT -> {
                 if (!loadMostRecentUnit()) {
-                    new StartupGUI().setVisible(true);
+                    StartupGUI.getInstance().setVisible(true);
                 }
             }
             case RESTORE_TABS -> UiLoader.restoreTabbedUi();
-            default -> new StartupGUI().setVisible(true);
+            default -> StartupGUI.getInstance().setVisible(true);
         }
     }
 

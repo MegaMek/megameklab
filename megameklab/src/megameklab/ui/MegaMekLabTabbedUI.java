@@ -440,6 +440,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         targetWindow.setVisible(true);
         targetWindow.toFront();
         targetWindow.requestFocus();
+        if (StartupGUI.hasInstance()) {
+            StartupGUI.getInstance().getFrame().setVisible(false);
+            StartupGUI.getInstance().getFrame().dispose();
+        }
     }
 
     /**
