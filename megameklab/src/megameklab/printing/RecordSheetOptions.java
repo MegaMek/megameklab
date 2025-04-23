@@ -13,8 +13,6 @@
  */
 package megameklab.printing;
 
-import java.awt.Color;
-
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.util.CConfig;
 
@@ -69,7 +67,7 @@ public class RecordSheetOptions {
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
-        this.damageColor = String.format("#%06X", CConfig.getColorParam(CConfig.RS_DAMAGE_COLOR, Color.RED).getRGB() & 0xFFFFFF);
+        this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
         this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
     }
 

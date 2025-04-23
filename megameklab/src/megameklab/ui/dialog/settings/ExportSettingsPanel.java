@@ -18,11 +18,11 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.client.ui.Messages;
 import megamek.client.ui.baseComponents.MMComboBox;
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
+import megameklab.printing.PrintEntity;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -32,7 +32,6 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -172,7 +171,7 @@ class ExportSettingsPanel extends JPanel {
 
         btnDamageColor.setText(resourceMap.getString("ConfigurationDialog.btnDamageColor.text"));
         btnDamageColor.setToolTipText(resourceMap.getString("ConfigurationDialog.btnDamageColor.tooltip"));
-        Color initial = CConfig.getColorParam(CConfig.RS_DAMAGE_COLOR, Color.RED);
+        Color initial = Color.decode(CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED));
         btnDamageColor.setBackground(initial);
         btnDamageColor.addActionListener(ev -> {
             Color chosen = JColorChooser.showDialog(

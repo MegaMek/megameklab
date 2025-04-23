@@ -370,28 +370,6 @@ public final class CConfig {
         return toReturn;
     }
 
-    
-    /**
-     * Read a hex‐string color (“#RRGGBB”) from config, or return defaultColor if missing/invalid.
-     */
-    public static Color getColorParam(String key, Color defaultColor) {
-        // getParam(key, default) returns a String
-        String hex = getParam(key, String.format("#%06X", defaultColor.getRGB() & 0xFFFFFF));
-        try {
-            // Color.decode accepts both "#rrggbb" and "0xrrggbb"
-            return Color.decode(hex.startsWith("#") ? hex : "#" + hex);
-        } catch (NumberFormatException ex) {
-            return defaultColor;
-        }
-    }
-
-    /**
-     * Store a color as “#RRGGBB” in config.
-     */
-    public static void setColorParam(String key, Color c) {
-        setParam(key, String.format("#%06X", c.getRGB() & 0xFFFFFF));
-    }
-
     /**
      * Write the config file out to ./data/mwconfig.txt.
      */
