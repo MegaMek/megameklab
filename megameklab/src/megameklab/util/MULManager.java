@@ -59,19 +59,23 @@ public class MULManager {
                 break;
             case LOAD_FORCE:
                 // Load into Force Builder
-                try {
-                    ForceBuildUI forceBuildUI = ForceBuildUI.getInstance();
-                    Vector<Entity> loadedUnits = new MULParser(file, forceBuildUI.getGame().getOptions()).getEntities();
-                    loadedUnits.trimToSize();
-                    forceBuildUI.clear();
-                    for (Entity entity : loadedUnits) {
-                        forceBuildUI.addEntity(entity);
-                    }
-                    forceBuildUI.setVisible(true);
-                } catch (Exception e) {
-                    logger.error("Error loading MUL file", e);
-                }
+                loadForceFromMUL(file);
                 break;
+        }
+    }
+
+    public static void loadForceFromMUL(File file) {
+        try {
+            ForceBuildUI forceBuildUI = ForceBuildUI.getInstance();
+            Vector<Entity> loadedUnits = new MULParser(file, forceBuildUI.getGame().getOptions()).getEntities();
+            loadedUnits.trimToSize();
+            forceBuildUI.clear();
+            for (Entity entity : loadedUnits) {
+                forceBuildUI.addEntity(entity);
+            }
+            forceBuildUI.setVisible(true);
+        } catch (Exception e) {
+            logger.error("Error loading MUL file", e);
         }
     }
 }
