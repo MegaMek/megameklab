@@ -67,6 +67,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         previewTab = new PreviewTab(this);
