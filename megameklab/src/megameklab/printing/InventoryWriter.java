@@ -381,6 +381,9 @@ public class InventoryWriter {
                     lines++;
                 }
             }
+            if (sheet.showQuirks() && entry.hasQuirks()) {
+                lines++;
+            }
         }
         return lines;
     }
@@ -736,6 +739,14 @@ public class InventoryWriter {
                             break;
                     }
                 }
+                yPosition += lineHeight * lines;
+            }
+            if (sheet.showQuirks() && line.hasQuirks()) {
+                int lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
+                            colX[0] + indent : colX[0],
+                            yPosition, viewWidth * 0.95, lineHeight,
+                            line.getQuirksField(), fontSize, SVGConstants.SVG_START_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE);
                 yPosition += lineHeight * lines;
             }
         }
