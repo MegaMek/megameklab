@@ -298,6 +298,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         } else {
             entity = entityToAdd;
         }
+        if (entity.getOwner() == null) {
+            UnitUtil.updateLoadedUnit(entity);
+        }
         if (entity.getCrew() == null) {
             entity.setCrew(new Crew(entity.defaultCrewType()));
         }
@@ -335,7 +338,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             C3Util.disconnectFromNetwork(client.getGame(), List.of(entity));
             client.getGame().removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
             entity.setCrew(new Crew(entity.defaultCrewType()));
-            entity.setOwner(new Player(ForceBuildUI.lastPlayerId++, ""));
             updateTotalBVLabelOnly();
             packWindow();
         }
