@@ -807,8 +807,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 addEntities(selectedEntities);
               });
         List<Entity> selectedEntities = viewer.getChosenEntities();
-        warnOnInvalid(selectedEntities);
-        addEntities(selectedEntities);
+        if (selectedEntities != null && !selectedEntities.isEmpty()) {
+            warnOnInvalid(selectedEntities);
+            addEntities(selectedEntities);
+        }
         viewer.dispose();
     }
 
