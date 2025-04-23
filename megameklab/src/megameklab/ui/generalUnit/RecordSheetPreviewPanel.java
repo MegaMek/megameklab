@@ -233,7 +233,8 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
-    private static final int REGENERATE_AND_UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
+    private static final int REGENERATE_DEBOUNCE_DELAY = 100; // ms delay before rendering after entity set
+    private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
 
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
@@ -248,12 +249,12 @@ public class RecordSheetPreviewPanel extends JPanel {
             performResetView();
         });
         resetViewTimer.setRepeats(false);
-        updateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
+        updateTimer = new Timer(UPDATE_DEBOUNCE_DELAY, e -> {
             updateTimer.stop();
             performUpdateSheetContentInPlace();
         });
         updateTimer.setRepeats(false);
-        regenerateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
+        regenerateTimer = new Timer(REGENERATE_DEBOUNCE_DELAY, e -> {
             regenerateTimer.stop();
             performRegenerateAndReset();
         });
@@ -475,32 +476,30 @@ private double constrainPanX(double panX) {
         this.oneUnitPerSheet = oneUnitPerSheet;
         regenerateAndReset();
     }
-
     
     /**
      * Set to true/false if you want C3 and other special equips to affect the BV
      * 
-     * @param enable
+     * @param enabled
      */
-    public void includeC3inBV(Boolean enable) {
-        if (this.includeC3inBV == enable) {
+    public void includeC3inBV(Boolean enabled) {
+        if (this.includeC3inBV == enabled) {
             return;
         }
-        this.includeC3inBV = enable;
+        this.includeC3inBV = enabled;
         updateSheetContentInPlace();
     }
 
-    
     /**
      * Set to true/false if you want to show the pilot data on the record sheet.
      * 
-     * @param enable
+     * @param enabled
      */
-    public void showPilotData(Boolean enable) {
-        if (this.showPilotData == enable) {
+    public void showPilotData(Boolean enabled) {
+        if (this.showPilotData == enabled) {
             return;
         }
-        this.showPilotData = enable;
+        this.showPilotData = enabled;
         updateSheetContentInPlace();
     }
 
