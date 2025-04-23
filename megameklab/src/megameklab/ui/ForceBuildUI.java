@@ -36,6 +36,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -107,7 +108,6 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.UnitEditorDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.lobby.LobbyErrors;
 import megamek.client.ui.swing.lobby.LobbyUtility;
@@ -116,6 +116,7 @@ import megamek.common.Crew;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;
 import megamek.common.Game;
+import megamek.common.MekFileParser;
 import megamek.common.IEntityRemovalConditions;
 import megamek.common.Player;
 import megamek.common.options.OptionsConstants;
@@ -128,6 +129,8 @@ import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
 import megameklab.util.UnitMemento;
+import megameklab.util.UnitUtil;
+import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 
@@ -139,6 +142,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private static ForceBuildUI instance; // Singleton instance
 
     private final ArrayList<Entity> forceList = new ArrayList<>();
+    private final MMLFileChooser loadUnitFileChooser = new MMLFileChooser();
     private JTable entityTable;
     private DefaultTableModel tableModel;
     private JLabel totalBVLabel;
@@ -178,6 +182,9 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         packWindow();
         setLocationRelativeTo(null);
         CConfig.getForceBuildPosition().ifPresent(this::setLocation);
+        loadUnitFileChooser.setDialogTitle(menuResources.getString("dialog.chooseUnit.title"));
+        loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
+                "mtf", "blk", "hmp", "hmv", "mep", "tdb"));
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -736,8 +743,19 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JButton loadFromCacheButton = new JButton(openIcon);
         loadFromCacheButton.setToolTipText(dialogResources.getString("ForceBuildDialog.loadFromCache.toolTipText"));
         loadFromCacheButton.setFocusable(false);
-        loadFromCacheButton.addActionListener(e -> {
-            selectAndLoadUnitFromCache();
+        loadFromCacheButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    // Left click - directly load from cache
+                    selectAndLoadUnitFromCache();
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    // Right click - show popup menu
+                    JPopupMenu menu = createLoadUnitPopupMenu();
+                    Point location = new Point(5, loadFromCacheButton.getHeight());
+                    menu.show(loadFromCacheButton, location.x, location.y);
+                }
+            }
         });
         buttonPanel.add(loadFromCacheButton, BorderLayout.WEST);
 
@@ -754,6 +772,23 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         updateTableAndTotal();
 
         add(centerPanel, BorderLayout.CENTER);
+    }
+    
+    /**
+     * Creates the popup menu with options for loading units
+     */
+    private JPopupMenu createLoadUnitPopupMenu() {
+        JPopupMenu menu = new JPopupMenu();
+
+        JMenuItem fromCache = new JMenuItem("Load from cache");
+        fromCache.addActionListener(e -> selectAndLoadUnitFromCache());
+        menu.add(fromCache);
+
+        JMenuItem fromFile = new JMenuItem("Load from file");
+        fromFile.addActionListener(e -> selectAndLoadUnitFromFile());
+        menu.add(fromFile);
+
+        return menu;
     }
 
     private void addEntities(List<Entity> entities) {
@@ -774,10 +809,49 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null,
               unitLoadingDialog,
               dialog -> {
-                addEntities(dialog.getChosenEntities());
+                List<Entity> selectedEntities = dialog.getChosenEntities();
+                warnOnInvalid(selectedEntities);
+                addEntities(selectedEntities);
               });
-        addEntities(viewer.getChosenEntities());
+        List<Entity> selectedEntities = viewer.getChosenEntities();
+        warnOnInvalid(selectedEntities);
+        addEntities(selectedEntities);
         viewer.dispose();
+    }
+
+    public void selectAndLoadUnitFromFile() {
+        loadUnitFileChooser.setCurrentDirectory(new File(CConfig.getParam(CConfig.FILE_LAST_DIRECTORY)));
+        int result = loadUnitFileChooser.showOpenDialog(null);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File selectedFile = loadUnitFileChooser.getSelectedFile();
+        Entity loadedUnit;
+        try {
+            loadedUnit = new MekFileParser(selectedFile).getEntity();
+            if (loadedUnit == null) {
+                throw new Exception("File is empty or invalid.");
+            }
+            warnOnInvalid(loadedUnit);
+            CConfig.setMostRecentFile(selectedFile.toString());
+        } catch (Exception ex) {
+            PopupMessages.showFileReadError(null, selectedFile.toString(), ex.getMessage());
+            return;
+        }
+        addEntity(loadedUnit);
+    }
+    
+    private void warnOnInvalid(List<Entity> entity) {
+        for (var e : entity) {
+            warnOnInvalid(e);
+        }
+    }
+
+    private void warnOnInvalid(Entity entity) {
+        var report = UnitUtil.validateUnit(entity);
+        if (!report.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(null, report);
+        }
     }
 
     private void openEntityInEditor(Entity entity) {
