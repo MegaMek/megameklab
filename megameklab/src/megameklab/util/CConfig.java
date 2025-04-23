@@ -146,6 +146,7 @@ public final class CConfig {
         defaults.setProperty(GUI_FULLSCREEN, Boolean.toString(false));
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
+        defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
