@@ -187,9 +187,11 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (!MegaMekLabTabbedUI.isOpen() 
-                && (!StartupGUI.hasInstance() || !StartupGUI.getInstance().isShowing())) {
-                    System.exit(0);
+                final boolean willTerminate = !MegaMekLabTabbedUI.isOpen() && (!StartupGUI.hasInstance() || !StartupGUI.getInstance().isShowing());
+                if (willTerminate) {
+                    if (CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT) && noTabsOpenExitPrompt()) {
+                            System.exit(0);
+                        }
                 } else {
                     setVisible(false);
                 }
@@ -209,6 +211,18 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 }
             }
         });
+    }
+
+    private boolean noTabsOpenExitPrompt() {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
+            return true;
+        }
+        int exitPrompt = JOptionPane.showConfirmDialog(null,
+                "Would you like to exit MegaMekLab?",
+                "Confirm Close",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        return exitPrompt == JOptionPane.YES_OPTION;
     }
 
     /**
