@@ -37,6 +37,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -52,6 +53,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -167,14 +170,13 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private static final String NOINFO = "|-1";
 
     private static final Integer[] SKILL_LEVELS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    private static int lastPlayerId = 1;
 
     // Private constructor for Singleton
     private ForceBuildUI() {
         super();
         setTitle(dialogResources.getString("ForceBuildDialog.windowName.text"));
         setMinimumSize(new Dimension(300, 200));
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         createCenterPane();
         packWindow();
         setLocationRelativeTo(null);
@@ -182,6 +184,17 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         loadUnitFileChooser.setDialogTitle(menuResources.getString("dialog.chooseUnit.title"));
         loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
                 "mtf", "blk", "hmp", "hmv", "mep", "tdb"));
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (!MegaMekLabTabbedUI.isOpen() 
+                && (!StartupGUI.hasInstance() || !StartupGUI.getInstance().isShowing())) {
+                    System.exit(0);
+                } else {
+                    setVisible(false);
+                }
+            }
+        });
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -202,7 +215,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
      * Gets the singleton instance of the ForceBuildWindow.
      * Creates the instance if it doesn't exist.
      *
-     * @param parent The parent frame, used only on first creation.
      * @return The singleton ForceBuildWindow instance.
      */
     public static synchronized ForceBuildUI getInstance() {
@@ -210,6 +222,15 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             instance = new ForceBuildUI();
         }
         return instance;
+    }
+
+    /**
+     * Verify if the singleton instance of ForceBuildWindow exists.
+     *
+     * @return The singleton ForceBuildWindow instance.
+     */
+    public static synchronized boolean hasInstance() {
+        return instance != null;
     }
 
     /**
