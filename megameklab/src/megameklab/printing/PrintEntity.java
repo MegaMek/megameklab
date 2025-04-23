@@ -345,11 +345,16 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void hideUnusedCrewElements() {
+        Crew crew = getEntity().getCrew();
         for (int i = 0; i < 3; i++) {
-            final boolean hide = i >= getEntity().getCrew().getSlotCount();
+            final boolean hide = i >= crew.getSlotCount();
+            boolean blankName = true;
+            if (!hide) {
+                blankName = crew.getName(i).isBlank() && crew.getNickname(i).isBlank() && crew.getName(i) != RandomNameGenerator.UNNAMED;
+            }
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && (getEntity().getCrew().getName(i).trim() != "")));
+            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && !blankName));
             hideElement(CREW_NAME + i, hide);
             hideElement(GUNNERY_SKILL + i, hide);
             hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());
