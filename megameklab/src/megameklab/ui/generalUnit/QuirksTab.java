@@ -429,7 +429,9 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     public void optionClicked(DialogOptionComponent comp, IOption option, boolean state) {
         option.setValue(state);
         updateQuirkFontStyle(comp, state);
-        refresh.refreshPreview();
+        if (refresh != null) {
+            refresh.refreshPreview();
+        }
     }
 
     @Override
