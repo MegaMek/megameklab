@@ -531,7 +531,7 @@ public class InventoryWriter {
             if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
                         viewWidth * 0.95, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
@@ -742,11 +742,10 @@ public class InventoryWriter {
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
-                int lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
-                            colX[0] + indent : colX[0],
-                            yPosition, viewWidth * 0.95, lineHeight,
-                            line.getQuirksField(), fontSize, SVGConstants.SVG_START_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE);
+                int lines = sheet.addMultilineTextElement(canvas, colX[0] + indent,
+                            yPosition, (viewWidth * 0.9) - colX[0] - indent, lineHeight*0.9,
+                            line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
             }
         }
@@ -887,7 +886,7 @@ public class InventoryWriter {
             int count = 1;
             for (int size : ship.getGravDecks()) {
                 String gravityString = "Grav Deck #" + count + ": " + size + "-meters";
-                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, "start", "normal");
+                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                 yPosition += lineHeight;
                 if (count == (ship.getGravDecks().size() / 2)) {
                     yPosition = currY;
