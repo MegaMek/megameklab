@@ -744,8 +744,8 @@ public class InventoryWriter {
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
-                int lines = sheet.addMultilineTextElement(canvas, colX[0] + indent,
-                            yPosition, (viewWidth * 0.95) - indent, lineHeight*0.9,
+                int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
+                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), lineHeight*0.9,
                             line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
