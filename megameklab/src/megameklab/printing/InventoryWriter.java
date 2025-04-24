@@ -507,36 +507,37 @@ public class InventoryWriter {
             canvas.appendChild(svgGroup);
             lines = 0;
             final double x = (viewX + viewWidth * 0.025);
-            final double width = (viewWidth * 0.95) - (viewX + viewWidth * 0.025);
+            final double textWidth = viewWidth * 0.95;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, x, 0, width, lineHeight,
+                lines = sheet.addMultilineTextElement(svgGroup, x, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, x,
-                        lines * lineHeight, width, lineHeight,
+                        lines * lineHeight, textWidth, lineHeight,
                         fuelText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, x,
-                        lines * lineHeight, width, lineHeight,
+                        lines * lineHeight, textWidth, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, x,
-                        lines * lineHeight, width, lineHeight,
+                        lines * lineHeight, textWidth, lineHeight,
                         miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, x, lines * lineHeight, width, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, x, lines * lineHeight, textWidth, lineHeight,
                         quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
+            final double totalHeight = lines * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - lines * lineHeight));
+                            viewY + viewHeight - totalHeight));
         }
     }
 
@@ -744,7 +745,7 @@ public class InventoryWriter {
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
                 int lines = sheet.addMultilineTextElement(canvas, colX[0] + indent,
-                            yPosition, (viewWidth * 0.9) - colX[0] - indent, lineHeight*0.9,
+                            yPosition, (viewWidth * 0.95) - indent, lineHeight*0.9,
                             line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;

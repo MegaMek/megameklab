@@ -116,6 +116,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     private Font normalFont = null;
     private Font boldFont = null;
+    private Font italicFont = null;
+    private Font boldItalicFont = null;
     private String typeface = null;
 
     /**
@@ -191,12 +193,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         return boldFont.deriveFont(size);
     }
+    
+    /**
+    * Used for measuring font metrics of an italic font
+    *
+    * @param size The font size
+    * @return A font derived from the default italic
+    */
+    protected final Font getItalicFont(float size) {
+        if (null == italicFont) {
+            assignFonts();
+        }
+        return italicFont.deriveFont(size);
+    }
+
+    /**
+    * Used for measuring font metrics of a bold italic font
+    *
+    * @param size The font size
+    * @return A font derived from the default italic
+    */
+    protected final Font getBoldItalicFont(float size) {
+        if (null == boldItalicFont) {
+            assignFonts();
+        }
+        return boldItalicFont.deriveFont(size);
+    }
 
     private void assignFonts() {
         typeface = CConfig.getParam(CConfig.RS_FONT, DEFAULT_TYPEFACE);
         Font font = Font.decode(typeface);
         normalFont = font.deriveFont(Font.PLAIN, 8);
         boldFont = font.deriveFont(Font.BOLD, 8);
+        italicFont = font.deriveFont(Font.ITALIC, 8);
+        boldItalicFont = font.deriveFont(Font.ITALIC | Font.BOLD, 8);
     }
 
     /**
@@ -839,7 +869,19 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         int pos = 0;
         while (!text.isBlank()) {
             // If the remaining text fits, add a line and exit.
-            if (getTextLength(text, fontSize) <= width) {
+            double textLength;
+            if ((fontStyle == SVGConstants.SVG_ITALIC_VALUE) && (weight == SVGConstants.SVG_BOLD_VALUE)) {
+                textLength = getBoldItalicTextLength(text, fontSize);
+            } else
+            if (weight == SVGConstants.SVG_BOLD_VALUE) {
+                textLength = getBoldTextLength(text, fontSize);
+            } else
+            if (fontStyle == SVGConstants.SVG_ITALIC_VALUE) {
+                textLength = getItalicTextLength(text, fontSize);
+            } else {
+                textLength = getTextLength(text, fontSize);
+            }
+            if (textLength <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
                 lines++;
                 return lines;
@@ -856,8 +898,20 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If there are no more delimiters in the text, or adding the next section after
             // the previous
             // delimiter that was found, add the text up to pos.
+            final String subText = text.substring(0, pos + index);
+            if ((fontStyle == SVGConstants.SVG_ITALIC_VALUE) && (weight == SVGConstants.SVG_BOLD_VALUE)) {
+                textLength = getBoldItalicTextLength(subText, fontSize);
+            } else
+            if (weight == SVGConstants.SVG_BOLD_VALUE) {
+                textLength = getBoldTextLength(subText, fontSize);
+            } else
+            if (fontStyle == SVGConstants.SVG_ITALIC_VALUE) {
+                textLength = getItalicTextLength(subText, fontSize);
+            } else {
+                textLength = getTextLength(subText, fontSize);
+            }
             if ((index < 0)
-                    || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
+                    || ((textLength > width)
                             && (pos > 0))) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill);
                 lines++;
@@ -1014,6 +1068,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     public double getBoldTextLength(String text, float fontSize) {
         Font font = getBoldFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+
+    public double getItalicTextLength(String text, float fontSize) {
+        Font font = getItalicFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+
+    public double getBoldItalicTextLength(String text, float fontSize) {
+        Font font = getBoldItalicFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
 
