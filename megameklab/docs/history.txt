@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.50.06
+
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
 + PR #1777: multi-select small units have preview in one sheet
