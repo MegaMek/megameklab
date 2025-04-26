@@ -228,11 +228,11 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Timer resetViewTimer;
     private Timer zoomRenderDebounceTimer;
     private Timer updateTimer;
-    private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
-    private static final int REGENERATE_AND_UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
+    private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
 
+    private boolean isInitialRender = true; // Flag to track if this is the first render
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
     
@@ -246,14 +246,9 @@ public class RecordSheetPreviewPanel extends JPanel {
             performResetView();
         });
         resetViewTimer.setRepeats(false);
-        updateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
+        updateTimer = new Timer(UPDATE_DEBOUNCE_DELAY, e -> {
             updateTimer.stop();
             performUpdateSheetContentInPlace();
-        });
-        updateTimer.setRepeats(false);
-        regenerateTimer = new Timer(REGENERATE_AND_UPDATE_DEBOUNCE_DELAY, e -> {
-            regenerateTimer.stop();
-            performRegenerateAndReset();
         });
         updateTimer.setRepeats(false);
 
@@ -278,7 +273,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                     } else {
                         // Re-check minimum zoom and potentially re-render if needed
                         minFitZoom = calculateMinimumFitZoom();
-                        requestRenderForAllPages();
+                        if (zoomFactor < minFitZoom) {
+                            zoomFactor = minFitZoom; // Reset zoom to fit
+                            requestRenderForAllPages();
+                        }
                     }
                 } else {
                     // Became hidden
@@ -381,56 +379,53 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isPanning && lastMousePoint != null) {
-                    int dx = e.getX() - lastMousePoint.x;
-                    int dy = e.getY() - lastMousePoint.y;
-                    
-                    double newPanX = panOffset.getX() + dx;
-                    double newPanY = panOffset.getY() + dy;
-                    newPanX = constrainPanX(newPanX);
-                    newPanY = constrainPanY(newPanY);
-
-                    panOffset.setLocation(newPanX, newPanY);
+                    final int dx = e.getX() - lastMousePoint.x;
+                    final int dy = e.getY() - lastMousePoint.y;
+                    panOffset.setLocation(
+                        constrainPanX(panOffset.getX() + dx),
+                        constrainPanY(panOffset.getY() + dy));
                     lastMousePoint = e.getPoint();
                     repaint();
                 }
             }
         });
     }
-/**
- * Constrains horizontal panning to keep content visible.
- * @param panX The proposed X pan coordinate
- * @return Constrained X coordinate
- */
-private double constrainPanX(double panX) {
-    if (sheetPages.isEmpty()) {
-        return 0;
-    }
-    
-    // Calculate leftmost and rightmost content bounds
-    double leftmostX = Double.MAX_VALUE;
-    double rightmostX = Double.MIN_VALUE;
-    
-    for (SheetPageInfo page : sheetPages) {
-        double pageLeft = page.layoutPosition.x * zoomFactor;
-        double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+
+    /**
+     * Constrains horizontal panning to keep content visible.
+     * @param panX The proposed X pan coordinate
+     * @return Constrained X coordinate
+     */
+    private double constrainPanX(double panX) {
+        if (sheetPages.isEmpty()) {
+            return 0;
+        }
         
-        leftmostX = Math.min(leftmostX, pageLeft);
-        rightmostX = Math.max(rightmostX, pageRight);
+        // Calculate leftmost and rightmost content bounds
+        double leftmostX = Double.MAX_VALUE;
+        double rightmostX = Double.MIN_VALUE;
+        
+        for (SheetPageInfo page : sheetPages) {
+            double pageLeft = page.layoutPosition.x * zoomFactor;
+            double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+            
+            leftmostX = Math.min(leftmostX, pageLeft);
+            rightmostX = Math.max(rightmostX, pageRight);
+        }
+        
+        // Left constraint: don't allow content to move right of viewport left edge
+        double minPanX = getWidth() - rightmostX;
+        // Right constraint: don't allow content to move left of viewport right edge
+        double maxPanX = -leftmostX;
+        
+        // If content is narrower than viewport, center it
+        if (rightmostX - leftmostX < getWidth()) {
+            double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
+            return centerOffset - leftmostX;
+        }
+        
+        return Math.min(maxPanX, Math.max(minPanX, panX));
     }
-    
-    // Left constraint: don't allow content to move right of viewport left edge
-    double minPanX = getWidth() - rightmostX;
-    // Right constraint: don't allow content to move left of viewport right edge
-    double maxPanX = -leftmostX;
-    
-    // If content is narrower than viewport, center it
-    if (rightmostX - leftmostX < getWidth()) {
-        double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
-        return centerOffset - leftmostX;
-    }
-    
-    return Math.min(maxPanX, Math.max(minPanX, panX));
-}
 
     /**
      * Constrains vertical panning to keep content visible.
@@ -530,7 +525,7 @@ private double constrainPanX(double panX) {
             return;
         }
         updateTimer.stop();
-        regenerateTimer.restart();
+        performRegenerateAndReset(); // Perform the reset and regeneration
     }
 
     /**
@@ -555,11 +550,21 @@ private double constrainPanX(double panX) {
 
         if (isShowing()) {
             // Generate sheets and pages in the background to avoid blocking EDT
-            // Display a "Loading..." message while generating
-            repaint(); // Show empty state or loading message immediately
             renderExecutor.submit(() -> {
                 generateSheetPages(currentEntities);
-                SwingUtilities.invokeLater(this::scheduleResetView); // Reset view once pages are generated
+                if (isInitialRender) {
+                    isInitialRender = false;
+                    SwingUtilities.invokeLater(this::performResetView); // Reset view once pages are generated
+                } else {
+                    minFitZoom = calculateMinimumFitZoom();
+                    if (zoomFactor < minFitZoom) {
+                        zoomFactor = minFitZoom; // Adjust zoom to fit if needed
+                    }
+                    panOffset.setLocation(
+                        constrainPanX(panOffset.getX()),
+                        constrainPanY(panOffset.getY()));
+                    requestRenderForAllPages();
+                }
             });
         } else {
             needsViewReset = true; // Mark for reset, generation will happen when shown/reset
@@ -667,7 +672,6 @@ private double constrainPanX(double panX) {
             pendingInPlaceUpdate = true;
             return;
         }
-        regenerateTimer.stop();
         updateTimer.restart(); // Restart update timer to debounce
     }
 
@@ -936,8 +940,6 @@ private double constrainPanX(double panX) {
                 requestRenderForPage(pageInfo, targetZoom);
             }
         }
-        // Repaint immediately to show placeholders or potentially already cached images
-        repaint();
     }
 
     /**
