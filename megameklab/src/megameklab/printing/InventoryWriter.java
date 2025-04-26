@@ -506,32 +506,32 @@ public class InventoryWriter {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
-            final double x = (viewX + viewWidth * 0.025);
+            final double xPosition = (viewX + viewWidth * 0.025);
             final double textWidth = viewWidth * 0.95;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, x, 0, textWidth, lineHeight,
+                lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, x,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
                         lines * lineHeight, textWidth, lineHeight,
                         fuelText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, x,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
                         lines * lineHeight, textWidth, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, x,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
                         lines * lineHeight, textWidth, lineHeight,
                         miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, x, lines * lineHeight, textWidth, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
                         quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
             final double totalHeight = lines * lineHeight;
@@ -702,9 +702,10 @@ public class InventoryWriter {
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
+                            final float rightPadding = (fontSize / 2);
                             lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
                                     yPosition,
-                                    colX[i + 1] - colX[i] - 4, lineHeight, line.getDamageField(row),
+                                    colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
