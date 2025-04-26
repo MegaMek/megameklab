@@ -1,7 +1,11 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.06
-+ PR #1853: 0.50.06 Deprecation Removal and Clean up 
++ PR #1853: 0.50.06 Deprecation Removal and Clean up
++ Fix #1812: Max number of squads
++ PR #1850: Adds option to show weapons quirks to record sheets
++ Fix #1060: Adds weapon sort opion to record sheets.
++ Fix #1854: Maintain Zoom and Position on Record Sheets
 
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
