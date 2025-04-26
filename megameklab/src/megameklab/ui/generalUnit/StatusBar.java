@@ -85,7 +85,7 @@ public class StatusBar extends ITab {
         btnRefresh.addActionListener(evt -> refresh.refreshAll());
 
         JButton btnAddToForce = new JButton("Add to Force");
-        btnAddToForce.setToolTipText("Add this your unit to the current force.");
+        btnAddToForce.setToolTipText("Add this unit to the current force.");
         btnAddToForce.addActionListener(evt -> {
             ForceBuildUI.showAndAddEntity(getEntity());
         });
