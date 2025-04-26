@@ -274,7 +274,7 @@ public class TabUtil {
         }
         var newUnit = entities.get(i);
         try {
-            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0 ? true : false);
+            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0);
             String validationResult = UnitUtil.validateUnit(newUnit);
             if (!validationResult.isBlank()) {
                 PopupMessages.showUnitInvalidWarning(tabbedUI.getFrame(), validationResult);
