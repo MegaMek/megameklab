@@ -39,6 +39,7 @@ import javax.swing.JFrame;
 
 import megamek.common.Entity;
 import megamek.common.MULParser;
+import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MulDndBehaviour;
@@ -46,7 +47,7 @@ import megameklab.ui.MulDndBehaviour;
 public class MULManager {
     private static final MMLogger logger = MMLogger.create(MULManager.class);
     
-    public static void processMULFile(File file, JFrame owner) {
+    public static void processMULFile(File file, @Nullable JFrame owner) {
         int behaviourValue = CConfig.getIntParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR);
         MulDndBehaviour[] allValues = MulDndBehaviour.values();
         MulDndBehaviour selectedBehaviour = MulDndBehaviour.PRINT;
