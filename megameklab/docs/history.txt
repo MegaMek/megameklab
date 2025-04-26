@@ -1,6 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.06
++ PR #1853: 0.50.06 Deprecation Removal and Clean up 
 
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
