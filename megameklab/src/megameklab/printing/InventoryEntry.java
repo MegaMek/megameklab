@@ -105,6 +105,16 @@ public interface InventoryEntry {
     boolean indentMultiline();
 
     /**
+     * @return Whether the entry has any quirks that need to be printed
+     */
+    boolean hasQuirks();
+
+    /**
+     * @return The quirk text to print, if any
+     */
+    String getQuirksField();
+    
+    /**
      * Computes any modification to the aerospace AV for linked Artemis, Apollo, or PPC capacitor
      *
      * @param weapon The weapon mount

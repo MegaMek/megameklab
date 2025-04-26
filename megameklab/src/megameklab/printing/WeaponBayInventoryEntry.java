@@ -289,6 +289,16 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         return true;
     }
 
+    @Override
+    public boolean hasQuirks() {
+        return false;
+    }
+
+    @Override
+    public String getQuirksField() {
+        return "";
+    }
+
     public boolean hasArtemisIV() {
         return artemisIV;
     }
