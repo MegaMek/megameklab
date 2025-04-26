@@ -895,6 +895,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         panOffset.setLocation(Math.max(0, xOffset), Math.max(0, yOffset));
 
         requestRenderForAllPages(); // Render all pages at the new fit zoom
+        repaint();
     }
 
     /**
