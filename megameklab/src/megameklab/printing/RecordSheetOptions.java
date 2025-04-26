@@ -13,6 +13,7 @@
  */
 package megameklab.printing;
 
+import megamek.common.enums.WeaponSortOrder;
 import megameklab.util.CConfig;
 
 /**
@@ -39,6 +40,7 @@ public class RecordSheetOptions {
     private boolean alternateArmorGrouping;
     private boolean frameless;
     private boolean boldType;
+    private WeaponSortOrder weaponsOrder;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -62,6 +64,7 @@ public class RecordSheetOptions {
         this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
+        this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -81,6 +84,7 @@ public class RecordSheetOptions {
         alternateArmorGrouping = options.alternateArmorGrouping;
         frameless = options.frameless;
         boldType = options.boldType;
+        weaponsOrder = options.weaponsOrder;
     }
 
     public PaperSize getPaperSize() {
@@ -206,5 +210,13 @@ public class RecordSheetOptions {
 
     public void setBoldType(boolean boldType) {
         this.boldType = boldType;
+    }
+    
+    public WeaponSortOrder getWeaponsOrder() {
+        return weaponsOrder;
+    }
+    
+    public void setWeaponsOrder(WeaponSortOrder order) {
+        this.weaponsOrder = order;
     }
 }

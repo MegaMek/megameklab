@@ -451,25 +451,25 @@ public class PrintMek extends PrintEntity {
             addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
             CriticalSlot crit = mek.getCritical(loc, slot);
-            String style = SVGConstants.SVG_BOLD_VALUE;
+            String weight = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
             if ((null == crit)
                     || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                             && (!crit.getMount().getType().isHittable()))) {
-                style = SVGConstants.SVG_NORMAL_VALUE;
+                weight = SVGConstants.SVG_NORMAL_VALUE;
                 fill = FILL_GREY;
                 addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
                 canvas.appendChild(pip);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
                 String critName = formatCritName(crit);
-                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill);
+                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
                 x = critX + getTextLength(critName, fontSize);
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
@@ -488,7 +488,7 @@ public class PrintMek extends PrintEntity {
                 }
             } else {
                 addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
