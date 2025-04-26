@@ -3,12 +3,12 @@
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
+ * MegaMekLab is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (GPL),
  * version 3 or (at your option) any later version,
  * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
+ * MegaMekLab is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -24,6 +24,11 @@
  * 
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
  * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui;
 
@@ -37,7 +42,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -111,7 +115,6 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.UnitEditorDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.lobby.LobbyErrors;
 import megamek.client.ui.swing.lobby.LobbyUtility;
@@ -122,7 +125,6 @@ import megamek.common.EntityListFile;
 import megamek.common.Game;
 import megamek.common.IEntityRemovalConditions;
 import megamek.common.MekFileParser;
-import megamek.common.Player;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.C3Util;
 import megamek.common.util.C3Util.C3CapacityException;
@@ -256,6 +258,18 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         ForceBuildUI view = getInstance();
         view.addEntity(entity);
         view.setVisible(true);
+    }
+
+    /**
+     * Gets the size of the force list.
+     * 
+     * @return
+     */
+    public static synchronized int getForceSize() {
+        if (instance == null) {
+            return 0;
+        }
+        return instance.forceList.size();
     }
 
     /**
