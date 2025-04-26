@@ -123,6 +123,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * @return Whether the quirks block should be shown on the record sheet
+     */
+    public boolean showQuirks() {
+        return options.showQuirks();
+    }
+
+    /**
      * Builds the string to display for the quirks block. Returns an empty string if quirks are
      * disabled (or if the unit has no quirks).
      *
@@ -296,7 +303,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
                                 bbox.getWidth(), lineHeight, spaText, fontSize,
                                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                FILL_BLACK, ' ');
+                                SVGConstants.SVG_ITALIC_VALUE, FILL_BLACK, ' ');
                     }
                 }
 

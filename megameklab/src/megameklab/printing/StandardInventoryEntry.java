@@ -36,6 +36,8 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megamek.common.options.WeaponQuirks;
+import megamek.common.options.IOption;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
 
@@ -620,5 +622,23 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public boolean indentMultiline() {
         return true;
+    }
+
+    @Override
+    public boolean hasQuirks() {
+        return mount.countQuirks()>0;
+    }
+
+    @Override
+    public String getQuirksField() {
+        StringBuilder sb = new StringBuilder();
+        final WeaponQuirks quirks = mount.getQuirks();
+        for (IOption quirk : quirks.activeQuirks()) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(quirk.getDisplayableName());
+        }
+        return sb.toString();
     }
 }
