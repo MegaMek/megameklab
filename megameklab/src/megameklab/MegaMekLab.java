@@ -332,12 +332,19 @@ public class MegaMekLab {
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
                 LOGGER.info("Printing file: {}", filePath);
                 Runnable printMul = () -> {
+                    // Parent frame is made "visible" so the OS keeps track of it in the taskbar and such.
+                    // But undecorated with size 0 means it's not really visible to the user.
+                    // This keeps the print queue dialog from becoming "lost" if you minimize it.
                     var frame = new JFrame();
+                    frame.setUndecorated(true);
+                    frame.setSize(0, 0);
+                    frame.setVisible(true);
                     UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
                     frame.dispose();
                 };
                 if (noStartup) {
                     printMul.run();
+                    System.exit(0);
                 } else {
                     SwingUtilities.invokeLater(printMul);
                     return false;
