@@ -232,7 +232,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
     private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
 
-    private boolean firstRender = true; // Flag to track if this is the first render
+    private boolean isInitialRender = true; // Flag to track if this is the first render
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
     
@@ -552,8 +552,8 @@ public class RecordSheetPreviewPanel extends JPanel {
             // Generate sheets and pages in the background to avoid blocking EDT
             renderExecutor.submit(() -> {
                 generateSheetPages(currentEntities);
-                if (firstRender) {
-                    firstRender = false;
+                if (isInitialRender) {
+                    isInitialRender = false;
                     SwingUtilities.invokeLater(this::performResetView); // Reset view once pages are generated
                 } else {
                     minFitZoom = calculateMinimumFitZoom();
