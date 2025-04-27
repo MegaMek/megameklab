@@ -374,6 +374,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (sheetPages.isEmpty()) {
                     return;
                 }
+                // Simulate vertical scrollbar click (no thumb)
                 if (isShowingVScroll
                     && e.getX() >= getWidth() - SCROLLBAR_THICKNESS
                     && !vScrollThumb.contains(e.getPoint())) {
@@ -385,6 +386,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     repaint();
                     return;
                 }
+                // Simulate horizontal scrollbar click (no thumb)
                 if (isShowingHScroll
                 && e.getY() >= getHeight() - SCROLLBAR_THICKNESS
                 && !hScrollThumb.contains(e.getPoint())) {
