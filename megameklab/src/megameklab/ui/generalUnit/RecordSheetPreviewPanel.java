@@ -415,8 +415,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isPanning && lastMousePoint != null) {
-                    final int dx = draggingVScroll ? 0 : e.getX() - lastMousePoint.x;
-                    final int dy = draggingHScroll ? 0 : e.getY() - lastMousePoint.y;
+                    // Lock panning axis if dragging scrollbars
+                    int dx = draggingVScroll ? 0 : e.getX() - lastMousePoint.x;
+                    int dy = draggingHScroll ? 0 : e.getY() - lastMousePoint.y;
+                    // Invert dy/dx if dragging scrollbars
+                    if (draggingVScroll) {
+                        dy = -dy;
+                    } else if (draggingHScroll) {
+                        dx = -dx;
+                    }
                     panOffset.setLocation(
                         constrainPanX(panOffset.getX() + dx),
                         constrainPanY(panOffset.getY() + dy));
@@ -1264,37 +1271,50 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private void paintScrollbars(Graphics2D g2d) {
-        double contentWidth = getContentWidth();
-        double contentHeight = getContentHeight();
-        int w = getWidth();
-        int h = getHeight();
-    
+        final double contentWidth = getContentWidth();
+        final double contentHeight = getContentHeight();
+        final int panelWidth = getWidth();
+        final int panelHeight = getHeight();
+        final boolean showHScroll = contentWidth > panelWidth;
+        final boolean showVScroll = contentHeight > panelHeight;
+
         // Horizontal scrollbar
-        if (contentWidth > w) {
-            int trackLen = w - SCROLLBAR_THICKNESS;
-            int thumbLen = Math.max((int) (w * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
-            int thumbPos = (int) (-panOffset.getX() * (trackLen - thumbLen) / (contentWidth - w));
-            hScrollThumb.setBounds(thumbPos, h - SCROLLBAR_THICKNESS, thumbLen, SCROLLBAR_THICKNESS);
-            g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fillRect(0, h - SCROLLBAR_THICKNESS, trackLen, SCROLLBAR_THICKNESS);
+        if (showHScroll) {
+            int trackLen = panelWidth - (showVScroll?SCROLLBAR_THICKNESS:0);
+            int thumbLen = Math.max((int) (panelWidth * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
+            int thumbPos = (int) (-panOffset.getX() * (trackLen - thumbLen) / (contentWidth - panelWidth));
+            hScrollThumb.setBounds(thumbPos, panelHeight - SCROLLBAR_THICKNESS, thumbLen, SCROLLBAR_THICKNESS);
             g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(0, panelHeight - SCROLLBAR_THICKNESS, trackLen, SCROLLBAR_THICKNESS);
+            g2d.setColor(Color.GRAY);
             g2d.fill(hScrollThumb);
         } else {
             hScrollThumb.setBounds(0, 0, 0, 0);
         }
     
         // Vertical scrollbar
-        if (contentHeight > h) {
-            int trackLen = h - SCROLLBAR_THICKNESS;
-            int thumbLen = Math.max((int) (h * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
-            int thumbPos = (int) (-panOffset.getY() * (trackLen - thumbLen) / (contentHeight - h));
-            vScrollThumb.setBounds(w - SCROLLBAR_THICKNESS, thumbPos, SCROLLBAR_THICKNESS, thumbLen);
-            g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fillRect(w - SCROLLBAR_THICKNESS, 0, SCROLLBAR_THICKNESS, trackLen);
+        if (showVScroll) {
+            int trackLen = panelHeight - (showHScroll?SCROLLBAR_THICKNESS:0);
+            int thumbLen = Math.max((int) (panelHeight * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
+            int thumbPos = (int) (-panOffset.getY() * (trackLen - thumbLen) / (contentHeight - panelHeight));
+            vScrollThumb.setBounds(panelWidth - SCROLLBAR_THICKNESS, thumbPos, SCROLLBAR_THICKNESS, thumbLen);
             g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(panelWidth - SCROLLBAR_THICKNESS, 0, SCROLLBAR_THICKNESS, trackLen);
+            g2d.setColor(Color.GRAY);
             g2d.fill(vScrollThumb);
         } else {
             vScrollThumb.setBounds(0, 0, 0, 0);
+        }
+
+        // Fill the bottom-right corner if both scrollbars are visible
+        if (showVScroll && showHScroll) {
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(
+                panelWidth - SCROLLBAR_THICKNESS,
+                panelHeight - SCROLLBAR_THICKNESS,
+                SCROLLBAR_THICKNESS,
+                SCROLLBAR_THICKNESS
+            );
         }
     }
 
