@@ -264,26 +264,40 @@ public class RecordSheetPreviewPanel extends JPanel {
     public RecordSheetPreviewPanel() {
         hScrollBar.setMinimum(0);
         vScrollBar.setMinimum(0);
-        hScrollBar.setUnitIncrement(20);
-        vScrollBar.setUnitIncrement(20);
+        hScrollBar.setUnitIncrement(50);
+        vScrollBar.setUnitIncrement(50);
         hScrollBar.setPreferredSize(new Dimension(0, SCROLLBARS_WIDTH));
         vScrollBar.setPreferredSize(new Dimension(SCROLLBARS_WIDTH, 0));
         add(hScrollBar);
         add(vScrollBar);
         hScrollBar.addAdjustmentListener(e -> {
-            if (!adjustingHScrollBar) {
-                adjustingHScrollBar = true;
-                panOffset.setLocation(-e.getValue(), panOffset.getY());
+            if (adjustingHScrollBar) return;
+            panOffset.setLocation(-e.getValue(), panOffset.getY());
+            // while dragging, do a quick lowres paint
+            if (e.getValueIsAdjusting()) {
+                isHighQualityPaint = false;
                 repaint();
-                adjustingHScrollBar = false;
+            } else {
+                // drag finished: restore hq and kick off full render+scrollbar sync
+                isHighQualityPaint = true;
+                repaint();
+                updateScrollbars();
+                requestRenderForAllPages();
             }
         });
         vScrollBar.addAdjustmentListener(e -> {
-            if (!adjustingVScrollBar) {
-                adjustingVScrollBar = true;
-                panOffset.setLocation(panOffset.getX(), -e.getValue());
+            if (adjustingVScrollBar) return;
+            panOffset.setLocation(panOffset.getX(), -e.getValue());
+            // while dragging, do a quick lowres paint
+            if (e.getValueIsAdjusting()) {
+                isHighQualityPaint = false;
                 repaint();
-                adjustingVScrollBar = false;
+            } else {
+                // drag finished: restore hq and kick off full render+scrollbar sync
+                isHighQualityPaint = true;
+                repaint();
+                updateScrollbars();
+                requestRenderForAllPages();
             }
         });
         addMouseListener(new RightClickListener());
@@ -1405,7 +1419,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private void updateScrollbars() {
-        System.out.println("Update scrollbars called");
         final double contentWidth = getContentWidth();
         final double contentHeight = getContentHeight();
         final int w = getWidth();
@@ -1418,10 +1431,10 @@ public class RecordSheetPreviewPanel extends JPanel {
             int max = (int)Math.ceil(contentWidth - w);
             int value = (int)Math.round(-panOffset.getX());
             value = Math.max(hScrollBar.getMinimum(), Math.min(max, value));
+            adjustingHScrollBar = true;
             hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
             hScrollBar.setVisibleAmount(w);
             hScrollBar.setBlockIncrement(w / 2);
-            adjustingHScrollBar = true;
             hScrollBar.setValue(value);
             adjustingHScrollBar = false;
         }
@@ -1429,10 +1442,10 @@ public class RecordSheetPreviewPanel extends JPanel {
             int max = (int)Math.ceil(contentHeight - h);
             int value = (int)Math.round(-panOffset.getY());
             value = Math.max(vScrollBar.getMinimum(), Math.min(max, value));
+            adjustingVScrollBar = true;
             vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
             vScrollBar.setVisibleAmount(h);
             vScrollBar.setBlockIncrement(h / 2);
-            adjustingVScrollBar = true;
             vScrollBar.setValue(value);
             adjustingVScrollBar = false;
         }
