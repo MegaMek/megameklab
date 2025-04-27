@@ -335,7 +335,7 @@ public class MegaMekLab {
                     // Parent frame is made "visible" so the OS keeps track of it in the taskbar and such.
                     // But undecorated with size 0 means it's not really visible to the user.
                     // This keeps the print queue dialog from becoming "lost" if you minimize it.
-                    var frame = new JFrame();
+                    var frame = new JFrame("MegaMekLab - Print Queue");
                     frame.setUndecorated(true);
                     frame.setSize(0, 0);
                     frame.setVisible(true);
