@@ -424,8 +424,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                         final double contentHeight = getContentHeight();
                         final int panelWidth = getWidth();
                         final int panelHeight = getHeight();
-                        final boolean showHScroll = contentWidth > panelWidth;
-                        final boolean showVScroll = contentHeight > panelHeight;
+                        final boolean showHScroll = contentWidth - panelWidth >= 1;
+                        final boolean showVScroll = contentHeight - panelHeight >= 1;
                         // Calculate thumb new position based on mouse drag and apply padding (Horizontal)
                         if (draggingHScroll) {
                             int trackLen = panelWidth - (showVScroll?SCROLLBAR_THICKNESS:0);
@@ -467,7 +467,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 totalWidth = Math.max(totalWidth, pageRight);
             }
         }
-        return totalWidth * zoomFactor + 1;
+        return totalWidth * zoomFactor;
     }
 
     private double getContentHeight() {
@@ -477,7 +477,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 maxHeight = Math.max(maxHeight, page.baseHeightPx);
             }
         }
-        return maxHeight * zoomFactor + 1;
+        return maxHeight * zoomFactor;
     }
 
     /**
@@ -1300,8 +1300,8 @@ public class RecordSheetPreviewPanel extends JPanel {
         final double contentHeight = getContentHeight();
         final int panelWidth = getWidth();
         final int panelHeight = getHeight();
-        final boolean showHScroll = contentWidth > panelWidth;
-        final boolean showVScroll = contentHeight > panelHeight;
+        final boolean showHScroll = contentWidth - panelWidth >= 1;
+        final boolean showVScroll = contentHeight - panelHeight >= 1;
 
         // Horizontal scrollbar
         if (showHScroll) {
