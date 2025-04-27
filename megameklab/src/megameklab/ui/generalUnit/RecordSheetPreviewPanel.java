@@ -252,6 +252,14 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
     
+    // Virtual scrollbars
+    private static final int SCROLLBAR_THICKNESS = 6;
+    private static final int SCROLLBAR_MIN_THUMB = 24;
+    private Rectangle hScrollThumb = new Rectangle();
+    private Rectangle vScrollThumb = new Rectangle();
+    private boolean draggingHScroll = false;
+    private boolean draggingVScroll = false;
+    
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
@@ -357,21 +365,34 @@ public class RecordSheetPreviewPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (sheetPages.isEmpty())
-                        return;
-                    lastMousePoint = e.getPoint();
-                    setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-                    isPanning = true;
-                    isHighQualityPaint = false;
-                    zoomRenderDebounceTimer.stop(); // Stop render requests during pan
+                if (e.getButton() != MouseEvent.BUTTON1) {
+                    return;
                 }
+                if (sheetPages.isEmpty()) {
+                    return;
+                }
+                lastMousePoint = e.getPoint();
+                if (vScrollThumb.contains(e.getPoint())) {
+                    draggingVScroll = true;
+                    setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+                } else
+                if (hScrollThumb.contains(e.getPoint())) {
+                    draggingHScroll = true;
+                    setCursor(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
+                } else {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                }
+                isPanning = true;
+                isHighQualityPaint = false;
+                zoomRenderDebounceTimer.stop(); // Stop render requests during pan
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1 && isPanning) {
                     setCursor(Cursor.getDefaultCursor());
+                    draggingHScroll = false;
+                    draggingVScroll = false;
                     isPanning = false;
                     lastMousePoint = null;
                     isHighQualityPaint = true;
@@ -394,8 +415,8 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isPanning && lastMousePoint != null) {
-                    final int dx = e.getX() - lastMousePoint.x;
-                    final int dy = e.getY() - lastMousePoint.y;
+                    final int dx = draggingVScroll ? 0 : e.getX() - lastMousePoint.x;
+                    final int dy = draggingHScroll ? 0 : e.getY() - lastMousePoint.y;
                     panOffset.setLocation(
                         constrainPanX(panOffset.getX() + dx),
                         constrainPanY(panOffset.getY() + dy));
@@ -404,6 +425,27 @@ public class RecordSheetPreviewPanel extends JPanel {
                 }
             }
         });
+    }
+
+    private double getContentWidth() {
+        double totalWidth = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                double pageRight = page.layoutPosition.x + page.baseWidthPx;
+                totalWidth = Math.max(totalWidth, pageRight);
+            }
+        }
+        return totalWidth * zoomFactor + 1;
+    }
+
+    private double getContentHeight() {
+        double maxHeight = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                maxHeight = Math.max(maxHeight, page.baseHeightPx);
+            }
+        }
+        return maxHeight * zoomFactor + 1;
     }
 
     /**
@@ -1221,6 +1263,41 @@ public class RecordSheetPreviewPanel extends JPanel {
         g.setRenderingHints(rh);
     }
 
+    private void paintScrollbars(Graphics2D g2d) {
+        double contentWidth = getContentWidth();
+        double contentHeight = getContentHeight();
+        int w = getWidth();
+        int h = getHeight();
+    
+        // Horizontal scrollbar
+        if (contentWidth > w) {
+            int trackLen = w - SCROLLBAR_THICKNESS;
+            int thumbLen = Math.max((int) (w * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
+            int thumbPos = (int) (-panOffset.getX() * (trackLen - thumbLen) / (contentWidth - w));
+            hScrollThumb.setBounds(thumbPos, h - SCROLLBAR_THICKNESS, thumbLen, SCROLLBAR_THICKNESS);
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.fillRect(0, h - SCROLLBAR_THICKNESS, trackLen, SCROLLBAR_THICKNESS);
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fill(hScrollThumb);
+        } else {
+            hScrollThumb.setBounds(0, 0, 0, 0);
+        }
+    
+        // Vertical scrollbar
+        if (contentHeight > h) {
+            int trackLen = h - SCROLLBAR_THICKNESS;
+            int thumbLen = Math.max((int) (h * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
+            int thumbPos = (int) (-panOffset.getY() * (trackLen - thumbLen) / (contentHeight - h));
+            vScrollThumb.setBounds(w - SCROLLBAR_THICKNESS, thumbPos, SCROLLBAR_THICKNESS, thumbLen);
+            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.fillRect(w - SCROLLBAR_THICKNESS, 0, SCROLLBAR_THICKNESS, trackLen);
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fill(vScrollThumb);
+        } else {
+            vScrollThumb.setBounds(0, 0, 0, 0);
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -1318,7 +1395,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             } // End loop over pages
-
+            paintScrollbars(g2d);
         } catch (Exception e) {
             logger.error("Error during paintComponent", e);
         } finally {
