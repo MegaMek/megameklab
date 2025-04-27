@@ -259,6 +259,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Rectangle vScrollThumb = new Rectangle();
     private boolean draggingHScroll = false;
     private boolean draggingVScroll = false;
+    private int scrollGrabOffset;
     
     public RecordSheetPreviewPanel() {
         addMouseListener(new RightClickListener());
@@ -374,10 +375,12 @@ public class RecordSheetPreviewPanel extends JPanel {
                 lastMousePoint = e.getPoint();
                 if (vScrollThumb.contains(e.getPoint())) {
                     draggingVScroll = true;
+                    scrollGrabOffset = e.getY() - vScrollThumb.y;
                     setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
                 } else
                 if (hScrollThumb.contains(e.getPoint())) {
                     draggingHScroll = true;
+                    scrollGrabOffset = e.getX() - hScrollThumb.x;
                     setCursor(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
                 } else {
                     setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -415,19 +418,41 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isPanning && lastMousePoint != null) {
-                    // Lock panning axis if dragging scrollbars
-                    int dx = draggingVScroll ? 0 : e.getX() - lastMousePoint.x;
-                    int dy = draggingHScroll ? 0 : e.getY() - lastMousePoint.y;
-                    // Invert dy/dx if dragging scrollbars
-                    if (draggingVScroll) {
-                        dy = -dy;
-                    } else if (draggingHScroll) {
-                        dx = -dx;
+                    // Check if we are dragging a scrollbar or panning
+                    if (draggingHScroll || draggingVScroll) {
+                        final double contentWidth = getContentWidth();
+                        final double contentHeight = getContentHeight();
+                        final int panelWidth = getWidth();
+                        final int panelHeight = getHeight();
+                        final boolean showHScroll = contentWidth > panelWidth;
+                        final boolean showVScroll = contentHeight > panelHeight;
+                        // Calculate thumb new position based on mouse drag and apply padding (Horizontal)
+                        if (draggingHScroll) {
+                            int trackLen = panelWidth - (showVScroll?SCROLLBAR_THICKNESS:0);
+                            int thumbLen = Math.max((int) (panelWidth * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
+                            int newX = e.getX() - scrollGrabOffset;
+                            newX = Math.max(0, Math.min(newX, trackLen - thumbLen));
+                            double panX = -newX * (contentWidth - panelWidth) / (trackLen - thumbLen);
+                            panOffset.setLocation(constrainPanX(panX), panOffset.getY());
+                        }
+                        // Calculate thumb new position based on mouse drag and apply padding (Vertical)
+                        else if (draggingVScroll) {
+                            int trackLen = panelHeight - (showHScroll?SCROLLBAR_THICKNESS:0);
+                            int thumbLen = Math.max((int) (panelHeight * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
+                            int newY = e.getY() - scrollGrabOffset;
+                            newY = Math.max(0, Math.min(newY, trackLen - thumbLen));
+                            double panY = -newY * (contentHeight - panelHeight) / (trackLen - thumbLen);
+                            panOffset.setLocation(panOffset.getX(), constrainPanY(panY));
+                        }
+                    } else {
+                        // Normal panning
+                        int dx = e.getX() - lastMousePoint.x;
+                        int dy = e.getY() - lastMousePoint.y;
+                        panOffset.setLocation(
+                            constrainPanX(panOffset.getX() + dx),
+                            constrainPanY(panOffset.getY() + dy));
+                        lastMousePoint = e.getPoint();
                     }
-                    panOffset.setLocation(
-                        constrainPanX(panOffset.getX() + dx),
-                        constrainPanY(panOffset.getY() + dy));
-                    lastMousePoint = e.getPoint();
                     repaint();
                 }
             }
