@@ -58,6 +58,7 @@ import java.awt.print.PageFormat;
 import java.awt.GraphicsEnvironment;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsConfiguration;
+import java.awt.Dimension;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -81,7 +82,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
@@ -254,6 +254,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
 
+    private static final int SCROLLBARS_WIDTH = 6;
     private final JScrollBar hScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
     private final JScrollBar vScrollBar = new JScrollBar(JScrollBar.VERTICAL);
     private boolean adjustingHScrollBar = false;
@@ -261,6 +262,12 @@ public class RecordSheetPreviewPanel extends JPanel {
     
     
     public RecordSheetPreviewPanel() {
+        hScrollBar.setMinimum(0);
+        vScrollBar.setMinimum(0);
+        hScrollBar.setUnitIncrement(20);
+        vScrollBar.setUnitIncrement(20);
+        hScrollBar.setPreferredSize(new Dimension(0, SCROLLBARS_WIDTH));
+        vScrollBar.setPreferredSize(new Dimension(SCROLLBARS_WIDTH, 0));
         add(hScrollBar);
         add(vScrollBar);
         hScrollBar.addAdjustmentListener(e -> {
@@ -351,7 +358,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 totalWidth = Math.max(totalWidth, pageRight);
             }
         }
-        return totalWidth * zoomFactor + 1;
+        return totalWidth * zoomFactor;
     }
 
     private double getContentHeight() {
@@ -361,7 +368,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 maxHeight = Math.max(maxHeight, page.baseHeightPx);
             }
         }
-        return maxHeight * zoomFactor + 1;
+        return maxHeight * zoomFactor;
     }
 
     private void setupMouseHandlers() {
@@ -1177,7 +1184,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         pageInfo.pendingRenderTask = null;
                     }
                     repaint(); // Repaint the panel to show the new image or clear old one
-
+                    updateScrollbars();
                 } else {
                     // Discarding stale/cancelled result
                     if (result != null && result.image != null) {
@@ -1210,6 +1217,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     pageInfo.cachedImage = new SoftReference<>(null);
                     pageInfo.imageRenderZoom = -1.0;
                     repaint(); // Repaint to show placeholder
+                    updateScrollbars();
                 }
             }
             return null;
@@ -1282,7 +1290,6 @@ public class RecordSheetPreviewPanel extends JPanel {
             // Background
             g2d.setColor(getBackground()); // Use panel background
             g2d.fillRect(0, 0, getWidth(), getHeight());
-
             if (sheetPages.isEmpty()) {
                 // Draw placeholder text if no sheets/pages
                 g2d.setColor(getForeground()); // Use panel foreground color
@@ -1370,6 +1377,14 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             } // End loop over pages
+            // Fill scrollbars little square in bottom-right
+            if (vScrollBar.isVisible() && hScrollBar.isVisible()) {
+                g2d.setColor(getBackground());
+                g2d.fillRect(getWidth() - vScrollBar.getPreferredSize().width,
+                            getHeight() - hScrollBar.getPreferredSize().height,
+                            vScrollBar.getPreferredSize().width,
+                            hScrollBar.getPreferredSize().height);
+            }
         } catch (Exception e) {
             logger.error("Error during paintComponent", e);
         } finally {
@@ -1380,60 +1395,46 @@ public class RecordSheetPreviewPanel extends JPanel {
     @Override
     public void doLayout() {
         super.doLayout();
-        int w = getWidth();
-        int h = getHeight();
+        final int w = getWidth();
+        final int h = getHeight();
         int hsbHeight = hScrollBar.getPreferredSize().height;
         int vsbWidth = vScrollBar.getPreferredSize().width;
-        hScrollBar.setBounds(0, h - hsbHeight, w - vsbWidth, hsbHeight);
-        vScrollBar.setBounds(w - vsbWidth, 0, vsbWidth, h - hsbHeight);
+        hScrollBar.setBounds(0, h - hsbHeight, w - (vScrollBar.isVisible()?vsbWidth:0), hsbHeight);
+        vScrollBar.setBounds(w - vsbWidth, 0, vsbWidth, h - (hScrollBar.isVisible()?hsbHeight:0));
         updateScrollbars();
     }
 
     private void updateScrollbars() {
-
-        double contentWidth = getContentWidth();
-        double contentHeight = getContentHeight();
-        int w = getWidth();
-        int h = getHeight();
-    
-        boolean hVisible = contentWidth > w;
-        boolean vVisible = contentHeight > h;
-    
+        System.out.println("Update scrollbars called");
+        final double contentWidth = getContentWidth();
+        final double contentHeight = getContentHeight();
+        final int w = getWidth();
+        final int h = getHeight();
+        final boolean hVisible = contentWidth - w >= 1;
+        final boolean vVisible = contentHeight - h >= 1;
         hScrollBar.setVisible(hVisible);
         vScrollBar.setVisible(vVisible);
-    
         if (hVisible) {
-            int min = 0;
             int max = (int)Math.ceil(contentWidth - w);
             int value = (int)Math.round(-panOffset.getX());
-            value = Math.max(min, Math.min(max, value));
-            hScrollBar.setMinimum(min);
+            value = Math.max(hScrollBar.getMinimum(), Math.min(max, value));
             hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
             hScrollBar.setVisibleAmount(w);
             hScrollBar.setBlockIncrement(w / 2);
-            hScrollBar.setUnitIncrement(1);
             adjustingHScrollBar = true;
             hScrollBar.setValue(value);
             adjustingHScrollBar = false;
-        } else {
-            hScrollBar.setValue(0);
         }
-    
         if (vVisible) {
-            int min = 0;
             int max = (int)Math.ceil(contentHeight - h);
             int value = (int)Math.round(-panOffset.getY());
-            value = Math.max(min, Math.min(max, value));
-            vScrollBar.setMinimum(min);
+            value = Math.max(vScrollBar.getMinimum(), Math.min(max, value));
             vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
             vScrollBar.setVisibleAmount(h);
             vScrollBar.setBlockIncrement(h / 2);
-            vScrollBar.setUnitIncrement(1);
             adjustingVScrollBar = true;
             vScrollBar.setValue(value);
             adjustingVScrollBar = false;
-        } else {
-            vScrollBar.setValue(0);
         }
     }
 
