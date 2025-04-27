@@ -372,6 +372,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (sheetPages.isEmpty()) {
                     return;
                 }
+                Rectangle overlapRegion = vScrollThumb.intersection(hScrollThumb);
+                if (overlapRegion.contains(e.getPoint())) {
+                    return; // Ignore clicks in the overlap region of scrollbars
+                }
                 lastMousePoint = e.getPoint();
                 if (vScrollThumb.contains(e.getPoint())) {
                     draggingVScroll = true;
