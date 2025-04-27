@@ -78,8 +78,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.ext.awt.RenderingHintsKeyExt;
@@ -251,12 +253,26 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean isInitialRender = true; // Flag to track if this is the first render
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
+
+    private final JScrollBar hScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
+    private final JScrollBar vScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+    
     
     public RecordSheetPreviewPanel() {
+        add(hScrollBar);
+        add(vScrollBar);
+        hScrollBar.addAdjustmentListener(e -> {
+            panOffset.setLocation(-e.getValue(), panOffset.getY());
+            repaint();
+        });
+        vScrollBar.addAdjustmentListener(e -> {
+            panOffset.setLocation(panOffset.getX(), -e.getValue());
+            repaint();
+        });
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
         setDoubleBuffered(true);
-
+        setLayout(null);
         resetViewTimer = new Timer(RESET_VIEW_DELAY, e -> {
             resetViewTimer.stop();
             performResetView();
@@ -317,6 +333,27 @@ public class RecordSheetPreviewPanel extends JPanel {
         performResetView(); // Initial state
     }
 
+    private double getContentWidth() {
+        double totalWidth = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                double pageRight = page.layoutPosition.x + page.baseWidthPx;
+                totalWidth = Math.max(totalWidth, pageRight);
+            }
+        }
+        return totalWidth * zoomFactor + 1;
+    }
+
+    private double getContentHeight() {
+        double maxHeight = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                maxHeight = Math.max(maxHeight, page.baseHeightPx);
+            }
+        }
+        return maxHeight * zoomFactor + 1;
+    }
+
     private void setupMouseHandlers() {
         // Zoom
         addMouseWheelListener(new MouseWheelListener() {
@@ -348,6 +385,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         
                     isHighQualityPaint = false;
                     repaint();
+                    updateScrollbars();
                     zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
                 }
             }
@@ -376,6 +414,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     lastMousePoint = null;
                     isHighQualityPaint = true;
                     repaint();
+                    updateScrollbars();
                 }
             }
 
@@ -401,6 +440,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         constrainPanY(panOffset.getY() + dy));
                     lastMousePoint = e.getPoint();
                     repaint();
+                    updateScrollbars();
                 }
             }
         });
@@ -927,6 +967,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             zoomFactor = minFitZoom;
             panOffset.setLocation(0, 0);
             repaint();
+            updateScrollbars();
             return;
         }
 
@@ -952,6 +993,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         requestRenderForAllPages(); // Render all pages at the new fit zoom
         repaint();
+        updateScrollbars();
     }
 
     /**
@@ -1318,11 +1360,66 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             } // End loop over pages
-
         } catch (Exception e) {
             logger.error("Error during paintComponent", e);
         } finally {
             g2d.dispose();
+        }
+    }
+
+    @Override
+    public void doLayout() {
+        super.doLayout();
+        int w = getWidth();
+        int h = getHeight();
+        int hsbHeight = hScrollBar.getPreferredSize().height;
+        int vsbWidth = vScrollBar.getPreferredSize().width;
+        hScrollBar.setBounds(0, h - hsbHeight, w - vsbWidth, hsbHeight);
+        vScrollBar.setBounds(w - vsbWidth, 0, vsbWidth, h - hsbHeight);
+        updateScrollbars();
+    }
+
+    private void updateScrollbars() {
+
+        double contentWidth = getContentWidth();
+        double contentHeight = getContentHeight();
+        int w = getWidth();
+        int h = getHeight();
+    
+        boolean hVisible = contentWidth > w;
+        boolean vVisible = contentHeight > h;
+    
+        hScrollBar.setVisible(hVisible);
+        vScrollBar.setVisible(vVisible);
+    
+        if (hVisible) {
+            int min = 0;
+            int max = (int)Math.ceil(contentWidth - w);
+            int value = (int)Math.round(-panOffset.getX());
+            value = Math.max(min, Math.min(max, value));
+            hScrollBar.setMinimum(min);
+            hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
+            hScrollBar.setVisibleAmount(w);
+            hScrollBar.setBlockIncrement(w / 2);
+            hScrollBar.setUnitIncrement(20);
+            hScrollBar.setValue(value);
+        } else {
+            hScrollBar.setValue(0);
+        }
+    
+        if (vVisible) {
+            int min = 0;
+            int max = (int)Math.ceil(contentHeight - h);
+            int value = (int)Math.round(-panOffset.getY());
+            value = Math.max(min, Math.min(max, value));
+            vScrollBar.setMinimum(min);
+            vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
+            vScrollBar.setVisibleAmount(h);
+            vScrollBar.setBlockIncrement(h / 2);
+            vScrollBar.setUnitIncrement(20);
+            vScrollBar.setValue(value);
+        } else {
+            vScrollBar.setValue(0);
         }
     }
 
