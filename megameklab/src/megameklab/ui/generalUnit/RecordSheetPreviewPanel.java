@@ -256,18 +256,28 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private final JScrollBar hScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
     private final JScrollBar vScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+    private boolean adjustingHScrollBar = false;
+    private boolean adjustingVScrollBar = false;
     
     
     public RecordSheetPreviewPanel() {
         add(hScrollBar);
         add(vScrollBar);
         hScrollBar.addAdjustmentListener(e -> {
-            panOffset.setLocation(-e.getValue(), panOffset.getY());
-            repaint();
+            if (!adjustingHScrollBar) {
+                adjustingHScrollBar = true;
+                panOffset.setLocation(-e.getValue(), panOffset.getY());
+                repaint();
+                adjustingHScrollBar = false;
+            }
         });
         vScrollBar.addAdjustmentListener(e -> {
-            panOffset.setLocation(panOffset.getX(), -e.getValue());
-            repaint();
+            if (!adjustingVScrollBar) {
+                adjustingVScrollBar = true;
+                panOffset.setLocation(panOffset.getX(), -e.getValue());
+                repaint();
+                adjustingVScrollBar = false;
+            }
         });
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
@@ -1401,8 +1411,10 @@ public class RecordSheetPreviewPanel extends JPanel {
             hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
             hScrollBar.setVisibleAmount(w);
             hScrollBar.setBlockIncrement(w / 2);
-            hScrollBar.setUnitIncrement(20);
+            hScrollBar.setUnitIncrement(1);
+            adjustingHScrollBar = true;
             hScrollBar.setValue(value);
+            adjustingHScrollBar = false;
         } else {
             hScrollBar.setValue(0);
         }
@@ -1416,8 +1428,10 @@ public class RecordSheetPreviewPanel extends JPanel {
             vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
             vScrollBar.setVisibleAmount(h);
             vScrollBar.setBlockIncrement(h / 2);
-            vScrollBar.setUnitIncrement(20);
+            vScrollBar.setUnitIncrement(1);
+            adjustingVScrollBar = true;
             vScrollBar.setValue(value);
+            adjustingVScrollBar = false;
         } else {
             vScrollBar.setValue(0);
         }
