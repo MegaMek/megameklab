@@ -252,6 +252,9 @@ public class TabUtil {
     }
 
     public static void loadMany(List<Entity> entities, List<String> fileNames, MenuBarOwner owner) {
+        if (entities.isEmpty()) {
+            return;
+        }
         if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
             ProgressMonitor progress = new ProgressMonitor(tabbedUI, "Loading units...", "Loaded 0 / %d".formatted(entities.size()), 0, entities.size());
             SwingUtilities.invokeLater(() -> insertTabs(0, entities, fileNames, tabbedUI, progress));
@@ -266,9 +269,12 @@ public class TabUtil {
     }
 
     private static void insertTabs(int i, List<Entity> entities, List<String> fileNames, MegaMekLabTabbedUI tabbedUI, ProgressMonitor progress) {
+        if (entities.isEmpty()) {
+            return;
+        }
         var newUnit = entities.get(i);
         try {
-            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0 ? true : false);
+            tabbedUI.addUnit(newUnit, fileNames.get(i),  i == 0);
             String validationResult = UnitUtil.validateUnit(newUnit);
             if (!validationResult.isBlank()) {
                 PopupMessages.showUnitInvalidWarning(tabbedUI.getFrame(), validationResult);

@@ -55,6 +55,7 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
+import megameklab.util.MULManager;
 import megameklab.util.SingleInstanceService;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -257,11 +258,11 @@ public class MegaMekLab {
             case NEW_CONVINFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
             case RECENT_UNIT -> {
                 if (!loadMostRecentUnit()) {
-                    new StartupGUI().setVisible(true);
+                    StartupGUI.getInstance().setVisible(true);
                 }
             }
             case RESTORE_TABS -> UiLoader.restoreTabbedUi();
-            default -> new StartupGUI().setVisible(true);
+            default -> StartupGUI.getInstance().setVisible(true);
         }
     }
 
@@ -330,7 +331,6 @@ public class MegaMekLab {
                 }
                 UiLoader.loadUi(e, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
-                LOGGER.info("Printing file: {}", filePath);
                 Runnable printMul = () -> {
                     // Parent frame is made "visible" so the OS keeps track of it in the taskbar and such.
                     // But undecorated with size 0 means it's not really visible to the user.
@@ -339,7 +339,7 @@ public class MegaMekLab {
                     frame.setUndecorated(true);
                     frame.setSize(0, 0);
                     frame.setVisible(true);
-                    UnitPrintManager.printMUL(frame, CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
+                    MULManager.processMULFile(file, frame);
                     frame.dispose();
                 };
                 if (noStartup) {

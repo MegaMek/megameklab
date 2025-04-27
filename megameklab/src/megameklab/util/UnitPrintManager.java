@@ -101,7 +101,9 @@ public class UnitPrintManager {
 
     public static File getExportFile(Frame parent, String suggestedFileName) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
-        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        if (parent != null) {
+            f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        }
         f.setDialogTitle("Choose export file name");
         f.setMultiSelectionEnabled(false);
         if (!suggestedFileName.isEmpty()) {
@@ -263,28 +265,31 @@ public class UnitPrintManager {
         }
 
         if (null != tank1) {
-            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
+            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
         }
 
         if (!baList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(baList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(baList, pageCount++, options));
         }
 
         if (!infList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(infList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(infList, pageCount++, options));
         }
 
         if (!protoList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
+            sheets.add(new PrintSmallUnitSheet(protoList, pageCount, options));
         }
         if (!hhwList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount));
+            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount, options));
         }
         return sheets;
     }
 
     public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {
-        RecordSheetOptions options = new RecordSheetOptions();
+        exportUnits(units, exportFile, singlePrint, new RecordSheetOptions());
+    }
+
+    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint, RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());

@@ -57,6 +57,7 @@ import megamek.common.Player;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
@@ -85,7 +86,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
-    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
+    private final JCheckBox      showPilotDataCheck      = new JCheckBox("Print crew data if available");
+    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV (C3 network)");
     private final JFrame         parent;
     private final List<BTObject> units                = new ArrayList<>();
     private final JList<String>  queuedUnitList       = new JList<>();
@@ -155,13 +157,21 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
               "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
-            oneUnitPerSheetCheck.addActionListener(e -> {
-                recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
-            });
+        oneUnitPerSheetCheck.addActionListener(e -> {
+            recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        });
+
+        showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        showPilotDataCheck.setToolTipText("When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
+        showPilotDataCheck.addActionListener(e -> {
+            recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        });
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
-                                       "BV is always adjusted for pilot skill.");
+        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
+        adjustedBvCheck.addActionListener(e -> {
+            recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+        });
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
@@ -193,15 +203,20 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         unitsPanel.add(moveButtonPanel);
         unitsPanel.add(queuedUnitListScrollPane);
 
-        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
+        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(3, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
         oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
-        if (fromMul) {
-            checkboxPanel.add(adjustedBvCheck);
-            adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
-        }
+        checkboxPanel.add(showPilotDataCheck);
+        showPilotDataCheck.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+        checkboxPanel.add(adjustedBvCheck);
+        adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
         checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
         
+        // Set RS settings from initial state of the checkboxes
+        recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+
         Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
         buttonPanelWithCheckboxes.add(buttonPanel);
         buttonPanelWithCheckboxes.add(Box.createHorizontalStrut(30));
@@ -288,15 +303,18 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
+        RecordSheetOptions options = recordSheetPanel.getRecordSheetOptions();
         if (fromMul) {
             if (adjustedBvCheck.isSelected()) {
                 linkForce();
             } else {
                 unlinkForce();
             }
-            CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
-
         }
+        options.setC3inBV(adjustedBvCheck.isSelected());
+        options.setPilotData(showPilotDataCheck.isSelected());
+        CConfig.setParam(CConfig.RS_SHOW_PILOT_DATA, String.valueOf(showPilotDataCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
         CConfig.saveConfig();
 
@@ -309,12 +327,12 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                       FilenameUtils.removeExtension(mulFileName) + ".pdf");
             }
             if (exportFile != null) {
-                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
+                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected(), options);
             } else {
                 return;
             }
         } else {
-            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected());
+            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected(), options);
         }
         super.okButtonActionPerformed(evt);
     }
@@ -325,30 +343,40 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             return;
         }
 
-        linkForce();
-
-        var fileChooser = new JFileChooser(".");
-        fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
-        var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
-        fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
-                                                   mulFileName :
-                                                   entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
-
-        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
-            fileChooser.getSelectedFile() == null) {
-            return;
+        // If the first entity has no game, we link them all to a game. This is needed for C3 links.
+        boolean forcedLink = false;
+        if (entities.get(0).getGame() == null) {
+            forcedLink = true;
+            linkForce();
         }
-
-        File file = fileChooser.getSelectedFile();
-        if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
-            file = new File(file + "." + CG_FILEPATHMUL);
-        }
-
         try {
-            EntityListFile.saveTo(file, entities);
-        } catch (IOException e) {
-            logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            var fileChooser = new JFileChooser(".");
+            fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
+            var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+            fileChooser.setFileFilter(filter);
+            fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
+                                                    mulFileName :
+                                                    entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+
+            if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
+                fileChooser.getSelectedFile() == null) {
+                return;
+            }
+
+            File file = fileChooser.getSelectedFile();
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
+                file = new File(file + "." + CG_FILEPATHMUL);
+            }
+
+            try {
+                EntityListFile.saveTo(file, entities);
+            } catch (IOException e) {
+                logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            }
+        } finally {
+            if (forcedLink) {
+                unlinkForce();
+            }
         }
     }
 
