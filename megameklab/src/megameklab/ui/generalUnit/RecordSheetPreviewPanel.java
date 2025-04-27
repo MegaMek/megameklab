@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community. 
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks 
+ * of The Topps Company, Inc. All Rights Reserved.
+ * 
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 
 package megameklab.ui.generalUnit;
@@ -219,6 +233,8 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
+    private Boolean includeC3inBV = false;
+    private Boolean showPilotData = false;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -251,7 +267,6 @@ public class RecordSheetPreviewPanel extends JPanel {
             performUpdateSheetContentInPlace();
         });
         updateTimer.setRepeats(false);
-
         zoomRenderDebounceTimer = new Timer(ZOOM_RENDER_DEBOUNCE_DELAY, e -> {
             zoomRenderDebounceTimer.stop();
             requestRenderForAllPages(); // Request render for all pages after zoom stops
@@ -468,6 +483,32 @@ public class RecordSheetPreviewPanel extends JPanel {
         this.oneUnitPerSheet = oneUnitPerSheet;
         regenerateAndReset();
     }
+    
+    /**
+     * Set to true/false if you want C3 and other special equips to affect the BV
+     * 
+     * @param enabled
+     */
+    public void includeC3inBV(Boolean enabled) {
+        if (this.includeC3inBV == enabled) {
+            return;
+        }
+        this.includeC3inBV = enabled;
+        updateSheetContentInPlace();
+    }
+
+    /**
+     * Set to true/false if you want to show the pilot data on the record sheet.
+     * 
+     * @param enabled
+     */
+    public void showPilotData(Boolean enabled) {
+        if (this.showPilotData == enabled) {
+            return;
+        }
+        this.showPilotData = enabled;
+        updateSheetContentInPlace();
+    }
 
     /**
      * Set the entities to be displayed in the record sheet preview.
@@ -572,6 +613,21 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     /**
+     * Returns the current RecordSheetOptions based on the current settings.
+     * @return
+     */
+    public RecordSheetOptions getRecordSheetOptions() {
+        RecordSheetOptions options = new RecordSheetOptions();
+        if (includeC3inBV != null) {
+            options.setC3inBV(includeC3inBV);
+        }
+        if (showPilotData != null) {
+            options.setPilotData(showPilotData);
+        }
+        return options;
+    }
+
+    /**
      * Generates the PrintRecordSheet objects and populates the sheetPages list.
      */
     private void generateSheetPages(List<BTObject> entitiesToGenerate) {
@@ -581,7 +637,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         sheetGenerationLock.lock(); // Ensure only one thread generates sheets at a time
         try {
-            RecordSheetOptions options = new RecordSheetOptions();
+            RecordSheetOptions options = getRecordSheetOptions();
             PaperSize pz = options.getPaperSize();
 
             // This is one of the slowest parts
@@ -717,7 +773,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 logger.debug("Starting in-place UnitPrintManager.createSheets...");
                 long start = System.nanoTime();
                 // Regenerate sheets based on potentially updated entity state
-                RecordSheetOptions options = new RecordSheetOptions();
+                RecordSheetOptions options = getRecordSheetOptions();
                 newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
@@ -908,7 +964,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             return MIN_ZOOM;
         }
 
-        RecordSheetOptions options = new RecordSheetOptions();
+        RecordSheetOptions options = getRecordSheetOptions();
         PaperSize pz = options.getPaperSize();
         double maxBaseHeight = 0;
         if (!sheetPages.isEmpty()) {
@@ -1282,7 +1338,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             return;
         }
 
-        RecordSheetOptions options = new RecordSheetOptions();
+        RecordSheetOptions options = getRecordSheetOptions();
         PaperSize pz = options.getPaperSize();
 
         // Calculate total dimensions for the clipboard image

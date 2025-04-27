@@ -168,7 +168,7 @@ public class UiLoader {
                     tabbedUi = new MegaMekLabTabbedUI(editors);
                     tabbedUi.setVisible(true);
                 } catch (IOException | IllegalStateException e) {
-                    new StartupGUI().setVisible(true);
+                    StartupGUI.getInstance().setVisible(true);
                 }
             }
 

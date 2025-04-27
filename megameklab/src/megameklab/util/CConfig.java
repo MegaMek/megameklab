@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import megamek.common.Configuration;
 import megamek.common.enums.WeaponSortOrder;
@@ -93,6 +94,7 @@ public final class CConfig {
     public static final String FILE_RECENT_PREFIX = "Save_File_";
     public static final String FILE_LAST_DIRECTORY = "Last_directory";
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
+    public static final String FORCE_BUILD_WINDOW = "Force_Build_Window";
 
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
@@ -107,6 +109,7 @@ public final class CConfig {
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
+    public static final String RS_SHOW_C3BV = "rs_show_c3bv";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
@@ -145,6 +148,7 @@ public final class CConfig {
         defaults.setProperty(GUI_FULLSCREEN, Boolean.toString(false));
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
+        defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
@@ -462,6 +466,14 @@ public final class CConfig {
 
     public static void writeFileChooserSettings(JDialog dialog) {
         writeWindowSettings(FILE_CHOOSER_WINDOW, dialog);
+    }
+
+    public static Optional<Point> getForceBuildPosition() {
+        return getWindowPosition(FORCE_BUILD_WINDOW);
+    }
+    
+    public static void writeForceBuildPosition(JFrame frame) {
+        writeWindowSettings(FORCE_BUILD_WINDOW, frame);
     }
 
     public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi) {
