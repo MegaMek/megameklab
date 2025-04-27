@@ -67,9 +67,12 @@ public class MULManager {
             dummyOwner.setVisible(true);
             owner = dummyOwner;
         }
-        UnitPrintManager.printMUL(owner, selectedBehaviour == MulDndBehaviour.EXPORT, file);
-        if (dummyOwner != null) {
-            dummyOwner.dispose();
+        try {
+            UnitPrintManager.printMUL(owner, selectedBehaviour == MulDndBehaviour.EXPORT, file);
+        } finally {
+            if (dummyOwner != null) {
+                dummyOwner.dispose();
+            }
         }
     }
 
