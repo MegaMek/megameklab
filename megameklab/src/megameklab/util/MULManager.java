@@ -60,7 +60,7 @@ public class MULManager {
         }
         JFrame dummyOwner = null;
         if (owner == null) {
-            dummyOwner = new JFrame();
+            dummyOwner = new JFrame("MegaMekLab - Print Queue");
             dummyOwner.setUndecorated(true);
             dummyOwner.setSize(0, 0);
             dummyOwner.setLocationRelativeTo(null);
