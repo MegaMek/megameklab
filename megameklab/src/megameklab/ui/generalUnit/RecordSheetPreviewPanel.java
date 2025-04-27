@@ -257,6 +257,8 @@ public class RecordSheetPreviewPanel extends JPanel {
     private static final int SCROLLBAR_MIN_THUMB = 24;
     private Rectangle hScrollThumb = new Rectangle();
     private Rectangle vScrollThumb = new Rectangle();
+    private boolean isShowingVScroll = false;
+    private boolean isShowingHScroll = false;
     private boolean draggingHScroll = false;
     private boolean draggingVScroll = false;
     private int scrollGrabOffset;
@@ -372,24 +374,35 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (sheetPages.isEmpty()) {
                     return;
                 }
-                if (vScrollThumb.width > 0 && hScrollThumb.height > 0) {
-                    // If both scrollbars are visible, check for overlap corner
-                    final Rectangle overlapRegion = new Rectangle(
-                        getWidth() - SCROLLBAR_THICKNESS,
-                        getHeight() - SCROLLBAR_THICKNESS,
-                        SCROLLBAR_THICKNESS,
-                        SCROLLBAR_THICKNESS);
-                        if (overlapRegion.contains(e.getPoint())) {
-                            return; // Ignore clicks in the overlap region of scrollbars
-                        }
+                if (isShowingVScroll
+                    && e.getX() >= getWidth() - SCROLLBAR_THICKNESS
+                    && !vScrollThumb.contains(e.getPoint())) {
+                    double panY = calculateVScroll(vScrollThumb.height);
+                    if ((e.getY() < vScrollThumb.y)) {
+                        panY = -panY;
+                    }
+                    panOffset.setLocation(panOffset.getX(), constrainPanY(panOffset.getY()+panY));
+                    repaint();
+                    return;
+                }
+                if (isShowingHScroll
+                && e.getY() >= getHeight() - SCROLLBAR_THICKNESS
+                && !hScrollThumb.contains(e.getPoint())) {
+                    double panX = calculateHScroll(hScrollThumb.width);
+                    if ((e.getX() < hScrollThumb.x)) {
+                        panX = -panX;
+                    }
+                    panOffset.setLocation(constrainPanX(panOffset.getX()+panX), panOffset.getY());
+                    repaint();
+                    return;
                 }
                 lastMousePoint = e.getPoint();
-                if (vScrollThumb.contains(e.getPoint())) {
+                if (isShowingVScroll && vScrollThumb.contains(e.getPoint())) {
                     draggingVScroll = true;
                     scrollGrabOffset = e.getY() - vScrollThumb.y;
                     setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
                 } else
-                if (hScrollThumb.contains(e.getPoint())) {
+                if (isShowingHScroll && hScrollThumb.contains(e.getPoint())) {
                     draggingHScroll = true;
                     scrollGrabOffset = e.getX() - hScrollThumb.x;
                     setCursor(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
@@ -416,6 +429,12 @@ public class RecordSheetPreviewPanel extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (isShowingHScroll && e.getY() >= getHeight() - SCROLLBAR_THICKNESS) {
+                    return; // Ignore clicks in the horizontal scrollbar area (no thumb)
+                }
+                if (isShowingVScroll && e.getX() >= getWidth() - SCROLLBAR_THICKNESS) {
+                    return; // Ignore clicks in the vertical scrollbar area (no thumb)
+                }
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
                     if (!sheetPages.isEmpty()) {
                         resetView();
@@ -431,28 +450,16 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (isPanning && lastMousePoint != null) {
                     // Check if we are dragging a scrollbar or panning
                     if (draggingHScroll || draggingVScroll) {
-                        final double contentWidth = getContentWidth();
-                        final double contentHeight = getContentHeight();
-                        final int panelWidth = getWidth();
-                        final int panelHeight = getHeight();
-                        final boolean showHScroll = contentWidth - panelWidth >= 1;
-                        final boolean showVScroll = contentHeight - panelHeight >= 1;
-                        // Calculate thumb new position based on mouse drag and apply padding (Horizontal)
+                        // Calculate thumb new position based on mouse drag and apply panning (Horizontal)
                         if (draggingHScroll) {
-                            int trackLen = panelWidth - (showVScroll?SCROLLBAR_THICKNESS:0);
-                            int thumbLen = Math.max((int) (panelWidth * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
                             int newX = e.getX() - scrollGrabOffset;
-                            newX = Math.max(0, Math.min(newX, trackLen - thumbLen));
-                            double panX = -newX * (contentWidth - panelWidth) / (trackLen - thumbLen);
+                            double panX = calculateHScroll(newX);
                             panOffset.setLocation(constrainPanX(panX), panOffset.getY());
                         }
-                        // Calculate thumb new position based on mouse drag and apply padding (Vertical)
+                        // Calculate thumb new position based on mouse drag and apply panning (Vertical)
                         else if (draggingVScroll) {
-                            int trackLen = panelHeight - (showHScroll?SCROLLBAR_THICKNESS:0);
-                            int thumbLen = Math.max((int) (panelHeight * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
                             int newY = e.getY() - scrollGrabOffset;
-                            newY = Math.max(0, Math.min(newY, trackLen - thumbLen));
-                            double panY = -newY * (contentHeight - panelHeight) / (trackLen - thumbLen);
+                            double panY = calculateVScroll(newY);
                             panOffset.setLocation(panOffset.getX(), constrainPanY(panY));
                         }
                     } else {
@@ -468,6 +475,22 @@ public class RecordSheetPreviewPanel extends JPanel {
                 }
             }
         });
+    }
+
+    private double calculateHScroll(int x) {
+        final int panelWidth = getWidth();
+        final int trackLen = panelWidth - (isShowingVScroll?SCROLLBAR_THICKNESS:0);
+        x = Math.max(0, Math.min(x, trackLen - hScrollThumb.width));
+        final double panX =  -x * (getContentWidth() - panelWidth) / (trackLen - hScrollThumb.width);
+        return panX;
+    }
+
+    private double calculateVScroll(int y) {
+        final int panelHeight = getHeight();
+        final int trackLen = panelHeight - (isShowingHScroll?SCROLLBAR_THICKNESS:0);
+        y = Math.max(0, Math.min(y, trackLen - vScrollThumb.height));
+        final double panY = -y * (getContentHeight() - panelHeight) / (trackLen - vScrollThumb.height);
+        return panY;
     }
 
     private double getContentWidth() {
@@ -1311,17 +1334,17 @@ public class RecordSheetPreviewPanel extends JPanel {
         final double contentHeight = getContentHeight();
         final int panelWidth = getWidth();
         final int panelHeight = getHeight();
-        final boolean showHScroll = contentWidth - panelWidth >= 1;
-        final boolean showVScroll = contentHeight - panelHeight >= 1;
+        isShowingHScroll = contentWidth - panelWidth >= 1;
+        isShowingVScroll = contentHeight - panelHeight >= 1;
 
         // Horizontal scrollbar
-        if (showHScroll) {
-            int trackLen = panelWidth - (showVScroll?SCROLLBAR_THICKNESS:0);
+        if (isShowingHScroll) {
+            int trackLen = panelWidth - (isShowingVScroll?SCROLLBAR_THICKNESS:0);
             int thumbLen = Math.max((int) (panelWidth * trackLen / contentWidth), SCROLLBAR_MIN_THUMB);
             int thumbPos = (int) (-panOffset.getX() * (trackLen - thumbLen) / (contentWidth - panelWidth));
             hScrollThumb.setBounds(thumbPos, panelHeight - SCROLLBAR_THICKNESS, thumbLen, SCROLLBAR_THICKNESS);
             g2d.setColor(Color.DARK_GRAY);
-            g2d.fillRect(0, panelHeight - SCROLLBAR_THICKNESS, trackLen, SCROLLBAR_THICKNESS);
+            g2d.fillRect(0, panelHeight - SCROLLBAR_THICKNESS, isShowingVScroll ? panelWidth : trackLen, SCROLLBAR_THICKNESS);
             g2d.setColor(Color.GRAY);
             g2d.fill(hScrollThumb);
         } else {
@@ -1329,28 +1352,17 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
     
         // Vertical scrollbar
-        if (showVScroll) {
-            int trackLen = panelHeight - (showHScroll?SCROLLBAR_THICKNESS:0);
+        if (isShowingVScroll) {
+            int trackLen = panelHeight - (isShowingHScroll?SCROLLBAR_THICKNESS:0);
             int thumbLen = Math.max((int) (panelHeight * trackLen / contentHeight), SCROLLBAR_MIN_THUMB);
             int thumbPos = (int) (-panOffset.getY() * (trackLen - thumbLen) / (contentHeight - panelHeight));
             vScrollThumb.setBounds(panelWidth - SCROLLBAR_THICKNESS, thumbPos, SCROLLBAR_THICKNESS, thumbLen);
             g2d.setColor(Color.DARK_GRAY);
-            g2d.fillRect(panelWidth - SCROLLBAR_THICKNESS, 0, SCROLLBAR_THICKNESS, trackLen);
+            g2d.fillRect(panelWidth - SCROLLBAR_THICKNESS, 0, SCROLLBAR_THICKNESS, isShowingHScroll ? panelHeight : trackLen);
             g2d.setColor(Color.GRAY);
             g2d.fill(vScrollThumb);
         } else {
             vScrollThumb.setBounds(0, 0, 0, 0);
-        }
-
-        // Fill the bottom-right corner if both scrollbars are visible
-        if (showVScroll && showHScroll) {
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.fillRect(
-                panelWidth - SCROLLBAR_THICKNESS,
-                panelHeight - SCROLLBAR_THICKNESS,
-                SCROLLBAR_THICKNESS,
-                SCROLLBAR_THICKNESS
-            );
         }
     }
 
