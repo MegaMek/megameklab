@@ -26,14 +26,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="3.1631944"
-     inkscape:cx="125.66411"
+     inkscape:cx="125.50604"
      inkscape:cy="69.708014"
      inkscape:window-width="1920"
      inkscape:window-height="1121"
      inkscape:window-x="-7"
      inkscape:window-y="-7"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g62" />
+     inkscape:current-layer="g11" />
   <g
      style="mml-color-elements:"
      id="rs_template">
@@ -202,21 +202,19 @@
              id="path9"
              sodipodi:nodetypes="ccccccc" />
           <text
-             x="90.070999"
+             x="86.057999"
              y="8.4379997"
              fill="#ffffff"
              text-anchor="middle"
              style="font-style:normal;font-weight:bold;font-size:8.6px;font-family:Eurostile"
-             textLength="88.665001"
              lengthAdjust="spacingAndGlyphs"
-             id="text9"
-             transform="translate(-4.0130892)">WEAPONS INVENTORY</text>
+             id="text9">WEAPONS INVENTORY</text>
         </g>
       </g>
       <rect
          fill="none"
-         x="3"
-         width="179.33299"
+         x="2"
+         width="173.5"
          id="inventory"
          height="75.369003"
          y="14.25" />
