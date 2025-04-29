@@ -64,7 +64,7 @@
             <text
                fill="#ffffff"
                x="7.999"
-               id="protomechIndex"
+               id="protomekIndex"
                y="11.250"
                style="font-family:Eurostile;font-size:10.600px;font-weight:bold;font-style:normal;mml-field-width:70.944"
                text-anchor="start">PROTOMECH #</text>
@@ -675,7 +675,7 @@
             transform="matrix(1.008 0 0 1.008 4.800 11.250)"
             id="g51">
             <g
-               id="armor_diagram_protomech_biped"
+               id="armor_diagram_protomek_biped"
                transform="matrix(1,0,0,-1,-485.35066,668.7845)">
                <g
                   id="shadow_MG">
