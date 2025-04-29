@@ -538,7 +538,6 @@ public class PrintMek extends PrintEntity {
             addTextElement(canvas, x + fontSize / 2, viewY - 1, text, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
-        final double fontHeight = getFontHeight(fontSize);
         for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
@@ -548,7 +547,7 @@ public class PrintMek extends PrintEntity {
             String weight = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
             if (crit != null && crit.isDamaged()) {
-                addLineThrough(canvas, viewX-EXTEND_DAMAGE_LINETHROUGH_LENGTH, currY-(fontHeight/4), (critX-viewX)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                addLineThrough(canvas, viewX-EXTEND_DAMAGE_LINETHROUGH_LENGTH, currY-(fontSize * 0.3), (critX-viewX)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
             }
             addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
@@ -575,7 +574,7 @@ public class PrintMek extends PrintEntity {
                 final String critName = formatCritName(crit);
                 final double textLength = getTextLength(critName, fontSize, weight);
                 if (crit.isDamaged()) {
-                    addLineThrough(canvas, critX, currY-(fontHeight/4), textLength+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                    addLineThrough(canvas, critX, currY-(fontSize * 0.3), textLength+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
                 }
                 addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
                 x = critX + textLength;
@@ -602,7 +601,7 @@ public class PrintMek extends PrintEntity {
             } else {
                 final String critName = formatCritName(crit);
                 if (crit.isDamaged()) {
-                    addLineThrough(canvas, critX, currY-(fontHeight/4), getTextLength(critName, fontSize, weight)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                    addLineThrough(canvas, critX, currY-(fontSize * 0.3), getTextLength(critName, fontSize, weight)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
                 }
                 addTextElement(canvas, critX, currY, critName, fontSize,
                         SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);

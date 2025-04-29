@@ -692,13 +692,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param color    The color of the line.
      */
     protected void addLineThrough(Element parent, double x, double y, double width, String color) {
+        final int STROKE_THICKNESS = 1;
         Element line = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_LINE_TAG);
         line.setAttributeNS(null, SVGConstants.SVG_X1_ATTRIBUTE, String.valueOf(x));
         line.setAttributeNS(null, SVGConstants.SVG_Y1_ATTRIBUTE, String.valueOf(y));
         line.setAttributeNS(null, SVGConstants.SVG_X2_ATTRIBUTE, String.valueOf(x + width));
         line.setAttributeNS(null, SVGConstants.SVG_Y2_ATTRIBUTE, String.valueOf(y));
         line.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, color);
-        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "1px");
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, STROKE_THICKNESS+"px");
         parent.appendChild(line);
     }
 

@@ -675,12 +675,11 @@ public class InventoryWriter {
      */
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
-        final double fontHeight = sheet.getFontHeight(fontSize);
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
                 if (line.isDamaged()) {
-                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontHeight/4), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
+                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontSize * 0.3), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
                 }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
