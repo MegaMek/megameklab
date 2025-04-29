@@ -551,7 +551,7 @@ public class InventoryWriter {
             }
             if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                        quirksText, fontSize * 0.9f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
             final double totalHeight = lines * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
