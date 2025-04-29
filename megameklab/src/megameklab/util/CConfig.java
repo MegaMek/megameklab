@@ -40,6 +40,7 @@ import megamek.common.Configuration;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
+import megameklab.printing.PrintRecordSheet;
 import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
@@ -166,7 +167,7 @@ public final class CConfig {
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
         defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
         defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
-        defaults.setProperty(RS_DAMAGE_COLOR, String.format("#%06X", Color.RED.getRGB() & 0xFFFFFF));
+        defaults.setProperty(RS_DAMAGE_COLOR, PrintRecordSheet.FILL_RED);
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
