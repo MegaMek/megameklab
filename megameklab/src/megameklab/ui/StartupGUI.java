@@ -48,7 +48,7 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     JFrame frame;
     MenuBar mmlMenuBar;
-    private static StartupGUI instance = null;
+    private static volatile StartupGUI instance = null;
 
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();

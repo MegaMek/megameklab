@@ -91,8 +91,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
-    public static final String FILL_WHITE = "#ffffff";
-    public static final String FILL_RED = "#ff0000";
+    public static final String FILL_WHITE = "#ffffff";;
+    public static final String FILL_RED = "#cc0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
 
@@ -118,6 +118,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     private Font normalFont = null;
     private Font boldFont = null;
+    private Font italicFont = null;
+    private Font boldItalicFont = null;
     private String typeface = null;
 
     /**
@@ -193,12 +195,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         return boldFont.deriveFont(size);
     }
+    
+    /**
+    * Used for measuring font metrics of an italic font
+    *
+    * @param size The font size
+    * @return A font derived from the default italic
+    */
+    protected final Font getItalicFont(float size) {
+        if (null == italicFont) {
+            assignFonts();
+        }
+        return italicFont.deriveFont(size);
+    }
+
+    /**
+    * Used for measuring font metrics of a bold italic font
+    *
+    * @param size The font size
+    * @return A font derived from the default italic
+    */
+    protected final Font getBoldItalicFont(float size) {
+        if (null == boldItalicFont) {
+            assignFonts();
+        }
+        return boldItalicFont.deriveFont(size);
+    }
 
     private void assignFonts() {
         typeface = CConfig.getParam(CConfig.RS_FONT, DEFAULT_TYPEFACE);
         Font font = Font.decode(typeface);
         normalFont = font.deriveFont(Font.PLAIN, 8);
         boldFont = font.deriveFont(Font.BOLD, 8);
+        italicFont = font.deriveFont(Font.ITALIC, 8);
+        boldItalicFont = font.deriveFont(Font.ITALIC | Font.BOLD, 8);
     }
 
     /**
@@ -639,6 +669,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
+     * Add a line through the text at the given coordinates. The line is drawn at the
+     * center of the text.
+     * 
+     * @param parent   The SVG element to add the line to.
+     * @param x        The X position of the line.
+     * @param y        The Y position of the line.
+     * @param width    The width of the line.
+     */
+    protected void addLineThrough(Element parent, double x, double y, double width) {
+        addLineThrough(parent, x, y, width, getDamageFillColor());
+    }
+
+    /**
+     * Add a line through the text at the given coordinates. The line is drawn at the
+     * center of the text.
+     * 
+     * @param parent   The SVG element to add the line to.
+     * @param x        The X position of the line.
+     * @param y        The Y position of the line.
+     * @param width    The width of the line.
+     * @param color    The color of the line.
+     */
+    protected void addLineThrough(Element parent, double x, double y, double width, String color) {
+        Element line = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_LINE_TAG);
+        line.setAttributeNS(null, SVGConstants.SVG_X1_ATTRIBUTE, String.valueOf(x));
+        line.setAttributeNS(null, SVGConstants.SVG_Y1_ATTRIBUTE, String.valueOf(y));
+        line.setAttributeNS(null, SVGConstants.SVG_X2_ATTRIBUTE, String.valueOf(x + width));
+        line.setAttributeNS(null, SVGConstants.SVG_Y2_ATTRIBUTE, String.valueOf(y));
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, color);
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, "1px");
+        parent.appendChild(line);
+    }
+
+    /**
      * Convenience method for creating a new SVG Text element and adding it to the
      * parent. The width
      * of the text is returned, to aid in layout.
@@ -656,29 +720,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight) {
-        return addTextElement(parent, x, y, text, fontSize, anchor, weight, FILL_BLACK);
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK);
     }
 
-    /**
-     * Convenience method for creating a new SVG Text element and adding it to the
-     * parent. The width
-     * of the text is returned, to aid in layout.
-     *
-     * @param parent   The SVG element to add the text element to.
-     * @param x        The X position of the new element.
-     * @param y        The Y position of the new element.
-     * @param text     The text to display.
-     * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
-     * @param weight   The font weight, either normal or bold.
-     *
-     * @return The width of the text in the current font size
-     */
-    protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fill) {
-        return addTextElement(parent, x, y, text, fontSize, anchor, weight, FILL_BLACK, false);
-    }
     /**
      * Convenience method for creating a new SVG Text element and adding it to the
      * parent. The
@@ -692,13 +736,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param anchor   Set the Text elements text-anchor. Should be either start,
      *                 middle, or end.
      * @param weight   The font weight, either normal or bold.
+     * @param fontStyle The font style, either normal or italic.
      * @param fill     The fill color for the text (e.g. foreground color)
-     * @param strikethrough Whether to add a strikethrough line to the text
      *
      * @return The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fill, boolean needsStrikethrough) {
+            float fontSize, String anchor, String weight, String fontStyle, String fill) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -706,16 +750,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
+        newText.setAttributeNS(null, SVGConstants.SVG_FONT_STYLE_ATTRIBUTE, fontStyle);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-        if (needsStrikethrough) {
-            final String style = "text-decoration: line-through;";
-            newText.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style);
-        }
         parent.appendChild(newText);
-
-        return weight.equals(SVGConstants.SVG_BOLD_VALUE) ? getBoldTextLength(text, fontSize)
-                : getTextLength(text, fontSize);
+        return getTextLength(text, fontSize, weight, fontStyle);
     }
 
     /**
@@ -765,7 +804,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-        if (getTextLength(text, fontSize) > width) {
+        if (getTextLength(text, fontSize, weight) > width) {
             newText.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(width));
             newText.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
                     SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
@@ -798,15 +837,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, FILL_BLACK, ' ');
+                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, false, FILL_BLACK, ' ');
     }
 
-        /**
+    /**
      * Adds a text element to a region with limited width. If there are multiple
      * lines, the text
-     * will be split over multiple lines, broken on the provided character. The line
-     * break character
-     * will be included on the next line.
+     * will be split over multiple lines, broken on a space character. The space
+     * will still be
+     * included on the next line as a small indent.
      *
      * @param canvas     The parent <code>SVGElement</code> to the new
      *                   <code>Text</code>.
@@ -820,15 +859,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param fontSize   The font-size attribute
      * @param anchor     The text-anchor attribute
      * @param weight     The font-weight attribute
-     * @param fill       The fill color for the text (e.g. foreground color)
-     * @param delimiter  The character to use as an acceptable line ending
+     * @param fontStyle The font style, e.g., normal or italic.
      *
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fill, char delimiter) {
+            String text, float fontSize, String anchor, String weight, String fontStyle) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, fill, delimiter, false);
+                text, fontSize, anchor, weight, fontStyle, false, FILL_BLACK, ' ');
     }
 
     /**
@@ -850,14 +888,46 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param fontSize   The font-size attribute
      * @param anchor     The text-anchor attribute
      * @param weight     The font-weight attribute
+     * @param fontStyle The font style, e.g., normal or italic.
      * @param fill       The fill color for the text (e.g. foreground color)
      * @param delimiter  The character to use as an acceptable line ending
-     * @param strikethrough Whether to add a strikethrough line to the text
      *
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fill, char delimiter, boolean strikethrough) {
+            String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter) {
+        return addMultilineTextElement(canvas, x, y, width, lineHeight,
+                text, fontSize, anchor, weight, fontStyle, false, fill, delimiter);
+    }
+
+    /**
+     * Adds a text element to a region with limited width. If there are multiple
+     * lines, the text
+     * will be split over multiple lines, broken on the provided character. The line
+     * break character
+     * will be included on the next line.
+     *
+     * @param canvas     The parent <code>SVGElement</code> to the new
+     *                   <code>Text</code>.
+     * @param x          The x coordinate of the upper left corner of the text
+     *                   region
+     * @param y          The y coordinate of the upper left corner of the text
+     *                   region
+     * @param width      The allowable width of the text element.
+     * @param lineHeight The amount to increase the y coordinate for a new line
+     * @param text       The text to add
+     * @param fontSize   The font-size attribute
+     * @param anchor     The text-anchor attribute
+     * @param weight     The font-weight attribute
+     * @param fontStyle The font style, e.g., normal or italic.
+     * @param linethrough Whether to add a strikethrough line to the text
+     * @param fill       The fill color for the text (e.g. foreground color)
+     * @param delimiter  The character to use as an acceptable line ending
+     *
+     * @return The number of lines of text added
+     */
+    protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
+            String text, float fontSize, String anchor, String weight, String fontStyle, boolean linethrough, String fill,char delimiter) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
         // in text
@@ -865,8 +935,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         int pos = 0;
         while (!text.isBlank()) {
             // If the remaining text fits, add a line and exit.
-            if (getTextLength(text, fontSize) <= width) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill, strikethrough);
+            double textLength = getTextLength(text, fontSize, weight, fontStyle);
+            if (textLength <= width) {
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
+                if (linethrough) {
+                    addLineThrough(canvas, x, y-(getFontHeight(fontSize)/2), textLength);
+                }
                 lines++;
                 return lines;
             }
@@ -875,17 +949,25 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             int index = text.substring(pos).indexOf(delimiter);
             // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fill, strikethrough);
+                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
+                if (linethrough) {
+                    addLineThrough(canvas, x, y-(getFontHeight(fontSize)/2), textLength);
+                }
                 lines++;
                 return lines;
             }
             // If there are no more delimiters in the text, or adding the next section after
             // the previous
             // delimiter that was found, add the text up to pos.
+            final String subText = text.substring(0, pos + index);
+            textLength = getTextLength(subText, fontSize, weight, fontStyle);
             if ((index < 0)
-                    || ((getTextLength(text.substring(0, pos + index), fontSize) > width)
+                    || ((textLength > width)
                             && (pos > 0))) {
-                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fill, strikethrough);
+                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill);
+                if (linethrough) {
+                    addLineThrough(canvas, x, y+(getFontHeight(fontSize)/2), textLength);
+                }
                 lines++;
                 y += lineHeight;
                 text = text.substring(pos);
@@ -1029,11 +1111,22 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     public float getFontHeight(float fontSize) {
         Font f = getNormalFont(fontSize);
-        FontMetrics fm = svgGenerator.getFontMetrics(f);
+        return getFontHeight(fontSize, f);
+    }
+
+    /**
+     * Determines the vertical space taken up by a line of text.
+     *
+     * @param fontSize Value of CSS font-size attribute
+     * @param font     The font to use for the text
+     * @return The height of the bounding box of a text element
+     */
+    protected float getFontHeight(float fontSize, Font font) {
+        FontMetrics fm = svgGenerator.getFontMetrics(font);
         return fm.getHeight();
     }
 
-    public double getTextLength(String text, float fontSize) {
+    public double getNormalTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
@@ -1041,6 +1134,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public double getBoldTextLength(String text, float fontSize) {
         Font font = getBoldFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+
+    public double getItalicTextLength(String text, float fontSize) {
+        Font font = getItalicFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+
+    public double getBoldItalicTextLength(String text, float fontSize) {
+        Font font = getBoldItalicFont(fontSize);
+        return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+    
+    public double getTextLength(String text, float fontSize) {
+        return getTextLength(text, fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    public double getTextLength(String text, float fontSize, String weight) {
+        return getTextLength(text, fontSize, weight, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    public double getTextLength(String text, float fontSize, String weight, String fontStyle) {
+        double textLength;
+        if ((fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) && (weight.equals(SVGConstants.SVG_BOLD_VALUE))) {
+            textLength = getBoldItalicTextLength(text, fontSize);
+        } else
+        if (weight.equals(SVGConstants.SVG_BOLD_VALUE)) {
+            textLength = getBoldTextLength(text, fontSize);
+        } else
+        if (fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) {
+            textLength = getItalicTextLength(text, fontSize);
+        } else {
+            textLength = getNormalTextLength(text, fontSize);
+        }
+        return textLength;
     }
 
     public static Rectangle2D getRectBBox(SVGRectElement rect) {
@@ -1177,6 +1304,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
+    /**
+     * @return The color to use for the damage fill
+     */
     protected String getDamageFillColor() {
         return options.getDamageColor();
     }

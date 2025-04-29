@@ -104,7 +104,6 @@ class ExportSettingsPanel extends JPanel {
         fontPanel.add(Box.createHorizontalStrut(25));
         fontPanel.add(txtFontDisplay);
 
-        
         JLabel defaultSortOrderLabel = new JLabel(resourceMap.getString("ConfigurationDialog.weaponsOrder.text"));
         String toolTip = resourceMap.getString("ConfigurationDialog.weaponsOrder.tooltip");
         defaultSortOrderLabel.setToolTipText(toolTip);

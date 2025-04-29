@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community. 
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks 
+ * of The Topps Company, Inc. All Rights Reserved.
+ * 
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 
 package megameklab.ui.generalUnit;
@@ -231,12 +245,11 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Timer resetViewTimer;
     private Timer zoomRenderDebounceTimer;
     private Timer updateTimer;
-    private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
-    private static final int REGENERATE_DEBOUNCE_DELAY = 100; // ms delay before rendering after entity set
     private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
 
+    private boolean isInitialRender = true; // Flag to track if this is the first render
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
     
@@ -255,12 +268,6 @@ public class RecordSheetPreviewPanel extends JPanel {
             performUpdateSheetContentInPlace();
         });
         updateTimer.setRepeats(false);
-        regenerateTimer = new Timer(REGENERATE_DEBOUNCE_DELAY, e -> {
-            regenerateTimer.stop();
-            performRegenerateAndReset();
-        });
-        updateTimer.setRepeats(false);
-
         zoomRenderDebounceTimer = new Timer(ZOOM_RENDER_DEBOUNCE_DELAY, e -> {
             zoomRenderDebounceTimer.stop();
             requestRenderForAllPages(); // Request render for all pages after zoom stops
@@ -282,7 +289,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                     } else {
                         // Re-check minimum zoom and potentially re-render if needed
                         minFitZoom = calculateMinimumFitZoom();
-                        requestRenderForAllPages();
+                        if (zoomFactor < minFitZoom) {
+                            zoomFactor = minFitZoom; // Reset zoom to fit
+                            requestRenderForAllPages();
+                        }
                     }
                 } else {
                     // Became hidden
@@ -385,56 +395,53 @@ public class RecordSheetPreviewPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isPanning && lastMousePoint != null) {
-                    int dx = e.getX() - lastMousePoint.x;
-                    int dy = e.getY() - lastMousePoint.y;
-                    
-                    double newPanX = panOffset.getX() + dx;
-                    double newPanY = panOffset.getY() + dy;
-                    newPanX = constrainPanX(newPanX);
-                    newPanY = constrainPanY(newPanY);
-
-                    panOffset.setLocation(newPanX, newPanY);
+                    final int dx = e.getX() - lastMousePoint.x;
+                    final int dy = e.getY() - lastMousePoint.y;
+                    panOffset.setLocation(
+                        constrainPanX(panOffset.getX() + dx),
+                        constrainPanY(panOffset.getY() + dy));
                     lastMousePoint = e.getPoint();
                     repaint();
                 }
             }
         });
     }
-/**
- * Constrains horizontal panning to keep content visible.
- * @param panX The proposed X pan coordinate
- * @return Constrained X coordinate
- */
-private double constrainPanX(double panX) {
-    if (sheetPages.isEmpty()) {
-        return 0;
-    }
-    
-    // Calculate leftmost and rightmost content bounds
-    double leftmostX = Double.MAX_VALUE;
-    double rightmostX = Double.MIN_VALUE;
-    
-    for (SheetPageInfo page : sheetPages) {
-        double pageLeft = page.layoutPosition.x * zoomFactor;
-        double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+
+    /**
+     * Constrains horizontal panning to keep content visible.
+     * @param panX The proposed X pan coordinate
+     * @return Constrained X coordinate
+     */
+    private double constrainPanX(double panX) {
+        if (sheetPages.isEmpty()) {
+            return 0;
+        }
         
-        leftmostX = Math.min(leftmostX, pageLeft);
-        rightmostX = Math.max(rightmostX, pageRight);
+        // Calculate leftmost and rightmost content bounds
+        double leftmostX = Double.MAX_VALUE;
+        double rightmostX = Double.MIN_VALUE;
+        
+        for (SheetPageInfo page : sheetPages) {
+            double pageLeft = page.layoutPosition.x * zoomFactor;
+            double pageRight = pageLeft + (page.baseWidthPx * zoomFactor);
+            
+            leftmostX = Math.min(leftmostX, pageLeft);
+            rightmostX = Math.max(rightmostX, pageRight);
+        }
+        
+        // Left constraint: don't allow content to move right of viewport left edge
+        double minPanX = getWidth() - rightmostX;
+        // Right constraint: don't allow content to move left of viewport right edge
+        double maxPanX = -leftmostX;
+        
+        // If content is narrower than viewport, center it
+        if (rightmostX - leftmostX < getWidth()) {
+            double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
+            return centerOffset - leftmostX;
+        }
+        
+        return Math.min(maxPanX, Math.max(minPanX, panX));
     }
-    
-    // Left constraint: don't allow content to move right of viewport left edge
-    double minPanX = getWidth() - rightmostX;
-    // Right constraint: don't allow content to move left of viewport right edge
-    double maxPanX = -leftmostX;
-    
-    // If content is narrower than viewport, center it
-    if (rightmostX - leftmostX < getWidth()) {
-        double centerOffset = (getWidth() - (rightmostX - leftmostX)) / 2.0;
-        return centerOffset - leftmostX;
-    }
-    
-    return Math.min(maxPanX, Math.max(minPanX, panX));
-}
 
     /**
      * Constrains vertical panning to keep content visible.
@@ -477,7 +484,6 @@ private double constrainPanX(double panX) {
         this.oneUnitPerSheet = oneUnitPerSheet;
         regenerateAndReset();
     }
-
     
     /**
      * Set to true/false if you want C3 and other special equips to affect the BV
@@ -492,7 +498,6 @@ private double constrainPanX(double panX) {
         updateSheetContentInPlace();
     }
 
-    
     /**
      * Set to true/false if you want to show the pilot data on the record sheet.
      * 
@@ -575,7 +580,7 @@ private double constrainPanX(double panX) {
             return;
         }
         updateTimer.stop();
-        regenerateTimer.restart();
+        performRegenerateAndReset(); // Perform the reset and regeneration
     }
 
     /**
@@ -600,11 +605,21 @@ private double constrainPanX(double panX) {
 
         if (isShowing()) {
             // Generate sheets and pages in the background to avoid blocking EDT
-            // Display a "Loading..." message while generating
-            repaint(); // Show empty state or loading message immediately
             renderExecutor.submit(() -> {
                 generateSheetPages(currentEntities);
-                SwingUtilities.invokeLater(this::scheduleResetView); // Reset view once pages are generated
+                if (isInitialRender) {
+                    isInitialRender = false;
+                    SwingUtilities.invokeLater(this::performResetView); // Reset view once pages are generated
+                } else {
+                    minFitZoom = calculateMinimumFitZoom();
+                    if (zoomFactor < minFitZoom) {
+                        zoomFactor = minFitZoom; // Adjust zoom to fit if needed
+                    }
+                    panOffset.setLocation(
+                        constrainPanX(panOffset.getX()),
+                        constrainPanY(panOffset.getY()));
+                    requestRenderForAllPages();
+                }
             });
         } else {
             needsViewReset = true; // Mark for reset, generation will happen when shown/reset
@@ -730,7 +745,6 @@ private double constrainPanX(double panX) {
             pendingInPlaceUpdate = true;
             return;
         }
-        regenerateTimer.stop();
         updateTimer.restart(); // Restart update timer to debounce
     }
 
@@ -999,8 +1013,6 @@ private double constrainPanX(double panX) {
                 requestRenderForPage(pageInfo, targetZoom);
             }
         }
-        // Repaint immediately to show placeholders or potentially already cached images
-        repaint();
     }
 
     /**

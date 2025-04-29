@@ -13,19 +13,15 @@
  */
 package megameklab.printing;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
@@ -34,7 +30,6 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGRectElement;
 
@@ -54,6 +49,7 @@ import megameklab.util.UnitUtil;
  */
 public class PrintMek extends PrintEntity {
     private static final MMLogger logger = MMLogger.create(PrintMek.class);
+    private static final int EXTEND_DAMAGE_LINETHROUGH_LENGTH = 2;
 
     /**
      * The current Mek being printed.
@@ -542,24 +538,27 @@ public class PrintMek extends PrintEntity {
             addTextElement(canvas, x + fontSize / 2, viewY - 1, text, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
-
+        final double fontHeight = getFontHeight(fontSize);
         for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
                 currY += gap;
             }
+            CriticalSlot crit = mek.getCritical(loc, slot);
+            String weight = SVGConstants.SVG_BOLD_VALUE;
+            String fill = FILL_BLACK;
+            if (crit != null && crit.isDamaged()) {
+                addLineThrough(canvas, viewX-EXTEND_DAMAGE_LINETHROUGH_LENGTH, currY-(fontHeight/4), (critX-viewX)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+            }
             addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
-            CriticalSlot crit = mek.getCritical(loc, slot);
-            String style = SVGConstants.SVG_BOLD_VALUE;
-            String fill = FILL_BLACK;
             if ((null == crit)
                     || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                             && (!crit.getMount().getType().isHittable()))) {
-                style = SVGConstants.SVG_NORMAL_VALUE;
+                weight = SVGConstants.SVG_NORMAL_VALUE;
                 fill = FILL_GREY;
                 addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
                 int damage = 0;
                 final boolean isDamagedPip = damage > 0;
@@ -569,13 +568,17 @@ public class PrintMek extends PrintEntity {
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() : FILL_WHITE);
                 canvas.appendChild(pip);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
-                String critName = formatCritName(crit);
-                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill, crit.isDamaged());
-                x = critX + getTextLength(critName, fontSize);
+                final String critName = formatCritName(crit);
+                final double textLength = getTextLength(critName, fontSize, weight);
+                if (crit.isDamaged()) {
+                    addLineThrough(canvas, critX, currY-(fontHeight/4), textLength+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                }
+                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
+                x = critX + textLength;
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
                 double radius = spacing * 0.25;
@@ -597,8 +600,12 @@ public class PrintMek extends PrintEntity {
                     x += spacing;
                 }
             } else {
-                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill, crit.isDamaged());
+                final String critName = formatCritName(crit);
+                if (crit.isDamaged()) {
+                    addLineThrough(canvas, critX, currY-(fontHeight/4), getTextLength(critName, fontSize, weight)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                }
+                addTextElement(canvas, critX, currY, critName, fontSize,
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)

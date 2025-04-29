@@ -3,12 +3,12 @@
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
+ * MegaMekLab is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License (GPL),
  * version 3 or (at your option) any later version,
  * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
+ * MegaMekLab is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -24,6 +24,11 @@
  * 
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
  * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
@@ -34,6 +39,7 @@ import javax.swing.JFrame;
 
 import megamek.common.Entity;
 import megamek.common.MULParser;
+import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MulDndBehaviour;
@@ -41,26 +47,32 @@ import megameklab.ui.MulDndBehaviour;
 public class MULManager {
     private static final MMLogger logger = MMLogger.create(MULManager.class);
     
-    public static void processMULFile(File file, JFrame owner) {
+    public static void processMULFile(File file, @Nullable JFrame owner) {
         int behaviourValue = CConfig.getIntParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR);
         MulDndBehaviour[] allValues = MulDndBehaviour.values();
         MulDndBehaviour selectedBehaviour = MulDndBehaviour.PRINT;
         if (behaviourValue >= 0 && behaviourValue < allValues.length) {
             selectedBehaviour = allValues[behaviourValue];
         }
-        switch (selectedBehaviour) {
-            case PRINT:
-                // Print
-                UnitPrintManager.printMUL(owner, false, file);
-                break;
-            case EXPORT:
-                // Export to PDF
-                UnitPrintManager.printMUL(owner, true, file);
-                break;
-            case LOAD_FORCE:
-                // Load into Force Builder
-                loadForceFromMUL(file);
-                break;
+        if (selectedBehaviour == MulDndBehaviour.LOAD_FORCE) {
+            loadForceFromMUL(file);
+            return;
+        }
+        JFrame dummyOwner = null;
+        if (owner == null) {
+            dummyOwner = new JFrame("MegaMekLab - Print Queue");
+            dummyOwner.setUndecorated(true);
+            dummyOwner.setSize(0, 0);
+            dummyOwner.setLocationRelativeTo(null);
+            dummyOwner.setVisible(true);
+            owner = dummyOwner;
+        }
+        try {
+            UnitPrintManager.printMUL(owner, selectedBehaviour == MulDndBehaviour.EXPORT, file);
+        } finally {
+            if (dummyOwner != null) {
+                dummyOwner.dispose();
+            }
         }
     }
 

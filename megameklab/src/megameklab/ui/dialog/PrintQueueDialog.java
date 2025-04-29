@@ -344,7 +344,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                 return;
             }
         } else {
-            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected(), options);
+            if (!UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected(), options)) {
+                return;
+            }
         }
         super.okButtonActionPerformed(evt);
     }
@@ -573,6 +575,16 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             var end   = indices[indices.length - 1];
             return end - start == indices.length - 1;
         }
+    }
+
+    @Override
+    protected void okAction() {
+        dispose();
+    }
+
+    @Override
+    protected void cancelAction() {
+        dispose();
     }
 
     // TODO: Move to UIUtil

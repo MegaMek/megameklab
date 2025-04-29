@@ -56,6 +56,7 @@ public class InventoryWriter {
 
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
+    private static final int DAMAGE_LINETHROUGH_MARGIN = 8;
     /**
      * The minimum font size to use when scaling inventory text to fit into
      * available space
@@ -400,6 +401,9 @@ public class InventoryWriter {
                     lines++;
                 }
             }
+            if (sheet.showQuirks() && entry.hasQuirks()) {
+                lines++;
+            }
         }
         return lines;
     }
@@ -521,36 +525,38 @@ public class InventoryWriter {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
+            final double xPosition = (viewX + viewWidth * 0.025);
+            final double textWidth = viewWidth * 0.95;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
+                lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         fuelText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
-                        viewWidth * 0.95, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
+                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
+            final double totalHeight = lines * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - lines * lineHeight));
+                            viewY + viewHeight - totalHeight));
         }
     }
 
@@ -669,9 +675,13 @@ public class InventoryWriter {
      */
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
+        final double fontHeight = sheet.getFontHeight(fontSize);
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
+                if (line.isDamaged()) {
+                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontHeight/4), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
+                }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
@@ -695,13 +705,13 @@ public class InventoryWriter {
                                 lines = sheet.addMultilineTextElement(canvas, colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', line.isDamaged());
+                                        SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ');
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ', line.isDamaged());
+                                        SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE, PrintRecordSheet.FILL_BLACK, ' ');
                             }
                             break;
                         case LOCATION:
@@ -716,9 +726,10 @@ public class InventoryWriter {
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
+                            final float rightPadding = (fontSize / 2);
                             lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
                                     yPosition,
-                                    colX[i + 1] - colX[i] - fontSize, lineHeight, line.getDamageField(row),
+                                    colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
@@ -755,6 +766,13 @@ public class InventoryWriter {
                             break;
                     }
                 }
+                yPosition += lineHeight * lines;
+            }
+            if (sheet.showQuirks() && line.hasQuirks()) {
+                int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
+                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), lineHeight*0.9,
+                            line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
             }
         }
@@ -895,7 +913,7 @@ public class InventoryWriter {
             int count = 1;
             for (int size : ship.getGravDecks()) {
                 String gravityString = "Grav Deck #" + count + ": " + size + "-meters";
-                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, "start", "normal");
+                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                 yPosition += lineHeight;
                 if (count == (ship.getGravDecks().size() / 2)) {
                     yPosition = currY;

@@ -92,4 +92,14 @@ public class AR10InventoryEntry implements InventoryEntry {
     public boolean indentMultiline() {
         return false;
     }
+
+    @Override
+    public boolean hasQuirks() {
+        return false;
+    }
+
+    @Override
+    public String getQuirksField() {
+        return "";
+    }
 }

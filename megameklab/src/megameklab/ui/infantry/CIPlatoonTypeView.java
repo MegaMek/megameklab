@@ -43,6 +43,7 @@ import megameklab.ui.listeners.InfantryBuildListener;
  * @author Neoancient
  */
 public class CIPlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
+    private static final int MAX_NUM_SQUADS = 5;
     List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
@@ -232,7 +233,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
-        spnNumSquadsModel.setMaximum(maxSize / spnSquadSizeModel.getNumber().intValue());
+        spnNumSquadsModel.setMaximum(Math.min(MAX_NUM_SQUADS, (maxSize / spnSquadSizeModel.getNumber().intValue())));
         spnSquadSizeModel.setMaximum(maxSquad);
         spnNumSquads.addChangeListener(this);
         spnSquadSize.addChangeListener(this);
