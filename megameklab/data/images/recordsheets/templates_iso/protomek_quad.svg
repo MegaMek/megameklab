@@ -567,7 +567,7 @@
          transform="matrix(0.94,0,0,0.94,9.838,11.25)"
          id="g43">
         <g
-           id="armor_diagram_protomech_quad"
+           id="armor_diagram_protomek_quad"
            transform="matrix(1,0,0,-1,-488.94017,690.48224)">
           <g
              id="g2708"
@@ -718,257 +718,271 @@
                  id="tspan3038">Head</tspan></text>
           </g>
         </g>
-        <g
-           fill="none"
-           id="armorPips">
-          <g
-             id="armorPipsHD"
-             transform="translate(39.8,17.28)">
             <g
-               id="armorPipsHDSection01">
-              <rect
-                 x="-8.1000004"
-                 width="16.200001"
-                 y="0"
-                 height="3.2"
-                 id="armorHDRow00" />
-              <rect
-                 x="-8.1000004"
-                 width="16.200001"
-                 y="1.3"
-                 height="3.2"
-                 id="armorHDRow01" />
-              <rect
-                 x="-8.1000004"
-                 width="16.200001"
-                 y="2.5999999"
-                 height="3.2"
-                 id="armorHDRow02" />
+               fill="none"
+               id="armorPips">
+               <g
+                  style="mml-multisection:true"
+                  id="armorPipsHD"
+                  transform="translate(39.8,17.28)">
+                  <g
+                     id="armorPipsHDSection01">
+                     <rect
+                        x="-8.1"
+                        width="16.2"
+                        y="0"
+                        height="3.2"
+                        id="armorHDRow00" />
+                     <rect
+                        x="-8.1"
+                        width="16.2"
+                        y="1.3"
+                        height="3.2"
+                        id="armorHDRow01" />
+                     <rect
+                        x="-8.1"
+                        width="16.2"
+                        y="2.6"
+                        height="3.2"
+                        id="armorHDRow02" />
+                  </g>
+                  <g
+                     id="armorPipsHDSection02">
+                     <rect
+                        x="-7.5"
+                        width="15"
+                        y="7.8"
+                        height="3.2"
+                        id="armorHDRow03" />
+                     <rect
+                        x="-6.9"
+                        width="13.8"
+                        y="9.1"
+                        height="3.2"
+                        id="armorHDRow04" />
+                     <rect
+                        x="-6.7"
+                        width="13.4"
+                        y="10.4"
+                        height="3.2"
+                        id="armorHDRow05" />
+                  </g>
+               </g>
+               <g
+                  id="armorPipsT"
+                  transform="translate(39.8,35.08)">
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="0"
+                     height="3.2"
+                     id="armorTRow00"
+                     style="mml-gap:-8.7,8.7" />
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="2.6"
+                     height="3.2"
+                     id="armorTRow01" />
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="5.2"
+                     height="3.2"
+                     id="armorTRow03" />
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="7.8"
+                     height="3.2"
+                     id="armorTRow04" />
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="10.4"
+                     height="3.2"
+                     id="armorTRow05" />
+                  <rect
+                     x="-25"
+                     width="50"
+                     y="13"
+                     height="3.2"
+                     id="armorTRow06" />
+               </g>
+               <g
+                  id="armorPipsL"
+                  transform="translate(39.8,68.58)">
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="7.8"
+                     height="3.2"
+                     id="armorLRow00"
+                     style="mml-gap:-9,9" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="10.4"
+                     height="3.2"
+                     id="armorLRow01"
+                     style="mml-gap:-10,10" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="13"
+                     height="3.2"
+                     id="armorLRow02"
+                     style="mml-gap:-11,11" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="15.6"
+                     height="3.2"
+                     id="armorLRow03"
+                     style="mml-gap:-11,11" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="18.2"
+                     height="3.2"
+                     id="armorLRow04"
+                     style="mml-gap:-11,11" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="20.8"
+                     height="3.2"
+                     id="armorLRow05"
+                     style="mml-gap:-10.7,10.7" />
+                  <rect
+                     x="-22"
+                     width="44"
+                     y="23.4"
+                     height="3.2"
+                     id="armorLRow06"
+                     style="mml-gap:-8.8,8.8" />
+                  <rect
+                     x="-20"
+                     width="40"
+                     y="26"
+                     height="3.2"
+                     id="armorLRow07"
+                     style="mml-gap:-8.8,8.8" />
+                  <rect
+                     x="-20"
+                     width="40"
+                     y="28.6"
+                     height="3.2"
+                     id="armorLRow08"
+                     style="mml-gap:-8.8,8.8" />
+               </g>
+               <g
+                  id="armorPipsMG"
+                  transform="translate(19.035,3.78)">
+                  <rect
+                     x="-1.5"
+                     width="3"
+                     y="0"
+                     height="3.2"
+                     id="armorMGRow00" />
+                  <rect
+                     x="-3.1"
+                     width="6.2"
+                     y="1.3"
+                     height="3.2"
+                     id="armorMGRow01" />
+                  <rect
+                     x="-3.75"
+                     width="7.5"
+                     y="2.6"
+                     height="3.2"
+                     id="armorMGRow02" />
+                  <rect
+                     x="-4"
+                     width="8"
+                     y="3.9"
+                     height="3.2"
+                     id="armorMGRow03" />
+                  <rect
+                     x="-3.9"
+                     width="7.8"
+                     y="5.2"
+                     height="3.2"
+                     id="armorMGRow04" />
+               </g>
             </g>
             <g
-               id="armorPipsHDSection02">
-              <rect
-                 x="-7.5"
-                 width="15"
-                 y="7.8000002"
-                 height="3.2"
-                 id="armorHDRow03" />
-              <rect
-                 x="-6.9000001"
-                 width="13.8"
-                 y="9.1000004"
-                 height="3.2"
-                 id="armorHDRow04" />
-              <rect
-                 x="-6.6999998"
-                 width="13.4"
-                 y="10.4"
-                 height="3.2"
-                 id="armorHDRow05" />
+               fill="none"
+               id="structurePips">
+               <g
+                  id="structurePipsHD"
+                  transform="translate(39.8,22.48)">
+                  <rect
+                     x="-7.4"
+                     width="14.8"
+                     y="0"
+                     height="2.6"
+                     id="structureHDRow00" />
+               </g>
+               <g
+                  id="structurePipsT"
+                  transform="translate(39.8,50.68)">
+                  <rect
+                     x="-23.2"
+                     width="46.4"
+                     y="0"
+                     height="2.6"
+                     id="structureTRow00" />
+                  <rect
+                     x="-20"
+                     width="40"
+                     y="2.6"
+                     height="2.6"
+                     id="structureTRow01" />
+               </g>
+               <g
+                  id="structurePipsL"
+                  transform="translate(39.8,68.58)">
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="0"
+                     height="2.6"
+                     id="structureLRow00"
+                     style="mml-gap:-4,4" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="2.6"
+                     height="2.6"
+                     id="structureLRow01"
+                     style="mml-gap:-4.5,4.5" />
+                  <rect
+                     x="-27.5"
+                     width="55"
+                     y="5.2"
+                     height="2.6"
+                     id="structureLRow02"
+                     style="mml-gap:-5.7,5.7" />
+               </g>
+               <g
+                  id="structurePipsMG"
+                  transform="translate(19.035,3.78)">
+                  <rect
+                     x="-3.3"
+                     width="6.6"
+                     y="6.5"
+                     height="2.6"
+                     id="structureMGRow00" />
+                  <rect
+                     x="-2.4"
+                     width="4.8"
+                     y="7.8"
+                     height="2.6"
+                     id="structureMGRow01" />
+               </g>
             </g>
-          </g>
-          <g
-             id="armorPipsT"
-             transform="translate(39.8,35.08)">
-            <rect
-               x="-25"
-               width="50"
-               y="0"
-               height="3.2"
-               id="armorTRow00" />
-            <rect
-               x="-25"
-               width="50"
-               y="2.5999999"
-               height="3.2"
-               id="armorTRow01" />
-            <rect
-               x="-25"
-               width="50"
-               y="5.1999998"
-               height="3.2"
-               id="armorTRow03" />
-            <rect
-               x="-25"
-               width="50"
-               y="7.8000002"
-               height="3.2"
-               id="armorTRow04" />
-            <rect
-               x="-25"
-               width="50"
-               y="10.4"
-               height="3.2"
-               id="armorTRow05" />
-            <rect
-               x="-25"
-               width="50"
-               y="13"
-               height="3.2"
-               id="armorTRow06" />
-          </g>
-          <g
-             id="armorPipsL"
-             transform="translate(39.8,68.58)">
-            <rect
-               x="-27.5"
-               width="55"
-               y="7.8000002"
-               height="3.2"
-               id="armorLRow00" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="10.4"
-               height="3.2"
-               id="armorLRow01" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="13"
-               height="3.2"
-               id="armorLRow02" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="15.6"
-               height="3.2"
-               id="armorLRow03" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="18.200001"
-               height="3.2"
-               id="armorLRow04" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="20.799999"
-               height="3.2"
-               id="armorLRow05" />
-            <rect
-               x="-22"
-               width="44"
-               y="23.4"
-               height="3.2"
-               id="armorLRow06" />
-            <rect
-               x="-20"
-               width="40"
-               y="26"
-               height="3.2"
-               id="armorLRow07" />
-            <rect
-               x="-20"
-               width="40"
-               y="28.6"
-               height="3.2"
-               id="armorLRow08" />
-          </g>
-          <g
-             id="armorPipsMG"
-             transform="translate(19.035,3.78)">
-            <rect
-               x="-1.5"
-               width="3"
-               y="0"
-               height="3.2"
-               id="armorMGRow00" />
-            <rect
-               x="-3.0999999"
-               width="6.1999998"
-               y="1.3"
-               height="3.2"
-               id="armorMGRow01" />
-            <rect
-               x="-3.75"
-               width="7.5"
-               y="2.5999999"
-               height="3.2"
-               id="armorMGRow02" />
-            <rect
-               x="-4"
-               width="8"
-               y="3.9000001"
-               height="3.2"
-               id="armorMGRow03" />
-            <rect
-               x="-3.9000001"
-               width="7.8000002"
-               y="5.1999998"
-               height="3.2"
-               id="armorMGRow04" />
-          </g>
-        </g>
-        <g
-           fill="none"
-           id="structurePips">
-          <g
-             id="structurePipsHD"
-             transform="translate(39.8,22.48)">
-            <rect
-               x="-7.4000001"
-               width="14.8"
-               y="0"
-               height="2.5999999"
-               id="structureHDRow00" />
-          </g>
-          <g
-             id="structurePipsT"
-             transform="translate(39.8,50.68)">
-            <rect
-               x="-23.200001"
-               width="46.400002"
-               y="0"
-               height="2.5999999"
-               id="structureTRow00" />
-            <rect
-               x="-20"
-               width="40"
-               y="2.5999999"
-               height="2.5999999"
-               id="structureTRow01" />
-          </g>
-          <g
-             id="structurePipsL"
-             transform="translate(39.8,68.58)">
-            <rect
-               x="-27.5"
-               width="55"
-               y="0"
-               height="2.5999999"
-               id="structureLRow00" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="2.5999999"
-               height="2.5999999"
-               id="structureLRow01" />
-            <rect
-               x="-27.5"
-               width="55"
-               y="5.1999998"
-               height="2.5999999"
-               id="structureLRow02" />
-          </g>
-          <g
-             id="structurePipsMG"
-             transform="translate(19.035,3.78)">
-            <rect
-               x="-3.3"
-               width="6.5999999"
-               y="6.5"
-               height="2.5999999"
-               id="structureMGRow00" />
-            <rect
-               x="-2.4000001"
-               width="4.8000002"
-               y="7.8000002"
-               height="2.5999999"
-               id="structureMGRow01" />
-          </g>
-        </g>
-      </g>
+         </g>
       <g
          transform="translate(5.3376345)"
          id="g44">
