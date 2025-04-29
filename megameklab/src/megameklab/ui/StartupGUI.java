@@ -72,7 +72,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame = new JFrame("MegaMekLab");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         lastDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
-        tipOfTheDay = new TipOfTheDay(resourceMap.getString("tipOfTheDay.title.text"), "megameklab.resources.TipOfTheDay", frame);
+        tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"), "megameklab.resources.TipOfTheDay", frame);
         setupDpiChangeListeners();
         initComponents();
     }
