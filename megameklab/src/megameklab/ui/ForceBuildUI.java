@@ -392,6 +392,18 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         }
     }
 
+    // Instance method to remove all entities
+    public void removeAllEntities() {
+        for (int index = forceList.size() - 1; index >= 0; index--) {
+            tableModel.removeRow(index);
+            Entity entity = forceList.remove(index);
+            C3Util.disconnectFromNetwork(client.getGame(), List.of(entity));
+            client.getGame().removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
+        }
+        refreshTableContent();
+    }
+
     private void updateTotalBVLabelOnly() {
         int totalBV = 0;
         for (Entity entity : forceList) {
@@ -532,15 +544,39 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         });
         rowPopupMenu.add(miCurrentUnitBVBreakdown);
 
+        // --- Duplicate Item ---
+        JMenuItem duplicateItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.duplicate.text"));
+        duplicateItem.addActionListener(e -> {
+            for (Entity entity : selectedEntities) {
+                Entity clonedEntity = UnitUtil.cloneUnit(entity);
+                UnitUtil.resetUnit(clonedEntity);
+                clonedEntity.setCrew(new Crew(entity.defaultCrewType()));
+                addEntity(clonedEntity);
+            }
+        });
+        rowPopupMenu.add(duplicateItem);
+
         // --- Delete Item ---
         rowPopupMenu.addSeparator();
-        JMenuItem deleteItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.delete.text"));
-        deleteItem.addActionListener(e -> {
+        JMenuItem removeItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.remove.text"));
+        removeItem.addActionListener(e -> {
             for (Entity entity : selectedEntities) {
                 removeEntity(entity);
             }
         });
-        rowPopupMenu.add(deleteItem);
+        rowPopupMenu.add(removeItem);
+        // --- Delete All Item ---
+        JMenuItem removeAllItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.removeAll.text"));
+        removeAllItem.addActionListener(e -> {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS) || (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,
+            dialogResources.getString("ForceBuildDialog.removeAllDialog.body.text"),
+            dialogResources.getString("ForceBuildDialog.removeAllDialog.title.text"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE))) {
+                    removeAllEntities();
+                }
+        });
+        rowPopupMenu.add(removeAllItem);
     }
 
     private void createCenterPane() {
