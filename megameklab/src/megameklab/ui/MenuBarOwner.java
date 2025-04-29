@@ -78,33 +78,6 @@ public interface MenuBarOwner extends AppCloser {
     void refreshMenuBar();
 
     /**
-     * Creates a new main UI frame for the given unit type and disposes the
-     * existing frame (this MenuBarOwner).
-     *
-     * @param type an int corresponding to the unit type to construct
-     */
-    default void newUnit(long type) {
-        newUnit(type, false);
-    }
-
-    /**
-     * Creates a new main UI frame for the given unit type and disposes the
-     * existing frame (this MenuBarOwner).
-     *
-     * @param type an int corresponding to the unit type to construct
-     * @param primitive true when the new unit should be a primitive type
-     */
-    default void newUnit(long type, boolean primitive) {
-        if (safetyPrompt()) {
-            getFrame().setVisible(false);
-            getFrame().dispose();
-            CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
-            CConfig.saveConfig();
-            UiLoader.loadUi(type, primitive, false);
-        }
-    }
-
-    /**
      * Sets the look and feel for the application and lets Swing update the current
      * components.
      *
