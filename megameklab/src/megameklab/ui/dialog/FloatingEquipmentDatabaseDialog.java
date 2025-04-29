@@ -63,7 +63,6 @@ public class FloatingEquipmentDatabaseDialog extends AbstractMMLDialog {
             //helping the GC
             equipmentDatabase.removeAll();
         }
-        removeAll();
         dispose();
     }
 }
