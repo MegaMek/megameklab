@@ -15,15 +15,12 @@
  */
 package megameklab.ui;
 
+import megamek.common.EnhancedTabbedPane;
 import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MekFileParser;
 import megamek.common.Mounted;
-import megamek.common.loaders.MtfFile;
+import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
+import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.logging.MMLogger;
-import megameklab.ui.util.EnhancedTabbedPane;
-import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
-import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
@@ -34,8 +31,6 @@ import java.awt.*;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public abstract class MegaMekLabMainUI extends JPanel
         implements RefreshListener, EntitySource, FileNameManager {
