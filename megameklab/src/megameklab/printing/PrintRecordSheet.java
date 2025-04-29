@@ -837,7 +837,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, false, FILL_BLACK, ' ');
+                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, ' ');
     }
 
     /**
@@ -866,7 +866,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fontStyle) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, fontStyle, false, FILL_BLACK, ' ');
+                text, fontSize, anchor, weight, fontStyle, FILL_BLACK, ' ');
     }
 
     /**
@@ -896,38 +896,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter) {
-        return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, fontStyle, false, fill, delimiter);
-    }
-
-    /**
-     * Adds a text element to a region with limited width. If there are multiple
-     * lines, the text
-     * will be split over multiple lines, broken on the provided character. The line
-     * break character
-     * will be included on the next line.
-     *
-     * @param canvas     The parent <code>SVGElement</code> to the new
-     *                   <code>Text</code>.
-     * @param x          The x coordinate of the upper left corner of the text
-     *                   region
-     * @param y          The y coordinate of the upper left corner of the text
-     *                   region
-     * @param width      The allowable width of the text element.
-     * @param lineHeight The amount to increase the y coordinate for a new line
-     * @param text       The text to add
-     * @param fontSize   The font-size attribute
-     * @param anchor     The text-anchor attribute
-     * @param weight     The font-weight attribute
-     * @param fontStyle The font style, e.g., normal or italic.
-     * @param linethrough Whether to add a strikethrough line to the text
-     * @param fill       The fill color for the text (e.g. foreground color)
-     * @param delimiter  The character to use as an acceptable line ending
-     *
-     * @return The number of lines of text added
-     */
-    protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle, boolean linethrough, String fill,char delimiter) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
         // in text
@@ -938,9 +906,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             double textLength = getTextLength(text, fontSize, weight, fontStyle);
             if (textLength <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
-                if (linethrough) {
-                    addLineThrough(canvas, x, y-(getFontHeight(fontSize)/2), textLength);
-                }
                 lines++;
                 return lines;
             }
@@ -950,9 +915,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
-                if (linethrough) {
-                    addLineThrough(canvas, x, y-(getFontHeight(fontSize)/2), textLength);
-                }
                 lines++;
                 return lines;
             }
@@ -965,9 +927,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     || ((textLength > width)
                             && (pos > 0))) {
                 addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill);
-                if (linethrough) {
-                    addLineThrough(canvas, x, y+(getFontHeight(fontSize)/2), textLength);
-                }
                 lines++;
                 y += lineHeight;
                 text = text.substring(pos);
