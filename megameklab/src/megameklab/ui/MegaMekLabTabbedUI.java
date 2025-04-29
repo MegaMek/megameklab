@@ -246,9 +246,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     // Left click - directly create a new unit
-                    MegaMekLabMainUI newUi = UiLoader.getUI(Entity.ETYPE_MEK, false, false);
-                    newUi.setTabOwner(MegaMekLabTabbedUI.this);
-                    addTab(newUi);
+                    createNewUnit(Entity.ETYPE_MEK, false, false);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     // Right click - show popup menu
                     showNewUnitPopupMenu(button);
@@ -326,9 +324,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     private JMenuItem newUnitItem(String name, long entityType, boolean primitive) {
         JMenuItem item = new JMenuItem(name);
         item.addActionListener(e -> {
-            MegaMekLabMainUI newUi = UiLoader.getUI(entityType, primitive, false);
-            newUi.setTabOwner(MegaMekLabTabbedUI.this);
-            addTab(newUi);
+            createNewUnit(entityType, primitive, primitive);
         });
         return item;
     }
@@ -516,7 +512,37 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * The name is misleading, this is actually the Switch Unit Type operation!
+     * Create a new blank editor of the given unit type.
+     *
+     * @param type       the type of unit to load for the new editor UI
+     * @param primitive  whether the unit is primitive
+     * @param industrial whether the unit is an IndustrialMek
+     * @return the index of the newly created tab
+     */
+    public void createNewUnit(long type, boolean primitive, boolean industrial) {
+        createNewUnit(type, primitive, industrial, tabs.getTabCount());
+    }
+
+    /**
+     * Create a new blank editor of the given unit type.
+     *
+     * @param type       the type of unit to load for the new editor UI
+     * @param primitive  whether the unit is primitive
+     * @param industrial whether the unit is an IndustrialMek
+     * @param tabIndex  the index at which to insert the new tab
+     * @return the index of the newly created tab
+     */
+    private void createNewUnit(long type, boolean primitive, boolean industrial, int tabIndex) {
+        MegaMekLabMainUI editor = UiLoader.getUI(type, primitive, industrial);
+        editors.add(editor);
+        final Entity entity = editor.getEntity();
+        final String tabName = entity.getShortNameRaw();
+        tabs.addCloseableTab(tabName, null, editor, tabIndex);
+        editor.setTabOwner(this);
+        tabs.setSelectedIndex(tabIndex);
+    }
+
+    /**
      * Replaces the current editor with a new blank one of the given unit type.
      * Disposes of the old editor UI after the new one is initialized.
      *
@@ -524,34 +550,24 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      * @param primitive  whether the unit is primitive
      * @param industrial whether the unit is an IndustrialMek
      */
-    private void newUnit(long type, boolean primitive, boolean industrial) {
+    private void switchUnit(long type, boolean primitive, boolean industrial) {
         final int index = tabs.getSelectedIndex();
         if (index < 0) {
             return; // No tab selected, nothing to do
         }
-        MegaMekLabMainUI editor = UiLoader.getUI(type, primitive, industrial);
-        if (!editors.contains(editor)) {
-            editors.add(editor);
-        }
-        final Entity entity = editor.getEntity();
-        final String tabName = entity.getShortNameRaw();
-        tabs.addCloseableTab(tabName, null, editor, index);
-        editor.setTabOwner(this);
-        tabs.setSelectedIndex(index);
+        createNewUnit(type, primitive, industrial, index);
         closeTabAt(index+1); // Close the old tab
     }
 
     /**
-     * The name is misleading, this is actually the Switch Unit Type operation!
      * Replaces the current editor with a new blank one of the given unit type.
      * Disposes of the old editor UI after the new one is initialized.
      *
      * @param type      the type of unit to load for the new editor UI
      * @param primitive whether the unit is primitive
      */
-    @Override
-    public void newUnit(long type, boolean primitive) {
-        newUnit(type, primitive, false);
+    public void switchUnit(long type, boolean primitive) {
+        switchUnit(type, primitive, false);
     }
 
     /**

@@ -25,6 +25,7 @@ import megamek.common.Configuration;
 import megamek.common.Entity;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
@@ -104,6 +105,14 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         }
     }
 
+    private void createNewUnit(long type) {
+        getFrame().setVisible(false);
+        CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
+        CConfig.saveConfig();
+        UiLoader.loadUi(type, false, false);
+        getFrame().dispose();
+    }
+
     private void initComponents() {
         SkinSpecification skinSpec = SkinXMLHandler.getSkin(UIComponents.MainMenuBorder.getComp(), true);
 
@@ -128,39 +137,39 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         MegaMekButton btnNewMek = new MegaMekButton(resourceMap.getString("btnNewMek.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewMek.addActionListener(evt -> newUnit(Entity.ETYPE_MEK));
+        btnNewMek.addActionListener(evt -> createNewUnit(Entity.ETYPE_MEK));
 
         MegaMekButton btnNewVee = new MegaMekButton(resourceMap.getString("btnNewVee.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewVee.addActionListener(evt -> newUnit(Entity.ETYPE_TANK));
+        btnNewVee.addActionListener(evt -> createNewUnit(Entity.ETYPE_TANK));
 
         MegaMekButton btnNewSupportVee = new MegaMekButton(resourceMap.getString("btnNewSupportVee.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewSupportVee.addActionListener(evt -> newUnit(Entity.ETYPE_SUPPORT_TANK));
+        btnNewSupportVee.addActionListener(evt -> createNewUnit(Entity.ETYPE_SUPPORT_TANK));
 
         MegaMekButton btnNewBA = new MegaMekButton(resourceMap.getString("btnNewBA.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewBA.addActionListener(evt -> newUnit(Entity.ETYPE_BATTLEARMOR));
+        btnNewBA.addActionListener(evt -> createNewUnit(Entity.ETYPE_BATTLEARMOR));
 
         MegaMekButton btnNewAero = new MegaMekButton(resourceMap.getString("btnNewAero.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewAero.addActionListener(evt -> newUnit(Entity.ETYPE_AERO));
+        btnNewAero.addActionListener(evt -> createNewUnit(Entity.ETYPE_AERO));
 
         MegaMekButton btnNewDropper = new MegaMekButton(resourceMap.getString("btnNewDropper.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewDropper.addActionListener(evt -> newUnit(Entity.ETYPE_DROPSHIP));
+        btnNewDropper.addActionListener(evt -> createNewUnit(Entity.ETYPE_DROPSHIP));
 
         MegaMekButton btnNewLargeCraft = new MegaMekButton(resourceMap.getString("btnNewLargeCraft.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewLargeCraft.addActionListener(evt -> newUnit(Entity.ETYPE_JUMPSHIP));
+        btnNewLargeCraft.addActionListener(evt -> createNewUnit(Entity.ETYPE_JUMPSHIP));
 
         MegaMekButton btnNewProto = new MegaMekButton(resourceMap.getString("btnNewProto.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewProto.addActionListener(evt -> newUnit(Entity.ETYPE_PROTOMEK));
+        btnNewProto.addActionListener(evt -> createNewUnit(Entity.ETYPE_PROTOMEK));
 
         MegaMekButton btnNewPbi = new MegaMekButton(resourceMap.getString("btnNewPbi.text"),
                 UIComponents.MainMenuButton.getComp(), true);
-        btnNewPbi.addActionListener(evt -> newUnit(Entity.ETYPE_INFANTRY));
+        btnNewPbi.addActionListener(evt -> createNewUnit(Entity.ETYPE_INFANTRY));
 
         MegaMekButton btnQuit = new MegaMekButton(resourceMap.getString("btnQuit.text"),
                 UIComponents.MainMenuButton.getComp(), true);
