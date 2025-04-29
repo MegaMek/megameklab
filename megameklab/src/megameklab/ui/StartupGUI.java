@@ -54,6 +54,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     MenuBar mmlMenuBar;
     JLabel splash;
     private double lastDpiScaleFactor;
+    private static volatile StartupGUI instance = null;
 
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
@@ -66,7 +67,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
     private TipOfTheDay tipOfTheDay;
 
-    public StartupGUI() {
+    private StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
         frame = new JFrame("MegaMekLab");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -128,6 +129,27 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         Point newTopLeft = new Point(oldCenter.x - newSize.width / 2,
                                      oldCenter.y - newSize.height / 2);
         frame.setLocation(newTopLeft);
+    }
+
+    /**
+     * Checks if the StartupGUI instance is already created.
+     * 
+     * @return
+     */
+    static public boolean hasInstance() {
+        return instance != null;
+    }
+
+    /**
+     * Returns the instance of the StartupGUI. If it does not exist, it creates a new one.
+     * 
+     * @return The instance of the StartupGUI.
+     */
+    static public StartupGUI getInstance() {
+        if (instance == null) {
+            instance = new StartupGUI();
+        }
+        return instance;
     }
 
     @Override

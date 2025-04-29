@@ -27,6 +27,7 @@ public class RecordSheetOptions {
     private PaperSize paperSize;
     private boolean color;
     private boolean quirks;
+    private boolean c3bv;
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
@@ -50,6 +51,7 @@ public class RecordSheetOptions {
         }
         this.color = CConfig.getBooleanParam(CConfig.RS_COLOR);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
+        this.c3bv = CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
@@ -69,6 +71,7 @@ public class RecordSheetOptions {
         paperSize = options.paperSize;
         color = options.color;
         quirks = options.quirks;
+        c3bv = options.c3bv;
         pilotData = options.pilotData;
         eraIcon = options.eraIcon;
         role = options.role;
@@ -101,11 +104,20 @@ public class RecordSheetOptions {
     public boolean showPilotData() {
         return pilotData;
     }
+
+    public boolean showC3inBV() {
+        return c3bv;
+    }
+
     public boolean showRole() {
         return role;
     }
     public boolean showHeatProfile() {
         return heatProfile;
+    }
+
+    public void setC3inBV(boolean enable) {
+        this.c3bv = enable;
     }
 
     public void setPilotData(boolean pilotData) {

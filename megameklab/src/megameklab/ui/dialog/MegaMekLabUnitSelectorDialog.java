@@ -72,6 +72,13 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
         }
         initialize();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                closeWithoutSelection();
+            }
+        });
         setupDoubleClickListener();
         setupRecordSheetTab();
         run();
@@ -100,6 +107,13 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
         this.entityPickCallback = entityPickCallback;
         initialize();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                closeWithoutSelection();
+            }
+        });
         setupDoubleClickListener();
         // This overrides the default close behavior to avoid selecting another unit
         // when closing with ESC or the Close button. AbstractUnitSelectorDialog should
@@ -228,6 +242,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     void closeWithoutSelection() {
         chosenEntity = null;
+        chosenEntities = null;
         setVisible(false);
     }
 

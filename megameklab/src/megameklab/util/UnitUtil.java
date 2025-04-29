@@ -33,26 +33,76 @@
 package megameklab.util;
 
 import java.awt.Font;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import megamek.common.*;
+import megamek.client.Client;
+import megamek.common.Aero;
+import megamek.common.AmmoType;
+import megamek.common.BattleArmor;
+import megamek.common.Crew;
+import megamek.common.CriticalSlot;
+import megamek.common.Entity;
+import megamek.common.EntityWeightClass;
+import megamek.common.EquipmentFlag;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.FixedWingSupport;
+import megamek.common.Game;
+import megamek.common.GunEmplacement;
+import megamek.common.HandheldWeapon;
+import megamek.common.ITechManager;
+import megamek.common.ITechnology;
+import megamek.common.Infantry;
+import megamek.common.Jumpship;
+import megamek.common.LocationFullException;
+import megamek.common.Mek;
+import megamek.common.MekFileParser;
+import megamek.common.MiscType;
+import megamek.common.Mounted;
+import megamek.common.Player;
+import megamek.common.ProtoMek;
+import megamek.common.SimpleTechLevel;
+import megamek.common.SmallCraft;
+import megamek.common.SmallWeaponAmmoType;
+import megamek.common.Tank;
+import megamek.common.TechConstants;
+import megamek.common.Transporter;
+import megamek.common.VTOL;
+import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.loaders.BLKFile;
+import megamek.common.options.OptionsConstants;
 import megamek.common.util.BuildingBlock;
-import megamek.common.verifier.*;
+import megamek.common.verifier.EntityVerifier;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestEntity.Ceil;
+import megamek.common.verifier.TestHandheldWeapon;
+import megamek.common.verifier.TestInfantry;
+import megamek.common.verifier.TestMek;
+import megamek.common.verifier.TestProtoMek;
+import megamek.common.verifier.TestSmallCraft;
+import megamek.common.verifier.TestSupportVehicle;
+import megamek.common.verifier.TestTank;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -84,6 +134,25 @@ public class UnitUtil {
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
+    private static Client dummyClient = new Client("", "", 0);
+    private static Player dummyPlayer = new Player(1, "");
+
+    static {
+        final Game game = dummyClient.getGame();
+        game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
+        game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
+        game.addPlayer(1, dummyPlayer);
+        dummyClient.setLocalPlayerNumber(1);
+    }
+
+    /**
+     * Returns a Client object that is used for internal calculations of the units.
+     * 
+     * @return A Client object
+     */
+    public static Client getDummyClient() {
+        return dummyClient;
+    }
 
     /**
      * Tells us if the passed in {@link EquipmentType} is equipment that uses critical slots/mounted and is spread
@@ -1266,6 +1335,10 @@ public class UnitUtil {
     }
 
     public static void updateLoadedUnit(Entity unit) {
+        // Add Entity to a dummy game
+        unit.setGame(getDummyClient().getGame());
+        unit.setOwner(getDummyClient().getLocalPlayer());
+
         // Check for illegal armor tech levels and set to the tech level of the unit.
         for (int loc = 0; loc < unit.locations(); loc++) {
             if (unit.getArmorType(loc) >= 0) {
@@ -2030,4 +2103,120 @@ public class UnitUtil {
         }
     }
 
+    /**
+     * Clone an entity. This method creates a deep copy of the entity, including all its properties and references.
+     * @param entity The entity to copy
+     * @return The copied entity
+     */
+    static public Entity cloneUnit(Entity entity) {
+        try {
+            Entity newEntity = null;
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+                    // Serialize the entities
+                    objectOutputStream.writeObject(entity);
+                    objectOutputStream.flush();
+                    byte[] serializedData = byteArrayOutputStream.toByteArray();
+
+                    // Deserialize to create new instances
+                    try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedData)) {
+                        try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
+                            newEntity = (Entity) objectInputStream.readObject();
+                        }
+                    }
+                }
+            }                    
+            newEntity.setGame(entity.getGame());
+            newEntity.setOwner(entity.getOwner());
+            return newEntity;
+        } catch (Exception e) {
+            logger.error(e, "Failed to break references for entity {}", entity);
+            return null;
+        }
+    }
+
+    /**
+     * Reset the damage of the unity to its original state.
+     * @param entity The entity to reset
+     * @return The copied entity
+     */
+    static public void resetUnit(Entity entity) {
+        for (Mounted<?> mounted : entity.getEquipment()) {
+            if (mounted instanceof MiscMounted misc) {
+                misc.setDamageTaken(0);
+            }
+            mounted.setHit(false);
+            mounted.setDestroyed(false);
+            mounted.setMissing(false);
+            mounted.setJammed(false);
+            mounted.setBreached(false);
+            mounted.setFired(false);
+            mounted.setDumping(false);
+        }
+        for (int loc = 0; loc < entity.locations(); loc++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+                CriticalSlot cs = entity.getCritical(loc, slot);
+                if (cs != null) {
+                    cs.setDestroyed(false);
+                    cs.setMissing(false);
+                    cs.setBreached(false);
+                    cs.setHit(false);
+                }
+            }
+            entity.setInternal(entity.getOInternal(loc), loc);
+            entity.setArmor(entity.getOArmor(loc), loc);
+            if (entity.hasRearArmor(loc)) {
+                entity.setArmor(entity.getOArmor(loc, true), loc, true);
+            }
+        }
+        if (entity instanceof Aero aero) {
+            aero.setSI(aero.getOSI());
+        }
+        for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+            Crew crew = entity.getCrew();
+            crew.setHits(0, i);
+            crew.setDead(false, i);
+        }
+    }
+
+    static public boolean isDamaged(Entity entity, boolean includeCrew) {
+        for (Mounted<?> mounted : entity.getEquipment()) {
+            if (mounted.isHit() || mounted.isDestroyed() || mounted.isMissing()) {
+                return true;
+            }
+        }
+        for (int loc = 0; loc < entity.locations(); loc++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+                CriticalSlot cs = entity.getCritical(loc, slot);
+                if (cs != null && (cs.isDamaged() || cs.isMissing())) {
+                    return true;
+                }
+            }
+        }
+        if (entity instanceof Aero aero) {
+            if (aero.getSI() != aero.getOSI()) {
+                return true;
+            }
+        }
+        for (int loc = 0; loc < entity.locations(); loc++) {
+            if (entity.getInternal(loc) != entity.getOInternal(loc)) {
+                return true;
+            }
+            if (entity.getArmor(loc) != entity.getOArmor(loc)) {
+                return true;
+            }
+            if (entity.hasRearArmor(loc) && (entity.getArmor(loc, true) != entity.getOArmor(loc, true))) {
+                return true;
+            }
+        }
+        if (includeCrew) {
+            for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+                Crew crew = entity.getCrew();
+                if ((crew.getHits(i)>0) || crew.isDead(i)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
