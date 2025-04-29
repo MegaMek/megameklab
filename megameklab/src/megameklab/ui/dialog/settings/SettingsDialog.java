@@ -83,11 +83,13 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
             GUIPreferences.getInstance().setValue(GUIPreferences.GUI_SCALE, miscSettingsPanel.guiScale());
             MegaMekLab.updateGuiScaling();
         }
+        dispose();
     }
 
     @Override
     protected void cancelAction() {
         CConfig.loadConfigFile();
+        dispose();
     }
 
     private static class SettingsScrollPane extends JScrollPane {

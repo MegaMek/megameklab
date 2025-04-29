@@ -54,19 +54,25 @@ public class MULManager {
         if (behaviourValue >= 0 && behaviourValue < allValues.length) {
             selectedBehaviour = allValues[behaviourValue];
         }
-        switch (selectedBehaviour) {
-            case PRINT:
-                // Print
-                UnitPrintManager.printMUL(owner, false, file);
-                break;
-            case EXPORT:
-                // Export to PDF
-                UnitPrintManager.printMUL(owner, true, file);
-                break;
-            case LOAD_FORCE:
-                // Load into Force Builder
-                loadForceFromMUL(file);
-                break;
+        if (selectedBehaviour == MulDndBehaviour.LOAD_FORCE) {
+            loadForceFromMUL(file);
+            return;
+        }
+        JFrame dummyOwner = null;
+        if (owner == null) {
+            dummyOwner = new JFrame("MegaMekLab - Print Queue");
+            dummyOwner.setUndecorated(true);
+            dummyOwner.setSize(0, 0);
+            dummyOwner.setLocationRelativeTo(null);
+            dummyOwner.setVisible(true);
+            owner = dummyOwner;
+        }
+        try {
+            UnitPrintManager.printMUL(owner, selectedBehaviour == MulDndBehaviour.EXPORT, file);
+        } finally {
+            if (dummyOwner != null) {
+                dummyOwner.dispose();
+            }
         }
     }
 
