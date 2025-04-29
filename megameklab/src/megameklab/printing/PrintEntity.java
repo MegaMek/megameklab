@@ -332,7 +332,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) rect.getParentNode();
                         String spaText = "Abilities: " + spaList;
-                        float fontSize = FONT_SIZE_MEDIUM;
+                        float fontSize = FONT_SIZE_MEDIUM * 0.9f;
                         if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
                             fontSize = (float) bbox.getHeight() / 2.4f;
                         }
