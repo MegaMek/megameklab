@@ -340,7 +340,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
                                 bbox.getWidth(), lineHeight, spaText, fontSize,
                                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                SVGConstants.SVG_ITALIC_VALUE, false, FILL_BLACK, ' ');
+                                SVGConstants.SVG_ITALIC_VALUE);
                     }
                 }
 
