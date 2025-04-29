@@ -8,33 +8,12 @@
    preserveAspectRatio="xMidYMid meet"
    version="1.0"
    id="svg67"
-   sodipodi:docname="protomek_biped.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs67" />
-  <sodipodi:namedview
-     id="namedview67"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showguides="true"
-     inkscape:zoom="6.3663194"
-     inkscape:cx="138.30597"
-     inkscape:cy="59.610581"
-     inkscape:window-width="1435"
-     inkscape:window-height="941"
-     inkscape:window-x="39"
-     inkscape:window-y="44"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="g11" />
   <g
      id="rs_template">
     <g
@@ -46,16 +25,14 @@
          stroke-width="5.2"
          stroke-linejoin="round"
          stroke="#c7c7c7"
-         id="path1"
-         sodipodi:nodetypes="ccccccccccccc" />
+         id="path1" />
       <path
          fill="#ffffff"
          d="M 0,8.214 5.475,0 h 82.038 l 5.475,8.214 h 455.037 l 5.475,8.214 v 119.558 l -5.475,8.214 H 95.988 l -5.475,-8.214 H 5.475 L 0,127.772 Z"
          stroke-width="1.932"
          stroke-linejoin="round"
          stroke="#000000"
-         id="path2"
-         sodipodi:nodetypes="ccccccccccccc" />
+         id="path2" />
       <g
          transform="translate(2.5,3)"
          id="g3">
@@ -191,16 +168,14 @@
            stroke-width="0.95"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path8"
-           sodipodi:nodetypes="ccccccccc" />
+           id="path8" />
         <g
            transform="translate(2.5,3)"
            id="g9">
           <path
              fill="#000000"
              d="M -2,5.625 1.749,0 h 164.643 l 3.749,5.625 -3.749,5.625 H 1.749 Z"
-             id="path9"
-             sodipodi:nodetypes="ccccccc" />
+             id="path9" />
           <text
              x="84.057999"
              y="8.4379997"
@@ -230,8 +205,7 @@
            stroke-width="0.95"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path11"
-           sodipodi:nodetypes="ccccccccc" />
+           id="path11" />
         <g
            transform="translate(2.5,3)"
            id="g12">
@@ -1233,8 +1207,7 @@
            stroke-width="0.95"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path49"
-           sodipodi:nodetypes="ccccccccccc" />
+           id="path49" />
         <g
            transform="translate(2.5,3)"
            id="g50">
@@ -1272,8 +1245,7 @@
          d="m 32.073,22.668 h 93.355"
          stroke-width="0.72"
          stroke-linejoin="round"
-         stroke="#000000"
-         sodipodi:nodetypes="cc" />
+         stroke="#000000" />
       <text
          x="9.8450003"
          y="30.941"
@@ -1418,14 +1390,13 @@
     </g>
     <text
        x="99.667"
-       y="130.2"
+       y="140.2"
        fill="#000000"
        text-anchor="start"
        style="font-style:normal;font-weight:bold;font-size:6.2px;font-family:Eurostile"
        textLength="9.0459995"
        lengthAdjust="spacingAndGlyphs"
-       id="text66"
-       transform="translate(0,10)">BV:</text>
+       id="text66">BV:</text>
     <text
        fill="#000000"
        x="111.806"
@@ -1435,14 +1406,13 @@
        text-anchor="start">0</text>
     <text
        x="146"
-       y="130.2"
+       y="140.2"
        fill="#000000"
        text-anchor="start"
        style="font-style:normal;font-weight:bold;font-size:6.2px;font-family:Eurostile"
        textLength="18.711"
        lengthAdjust="spacingAndGlyphs"
-       id="text67"
-       transform="translate(0,10)">Armor:</text>
+       id="text67">Armor:</text>
     <text
        fill="#000000"
        x="167.804"

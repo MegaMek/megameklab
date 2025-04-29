@@ -8,32 +8,12 @@
    preserveAspectRatio="xMidYMid meet"
    version="1.0"
    id="svg71"
-   sodipodi:docname="protomek_glider.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs71" />
-  <sodipodi:namedview
-     id="namedview71"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.1631944"
-     inkscape:cx="121.08013"
-     inkscape:cy="69.708014"
-     inkscape:window-width="1920"
-     inkscape:window-height="1121"
-     inkscape:window-x="-7"
-     inkscape:window-y="-7"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g70" />
   <g
      style="mml-color-elements:"
      id="rs_template">
@@ -191,8 +171,7 @@
            stroke-width="0.95"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path9"
-           sodipodi:nodetypes="ccccccccc" />
+           id="path9" />
         <g
            transform="translate(2.5,3)"
            id="g10">
@@ -1441,14 +1420,13 @@
     </g>
     <text
        x="99.667"
-       y="130.2"
+       y="140.2"
        fill="#000000"
        text-anchor="start"
        style="font-style:normal;font-weight:bold;font-size:6.2px;font-family:Eurostile"
        textLength="9.0459995"
        lengthAdjust="spacingAndGlyphs"
-       id="text70"
-       transform="translate(0,10)">BV:</text>
+       id="text70">BV:</text>
     <text
        fill="#000000"
        x="111.806"
@@ -1458,14 +1436,13 @@
        text-anchor="start">0</text>
     <text
        x="146"
-       y="130.2"
+       y="140.2"
        fill="#000000"
        text-anchor="start"
        style="font-style:normal;font-weight:bold;font-size:6.2px;font-family:Eurostile"
        textLength="18.711"
        lengthAdjust="spacingAndGlyphs"
-       id="text71"
-       transform="translate(0,10)">Armor:</text>
+       id="text71">Armor:</text>
     <text
        fill="#000000"
        x="167.804"
