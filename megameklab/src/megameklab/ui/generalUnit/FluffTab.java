@@ -514,24 +514,26 @@ public class FluffTab extends ITab implements FocusListener {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog, false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            try {
-                Image fluffImage = FluffImageHelper.getFluffImage(chosenEntity);
-                if (fluffImage == null) {
-                    PopupMessages.showNoFluffImage(getParent());
-                    return;
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                try {
+                    Image fluffImage = FluffImageHelper.getFluffImage(chosenEntity);
+                    if (fluffImage == null) {
+                        PopupMessages.showNoFluffImage(getParent());
+                        return;
+                    }
+                    eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
+                    refresh.refreshPreview();
+                } catch (Exception ex) {
+                    PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
+                    logger.error("Fluff could not be copied!", ex);
                 }
-                eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
-                refresh.refreshPreview();
-            } catch (Exception ex) {
-                PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
-                logger.error("Fluff could not be copied!", ex);
             }
+        } finally {          
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
-        unitLoadingDialog.dispose();
         refreshGUI();
     }
 

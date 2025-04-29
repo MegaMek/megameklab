@@ -515,6 +515,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             Entity entity = selectedEntities.get(0);
             UnitEditorDialog med = new UnitEditorDialog(null, entity);
             med.setVisible(true);
+            med.dispose();
             MegaMekLabTabbedUI.refreshEntity(entity);
         });
         rowPopupMenu.add(editDamage);
@@ -877,12 +878,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 warnOnInvalid(selectedEntities);
                 addEntities(selectedEntities);
               });
-        List<Entity> selectedEntities = viewer.getChosenEntities();
-        if (selectedEntities != null && !selectedEntities.isEmpty()) {
-            warnOnInvalid(selectedEntities);
-            addEntities(selectedEntities);
+        try {
+            List<Entity> selectedEntities = viewer.getChosenEntities();
+            if (selectedEntities != null && !selectedEntities.isEmpty()) {
+                warnOnInvalid(selectedEntities);
+                addEntities(selectedEntities);
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     public void selectAndLoadUnitFromFile() {
@@ -1118,6 +1123,14 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         // Update table in case of BV or Pilot changes
         refreshTableContent();
         MegaMekLabTabbedUI.refreshEntity(entity);
+        
+        if (cmd.isOkay() && (cmd.getStatus() != CustomMekDialog.DONE)) {
+            Entity nextEnt = cmd.getNextEntity(cmd.getStatus() == CustomMekDialog.NEXT);
+            cmd.dispose();
+            openEntityConfiguration(nextEnt);
+        } else {
+            cmd.dispose();
+        }
     }
     
     @Override

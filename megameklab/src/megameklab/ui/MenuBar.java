@@ -1046,11 +1046,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            UnitUtil.showValidation(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                UnitUtil.showValidation(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
@@ -1058,11 +1062,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -1070,12 +1078,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {

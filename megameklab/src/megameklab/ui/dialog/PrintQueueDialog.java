@@ -406,8 +406,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
               unitLoadingDialog,
               dialog -> entitiesSelected(dialog.getChosenEntities()));
         var entities = viewer.getChosenEntities();
+        unitLoadingDialog.dispose();
         viewer.dispose();
-
         entitiesSelected(entities);
     }
 

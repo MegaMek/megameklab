@@ -370,12 +370,16 @@ public class UnitPrintManager {
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();
 
-        if (entity != null) {
-            if (pdf) {
-                exportEntity(entity, parent);
-            } else {
-                printEntity(entity);
+        try {
+            if (entity != null) {
+                if (pdf) {
+                    exportEntity(entity, parent);
+                } else {
+                    printEntity(entity);
+                }
             }
+        } finally {
+            unitLoadingDialog.dispose();
             viewer.dispose();
         }
     }
