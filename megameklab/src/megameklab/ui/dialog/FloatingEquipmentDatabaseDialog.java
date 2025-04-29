@@ -56,4 +56,9 @@ public class FloatingEquipmentDatabaseDialog extends AbstractMMLDialog {
     protected Container createCenterPane() {
         return equipmentDatabase;
     }
+
+    @Override
+    protected void cancelAction() {
+        dispose();
+    }
 }
