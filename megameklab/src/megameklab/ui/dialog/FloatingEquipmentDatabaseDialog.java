@@ -59,6 +59,11 @@ public class FloatingEquipmentDatabaseDialog extends AbstractMMLDialog {
 
     @Override
     protected void cancelAction() {
+        if (equipmentDatabase != null) {
+            //helping the GC
+            equipmentDatabase.removeAll();
+        }
+        removeAll();
         dispose();
     }
 }
