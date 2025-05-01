@@ -405,6 +405,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineChanged(Engine engine) {
         getSV().setEngine(engine);
+
+        if (engine.getEngineType() == Engine.NONE) {
+            getSV().setOriginalWalkMP(0);
+        }
+
         // Switching between maglev and non-maglev engines changes movement mode
         if (TestSupportVehicle.SVType.RAIL.equals(TestSupportVehicle.SVType.getVehicleType(getSV()))) {
             getSV().setMovementMode(
