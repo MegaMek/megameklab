@@ -874,7 +874,7 @@ public class InventoryWriter {
                 case MRV:
                 case LRV:
                 case ERV:
-                    sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, Column.BAY_COLUMNS[i].header, FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 default:
