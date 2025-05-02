@@ -29,6 +29,7 @@ import megamek.common.EquipmentType;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
@@ -153,9 +154,34 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             location = locString.toString();
             StringBuilder nameString = new StringBuilder(weaponType.getShortName());
             if (bay.weaponAmmo.containsKey(weaponType)) {
-                Mounted<?> ammo = bay.weaponAmmo.get(weaponType);
+                List<Mounted<?>> ammoList = bay.weaponAmmo.get(weaponType);
+                Mounted<?> ammo = ammoList.get(0);
                 if (weaponType.getAmmoType() == AmmoType.T_AR10) {
-                    nameString.append(" (").append((int) ammo.getSize()).append(" ton capacity)");
+                    nameString.append(" (");
+                    
+                    StringJoiner ammoDetails = new StringJoiner(", ");
+                    ammoList.forEach(e -> {
+                            if (e instanceof AmmoMounted am) {
+                                String originalAmmoShortName = am.getShortName();
+                                String displayAmmoName;
+                                switch (originalAmmoShortName) {
+                                    case "Barracuda":
+                                        displayAmmoName = "B";
+                                        break;
+                                    case "White Shark":
+                                        displayAmmoName = "WS";
+                                        break;
+                                    case "Killer Whale":
+                                        displayAmmoName = "KW";
+                                        break;
+                                    default:
+                                        displayAmmoName = originalAmmoShortName;
+                                }
+                                ammoDetails.add(am.getBaseShotsLeft() + " " + displayAmmoName);
+                            }
+                        });
+                    nameString.append(ammoDetails.toString());
+                    nameString.append(")");
                 } else if (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" missiles)");
                 } else {

@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -301,11 +302,12 @@ public class InventoryWriter {
                 standardWeapons.add(m);
             }
         }
-        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons);
+        List<AmmoMounted> ammos = sheet.getEntity().getAmmo();
+        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammos);
         for (WeaponBayText text : list) {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, true));
         }
-        list = computeWeaponBayTexts(standardWeapons);
+        list = computeWeaponBayTexts(standardWeapons, ammos);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
@@ -335,13 +337,19 @@ public class InventoryWriter {
      * @param weapons A list of weapon bays
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
+    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons, List<AmmoMounted> ammos) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
             for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
-                wbt.addBayWeapon(weaponMounted);
+                if (!wbt.addBayWeapon(weaponMounted)) continue;
+                for (AmmoMounted ammo : ammos) {
+                    if (ammo.getLocation() == weaponMounted.getLocation()
+                    && weaponMounted.getType().getAmmoType() == ammo.getType().getAmmoType()) {
+                        wbt.addBayAmmo(weaponMounted.getType(), ammo);
+                    }
+                }
             }
             // Combine or add
             boolean combined = false;
