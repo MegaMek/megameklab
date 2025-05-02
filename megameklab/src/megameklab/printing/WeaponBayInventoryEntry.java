@@ -162,22 +162,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                     StringJoiner ammoDetails = new StringJoiner(", ");
                     ammoList.forEach(e -> {
                             if (e instanceof AmmoMounted am) {
-                                String originalAmmoShortName = am.getShortName();
-                                String displayAmmoName;
-                                switch (originalAmmoShortName) {
-                                    case "Barracuda":
-                                        displayAmmoName = "B";
-                                        break;
-                                    case "White Shark":
-                                        displayAmmoName = "WS";
-                                        break;
-                                    case "Killer Whale":
-                                        displayAmmoName = "KW";
-                                        break;
-                                    default:
-                                        displayAmmoName = originalAmmoShortName;
-                                }
-                                ammoDetails.add(am.getBaseShotsLeft() + " " + displayAmmoName);
+                                ammoDetails.add(am.getBaseShotsLeft() + " " + am.getShortName());
                             }
                         });
                     nameString.append(ammoDetails.toString());
