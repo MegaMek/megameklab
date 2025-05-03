@@ -1211,32 +1211,38 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         // set up the contents
         JPanel child = new JPanel();
         child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
+        child.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // set the text up.
         JLabel version = new JLabel(String.format(resources.getString("menu.help.about.version.format"),
                 MMLConstants.VERSION));
-        JLabel license1 = new JLabel(resources.getString("menu.help.about.license.1"));
-        JLabel license2 = new JLabel(resources.getString("menu.help.about.license.2"));
-        JLabel license3 = new JLabel(resources.getString("menu.help.about.info.1"));
-        JLabel license4 = new JLabel(resources.getString("menu.help.about.info.2"));
+        JEditorPane body = new JEditorPane();
+        body.setContentType("text/html");
+        body.setEditable(false);
+        body.setOpaque(false);
+        body.setText(resources.getString("menu.help.about.text"));
+
+        body.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                if (java.awt.Desktop.isDesktopSupported()) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (Exception ex) {
+                        logger.error("Could not open link: " + e.getURL(), ex);
+                    }
+                }
+            }
+        });
 
         // center everything
         version.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license3.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license4.setAlignmentX(Component.CENTER_ALIGNMENT);
+        body.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // add to child panel
         child.add(new JLabel("\n"));
         child.add(version);
         child.add(new JLabel("\n"));
-        child.add(license1);
-        child.add(license2);
-        child.add(new JLabel("\n"));
-        child.add(license3);
-        child.add(license4);
-        child.add(new JLabel("\n"));
+        child.add(body);
 
         // then add child panel to the content pane.
         dlg.getContentPane().add(child);
@@ -1257,13 +1263,25 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
 
         // set the text up.
-        JTextArea recordSheetImageHelp = new JTextArea();
-
+        JEditorPane recordSheetImageHelp = new JEditorPane();
+        recordSheetImageHelp.setContentType("text/html");
         recordSheetImageHelp.setEditable(false);
+        recordSheetImageHelp.setOpaque(false);
+        recordSheetImageHelp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         recordSheetImageHelp.setText(resources.getString("menu.help.imageHelp.text"));
-        // center everything
-        recordSheetImageHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        recordSheetImageHelp.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                if (java.awt.Desktop.isDesktopSupported()) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (Exception ex) {
+                        logger.error("Could not open link: " + e.getURL(), ex);
+                    }
+                }
+            }
+        });
 
         // add to child panel
         child.add(recordSheetImageHelp);
