@@ -156,14 +156,14 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         if (!weaponAmmo.keySet().equals(other.weaponAmmo.keySet())) {
             return false;
         }
-        // Now, for each weapon type, compare the 
+        // Now we compare the ammo sets of each weapon
         for (WeaponType weaponType : weaponAmmo.keySet()) {
-            // Calculate total shots for this weapon type in 'this' bay
             List<Mounted<?>> ammoListThis = weaponAmmo.get(weaponType);
             List<Mounted<?>> ammoListOther = other.weaponAmmo.get(weaponType);
             if (ammoListThis == null || ammoListOther == null) {
                 return false;
             }
+            // If the number of ammo types is different, the ammo doesn't match
             if (ammoListThis.size() != ammoListOther.size()) {
                 return false;
             }
