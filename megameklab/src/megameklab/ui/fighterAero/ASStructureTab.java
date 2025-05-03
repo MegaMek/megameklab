@@ -398,6 +398,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         if (getAero().isOmni()) {
             getAero().setPodHeatSinks(Math.max(0, count - panHeat.getBaseCount()));
         }
+        panHeat.setFromAero(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

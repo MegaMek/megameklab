@@ -89,9 +89,13 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblPrototypeCount = new JLabel();
     private final JSpinner spnPrototypeCount = new JSpinner();
     private final JLabel lblCritFreeText = new JLabel();
-    private final JLabel lblCritFreeCount = new JLabel();
+    private final JTextField lblCritFreeCount = new JTextField();
     private final JLabel lblWeightFreeText = new JLabel();
-    private final JLabel lblWeightFreeCount = new JLabel();
+    private final JTextField lblWeightFreeCount = new JTextField();
+    private final JLabel lblTotalDissipationText = new JLabel();
+    private final JTextField lblTotalDissipationCount = new JTextField();
+    private final JLabel lblMaxHeatText = new JLabel();
+    private final JTextField lblMaxHeatCount = new JTextField();
     private final JLabel lblRiscHeatSinkKit = new JLabel();
     private final JCheckBox chkRiscHeatSinkKit = new JCheckBox();
 
@@ -150,6 +154,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         add(lblCritFreeText, gbc);
         gbc.gridx = 4;
         lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip"));
+        lblCritFreeCount.setEditable(false);
+        lblCritFreeCount.setHorizontalAlignment(JTextField.RIGHT);
         add(lblCritFreeCount, gbc);
 
         spnBaseCount.setModel(baseCountModel);
@@ -178,7 +184,29 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         add(lblWeightFreeText, gbc);
         gbc.gridx = 1;
         lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip"));
+        lblWeightFreeCount.setEditable(false);
+        lblWeightFreeCount.setHorizontalAlignment(JTextField.RIGHT);
         add(lblWeightFreeCount, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        lblTotalDissipationText.setText(resourceMap.getString("HeatSinkView.lblTotalDissipation.text"));
+        add(lblTotalDissipationText, gbc);
+        gbc.gridx = 1;
+        lblTotalDissipationCount.setToolTipText(resourceMap.getString("HeatSinkView.lblTotalDissipation.tooltip"));
+        lblTotalDissipationCount.setEditable(false);
+        lblTotalDissipationCount.setHorizontalAlignment(JTextField.RIGHT);
+        add(lblTotalDissipationCount, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        lblMaxHeatText.setText(resourceMap.getString("HeatSinkView.lblMaxHeat.text"));
+        add(lblMaxHeatText, gbc);
+        gbc.gridx = 1;
+        lblMaxHeatCount.setToolTipText(resourceMap.getString("HeatSinkView.lblMaxHeat.tooltip"));
+        lblMaxHeatCount.setEditable(false);
+        lblMaxHeatCount.setHorizontalAlignment(JTextField.RIGHT);
+        add(lblMaxHeatCount, gbc);
 
 
         lblRiscHeatSinkKit.setText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.text"));
@@ -252,6 +280,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
+        lblTotalDissipationCount.setText(String.valueOf(mek.formatHeat()));
+        lblMaxHeatCount.setText(String.valueOf(getTotalHeatGeneration(mek)));
 
         showRiscKit(techManager.isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement()));
         if (mek.hasRiscHeatSinkOverrideKit()) {
@@ -285,6 +315,8 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         baseCountModel.setValue(Math.max(0, aero.getHeatSinks() - aero.getPodHeatSinks()));
         spnBaseCount.addChangeListener(this);
         lblWeightFreeCount.setText(String.valueOf(TestAero.weightFreeHeatSinks(aero)));
+        lblTotalDissipationCount.setText(String.valueOf(aero.formatHeat()));
+        lblMaxHeatCount.setText(String.valueOf(getTotalHeatGeneration(aero)));
         lblBaseCount.setVisible(aero.isOmni());
         spnBaseCount.setVisible(aero.isOmni());
         lblPrototypeCount.setVisible(false);
@@ -393,6 +425,11 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         } else {
             listeners.forEach(l -> l.heatSinksChanged(getHeatSinkType(), getCount()));
         }
+    }
+
+    private int getTotalHeatGeneration(Entity entity) {
+        int heat = entity.getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        return heat;
     }
 
 }
