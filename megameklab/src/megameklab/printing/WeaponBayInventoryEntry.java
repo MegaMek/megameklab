@@ -60,20 +60,6 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         processBay();
     }
 
-
-    
-            // // Streaks / iATMs will _all_ hit, if they hit at all.
-            // if (((wt.getAmmoType() == AmmoType.T_SRM_STREAK)
-            //         || (wt.getAmmoType() == AmmoType.T_LRM_STREAK))
-            //         || (wt.getAmmoType() == AmmoType.T_IATM)
-            //                 && !ComputeECM.isAffectedByAngelECM(attacker, attacker
-            //                         .getPosition(), waa.getTarget(g).getPosition(),
-            //                         allECMInfo)) {
-            //     fHits = wt.getRackSize();
-            // }
-
-
-
     private void processBay() {
         for (WeaponType weaponType : bay.weapons.keySet()) {
             int numWeapons = bay.weapons.get(weaponType);
