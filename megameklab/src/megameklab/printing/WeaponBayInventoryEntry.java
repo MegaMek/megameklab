@@ -60,6 +60,20 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         processBay();
     }
 
+
+    
+            // // Streaks / iATMs will _all_ hit, if they hit at all.
+            // if (((wt.getAmmoType() == AmmoType.T_SRM_STREAK)
+            //         || (wt.getAmmoType() == AmmoType.T_LRM_STREAK))
+            //         || (wt.getAmmoType() == AmmoType.T_IATM)
+            //                 && !ComputeECM.isAffectedByAngelECM(attacker, attacker
+            //                         .getPosition(), waa.getTarget(g).getPosition(),
+            //                         allECMInfo)) {
+            //     fHits = wt.getRackSize();
+            // }
+
+
+
     private void processBay() {
         for (WeaponType weaponType : bay.weapons.keySet()) {
             int numWeapons = bay.weapons.get(weaponType);
@@ -72,7 +86,12 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             } else if (weaponType instanceof ATMWeapon || weaponType instanceof CLIATMWeapon) {
                 // The default AVs assume standard ammo. Per footnote on TW, p. 304, the SRV is multiplied
                 // by 1.5 for HE and the long and extreme by 0.5 for ER, both rounded up.
-                double av = Math.ceil(weaponType.getShortAV() * numWeapons * 0.5);
+                double av;
+                if (weaponType instanceof CLIATMWeapon) {
+                    av = weaponType.getShortAV() * numWeapons;
+                } else {
+                    av = Math.ceil(weaponType.getShortAV() * numWeapons * 0.5);
+                }
                 baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
                 bayMRV += Math.round(av / 10.0);
                 bayLRV += Math.round(Math.ceil(av * 0.5) / 10.0);
