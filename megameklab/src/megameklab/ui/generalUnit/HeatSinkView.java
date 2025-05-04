@@ -281,7 +281,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
         lblTotalDissipationCount.setText(String.valueOf(mek.formatHeat()));
-        lblMaxHeatCount.setText(String.valueOf(getTotalHeatGeneration(mek)));
+        lblMaxHeatCount.setText(String.valueOf(UnitUtil.getTotalHeatGeneration(mek)));
 
         showRiscKit(techManager.isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement()));
         if (mek.hasRiscHeatSinkOverrideKit()) {
@@ -316,7 +316,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnBaseCount.addChangeListener(this);
         lblWeightFreeCount.setText(String.valueOf(TestAero.weightFreeHeatSinks(aero)));
         lblTotalDissipationCount.setText(String.valueOf(aero.formatHeat()));
-        lblMaxHeatCount.setText(String.valueOf(getTotalHeatGeneration(aero)));
+        lblMaxHeatCount.setText(String.valueOf(UnitUtil.getTotalHeatGeneration(aero)));
         lblBaseCount.setVisible(aero.isOmni());
         spnBaseCount.setVisible(aero.isOmni());
         lblPrototypeCount.setVisible(false);
@@ -425,11 +425,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         } else {
             listeners.forEach(l -> l.heatSinksChanged(getHeatSinkType(), getCount()));
         }
-    }
-
-    private int getTotalHeatGeneration(Entity entity) {
-        int heat = entity.getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
-        return heat;
     }
 
 }

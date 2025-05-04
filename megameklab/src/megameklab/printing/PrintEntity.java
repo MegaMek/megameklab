@@ -52,6 +52,7 @@ import megamek.common.options.PilotOptions;
 import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
+import megameklab.util.UnitUtil;
 
 /**
  * Base class for printing Entity record sheets
@@ -110,7 +111,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return A String showing the total weapon heat and dissipation.
      */
     protected String heatProfileText() {
-        int heat = getEntity().getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        int heat = UnitUtil.getTotalHeatGeneration(getEntity());
         return "Total Heat (Dissipation): " + heat + " (" + getEntity().formatHeat() + ")";
     }
 
