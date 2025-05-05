@@ -457,7 +457,8 @@ public class UnitUtil {
      * Removes all criticals of the given unit.
      */
     synchronized public static void removeAllCriticals(Entity unit) {
-        removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
+        removeAllCriticalsFrom(unit, IntStream.range(1, unit.locations()).boxed().toList());
+
         // cleanup of remnants if any (should not be needed but we never know)
         unit.getEquipment().stream()
             .filter(m -> (m != null) && (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
@@ -483,7 +484,7 @@ public class UnitUtil {
         }
         // first we remove all criticals
         for (int loc = 0; loc < unit.locations(); loc++) {
-            if (locations.contains(loc)) {
+            if (!locations.contains(loc)) {
                 continue;
             }
             for (int i = 0; i < unit.getNumberOfCriticals(loc); i++) {
@@ -492,12 +493,11 @@ public class UnitUtil {
                     Mounted<?> m1 = cs.getMount();
                     Mounted<?> m2 = cs.getMount2();
                     if ((m2 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m2.getType()))) {
-                        cs.setMount2(null);
+                        UnitUtil.removeCriticals(unit, m2);
                         UnitUtil.changeMountStatus(unit, m2, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     }
                     if ((m1 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m1.getType()))) {
-                        cs.setMount(null);
-                        unit.setCritical(loc, i, null);
+                        UnitUtil.removeCriticals(unit, m1);
                         UnitUtil.changeMountStatus(unit, m1, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     }
                 }
