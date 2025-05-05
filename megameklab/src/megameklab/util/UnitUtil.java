@@ -457,7 +457,7 @@ public class UnitUtil {
      * Removes all criticals of the given unit.
      */
     synchronized public static void removeAllCriticals(Entity unit) {
-        removeAllCriticalsFrom(unit, IntStream.range(1, unit.locations()).boxed().toList());
+        removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
 
         // cleanup of remnants if any (should not be needed but we never know)
         unit.getEquipment().stream()
