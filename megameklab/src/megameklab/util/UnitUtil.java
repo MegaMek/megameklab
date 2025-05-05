@@ -499,8 +499,8 @@ public class UnitUtil {
         }
         // cleanup of remnants if any (should not be needed but we never know)
         unit.getEquipment().stream()
-            .filter(m -> locations.contains(m.getLocation()))
-            .filter(m -> (m != null) && (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+            .filter(m -> (m != null) && locations.contains(m.getLocation()))
+            .filter(m -> (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
             .forEach(m -> {
                 UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
