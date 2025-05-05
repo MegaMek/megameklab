@@ -463,6 +463,7 @@ public class UnitUtil {
         unit.getEquipment().stream()
             .filter(m -> (m != null) && (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
             .forEach(m -> {
+                UnitUtil.removeCriticals(unit, m);
                 UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
     }
@@ -508,6 +509,7 @@ public class UnitUtil {
             .filter(m -> (m != null) && locations.contains(m.getLocation()))
             .filter(m -> (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
             .forEach(m -> {
+                UnitUtil.removeCriticals(unit, m);
                 UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
     }
