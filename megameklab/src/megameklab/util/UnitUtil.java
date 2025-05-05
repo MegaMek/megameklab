@@ -467,7 +467,7 @@ public class UnitUtil {
         // Special handling for BattleArmor
         if (unit instanceof BattleArmor ba) {
             ba.getEquipment().stream()
-                .filter(m -> m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE)
+                .filter(m -> (m != null) && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE))
                 .filter(m -> locations.contains(m.getBaMountLoc()))
                 .forEach(m -> {
                     m.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
