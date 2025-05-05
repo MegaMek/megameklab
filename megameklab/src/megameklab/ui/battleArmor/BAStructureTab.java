@@ -531,6 +531,7 @@ public class BAStructureTab extends ITab
     @Override
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
+        UnitUtil.removeAllCriticalsFrom(getBattleArmor(), List.of(BattleArmor.MOUNT_LOC_LARM, BattleArmor.MOUNT_LOC_RARM, BattleArmor.MOUNT_LOC_TURRET));
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());

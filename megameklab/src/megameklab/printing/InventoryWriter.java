@@ -273,6 +273,17 @@ public class InventoryWriter {
                     && m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
+            /**
+             * BattleArmor have their own special mount points.
+             * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
+             * The solution is to filter out everything that has critical slots (means can't be for squad only)
+             * and is mounted on MOUNT_LOC_NONE
+             */
+            if ((sheet.getEntity() instanceof BattleArmor)
+                && (m.getCriticals() > 0)
+                && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                continue;
+            }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
             StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
             if (null == same) {
