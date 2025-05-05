@@ -89,8 +89,7 @@ public class CVMainUI extends MegaMekLabMainUI {
                 new CVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

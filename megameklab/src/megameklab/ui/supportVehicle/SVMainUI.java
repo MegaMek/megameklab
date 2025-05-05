@@ -96,8 +96,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new SVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

@@ -88,8 +88,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new PMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

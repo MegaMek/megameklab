@@ -81,8 +81,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
