@@ -460,8 +460,7 @@ public class UnitUtil {
         removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
         // cleanup of remnants if any (should not be needed but we never know)
         unit.getEquipment().stream()
-            .filter(m -> (m != null))
-            .filter(m -> (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+            .filter(m -> (m != null) && (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
             .forEach(m -> {
                 UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
