@@ -456,7 +456,7 @@ public class UnitUtil {
     /**
      * Removes all criticals of the given unit.
      */
-    public static void removeAllCriticals(Entity unit) {
+    synchronized public static void removeAllCriticals(Entity unit) {
         removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
         // cleanup of remnants if any (should not be needed but we never know)
         unit.getEquipment().stream()
@@ -469,7 +469,7 @@ public class UnitUtil {
     /**
      * Removes all criticals from the given locations for the given unit.
      */
-    public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
+    synchronized public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
         // Special handling for BattleArmor
         if (unit instanceof BattleArmor ba) {
             ba.getEquipment().stream()
