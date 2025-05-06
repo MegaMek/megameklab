@@ -94,7 +94,7 @@ public class ClusterHitsTable extends ReferenceTable {
             }
             if (entity instanceof BattleArmor) {
                 for (Mounted<?> mounted : entity.getIndividualWeaponList()) {
-                    // We skip equipment that has critical slots and is not in valid a mount location
+                    // We skip equipment that has critical slots and is not in a valid mount location
                     if ((mounted.getCriticals()>0) && (mounted.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) continue;
                     if (mounted.getType() instanceof MissileWeapon) {
                         for (int troopers = 1; troopers <= size; troopers++) {
