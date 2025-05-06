@@ -126,14 +126,7 @@ public class CVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getTank().getEquipment()) {
-            // Fixed shouldn't be removed
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                continue;
-            }
-            UnitUtil.removeCriticals(getTank(), mount);
-            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-        }
+        UnitUtil.removeAllCriticals(getTank());
         // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getTank());

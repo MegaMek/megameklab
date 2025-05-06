@@ -207,8 +207,7 @@ public class WSMainUI extends MegaMekLabMainUI {
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

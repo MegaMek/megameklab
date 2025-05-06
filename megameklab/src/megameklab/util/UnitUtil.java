@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -453,6 +454,67 @@ public class UnitUtil {
     }
 
     /**
+     * Removes all criticals of the given unit.
+     */
+    synchronized public static void removeAllCriticals(Entity unit) {
+        removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
+
+        // cleanup of remnants if any (should not be needed but we never know)
+        unit.getEquipment().stream()
+            .filter(m -> (m != null) && (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+            .forEach(m -> {
+                UnitUtil.removeCriticals(unit, m);
+                UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+    }
+
+    /**
+     * Removes all criticals from the given locations for the given unit.
+     */
+    synchronized public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
+        // Special handling for BattleArmor
+        if (unit instanceof BattleArmor ba) {
+            ba.getEquipment().stream()
+                .filter(m -> (m != null) && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE))
+                .filter(m -> locations.contains(m.getBaMountLoc()))
+                .forEach(m -> {
+                    m.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+                    UnitUtil.changeMountStatus(unit, m, BattleArmor.LOC_SQUAD, BattleArmor.LOC_SQUAD, false);
+                });
+            return;
+        }
+        // first we remove all criticals
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (!locations.contains(loc)) {
+                continue;
+            }
+            for (int i = 0; i < unit.getNumberOfCriticals(loc); i++) {
+                CriticalSlot cs = unit.getCritical(loc, i);
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    Mounted<?> m1 = cs.getMount();
+                    Mounted<?> m2 = cs.getMount2();
+                    if ((m2 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m2.getType()))) {
+                        UnitUtil.removeCriticals(unit, m2);
+                        UnitUtil.changeMountStatus(unit, m2, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    }
+                    if ((m1 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m1.getType()))) {
+                        UnitUtil.removeCriticals(unit, m1);
+                        UnitUtil.changeMountStatus(unit, m1, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    }
+                }
+            }
+        }
+        // cleanup of remnants if any (should not be needed but we never know)
+        unit.getEquipment().stream()
+            .filter(m -> (m != null) && locations.contains(m.getLocation()))
+            .filter(m -> (m.getLocation() != Entity.LOC_NONE) && (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+            .forEach(m -> {
+                UnitUtil.removeCriticals(unit, m);
+                UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            });
+    }
+
+    /**
      * Sets the corresponding critical slots to null for the Mounted object.
      *
      * @param unit The entity
@@ -467,7 +529,7 @@ public class UnitUtil {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    if (cs.getMount().equals(eq)) {
+                    if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
                         // If there are two pieces of equipment in this slot, remove first one, and replace it with the
                         // second
                         if (cs.getMount2() != null) {
@@ -478,7 +540,7 @@ public class UnitUtil {
                             cs = null;
                             unit.setCritical(loc, slot, cs);
                         }
-                    } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
+                    } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
                         cs.setMount2(null);
                     }
                 }
@@ -501,7 +563,7 @@ public class UnitUtil {
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
             if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                if (cs.getMount().equals(eq)) {
+                if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
                     // If there are two pieces of equipment in this slot,
                     // remove first one, and replace it with the second
                     if (cs.getMount2() != null) {
@@ -512,7 +574,7 @@ public class UnitUtil {
                         cs = null;
                         unit.setCritical(loc, slot, cs);
                     }
-                } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
+                } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
                     cs.setMount2(null);
                 }
             }
