@@ -1285,6 +1285,14 @@ public class UnitUtil {
     }
 
     /**
+     * Returns the total heat generation of the entity
+     */
+    public static int getTotalHeatGeneration(Entity entity) {
+        int heat = entity.getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        return heat;
+    }
+
+    /**
      * Determines if the previous critical slot is empty.
      *
      * @param unit     Unit to check.
