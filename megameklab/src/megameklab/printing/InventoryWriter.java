@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -272,6 +273,17 @@ public class InventoryWriter {
                     && m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
+            /**
+             * BattleArmor have their own special mount points.
+             * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
+             * The solution is to filter out everything that has critical slots (means can't be for squad only)
+             * and is mounted on MOUNT_LOC_NONE
+             */
+            if ((sheet.getEntity() instanceof BattleArmor)
+                && (m.getCriticals() > 0)
+                && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                continue;
+            }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
             StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
             if (null == same) {
@@ -301,11 +313,12 @@ public class InventoryWriter {
                 standardWeapons.add(m);
             }
         }
-        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons);
+        List<AmmoMounted> ammos = sheet.getEntity().getAmmo();
+        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammos);
         for (WeaponBayText text : list) {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, true));
         }
-        list = computeWeaponBayTexts(standardWeapons);
+        list = computeWeaponBayTexts(standardWeapons, ammos);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
@@ -335,13 +348,19 @@ public class InventoryWriter {
      * @param weapons A list of weapon bays
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
+    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons, List<AmmoMounted> ammos) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
             for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
-                wbt.addBayWeapon(weaponMounted);
+                if (!wbt.addBayWeapon(weaponMounted)) continue;
+                for (AmmoMounted ammo : ammos) {
+                    if (ammo.getLocation() == weaponMounted.getLocation()
+                    && weaponMounted.getType().getAmmoType() == ammo.getType().getAmmoType()) {
+                        wbt.addBayAmmo(weaponMounted.getType(), ammo);
+                    }
+                }
             }
             // Combine or add
             boolean combined = false;
@@ -874,7 +893,7 @@ public class InventoryWriter {
                 case MRV:
                 case LRV:
                 case ERV:
-                    sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, Column.BAY_COLUMNS[i].header, FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 default:

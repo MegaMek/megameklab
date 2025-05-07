@@ -49,11 +49,11 @@ import megameklab.util.UnitUtil;
 public class ASCriticalView extends IView {
     private static final MMLogger logger = MMLogger.create(ASCriticalView.class);
 
-    private final BAASBMDropTargetCriticalList<String> noseCrits;
-    private final BAASBMDropTargetCriticalList<String> leftWingCrits;
-    private final BAASBMDropTargetCriticalList<String> rightWingCrits;
-    private final BAASBMDropTargetCriticalList<String> aftCrits;
-    private final BAASBMDropTargetCriticalList<String> fuselageCrits;
+    private BAASBMDropTargetCriticalList<String> noseCrits;
+    private BAASBMDropTargetCriticalList<String> leftWingCrits;
+    private BAASBMDropTargetCriticalList<String> rightWingCrits;
+    private BAASBMDropTargetCriticalList<String> aftCrits;
+    private BAASBMDropTargetCriticalList<String> fuselageCrits;
 
     private final JLabel noseSpace = new JLabel();
     private final JLabel leftSpace = new JLabel();
@@ -68,7 +68,11 @@ public class ASCriticalView extends IView {
     public ASCriticalView(EntitySource eSource, RefreshListener refreshListener) {
         super(eSource);
         this.refreshListener = refreshListener;
+        setUI();
+        fillSlots();
+    }
 
+    private void setUI() {
         noseCrits = new BAASBMDropTargetCriticalList<>(
                 new ArrayList<>(), eSource, refreshListener, true, this);
         noseCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
@@ -135,16 +139,7 @@ public class ASCriticalView extends IView {
         add(mainPanel);
     }
 
-    public void updateRefresh(RefreshListener refresh) {
-        this.refreshListener = refresh;
-        noseCrits.setRefresh(refresh);
-        leftWingCrits.setRefresh(refresh);
-        rightWingCrits.setRefresh(refresh);
-        aftCrits.setRefresh(refresh);
-        fuselageCrits.setRefresh(refresh);
-    }
-
-    public void refresh() {
+    private void fillSlots() {
         for (int location = 0; location < getAero().locations(); location++) {
             if (location == Aero.LOC_WINGS) {
                 continue;
@@ -192,6 +187,21 @@ public class ASCriticalView extends IView {
                 aftSpace.setText(usedCritText);
             }
         }
+    }
+
+    public void updateRefresh(RefreshListener refresh) {
+        this.refreshListener = refresh;
+        noseCrits.setRefresh(refresh);
+        leftWingCrits.setRefresh(refresh);
+        rightWingCrits.setRefresh(refresh);
+        aftCrits.setRefresh(refresh);
+        fuselageCrits.setRefresh(refresh);
+    }
+
+    public void refresh() {
+        removeAll();
+        setUI();
+        fillSlots();
     }
 
     private String availableSpace(int location) {

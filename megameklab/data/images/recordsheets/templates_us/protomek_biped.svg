@@ -8,33 +8,12 @@
    preserveAspectRatio="xMidYMid meet"
    version="1.0"
    id="svg67"
-   sodipodi:docname="protomek_biped.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs67" />
-  <sodipodi:namedview
-     id="namedview67"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showguides="true"
-     inkscape:zoom="3.1831597"
-     inkscape:cx="246.13908"
-     inkscape:cy="50.264521"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg67" />
   <g
      id="rs_template">
     <g
@@ -64,7 +43,7 @@
         <text
            fill="#ffffff"
            x="7.9990001"
-           id="protomechIndex"
+           id="protomekIndex"
            y="11.25"
            style="font-style:normal;font-weight:bold;font-size:10.6px;font-family:Eurostile"
            text-anchor="start">PROTOMECH #</text>
@@ -629,30 +608,30 @@
          id="magClampNote">Magnetic Clamp System destroyed on first torso critical</text>
     </g>
     <g
-       transform="translate(476.333,11.786)"
-       id="g49">
+       transform="translate (476.333 11.786)"
+       id="armorDiagram">
       <g
-         transform="translate(5.3376345)"
-         id="g46">
+         transform="translate (5.337634472769196,0.0)"
+         id="g50">
         <path
            fill="#000000"
-           d="M 0,5.625 3.749,0 h 76.493 l 3.749,5.625 -3.749,5.625 H 3.749 Z"
-           id="path45" />
+           d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
+           id="path49" />
         <text
-           x="41.995998"
-           y="8.4379997"
+           x="41.996"
+           y="8.438"
            fill="#ffffff"
            text-anchor="middle"
-           style="font-style:normal;font-weight:bold;font-size:8.6px;font-family:Eurostile"
-           textLength="69.539001"
+           style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
+           textLength="69.539"
            lengthAdjust="spacingAndGlyphs"
-           id="text46">ARMOR DIAGRAM</text>
+           id="text50">ARMOR DIAGRAM</text>
       </g>
       <g
-         transform="matrix(1.008,0,0,1.008,4.8,11.25)"
-         id="g47">
+         transform="matrix(1.008 0 0 1.008 4.800 11.250)"
+         id="g51">
         <g
-           id="armor_diagram_protomech_biped"
+           id="armor_diagram_protomek_biped"
            transform="matrix(1,0,0,-1,-485.35066,668.7845)">
           <g
              id="shadow_MG">
@@ -668,7 +647,7 @@
                id="g2518"
                transform="translate(516.7427,666.7183)">
               <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 style="fill:none;stroke:#c7c8ca;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                  d="m 0,0 c -2.655,0 -4.809,-2.692 -4.809,-6.013 0,-3.321 2.154,-6.014 4.809,-6.014 2.657,0 4.811,2.693 4.811,6.014 C 4.811,-2.692 2.657,0 0,0 Z"
                  id="path2520" />
             </g>
@@ -685,7 +664,7 @@
              id="g2526"
              transform="translate(568.9064,629.486)">
             <path
-               style="fill:none;stroke:#c7c8ca;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#c7c8ca;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -0.568,1.7 -1.133,1.701 -1.985,1.985 -1.417,1.134 -1.418,1.417 -1.418,1.985 -1.982,2.268 -1.702,1.134 -0.568,1.701 -0.849,1.985 -1.703,1.134 -1.983,1.417 -1.7,1.418 -1.419,1.417 -1.868,0.533 0.168,1.167 1.132,0.85 1.702,0.851 1.701,0.284 0.851,1.984 0.849,2.267 -0.565,1.985 -1.135,-0.283 -0.283,-1.418 v -1.133 l -1.133,-0.851 -1.419,-0.283 -0.851,0.566 -0.568,1.134 -1.699,0.283 -1.702,-0.283 -2.267,-0.282 h -4.536 l -1.985,-0.284 -1.984,-0.568 -1.133,-1.133 -2.147,0.268 0.002,0.015 h -2.958 l -2.268,-0.283 -1.135,1.133 -1.984,0.568 -1.985,0.284 h -4.536 l -2.267,0.282 -1.702,0.283 -1.701,-0.283 -0.566,-1.134 -0.852,-0.566 -1.416,0.283 -1.136,0.851 v 1.133 l -0.282,1.418 -1.134,0.283 -0.567,-1.985 0.85,-2.267 0.851,-1.984 1.7,-0.284 1.701,-0.851 1.134,-0.85 0.283,-1.984 0.137,-1.221 -0.42,2.072 -2.835,-0.567 -1.418,-1.417 -1.7,-1.418 -1.984,-1.417 -1.701,-1.134 -0.85,-1.985 -0.567,-1.701 L -71.726,12.19 -73.71,9.922 -75.126,7.937 -76.543,6.52 -77.96,5.386 -79.945,3.401 -81.08,1.7 -81.646,0 l -0.568,-2.269 0.285,-1.983 0.566,-2.269 1.418,-1.701 1.416,-1.701 1.702,-1.417 1.701,-1.134 1.134,-1.418 2.266,-0.567 1.419,-1.134 h 1.418 l 2.267,0.567 1.134,0.567 v 1.134 l -1.417,0.568 -1.417,0.566 v 1.984 l 0.567,1.134 -0.567,0.851 -0.284,1.417 -0.283,1.418 h 0.85 l 0.85,-1.701 0.567,-1.701 0.851,-0.566 0.567,1.7 v 1.701 l -0.851,1.702 -1.134,0.85 -1.417,0.567 v 1.417 l 1.133,0.566 1.702,0.284 1.984,0.568 1.418,0.85 1.418,1.134 1.134,1.701 0.849,0.85 2.305,-0.247 2.958,0.265 -2.738,13.536 -1.391,-0.513 1.136,-1.417 c 0,0 1.416,-0.851 2.267,-0.851 0.85,0 1.701,-0.567 1.701,-0.567 l 2.269,-0.566 1.701,-0.567 1.416,-1.134 1.417,-1.702 1.702,-1.984 1.418,-2.268 1.418,-1.134 h 2.267 l 1.416,1.134 1.419,2.268 1.7,1.984 1.418,1.702 1.419,1.134 1.7,0.567 2.268,0.566 c 0,0 0.85,0.567 1.699,0.567 0.385,0 0.881,0.174 1.313,0.364 l -16.619,4.456 -15.026,-4.252 0.283,-2.552 0.284,-2.835 0.566,-2.552 0.285,-1.984 -0.285,-2.834 -0.566,-2.836 0.284,-2.268 0.567,-2.551 1.132,-2.269 0.03,-0.023 -0.135,0.077 -0.567,-2.268 -0.46,-3.455 0.281,-2.836 v -2.834 l -2.267,-2.836 -1.702,-3.401 -1.984,-2.835 -2.834,-4.535 -0.284,-1.702 -1.417,-1.134 -0.851,-1.417 0.567,-2.835 v -4.819 l 0.284,-1.701 0.567,-1.986 0.85,-1.7 -2.552,-7.371 -1.7,-1.134 -1.134,-0.85 -1.134,-1.702 -1.419,-1.984 -1.417,-1.418 -0.849,-1.133 -0.284,-1.418 h 2.834 l 0.285,-1.417 h 4.818 l 1.702,0.284 2.268,0.282 2.267,0.851 1.986,0.568 1.418,0.85 1.982,0.85 1.986,0.851 1.701,0.567 1.984,0.567 1.418,0.283 1.416,0.851 0.569,1.7 -0.569,1.701 -1.133,2.552 0.284,1.417 c 0,0 0,1.701 -0.284,2.552 -0.283,0.851 0,1.985 0,1.985 l -0.567,3.118 -0.849,1.134 -0.851,1.133 -0.284,1.985 0.284,1.419 0.283,2.834 0.568,1.985 1.982,1.7 1.986,1.985 1.133,1.418 0.568,1.417 1.418,2.268 1.133,0.568 1.134,-0.568 1.418,-2.268 0.567,-1.417 1.134,-1.418 1.985,-1.985 1.984,-1.7 0.568,-1.985 0.282,-2.834 0.285,-1.419 -0.285,-1.985 -0.85,-1.133 -0.851,-1.134 -0.567,-3.118 c 0,0 0.283,-1.134 0,-1.985 -0.284,-0.851 -0.284,-2.552 -0.284,-2.552 l 0.284,-1.417 -1.133,-2.552 -0.568,-1.701 0.568,-1.7 1.416,-0.851 1.418,-0.283 1.985,-0.567 1.701,-0.567 1.984,-0.851 1.984,-0.85 1.418,-0.85 1.984,-0.568 2.268,-0.851 2.267,-0.282 1.701,-0.284 h 4.822 l 0.282,1.417 h 2.834 l -0.283,1.418 -0.851,1.133 -1.416,1.418 -1.418,1.984 -1.134,1.702 -1.133,0.85 -1.703,1.134 -2.55,7.371 0.849,1.7 0.569,1.986 0.283,1.701 v 4.819 l 0.565,2.835 -0.848,1.417 -1.418,1.134 -0.284,1.702 -2.836,4.535 -1.983,2.835 -1.701,3.401 -2.268,2.836 v 2.834 l 0.282,2.836 -0.566,3.401 -0.567,2.268 1.133,2.269 0.568,2.551 0.283,2.268 -0.565,2.836 -0.286,2.834 0.286,1.984 0.565,2.552 0.284,2.835 0.265,2.386 c 0.486,0.22 0.869,0.449 0.869,0.449 l -0.424,1.171 -2.694,-12.512 2.551,-0.565 1.702,0.282 0.849,-0.85 1.134,-1.701 1.418,-1.134 1.418,-0.85 1.985,-0.568 1.7,-0.284 1.135,-0.566 v -1.417 l -1.419,-0.567 -1.133,-0.85 -0.852,-1.702 v -1.701 l 0.569,-1.7 0.848,0.566 0.568,1.701 0.851,1.701 h 0.85 l -0.282,-1.418 -0.285,-1.417 -0.567,-0.851 0.567,-1.134 v -1.984 l -1.418,-0.566 -1.416,-0.568 v -1.134 l 1.132,-0.567 2.269,-0.567 h 1.418 l 1.419,1.134 2.266,0.567 1.134,1.418 1.702,1.134 1.702,1.417 1.416,1.701 1.418,1.701 0.566,2.269 0.283,1.983 z"
                id="path2528" />
           </g>
@@ -701,7 +680,7 @@
              id="g2534"
              transform="translate(560.9679,565.6996)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -0.849,1.134 -1.419,1.418 -1.417,1.983 -1.134,1.702 -1.134,0.85 -1.701,1.134 -2.552,7.372 0.851,1.7 0.567,1.985 0.282,1.701 v 4.818 l 0.569,2.836 -0.851,1.416 -1.418,1.135 -0.281,1.701 -2.838,4.536 -1.983,2.834 -1.702,3.403 -2.267,2.835 v 2.834 l 0.283,2.835 -0.567,3.402 -0.567,2.268 -13.323,-7.654 -13.43,7.708 -0.569,-2.268 -0.46,-3.456 0.284,-2.835 v -2.834 l -2.269,-2.835 -1.701,-3.403 -1.984,-2.834 -2.835,-4.536 -0.283,-1.701 -1.418,-1.135 -0.85,-1.416 0.566,-2.836 v -4.818 l 0.284,-1.701 0.567,-1.985 0.851,-1.7 -2.553,-7.372 -1.7,-1.134 -1.133,-0.85 L -63.218,4.535 -64.637,2.552 -66.054,1.134 -66.905,0 -67.188,-1.417 h 2.834 l 0.284,-1.418 h 4.819 l 1.702,0.283 2.267,0.283 2.269,0.852 1.984,0.566 1.418,0.851 1.985,0.85 1.984,0.851 1.702,0.567 1.983,0.567 1.418,0.284 1.418,0.85 0.567,1.701 -0.567,1.701 -1.134,2.552 0.283,1.417 c 0,0 0,1.701 -0.283,2.551 -0.284,0.85 0,1.985 0,1.985 l -0.567,3.118 -0.851,1.134 -0.849,1.135 -0.285,1.983 0.285,1.418 0.282,2.834 0.567,1.985 1.984,1.701 1.986,1.984 1.133,1.418 0.568,1.417 1.416,2.269 1.135,0.566 1.134,-0.566 1.417,-2.269 0.567,-1.417 1.135,-1.418 1.983,-1.984 1.984,-1.701 0.568,-1.985 0.283,-2.834 0.283,-1.418 -0.283,-1.983 -0.851,-1.135 -0.85,-1.134 -0.567,-3.118 c 0,0 0.284,-1.135 0,-1.985 -0.283,-0.85 -0.283,-2.551 -0.283,-2.551 l 0.283,-1.417 -1.134,-2.552 -0.567,-1.701 0.567,-1.701 1.418,-0.85 1.417,-0.284 1.984,-0.567 1.699,-0.567 1.987,-0.851 1.984,-0.85 1.418,-0.851 1.984,-0.566 2.268,-0.852 2.268,-0.283 1.701,-0.283 h 4.819 l 0.283,1.418 h 2.836 z"
                id="path2536" />
           </g>
@@ -709,7 +688,7 @@
              id="g2538"
              transform="translate(542.2572,634.872)">
             <path
-               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 1.418,-0.284 3.118,0 3.97,-0.851 l 1.135,-1.701 1.417,-1.134 1.417,-0.85 1.984,-0.568 1.7,-0.282 1.135,-0.568 v -1.417 l -1.418,-0.567 -1.135,-0.85 -0.849,-1.701 v -1.702 l 0.567,-1.7 0.851,0.566 0.566,1.701 0.851,1.702 h 0.851 l -0.284,-1.419 -0.283,-1.417 -0.568,-0.85 0.568,-1.134 v -1.984 l -1.418,-0.567 -1.418,-0.568 v -1.134 l 1.135,-0.567 2.268,-0.567 h 1.417 l 1.417,1.134 2.268,0.568 1.135,1.417 1.701,1.134 1.7,1.417 1.417,1.701 1.417,1.701 0.567,2.269 0.285,1.984 -0.567,2.268 -0.567,1.701 -1.135,1.702 -1.983,1.983 -1.418,1.135 -1.417,1.416 -1.417,1.985 -1.986,2.268 -1.7,1.135 -0.566,1.7 -0.852,1.985 -1.701,1.134 -1.984,1.417 -1.701,1.417 -1.418,1.418 -4.78,0.284"
                id="path2540" />
           </g>
@@ -717,7 +696,7 @@
              id="g2542"
              transform="translate(542.2572,634.872)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 1.418,-0.284 3.118,0 3.97,-0.851 l 1.135,-1.701 1.417,-1.134 1.417,-0.85 1.984,-0.568 1.7,-0.282 1.135,-0.568 v -1.417 l -1.418,-0.567 -1.135,-0.85 -0.849,-1.701 v -1.702 l 0.567,-1.7 0.851,0.566 0.566,1.701 0.851,1.702 h 0.851 l -0.284,-1.419 -0.283,-1.417 -0.568,-0.85 0.568,-1.134 v -1.984 l -1.418,-0.567 -1.418,-0.568 v -1.134 l 1.135,-0.567 2.268,-0.567 h 1.417 l 1.417,1.134 2.268,0.568 1.135,1.417 1.701,1.134 1.7,1.417 1.417,1.701 1.417,1.701 0.567,2.269 0.285,1.984 -0.567,2.268 -0.567,1.701 -1.135,1.702 -1.983,1.983 -1.418,1.135 -1.417,1.416 -1.417,1.985 -1.986,2.268 -1.7,1.135 -0.566,1.7 -0.852,1.985 -1.701,1.134 -1.984,1.417 -1.701,1.417 -1.418,1.418 -4.78,0.284"
                id="path2544" />
           </g>
@@ -725,7 +704,7 @@
              id="g2546"
              transform="translate(512.8092,634.9069)">
             <path
-               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -1.416,-0.283 -2.304,0.248 -0.851,-0.851 -1.135,-1.701 -1.418,-1.134 -1.416,-0.85 -1.985,-0.568 -1.7,-0.282 -1.133,-0.568 v -1.417 l 1.417,-0.567 1.133,-0.85 0.85,-1.702 v -1.701 l -0.567,-1.7 -0.85,0.566 -0.566,1.701 -0.851,1.702 h -0.85 l 0.284,-1.419 0.282,-1.416 0.568,-0.851 -0.568,-1.133 v -1.984 l 1.418,-0.567 1.416,-0.568 v -1.134 l -1.133,-0.567 -2.267,-0.567 h -1.417 l -1.419,1.134 -2.267,0.568 -1.135,1.417 -1.701,1.134 -1.701,1.417 -1.417,1.701 -1.418,1.7 -0.566,2.269 -0.284,1.984 0.567,2.268 0.568,1.7 1.133,1.703 1.984,1.983 1.419,1.135 1.416,1.416 1.418,1.985 1.984,2.268 1.702,1.135 0.567,1.7 0.851,1.985 1.7,1.134 1.984,1.417 1.701,1.417 1.418,1.418 5.387,1.134"
                id="path2548" />
           </g>
@@ -733,7 +712,7 @@
              id="g2550"
              transform="translate(512.8092,634.9069)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -1.416,-0.283 -2.304,0.248 -0.851,-0.851 -1.135,-1.701 -1.418,-1.134 -1.416,-0.85 -1.985,-0.568 -1.7,-0.282 -1.133,-0.568 v -1.417 l 1.417,-0.567 1.133,-0.85 0.85,-1.702 v -1.701 l -0.567,-1.7 -0.85,0.566 -0.566,1.701 -0.851,1.702 h -0.85 l 0.284,-1.419 0.282,-1.416 0.568,-0.851 -0.568,-1.133 v -1.984 l 1.418,-0.567 1.416,-0.568 v -1.134 l -1.133,-0.567 -2.267,-0.567 h -1.417 l -1.419,1.134 -2.267,0.568 -1.135,1.417 -1.701,1.134 -1.701,1.417 -1.417,1.701 -1.418,1.7 -0.566,2.269 -0.284,1.984 0.567,2.268 0.568,1.7 1.133,1.703 1.984,1.983 1.419,1.135 1.416,1.416 1.418,1.985 1.984,2.268 1.702,1.135 0.567,1.7 0.851,1.985 1.7,1.134 1.984,1.417 1.701,1.417 1.418,1.418 5.387,1.134"
                id="path2552" />
           </g>
@@ -749,7 +728,7 @@
              id="g2558"
              transform="translate(527.5168,615.8778)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 2.268,-0.283 4.252,-0.567 6.52,-1.134 7.937,-1.418 8.505,0 v 1.984 l -0.568,2.269 1.702,0.851 1.7,0.85 1.985,1.7 1.134,2.269 0.568,2.551 0.282,2.268 -0.567,2.835 -0.283,2.834 0.283,1.985 0.567,2.551 0.284,2.835 0.283,2.552 h -31.751 l 0.282,-2.552 0.285,-2.835 0.566,-2.551 0.284,-1.985 -0.284,-2.834 -0.566,-2.835 0.283,-2.268 0.567,-2.551 1.132,-2.269 1.987,-1.7 3.401,-1.701 -0.567,-2.269 V 0 l 0.567,-1.418 1.418,0.284 2.269,0.567 1.982,0.284 L 0,0"
                id="path2560" />
           </g>
@@ -757,7 +736,7 @@
              id="g2562"
              transform="translate(527.5168,615.8778)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 2.268,-0.283 4.252,-0.567 6.52,-1.134 7.937,-1.418 8.505,0 v 1.984 l -0.568,2.269 1.702,0.851 1.7,0.85 1.985,1.7 1.134,2.269 0.568,2.551 0.282,2.268 -0.567,2.835 -0.283,2.834 0.283,1.985 0.567,2.551 0.284,2.835 0.283,2.552 h -31.751 l 0.282,-2.552 0.285,-2.835 0.566,-2.551 0.284,-1.985 -0.284,-2.834 -0.566,-2.835 0.283,-2.268 0.567,-2.551 1.132,-2.269 1.987,-1.7 3.401,-1.701 -0.567,-2.269 V 0 l 0.567,-1.418 1.418,0.284 2.269,0.567 1.982,0.284 L 0,0"
                id="path2564" />
           </g>
@@ -765,7 +744,7 @@
              id="g2566"
              transform="translate(552.1804,662.6537)">
             <path
-               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -1.134,-0.282 -0.285,-1.419 v -1.134 l -1.133,-0.849 -1.417,-0.285 -0.849,0.568 -0.569,1.134 -1.701,0.283 -1.701,-0.283 -2.267,-0.285 h -4.537 l -1.983,-0.283 -1.986,-0.566 -1.134,-1.134 -2.144,0.268 v 0.015 h -2.959 l -2.267,-0.283 -1.134,1.134 -1.984,0.566 -1.985,0.283 h -4.536 l -2.267,0.285 -1.701,0.283 -1.702,-0.283 -0.567,-1.134 -0.85,-0.568 -1.418,0.285 -1.134,0.849 v 1.134 l -0.284,1.419 -1.133,0.282 -0.567,-1.984 0.851,-2.268 0.849,-1.984 1.702,-0.284 1.701,-0.851 1.135,-0.85 0.282,-1.984 0.284,-2.553 0.566,-1.983 1.134,-1.417 c 0,0 1.418,-0.852 2.268,-0.852 0.851,0 1.702,-0.566 1.702,-0.566 l 2.268,-0.567 1.701,-0.568 1.418,-1.133 1.416,-1.701 1.702,-1.985 1.416,-2.267 1.418,-1.134 h 2.268 l 1.417,1.134 1.418,2.267 1.701,1.985 1.417,1.701 1.419,1.133 1.7,0.568 2.269,0.567 c 0,0 0.85,0.566 1.7,0.566 0.849,0 2.267,0.852 2.267,0.852 l 1.134,1.417 0.568,1.983 0.284,2.553 0.283,1.984 1.133,0.85 1.702,0.851 1.701,0.284 0.85,1.984 0.851,2.268 L 0,0"
                id="path2568" />
           </g>
@@ -773,7 +752,7 @@
              id="g2570"
              transform="translate(552.1804,662.6537)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -1.134,-0.282 -0.285,-1.419 v -1.134 l -1.133,-0.849 -1.417,-0.285 -0.849,0.568 -0.569,1.134 -1.701,0.283 -1.701,-0.283 -2.267,-0.285 h -4.537 l -1.983,-0.283 -1.986,-0.566 -1.134,-1.134 -2.144,0.268 v 0.015 h -2.959 l -2.267,-0.283 -1.134,1.134 -1.984,0.566 -1.985,0.283 h -4.536 l -2.267,0.285 -1.701,0.283 -1.702,-0.283 -0.567,-1.134 -0.85,-0.568 -1.418,0.285 -1.134,0.849 v 1.134 l -0.284,1.419 -1.133,0.282 -0.567,-1.984 0.851,-2.268 0.849,-1.984 1.702,-0.284 1.701,-0.851 1.135,-0.85 0.282,-1.984 0.284,-2.553 0.566,-1.983 1.134,-1.417 c 0,0 1.418,-0.852 2.268,-0.852 0.851,0 1.702,-0.566 1.702,-0.566 l 2.268,-0.567 1.701,-0.568 1.418,-1.133 1.416,-1.701 1.702,-1.985 1.416,-2.267 1.418,-1.134 h 2.268 l 1.417,1.134 1.418,2.267 1.701,1.985 1.417,1.701 1.419,1.133 1.7,0.568 2.269,0.567 c 0,0 0.85,0.566 1.7,0.566 0.849,0 2.267,0.852 2.267,0.852 l 1.134,1.417 0.568,1.983 0.284,2.553 0.283,1.984 1.133,0.85 1.702,0.851 1.701,0.284 0.85,1.984 0.851,2.268 z"
                id="path2572" />
           </g>
@@ -789,7 +768,7 @@
              id="g2578"
              transform="translate(527.6581,640.9674)">
             <path
-               style="fill:none;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -1.418,0.849 -1.417,0.568 -0.85,1.702 -0.568,1.983 -0.566,1.985 -0.567,2.268 v 1.417 l 0.85,1.985 1.133,1.418 1.985,1.133 H 1.416 L 3.403,14.175 4.535,12.757 5.386,10.772 V 9.355 L 4.82,7.087 4.253,5.102 3.685,3.119 2.834,1.417 1.416,0.849 0,0"
                id="path2580" />
           </g>
@@ -799,7 +778,7 @@
                id="g2582"
                transform="translate(515.8928,667.5696)">
               <path
-                 style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                  d="m 0,0 c -2.656,0 -4.81,-2.693 -4.81,-6.014 0,-3.322 2.154,-6.014 4.81,-6.014 2.658,0 4.811,2.692 4.811,6.014 C 4.811,-2.693 2.658,0 0,0"
                  id="path2584" />
             </g>
@@ -807,13 +786,13 @@
                id="g2586"
                transform="translate(515.8928,667.5696)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.459;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 style="fill:none;stroke:#000000;stroke-width:0.45899999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                  d="m 0,0 c -2.656,0 -4.81,-2.693 -4.81,-6.014 0,-3.322 2.154,-6.014 4.81,-6.014 2.658,0 4.811,2.692 4.811,6.014 C 4.811,-2.693 2.658,0 0,0 Z"
                  id="path2588" />
             </g>
           </g>
           <text
-             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:4.33199px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:4.33199406px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text3032"
              transform="matrix(0.98162644,0,-0.19081282,-0.98162644,488.9417,626.3481)"><tspan
                x="0 2.4475768 4.9168134 6.4243474"
@@ -835,14 +814,14 @@
                y="15.885423"
                id="tspan3030">Legs</tspan></text>
           <text
-             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.581px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.58099556px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text_MG"
              transform="matrix(0.98162643,0,-0.19081285,-0.98162643,523.5285,662.6363)"><tspan
                x="0 3.6060627"
                y="0"
                id="tspan3034">Main Gun</tspan></text>
           <text
-             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:4.33199px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:4.33199406px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              id="text3040"
              transform="matrix(0.98162644,0,-0.19081282,-0.98162644,533.5791,653.47)"><tspan
                x="0"
@@ -853,25 +832,26 @@
            fill="none"
            id="armorPips">
           <g
+             style="mml-multisection:true"
              id="armorPipsHD"
              transform="translate(42.335,13.18)">
             <g
                id="armorPipsHDSection01">
               <rect
-                 x="-2.4000001"
-                 width="4.8000002"
+                 x="-2.4"
+                 width="4.8"
                  y="0"
                  height="3.2"
                  id="armorHDRow00" />
               <rect
-                 x="-4.3000002"
-                 width="8.6000004"
+                 x="-4.3"
+                 width="8.6"
                  y="1"
                  height="3.2"
                  id="armorHDRow01" />
               <rect
-                 x="-4.9499998"
-                 width="9.8999996"
+                 x="-4.95"
+                 width="9.9"
                  y="2"
                  height="3.2"
                  id="armorHDRow02" />
@@ -881,19 +861,19 @@
               <rect
                  x="-4"
                  width="8"
-                 y="7.8000002"
+                 y="7.8"
                  height="3.2"
                  id="armorHDRow03" />
               <rect
                  x="-3.55"
-                 width="7.0999999"
-                 y="8.8000002"
+                 width="7.1"
+                 y="8.8"
                  height="3.2"
                  id="armorHDRow04" />
               <rect
-                 x="-2.9000001"
-                 width="5.8000002"
-                 y="9.8000002"
+                 x="-2.9"
+                 width="5.8"
+                 y="9.8"
                  height="3.2"
                  id="armorHDRow05" />
             </g>
@@ -903,26 +883,29 @@
              transform="translate(42.335,25.78)">
             <rect
                x="-14.6"
-               width="29.200001"
+               width="29.2"
                y="0"
                height="3.2"
-               id="armorTRow00" />
+               id="armorTRow00"
+               style="mml-gap:-8,8" />
             <rect
                x="-14.25"
                width="28.5"
-               y="2.5999999"
+               y="2.6"
                height="3.2"
-               id="armorTRow01" />
+               id="armorTRow01"
+               style="mml-gap:-5.9,5.9" />
             <rect
                x="-14"
                width="28"
-               y="5.1999998"
+               y="5.2"
                height="3.2"
-               id="armorTRow03" />
+               id="armorTRow03"
+               style="mml-gap:-4,4" />
             <rect
                x="-14"
                width="28"
-               y="7.8000002"
+               y="7.8"
                height="3.2"
                id="armorTRow04" />
             <rect
@@ -942,32 +925,32 @@
              id="armorPipsRA"
              transform="rotate(-45,59.07844,-61.47437)">
             <rect
-               x="-7.3000002"
+               x="-7.3"
                width="14.2"
-               y="5.1999998"
+               y="5.2"
                height="3.2"
                id="armorRARow02" />
             <rect
-               x="-6.8000002"
+               x="-6.8"
                width="12.6"
-               y="7.8000002"
+               y="7.8"
                height="3.2"
                id="armorRARow03" />
             <rect
-               x="-7.1999998"
+               x="-7.2"
                width="13"
                y="10.4"
                height="3.2"
                id="armorRARow04" />
             <rect
-               x="-6.6999998"
+               x="-6.7"
                width="12.5"
                y="13"
                height="3.2"
                id="armorRARow05" />
             <rect
-               x="-4.6999998"
-               width="9.8999996"
+               x="-4.7"
+               width="9.9"
                y="15.6"
                height="3.2"
                id="armorRARow06" />
@@ -976,32 +959,32 @@
              id="armorPipsLA"
              transform="matrix(-0.70712197,-0.70710678,-0.70712197,0.70710678,23.488057,23.636133)">
             <rect
-               x="-7.3000002"
+               x="-7.3"
                width="14.2"
-               y="5.1999998"
+               y="5.2"
                height="3.2"
                id="armorLARow02" />
             <rect
-               x="-6.8000002"
+               x="-6.8"
                width="12.6"
-               y="7.8000002"
+               y="7.8"
                height="3.2"
                id="armorLARow03" />
             <rect
-               x="-7.1999998"
+               x="-7.2"
                width="13"
                y="10.4"
                height="3.2"
                id="armorLARow04" />
             <rect
-               x="-6.6999998"
+               x="-6.7"
                width="12.5"
                y="13"
                height="3.2"
                id="armorLARow05" />
             <rect
-               x="-4.6999998"
-               width="9.8999996"
+               x="-4.7"
+               width="9.9"
                y="15.6"
                height="3.2"
                id="armorLARow06" />
@@ -1012,57 +995,66 @@
             <rect
                x="-20"
                width="40"
-               y="7.8000002"
+               y="7.8"
                height="3.2"
-               id="armorLRow00" />
+               id="armorLRow00"
+               style="mml-gap:-5.7,5.7" />
             <rect
-               x="-21.700001"
-               width="43.400002"
+               x="-21.7"
+               width="43.4"
                y="10.4"
                height="3.2"
-               id="armorLRow01" />
+               id="armorLRow01"
+               style="mml-gap:-8.8,8.8" />
             <rect
-               x="-22.799999"
-               width="45.599998"
+               x="-22.8"
+               width="45.6"
                y="13"
                height="3.2"
-               id="armorLRow02" />
+               id="armorLRow02"
+               style="mml-gap:-10,10" />
             <rect
-               x="-24.200001"
-               width="45.599998"
+               x="-24.2"
+               width="45.6"
                y="15.6"
                height="3.2"
-               id="armorLRow03" />
+               id="armorLRow03"
+               style="mml-gap:-10,10" />
             <rect
-               x="-22.799999"
-               width="45.599998"
-               y="18.200001"
+               x="-22.8"
+               width="45.6"
+               y="18.2"
                height="3.2"
-               id="armorLRow04" />
+               id="armorLRow04"
+               style="mml-gap:-10.3,10.3" />
             <rect
                x="-24"
                width="48"
-               y="20.799999"
+               y="20.8"
                height="3.2"
-               id="armorLRow05" />
+               id="armorLRow05"
+               style="mml-gap:-10,10" />
             <rect
-               x="-23.799999"
-               width="47.599998"
+               x="-23.8"
+               width="47.6"
                y="23.4"
                height="3.2"
-               id="armorLRow06" />
+               id="armorLRow06"
+               style="mml-gap:-9.7,9.7" />
             <rect
-               x="-22.799999"
+               x="-22.8"
                width="48"
                y="26"
                height="3.2"
-               id="armorLRow07" />
+               id="armorLRow07"
+               style="mml-gap:-8.3,8.3" />
             <rect
                x="-22.5"
                width="48"
                y="28.6"
                height="3.2"
-               id="armorLRow08" />
+               id="armorLRow08"
+               style="mml-gap:-8.2,8.2" />
           </g>
           <g
              id="armorPipsMG"
@@ -1074,9 +1066,9 @@
                height="3.2"
                id="armorMGRow00" />
             <rect
-               x="-3.0999999"
-               width="6.1999998"
-               y="0.94999999"
+               x="-3.1"
+               width="6.2"
+               y="0.95"
                height="3.2"
                id="armorMGRow01" />
             <rect
@@ -1092,9 +1084,9 @@
                height="3.2"
                id="armorMGRow03" />
             <rect
-               x="-3.9000001"
-               width="7.8000002"
-               y="4.5999999"
+               x="-3.9"
+               width="7.8"
+               y="4.6"
                height="3.2"
                id="armorMGRow04" />
           </g>
@@ -1106,10 +1098,10 @@
              id="structurePipsHD"
              transform="translate(42.335,13.18)">
             <rect
-               x="-4.4000001"
-               width="8.8000002"
-               y="5.1999998"
-               height="2.5999999"
+               x="-4.4"
+               width="8.8"
+               y="5.2"
+               height="2.6"
                id="structureHDRow00" />
           </g>
           <g
@@ -1119,13 +1111,13 @@
                x="-13"
                width="26"
                y="0"
-               height="2.5999999"
+               height="2.6"
                id="structureTRow00" />
             <rect
-               x="-9.1000004"
-               width="18.200001"
-               y="2.5999999"
-               height="2.5999999"
+               x="-9.1"
+               width="18.2"
+               y="2.6"
+               height="2.6"
                id="structureTRow01" />
           </g>
           <g
@@ -1135,13 +1127,13 @@
                x="-1.9"
                width="8"
                y="0"
-               height="2.5999999"
+               height="2.6"
                id="structureRARow00" />
             <rect
-               x="-4.4000001"
+               x="-4.4"
                width="10.8"
-               y="2.5999999"
-               height="2.5999999"
+               y="2.6"
+               height="2.6"
                id="structureRARow01" />
           </g>
           <g
@@ -1151,13 +1143,13 @@
                x="-1.9"
                width="8"
                y="0"
-               height="2.5999999"
+               height="2.6"
                id="structureLARow00" />
             <rect
-               x="-4.4000001"
+               x="-4.4"
                width="10.8"
-               y="2.5999999"
-               height="2.5999999"
+               y="2.6"
+               height="2.6"
                id="structureLARow01" />
           </g>
           <g
@@ -1165,57 +1157,59 @@
              transform="translate(42.335,59.08)">
             <rect
                x="-14.6"
-               width="29.200001"
+               width="29.2"
                y="0"
-               height="2.5999999"
+               height="2.6"
                id="structureLRow00" />
             <rect
                x="-16.85"
-               width="33.700001"
-               y="2.5999999"
-               height="2.5999999"
-               id="structureLRow01" />
+               width="33.7"
+               y="2.6"
+               height="2.6"
+               id="structureLRow01"
+               style="mml-gap:-3,3" />
             <rect
                x="-18.5"
                width="37"
-               y="5.1999998"
-               height="2.5999999"
-               id="structureLRow02" />
+               y="5.2"
+               height="2.6"
+               id="structureLRow02"
+               style="mml-gap:-4,4" />
           </g>
           <g
              id="structurePipsMG"
              transform="translate(30.535,1.78)">
             <rect
                x="-3.3"
-               width="6.5999999"
+               width="6.6"
                y="6.5"
-               height="2.5999999"
+               height="2.6"
                id="structureMGRow00" />
             <rect
-               x="-2.4000001"
-               width="4.8000002"
-               y="7.8000002"
-               height="2.5999999"
+               x="-2.4"
+               width="4.8"
+               y="7.8"
+               height="2.6"
                id="structureMGRow01" />
           </g>
         </g>
       </g>
       <g
-         transform="translate(5.3376345)"
-         id="g48">
+         transform="translate (5.337634472769196,0.0)"
+         id="g52">
         <path
            fill="#000000"
-           d="M 0,5.625 3.749,0 h 76.493 l 3.749,5.625 -3.749,5.625 H 3.749 Z"
-           id="path47" />
+           d="M 0,5.625 l 3.749,-5.625 h 76.493 l 3.749,5.625 l -3.749,5.625 h -76.493 Z"
+           id="path51" />
         <text
-           x="41.995998"
-           y="8.4379997"
+           x="41.996"
+           y="8.438"
            fill="#ffffff"
            text-anchor="middle"
-           style="font-style:normal;font-weight:bold;font-size:8.6px;font-family:Eurostile"
-           textLength="69.539001"
+           style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
+           textLength="69.539"
            lengthAdjust="spacingAndGlyphs"
-           id="text47">ARMOR DIAGRAM</text>
+           id="text51">ARMOR DIAGRAM</text>
       </g>
     </g>
     <g

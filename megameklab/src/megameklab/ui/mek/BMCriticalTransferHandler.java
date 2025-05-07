@@ -238,12 +238,13 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 if (!fixedEquipment) {
                     if (eq.getLocation() != Entity.LOC_NONE || eq.getSecondLocation() != Entity.LOC_NONE) {
                         UnitUtil.removeCriticals(getUnit(), eq);
-                        UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, -1, false);
+                        UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     } else {
                         eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                     }
                 } else {
                     UnitUtil.removeCriticals(getUnit(), eq, fixedLocation);
+                    UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
 
                 StringBuffer errors = new StringBuffer();

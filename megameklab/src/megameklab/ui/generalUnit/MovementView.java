@@ -274,7 +274,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
         txtRunBase.setText(String.valueOf((int) Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
-        txtRunFinal.setText(en.getRunMPasString());
+        txtRunFinal.setText(en.getRunMPasString(false));
 
         int labelIndex = LABEL_INDEX_MEK;
         boolean showJump = true;
