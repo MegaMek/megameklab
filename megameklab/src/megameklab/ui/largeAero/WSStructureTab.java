@@ -314,6 +314,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setHeatType(index);
         getJumpship().setHeatSinks(count);
         getJumpship().setOHeatSinks(count);
+        panHeat.setFromAero(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

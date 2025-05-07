@@ -133,13 +133,7 @@ public class PMBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getProtoMek().getEquipment()) {
-            // Fixed shouldn't be removed
-            if (TestProtoMek.requiresSlot(mount.getType())) {
-                UnitUtil.changeMountStatus(getProtoMek(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            }
-        }
-
+        UnitUtil.removeAllCriticals(getProtoMek());
         refresh.refreshAll();
     }
 
