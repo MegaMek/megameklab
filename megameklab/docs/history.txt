@@ -7,7 +7,6 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1060: Adds weapon sort opion to record sheets.
 + Fix #1854: Maintain Zoom and Position on Record Sheets
 + PR #1835: Force Builder
-+ PR #1836: Implement damaged units and RS printing of them
 
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
