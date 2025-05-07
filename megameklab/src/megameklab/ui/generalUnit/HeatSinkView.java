@@ -328,7 +328,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
 
     private String simplifyHeat(String heat) {
-        return heat.split(",")[0];
+        if (heat.contains(",")) {
+            return heat.split(",")[0];
+        }
+        return heat;
     }
 
     public void refresh() {
