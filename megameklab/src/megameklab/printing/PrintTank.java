@@ -287,6 +287,8 @@ public class PrintTank extends PrintEntity {
         }
         if (tank instanceof VTOL vtol) {
             fillCoreComponentCriticalDamage(FLIGHT_STABILIZER_HIT, vtol.isStabiliserHit(VTOL.LOC_ROTOR));
+            fillCoreComponentCriticalDamage(COPILOT_HIT, vtol.isCommanderHit());
+            fillCoreComponentCriticalDamage(PILOT_HIT, vtol.isDriverHit());
         }
     }
 
