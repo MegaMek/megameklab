@@ -515,7 +515,7 @@ public class InventoryWriter {
 
     /**
      * If the lines do not fit in the available space, we will need to reduce the font size
-     * and possible the amount of space between lines. We take it in steps of -0.5 instead of
+     * and possible the amount of space between lines. We take it in steps of -0.25 instead of
      * scaling proportionately because not only is the relationship between font size and height
      * not directly proportional, but a smaller reduction may be sufficient to reduce the number
      * of line required for longer fields.
@@ -526,20 +526,72 @@ public class InventoryWriter {
      * @return A tuple of the new font height and line height, in that order
      */
     public float[] scaleText(double height, Function<Float, Integer> calcLines) {
-        float fontSize = FONT_SIZE_MEDIUM;
-        float lineSpacing = 1.2f;
-        float lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
-        int lines = calcLines.apply(fontSize);
-        while ((fontSize > MIN_FONT_SIZE) && (lineHeight * lines >= height)) {
-            if (lineSpacing > MIN_LINE_SPACING) {
-                lineSpacing -= 0.1f;
-            } else {
-                fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
+        float currentFontSize = FONT_SIZE_MEDIUM;
+        float currentLineSpacingFactor = 1.2f;
+        int lines;
+        float actualLineHeight;
+        boolean alternateReductionPriority = false; // false = prioritize font size, true = prioritize line spacing
+        boolean attemptForLineSpacingOnly = true;
+        while (true) {
+            lines = calcLines.apply(currentFontSize);
+            float fontMetricsHeight = sheet.getFontHeight(currentFontSize);
+            actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+
+            if (actualLineHeight * lines < height) {
+                // Text fits! break the loop
+                break;
             }
-            lines = calcLines.apply(fontSize);
-            lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
+
+            // Before start the alternate font/spacing cycle, we try first to reduce the
+            // line spacing factor to see if it is enough to fit the text. If it fails,
+            // we rollback and start with the font instead.
+            if (attemptForLineSpacingOnly) {
+                attemptForLineSpacingOnly = false;
+                final float originalLineSpacingFactor = currentLineSpacingFactor;
+                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
+                    // Checking if is enough
+                    int tempLines = calcLines.apply(currentFontSize);
+                    float tempFontMetricsHeight = sheet.getFontHeight(currentFontSize);
+                    float tempActualLineHeight = tempFontMetricsHeight * currentLineSpacingFactor;
+
+                    if (tempActualLineHeight * tempLines < height) {
+                        actualLineHeight = tempActualLineHeight;
+                        break; // Text fits!
+                    } else {
+                        // Rollback
+                        currentLineSpacingFactor = originalLineSpacingFactor;
+                    }
+                }
+            }
+
+            boolean reductionMade = false;
+            // This is the alternate reduction cycle between font size and line spacing factor
+            if (alternateReductionPriority) { // Prioritize reducing line spacing factor
+                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
+                    reductionMade = true;
+                } else if (currentFontSize > MIN_FONT_SIZE) {
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - 0.25f);
+                    reductionMade = true;
+                }
+            } else { // Prioritize reducing font size
+                if (currentFontSize > MIN_FONT_SIZE) {
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - 0.25f);
+                    reductionMade = true;
+                } else if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
+                    reductionMade = true;
+                }
+            }
+            alternateReductionPriority = !alternateReductionPriority;
+
+            if (!reductionMade) {
+                // No more reductions possible, break the loop
+                break;
+            }
         }
-        return new float[] { fontSize, lineHeight };
+        return new float[] { currentFontSize, actualLineHeight };
     }
 
     /**
@@ -580,7 +632,7 @@ public class InventoryWriter {
             }
             if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                        quirksText, fontSize*0.9f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
             final double totalHeight = lines * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
@@ -620,24 +672,29 @@ public class InventoryWriter {
     private int calcLineCount(float fontSize) {
         // The width of the name field varies depending on aero/ground or whether there is a heat column,
         // but is always the difference between the second and third.
-        final double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
-        double dmgWidth = Double.MAX_VALUE;
+        double damageWidth = Double.MAX_VALUE;
         for (int i = 0; i < columnTypes.length; i++) {
             if (Column.DAMAGE.equals(columnTypes[i])) {
-                dmgWidth = colX[i + 1] - colX[i];
+                damageWidth = colX[i + 1] - colX[i] - (fontSize / 2);
                 break;
             }
         }
         int lines = 0;
         for (StandardInventoryEntry line : equipment) {
             int rows = line.nRows();
-            // If the name or damage field is too long to fit in the space, make sure there is a second row
-            if ((rows == 1) &&
-                    ((sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) ||
-                        sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
-                rows++;
-            }
             lines += rows;
+            for (int row = 0; row < rows; row++) {
+                double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
+                if (!(sheet.getEntity() instanceof BattleArmor)) {
+                    nameWidth -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
+                }
+                if (sheet.getTextLength(line.getNameField(row), fontSize) > nameWidth) {
+                    lines++;
+                } else
+                if (sheet.getTextLength(line.getDamageField(row), fontSize) > damageWidth) {
+                    lines++;
+                }
+            }
         }
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
             lines += transportBays.size() + 1; // add extra for header
@@ -654,7 +711,7 @@ public class InventoryWriter {
             + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
             + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
             + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
+            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / viewWidth);
     }
 
     /**
