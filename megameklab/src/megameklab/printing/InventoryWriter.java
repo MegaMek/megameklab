@@ -569,18 +569,18 @@ public class InventoryWriter {
             // This is the alternate reduction cycle between font size and line spacing factor
             if (alternateReductionPriority) { // Prioritize reducing line spacing factor
                 if (currentLineSpacingFactor > MIN_LINE_SPACING) {
-                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
                     reductionMade = true;
                 } else if (currentFontSize > MIN_FONT_SIZE) {
-                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - 0.25f);
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
                     reductionMade = true;
                 }
             } else { // Prioritize reducing font size
                 if (currentFontSize > MIN_FONT_SIZE) {
-                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - 0.25f);
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
                     reductionMade = true;
                 } else if (currentLineSpacingFactor > MIN_LINE_SPACING) {
-                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
                     reductionMade = true;
                 }
             }
