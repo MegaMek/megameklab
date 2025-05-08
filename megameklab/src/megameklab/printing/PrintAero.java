@@ -341,4 +341,19 @@ public class PrintAero extends PrintEntity {
         }
         return aero.getHeatSinkHits();
     }
+    
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(AVIONICS_HIT, aero.getAvionicsHits());
+        fillCoreComponentCriticalDamage(FCS_HIT, aero.getFCSHits());
+        fillCoreComponentCriticalDamage(SENSOR_HIT, aero.getSensorHits());
+        fillCoreComponentCriticalDamage(ENGINE_HIT, aero.getEngineHits());
+        fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, aero.isGearHit()?1:0);
+        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, aero.hasLifeSupport()?0:1);
+        fillCoreComponentCriticalDamage(CIC_HIT, aero.getCICHits());
+        fillCoreComponentCriticalDamage(FUEL_TANK_HIT, aero.fuelTankHit()?1:0);
+    }
+
 }

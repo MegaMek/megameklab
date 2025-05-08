@@ -261,7 +261,6 @@ public class PrintTank extends PrintEntity {
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 
-    
     @Override
     protected void applyCoreComponentsCriticalDamage() {
         if (!options.showDamage()) return;

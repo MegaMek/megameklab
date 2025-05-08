@@ -130,6 +130,9 @@ public interface IdConstants {
     String PILOT_HIT = "pilot_hit";
     String COPILOT_HIT = "copilot_hit";
     String AVIONICS_HIT = "avionics_hit_";
+    String FCS_HIT = "fcs_hit_";
+    String CIC_HIT = "cic_hit_";
+    String FUEL_TANK_HIT = "fuel_tank_hit_";
     String ENGINE_HIT = "engine_hit_";
     String GYRO_HIT = "gyro_hit_";
     String SENSOR_HIT = "sensor_hit_";
