@@ -133,65 +133,17 @@ public class PrintMek extends PrintEntity {
         return mek;
     }
 
-    private void applyCoreComponentsCriticalDamage() {
-        final int engineHits = getEngineHits();
-        for (int i = 1; i <= engineHits; i++) {
-            Element el = getSVGDocument().getElementById(ENGINE_HIT + i);
-            if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-            }
-        }
-        final int gyroHits = getGyroHits();
-        for (int i = 1; i <= gyroHits; i++) {
-            Element el = getSVGDocument().getElementById(GYRO_HIT + i);
-            if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-            }
-        }
-        final int sensorHits = getSensorHits();
-        for (int i = 1; i <= sensorHits; i++) {
-            Element el = getSVGDocument().getElementById(SENSOR_HIT + i);
-            if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-            }
-        }
-        final int lifeSupportHits = getLifeSupportHits();
-        for (int i = 1; i <= lifeSupportHits; i++) {
-            Element el = getSVGDocument().getElementById(LIFE_SUPPORT_HIT + i);
-            if (el != null) {
-                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-            }
-        }
-        if (options.showPilotData()) {
-            final int totalCrewMembers = getEntity().getCrew().getSlotCount(); 
-            for (int crewMemberId = 0; crewMemberId < totalCrewMembers; crewMemberId++) {
-                final int crewHits = getEntity().getCrew().getHits(crewMemberId);
-                for (int k = 1; k <= crewHits; k++) {
-                    final String elementId = CREW_HIT + crewMemberId + "_" + k;
-                    Element el = getSVGDocument().getElementById(elementId);
-                    if (el != null) {
-                        el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, "13pt"); 
-                        el.setTextContent("X");
-                        el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-                    }
-                }
-            }
-        }
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(ENGINE_HIT, getEngineHits());
+        fillCoreComponentCriticalDamage(GYRO_HIT, getGyroHits());
+        fillCoreComponentCriticalDamage(SENSOR_HIT, getHitsCoreComponent(Mek.SYSTEM_SENSORS));
+        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, getHitsCoreComponent(Mek.SYSTEM_LIFE_SUPPORT));
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
-            final int avionicsHits = getAvionicsHits();
-            for (int i = 1; i <= avionicsHits; i++) {
-                Element el = getSVGDocument().getElementById(AVIONICS_HIT + i);
-                if (el != null) {
-                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-                }
-            }
-            final int landingGearHits = getLandingGearHits();
-            for (int i = 1; i <= landingGearHits; i++) {
-                Element el = getSVGDocument().getElementById(LANDING_GEAR_HIT + i);
-                if (el != null) {
-                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
-                }
-            }
+            fillCoreComponentCriticalDamage(AVIONICS_HIT, getHitsCoreComponent(LandAirMek.LAM_AVIONICS));
+            fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, getHitsCoreComponent(LandAirMek.LAM_LANDING_GEAR));
         }
     }
 
@@ -209,10 +161,6 @@ public class PrintMek extends PrintEntity {
         }
 
         hideElement(HEAVY_DUTY_GYRO_PIP, mek.getGyroType() != Mek.GYRO_HEAVY_DUTY);
-
-        if (options.showDamage()) {
-            applyCoreComponentsCriticalDamage();
-        }
 
         Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
         if (hsRect instanceof SVGRectElement) {
@@ -984,44 +932,6 @@ public class PrintMek extends PrintEntity {
     
     protected int getGyroHits() {
         return mek.getGyroHits();
-    }
-    
-    protected int getAvionicsHits() {
-        if (!(mek instanceof LandAirMek)) {
-            return 0;
-        }
-        int totalHits = 0;
-        for (int loc = 0; loc < mek.locations(); loc++) {
-            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, LandAirMek.LAM_AVIONICS, loc);
-        }
-        return totalHits;
-    }
-    
-    protected int getSensorHits() {
-        int totalHits = 0;
-        for (int loc = 0; loc < mek.locations(); loc++) {
-            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_SENSORS, loc);
-        }
-        return totalHits;
-    }
-    
-    protected int getLifeSupportHits() {
-        int totalHits = 0;
-        for (int loc = 0; loc < mek.locations(); loc++) {
-            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, Mek.SYSTEM_LIFE_SUPPORT, loc);
-        }
-        return totalHits;
-    }
-    
-    protected int getLandingGearHits() {
-        if (!(mek instanceof LandAirMek)) {
-            return 0;
-        }
-        int totalHits = 0;
-        for (int loc = 0; loc < mek.locations(); loc++) {
-            totalHits += mek.getHitCriticals(CriticalSlot.TYPE_SYSTEM, LandAirMek.LAM_LANDING_GEAR, loc);
-        }
-        return totalHits;
     }
     
 }

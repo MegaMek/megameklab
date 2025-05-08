@@ -260,4 +260,32 @@ public class PrintTank extends PrintEntity {
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
+
+    
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(COMMANDER_HIT, tank.isCommanderHit());
+        fillCoreComponentCriticalDamage(DRIVER_HIT, tank.isDriverHit());
+        fillCoreComponentCriticalDamage(ENGINE_HIT, tank.isEngineHit()?1:0);
+        fillCoreComponentCriticalDamage(SENSOR_HIT, tank.getSensorHits());
+        fillCoreComponentCriticalDamage(MOTIVE_SYSTEM_HIT, tank.getMotiveDamage());
+        fillCoreComponentCriticalDamage(STABILIZER_HIT_FRONT, tank.isStabiliserHit(Tank.LOC_FRONT));
+        fillCoreComponentCriticalDamage(STABILIZER_HIT_LEFT, tank.isStabiliserHit(Tank.LOC_LEFT));
+        fillCoreComponentCriticalDamage(STABILIZER_HIT_RIGHT, tank.isStabiliserHit(Tank.LOC_RIGHT));
+        fillCoreComponentCriticalDamage(STABILIZER_HIT_REAR, tank.isStabiliserHit(Tank.LOC_REAR));
+        final int turretCount = tank.getTurretCount();
+        if (turretCount == 1) {
+            fillCoreComponentCriticalDamage(TURRET_LOCKED, tank.isTurretLocked(tank.getLocTurret()));
+            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET, tank.isStabiliserHit(tank.getLocTurret()));
+        } else 
+        if (turretCount == 2) {
+            fillCoreComponentCriticalDamage(TURRET_LOCKED_FRONT, tank.isTurretLocked(tank.getLocTurret()));
+            fillCoreComponentCriticalDamage(TURRET_LOCKED_REAR, tank.isTurretLocked(tank.getLocTurret2()));
+            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_FRONT, tank.isStabiliserHit(tank.getLocTurret()));
+            fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_REAR, tank.isStabiliserHit(tank.getLocTurret2()));
+        }
+    }
+
 }

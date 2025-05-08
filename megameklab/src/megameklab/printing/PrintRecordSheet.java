@@ -450,10 +450,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
         }
         processImage(pageIndex - firstPage, pageFormat);
+        applyCoreComponentsCriticalDamage();
         shadeTableRows();
         makeFrameless();
         makeBoldType();
         return true;
+    }
+    
+    /**
+     * Applies the critical damage to the core components of the unit and crew.
+     * This should be overridden by subclasses that have core components.
+     */
+    protected void applyCoreComponentsCriticalDamage() {
+    }
+
+    protected void fillCoreComponentCriticalDamage(String idPrefix, int damage) {
+        if (damage < 1) {
+            return;
+        }
+        for (int i = 1; i <= damage; i++) {
+            Element el = getSVGDocument().getElementById(idPrefix + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+            }
+        }
+    }
+
+    protected void fillCoreComponentCriticalDamage(String id, boolean damaged) {
+        if (!damaged) {
+            return;
+        }
+        Element el = getSVGDocument().getElementById(id);
+        if (el != null) {
+            el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+        }
     }
 
     @Override

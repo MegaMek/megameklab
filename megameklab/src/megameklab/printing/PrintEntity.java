@@ -466,6 +466,43 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * Applies the critical damage to the core components of the unit and crew.
+     * This should be overridden by subclasses that have core components.
+     */
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        if (options.showPilotData()) {
+            final int totalCrewMembers = getEntity().getCrew().getSlotCount();
+            for (int crewMemberId = 0; crewMemberId < totalCrewMembers; crewMemberId++) {
+                final int crewHits = getEntity().getCrew().getHits(crewMemberId);
+                for (int k = 1; k <= crewHits; k++) {
+                    final String elementId = CREW_HIT + crewMemberId + "_" + k;
+                    Element el = getSVGDocument().getElementById(elementId);
+                    if (el != null) {
+                        el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, "13pt");
+                        el.setTextContent("X");
+                        el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the number of hits on the core component of the unit.
+     * @param index
+     * @return
+     */
+    protected int getHitsCoreComponent(int index) {
+        int totalHits = 0;
+        for (int loc = 0; loc < getEntity().locations(); loc++) {
+            totalHits += getEntity().getHitCriticals(CriticalSlot.TYPE_SYSTEM, index, loc);
+        }
+        return totalHits;
+    }
+
+    /**
      * @return The color to use in the inside of structure pips
      */
     String structurePipFill() {
