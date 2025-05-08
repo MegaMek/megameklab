@@ -59,6 +59,7 @@ public class CIMainUI extends MegaMekLabMainUI {
 
         structureTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        statusbar.addRefreshedListener(this);
 
         configPane.addTab("Build", new TabScrollPane(structureTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
