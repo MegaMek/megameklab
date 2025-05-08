@@ -53,7 +53,7 @@ dependencies {
 
     implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
 
-    implementation 'org.apache.pdfbox:pdfbox:2.0.33'
+    implementation 'org.apache.pdfbox:pdfbox:3.0.5'
 
     implementation('org.apache.xmlgraphics:batik-bridge:1.18') {
         // We don't need the python and javascript engine taking up space
