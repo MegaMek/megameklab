@@ -683,8 +683,9 @@ public class InventoryWriter {
         for (StandardInventoryEntry line : equipment) {
             int rows = line.nRows();
             lines += rows;
+            double baseNameWidth = colX[2] - colX[1] - viewWidth * INDENT;
             for (int row = 0; row < rows; row++) {
-                double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
+                double nameWidth = baseNameWidth;
                 if (!(sheet.getEntity() instanceof BattleArmor)) {
                     nameWidth -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                 }
