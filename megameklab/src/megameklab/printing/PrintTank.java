@@ -285,6 +285,9 @@ public class PrintTank extends PrintEntity {
             fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_FRONT, tank.isStabiliserHit(tank.getLocTurret()));
             fillCoreComponentCriticalDamage(STABILIZER_HIT_TURRET_REAR, tank.isStabiliserHit(tank.getLocTurret2()));
         }
+        if (tank instanceof VTOL vtol) {
+            fillCoreComponentCriticalDamage(FLIGHT_STABILIZER_HIT, vtol.isStabiliserHit(VTOL.LOC_ROTOR));
+        }
     }
 
 }

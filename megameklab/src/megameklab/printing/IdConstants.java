@@ -153,6 +153,7 @@ public interface IdConstants {
     String STABILIZER_HIT_TURRET = "stabilizer_hit_turret";
     String STABILIZER_HIT_TURRET_FRONT = "stabilizer_hit_turret_f";
     String STABILIZER_HIT_TURRET_REAR = "stabilizer_hit_turret_r";
+    String FLIGHT_STABILIZER_HIT = "flight_stabilizer_hit";
 
     String HEAT_SINK_PIPS = "heatSinkPips";
     String HS_TYPE = "hsType";
