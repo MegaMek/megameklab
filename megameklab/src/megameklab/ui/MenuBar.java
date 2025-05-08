@@ -803,6 +803,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return false;
     }
 
+
+    private JMenuItem miSwitchUnitType;
     /**
      * * Refreshes the state of the Edit menu items based on the current state of
      * the active editor.
@@ -811,6 +813,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miUndo.setEnabled(activeEditorHasUndo());
         miRedo.setEnabled(activeEditorHasRedo());
         miReload.setEnabled(activeEditorCanReload());
+
+        if (miSwitchUnitType != null) {
+            editMenu.remove(miSwitchUnitType);
+        }
+        miSwitchUnitType = createSwitchUnitTypeMenu();
+        editMenu.add(miSwitchUnitType);
     }
 
     private void refreshForceMenu() {
@@ -874,8 +882,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miResetCurrentUnit.addActionListener(this::jMenuResetEntity_actionPerformed);
         miResetCurrentUnit.setEnabled(isUnitGui());
         editMenu.add(miResetCurrentUnit);
-
-        editMenu.add(createSwitchUnitTypeMenu());
 
         refreshEditMenu();
         return editMenu;
@@ -1458,9 +1464,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * Refreshes this menubar. At least this updates the file menu, showing the
-     * latest recent unit
-     * changes.
+     * Refreshes this menubar to show options relevant to the currently selected unit.
      */
     public void refreshMenuBar() {
         createFileMenu();

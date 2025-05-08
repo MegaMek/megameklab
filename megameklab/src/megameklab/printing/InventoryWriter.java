@@ -293,11 +293,22 @@ public class InventoryWriter {
                 same.incrementQty();
             }
         }
+
+        // Special entries for mek features which aren't represented by a MiscType.
         if (sheet.getEntity() instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
             var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
                 name = "RISC Heat Sink Override Kit";
                 shortName = "RISC HS Override Kit";
                 internalName = "RISC Heat Sink Override Kit";
+            }});
+            mounted.setLocation(Mek.LOC_NONE);
+            equipment.add(new StandardInventoryEntry(mounted));
+        }
+        if (sheet.getEntity() instanceof Mek mek && mek.hasFullHeadEject()) {
+            var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
+                name = "Full Head Ejection System";
+                shortName = "Full Head Eject System";
+                internalName = "Full Head Ejection System";
             }});
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
