@@ -92,7 +92,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";;
-    public static final String FILL_RED = "#cc0000";
+    public static final String FILL_RED = "#ee0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
 
