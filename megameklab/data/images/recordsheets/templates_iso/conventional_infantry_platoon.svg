@@ -27,13 +27,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showguides="true"
-     inkscape:zoom="6.5599284"
-     inkscape:cx="31.707663"
-     inkscape:cy="69.741614"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:zoom="6.56"
+     inkscape:cx="411"
+     inkscape:cy="69.7"
+     inkscape:window-width="1920"
+     inkscape:window-height="1121"
+     inkscape:window-x="-7"
+     inkscape:window-y="-7"
      inkscape:window-maximized="1"
      inkscape:current-layer="rs_template" />
   <g
@@ -86,10 +86,10 @@
        x="328.157"
        id="armor_kit"
        y="18.000"
-       style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:104.623"
+       style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:120"
        text-anchor="start">None</text>
     <text
-       x="440.800"
+       x="460.800"
        y="18.000"
        fill="#000000"
        text-anchor="start"
@@ -99,7 +99,7 @@
        id="text5">Damage Divisor:</text>
     <text
        fill="#000000"
-       x="505.387"
+       x="525.387"
        id="armor_divisor"
        y="18.000"
        style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:34.593"

@@ -27,13 +27,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showguides="true"
-     inkscape:zoom="12.732639"
-     inkscape:cx="73.472593"
-     inkscape:cy="87.688028"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:zoom="4.5"
+     inkscape:cx="476"
+     inkscape:cy="39.9"
+     inkscape:window-width="1920"
+     inkscape:window-height="1121"
+     inkscape:window-x="-7"
+     inkscape:window-y="-7"
      inkscape:window-maximized="1"
      inkscape:current-layer="rs_template" />
   <g
@@ -86,20 +86,20 @@
        x="336.65701"
        id="armor_kit"
        y="18"
-       style="font-style:normal;font-weight:normal;font-size:8.6px;font-family:Eurostile"
+       style="font-style:normal;font-weight:normal;font-size:8.6px;font-family:Eurostile;mml-field-width:120"
        text-anchor="start">None</text>
     <text
-       x="454.39999"
        y="18"
        fill="#000000"
        text-anchor="start"
        style="font-style:normal;font-weight:bold;font-size:8.6px;font-family:Eurostile"
        textLength="60.291"
        lengthAdjust="spacingAndGlyphs"
-       id="text5">Damage Divisor:</text>
+       id="text5"
+       x="479">Damage Divisor:</text>
     <text
        fill="#000000"
-       x="518.987"
+       x="543.987"
        id="armor_divisor"
        y="18"
        style="font-style:normal;font-weight:normal;font-size:8.6px;font-family:Eurostile"
