@@ -615,6 +615,12 @@ public class FluffTab extends ITab implements FocusListener {
         txtDeployment.setText(fluff.getDeployment());
         txtHistory.setText(fluff.getHistory());
         txtNotes.setText(fluff.getNotes());
+        
+        txtCapabilities.setCaretPosition(0);
+        txtOverview.setCaretPosition(0);
+        txtDeployment.setCaretPosition(0);
+        txtHistory.setCaretPosition(0);
+        txtNotes.setCaretPosition(0);
 
         // Update general text fields
         txtManufacturer.setText(fluff.getManufacturer());
