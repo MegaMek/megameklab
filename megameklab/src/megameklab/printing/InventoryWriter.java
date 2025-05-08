@@ -513,6 +513,9 @@ public class InventoryWriter {
         return scaleText(viewHeight, calcLines);
     }
 
+    static private float FONT_SIZE_REDUCTION_STEP = 0.25f;
+    static private float LINE_SPACING_REDUCTION_STEP = 0.1f;
+    
     /**
      * If the lines do not fit in the available space, we will need to reduce the font size
      * and possible the amount of space between lines. We take it in steps of -0.25 instead of
@@ -563,8 +566,7 @@ public class InventoryWriter {
                         currentLineSpacingFactor = originalLineSpacingFactor;
                     }
                 }
-            }
-
+            } 
             boolean reductionMade = false;
             // This is the alternate reduction cycle between font size and line spacing factor
             if (alternateReductionPriority) { // Prioritize reducing line spacing factor
