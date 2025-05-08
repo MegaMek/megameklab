@@ -354,6 +354,19 @@ public class PrintAero extends PrintEntity {
         fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, aero.hasLifeSupport()?0:1);
         fillCoreComponentCriticalDamage(CIC_HIT, aero.getCICHits());
         fillCoreComponentCriticalDamage(FUEL_TANK_HIT, aero.fuelTankHit()?1:0);
+        fillCoreComponentCriticalDamage(THRUSTER_LEFT_HIT, aero.getLeftThrustHits());
+        fillCoreComponentCriticalDamage(THRUSTER_RIGHT_HIT, aero.getRightThrustHits());
     }
 
+    protected int getCollarDamage() {
+        List<DockingCollar> collars = aero.getDockingCollars();
+        int collarDamage = 0;
+        for (int i = 0; i < collars.size(); i++) {
+            final DockingCollar collar = collars.get(i);
+            if (collar.isDamaged()) {
+                collarDamage += 1;
+            }
+        }
+        return collarDamage;
+    }
 }

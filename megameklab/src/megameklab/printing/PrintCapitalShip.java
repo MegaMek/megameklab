@@ -22,7 +22,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.DockingCollar;
 import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
 import megamek.common.UnitType;
@@ -155,15 +154,9 @@ public class PrintCapitalShip extends PrintDropship {
         }
         printInternalRegion(KF_PIPS, ship.getOKFIntegrity(), (ship.getOKFIntegrity() - ship.getKFIntegrity()), 30);
         printInternalRegion(SAIL_PIPS, ship.getOSailIntegrity(), (ship.getOSailIntegrity() - ship.getSailIntegrity()), 10);
-        List<DockingCollar> collars = ship.getDockingCollars();
-        int collarDamage = 0;
-        for (int i = 0; i < collars.size(); i++) {
-            final DockingCollar collar = collars.get(i);
-            if (collar.isDamaged()) {
-                collarDamage += 1;
-            }
-        }
-        printInternalRegion(DC_PIPS, collars.size(), collarDamage, 10);
+        final int collarCount = ship.getDockingCollars().size();
+        final int collarDamage = getCollarDamage();
+        printInternalRegion(DC_PIPS, collarCount, collarDamage, 10);
     }
 
     @Override

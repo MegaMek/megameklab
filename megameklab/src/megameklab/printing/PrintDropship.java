@@ -17,6 +17,7 @@ import java.awt.print.PageFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -26,6 +27,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import megamek.common.UnitType;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.DockingCollar;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
@@ -353,4 +355,15 @@ public class PrintDropship extends PrintAero {
     public boolean supportsAlternateArmorGrouping() {
         return true;
     }
+
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        if (ship instanceof Dropship dropship) {
+            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isDockCollarDamaged()?1:0);
+            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isKFBoomDamaged()?1:0);
+        }
+    }
+
 }
