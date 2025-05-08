@@ -135,8 +135,8 @@ public interface IdConstants {
     String FUEL_TANK_HIT = "fuel_tank_hit_";
     String DOCKING_COLLAR_HIT = "docking_collar_hit_";
     String KF_BOOM_HIT = "kf_boom_hit_";
-    String THRUSTER_LEFT_HIT = "truster_left_hit_";
-    String THRUSTER_RIGHT_HIT = "truster_right_hit_";
+    String THRUSTER_LEFT_HIT = "thruster_left_hit_";
+    String THRUSTER_RIGHT_HIT = "thruster_right_hit_";
     String ENGINE_HIT = "engine_hit_";
     String GYRO_HIT = "gyro_hit_";
     String SENSOR_HIT = "sensor_hit_";

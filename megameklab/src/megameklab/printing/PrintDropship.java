@@ -362,7 +362,7 @@ public class PrintDropship extends PrintAero {
         super.applyCoreComponentsCriticalDamage();
         if (ship instanceof Dropship dropship) {
             fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isDockCollarDamaged()?1:0);
-            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isKFBoomDamaged()?1:0);
+            fillCoreComponentCriticalDamage(KF_BOOM_HIT, dropship.isKFBoomDamaged()?1:0);
         }
     }
 
