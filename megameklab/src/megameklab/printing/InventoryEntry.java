@@ -19,11 +19,9 @@
 package megameklab.printing;
 
 import megamek.common.EquipmentType;
-import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
-import megamek.common.weapons.lrms.LRMWeapon;
-import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.util.AeroAVModCalculator;
 
 /**
  * Interface for classes that process entries in the weapons and inventory table
@@ -137,27 +135,6 @@ public interface InventoryEntry {
      * @return         The AV modification, if any
      */
     default int aeroAVMod(WeaponType weapon, EquipmentType linkedBy, boolean bay) {
-        if (linkedBy.hasFlag(MiscType.F_ARTEMIS)
-                || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
-            // The 9 and 10 rows of the cluster hits table is only different in the 3 column
-            if (weapon.getAtClass() == WeaponType.CLASS_MML) {
-                if (weapon.getRackSize() >= 7) {
-                    return 2;
-                } else if ((weapon.getRackSize() >= 5) || linkedBy.hasFlag(MiscType.F_ARTEMIS_V)) {
-                    return 1;
-                }
-            } else if (weapon instanceof LRMWeapon) {
-                return weapon.getRackSize() / 5;
-            } else if (weapon instanceof SRMWeapon) {
-                return 2;
-            }
-        } else if (linkedBy.hasFlag(MiscType.F_ARTEMIS_PROTO) && weapon.getRackSize() == 2) {
-            // The +1 cluster hit bonus only adds a missile hit for SRM2
-            return 2;
-        } else if (bay && linkedBy.hasFlag(MiscType.F_PPC_CAPACITOR)) {
-            // PPC capacitors in weapon bays are treated as if always charged
-            return 5;
-        }
-        return 0;
+        return AeroAVModCalculator.calculateBonus(weapon, linkedBy, bay);
     }
 }
