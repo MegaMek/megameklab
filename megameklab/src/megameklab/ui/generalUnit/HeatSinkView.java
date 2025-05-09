@@ -280,7 +280,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
-        lblTotalDissipationCount.setText(String.valueOf(mek.formatHeat()));
+        lblTotalDissipationCount.setText(String.valueOf(mek.getHeatCapacity(true, false)));
         lblMaxHeatCount.setText(String.valueOf(UnitUtil.getTotalHeatGeneration(mek)));
 
         showRiscKit(techManager.isLegal(Mek.getRiscHeatSinkOverrideKitAdvancement()));
@@ -315,7 +315,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         baseCountModel.setValue(Math.max(0, aero.getHeatSinks() - aero.getPodHeatSinks()));
         spnBaseCount.addChangeListener(this);
         lblWeightFreeCount.setText(String.valueOf(TestAero.weightFreeHeatSinks(aero)));
-        lblTotalDissipationCount.setText(String.valueOf(aero.formatHeat()));
+        lblTotalDissipationCount.setText(String.valueOf(aero.getHeatCapacity(false)));
         lblMaxHeatCount.setText(String.valueOf(UnitUtil.getTotalHeatGeneration(aero)));
         lblBaseCount.setVisible(aero.isOmni());
         spnBaseCount.setVisible(aero.isOmni());
