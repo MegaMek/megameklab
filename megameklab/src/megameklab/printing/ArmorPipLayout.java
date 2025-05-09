@@ -115,7 +115,6 @@ class ArmorPipLayout {
                         PrintRecordSheet.PipType pipType, double strokeWidth,
                         String fill, int damage, boolean alternateMethod) {
         if (pipCount > 0) {
-            AtomicInteger remainingDamageCounter = new AtomicInteger(damage);
             boolean multi = false;
             final String multiVal = PrintRecordSheet.parseStyle(group, IdConstants.MML_MULTISECTION);
             if (null != multiVal) {
@@ -162,14 +161,14 @@ class ArmorPipLayout {
                 }
                 for (int s = 0; s < sections.size(); s++) {
                     if (pipCounts.get(s) > 0) {
-                        sections.get(s).process(pipCounts.get(s), remainingDamageCounter, alternateMethod);
+                        sections.get(s).process(pipCounts.get(s), damage, alternateMethod);
                     }
                 }
             } else {
                 ArmorPipLayout layout = new ArmorPipLayout(sheet, group,
                         pipType, strokeWidth, fill);
                 if (!layout.regions.isEmpty()) {
-                    layout.process(pipCount, remainingDamageCounter, alternateMethod);
+                    layout.process(pipCount, damage, alternateMethod);
                 }
             }
         }
@@ -349,9 +348,9 @@ class ArmorPipLayout {
         };
     }
 
-    void process(int pipCount, AtomicInteger damageCounter, boolean alternate) {
+    void process(int pipCount, int damage, boolean alternate) {
         if (!alternate) {
-            process(pipCount, damageCounter);
+            process(pipCount, damage);
             return;
         }
         int attempts = 0;
@@ -403,19 +402,19 @@ class ArmorPipLayout {
             if (remaining > 0) {
                 attempts++;
                 if (attempts > 5) {
-                    process(pipCount, damageCounter);
+                    process(pipCount, damage);
                     return;
                 }
                 diameter *= 0.9;
             }
         } while (remaining > 0);
 
+        int remainingDamage = damage;
         for (var pip : pips) {
             boolean isDamaged = false;
-            if (damageCounter.get() > 0) {
-                if (damageCounter.decrementAndGet() >= 0) {
-                    isDamaged = true;
-                }
+            if (remainingDamage > 0) {
+                remainingDamage--;
+                isDamaged = true;
             }
             final String fillColor = (isDamaged) ? sheet.getDamageFillColor() : fill;
             group.appendChild(sheet.createPip(pip.x, pip.y + (originalDiameter / 2 - diameter / 2.2), diameter / 2.2, strokeWidth, pipType, fillColor));
@@ -427,7 +426,7 @@ class ArmorPipLayout {
      *
      * @param pipCount The number of pips to place in the region
      */
-    private void process(int pipCount, AtomicInteger damageCounter) {
+    private void process(int pipCount, int damage) {
         /* Estimate the number of rows required by finding the height of a rectangle
          * with an area of pipCount that has the same aspect ratio as the bounding box.
          */
@@ -525,7 +524,7 @@ class ArmorPipLayout {
             }
         }
         double xSpacing = adjustCount(pipCount, rows, gaps, rowCount, staggered, spacing);
-        drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing, damageCounter);
+        drawPips(rows, gaps, rowCount, staggered, Math.min(radius, xSpacing * 0.4), xSpacing, damage);
     }
 
     /**
@@ -680,7 +679,7 @@ class ArmorPipLayout {
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
-            boolean staggered, double radius, double xSpacing, AtomicInteger damageCounter) {
+            boolean staggered, double radius, double xSpacing, int damage) {
         double dx = staggered ? xSpacing * 2 : xSpacing;
         /*
          * Find the row that takes up the largest percentage of its row. If it's over
@@ -711,17 +710,18 @@ class ArmorPipLayout {
         double centerX = rows.get(0).centerX();
         // The offset needed to center the pip in the cell.
         double xPadding = dx * 0.5 - radius;
+        AtomicInteger remainingDamageCounter = new AtomicInteger(damage);
         for (int r = 0; r < rows.size(); r++) {
             final Bounds row = rows.get(r);
             if (gaps.get(r).width() > 0) {
                 Bounds left = new Bounds(row.left, row.top, gaps.get(r).left, row.bottom);
                 Bounds right = new Bounds(gaps.get(r).right, row.top, row.right, row.bottom);
                 int count = (int) Math.round(rowCount.get(r) * left.width() / (left.width() + right.width()));
-                drawRow(left, count, radius, dx, centerX, xPadding, damageCounter);
-                drawRow(right, rowCount.get(r) - count, radius, dx, centerX, xPadding, damageCounter);
+                drawRow(left, count, radius, dx, centerX, xPadding, remainingDamageCounter);
+                drawRow(right, rowCount.get(r) - count, radius, dx, centerX, xPadding, remainingDamageCounter);
                 centerX = row.centerX();
             } else {
-                centerX = drawRow(row, rowCount.get(r), radius, dx, centerX, xPadding, damageCounter);
+                centerX = drawRow(row, rowCount.get(r), radius, dx, centerX, xPadding, remainingDamageCounter);
             }
         }
     }
