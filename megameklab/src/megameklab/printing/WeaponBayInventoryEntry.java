@@ -211,6 +211,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     public int nRows() {
         return bay.weapons.size();
     }
+    
+    @Override
+    public boolean isDamaged() {
+        return false;
+    }
 
     @Override
     public String getQuantityField(int row) {

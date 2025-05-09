@@ -83,6 +83,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     public static final String DEFAULT_TYPEFACE = "Eurostile";
     public static final float DEFAULT_PIP_SIZE = 0.38f;
+    public static final float DEFAULT_PIP_STROKE = 0.5f;
     public static final float FONT_SIZE_LARGE = 7.2f;
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;
@@ -90,7 +91,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
-    public static final String FILL_WHITE = "#ffffff";
+    public static final String FILL_WHITE = "#ffffff";;
+    public static final String FILL_RED = "#ee0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
 
@@ -448,10 +450,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
         }
         processImage(pageIndex - firstPage, pageFormat);
+        applyCoreComponentsCriticalDamage();
         shadeTableRows();
         makeFrameless();
         makeBoldType();
         return true;
+    }
+    
+    /**
+     * Applies the critical damage to the core components of the unit and crew.
+     * This should be overridden by subclasses that have core components.
+     */
+    protected void applyCoreComponentsCriticalDamage() {
+    }
+
+    protected void fillCoreComponentCriticalDamage(String idPrefix, int damage) {
+        if (damage < 1) {
+            return;
+        }
+        for (int i = 1; i <= damage; i++) {
+            Element el = getSVGDocument().getElementById(idPrefix + i);
+            if (el != null) {
+                el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+            }
+        }
+    }
+
+    protected void fillCoreComponentCriticalDamage(String id, boolean damaged) {
+        if (!damaged) {
+            return;
+        }
+        Element el = getSVGDocument().getElementById(id);
+        if (el != null) {
+            el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+        }
     }
 
     @Override
@@ -667,6 +699,41 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
+     * Add a line through the text at the given coordinates. The line is drawn at the
+     * center of the text.
+     * 
+     * @param parent   The SVG element to add the line to.
+     * @param x        The X position of the line.
+     * @param y        The Y position of the line.
+     * @param width    The width of the line.
+     */
+    protected void addLineThrough(Element parent, double x, double y, double width) {
+        addLineThrough(parent, x, y, width, getDamageFillColor());
+    }
+
+    /**
+     * Add a line through the text at the given coordinates. The line is drawn at the
+     * center of the text.
+     * 
+     * @param parent   The SVG element to add the line to.
+     * @param x        The X position of the line.
+     * @param y        The Y position of the line.
+     * @param width    The width of the line.
+     * @param color    The color of the line.
+     */
+    protected void addLineThrough(Element parent, double x, double y, double width, String color) {
+        final int STROKE_THICKNESS = 1;
+        Element line = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_LINE_TAG);
+        line.setAttributeNS(null, SVGConstants.SVG_X1_ATTRIBUTE, String.valueOf(x));
+        line.setAttributeNS(null, SVGConstants.SVG_Y1_ATTRIBUTE, String.valueOf(y));
+        line.setAttributeNS(null, SVGConstants.SVG_X2_ATTRIBUTE, String.valueOf(x + width));
+        line.setAttributeNS(null, SVGConstants.SVG_Y2_ATTRIBUTE, String.valueOf(y));
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, color);
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, STROKE_THICKNESS+"px");
+        parent.appendChild(line);
+    }
+
+    /**
      * Convenience method for creating a new SVG Text element and adding it to the
      * parent. The width
      * of the text is returned, to aid in layout.
@@ -718,9 +785,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         parent.appendChild(newText);
-
-        return weight.equals(SVGConstants.SVG_BOLD_VALUE) ? getBoldTextLength(text, fontSize)
-                : getTextLength(text, fontSize);
+        return getTextLength(text, fontSize, weight, fontStyle);
     }
 
     /**
@@ -770,7 +835,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_WEIGHT_ATTRIBUTE, weight);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-        if (getTextLength(text, fontSize) > width) {
+        if (getTextLength(text, fontSize, weight) > width) {
             newText.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(width));
             newText.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
                     SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
@@ -861,7 +926,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle, String fill, char delimiter) {
+            String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
         // in text
@@ -869,18 +934,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         int pos = 0;
         while (!text.isBlank()) {
             // If the remaining text fits, add a line and exit.
-            double textLength;
-            if ((fontStyle == SVGConstants.SVG_ITALIC_VALUE) && (weight == SVGConstants.SVG_BOLD_VALUE)) {
-                textLength = getBoldItalicTextLength(text, fontSize);
-            } else
-            if (weight == SVGConstants.SVG_BOLD_VALUE) {
-                textLength = getBoldTextLength(text, fontSize);
-            } else
-            if (fontStyle == SVGConstants.SVG_ITALIC_VALUE) {
-                textLength = getItalicTextLength(text, fontSize);
-            } else {
-                textLength = getTextLength(text, fontSize);
-            }
+            double textLength = getTextLength(text, fontSize, weight, fontStyle);
             if (textLength <= width) {
                 addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
                 lines++;
@@ -899,17 +953,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // the previous
             // delimiter that was found, add the text up to pos.
             final String subText = text.substring(0, pos + index);
-            if ((fontStyle == SVGConstants.SVG_ITALIC_VALUE) && (weight == SVGConstants.SVG_BOLD_VALUE)) {
-                textLength = getBoldItalicTextLength(subText, fontSize);
-            } else
-            if (weight == SVGConstants.SVG_BOLD_VALUE) {
-                textLength = getBoldTextLength(subText, fontSize);
-            } else
-            if (fontStyle == SVGConstants.SVG_ITALIC_VALUE) {
-                textLength = getItalicTextLength(subText, fontSize);
-            } else {
-                textLength = getTextLength(subText, fontSize);
-            }
+            textLength = getTextLength(subText, fontSize, weight, fontStyle);
             if ((index < 0)
                     || ((textLength > width)
                             && (pos > 0))) {
@@ -1057,11 +1101,22 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     public float getFontHeight(float fontSize) {
         Font f = getNormalFont(fontSize);
-        FontMetrics fm = svgGenerator.getFontMetrics(f);
+        return getFontHeight(fontSize, f);
+    }
+
+    /**
+     * Determines the vertical space taken up by a line of text.
+     *
+     * @param fontSize Value of CSS font-size attribute
+     * @param font     The font to use for the text
+     * @return The height of the bounding box of a text element
+     */
+    protected float getFontHeight(float fontSize, Font font) {
+        FontMetrics fm = svgGenerator.getFontMetrics(font);
         return fm.getHeight();
     }
 
-    public double getTextLength(String text, float fontSize) {
+    public double getNormalTextLength(String text, float fontSize) {
         Font font = getNormalFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
@@ -1079,6 +1134,30 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public double getBoldItalicTextLength(String text, float fontSize) {
         Font font = getBoldItalicFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
+    }
+    
+    public double getTextLength(String text, float fontSize) {
+        return getTextLength(text, fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    public double getTextLength(String text, float fontSize, String weight) {
+        return getTextLength(text, fontSize, weight, SVGConstants.SVG_NORMAL_VALUE);
+    }
+
+    public double getTextLength(String text, float fontSize, String weight, String fontStyle) {
+        double textLength;
+        if ((fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) && (weight.equals(SVGConstants.SVG_BOLD_VALUE))) {
+            textLength = getBoldItalicTextLength(text, fontSize);
+        } else
+        if (weight.equals(SVGConstants.SVG_BOLD_VALUE)) {
+            textLength = getBoldTextLength(text, fontSize);
+        } else
+        if (fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) {
+            textLength = getItalicTextLength(text, fontSize);
+        } else {
+            textLength = getNormalTextLength(text, fontSize);
+        }
+        return textLength;
     }
 
     public static Rectangle2D getRectBBox(SVGRectElement rect) {
@@ -1213,5 +1292,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                     table.createTable(x, ypos, width, tableHeight - BORDER));
             ypos += tableHeight;
         }
+    }
+
+    /**
+     * @return The color to use for the damage fill
+     */
+    protected String getDamageFillColor() {
+        return options.getDamageColor();
     }
 }

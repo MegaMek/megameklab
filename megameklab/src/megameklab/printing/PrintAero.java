@@ -109,7 +109,7 @@ public class PrintAero extends PrintEntity {
         if (aero.tracksHeat()) {
             Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
             if (hsRect instanceof SVGRectElement) {
-                drawHeatSinkPips((SVGRectElement) hsRect, aero.getHeatSinks());
+                drawHeatSinkPips((SVGRectElement) hsRect, aero.getHeatSinks(), getHeatsinkDamage());
             }
         }
         if (aero.isBomber()) {
@@ -137,9 +137,10 @@ public class PrintAero extends PrintEntity {
     protected void drawArmorStructurePips() {
         super.drawArmorStructurePips();
         Element element = getElementById(SI_PIPS);
+        final int damage = (aero.getOSI()-aero.getSI());
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.getOSI(),
-                    PipType.CIRCLE, 0.5, FILL_WHITE, useAlternateArmorGrouping());
+                    PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, damage, useAlternateArmorGrouping());
         }
     }
 
@@ -332,5 +333,40 @@ public class PrintAero extends PrintEntity {
                     pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
                     height * 0.5 - 3.0));
         }
+    }
+
+    protected int getHeatsinkDamage() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return aero.getHeatSinkHits();
+    }
+    
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(AVIONICS_HIT, aero.getAvionicsHits());
+        fillCoreComponentCriticalDamage(FCS_HIT, aero.getFCSHits());
+        fillCoreComponentCriticalDamage(SENSOR_HIT, aero.getSensorHits());
+        fillCoreComponentCriticalDamage(ENGINE_HIT, aero.getEngineHits());
+        fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, aero.isGearHit()?1:0);
+        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, aero.hasLifeSupport()?0:1);
+        fillCoreComponentCriticalDamage(CIC_HIT, aero.getCICHits());
+        fillCoreComponentCriticalDamage(FUEL_TANK_HIT, aero.fuelTankHit()?1:0);
+        fillCoreComponentCriticalDamage(THRUSTER_LEFT_HIT, aero.getLeftThrustHits());
+        fillCoreComponentCriticalDamage(THRUSTER_RIGHT_HIT, aero.getRightThrustHits());
+    }
+
+    protected int getCollarDamage() {
+        List<DockingCollar> collars = aero.getDockingCollars();
+        int collarDamage = 0;
+        for (int i = 0; i < collars.size(); i++) {
+            final DockingCollar collar = collars.get(i);
+            if (collar.isDamaged()) {
+                collarDamage += 1;
+            }
+        }
+        return collarDamage;
     }
 }
