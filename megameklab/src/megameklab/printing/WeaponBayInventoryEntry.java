@@ -221,7 +221,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     @Override
-    public String getNameField(int row) {
+    public String getNameField(int row, PrintRecordSheet sheet, double width, float fontSize) {
         if (row == 0 && bay.rear && !ship.isSpheroid()) {
             return quantities.get(row) + " " + weaponNames.get(row) + " (R)";
         } else if (row < weaponNames.size()) {

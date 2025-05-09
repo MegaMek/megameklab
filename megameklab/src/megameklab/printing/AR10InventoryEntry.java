@@ -38,7 +38,7 @@ public class AR10InventoryEntry implements InventoryEntry {
     }
 
     @Override
-    public String getNameField(int row) {
+    public String getNameField(int row, PrintRecordSheet sheet, double width, float fontSize) {
         return names[row];
     }
 

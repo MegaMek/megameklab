@@ -253,17 +253,32 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String formatName() {
+        return formatName(null, 0, 0);
+    }
+
+    private String formatName(PrintRecordSheet sheet, double width, float fontSize) {
         String eqName = mount.getName();
-        if (eqName.length() > 20) {
-            eqName = mount.getShortName();
+        String eqShortName;
+        if (sheet == null) {
+            if (eqName.length() > 20) {
+                eqName = mount.getShortName();
+            }
+            eqShortName = eqName;
+        } else {
+            eqShortName = mount.getShortName();
         }
         // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
         // including possible leading space. For mixed tech units this is presumably needed to remove
         // ambiguity.
         if (!mount.getEntity().isMixedTech()) {
-            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+            if (eqName.equals(eqShortName)) {
+                eqShortName = eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+            } else {
+                eqShortName = eqShortName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+                eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+            }
         }
-        StringBuilder name = new StringBuilder(eqName);
+        StringBuilder name = new StringBuilder("");
         // For mixed tech units, we want to append the tech base if there is ambiguity
         // and it isn't already part of the name.
         if (showTechBase()) {
@@ -297,7 +312,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                     .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
                     .append(" shots]");
         }
-        return name.toString().trim();
+        if ((sheet == null) || eqName.equals(eqShortName)) {
+            name.insert(0, eqShortName);
+            return name.toString().trim();
+        } else {
+            final String suffix = name.toString();
+            StringBuilder fullName = new StringBuilder(suffix);
+            fullName.insert(0, eqName);
+            if (sheet.getTextLength(fullName.toString().trim(), fontSize) <= width) {
+                return fullName.toString().trim();
+            }
+            StringBuilder shortName = new StringBuilder(suffix);
+            shortName.insert(0, eqShortName);
+            return shortName.toString().trim();
+        }
     }
 
     /**
@@ -377,8 +405,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     @Override
-    public String getNameField(int row) {
+    public String getNameField(int row, PrintRecordSheet sheet, double width, float fontSize) {
         if (row == 0) {
+            if (sheet != null) {
+                return formatName(sheet, width, fontSize);
+            }
             return name;
         }
 

@@ -47,7 +47,15 @@ public interface InventoryEntry {
      * @param row The row index within the entry. Should be &lt; nRows()
      * @return    The name of the equipment
      */
-    String getNameField(int row);
+    default String getNameField(int row) {
+        return getNameField(row, null, 0, 0);
+    }
+
+    /**
+     * @param row The row index within the entry. Should be &lt; nRows()
+     * @return    The name of the equipment
+     */
+    String getNameField(int row, PrintRecordSheet sheet, double width, float fontSize);
 
     /**
      * @param row The row index within the entry. Should be &lt; nRows()

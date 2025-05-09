@@ -808,13 +808,13 @@ public class InventoryWriter {
                             if (row == 0) {
                                 lines = sheet.addMultilineTextElement(canvas, colX[i],
                                         yPosition, width, lineHeight,
-                                        line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
+                                        line.getNameField(row, sheet, width, fontSize), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             } else {
                                 lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
-                                        line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
+                                        line.getNameField(row, sheet, width, fontSize), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             }
                             break;
