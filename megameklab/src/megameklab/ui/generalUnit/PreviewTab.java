@@ -24,14 +24,19 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.Component;
+import java.util.List;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
+
 
 import megamek.client.ui.panes.ConfigurableMekViewPanel;
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.MekViewPanel;
 import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
+import megamek.common.EnhancedTabbedPane;
+import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;
 import megamek.common.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
@@ -49,7 +54,7 @@ public class PreviewTab extends ITab {
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
-    private JTabbedPane panPreview;
+    private EnhancedTabbedPane panPreview;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
@@ -68,11 +73,13 @@ public class PreviewTab extends ITab {
         troViewScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         troViewScroll.setBorder(null);
 
-        panPreview = new JTabbedPane();
+        panPreview = new EnhancedTabbedPane(true, true);
         panPreview.addTab("Summary", mekViewScroll);
         panPreview.addTab("TRO", troViewScroll);
         panPreview.addTab("AS Card", cardPanel);
         panPreview.addTab("Record Sheet", rsPanel);
+        List<String> tabsOrder = GUIPreferences.getInstance().getTabOrder(this.getClass().getName());
+        panPreview.setTabOrder(tabsOrder);
         add(panPreview, BorderLayout.CENTER);
 
         panPreview.addChangeListener(e -> {
@@ -93,6 +100,14 @@ public class PreviewTab extends ITab {
                 if (availableWidth > 0) {
                     setPreferredWidth(availableWidth);
                 }
+            }
+        });
+        
+        panPreview.addTabStateListener(new TabStateListener() {
+            @Override
+            public void onTabMoved(int oldIndex, int newIndex, Component component) {
+                List<String> tabsOrder = panPreview.getTabOrder(); 
+                GUIPreferences.getInstance().setTabOrder(PreviewTab.this.getClass().getName(), tabsOrder);
             }
         });
 
@@ -154,6 +169,12 @@ public class PreviewTab extends ITab {
         if (isVisible()) {
             update();
         }
+    }
+
+    @Override
+    public void removeNotify() {
+        panPreview.reattachAllTabs();
+        super.removeNotify();
     }
 
     ComponentListener refreshOnShow = new ComponentAdapter() {
