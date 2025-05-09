@@ -129,18 +129,17 @@ public class PrintBattleArmor extends PrintEntity {
                     double radius = size * 0.36;
                     double strokeWidth = 0.9;
                     double y = viewY + viewHeight * 0.5 - radius;
-                    
-                    int damage = pipCount - battleArmor.getArmor(BattleArmor.LOC_TROOPER_1 + i);
+                    final boolean alive = battleArmor.getInternal(BattleArmor.LOC_TROOPER_1 + i) > 0;
+                    int currentArmor = battleArmor.getArmor(BattleArmor.LOC_TROOPER_1 + i);
                     for (int p = 0; p < pipCount; p++) {
-                        final boolean isDamaged = damage > 0;
-                        if (damage > 0) {
-                            damage--;
+                        String fill;
+                        if (p == 0) {
+                            fill = alive ? FILL_GREY : getDamageFillColor();
+                        } else {
+                            final boolean isDamaged = p > currentArmor;
+                            fill = (!alive || isDamaged) ? getDamageFillColor() : FILL_WHITE;
                         }
-                        final String fill = isDamaged ? getDamageFillColor() : FILL_WHITE;
                         Element pip = createPip(viewX + size * p, y, radius, strokeWidth, PipType.CIRCLE, fill);
-                        if ((p == 0) && (!isDamaged)) {
-                            pip.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_GREY);
-                        }
                         canvas.appendChild(pip);
                     }
                 }
