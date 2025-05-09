@@ -514,7 +514,7 @@ public class InventoryWriter {
     }
 
     static private float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
-    static private float LINE_SPACING_REDUCTION_STEP = 0.1f; // the amount we reduce the line spacing each attempt
+    static private float LINE_SPACING_REDUCTION_STEP = 0.05f; // the amount we reduce the line spacing each attempt
     static private float FONT_SIZE_REDUCTION_STEP = 0.25f; // the amount we reduce the font each attempt
     // the minimum line spacing during the first "line spacing only" attempts
     // if we can't fit the text, we will rollback and we will start reducing the
@@ -522,7 +522,7 @@ public class InventoryWriter {
     static private float MIN_LINE_SPACING_IN_SPECIAL_ATTEMPTS = 1.0f;
     // the ratio of attempts between font size and line spacing.
     // if this number is > 1, we will do more attempts to reduce line spacing compared to font size
-    static private float RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS = 1;
+    static private float RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS = 2;
 
     /**
      * If the lines do not fit in the available space, we will need to reduce the font size
