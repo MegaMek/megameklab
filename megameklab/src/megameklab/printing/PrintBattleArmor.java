@@ -13,6 +13,7 @@
  */
 package megameklab.printing;
 
+import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megamek.common.battlevalue.BattleArmorBVCalculator;
 import megameklab.util.BattleArmorUtil;
@@ -21,6 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
+import java.text.NumberFormat;
 import java.util.StringJoiner;
 
 /**
@@ -90,8 +92,20 @@ public class PrintBattleArmor extends PrintEntity {
         hideElement(CHECK_LEG, !BattleArmorUtil.canLegAttack(battleArmor));
         hideElement(CHECK_AP, battleArmor.countWorkingMisc(MiscType.F_AP_MOUNT) == 0);
 
-        setTextField(BV, battleArmor.calculateBattleValue(true, !showPilotInfo())
-            + "/" + ((BattleArmorBVCalculator)battleArmor.getBvCalculator()).singleTrooperBattleValue());
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !showPilotInfo());
+        if (showC3()) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !showPilotInfo());
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        setTextField(BV, bvValue + "/" + ((BattleArmorBVCalculator)battleArmor.getBvCalculator()).singleTrooperBattleValue());
     }
 
     @Override
@@ -110,15 +124,21 @@ public class PrintBattleArmor extends PrintEntity {
                     int viewY = (int)bbox.getY();
                     // Extra pip for trooper
                     final int pipCount = battleArmor.getOArmor(BattleArmor.LOC_TROOPER_1 + i) + 1;
-
                     // Max armor for any BA unit is 18
                     double size = viewWidth / 19.0;
                     double radius = size * 0.36;
                     double strokeWidth = 0.9;
                     double y = viewY + viewHeight * 0.5 - radius;
+                    
+                    int damage = pipCount - battleArmor.getArmor(BattleArmor.LOC_TROOPER_1 + i);
                     for (int p = 0; p < pipCount; p++) {
-                        Element pip = createPip(viewX + size * p, y, radius, strokeWidth);
-                        if (p == 0) {
+                        final boolean isDamaged = damage > 0;
+                        if (damage > 0) {
+                            damage--;
+                        }
+                        final String fill = isDamaged ? getDamageFillColor() : FILL_WHITE;
+                        Element pip = createPip(viewX + size * p, y, radius, strokeWidth, PipType.CIRCLE, fill);
+                        if ((p == 0) && (!isDamaged)) {
                             pip.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_GREY);
                         }
                         canvas.appendChild(pip);
