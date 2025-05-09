@@ -513,15 +513,23 @@ public class InventoryWriter {
         return scaleText(viewHeight, calcLines);
     }
 
-    static private float FONT_SIZE_REDUCTION_STEP = 0.25f;
-    static private float LINE_SPACING_REDUCTION_STEP = 0.1f;
-    
+    static private float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
+    static private float LINE_SPACING_REDUCTION_STEP = 0.1f; // the amount we reduce the line spacing each attempt
+    static private float FONT_SIZE_REDUCTION_STEP = 0.25f; // the amount we reduce the font each attempt
+    // the minimum line spacing during the first "line spacing only" attempts
+    // if we can't fit the text, we will rollback and we will start reducing the
+    // font size and line spacing
+    static private float MIN_LINE_SPACING_IN_SPECIAL_ATTEMPTS = 1.0f;
+    // the ratio of attempts between font size and line spacing.
+    // if this number is > 1, we will do more attempts to reduce line spacing compared to font size
+    static private float RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS = 1;
+
     /**
      * If the lines do not fit in the available space, we will need to reduce the font size
-     * and possible the amount of space between lines. We take it in steps of -0.25 instead of
-     * scaling proportionately because not only is the relationship between font size and height
-     * not directly proportional, but a smaller reduction may be sufficient to reduce the number
-     * of line required for longer fields.
+     * and possible the amount of space between lines.
+     * We first try to reduce the line spacing factor until a certain threshold,
+     * and if it fails we start an alternate cycle of attempts between font size
+     * and line spacing reduction.
      *
      * @param height The height of the region the text needs to fit in
      * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
@@ -530,10 +538,10 @@ public class InventoryWriter {
      */
     public float[] scaleText(double height, Function<Float, Integer> calcLines) {
         float currentFontSize = FONT_SIZE_MEDIUM;
-        float currentLineSpacingFactor = 1.2f;
+        float currentLineSpacingFactor = INITIAL_LINE_SPACING;
         int lines;
         float actualLineHeight;
-        boolean alternateReductionPriority = false; // false = prioritize font size, true = prioritize line spacing
+        int alternateReductionState = 0; // 0 = prioritize font size, 1 = prioritize line spacing
         boolean attemptForLineSpacingOnly = true;
         while (true) {
             lines = calcLines.apply(currentFontSize);
@@ -545,39 +553,39 @@ public class InventoryWriter {
                 break;
             }
 
-            // Before start the alternate font/spacing cycle, we try first to reduce the
-            // line spacing factor to see if it is enough to fit the text. If it fails,
-            // we rollback and start with the font instead.
+            // We try first to reduce the line spacing factor to see if it is enough
+            // to fit the text. If it fails, we rollback and we start an alternate
+            // cycle of attempts between font and line spacing.
             if (attemptForLineSpacingOnly) {
                 attemptForLineSpacingOnly = false;
+                boolean fitFoundInSpecialPhase = false;
                 final float originalLineSpacingFactor = currentLineSpacingFactor;
-                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
-                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - 0.1f);
-                    // Checking if is enough
-                    int tempLines = calcLines.apply(currentFontSize);
-                    float tempFontMetricsHeight = sheet.getFontHeight(currentFontSize);
-                    float tempActualLineHeight = tempFontMetricsHeight * currentLineSpacingFactor;
-
-                    if (tempActualLineHeight * tempLines < height) {
-                        actualLineHeight = tempActualLineHeight;
-                        break; // Text fits!
-                    } else {
-                        // Rollback
-                        currentLineSpacingFactor = originalLineSpacingFactor;
+                while (true) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
+                    if (currentLineSpacingFactor < MIN_LINE_SPACING_IN_SPECIAL_ATTEMPTS) {
+                        // Too much reduction, we failed
+                        break;
+                    }
+                    actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+                    if (actualLineHeight * lines < height) {
+                        fitFoundInSpecialPhase = true;
+                        break;
                     }
                 }
-            } 
+                if (fitFoundInSpecialPhase) {
+                    // We found the fit! The main loop will to the final check.
+                    continue;
+                } else {
+                    // Rollback
+                    currentLineSpacingFactor = originalLineSpacingFactor;
+                    actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+                }
+            }
+
+
             boolean reductionMade = false;
             // This is the alternate reduction cycle between font size and line spacing factor
-            if (alternateReductionPriority) { // Prioritize reducing line spacing factor
-                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
-                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
-                    reductionMade = true;
-                } else if (currentFontSize > MIN_FONT_SIZE) {
-                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
-                    reductionMade = true;
-                }
-            } else { // Prioritize reducing font size
+            if (alternateReductionState == 0) { // Prioritize reducing font size
                 if (currentFontSize > MIN_FONT_SIZE) {
                     currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
                     reductionMade = true;
@@ -585,8 +593,20 @@ public class InventoryWriter {
                     currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
                     reductionMade = true;
                 }
+            } else { // Prioritize reducing line spacing factor
+                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
+                    reductionMade = true;
+                } else if (currentFontSize > MIN_FONT_SIZE) {
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
+                    reductionMade = true;
+                }
             }
-            alternateReductionPriority = !alternateReductionPriority;
+            
+            alternateReductionState++;
+            if (alternateReductionState > RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS) {
+                alternateReductionState = 0;
+            }
 
             if (!reductionMade) {
                 // No more reductions possible, break the loop
