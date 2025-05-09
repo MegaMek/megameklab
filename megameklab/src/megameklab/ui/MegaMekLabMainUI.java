@@ -15,6 +15,7 @@
  */
 package megameklab.ui;
 
+import megamek.client.ui.swing.GUIPreferences;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.Entity;
 import megamek.common.Mounted;
@@ -31,6 +32,7 @@ import java.awt.*;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.List;
 
 public abstract class MegaMekLabMainUI extends JPanel
         implements RefreshListener, EntitySource, FileNameManager {
@@ -64,6 +66,12 @@ public abstract class MegaMekLabMainUI extends JPanel
                 final String displayName = entity.getDisplayName();
                 configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
             }
+
+            @Override
+            public void onTabMoved(int oldIndex, int newIndex, Component component) {
+                List<String> tabsOrder = configPane.getTabOrder(); 
+                GUIPreferences.getInstance().setTabOrder(MegaMekLabMainUI.this.getClass().getName(), tabsOrder);
+            }
         });
     }
 
@@ -75,6 +83,9 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (!initializedTabs) {
             initializedTabs = true;
             reloadTabs();
+            List<String> tabsOrder = GUIPreferences.getInstance().getTabOrder(this.getClass().getName());
+            configPane.setTabOrder(tabsOrder);
+
         }
     }
 
