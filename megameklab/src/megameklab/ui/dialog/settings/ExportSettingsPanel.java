@@ -19,9 +19,10 @@
 package megameklab.ui.dialog.settings;
 
 import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
-import megamek.common.enums.WeaponSortOrder;
+import megameklab.printing.PrintEntity;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -50,6 +51,9 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkShowCondensedTables = new JCheckBox();
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
+    private final JCheckBox chkShowForceData = new JCheckBox();
+    private final JCheckBox chkShowDamage = new JCheckBox();
+    private final JButton btnDamageColor = new JButton();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
@@ -156,6 +160,28 @@ class ExportSettingsPanel extends JPanel {
         chkShowPilotData.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowPilotData.tooltip"));
         chkShowPilotData.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
 
+        chkShowForceData.setText(resourceMap.getString("ConfigurationDialog.chkShowForceData.text"));
+        chkShowForceData.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowForceData.tooltip"));
+        chkShowForceData.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV));
+
+        chkShowDamage.setText(resourceMap.getString("ConfigurationDialog.chkShowDamage.text"));
+        chkShowDamage.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowDamage.tooltip"));
+        chkShowDamage.setSelected(CConfig.getBooleanParam(CConfig.RS_DAMAGE));
+
+        btnDamageColor.setText(resourceMap.getString("ConfigurationDialog.btnDamageColor.text"));
+        btnDamageColor.setToolTipText(resourceMap.getString("ConfigurationDialog.btnDamageColor.tooltip"));
+        Color initial = Color.decode(CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED));
+        btnDamageColor.setBackground(initial);
+        btnDamageColor.addActionListener(ev -> {
+            Color chosen = JColorChooser.showDialog(
+                ExportSettingsPanel.this,
+                resourceMap.getString("ConfigurationDialog.btnDamageColor.text"),
+                btnDamageColor.getBackground());
+            if (chosen != null) {
+                btnDamageColor.setBackground(chosen);
+            }
+        });
+
         chkShowEraIcon.setText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.text"));
         chkShowEraIcon.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.tooltip"));
         chkShowEraIcon.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_ERA));
@@ -171,6 +197,7 @@ class ExportSettingsPanel extends JPanel {
         chkTacOpsHeat.setText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.text"));
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
+
 
         mekChassis.setRenderer(mekNameArrangementRenderer);
         mekChassis.setSelectedItem(CConfig.getMekNameArrangement());
@@ -202,6 +229,16 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(txtScale);
         scalePanel.add(cbRSScale);
 
+        JPanel damagePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.weightx = 0.8;
+        damagePanel.add(chkShowDamage, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.2;
+        damagePanel.add(btnDamageColor, gbc);
+
         JPanel gridPanel = new JPanel(new SpringLayout());
         JPanel innerGridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkProgressBar);
@@ -216,6 +253,8 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkShowCondensedTables);
         innerGridPanel.add(chkShowQuirks);
         innerGridPanel.add(chkShowPilotData);
+        innerGridPanel.add(chkShowForceData);
+        innerGridPanel.add(damagePanel);
         innerGridPanel.add(chkShowEraIcon);
         innerGridPanel.add(chkShowRole);
         innerGridPanel.add(chkHeatProfile);
@@ -227,7 +266,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
 
-        SpringUtilities.makeCompactGrid(innerGridPanel, 7, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(innerGridPanel, 8, 2, 0, 0, 15, 6);
         SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -245,14 +284,16 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_CONDENSED_REFERENCE, Boolean.toString(chkShowCondensedTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
+        recordSheetSettings.put(CConfig.RS_SHOW_C3BV, Boolean.toString(chkShowForceData.isSelected()));
+        recordSheetSettings.put(CConfig.RS_DAMAGE, Boolean.toString(chkShowDamage.isSelected()));
+        recordSheetSettings.put(CConfig.RS_DAMAGE_COLOR, String.format("#%06X", btnDamageColor.getBackground().getRGB() & 0xFFFFFF));
         recordSheetSettings.put(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
-        recordSheetSettings.put(CConfig.RS_MEK_NAMES,
-                Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+        recordSheetSettings.put(CConfig.RS_MEK_NAMES, Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));

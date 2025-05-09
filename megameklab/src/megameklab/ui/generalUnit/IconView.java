@@ -151,14 +151,17 @@ public class IconView extends BuildView {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog, false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            final Image image = MMStaticDirectoryManager.getMekTileset().imageFor(chosenEntity);
-            entity.setIcon(ImageUtil.base64TextEncodeImage(image));
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                final Image image = MMStaticDirectoryManager.getMekTileset().imageFor(chosenEntity);
+                entity.setIcon(ImageUtil.base64TextEncodeImage(image));
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
+            refresh();
         }
-        viewer.dispose();
-        refresh();
     }
 
     private void removeIcon() {

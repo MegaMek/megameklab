@@ -310,12 +310,15 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         } else {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, true);
         }
-        viewer.dispose();
-        if (CollectionUtils.isEmpty(viewer.getChosenEntities())) {
-            return;
+        try {
+            if (CollectionUtils.isEmpty(viewer.getChosenEntities())) {
+                return;
+            }
+            addUnits(viewer, previousFrame);
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-
-        addUnits(viewer, previousFrame);
     }
 
     @Override

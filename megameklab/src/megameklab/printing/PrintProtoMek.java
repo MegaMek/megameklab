@@ -17,6 +17,7 @@ import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 
+import megamek.common.CriticalSlot;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -189,5 +190,23 @@ public class PrintProtoMek extends PrintEntity {
     @Override
     String structurePipFill() {
         return FILL_SHADOW;
+    }
+
+    static final String GUN_HIT = "gun_hit_";
+    static final String LEGS_HIT = "legs_hit_";
+    static final String TORSO_HIT = "torso_hit_";
+    static final String HEAD_HIT = "head_hit_";
+    static final String RIGHT_ARM_HIT = "ra_hit_";
+    static final String LEFT_ARM_HIT = "la_hit_";
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(GUN_HIT, proto.getCritsHit(ProtoMek.LOC_MAINGUN));
+        fillCoreComponentCriticalDamage(LEGS_HIT, proto.getCritsHit(ProtoMek.LOC_LEG));
+        fillCoreComponentCriticalDamage(TORSO_HIT, proto.getCritsHit(ProtoMek.LOC_TORSO));
+        fillCoreComponentCriticalDamage(HEAD_HIT, proto.getCritsHit(ProtoMek.LOC_HEAD));
+        fillCoreComponentCriticalDamage(LEFT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_LARM));
+        fillCoreComponentCriticalDamage(RIGHT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_RARM));
     }
 }

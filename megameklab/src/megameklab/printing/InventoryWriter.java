@@ -57,6 +57,7 @@ public class InventoryWriter {
 
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
+    private static final int DAMAGE_LINETHROUGH_MARGIN = 8;
     /**
      * The minimum font size to use when scaling inventory text to fit into
      * available space
@@ -788,6 +789,9 @@ public class InventoryWriter {
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
+                if (line.isDamaged()) {
+                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontSize * 0.3), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
+                }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
@@ -802,6 +806,7 @@ public class InventoryWriter {
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
+                            
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;

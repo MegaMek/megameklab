@@ -115,6 +115,7 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.dialogs.BVDisplayDialog;
 import megamek.client.ui.swing.CustomMekDialog;
 import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.swing.UnitEditorDialog;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.lobby.LobbyErrors;
 import megamek.client.ui.swing.lobby.LobbyUtility;
@@ -391,6 +392,18 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         }
     }
 
+    // Instance method to remove all entities
+    public void removeAllEntities() {
+        for (int index = forceList.size() - 1; index >= 0; index--) {
+            tableModel.removeRow(index);
+            Entity entity = forceList.remove(index);
+            C3Util.disconnectFromNetwork(client.getGame(), List.of(entity));
+            client.getGame().removeEntity(entity.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
+            entity.setCrew(new Crew(entity.defaultCrewType()));
+        }
+        refreshTableContent();
+    }
+
     private void updateTotalBVLabelOnly() {
         int totalBV = 0;
         for (Entity entity : forceList) {
@@ -508,15 +521,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
 
         // --- Edit Damage ---
-        // JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
-        // editDamage.setMnemonic(KeyEvent.VK_D);
-        // editDamage.addActionListener(e -> {
-        //     Entity entity = selectedEntities.get(0);
-        //     UnitEditorDialog med = new UnitEditorDialog(null, entity);
-        //     med.setVisible(true);
-        //     MegaMekLabTabbedUI.refreshEntity(entity);
-        // });
-        // rowPopupMenu.add(editDamage);
+        JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
+        editDamage.setMnemonic(KeyEvent.VK_D);
+        editDamage.addActionListener(e -> {
+            Entity entity = selectedEntities.get(0);
+            UnitEditorDialog med = new UnitEditorDialog(null, entity);
+            med.setVisible(true);
+            med.dispose();
+            MegaMekLabTabbedUI.refreshEntity(entity);
+        });
+        rowPopupMenu.add(editDamage);
 
         // --- C3 Menu ---
         rowPopupMenu.add(c3Menu(true, selectedEntities, client, instance));
@@ -530,15 +544,39 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         });
         rowPopupMenu.add(miCurrentUnitBVBreakdown);
 
+        // --- Duplicate Item ---
+        JMenuItem duplicateItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.duplicate.text"));
+        duplicateItem.addActionListener(e -> {
+            for (Entity entity : selectedEntities) {
+                Entity clonedEntity = UnitUtil.cloneUnit(entity);
+                UnitUtil.resetUnit(clonedEntity);
+                clonedEntity.setCrew(new Crew(entity.defaultCrewType()));
+                addEntity(clonedEntity);
+            }
+        });
+        rowPopupMenu.add(duplicateItem);
+
         // --- Delete Item ---
         rowPopupMenu.addSeparator();
-        JMenuItem deleteItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.delete.text"));
-        deleteItem.addActionListener(e -> {
+        JMenuItem removeItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.remove.text"));
+        removeItem.addActionListener(e -> {
             for (Entity entity : selectedEntities) {
                 removeEntity(entity);
             }
         });
-        rowPopupMenu.add(deleteItem);
+        rowPopupMenu.add(removeItem);
+        // --- Delete All Item ---
+        JMenuItem removeAllItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.removeAll.text"));
+        removeAllItem.addActionListener(e -> {
+        if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS) || (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null,
+            dialogResources.getString("ForceBuildDialog.removeAllDialog.body.text"),
+            dialogResources.getString("ForceBuildDialog.removeAllDialog.title.text"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE))) {
+                    removeAllEntities();
+                }
+        });
+        rowPopupMenu.add(removeAllItem);
     }
 
     private void createCenterPane() {
@@ -876,12 +914,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                 warnOnInvalid(selectedEntities);
                 addEntities(selectedEntities);
               });
-        List<Entity> selectedEntities = viewer.getChosenEntities();
-        if (selectedEntities != null && !selectedEntities.isEmpty()) {
-            warnOnInvalid(selectedEntities);
-            addEntities(selectedEntities);
+        try {
+            List<Entity> selectedEntities = viewer.getChosenEntities();
+            if (selectedEntities != null && !selectedEntities.isEmpty()) {
+                warnOnInvalid(selectedEntities);
+                addEntities(selectedEntities);
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     public void selectAndLoadUnitFromFile() {
@@ -1117,6 +1159,14 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         // Update table in case of BV or Pilot changes
         refreshTableContent();
         MegaMekLabTabbedUI.refreshEntity(entity);
+        
+        if (cmd.isOkay() && (cmd.getStatus() != CustomMekDialog.DONE)) {
+            Entity nextEnt = cmd.getNextEntity(cmd.getStatus() == CustomMekDialog.NEXT);
+            cmd.dispose();
+            openEntityConfiguration(nextEnt);
+        } else {
+            cmd.dispose();
+        }
     }
     
     @Override

@@ -235,8 +235,9 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
-    private Boolean includeC3inBV = false;
-    private Boolean showPilotData = false;
+    private Boolean includeC3inBV = null;
+    private Boolean showPilotData = null;
+    private Boolean showDamage = null;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -582,6 +583,19 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     /**
+     * Set to true/false if you want to show the damage on the record sheet.
+     * 
+     * @param enabled
+     */
+    public void showDamage(Boolean enabled) {
+        if (this.showDamage == enabled) {
+            return;
+        }
+        this.showDamage = enabled;
+        updateSheetContentInPlace();
+    }
+
+    /**
      * Set the entities to be displayed in the record sheet preview.
      * 
      * @param selectedEntities The list of entities to display.
@@ -694,6 +708,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
         if (showPilotData != null) {
             options.setPilotData(showPilotData);
+        }
+        if (showDamage != null) {
+            options.setDamage(showDamage);
         }
         return options;
     }
