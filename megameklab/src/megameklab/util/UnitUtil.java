@@ -96,6 +96,7 @@ public class UnitUtil {
 
     static {
         final Game game = dummyClient.getGame();
+        game.getOptions().getOption(OptionsConstants.ADVANCED_STRATOPS_QUIRKS).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
         game.addPlayer(1, dummyPlayer);

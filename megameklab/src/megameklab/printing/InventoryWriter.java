@@ -706,17 +706,18 @@ public class InventoryWriter {
             int rows = line.nRows();
             lines += rows;
             double baseNameWidth = colX[2] - colX[1] - viewWidth * INDENT;
-            for (int row = 0; row < rows; row++) {
-                double nameWidth = baseNameWidth;
-                if (!(sheet.getEntity() instanceof BattleArmor)) {
-                    nameWidth -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
-                }
-                if (sheet.getTextLength(line.getNameField(row), fontSize) > nameWidth) {
-                    lines++;
-                } else
-                if (sheet.getTextLength(line.getDamageField(row), fontSize) > damageWidth) {
-                    lines++;
-                }
+            double nameWidth = baseNameWidth;
+            if (!(sheet.getEntity() instanceof BattleArmor)) {
+                nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
+            }
+            if (sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) {
+                lines++;
+            } else
+            if (sheet.getTextLength(line.getDamageField(0), fontSize) > damageWidth) {
+                lines++;
+            }
+            if (sheet.showQuirks() && line.hasQuirks()) {
+                lines += (int) Math.ceil(sheet.getItalicTextLength(line.getQuirksField(), fontSize) / (viewWidth * 0.96));
             }
         }
         if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
