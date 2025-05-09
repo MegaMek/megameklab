@@ -49,6 +49,8 @@ import megameklab.util.UnitUtil;
  */
 public class PrintMek extends PrintEntity {
     private static final MMLogger logger = MMLogger.create(PrintMek.class);
+    private static final String IS_PIP_HD_PREFIX = "is_pip_hd_";
+    private static final String IS_PIP_HD_SH_PREFIX = "is_pip_hd_sh_";
     private static final int EXTEND_DAMAGE_LINETHROUGH_LENGTH = 2;
 
     /**
@@ -421,10 +423,24 @@ public class PrintMek extends PrintEntity {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
                         PipType.forAT(mek.getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), alternateMethod);
             }
-            if ((loc > Mek.LOC_HEAD) && !structComplete) {
-                element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
-                if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod);
+            if (!structComplete) {
+                if ((loc == Mek.LOC_HEAD) ) {
+                    final int headDamage = getStructureDamage(loc);
+                    if (headDamage > 0) {
+                        final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+                        for (int i = 1; i <= headDamage; i++) {
+                            element = getElementById(prefixHeadPip + i);
+                            if (null != element) {
+                                element.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                            }
+                        }
+                    }
+                } else
+                if (loc > Mek.LOC_HEAD) {
+                    element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
+                    if (null != element) {
+                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod);
+                    }
                 }
             }
             if (mek.hasRearArmor(loc) && !rearComplete) {

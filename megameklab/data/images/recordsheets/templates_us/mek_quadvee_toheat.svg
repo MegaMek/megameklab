@@ -4913,25 +4913,28 @@
                    id="g1462"
                    transform="translate(475.7472,409.4425)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1464" />
+                     id="is_pip_hd_3" />
                 </g>
                 <g
                    id="g1466"
                    transform="translate(471.593,402.0341)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.961 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.8 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1468" />
+                     id="is_pip_hd_1" />
                 </g>
                 <g
                    id="g1470"
                    transform="translate(467.6313,409.4425)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1472" />
+                     id="is_pip_hd_2" />
                 </g>
               </g>
               <g
