@@ -302,6 +302,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setHeatType(index);
         getSmallCraft().setHeatSinks(count);
         getSmallCraft().setOHeatSinks(count);
+        panHeat.setFromAero(getSmallCraft());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

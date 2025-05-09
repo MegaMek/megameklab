@@ -405,6 +405,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineChanged(Engine engine) {
         getSV().setEngine(engine);
+
+        if (engine.getEngineType() == Engine.NONE) {
+            getSV().setOriginalWalkMP(0);
+        }
+
         // Switching between maglev and non-maglev engines changes movement mode
         if (TestSupportVehicle.SVType.RAIL.equals(TestSupportVehicle.SVType.getVehicleType(getSV()))) {
             getSV().setMovementMode(
@@ -461,6 +466,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
             getEntity().setOmni(installed);
@@ -554,6 +560,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().getMisc().remove(sponson);
                 getSV().getEquipment().remove(sponson);
                 UnitUtil.removeCriticals(getSV(), sponson);
+                UnitUtil.changeMountStatus(getSV(), sponson, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
         resetSponsonPintleWeight();
@@ -584,9 +591,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                     m.setPintleTurretMounted(false);
                 }
             }
-            getSV().getMisc().remove(installedPintle.get());
-            getSV().getEquipment().remove(installedPintle.get());
-            UnitUtil.removeCriticals(getSV(), installedPintle.get());
+            MiscMounted pintle = installedPintle.get();
+            getSV().getMisc().remove(pintle);
+            getSV().getEquipment().remove(pintle);
+            UnitUtil.removeCriticals(getSV(), pintle);
+            UnitUtil.changeMountStatus(getSV(), pintle, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         resetSponsonPintleWeight();
 
@@ -642,6 +651,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         EquipmentType eq = null;
         if (index == SVBuildListener.FIRECON_BASIC) {

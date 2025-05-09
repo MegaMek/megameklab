@@ -150,18 +150,23 @@ public class FluffTab extends ITab implements FocusListener {
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtCapabilities"), txtCapabilities);
         txtCapabilities.setText(getFluff().getCapabilities());
+        txtCapabilities.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtOverview"), txtOverview);
         txtOverview.setText(getFluff().getOverview());
+        txtOverview.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtDeployment"), txtDeployment);
         txtDeployment.setText(getFluff().getDeployment());
+        txtDeployment.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtHistory"), txtHistory);
         txtHistory.setText(getFluff().getHistory());
+        txtHistory.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtNotes"), txtNotes);
         txtNotes.setText(getFluff().getNotes());
+        txtNotes.setCaretPosition(0);
 
         // Add a filler component at the bottom of panLeft to push content up
         gbcLeft.gridy++;

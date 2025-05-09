@@ -8,6 +8,8 @@ MEGAMEKLAB VERSION HISTORY:
 + Fix #1854: Maintain Zoom and Position on Record Sheets
 + PR #1835: Force Builder
 + PR #1864: properly implemented createNewUnit() and switchUnit() instead of the mislabeled newUnit() acting as a switch unit.
++ Fix #1869: ProtoMek RS pip fixes
++ Fix #1868: Enforce SV with no engine has 0 MP
 
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
