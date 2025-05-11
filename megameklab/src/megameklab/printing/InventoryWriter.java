@@ -410,7 +410,7 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraCapitalBayLines(float fontSize) {
-        return extraLines(equipment, bayColX, fontSize, 0);
+        return extraLines(capitalBays, bayColX, fontSize, 0);
     }
 
     /**
@@ -426,11 +426,12 @@ public class InventoryWriter {
 
     private int extraLines(List<? extends InventoryEntry> list, double[] colX, float fontSize, int nameIndex) {
         int lines = 0;
+        final double nameWidth = colX[nameIndex + 1] - colX[nameIndex] - indent;
         for (InventoryEntry entry : list) {
-            double width = colX[nameIndex + 1] - colX[nameIndex] - indent;
-            double row1Width = width - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
+            // Take in consideration the location field for possible reduction of name width on the first row
+            final double nameWidthRow0 = nameWidth - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
             for (int r = 0; r < entry.nRows(); r++) {
-                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? row1Width : width)) {
+                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? nameWidthRow0 : nameWidth)) {
                     lines++;
                 }
             }
@@ -725,7 +726,7 @@ public class InventoryWriter {
             }
         }
         if (transportBayLines() > 0) {
-            lines += transportBayLines() + 2; // add extra for header
+            lines += transportBayLines();
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
