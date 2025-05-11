@@ -116,7 +116,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            btnSetArmor.setEnabled(equip.hasFlag(MiscType.F_ARMOR_KIT));
+            btnSetArmor.setEnabled((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT)));
         });
         masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
@@ -125,7 +125,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if (eq.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARMOR_KIT))) {
                 allTypes.add(eq);
             }
         }
@@ -356,7 +356,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            if (equip.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT))) {
                 getInfantry().setArmorKit(equip);
                 rbtnCustom.setEnabled(false);
             }
@@ -432,7 +432,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if (!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
+                if (!(etype instanceof MiscType) || !(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 } else if ((null != eSource.getTechManager())
                         && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
