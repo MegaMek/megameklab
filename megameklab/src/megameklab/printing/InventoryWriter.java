@@ -435,7 +435,7 @@ public class InventoryWriter {
                 }
             }
             if (sheet.showQuirks() && entry.hasQuirks()) {
-                lines++;
+                lines += (int) Math.ceil(sheet.getItalicTextLength(entry.getQuirksField(), fontSize) / ((viewWidth * 0.96) - (colX[0] + indent)));
             }
         }
         return lines;
@@ -724,8 +724,8 @@ public class InventoryWriter {
                 lines += (int) Math.ceil(sheet.getItalicTextLength(line.getQuirksField(), fontSize) / (viewWidth * 0.96));
             }
         }
-        if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
-            lines += transportBays.size() + 1; // add extra for header
+        if (transportBayLines() > 0) {
+            lines += transportBayLines() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
