@@ -726,7 +726,7 @@ public class InventoryWriter {
             }
         }
         if (transportBayLines() > 0) {
-            lines += transportBayLines();
+            lines += transportBayLines() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
