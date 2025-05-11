@@ -58,11 +58,14 @@ public class InventoryWriter {
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
     private static final int DAMAGE_LINETHROUGH_MARGIN = 8;
+
     /**
      * The minimum font size to use when scaling inventory text to fit into
      * available space
      */
     private static final float MIN_FONT_SIZE = 4.5f;
+    private static final float QUIRKS_FONT_SCALING = 0.9f;
+    private static final float FOOTER_TEXT_WIDTH_RATIO = 0.95f;
     /**
      * The amount of space between lines, as a factor of the font height determined
      * by {@link java.awt.FontMetrics}
@@ -630,7 +633,7 @@ public class InventoryWriter {
             canvas.appendChild(svgGroup);
             lines = 0;
             final double xPosition = (viewX + viewWidth * 0.025);
-            final double textWidth = viewWidth * 0.95;
+            final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
             if (!ammoText.isEmpty()) {
                 lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
@@ -654,13 +657,13 @@ public class InventoryWriter {
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
-                        quirksText, fontSize*0.9f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
+                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
-            final double totalHeight = lines * lineHeight;
+            final double totalHeight = (lines-1) * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - totalHeight));
+                            viewY + viewHeight - totalHeight - (lineHeight * 0.5)));
         }
     }
 
@@ -732,11 +735,13 @@ public class InventoryWriter {
     }
 
     public int footerLines(float fontSize) {
-        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / viewWidth);
+        final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
+        final int footerLines = (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / textWidth);
+        return footerLines;
     }
 
     /**
@@ -880,8 +885,8 @@ public class InventoryWriter {
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
                 int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
-                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), lineHeight*0.9,
-                            line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
+                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
+                            line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
             }
