@@ -664,7 +664,7 @@ public class InventoryWriter {
             final double totalHeight = (lines-1) * lineHeight;
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - totalHeight - (lineHeight * 0.5)));
+                            viewY + viewHeight - totalHeight - (lineHeight * 0.75)));
         }
     }
 
