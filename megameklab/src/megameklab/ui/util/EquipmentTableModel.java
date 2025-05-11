@@ -264,7 +264,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "-";
             }
         } else if (col == COL_DIVISOR) {
-            if (mtype != null && mtype.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((mtype != null) && (mtype.hasFlag(MiscType.F_ARMOR_KIT))) {
                 if ((mtype.getSubType() & MiscType.S_ENCUMBERING) == 0) {
                     return String.valueOf(mtype.getDamageDivisor());
                 } else {
@@ -295,7 +295,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                     special += "F";
                 }
             }
-            if (type.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((type instanceof MiscType) && (type.hasFlag(MiscType.F_ARMOR_KIT))) {
                 if ((type.getSubType() & MiscType.S_DEST) != 0) {
                     special += "DEST ";
                 }
