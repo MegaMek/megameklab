@@ -123,11 +123,11 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         bodyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(bodyLabel, BorderLayout.NORTH);
 
-        int spinnerInitialValue = (this.maxAmount < 0) ? 0 : this.maxAmount;
+        int spinnerMaxValue = (this.maxAmount < 0) ? 0 : this.maxAmount;
         if (this.amount < 0) this.amount = 0;
-        if (this.amount > spinnerInitialValue) this.amount = spinnerInitialValue;
+        if (this.amount > spinnerMaxValue) this.amount = spinnerMaxValue;
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.amount, 0, spinnerInitialValue, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.amount, 0, spinnerMaxValue, 1);
         amountSpinner = new JSpinner(spinnerModel);
         amountSpinner.setName("amountSpinner");
         
@@ -151,7 +151,7 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         
         JPanel spinnerWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         spinnerWrapper.add(amountSpinner);
-        JLabel maxAmountLabel = new JLabel("/ " + spinnerInitialValue);
+        JLabel maxAmountLabel = new JLabel("/ " + spinnerMaxValue);
         spinnerWrapper.add(maxAmountLabel);
 
         panel.add(spinnerWrapper, BorderLayout.CENTER);
