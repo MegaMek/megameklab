@@ -36,6 +36,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -45,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import megamek.client.ui.enums.DialogResult;
 
@@ -68,6 +71,14 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         this.maxAmount = maxAmount;
         this.amount = maxAmount;
         initialize();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                if (amountSpinner != null) {
+                    SwingUtilities.invokeLater(() -> amountSpinner.requestFocusInWindow());
+                }
+            }
+        });
     }
 
     public static int showDialog(JFrame frame, String itemname, int maxAmount) {
