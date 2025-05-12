@@ -58,11 +58,14 @@ public class InventoryWriter {
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
     private static final int DAMAGE_LINETHROUGH_MARGIN = 8;
+
     /**
      * The minimum font size to use when scaling inventory text to fit into
      * available space
      */
     private static final float MIN_FONT_SIZE = 4.5f;
+    private static final float QUIRKS_FONT_SCALING = 0.9f;
+    private static final float FOOTER_TEXT_WIDTH_RATIO = 0.95f;
     /**
      * The amount of space between lines, as a factor of the font height determined
      * by {@link java.awt.FontMetrics}
@@ -407,7 +410,10 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraCapitalBayLines(float fontSize) {
-        return extraLines(equipment, bayColX, fontSize, 0);
+        if (capitalBays == null || capitalBays.isEmpty()) {
+            return 0;
+        }
+        return extraLines(capitalBays, bayColX, fontSize, 0);
     }
 
     /**
@@ -418,21 +424,25 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraStandardBayLines(float fontSize) {
+        if (standardBays == null || standardBays.isEmpty()) {
+            return 0;
+        }
         return extraLines(standardBays, bayColX, fontSize, 0);
     }
 
     private int extraLines(List<? extends InventoryEntry> list, double[] colX, float fontSize, int nameIndex) {
         int lines = 0;
+        final double nameWidth = colX[nameIndex + 1] - colX[nameIndex] - indent;
         for (InventoryEntry entry : list) {
-            double width = colX[nameIndex + 1] - colX[nameIndex] - indent;
-            double row1Width = width - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
+            // Take in consideration the location field for possible reduction of name width on the first row
+            final double nameWidthRow0 = nameWidth - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
             for (int r = 0; r < entry.nRows(); r++) {
-                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? row1Width : width)) {
+                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? nameWidthRow0 : nameWidth)) {
                     lines++;
                 }
             }
             if (sheet.showQuirks() && entry.hasQuirks()) {
-                lines++;
+                lines += (int) Math.ceil(sheet.getItalicTextLength(entry.getQuirksField(), fontSize) / ((viewWidth * 0.96) - (colX[0] + indent)));
             }
         }
         return lines;
@@ -630,7 +640,7 @@ public class InventoryWriter {
             canvas.appendChild(svgGroup);
             lines = 0;
             final double xPosition = (viewX + viewWidth * 0.025);
-            final double textWidth = viewWidth * 0.95;
+            final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
             if (!ammoText.isEmpty()) {
                 lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
@@ -654,13 +664,14 @@ public class InventoryWriter {
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, lineHeight,
-                        quirksText, fontSize*0.9f, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
+                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
-            final double totalHeight = lines * lineHeight;
+            final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
+            // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - totalHeight));
+                            viewY + viewHeight - totalHeight - (lineHeight * 0.5)));
         }
     }
 
@@ -721,8 +732,8 @@ public class InventoryWriter {
                 lines += (int) Math.ceil(sheet.getItalicTextLength(line.getQuirksField(), fontSize) / (viewWidth * 0.96));
             }
         }
-        if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
-            lines += transportBays.size() + 1; // add extra for header
+        if (transportBayLines() > 0) {
+            lines += transportBayLines() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
@@ -732,11 +743,13 @@ public class InventoryWriter {
     }
 
     public int footerLines(float fontSize) {
-        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / viewWidth);
+        final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
+        final int footerLines = (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / textWidth);
+        return footerLines;
     }
 
     /**
@@ -880,8 +893,8 @@ public class InventoryWriter {
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
                 int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
-                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), lineHeight*0.9,
-                            line.getQuirksField(), (float) (fontSize*0.9), SVGConstants.SVG_START_VALUE,
+                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
+                            line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
             }

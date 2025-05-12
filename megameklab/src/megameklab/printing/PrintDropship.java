@@ -274,11 +274,12 @@ public class PrintDropship extends PrintAero {
                 lines += linesPerBlock[block];
             }
         }
-        if (!reverse && blockOnReverse[BLOCK_STANDARD]) {
-            lines += 2;
-        }
-        if (reverse == blockOnReverse[BLOCK_STANDARD] && linesPerBlock[BLOCK_STANDARD] > 0) {
-            lines += inventory.extraStandardBayLines(fontSize);
+        if (linesPerBlock[BLOCK_STANDARD] > 0) { 
+            if (reverse == blockOnReverse[BLOCK_STANDARD]) {
+                lines += inventory.extraStandardBayLines(fontSize);
+            } else if (!reverse) {
+                lines += 2; // Print Reverse Side Message
+            }
         }
         if (reverse == blockOnReverse[BLOCK_CAPITAL] && linesPerBlock[BLOCK_CAPITAL] > 0) {
             lines += inventory.extraCapitalBayLines(fontSize);
