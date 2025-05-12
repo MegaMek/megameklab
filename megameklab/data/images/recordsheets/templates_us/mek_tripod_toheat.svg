@@ -1557,7 +1557,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text244">1</text>
+           id="crew_damage_0_1">1</text>
         <text
            fill="#000000"
            x="57.383999"
@@ -1571,7 +1571,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text246">2</text>
+           id="crew_damage_0_2">2</text>
         <text
            fill="#000000"
            x="72.333"
@@ -1585,7 +1585,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text248">3</text>
+           id="crew_damage_0_3">3</text>
         <text
            fill="#000000"
            x="87.280998"
@@ -1599,7 +1599,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text250">4</text>
+           id="crew_damage_0_4">4</text>
         <text
            fill="#000000"
            x="102.229"
@@ -1613,7 +1613,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text252">5</text>
+           id="crew_damage_0_5">5</text>
         <text
            fill="#000000"
            x="117.178"
@@ -1627,7 +1627,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text254">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="132.12601"
            y="49"
@@ -1746,7 +1746,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text258">1</text>
+           id="crew_damage_1_1">1</text>
         <text
            fill="#000000"
            x="57.383999"
@@ -1760,7 +1760,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text260">2</text>
+           id="crew_damage_1_2">2</text>
         <text
            fill="#000000"
            x="72.333"
@@ -1774,7 +1774,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text262">3</text>
+           id="crew_damage_1_3">3</text>
         <text
            fill="#000000"
            x="87.280998"
@@ -1788,7 +1788,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text264">4</text>
+           id="crew_damage_1_4">4</text>
         <text
            fill="#000000"
            x="102.229"
@@ -1802,7 +1802,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text266">5</text>
+           id="crew_damage_1_5">5</text>
         <text
            fill="#000000"
            x="117.178"
@@ -1816,7 +1816,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text268">6</text>
+           id="crew_damage_1_6">6</text>
         <text
            x="132.12601"
            y="101"
@@ -1944,7 +1944,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text272">1</text>
+           id="crew_damage_2_1">1</text>
         <text
            fill="#000000"
            x="57.383999"
@@ -1958,7 +1958,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text274">2</text>
+           id="crew_damage_2_2">2</text>
         <text
            fill="#000000"
            x="72.333"
@@ -1972,7 +1972,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text276">3</text>
+           id="crew_damage_2_3">3</text>
         <text
            fill="#000000"
            x="87.280998"
@@ -1986,7 +1986,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text278">4</text>
+           id="crew_damage_2_4">4</text>
         <text
            fill="#000000"
            x="102.229"
@@ -2000,7 +2000,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text280">5</text>
+           id="crew_damage_2_5">5</text>
         <text
            fill="#000000"
            x="117.178"
@@ -2014,7 +2014,7 @@
            y="143"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text282">6</text>
+           id="crew_damage_2_6">6</text>
         <text
            x="132.12601"
            y="153"
