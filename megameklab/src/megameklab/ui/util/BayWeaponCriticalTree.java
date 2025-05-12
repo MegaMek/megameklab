@@ -130,7 +130,7 @@ public class BayWeaponCriticalTree extends JTree {
             @Override
             protected int ammoTransferAmount(AmmoMounted ammo) {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this);
-                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft());
+                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft(), "AmountDialog.add.text");
                 return amount;
             }
         };
@@ -782,6 +782,19 @@ public class BayWeaponCriticalTree extends JTree {
             final int row = getClosestRowForLocation(e.getX(), e.getY());
             if (getPathForRow(row).getLastPathComponent() instanceof EquipmentNode) {
                 final EquipmentNode node = (EquipmentNode) getPathForRow(row).getLastPathComponent();
+                if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2)) {
+                    if (node.isLeaf()) {
+                        if (node.getMounted().getType() instanceof AmmoType at) {
+                            int shots = AmountDialog.showDialog(
+                                    (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                    at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.remove.text");
+                            if (shots <= 0) {
+                                return;
+                            }
+                            removeAmmo((AmmoMounted) node.getMounted(), shots);
+                        }
+                    }
+                } else
                 if ((e.getButton() == MouseEvent.BUTTON2)
                         || ((e.getButton() == MouseEvent.BUTTON3)
                                 && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
@@ -805,33 +818,35 @@ public class BayWeaponCriticalTree extends JTree {
                         if (node.getMounted().getType() instanceof AmmoType) {
                             AmmoType at = (AmmoType) node.getMounted().getType();
                             if (node.getMounted().getBaseShotsLeft() > at.getShots()) {
-                                JMenu remove = new JMenu("Remove");
-                                JMenu delete = new JMenu("Delete");
-                                for (int s = at.getShots(); s < node.getMounted().getBaseShotsLeft(); s += at
-                                        .getShots()) {
-                                    final int shots = s;
-                                    info = new JMenuItem("Remove " + shots + ((shots > 1) ? " shots" : " shot"));
-                                    info.addActionListener(ev -> removeAmmo((AmmoMounted) node.getMounted(), shots));
-                                    remove.add(info);
-                                    info = new JMenuItem("Delete " + shots + ((shots > 1) ? " shots" : " shot"));
-                                    info.addActionListener(ev -> deleteAmmo((AmmoMounted) node.getMounted(), shots));
-                                    delete.add(info);
-                                }
-                                info = new JMenuItem("Remove all");
-                                info.addActionListener(ev -> removeEquipment(node));
-                                remove.add(info);
-                                info = new JMenuItem("Delete all");
-                                info.addActionListener(ev -> deleteEquipment(node));
-                                delete.add(info);
+                                JMenuItem remove = new JMenuItem("Remove...");
                                 popup.add(remove);
+                                JMenuItem delete = new JMenuItem("Delete...");
                                 popup.add(delete);
-                            } else {
-                                info = new JMenuItem("Remove all shots");
-                                info.addActionListener(ev -> removeEquipment(node));
-                                popup.add(info);
-                                info = new JMenuItem("Delete all shots");
-                                info.addActionListener(ev -> deleteEquipment(node));
+                                remove.addActionListener(ev -> {
+                                    int shots = AmountDialog.showDialog(
+                                            (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                            at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.remove.text");
+                                    if (shots <= 0) {
+                                        return;
+                                    }
+                                    removeAmmo((AmmoMounted) node.getMounted(), shots);
+                                });
+                                delete.addActionListener(ev -> {
+                                    int shots = AmountDialog.showDialog(
+                                            (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                            at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.delete.text");
+                                    if (shots <= 0) {
+                                        return;
+                                    }
+                                    deleteAmmo((AmmoMounted) node.getMounted(), shots);
+                                });
+                                popup.addSeparator();
                             }
+                            info = new JMenuItem("Remove all");
+                            info.addActionListener(ev -> removeEquipment(node));
+                            popup.add(info);
+                            info = new JMenuItem("Delete all");
+                            info.addActionListener(ev -> deleteEquipment(node));
                         } else {
                             info = new JMenuItem("Remove " + mounted.getName());
                             if ((node.getParent() instanceof BayNode)

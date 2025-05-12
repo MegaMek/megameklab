@@ -36,7 +36,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -71,11 +70,13 @@ public class AmountDialog extends AbstractMMLButtonDialog {
     private int amount;
     private JSpinner amountSpinner;
     private final String itemname;
+    private final String actionName;
     private final int maxAmount;
 
-    private AmountDialog(JFrame frame, String itemname, int maxAmount) {
+    private AmountDialog(JFrame frame, String itemname, int maxAmount, String actionName) {
         super(frame, "AmountDialog", "AmountDialog.title.text");
         this.itemname = itemname;
+        this.actionName = actionName;
         this.maxAmount = maxAmount;
         this.amount = maxAmount;
         initialize();
@@ -89,9 +90,9 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         });
     }
 
-    public static int showDialog(JFrame frame, String itemname, int maxAmount) {
+    public static int showDialog(JFrame frame, String itemname, int maxAmount, String actionName) {
         try {
-            AmountDialog dialog = new AmountDialog(frame, itemname, maxAmount);
+            AmountDialog dialog = new AmountDialog(frame, itemname, maxAmount, actionName);
             try {
                 dialog.setModal(true);
                 dialog.setLocationRelativeTo(frame);
@@ -118,7 +119,10 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add some padding
 
-        final String bodyText = resources.getString("AmountDialog.body.text").replace("{0}", this.itemname);
+        String bodyText = resources.getString("AmountDialog.body.text").replace("{0}", this.itemname);
+        if (this.actionName != null) {
+            bodyText = bodyText.replace("{1}", resources.getString(this.actionName));
+        }
         JLabel bodyLabel = new JLabel(bodyText);
         bodyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(bodyLabel, BorderLayout.NORTH);

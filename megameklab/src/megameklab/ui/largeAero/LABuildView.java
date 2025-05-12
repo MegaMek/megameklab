@@ -86,7 +86,7 @@ public class LABuildView extends IView implements MouseListener {
             @Override
             protected int ammoTransferAmount(AmmoMounted ammo) {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LABuildView.this);
-                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft());
+                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft(), "AmountDialog.remove.text");
                 return amount;
             }
         };
