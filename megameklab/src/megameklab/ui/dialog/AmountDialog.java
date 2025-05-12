@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -148,8 +149,11 @@ public class AmountDialog extends AbstractMMLButtonDialog {
             textField.getActionMap().put("confirmOnEnter", enterAction);
         }
         
-        JPanel spinnerWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel spinnerWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         spinnerWrapper.add(amountSpinner);
+        JLabel maxAmountLabel = new JLabel("/ " + spinnerInitialValue);
+        spinnerWrapper.add(maxAmountLabel);
+
         panel.add(spinnerWrapper, BorderLayout.CENTER);
         
         return panel;
