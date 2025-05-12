@@ -107,7 +107,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 if (mount.getType() instanceof BayWeapon) {
                     tree.addBay((WeaponMounted) mount);
                 } else if ((mount instanceof AmmoMounted ammo) && (support.getUserDropAction() == AMMO_SINGLE)) {
-                    // Default action for ammo is to as the amount of shots to move. Holding the ctrl key when
+                    // Default action for ammo is to prompt for the number of shots to move. Holding the ctrl key when
                     // dropping will create a AMMO_ALL command, which adds all the ammo of the type.
                     final int transferAmount = ammoTransferAmount(ammo);
                     if (transferAmount <= 0) {
