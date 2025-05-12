@@ -94,8 +94,7 @@ public class AeroBayTransferHandler extends TransferHandler {
             return false;
         }
 
-        if ((support.getComponent() instanceof BayWeaponCriticalTree)) {
-            final BayWeaponCriticalTree tree = (BayWeaponCriticalTree) support.getComponent();
+        if ((support.getComponent() instanceof BayWeaponCriticalTree tree)) {
             if (eSource.getEntity().usesWeaponBays() && (eqList.size() == 1)) {
                 // If it's a bay we move it and its entire contents. Otherwise we find the bay
                 // that was
@@ -107,12 +106,14 @@ public class AeroBayTransferHandler extends TransferHandler {
                 final Mounted<?> mount = eqList.get(0);
                 if (mount.getType() instanceof BayWeapon) {
                     tree.addBay((WeaponMounted) mount);
-                } else if ((mount instanceof AmmoMounted) && (support.getUserDropAction() == AMMO_SINGLE)) {
-                    // Default action for ammo is to move a single slot. Holding the ctrl key when
-                    // dropping
-                    // will create a AMMO_ALL command, which adds all the ammo of the type.
-                    tree.addAmmo((AmmoMounted) mount, ((AmmoMounted) mount).getType().getShots(),
-                            ((JTree.DropLocation) support.getDropLocation()).getPath());
+                } else if ((mount instanceof AmmoMounted ammo) && (support.getUserDropAction() == AMMO_SINGLE)) {
+                    // Default action for ammo is to as the amount of shots to move. Holding the ctrl key when
+                    // dropping will create a AMMO_ALL command, which adds all the ammo of the type.
+                    final int transferAmount = ammoTransferAmount(ammo);
+                    if (transferAmount <= 0) {
+                        return false;
+                    }
+                    tree.addAmmo((AmmoMounted) mount, transferAmount, ((JTree.DropLocation) support.getDropLocation()).getPath());
                 } else {
                     tree.addToArc(mount, ((JTree.DropLocation) support.getDropLocation()).getPath());
                 }
@@ -123,27 +124,40 @@ public class AeroBayTransferHandler extends TransferHandler {
         } else {
             // Target is unallocated bay table.
             for (Mounted<?> mount : eqList) {
-                if (mount.getType() instanceof AmmoType) {
-                    AmmoType at = (AmmoType) mount.getType();
-                    // Check whether we are moving one of multiple slots.
-                    if ((support.getUserDropAction() == AMMO_SINGLE) && (mount.getUsableShotsLeft() > at.getShots())) {
-                        mount.setShotsLeft(mount.getUsableShotsLeft() - at.getShots());
+                if (mount.getType() instanceof AmmoType at) {
+                    final AmmoMounted ammoMounted = (AmmoMounted) mount;
+                    int ammoAmount;
+                    // Check whether we are moving one of multiple shots.
+                    if (support.getUserDropAction() == AMMO_SINGLE) {
+                        ammoAmount = at.getShots();
+                    } else {
+                        ammoAmount = ammoMounted.getUsableShotsLeft();
+                    }
+                    if (ammoAmount >= ammoMounted.getUsableShotsLeft()) {
+                        ammoAmount = ammoMounted.getUsableShotsLeft();
+                        UnitUtil.removeCriticals(eSource.getEntity(), ammoMounted);
+                        UnitUtil.removeMounted(eSource.getEntity(), ammoMounted);
+                    } else {
+                        ammoAmount = ammoTransferAmount(ammoMounted);
+                        if (ammoAmount <= 0) {
+                            return false;
+                        }
+                        if (ammoAmount == ammoMounted.getUsableShotsLeft()) {
+                            UnitUtil.removeCriticals(eSource.getEntity(), ammoMounted);
+                            UnitUtil.removeMounted(eSource.getEntity(), ammoMounted);
+                        } else {
+                            ammoMounted.setShotsLeft(ammoMounted.getUsableShotsLeft() - ammoAmount);
+                        }
                     }
                     Mounted<?> addMount = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), at);
                     if (null != addMount) {
-                        if (support.getUserDropAction() == AMMO_SINGLE) {
-                            addMount.setShotsLeft(addMount.getUsableShotsLeft() + at.getShots());
-                        } else {
-                            addMount.setShotsLeft(addMount.getUsableShotsLeft() + mount.getUsableShotsLeft());
-                        }
+                        addMount.setShotsLeft(addMount.getUsableShotsLeft() + ammoAmount);
                     } else {
                         try {
                             Mounted<?> m = eSource.getEntity().addEquipment(at, Entity.LOC_NONE);
-                            if (support.getUserDropAction() == AMMO_ALL) {
-                                m.setShotsLeft(mount.getUsableShotsLeft());
-                            }
+                            m.setShotsLeft(ammoAmount);
                         } catch (LocationFullException e) {
-                            logger.error("", e);
+                            logger.error("Error creating target ammo", e);
                         }
                     }
                 } else {
@@ -184,6 +198,10 @@ public class AeroBayTransferHandler extends TransferHandler {
             }
         }
         return true;
+    }
+
+    protected int ammoTransferAmount(AmmoMounted ammo) {
+        return ammo.getType().getShots();
     }
 
     @Override

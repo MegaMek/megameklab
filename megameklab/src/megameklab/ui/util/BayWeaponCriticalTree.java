@@ -56,6 +56,7 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
+import megameklab.ui.dialog.AmountDialog;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -125,7 +126,14 @@ public class BayWeaponCriticalTree extends JTree {
         addMouseListener(mouseListener);
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
+        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource) {
+            @Override
+            protected int ammoTransferAmount(AmmoMounted ammo) {
+                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this);
+                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft());
+                return amount;
+            }
+        };
         setDragEnabled(true);
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);

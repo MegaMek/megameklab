@@ -25,12 +25,14 @@ import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
@@ -44,6 +46,7 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
+import megameklab.ui.dialog.AmountDialog;
 import megameklab.ui.util.AeroBayTransferHandler;
 import megameklab.ui.util.BayWeaponCriticalTree;
 import megameklab.ui.util.CriticalTableModel;
@@ -79,7 +82,14 @@ public class LABuildView extends IView implements MouseListener {
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
+        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource) {
+            @Override
+            protected int ammoTransferAmount(AmmoMounted ammo) {
+                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LABuildView.this);
+                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft());
+                return amount;
+            }
+        };
         equipmentTable.setTransferHandler(cth);
         TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
