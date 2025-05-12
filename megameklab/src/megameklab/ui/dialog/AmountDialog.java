@@ -36,15 +36,22 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
 
+import javax.swing.Action;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -115,7 +122,11 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         bodyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(bodyLabel, BorderLayout.NORTH);
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.amount, 0, this.maxAmount, 1);
+        int spinnerInitialValue = (this.maxAmount < 0) ? 0 : this.maxAmount;
+        if (this.amount < 0) this.amount = 0;
+        if (this.amount > spinnerInitialValue) this.amount = spinnerInitialValue;
+
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.amount, 0, spinnerInitialValue, 1);
         amountSpinner = new JSpinner(spinnerModel);
         amountSpinner.setName("amountSpinner");
         
@@ -123,6 +134,20 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         spinnerSize.width = Math.max(spinnerSize.width, 60);
         amountSpinner.setPreferredSize(spinnerSize);
 
+        Action enterAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                okButtonActionPerformed(e);
+            }
+        };
+
+        JComponent editor = amountSpinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
+            textField.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "confirmOnEnter");
+            textField.getActionMap().put("confirmOnEnter", enterAction);
+        }
+        
         JPanel spinnerWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
         spinnerWrapper.add(amountSpinner);
         panel.add(spinnerWrapper, BorderLayout.CENTER);
