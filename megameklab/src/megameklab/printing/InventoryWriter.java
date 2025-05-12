@@ -410,6 +410,9 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraCapitalBayLines(float fontSize) {
+        if (capitalBays == null || capitalBays.isEmpty()) {
+            return 0;
+        }
         return extraLines(capitalBays, bayColX, fontSize, 0);
     }
 
@@ -421,6 +424,9 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraStandardBayLines(float fontSize) {
+        if (standardBays == null || standardBays.isEmpty()) {
+            return 0;
+        }
         return extraLines(standardBays, bayColX, fontSize, 0);
     }
 
@@ -661,7 +667,8 @@ public class InventoryWriter {
                 lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
                         quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
-            final double totalHeight = (lines-1) * lineHeight;
+            final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
+            // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
                             viewY + viewHeight - totalHeight - (lineHeight * 0.5)));
