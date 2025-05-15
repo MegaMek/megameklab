@@ -175,7 +175,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -417,7 +417,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                     (engine.getEngineType() == Engine.MAGLEV) ? EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
         }
         // Make sure the engine tech rating is at least the minimum for the engine type
-        if (getSV().getEngineTechRating() < engine.getTechRating()) {
+        if (getSV().getEngineTechRating().getIndex() < engine.getTechRating().getIndex()) {
             getSV().setEngineTechRating(engine.getTechRating());
             getSV().recalculateTechAdvancement();
         }

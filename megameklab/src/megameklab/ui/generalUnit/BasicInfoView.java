@@ -337,7 +337,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         return (retVal == null) ? ITechnology.Faction.NONE : ITechnology.Faction.fromIndex(retVal);
     }
 
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         cbFaction.setSelectedItem(techFaction);
     }
 
