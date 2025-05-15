@@ -128,7 +128,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         chkSmall.setActionCommand(ACTION_SMALL);
         chkSmall.addActionListener(this);
 
-        for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+        for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
             cbStructureTechRating.addItem(r);
         }
         gbc.gridx = 0;
@@ -169,7 +169,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngine.setActionCommand(ACTION_ENGINE);
         cbEngine.addActionListener(this);
 
-        for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+        for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
             cbEngineTechRating.addItem(r);
         }
         gbc.gridx = 0;
@@ -360,7 +360,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (cbStructureTechRating.getSelectedItem() != null) {
             return (Integer) cbStructureTechRating.getSelectedItem();
         } else {
-            return ITechnology.RATING_A;
+            return ITechnology.TechRating.A;
         }
     }
 
@@ -371,7 +371,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (cbEngineTechRating.getSelectedItem() != null) {
             return (Integer) cbEngineTechRating.getSelectedItem();
         } else {
-            return ITechnology.RATING_A;
+            return ITechnology.TechRating.A;
         }
     }
 
@@ -429,7 +429,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         // Engine::getTechRating will return the minimum tech rating for the engine type.
         cbEngineTechRating.removeActionListener(this);
         cbEngineTechRating.removeAllItems();
-        for (int r = entity.getEngine().getTechRating(); r <= ITechnology.RATING_F; r++) {
+        for (int r = entity.getEngine().getTechRating(); r <= ITechnology.TechRating.F; r++) {
             cbEngineTechRating.addItem(r);
         }
         cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());

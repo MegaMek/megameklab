@@ -52,8 +52,8 @@ public interface SVBuildListener extends BuildListener {
 
     /**
      * Notify of a change in the structural tech rating
-     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_A}
-     *                   through {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_F}
+     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.A}
+     *                   through {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.F}
      */
     void structuralTechRatingChanged(int techRating);
 
@@ -64,8 +64,8 @@ public interface SVBuildListener extends BuildListener {
     void engineChanged(Engine engine);
     /**
      * Notify of a change in the engine tech rating
-     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_A}
-     *                   through {@link megamek.common.ITechnology#RATING_A ITechnology.RATING_F}
+     * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.A}
+     *                   through {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.F}
      */
     void engineTechRatingChanged(int techRating);
 

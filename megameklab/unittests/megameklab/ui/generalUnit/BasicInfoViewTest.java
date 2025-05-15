@@ -63,7 +63,7 @@ class BasicInfoViewTest {
         // Confirm expected Tech Base (IS) and Tech Level (Simple Intro)
         int techBase = te.getTechBase();
         int techLevel = te.getTechLevel();
-        assertEquals(TechAdvancement.TECH_BASE_IS, techBase);
+        assertEquals(TechAdvancement.TechBase.IS, techBase);
         assertEquals(TechConstants.T_SIMPLE_INTRO, techLevel);
 
         // Update Tech Level
@@ -77,7 +77,7 @@ class BasicInfoViewTest {
         techBase = newTE.getTechBase();
         techLevel = newTE.getTechLevel();
         // Confirm expected Tech Base (IS) and Tech Level (IS Unofficial)
-        assertEquals(TechAdvancement.TECH_BASE_IS, techBase);
+        assertEquals(TechAdvancement.TechBase.IS, techBase);
         assertEquals(TechConstants.T_IS_UNOFFICIAL, techLevel);
         assertFalse(newTE.isClan());
     }

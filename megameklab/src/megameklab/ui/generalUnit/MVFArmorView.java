@@ -43,6 +43,7 @@ import megamek.common.ITechnology;
 import megamek.common.Mek;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
+import megamek.common.ITechnology.TechRating;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -123,7 +124,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.addActionListener(this);
 
         if (supportVee) {
-            for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+            for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
                 cbSVTechRating.addItem(r);
             }
             gbc.gridx = 0;
@@ -340,7 +341,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         if (null != selected) {
             return selected;
         }
-        return ITechnology.RATING_A;
+        return ITechnology.TechRating.A;
     }
     public double getArmorTonnage() {
         return tonnageModel.getNumber().doubleValue();
