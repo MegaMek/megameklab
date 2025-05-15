@@ -20,6 +20,8 @@
 package megameklab.ui.generalUnit;
 
 import megamek.common.*;
+import megamek.common.ITechnology.TechRating;
+import megamek.common.ITechnology.TechBase;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.BLKTankFile;
 import megamek.common.loaders.EntityLoadingException;
@@ -61,7 +63,7 @@ class BasicInfoViewTest {
         Entity te = loadEntity(fname);
 
         // Confirm expected Tech Base (IS) and Tech Level (Simple Intro)
-        int techBase = te.getTechBase();
+        TechBase techBase = te.getTechBase();
         int techLevel = te.getTechLevel();
         assertEquals(TechAdvancement.TechBase.IS, techBase);
         assertEquals(TechConstants.T_SIMPLE_INTRO, techLevel);

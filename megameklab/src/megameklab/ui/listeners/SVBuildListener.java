@@ -22,6 +22,7 @@ import megamek.common.Engine;
 import megamek.common.EquipmentType;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.supportVehicle.SVChassisView;
+import megamek.common.ITechnology.TechRating;
 
 /**
  * Listener for views used by support vehicle construction.
@@ -55,7 +56,7 @@ public interface SVBuildListener extends BuildListener {
      * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.A}
      *                   through {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.F}
      */
-    void structuralTechRatingChanged(int techRating);
+    void structuralTechRatingChanged(TechRating techRating);
 
     /**
      * Notify of a change in the type of engine
@@ -67,7 +68,7 @@ public interface SVBuildListener extends BuildListener {
      * @param techRating The new tech rating. This should be one of the constants {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.A}
      *                   through {@link megamek.common.ITechnology#TechRating.A ITechnology.TechRating.F}
      */
-    void engineTechRatingChanged(int techRating);
+    void engineTechRatingChanged(TechRating techRating);
 
     /**
      * Notify of the addition or removal of a chassis modification

@@ -69,7 +69,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final static String CMD_REMAINING = "REMAINING";
 
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
-    private final CustomComboBox<Integer> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<ITechnology.TechRating> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
@@ -124,9 +124,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.addActionListener(this);
 
         if (supportVee) {
-            for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
-                cbSVTechRating.addItem(r);
-            }
+            cbSVTechRating.addItem(TechRating.A);
+            cbSVTechRating.addItem(TechRating.B);
+            cbSVTechRating.addItem(TechRating.C);
+            cbSVTechRating.addItem(TechRating.D);
+            cbSVTechRating.addItem(TechRating.E);
+            cbSVTechRating.addItem(TechRating.F);
             gbc.gridx = 0;
             gbc.gridy++;
             gbc.gridwidth = 1;
@@ -336,13 +339,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
     }
 
-    public int getTechRating() {
-        Integer selected = (Integer) cbSVTechRating.getSelectedItem();
-        if (null != selected) {
-            return selected;
-        }
-        return ITechnology.TechRating.A;
+    public TechRating getTechRating() {
+        TechRating selected = (TechRating) cbSVTechRating.getSelectedItem();
+        return selected != null ? selected : ITechnology.TechRating.A;
     }
+
     public double getArmorTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }

@@ -33,6 +33,7 @@ import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megamek.common.ITechnology.TechRating;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -394,7 +395,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void structuralTechRatingChanged(int techRating) {
+    public void structuralTechRatingChanged(TechRating techRating) {
         getSV().setStructuralTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panSummary.refresh();
@@ -442,7 +443,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void engineTechRatingChanged(int techRating) {
+    public void engineTechRatingChanged(TechRating techRating) {
         getSV().setEngineTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panFuel.setFromEntity(getSV());

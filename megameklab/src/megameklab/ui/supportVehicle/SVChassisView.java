@@ -19,6 +19,7 @@
 package megameklab.ui.supportVehicle;
 
 import megamek.common.*;
+import megamek.common.ITechnology.TechRating;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
@@ -70,11 +71,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
-    private final CustomComboBox<Integer> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<ITechnology.TechRating> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<TestSupportVehicle.SVType> cbType = new CustomComboBox<>(t -> typeNames.getOrDefault(t, "?"));
     private final TechComboBox<TestSupportVehicle.SVEngine> cbEngine = new TechComboBox<>(e -> e.engine.getEngineName()
             .replaceAll("^\\d+ ", "").replace("[SV]", ""));
-    private final CustomComboBox<Integer> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<ITechnology.TechRating> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JCheckBox chkSponson = new JCheckBox();
     private final JLabel lblPintle = createLabel("lblPintle", "");
@@ -127,10 +128,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(chkSmall, gbc);
         chkSmall.setActionCommand(ACTION_SMALL);
         chkSmall.addActionListener(this);
-
-        for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
-            cbStructureTechRating.addItem(r);
-        }
+        cbStructureTechRating.addItem(TechRating.A);
+        cbStructureTechRating.addItem(TechRating.B);
+        cbStructureTechRating.addItem(TechRating.C);
+        cbStructureTechRating.addItem(TechRating.D);
+        cbStructureTechRating.addItem(TechRating.E);
+        cbStructureTechRating.addItem(TechRating.F);
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
@@ -168,10 +171,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(cbEngine, gbc);
         cbEngine.setActionCommand(ACTION_ENGINE);
         cbEngine.addActionListener(this);
-
-        for (int r = ITechnology.TechRating.A; r <= ITechnology.TechRating.F; r++) {
-            cbEngineTechRating.addItem(r);
-        }
+        cbEngineTechRating.addItem(TechRating.A);
+        cbEngineTechRating.addItem(TechRating.B);
+        cbEngineTechRating.addItem(TechRating.C);
+        cbEngineTechRating.addItem(TechRating.D);
+        cbEngineTechRating.addItem(TechRating.E);
+        cbEngineTechRating.addItem(TechRating.F);
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
@@ -356,23 +361,17 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     /**
      * @return The currently selected structural tech rating, or A if none is selected.
      */
-    private int getStructuralTechRating() {
-        if (cbStructureTechRating.getSelectedItem() != null) {
-            return (Integer) cbStructureTechRating.getSelectedItem();
-        } else {
-            return ITechnology.TechRating.A;
-        }
+    private TechRating getStructuralTechRating() {
+        TechRating selected = (TechRating) cbStructureTechRating.getSelectedItem();
+        return selected != null ? selected : ITechnology.TechRating.A;
     }
 
     /**
      * @return The currently selected engine tech rating, or A if none is selected.
      */
-    private int getEngineTechRating() {
-        if (cbEngineTechRating.getSelectedItem() != null) {
-            return (Integer) cbEngineTechRating.getSelectedItem();
-        } else {
-            return ITechnology.TechRating.A;
-        }
+    private TechRating getEngineTechRating() {
+        TechRating selected = (TechRating) cbEngineTechRating.getSelectedItem();
+        return selected != null ? selected : ITechnology.TechRating.A;
     }
 
     /**
@@ -429,8 +428,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         // Engine::getTechRating will return the minimum tech rating for the engine type.
         cbEngineTechRating.removeActionListener(this);
         cbEngineTechRating.removeAllItems();
-        for (int r = entity.getEngine().getTechRating(); r <= ITechnology.TechRating.F; r++) {
-            cbEngineTechRating.addItem(r);
+        for (int r = entity.getEngine().getTechRating().getIndex(); r <= ITechnology.TechRating.F.getIndex(); r++) {
+            cbEngineTechRating.addItem(TechRating.fromIndex(r));
         }
         cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());
         cbEngineTechRating.addActionListener(this);
