@@ -42,11 +42,14 @@ public class FactionComboBox extends CustomComboBox<Integer> {
     
     public void refresh(int year) {
         displayNames.clear();
-        for (int i = 0; i < ITechnology.MM_FACTION_CODES.length; i++) {
-            final FactionRecord fRec = RATGenerator.getInstance().getFaction(ITechnology.MM_FACTION_CODES[i]);
+        for (ITechnology.Faction f : ITechnology.Faction.values()) {
+            if (f.equals(ITechnology.Faction.NONE)) {
+                continue;
+            }
+            final FactionRecord fRec = RATGenerator.getInstance().getFaction(f.getCodeMM());
             // TA will generate a null value because the RAT Generator doesn't distinguish between TH and TA.
             if ((null != fRec) && (fRec.isActiveInYear(year))) {
-                displayNames.put(i, fRec.getName(year));
+                displayNames.put(f.getIndex(), fRec.getName(year));
             }
         }
         List<Integer> sorted = new ArrayList<>(displayNames.keySet());
