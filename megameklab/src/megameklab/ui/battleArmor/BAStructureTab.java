@@ -258,7 +258,7 @@ public class BAStructureTab extends ITab
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

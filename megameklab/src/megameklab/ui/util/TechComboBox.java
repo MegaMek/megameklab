@@ -35,12 +35,12 @@ public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
         showTechBase = show;
     }
     
-    private String getTechName(String name, int techBase) {
+    private String getTechName(String name, ITechnology.TechBase techBase) {
         StringBuilder sb = new StringBuilder();
         if (showTechBase) {
-            if (techBase == ITechnology.TECH_BASE_CLAN) {
+            if (techBase == ITechnology.TechBase.CLAN) {
                 sb.append("Clan ");
-            } else if (techBase == ITechnology.TECH_BASE_IS) {
+            } else if (techBase == ITechnology.TechBase.IS) {
                 sb.append("IS ");
             }
         }

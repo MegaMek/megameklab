@@ -826,7 +826,7 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)
+                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TechBase.IS)
                         && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
                 } else if (!mek.isClan() && m.getType().isClan()

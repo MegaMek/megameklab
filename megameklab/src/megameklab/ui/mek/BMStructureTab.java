@@ -202,7 +202,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

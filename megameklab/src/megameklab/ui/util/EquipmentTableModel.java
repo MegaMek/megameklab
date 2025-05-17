@@ -453,11 +453,11 @@ public class EquipmentTableModel extends AbstractTableModel {
      */
     public static String getTechBaseAsString(EquipmentType equipment) {
         switch(equipment.getTechBase()) {
-            case TechAdvancement.TECH_BASE_ALL:
+            case ALL:
                 return "All";
-            case TechAdvancement.TECH_BASE_IS:
+            case IS:
                 return "IS";
-            case TechAdvancement.TECH_BASE_CLAN:
+            case CLAN:
                 return "Clan";
             default:
                 return "Unknown";

@@ -168,7 +168,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         return panBasicInfo;
     }
 
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

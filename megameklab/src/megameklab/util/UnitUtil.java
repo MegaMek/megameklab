@@ -590,7 +590,7 @@ public class UnitUtil {
                 return false;
             }
         } else {
-            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL && unit.isClan() != tech.isClan()) {
+            if (tech.getTechBase() != ITechnology.TechBase.ALL && unit.isClan() != tech.isClan()) {
                 return false;
             }
 
