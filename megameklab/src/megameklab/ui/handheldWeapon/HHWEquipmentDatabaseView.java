@@ -76,8 +76,12 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             // AMS has type PB so it's allowed
             // Except APDS has type P*D*, whatever that means.
             if (UnitUtil.isAMS(wt) && !(wt instanceof ISAPDS)) {
-                valid = true;
-            } else if (!MekUtil.isMekWeapon(wt, new BipedMek())) {
+                return super.shouldShow(eq);
+            }
+
+            // isMekWeapon/isMekEquipment consider some WeaponTypes to be Equipment rather than a Weapon, and the
+            // functions are mutually exclusive, so we check both to determine if the type is valid for a mech.
+            if (!MekUtil.isMekWeapon(wt, new BipedMek()) && !MekUtil.isMekEquipment(wt, new BipedMek())) {
                 return false;
             }
 
