@@ -14,7 +14,11 @@
  */
 package megameklab.ui;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -38,7 +42,6 @@ import megamek.client.ui.dialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.WeightDisplayDialog;
 import megamek.client.ui.swing.GUIPreferences;
 import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;
@@ -752,6 +755,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     private @Nullable JMenuItem createCConfigMenuItem(final String recentFileName, final int fileNumber) {
         File recent = new File(recentFileName);
+        String filename = recent.getName();
         String path = recent.getParent();
         String mmlDirectory = System.getProperty("user.dir");
         if (recentFileName.startsWith(mmlDirectory)) {
@@ -760,13 +764,47 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 path = path.substring(0, 40) + "...";
             }
         }
-        String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
-        String style = ".small { font-size:smaller; color:gray; }";
-        String content = "<NOBR>%d. %s<BR>".formatted(fileNumber, recent.getName()) + UIUtil.spanCSS("small", path);
-        final JMenuItem miCConfig = new JMenuItem(html.formatted(style, content));
+        final JMenuItem miCConfig = new JMenuItem() {
+            @Override
+            // Override of getPreferredSize to ensure the menu item has enough height to show both labels
+            public java.awt.Dimension getPreferredSize() {
+                java.awt.LayoutManager lm = getLayout();
+                if (lm != null) {
+                    java.awt.Dimension contentPrefSize = lm.preferredLayoutSize(this);
+                    java.awt.Insets insets = getInsets();
+                    int totalPrefWidth = contentPrefSize.width + insets.left + insets.right;
+                    int totalPrefHeight = contentPrefSize.height + insets.top + insets.bottom;
+                    java.awt.Dimension superPref = super.getPreferredSize();
+                    return new java.awt.Dimension(Math.max(superPref.width, totalPrefWidth), totalPrefHeight);
+                }
+                return super.getPreferredSize();
+            }
+        };
+        miCConfig.setLayout(new GridBagLayout());
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
-        miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
+        miCConfig.setMnemonic(KeyEvent.VK_0 + fileNumber);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.LINE_START;
+
+        // Label for "1. FileName.ext"
+        gbc.gridy = 0;
+        JLabel mainLabel = new JLabel(String.format("%d. %s", fileNumber, filename));
+        miCConfig.add(mainLabel, gbc);
+
+        // Label for the path
+        gbc.gridy = 1;
+        JLabel pathLabel = new JLabel(path);
+        Font currentPathFont = pathLabel.getFont();
+        float newSize = Math.max(9.0f, currentPathFont.getSize2D() - 2.0f);
+        pathLabel.setFont(currentPathFont.deriveFont(newSize));
+        pathLabel.setForeground(Color.GRAY);
+        miCConfig.add(pathLabel, gbc);
+
         return miCConfig;
     }
 
