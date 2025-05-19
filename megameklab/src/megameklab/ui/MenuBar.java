@@ -49,6 +49,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
+import megameklab.ui.util.OSUtil;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -760,10 +761,18 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 path = path.substring(0, 40) + "...";
             }
         }
-        String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
-        String style = ".small { font-size:smaller; color:gray; }";
-        String content = "<NOBR>%d. %s<BR>".formatted(fileNumber, recent.getName()) + UIUtil.spanCSS("small", path);
-        final JMenuItem miCConfig = new JMenuItem(html.formatted(style, content));
+
+        String content;
+        if (OSUtil.isMac()) {
+             content = "%d. %s ".formatted(fileNumber, recent.getName()) + "(" + path + ")";
+        } else {
+            String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
+            String style = ".small { font-size:smaller; color:gray; }";
+            content = html.formatted(style, "<NOBR>%d. %s<BR>".formatted(fileNumber,
+                  recent.getName()) + UIUtil.spanCSS("small", path));
+        }
+
+        final JMenuItem miCConfig = new JMenuItem(content);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
         miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
@@ -1096,11 +1105,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            UnitUtil.showValidation(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                UnitUtil.showValidation(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
@@ -1108,11 +1121,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -1120,12 +1137,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {

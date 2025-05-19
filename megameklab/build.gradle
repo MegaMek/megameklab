@@ -2,9 +2,9 @@ import java.time.LocalDateTime
 
 plugins {
     id 'application'
-    id 'com.palantir.git-version' version '3.1.0'
+    id 'com.palantir.git-version' version '3.2.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
-    id "io.sentry.jvm.gradle" version "5.3.0"
+    id "io.sentry.jvm.gradle" version "5.5.0"
     id 'jacoco'
     id 'java'
 }
@@ -46,6 +46,10 @@ ext {
     mmDir = "${rootDir}/../megamek"
 }
 
+applicationDefaultJvmArgs = [
+        '-Xmx1024m',
+]
+
 dependencies {
     implementation "org.megamek:megamek:${version}"
 
@@ -55,41 +59,41 @@ dependencies {
 
     implementation 'org.apache.pdfbox:pdfbox:3.0.5'
 
-    implementation('org.apache.xmlgraphics:batik-bridge:1.18') {
+    implementation('org.apache.xmlgraphics:batik-bridge:1.19') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
         exclude group: 'xml-apis'
     }
 
-    implementation('org.apache.xmlgraphics:batik-codec:1.18') {
+    implementation('org.apache.xmlgraphics:batik-codec:1.19') {
         exclude group: 'xml-apis'
     }
 
-    implementation('org.apache.xmlgraphics:batik-dom:1.18') {
+    implementation('org.apache.xmlgraphics:batik-dom:1.19') {
         exclude group: 'xml-apis'
     }
 
-    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.18'
-    implementation 'org.apache.xmlgraphics:batik-svggen:1.18'
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.19'
+    implementation 'org.apache.xmlgraphics:batik-svggen:1.19'
 
-    implementation('org.apache.xmlgraphics:fop:2.10') {
+    implementation('org.apache.xmlgraphics:fop:2.11') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
 
-    implementation('org.apache.commons:commons-collections4:4.5.0-M3')
+    implementation('org.apache.commons:commons-collections4:4.5.0')
 
-    testImplementation 'org.mockito:mockito-core:5.15.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Compatibility.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
 }
 
 application {
@@ -105,6 +109,7 @@ jar {
                 .collect { "${lib}/${it.name}" }.join(' '))
         attributes "Add-Opens": 'java.base/java.util java.base/java.util.concurrent'
         attributes "Build-Date": LocalDateTime.now()
+        attributes "Sealed": true
     }
 }
 
@@ -159,7 +164,6 @@ tasks.register('createStartScripts', CreateStartScripts) {
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
-    defaultJvmOpts = project.ext.mmlJvmOptions
 }
 
 distributions {

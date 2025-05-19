@@ -30,6 +30,7 @@ import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.util.AeroAVModCalculator;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
@@ -91,7 +92,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 if (bay.augmentations.containsKey(weaponType)) {
                     bonus = bay.augmentations.get(
                             weaponType).entrySet().stream()
-                        .mapToInt(e -> aeroAVMod(weaponType, e.getKey(), true) * e.getValue()).sum();
+                        .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true) * e.getValue()).sum();
                 }
                 if (weaponType.getShortAV() > 0) {
                     double av = weaponType.getShortAV() * numWeapons + bonus;
@@ -209,6 +210,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     @Override
     public int nRows() {
         return bay.weapons.size();
+    }
+    
+    @Override
+    public boolean isDamaged() {
+        return false;
     }
 
     @Override

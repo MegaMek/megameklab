@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +40,7 @@ import megamek.common.Configuration;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
+import megameklab.printing.PrintRecordSheet;
 import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
@@ -123,6 +125,8 @@ public final class CConfig {
     public static final String RS_ARMOR_GROUPING = "rs_armor_grouping";
     public static final String RS_FRAMELESS = "rs_frameless";
     public static final String RS_BOLD_TYPE = "rs_bold_type";
+    public static final String RS_DAMAGE = "rs_damage";
+    public static final String RS_DAMAGE_COLOR = "rs_damage_color";
     public static final String RS_WEAPONS_ORDER = "rs_weapons_order";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
@@ -134,6 +138,8 @@ public final class CConfig {
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
     public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
+    public static final String PQ_DAMAGE = "pqDamage";
+    public static final String PQ_SHOW_PILOT_DATA = "pqShowPilotData";
 
     private static final Properties config = getDefaults();
 
@@ -155,9 +161,13 @@ public final class CConfig {
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_C3BV, Boolean.toString(false));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
+        defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE_COLOR, PrintRecordSheet.FILL_RED);
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
@@ -166,6 +176,7 @@ public final class CConfig {
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
+        defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_WEAPONS_ORDER, WeaponSortOrder.DEFAULT.name());
         return defaults;
     }
@@ -531,7 +542,10 @@ public final class CConfig {
             String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int sizeX = Integer.parseInt(fileChooserSettings[2]);
             int sizeY = Integer.parseInt(fileChooserSettings[3]);
-            return Optional.of(new Dimension(sizeX, sizeY));
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedWidth  = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
+            int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
+            return Optional.of(new Dimension(clampedWidth, clampedHeight));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -542,7 +556,10 @@ public final class CConfig {
             String[] fileChooserSettings = getParam(cconfigSetting).split(";");
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
-            return Optional.of(new Point(posX, posY));
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedX = Math.max(0, Math.min(posX, screen.width-100)); // -100 to avoid the right edge
+            int clampedY = Math.max(0, Math.min(posY, screen.height-100)); // -100 to avoid the taskbar
+            return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();
         }

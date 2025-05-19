@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="1.6866207"
      inkscape:cx="174.6095"
-     inkscape:cy="477.87863"
+     inkscape:cy="431.33587"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="crewDamage1" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1136,7 +1136,7 @@
          x="29.229"
          id="type"
          y="28"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000;mml-field-width:188"
          text-anchor="start">Lorem Ipsum</text>
       <text
          fill="#000000"
@@ -1507,7 +1507,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text241">1</text>
+           id="crew_damage_0_1">1</text>
         <text
            fill="#000000"
            x="57.383999"
@@ -1521,7 +1521,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text243">2</text>
+           id="crew_damage_0_2">2</text>
         <text
            fill="#000000"
            x="72.333"
@@ -1535,7 +1535,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text245">3</text>
+           id="crew_damage_0_3">3</text>
         <text
            fill="#000000"
            x="87.280998"
@@ -1549,7 +1549,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text247">4</text>
+           id="crew_damage_0_4">4</text>
         <text
            fill="#000000"
            x="102.229"
@@ -1563,7 +1563,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text249">5</text>
+           id="text1">5</text>
         <text
            fill="#000000"
            x="117.178"
@@ -1577,7 +1577,7 @@
            y="39"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text251">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="132.12601"
            y="49"
@@ -1705,7 +1705,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text255">1</text>
+           id="crew_damage_1_1">1</text>
         <text
            fill="#000000"
            x="57.383999"
@@ -1719,7 +1719,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text257">2</text>
+           id="crew_damage_1_2">2</text>
         <text
            fill="#000000"
            x="72.333"
@@ -1733,7 +1733,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text259">3</text>
+           id="crew_damage_1_3">3</text>
         <text
            fill="#000000"
            x="87.280998"
@@ -1747,7 +1747,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text261">4</text>
+           id="crew_damage_1_4">4</text>
         <text
            fill="#000000"
            x="102.229"
@@ -1761,7 +1761,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text263">5</text>
+           id="crew_damage_1_5">5</text>
         <text
            fill="#000000"
            x="117.178"
@@ -1775,7 +1775,7 @@
            y="91"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text265">6</text>
+           id="crew_damage_1_6">6</text>
         <text
            x="132.12601"
            y="101"
@@ -4285,19 +4285,19 @@
            d="m 64.330191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path291" />
+           id="engine_hit_1" />
         <path
            fill="none"
            d="m 73.530191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path292" />
+           id="engine_hit_2" />
         <path
            fill="none"
            d="m 82.730191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path293" />
+           id="engine_hit_3" />
         <text
            x="55.93"
            y="21"
@@ -4312,16 +4312,16 @@
            d="m 64.330191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path294" />
+           id="gyro_hit_1" />
         <path
            fill="none"
            d="m 73.530191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path295" />
+           id="gyro_hit_2" />
         <path
            fill="none"
-           id="heavyDutyGyroPip"
+           id="gyro_hit_3"
            d="m 82.730191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            visibility="hidden"
@@ -4340,13 +4340,13 @@
            d="m 64.330191,27.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path296" />
+           id="sensor_hit_1" />
         <path
            fill="none"
            d="m 73.530191,27.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path297" />
+           id="sensor_hit_2" />
         <text
            x="55.93"
            y="39"
@@ -4361,7 +4361,7 @@
            d="m 64.330191,36.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path298" />
+           id="life_support_hit_1" />
         <path
            fill="none"
            d="M 6,9.78 C 6,6.03 9.03,3 12.78,3 h 72.37 c 3.75,0 6.78,3.03 6.78,6.78 V 38.22 C 91.93,41.97 88.9,45 85.15,45 H 12.78 C 9.03,45 6,41.97 6,38.22 Z"
@@ -5775,25 +5775,28 @@
                id="g1680"
                transform="translate(476.465,408.5257)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.759 1.76,1.759 0.959,0 1.758,-0.8 1.758,-1.759 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1682" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_3" />
             </g>
             <g
                id="g1684"
                transform="translate(472.3109,401.1173)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1686" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_1" />
             </g>
             <g
                id="g1688"
                transform="translate(468.3491,408.5257)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.759 1.76,1.759 0.959,0 1.758,-0.8 1.758,-1.759 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1690" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_2" />
             </g>
           </g>
           <g
@@ -5803,33 +5806,37 @@
                id="g1693"
                transform="translate(476.465,404.8215)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.759 1.76,1.759 0.959,0 1.758,-0.8 1.758,-1.759 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1695" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_sh_3" />
             </g>
             <g
                id="g1697"
                transform="translate(472.3109,401.1173)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1699" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_sh_1" />
             </g>
             <g
                id="g1701"
                transform="translate(468.3491,404.8215)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.759 1.76,1.759 0.959,0 1.758,-0.8 1.758,-1.759 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1703" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_sh_2" />
             </g>
             <g
                id="g1705"
                transform="translate(472.3109,408.5257)">
               <path
-                 style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                 id="path1707" />
+                 fill="#FFFFFF"
+                 style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                 d="m 0.334,-3.2 c -0.96,0 -1.754,0.8 -1.754,1.77 0,0.971 0.794,1.762 1.754,1.762 C 1.3,0.332 2.1,-0.459 2.1,-1.43 2.1,-2.4 1.3,-3.2 0.334,-3.2 Z"
+                 id="is_pip_hd_sh_4" />
             </g>
           </g>
           <g

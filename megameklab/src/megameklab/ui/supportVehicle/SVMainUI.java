@@ -75,6 +75,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         quirksTab.addRefreshedListener(this);
+        statusbar.addRefreshedListener(this);
 
         previewTab = new PreviewTab(this);
 

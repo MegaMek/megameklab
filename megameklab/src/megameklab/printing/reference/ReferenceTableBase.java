@@ -84,7 +84,7 @@ abstract public class ReferenceTableBase {
 
     private Element createLabel(double x, double y, String title, double labelWidth) {
         final double textHeight = sheet.getFontHeight(FONT_SIZE_LABEL) * 0.625f;
-        final double textWidth = sheet.getBoldTextLength(title, FONT_SIZE_LABEL);
+        final double textWidth = sheet.getTextLength(title, FONT_SIZE_LABEL, SVGConstants.SVG_BOLD_VALUE);
         final double rectMargin = textWidth * 0.05f;
         final double taperWidth = textHeight * bevelX / bevelY;
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
@@ -121,8 +121,7 @@ abstract public class ReferenceTableBase {
         t.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, formatStyle(fontSize, fontWeight));
         t.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         t.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
-        double textLength = fontWeight.equals(SVGConstants.SVG_BOLD_VALUE) ?
-                sheet.getBoldTextLength(text, fontSize) : sheet.getTextLength(text, fontSize);
+        double textLength = sheet.getTextLength(text, fontSize, fontWeight);
         if (fixedWidth || ((width != null) && (textLength > width))) {
             if (width != null && (textLength > width)) {
                 textLength = width;
