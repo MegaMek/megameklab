@@ -46,10 +46,6 @@ ext {
     mmDir = "${rootDir}/../megamek"
 }
 
-applicationDefaultJvmArgs = [
-        '-Xmx1024m',
-]
-
 dependencies {
     implementation "org.megamek:megamek:${version}"
 
@@ -98,6 +94,9 @@ dependencies {
 
 application {
     mainClass = 'megameklab.MegaMekLab'
+    applicationDefaultJvmArgs = [
+        '-Xmx1024m',
+    ]
 }
 
 jar {
