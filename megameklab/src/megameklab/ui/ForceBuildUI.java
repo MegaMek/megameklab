@@ -604,10 +604,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     if (column == COL_GUNNERY || column == COL_PILOTING) {
                         if (aValue instanceof Integer skillValue) {
                             if (column == COL_GUNNERY) {
-                                entity.getCrew().setGunnery(skillValue, 0);
+                                entity.getCrew().setGunnery(skillValue, entity.getCrew().getCrewType().getGunnerPos());
                                 needsBvUpdate = true;
                             } else { // Must be COL_PILOTING
-                                entity.getCrew().setPiloting(skillValue, 0);
+                                entity.getCrew().setPiloting(skillValue, entity.getCrew().getCrewType().getPilotPos());
                                 needsBvUpdate = true;
                             }
                         }
