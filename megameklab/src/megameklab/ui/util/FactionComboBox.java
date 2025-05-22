@@ -17,17 +17,17 @@ import java.util.*;
 
 import megamek.client.ratgenerator.FactionRecord;
 import megamek.client.ratgenerator.RATGenerator;
-import megamek.common.ITechnology;
+import megamek.common.ITechnology.Faction;
 
 /**
  * Combo box that uses the RATGenerator faction data to provide a list of factions appropriate
  * to a unit's intro year and with the era-appropriate name. The underlying data type is the
- * ITechnology faction constant.
+ * ITechnology Faction ENUM.
  * 
  * @author Neoancient
  */
-public class FactionComboBox extends CustomComboBox<Integer> {
-    private final Map<Integer, String> displayNames = new HashMap<>();
+public class FactionComboBox extends CustomComboBox<Faction> {
+    private final Map<Faction, String> displayNames = new HashMap<>();
     
     public FactionComboBox() {
         super();
@@ -42,21 +42,21 @@ public class FactionComboBox extends CustomComboBox<Integer> {
     
     public void refresh(int year) {
         displayNames.clear();
-        for (ITechnology.Faction f : ITechnology.Faction.values()) {
-            if (f.equals(ITechnology.Faction.NONE)) {
+        for (Faction f : Faction.values()) {
+            if (f.equals(Faction.NONE)) {
                 continue;
             }
             final FactionRecord fRec = RATGenerator.getInstance().getFaction(f.getCodeMM());
             // TA will generate a null value because the RAT Generator doesn't distinguish between TH and TA.
             if ((null != fRec) && (fRec.isActiveInYear(year))) {
-                displayNames.put(f.getIndex(), fRec.getName(year));
+                displayNames.put(f, fRec.getName(year));
             }
         }
-        List<Integer> sorted = new ArrayList<>(displayNames.keySet());
+        List<Faction> sorted = new ArrayList<>(displayNames.keySet());
         sorted.sort(Comparator.comparing(displayNames::get));
         removeAllItems();
-        addItem(-1);
-        displayNames.put(-1, "Any");
+        addItem(Faction.NONE);
+        displayNames.put(Faction.NONE, "Any");
         sorted.forEach(this::addItem);
     }
 }

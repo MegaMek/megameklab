@@ -182,7 +182,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip"));
         add(cbFaction, gbc);
         cbFaction.addActionListener(this);
-        cbFaction.setPrototypeDisplayValue(0);
+        cbFaction.setPrototypeDisplayValue(Faction.NONE);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -333,8 +333,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             return ITechnology.Faction.NONE;
         }
-        Integer retVal = (Integer) cbFaction.getSelectedItem();
-        return (retVal == null) ? ITechnology.Faction.NONE : ITechnology.Faction.fromIndex(retVal);
+        Faction selectedFaction = (Faction) cbFaction.getSelectedItem();
+        return (selectedFaction == null) ? ITechnology.Faction.NONE : selectedFaction;
     }
 
     public void setTechFaction(ITechnology.Faction techFaction) {
@@ -505,7 +505,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private void refreshFaction() {
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
-            Integer prevFaction = (Integer) cbFaction.getSelectedItem();
+            Faction prevFaction = (Faction) cbFaction.getSelectedItem();
             cbFaction.refresh(getTechIntroYear());
             cbFaction.setSelectedItem(prevFaction);
             cbFaction.addActionListener(this);

@@ -128,12 +128,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(chkSmall, gbc);
         chkSmall.setActionCommand(ACTION_SMALL);
         chkSmall.addActionListener(this);
-        cbStructureTechRating.addItem(TechRating.A);
-        cbStructureTechRating.addItem(TechRating.B);
-        cbStructureTechRating.addItem(TechRating.C);
-        cbStructureTechRating.addItem(TechRating.D);
-        cbStructureTechRating.addItem(TechRating.E);
-        cbStructureTechRating.addItem(TechRating.F);
+        for (TechRating r : TechRating.values()) {
+            cbStructureTechRating.addItem(r);
+        }
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;
@@ -171,12 +168,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         add(cbEngine, gbc);
         cbEngine.setActionCommand(ACTION_ENGINE);
         cbEngine.addActionListener(this);
-        cbEngineTechRating.addItem(TechRating.A);
-        cbEngineTechRating.addItem(TechRating.B);
-        cbEngineTechRating.addItem(TechRating.C);
-        cbEngineTechRating.addItem(TechRating.D);
-        cbEngineTechRating.addItem(TechRating.E);
-        cbEngineTechRating.addItem(TechRating.F);
+        for (TechRating r : TechRating.values()) {
+            cbEngineTechRating.addItem(r);
+        }
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.gridy++;

@@ -124,12 +124,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.addActionListener(this);
 
         if (supportVee) {
-            cbSVTechRating.addItem(TechRating.A);
-            cbSVTechRating.addItem(TechRating.B);
-            cbSVTechRating.addItem(TechRating.C);
-            cbSVTechRating.addItem(TechRating.D);
-            cbSVTechRating.addItem(TechRating.E);
-            cbSVTechRating.addItem(TechRating.F);
+            for (TechRating r : TechRating.values()) {
+                cbSVTechRating.addItem(r);
+            }
             gbc.gridx = 0;
             gbc.gridy++;
             gbc.gridwidth = 1;
