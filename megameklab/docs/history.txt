@@ -1,6 +1,9 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.06 (2025-05-19 1830 UTC)
+0.50.07
+
+0.50.06 (2025-05-19 1830 UTC) (MILESTONE RELEASE) - DEV NOTE - Starting with this release the History file is built on release rather than on going.
+DEV NOTE - Starting with this release the History file is built on release rather than on going.
 * 0.50.06 Deprecation Removal and Clean up by @rjhancock in https://github.com/MegaMek/megameklab/pull/1853
 * Max number of squads by @exeea in https://github.com/MegaMek/megameklab/pull/1856
 * Adds option to show weapons quirks to record sheets by @exeea in https://github.com/MegaMek/megameklab/pull/1850
@@ -29,7 +32,7 @@ MEGAMEKLAB VERSION HISTORY:
 * Added Default JVM Options per latest Gradle by @rjhancock in https://github.com/MegaMek/megameklab/pull/1888
 * Allow TAG on HHWs by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1889
 * Fix: checks if OS is mac and dont load the html for the recent files in the menu bar by @Scoppio in https://github.com/MegaMek/megameklab/pull/1891
-
+Around
 
 
 0.50.05 (2025-04-25 1800 UTC)
