@@ -27,13 +27,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      showguides="true"
-     inkscape:zoom="6.5599284"
-     inkscape:cx="31.707663"
-     inkscape:cy="69.741614"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:zoom="6.56"
+     inkscape:cx="411"
+     inkscape:cy="69.7"
+     inkscape:window-width="1920"
+     inkscape:window-height="1121"
+     inkscape:window-x="-7"
+     inkscape:window-y="-7"
      inkscape:window-maximized="1"
      inkscape:current-layer="rs_template" />
   <g
@@ -54,7 +54,7 @@
          d="M 0,8.214 5.475,0 h 255.55 l 5.475,8.214 h 282.155 l 7.845,7.6 v 157.472 l -5.475,8.214 H 293.45 l -5.475,-8.214 H 7.845 L 0,165.686 Z"
          stroke-width="1.932"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path2" />
       <g
          transform="translate(2.5,3)"
@@ -68,38 +68,38 @@
            x="7.9990001"
            id="type"
            y="11.25"
-           style="font-style:normal;font-weight:bold;font-size:10.6px;font-family:Eurostile"
+           style="font-style:normal;font-weight:bold;font-size:10.6px;font-family:Eurostile;mml-field-width:180"
            text-anchor="start">Infantry Record Sheet</text>
       </g>
     </g>
     <text
        x="278.500"
        y="18.000"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
        textLength="45.361"
        lengthAdjust="spacingAndGlyphs"
        id="text4">Armor Type:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="328.157"
        id="armor_kit"
        y="18.000"
-       style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:104.623"
+       style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:120"
        text-anchor="start">None</text>
     <text
-       x="440.800"
+       x="460.800"
        y="18.000"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:8.600px;font-weight:bold;font-style:normal"
        textLength="60.291"
        lengthAdjust="spacingAndGlyphs"
        id="text5">Damage Divisor:</text>
     <text
-       fill="#231f20"
-       x="505.387"
+       fill="#000000"
+       x="525.387"
        id="armor_divisor"
        y="18.000"
        style="font-family:Eurostile;font-size:8.600px;font-weight:normal;font-style:normal;mml-field-width:34.593"
@@ -107,14 +107,14 @@
     <text
        x="3.000"
        y="30.752"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        textLength="39.436"
        lengthAdjust="spacingAndGlyphs"
        id="text6">Commander:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="46.030"
        id="pilotName0"
        y="30.752"
@@ -125,18 +125,18 @@
        d="m 46.03,31.752 h 64.947"
        stroke-width="0.737532"
        stroke-linejoin="round"
-       stroke="#231f20" />
+       stroke="#000000" />
     <text
        x="3.000"
        y="43.505"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        id="gunnerySkillText0"
        textLength="41.711"
        lengthAdjust="spacingAndGlyphs">Gunnery Skill:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="56.099998"
        id="gunnerySkill0"
        y="43.505001"
@@ -147,18 +147,18 @@
        d="m 56.1,44.505 h 54.877"
        stroke-width="0.680382"
        stroke-linejoin="round"
-       stroke="#231f20" />
+       stroke="#000000" />
     <text
        x="3.000"
        y="56.257"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        id="pilotingSkillText0"
        textLength="48.996"
        lengthAdjust="spacingAndGlyphs">Anti-'Mech Skill:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="56.099998"
        id="pilotingSkill0"
        y="56.257"
@@ -169,32 +169,32 @@
        d="m 56.1,57.257 h 54.877"
        stroke-width="0.72"
        stroke-linejoin="round"
-       stroke="#231f20" />
+       stroke="#000000" />
     <text
        x="3.000"
        y="69.009"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        id="labelRole"
        textLength="15.108"
        lengthAdjust="spacingAndGlyphs">Role:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="21.702"
        id="role"
        y="69.009"
        style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal"
        text-anchor="start">Lorem Ipsum</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="3.000"
        y="81.762"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        text-anchor="start"
        id="text7">Max Weapon Damage*</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="3.000"
        y="94.514"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
@@ -211,14 +211,14 @@
     <text
        x="113.200"
        y="167.286"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        textLength="10.508"
        lengthAdjust="spacingAndGlyphs"
        id="text9">BV:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="127.301"
        id="bv"
        y="167.286"
@@ -227,14 +227,14 @@
     <text
        x="168.300"
        y="167.286"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        textLength="44.508"
        lengthAdjust="spacingAndGlyphs"
        id="text10">Transport Wt:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="216.402"
        id="transport_wt"
        y="167.286"
@@ -243,14 +243,14 @@
     <text
        x="306.050"
        y="167.286"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        textLength="47.189"
        lengthAdjust="spacingAndGlyphs"
        id="text11">Movement MP:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="356.833"
        id="mp_1"
        y="167.286"
@@ -259,7 +259,7 @@
     <text
        x="306.050"
        y="177.488"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        visibility="hidden"
@@ -269,7 +269,7 @@
     <text
        x="356.833"
        y="177.488"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal"
        visibility="hidden"
@@ -277,14 +277,14 @@
     <text
        x="416.250"
        y="167.286"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        textLength="15.930"
        lengthAdjust="spacingAndGlyphs"
        id="text12">Type:</text>
     <text
-       fill="#231f20"
+       fill="#000000"
        x="435.773"
        id="movement_mode_1"
        y="167.286"
@@ -293,7 +293,7 @@
     <text
        x="416.250"
        y="177.488"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:bold;font-style:normal"
        visibility="hidden"
@@ -303,7 +303,7 @@
     <text
        x="435.773"
        y="177.488"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="start"
        style="font-family:Eurostile;font-size:7.200px;font-weight:normal;font-style:normal"
        visibility="hidden"
@@ -316,32 +316,32 @@
          d="M 0.0,0.0 L 437.800,0.000 L 437.800,116.629 l -7.845,7.600 L 7.845,124.229 l -7.845,-7.600 Z"
          stroke-width="1.0"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path12" />
       <path
          d="M 0,43.48008 h 437.8"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path13" />
       <path
          d="M 0,62.1144 h 437.8"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path14" />
       <path
          d="M 0.0,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path15" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="3.000"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text15">30</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.297"
          id="damage_30"
          y="55.997"
@@ -373,17 +373,17 @@
       <path
          d="M 14.593333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path16" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="17.593"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text16">29</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="21.890"
          id="damage_29"
          y="55.997"
@@ -415,17 +415,17 @@
       <path
          d="M 29.186666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path17" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="32.187"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text17">28</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="36.483"
          id="damage_28"
          y="55.997"
@@ -457,17 +457,17 @@
       <path
          d="M 43.78,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path18" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="46.780"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text18">27</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="51.077"
          id="damage_27"
          y="55.997"
@@ -499,17 +499,17 @@
       <path
          d="M 58.373333333333335,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path19" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="61.373"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text19">26</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="65.670"
          id="damage_26"
          y="55.997"
@@ -541,17 +541,17 @@
       <path
          d="M 72.96666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path20" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="75.967"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text20">25</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="80.263"
          id="damage_25"
          y="55.997"
@@ -583,17 +583,17 @@
       <path
          d="M 87.56,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path21" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="90.560"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text21">24</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="94.857"
          id="damage_24"
          y="55.997"
@@ -625,17 +625,17 @@
       <path
          d="M 102.15333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path22" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="105.153"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text22">23</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="109.450"
          id="damage_23"
          y="55.997"
@@ -667,17 +667,17 @@
       <path
          d="M 116.74666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path23" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="119.747"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text23">22</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="124.043"
          id="damage_22"
          y="55.997"
@@ -709,17 +709,17 @@
       <path
          d="M 131.34,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path24" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="134.340"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text24">21</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="138.637"
          id="damage_21"
          y="55.997"
@@ -751,17 +751,17 @@
       <path
          d="M 145.93333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path25" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="148.933"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text25">20</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="153.230"
          id="damage_20"
          y="55.997"
@@ -793,17 +793,17 @@
       <path
          d="M 160.52666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path26" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="163.527"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text26">19</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="167.823"
          id="damage_19"
          y="55.997"
@@ -835,17 +835,17 @@
       <path
          d="M 175.12,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path27" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="178.120"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text27">18</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="182.417"
          id="damage_18"
          y="55.997"
@@ -877,17 +877,17 @@
       <path
          d="M 189.71333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path28" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="192.713"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text28">17</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="197.010"
          id="damage_17"
          y="55.997"
@@ -919,17 +919,17 @@
       <path
          d="M 204.30666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path29" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="207.307"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text29">16</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="211.603"
          id="damage_16"
          y="55.997"
@@ -961,17 +961,17 @@
       <path
          d="M 218.9,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path30" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="221.900"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text30">15</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="226.197"
          id="damage_15"
          y="55.997"
@@ -1003,17 +1003,17 @@
       <path
          d="M 233.49333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path31" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="236.493"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text31">14</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="240.790"
          id="damage_14"
          y="55.997"
@@ -1045,17 +1045,17 @@
       <path
          d="M 248.08666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path32" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="251.087"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text32">13</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="255.383"
          id="damage_13"
          y="55.997"
@@ -1087,17 +1087,17 @@
       <path
          d="M 262.68,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path33" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="265.680"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text33">12</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="269.977"
          id="damage_12"
          y="55.997"
@@ -1129,17 +1129,17 @@
       <path
          d="M 277.27333333333337,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path34" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="280.273"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text34">11</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="284.570"
          id="damage_11"
          y="55.997"
@@ -1171,17 +1171,17 @@
       <path
          d="M 291.8666666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path35" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="294.867"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text35">10</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="299.163"
          id="damage_10"
          y="55.997"
@@ -1213,17 +1213,17 @@
       <path
          d="M 306.46000000000004,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path36" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="309.460"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text36">9</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="313.757"
          id="damage_9"
          y="55.997"
@@ -1255,17 +1255,17 @@
       <path
          d="M 321.05333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path37" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="324.053"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text37">8</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="328.350"
          id="damage_8"
          y="55.997"
@@ -1297,17 +1297,17 @@
       <path
          d="M 335.64666666666665,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path38" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="338.647"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text38">7</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="342.943"
          id="damage_7"
          y="55.997"
@@ -1339,17 +1339,17 @@
       <path
          d="M 350.24,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path39" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="353.240"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text39">6</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="357.537"
          id="damage_6"
          y="55.997"
@@ -1381,17 +1381,17 @@
       <path
          d="M 364.8333333333333,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path40" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="367.833"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text40">5</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="372.130"
          id="damage_5"
          y="55.997"
@@ -1423,17 +1423,17 @@
       <path
          d="M 379.4266666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path41" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="382.427"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text41">4</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="386.723"
          id="damage_4"
          y="55.997"
@@ -1465,17 +1465,17 @@
       <path
          d="M 394.02000000000004,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path42" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="397.020"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text42">3</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="401.317"
          id="damage_3"
          y="55.997"
@@ -1507,17 +1507,17 @@
       <path
          d="M 408.61333333333334,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path43" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="411.613"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text43">2</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="415.910"
          id="damage_2"
          y="55.997"
@@ -1549,17 +1549,17 @@
       <path
          d="M 423.2066666666667,0 v 62.1144"
          stroke-width="1.0"
-         stroke="#231f20"
+         stroke="#000000"
          id="path44" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="426.207"
          y="8.400"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text44">1</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="430.503"
          id="damage_1"
          y="55.997"
@@ -1589,35 +1589,35 @@
          xlink:show="embed"
          xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAgCAYAAAD0S5PyAAAABHNCSVQICAgIfAhkiAAAAvJJREFUSImdlV1IU2EYx/9nJ0ebF8JGCX5tfpAmmThKI0HMtAvBuhDKjEzLVldpfiBhZk0hvBWzpSYROjVUmh+oC1LU0ITEhdqFOlteqPOr5lXngKeL5Ztneze1Bw487//5n995zjnPeQ8EN1FUUCikpaa6K4sCNLFOryd5pU73f5Dsm1midfnjMo+QI3CKmupqjAwPI0wdTLTz8fHONlFInAWr9YeL6W1z0+EgWbeyUFb+hKxztVps2+1oaW6GIAj7Q4oeFqC3uwcVz3QAgAf5eTBPTcFisUDCsmior6dCGOEvPj7uHFZXVz22DQBfZ2cgl8tdO1lfW8PWz619AQAgk8not1Oh04H7zR0IwjAMHdLb3XMgwPOqKqou+TY7eyAAAISGhZHc/sv+DxIeESEyyuVyBAUFAQCCQ0IAAN7e3nhUWorAwEB8MJkQdTISyUlJ0Ne+xJ2cHMfb2TudzlFYXIzEC4kwm82orXkBViLB0tISqX/6PO6AvGlsRKWuggpRqVSwWq0uOsMwmFu0OHJBEASO41CQl4/+vj63HSkUCpyJPYtavd6lJgEAqVSK+bk56skpl1IAADEaDUz9A1QPGfuVlRWqYXRkFADgHxCAi8nJVA8Z+8gT4eA4+sB5eXmB53nMf1/03IlzGNpaSc7zPHVSXSA8z4sKsXFxorW7bUAEYVmWiGlXLgMATkVFuT2RCuk0GokoO+r4Ut93dx0OsrGxTsR3bW1U8/T0tGeIu1AolSS/mp5O9ZDdfnNzE2MTE6h7pYePjw8x1L9uwOnoaDAMg8kvk/Qr7f47hj4OCqEqNTl2417uXSFUpRY6OzoE08CA55/Xzs4OAdzIuC4y7er3tVoqhDyTocFB0l1Ti0HUbfbtHACA73Ff6t0QyMyeJ79tt4tMC/MLAIDl5WUqhD2mVD7NvJaB8bFxIhaXlIhMfn5+6Ghvx6LFApttDTabTTSIki6jEVKpFOpgx+7mH+DvcqUYjYbkrQYDEhISRPU/YkUFJc1xbRsAAAAASUVORK5CYII=" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="3.000"
          y="69.879"
          style="font-family:Eurostile;font-size:5.700px;font-weight:normal;font-style:normal"
          text-anchor="start"
          id="text45">*Damage is always applied in 2-point Damage Value groupings</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="218.900"
          id="rangeInHexes"
          y="69.879"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="start">RANGE IN HEXES (TO-HIT MODIFIER)</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="3.000"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="start"
          id="text46">Range:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="63.452"
          id="range_0"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">0</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="63.452"
          id="range_mod_0"
          y="85.407"
@@ -1626,20 +1626,20 @@
       <text
          x="63.452"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_0">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="80.724"
          id="range_1"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">1</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="80.724"
          id="range_mod_1"
          y="85.407"
@@ -1648,20 +1648,20 @@
       <text
          x="80.724"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_1">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="97.996"
          id="range_2"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">2</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="97.996"
          id="range_mod_2"
          y="85.407"
@@ -1670,20 +1670,20 @@
       <text
          x="97.996"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_2">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="115.268"
          id="range_3"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">3</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="115.268"
          id="range_mod_3"
          y="85.407"
@@ -1692,20 +1692,20 @@
       <text
          x="115.268"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_3">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="132.540"
          id="range_4"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">4</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="132.540"
          id="range_mod_4"
          y="85.407"
@@ -1714,20 +1714,20 @@
       <text
          x="132.540"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_4">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="149.812"
          id="range_5"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">5</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="149.812"
          id="range_mod_5"
          y="85.407"
@@ -1736,20 +1736,20 @@
       <text
          x="149.812"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_5">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="167.084"
          id="range_6"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">6</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="167.084"
          id="range_mod_6"
          y="85.407"
@@ -1758,20 +1758,20 @@
       <text
          x="167.084"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_6">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="184.356"
          id="range_7"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">7</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="184.356"
          id="range_mod_7"
          y="85.407"
@@ -1780,20 +1780,20 @@
       <text
          x="184.356"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_7">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="201.628"
          id="range_8"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">8</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="201.628"
          id="range_mod_8"
          y="85.407"
@@ -1802,20 +1802,20 @@
       <text
          x="201.628"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_8">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="218.900"
          id="range_9"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">9</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="218.900"
          id="range_mod_9"
          y="85.407"
@@ -1824,20 +1824,20 @@
       <text
          x="218.900"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_9">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="236.172"
          id="range_10"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">10</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="236.172"
          id="range_mod_10"
          y="85.407"
@@ -1846,20 +1846,20 @@
       <text
          x="236.172"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_10">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="253.444"
          id="range_11"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">11</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="253.444"
          id="range_mod_11"
          y="85.407"
@@ -1868,20 +1868,20 @@
       <text
          x="253.444"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_11">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="270.716"
          id="range_12"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">12</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="270.716"
          id="range_mod_12"
          y="85.407"
@@ -1890,20 +1890,20 @@
       <text
          x="270.716"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_12">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="287.988"
          id="range_13"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">13</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="287.988"
          id="range_mod_13"
          y="85.407"
@@ -1912,20 +1912,20 @@
       <text
          x="287.988"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_13">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="305.260"
          id="range_14"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">14</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="305.260"
          id="range_mod_14"
          y="85.407"
@@ -1934,20 +1934,20 @@
       <text
          x="305.260"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_14">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="322.532"
          id="range_15"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">15</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="322.532"
          id="range_mod_15"
          y="85.407"
@@ -1956,20 +1956,20 @@
       <text
          x="322.532"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_15">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="339.804"
          id="range_16"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">16</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="339.804"
          id="range_mod_16"
          y="85.407"
@@ -1978,20 +1978,20 @@
       <text
          x="339.804"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_16">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="357.076"
          id="range_17"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">17</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="357.076"
          id="range_mod_17"
          y="85.407"
@@ -2000,20 +2000,20 @@
       <text
          x="357.076"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_17">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="374.348"
          id="range_18"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">18</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="374.348"
          id="range_mod_18"
          y="85.407"
@@ -2022,20 +2022,20 @@
       <text
          x="374.348"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_18">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="391.620"
          id="range_19"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">19</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="391.620"
          id="range_mod_19"
          y="85.407"
@@ -2044,20 +2044,20 @@
       <text
          x="391.620"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_19">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="408.892"
          id="range_20"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">20</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="408.892"
          id="range_mod_20"
          y="85.407"
@@ -2066,20 +2066,20 @@
       <text
          x="408.892"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_20">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="426.164"
          id="range_21"
          y="77.643"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          text-anchor="middle">21</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="426.164"
          id="range_mod_21"
          y="85.407"
@@ -2088,13 +2088,13 @@
       <text
          x="426.164"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-family:Eurostile;font-size:6.200px;font-weight:normal;font-style:normal"
          visibility="hidden"
          id="uw_range_mod_21">–</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="3.000"
          y="85.407"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
@@ -2103,7 +2103,7 @@
       <text
          x="3.000"
          y="93.172"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
          visibility="hidden"
@@ -2112,133 +2112,133 @@
          visibility="hidden"
          id="field_gun_columns">
         <text
-           fill="#231f20"
+           fill="#000000"
            x="6.000"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text48">Qty</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="20.272"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="start"
            id="text49">Field Gun Type</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="85.042"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="start"
            id="text50">Dmg</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="119.586"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text51">Min</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="132.540"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text52">S</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="145.494"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text53">M</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="158.448"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text54">L</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="175.720"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text55">Ammo</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="197.310"
            y="100.936"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle"
            id="text56">Crew</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="6.000"
            id="field_gun_qty"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="20.272"
            id="field_gun_type"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="start" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="85.042"
            id="field_gun_dmg"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="start" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="85.042"
            id="field_gun_dmg_2"
            y="116.465"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="start" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="119.586"
            id="field_gun_min_range"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="132.540"
            id="field_gun_short"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="145.494"
            id="field_gun_med"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="158.448"
            id="field_gun_long"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="175.720"
            id="field_gun_ammo"
            y="108.700"
            style="font-family:Eurostile;font-size:6.200px;font-weight:bold;font-style:normal"
            text-anchor="middle" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="197.310"
            id="field_gun_crew"
            y="108.700"

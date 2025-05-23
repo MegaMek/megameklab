@@ -23,6 +23,7 @@ import megamek.common.*;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megamek.common.ITechnology.TechRating;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.MVFArmorView;
@@ -125,7 +126,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     }
 
     @Override
-    public void armorTechRatingChanged(int techRating) {
+    public void armorTechRatingChanged(TechRating techRating) {
         getEntity().setArmorTechRating(techRating);
         getEntity().recalculateTechAdvancement();
         panArmor.setFromEntity(getEntity());

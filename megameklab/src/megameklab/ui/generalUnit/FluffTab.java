@@ -150,18 +150,23 @@ public class FluffTab extends ITab implements FocusListener {
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtCapabilities"), txtCapabilities);
         txtCapabilities.setText(getFluff().getCapabilities());
+        txtCapabilities.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtOverview"), txtOverview);
         txtOverview.setText(getFluff().getOverview());
+        txtOverview.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtDeployment"), txtDeployment);
         txtDeployment.setText(getFluff().getDeployment());
+        txtDeployment.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtHistory"), txtHistory);
         txtHistory.setText(getFluff().getHistory());
+        txtHistory.setCaretPosition(0);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtNotes"), txtNotes);
         txtNotes.setText(getFluff().getNotes());
+        txtNotes.setCaretPosition(0);
 
         // Add a filler component at the bottom of panLeft to push content up
         gbcLeft.gridy++;
@@ -514,24 +519,26 @@ public class FluffTab extends ITab implements FocusListener {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog, false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            try {
-                Image fluffImage = FluffImageHelper.getFluffImage(chosenEntity);
-                if (fluffImage == null) {
-                    PopupMessages.showNoFluffImage(getParent());
-                    return;
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                try {
+                    Image fluffImage = FluffImageHelper.getFluffImage(chosenEntity);
+                    if (fluffImage == null) {
+                        PopupMessages.showNoFluffImage(getParent());
+                        return;
+                    }
+                    eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
+                    refresh.refreshPreview();
+                } catch (Exception ex) {
+                    PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
+                    logger.error("Fluff could not be copied!", ex);
                 }
-                eSource.getEntity().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(fluffImage));
-                refresh.refreshPreview();
-            } catch (Exception ex) {
-                PopupMessages.showFileReadError(getParent(), "", ex.getMessage());
-                logger.error("Fluff could not be copied!", ex);
             }
+        } finally {          
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
-        unitLoadingDialog.dispose();
         refreshGUI();
     }
 
@@ -608,6 +615,12 @@ public class FluffTab extends ITab implements FocusListener {
         txtDeployment.setText(fluff.getDeployment());
         txtHistory.setText(fluff.getHistory());
         txtNotes.setText(fluff.getNotes());
+        
+        txtCapabilities.setCaretPosition(0);
+        txtOverview.setCaretPosition(0);
+        txtDeployment.setCaretPosition(0);
+        txtHistory.setCaretPosition(0);
+        txtNotes.setCaretPosition(0);
 
         // Update general text fields
         txtManufacturer.setText(fluff.getManufacturer());

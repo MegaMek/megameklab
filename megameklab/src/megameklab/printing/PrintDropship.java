@@ -17,6 +17,7 @@ import java.awt.print.PageFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -26,6 +27,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import megamek.common.UnitType;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.DockingCollar;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
@@ -87,16 +89,6 @@ public class PrintDropship extends PrintAero {
         this.ship = ship;
         inventory = new InventoryWriter(this);
         distributeEquipmentBlocks();
-    }
-
-    /**
-     * Creates an SVG object for the record sheet using the global printing options
-     *
-     * @param ship      The ship to print
-     * @param startPage The print job page number for this sheet
-     */
-    public PrintDropship(Aero ship, int startPage) {
-        this(ship, startPage, new RecordSheetOptions());
     }
 
     @Override
@@ -282,11 +274,12 @@ public class PrintDropship extends PrintAero {
                 lines += linesPerBlock[block];
             }
         }
-        if (!reverse && blockOnReverse[BLOCK_STANDARD]) {
-            lines += 2;
-        }
-        if (reverse == blockOnReverse[BLOCK_STANDARD] && linesPerBlock[BLOCK_STANDARD] > 0) {
-            lines += inventory.extraStandardBayLines(fontSize);
+        if (linesPerBlock[BLOCK_STANDARD] > 0) { 
+            if (reverse == blockOnReverse[BLOCK_STANDARD]) {
+                lines += inventory.extraStandardBayLines(fontSize);
+            } else if (!reverse) {
+                lines += 2; // Print Reverse Side Message
+            }
         }
         if (reverse == blockOnReverse[BLOCK_CAPITAL] && linesPerBlock[BLOCK_CAPITAL] > 0) {
             lines += inventory.extraCapitalBayLines(fontSize);
@@ -363,4 +356,15 @@ public class PrintDropship extends PrintAero {
     public boolean supportsAlternateArmorGrouping() {
         return true;
     }
+
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        if (ship instanceof Dropship dropship) {
+            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isDockCollarDamaged()?1:0);
+            fillCoreComponentCriticalDamage(KF_BOOM_HIT, dropship.isKFBoomDamaged()?1:0);
+        }
+    }
+
 }

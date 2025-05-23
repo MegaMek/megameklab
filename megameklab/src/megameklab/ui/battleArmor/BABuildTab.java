@@ -140,12 +140,7 @@ public class BABuildTab extends ITab {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getBattleArmor().getEquipment()) {
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                continue;
-            }
-            mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-        }
+        UnitUtil.removeAllCriticals(getBattleArmor());
         refreshAll();
     }
 

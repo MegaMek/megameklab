@@ -23,9 +23,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -35,22 +35,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
+import megamek.common.EnhancedTabbedPane;
+import megamek.common.EnhancedTabbedPane.CloseableTab;
+import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
+import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
@@ -58,18 +52,13 @@ import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.mek.BMMainUI;
 import megameklab.ui.util.TabUtil;
-import megameklab.ui.util.EnhancedTabbedPane;
-import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
-import megameklab.ui.util.EnhancedTabbedPane.CloseableTab;
-import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import megameklab.util.UnitUtil;
 
 /**
- * Replaces {@link MegaMekLabMainUI} as the top-level window for MML.
- * Holds several {@link MegaMekLabMainUI}s as tabs, allowing many units to be
- * open at once.
+ * Replaces {@link MegaMekLabMainUI} as the top-level window for MML. Holds several {@link MegaMekLabMainUI}s as tabs,
+ * allowing many units to be open at once.
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
 
@@ -83,17 +72,11 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     private final MenuBar menuBar;
 
     /**
-     * Constructs a new MegaMekLabTabbedUI instance, which serves as the main tabbed
-     * UI
-     * for managing multiple MegaMekLabMainUI editors. Automatically initializes a
-     * default
-     * BMMainUI instance if no entities are provided.
+     * Constructs a new MegaMekLabTabbedUI instance, which serves as the main tabbed UI for managing multiple
+     * MegaMekLabMainUI editors. Automatically initializes a default BMMainUI instance if no entities are provided.
      *
-     * @param entities A variable number of MegaMekLabMainUI instances that will be
-     *                 added
-     *                 as tabs to the UI. If no entities are provided, a default
-     *                 BMMainUI
-     *                 instance will be created and added.
+     * @param entities A variable number of MegaMekLabMainUI instances that will be added as tabs to the UI. If no
+     *                 entities are provided, a default BMMainUI instance will be created and added.
      */
     public MegaMekLabTabbedUI(MegaMekLabMainUI... entities) {
         super("MegaMekLab");
@@ -117,7 +100,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 }
                 final Component selectedComponent = tabs.getSelectedComponent();
                 final Component previousComponent = lastSelectedComponent != null ? lastSelectedComponent.get() : null;
-        
+
                 if (selectedComponent != previousComponent) {
                     if (selectedComponent instanceof MegaMekLabMainUI mainUI) {
                         mainUI.onActivated();
@@ -139,11 +122,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
             @Override
             public boolean onTabDetaching(int tabIndex, Component component) {
-                if (tabs.getTabCount() <= 1) {
-                    // If there is only one tab, don't allow detachment
-                    return false;
-                }
-                return true;
+                // If there is only one tab, don't allow detachment
+                return tabs.getTabCount() > 1;
             }
 
             @Override
@@ -159,9 +139,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             public void onTabRemoved(int tabIndex, Component component) {
                 // If you try to close the last tab, we close this window
                 if (tabs.getTabCount() < 1) {
-                    final boolean willTerminate = (openWindows.size() == 1) && (!ForceBuildUI.hasInstance() || !ForceBuildUI.getInstance().isShowing() || ForceBuildUI.getForceSize() == 0);
-                    if (willTerminate && (CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT))
-                            && !noTabsOpenExitPrompt()) {
+                    final boolean willTerminate = (openWindows.size() == 1) &&
+                                                        (!ForceBuildUI.hasInstance() ||
+                                                               !ForceBuildUI.getInstance().isShowing() ||
+                                                               ForceBuildUI.getForceSize() == 0);
+                    if (willTerminate &&
+                              (CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT)) &&
+                              !noTabsOpenExitPrompt()) {
                         newTab();
                     } else {
                         cleanupAndDispose();
@@ -217,11 +201,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     /**
      * Checks if the given editor is the currently selected tab in the tabbed UI.
-     * 
-     * @param editor The MegaMekLabMainUI instance to check against the currently
-     *               selected
-     * @return True if the given editor is the currently selected tab, false
-     *         otherwise.
+     *
+     * @param editor The MegaMekLabMainUI instance to check against the currently selected
+     *
+     * @return True if the given editor is the currently selected tab, false otherwise.
      */
     public boolean isTabEditorSelected(MegaMekLabMainUI editor) {
         Component tab = tabs.getTabComponentAt(tabs.getSelectedIndex());
@@ -246,9 +229,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     // Left click - directly create a new unit
-                    MegaMekLabMainUI newUi = UiLoader.getUI(Entity.ETYPE_MEK, false, false);
-                    newUi.setTabOwner(MegaMekLabTabbedUI.this);
-                    addTab(newUi);
+                    createNewUnit(Entity.ETYPE_MEK, false, false);
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     // Right click - show popup menu
                     showNewUnitPopupMenu(button);
@@ -325,11 +306,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      */
     private JMenuItem newUnitItem(String name, long entityType, boolean primitive) {
         JMenuItem item = new JMenuItem(name);
-        item.addActionListener(e -> {
-            MegaMekLabMainUI newUi = UiLoader.getUI(entityType, primitive, false);
-            newUi.setTabOwner(MegaMekLabTabbedUI.this);
-            addTab(newUi);
-        });
+        item.addActionListener(e -> createNewUnit(entityType, primitive, primitive));
         return item;
     }
 
@@ -360,22 +337,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * Retrieves the currently selected editor from the tabbed user interface.
+     * Refreshes the display of the given entity. This method is called when the entity is modified externally.
      *
-     * @return The currently selected MegaMekLabMainUI instance, which represents
-     *         the active editor in the tabbed UI, or null if no tab is selected.
-     * @deprecated Use {@link #getActiveEditor()} instead as it provides the same functionality.
-     */
-    @Deprecated(since = "0.50.05", forRemoval = true)
-    public MegaMekLabMainUI currentEditor() {
-        return getActiveEditor();
-    }
-
-    /**
-     * Refreshes the display of the given entity.
-     * This method is called when the entity is modified externally.
-     * 
-     * @param entityToFind
+     * @param entityToFind {@link Entity} to be refreshed.
      */
     public static synchronized void refreshEntity(Entity entityToFind) {
         if (entityToFind == null) {
@@ -384,9 +348,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Try to find the entity in the open editors
         for (MegaMekLabMainUI editor : editors) {
             if (editor.getEntity() == entityToFind) {
-                SwingUtilities.invokeLater(() -> {
-                    editor.refreshAll();
-                });
+                SwingUtilities.invokeLater(editor::refreshAll);
                 return; // Found and refreshed
             }
         }
@@ -411,9 +373,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * Finds an open editor tab for the given entity, brings its window to the front,
-     * and selects the tab. If no editor is found, creates a new tab in the first
-     * available window.
+     * Finds an open editor tab for the given entity, brings its window to the front, and selects the tab. If no editor
+     * is found, creates a new tab in the first available window.
      *
      * @param entityToFind The entity to show the editor for.
      */
@@ -442,7 +403,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             StartupGUI.getInstance().getFrame().setVisible(false);
             StartupGUI.getInstance().getFrame().dispose();
         }
-        
+
         MegaMekLabMainUI newUi = UiLoader.getUI(entityToFind, "");
         targetWindow.addTab(newUi, true);
 
@@ -454,8 +415,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     /**
      * Retrieves the currently selected editor from the tabbed user interface.
      *
-     * @return The currently selected MegaMekLabMainUI instance, which represents
-     *         the active editor in the tabbed UI, or null if no tab is selected.
+     * @return The currently selected MegaMekLabMainUI instance, which represents the active editor in the tabbed UI, or
+     *       null if no tab is selected.
      */
     public MegaMekLabMainUI getActiveEditor() {
         int selectedIndex = tabs.getSelectedIndex();
@@ -472,8 +433,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * Updates the name of the currently selected tab in the tabbed user interface.
-     * Should typically be called when the name of the unit being edited changes.
+     * Updates the name of the currently selected tab in the tabbed user interface. Should typically be called when the
+     * name of the unit being edited changes.
      *
      * @param editor  The editor for which the tab name needs to be set
      * @param tabName The new name to be set for the currently selected tab.
@@ -490,9 +451,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * Adds a new editor tab to the tabbed UI. This includes adding the editor
-     * to the internal editor collection, refreshing it, setting the ownership,
-     * and adding the tab to the tabs UI.
+     * Adds a new editor tab to the tabbed UI. This includes adding the editor to the internal editor collection,
+     * refreshing it, setting the ownership, and adding the tab to the tabs UI.
      *
      * @param editor      The MegaMekLabMainUI instance to be added as a new tab.
      * @param setSelected Whether to set the new tab as the currently selected tab.
@@ -516,42 +476,60 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * The name is misleading, this is actually the Switch Unit Type operation!
-     * Replaces the current editor with a new blank one of the given unit type.
-     * Disposes of the old editor UI after the new one is initialized.
+     * Create a new blank editor of the given unit type.
      *
      * @param type       the type of unit to load for the new editor UI
      * @param primitive  whether the unit is primitive
      * @param industrial whether the unit is an IndustrialMek
      */
-    private void newUnit(long type, boolean primitive, boolean industrial) {
+    public void createNewUnit(long type, boolean primitive, boolean industrial) {
+        createNewUnit(type, primitive, industrial, tabs.getTabCount());
+    }
+
+    /**
+     * Create a new blank editor of the given unit type.
+     *
+     * @param type       the type of unit to load for the new editor UI
+     * @param primitive  whether the unit is primitive
+     * @param industrial whether the unit is an IndustrialMek
+     * @param tabIndex   the index at which to insert the new tab
+     */
+    private void createNewUnit(long type, boolean primitive, boolean industrial, int tabIndex) {
+        MegaMekLabMainUI editor = UiLoader.getUI(type, primitive, industrial);
+        editors.add(editor);
+        final Entity entity = editor.getEntity();
+        final String tabName = entity.getShortNameRaw();
+        tabs.addCloseableTab(tabName, null, editor, tabIndex);
+        editor.setTabOwner(this);
+        tabs.setSelectedIndex(tabIndex);
+    }
+
+    /**
+     * Replaces the current editor with a new blank one of the given unit type. Disposes of the old editor UI after the
+     * new one is initialized.
+     *
+     * @param type       the type of unit to load for the new editor UI
+     * @param primitive  whether the unit is primitive
+     * @param industrial whether the unit is an IndustrialMek
+     */
+    private void switchUnit(long type, boolean primitive, boolean industrial) {
         final int index = tabs.getSelectedIndex();
         if (index < 0) {
             return; // No tab selected, nothing to do
         }
-        MegaMekLabMainUI editor = UiLoader.getUI(type, primitive, industrial);
-        if (!editors.contains(editor)) {
-            editors.add(editor);
-        }
-        final Entity entity = editor.getEntity();
-        final String tabName = entity.getShortNameRaw();
-        tabs.addCloseableTab(tabName, null, editor, index);
-        editor.setTabOwner(this);
-        tabs.setSelectedIndex(index);
-        closeTabAt(index+1); // Close the old tab
+        createNewUnit(type, primitive, industrial, index);
+        closeTabAt(index + 1); // Close the old tab
     }
 
     /**
-     * The name is misleading, this is actually the Switch Unit Type operation!
-     * Replaces the current editor with a new blank one of the given unit type.
-     * Disposes of the old editor UI after the new one is initialized.
+     * Replaces the current editor with a new blank one of the given unit type. Disposes of the old editor UI after the
+     * new one is initialized.
      *
      * @param type      the type of unit to load for the new editor UI
      * @param primitive whether the unit is primitive
      */
-    @Override
-    public void newUnit(long type, boolean primitive) {
-        newUnit(type, primitive, false);
+    public void switchUnit(long type, boolean primitive) {
+        switchUnit(type, primitive, false);
     }
 
     /**
@@ -573,10 +551,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             return true;
         }
         int exitPrompt = JOptionPane.showConfirmDialog(this,
-                "Would you like to exit MegaMekLab?",
-                "Confirm Close",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
+              "Would you like to exit MegaMekLab?",
+              "Confirm Close",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
         return exitPrompt == JOptionPane.YES_OPTION;
     }
 
@@ -585,10 +563,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             return true;
         }
         int savePrompt = JOptionPane.showConfirmDialog(this,
-                "All unsaved changes to open units will be discarded. Close anyway?",
-                "Confirm Close",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
+              "All unsaved changes to open units will be discarded. Close anyway?",
+              "Confirm Close",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
         return savePrompt == JOptionPane.YES_OPTION;
     }
 
@@ -612,8 +590,10 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
 
     private void cleanupAndDispose() {
         openWindows.remove(this);
-        final boolean willTerminate = (openWindows.isEmpty() 
-        && (!ForceBuildUI.hasInstance() || !ForceBuildUI.getInstance().isShowing() || ForceBuildUI.getForceSize() == 0));
+        final boolean willTerminate = (openWindows.isEmpty() &&
+                                             (!ForceBuildUI.hasInstance() ||
+                                                    !ForceBuildUI.getInstance().isShowing() ||
+                                                    ForceBuildUI.getForceSize() == 0));
         if (willTerminate) {
             saveConfig(); // Save settings before closing
         }
@@ -666,8 +646,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * Deletes the current tab.
-     * This does not issue the safety prompt, it is up to the caller to do so!
+     * Deletes the current tab. This does not issue the safety prompt, it is up to the caller to do so!
      */
     public void closeCurrentTab() {
         closeTabAt(tabs.getSelectedIndex());
@@ -676,8 +655,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     private void closeTabAt(int position) {
         Component tabComponent = tabs.getTabComponentAt(position);
         if (tabComponent instanceof CloseableTab tab) {
-            if (tab.getComponent() instanceof MegaMekLabMainUI) {
-                MegaMekLabMainUI editor = (MegaMekLabMainUI) tab.getComponent();
+            if (tab.getComponent() instanceof MegaMekLabMainUI editor) {
                 editor.reattachAllTabs();
                 final int currentIndex = tabs.getSelectedIndex();
                 tabs.remove(position);
@@ -765,15 +743,13 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     }
 
     /**
-     * ReopenTabStack is a utility class that manages a fixed-capacity stack of
-     * closed MegaMekLabMainUI editors.
-     * It allows for storing references to recently closed editors and retrieving
-     * them in reverse order of their closure, resembling a "reopen tab"
-     * functionality.
+     * ReopenTabStack is a utility class that manages a fixed-capacity stack of closed MegaMekLabMainUI editors. It
+     * allows for storing references to recently closed editors and retrieving them in reverse order of their closure,
+     * resembling a "reopen tab" functionality.
      * <p>
-     * This stack maintains a circular buffer of references with a maximum capacity
-     * defined by the constant STACK_CAPACITY. If the capacity is exceeded, the
-     * oldest editor will be disposed of and removed to make room for new entries.
+     * This stack maintains a circular buffer of references with a maximum capacity defined by the constant
+     * STACK_CAPACITY. If the capacity is exceeded, the oldest editor will be disposed of and removed to make room for
+     * new entries.
      */
     private static class ReopenTabStack {
         public static final int STACK_CAPACITY = 20;

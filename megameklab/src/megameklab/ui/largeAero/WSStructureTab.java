@@ -29,6 +29,7 @@ import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.Jumpship;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SpaceStation;
@@ -170,7 +171,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 
@@ -314,6 +315,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setHeatType(index);
         getJumpship().setHeatSinks(count);
         getJumpship().setOHeatSinks(count);
+        panHeat.setFromAero(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();

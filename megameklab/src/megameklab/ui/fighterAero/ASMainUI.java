@@ -91,8 +91,7 @@ public class ASMainUI extends MegaMekLabMainUI {
                 new ASFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

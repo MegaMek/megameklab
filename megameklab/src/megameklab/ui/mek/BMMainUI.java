@@ -87,8 +87,7 @@ public class BMMainUI extends MegaMekLabMainUI {
                 new BMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        statusbar.refresh();
-        refreshHeader();
+        refreshAll();
         validate();
     }
 

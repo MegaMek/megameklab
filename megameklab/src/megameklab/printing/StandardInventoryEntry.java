@@ -40,6 +40,7 @@ import megamek.common.options.WeaponQuirks;
 import megamek.common.options.IOption;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
+import megamek.common.ITechnology;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -309,7 +310,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      */
     private boolean showTechBase() {
         if (!mount.getEntity().isMixedTech()
-                || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
+                || (mount.getType().getTechBase() == ITechnology.TechBase.ALL)) {
             return false;
         }
         if (showMixedTechBase.containsKey(mount.getType())) {
@@ -366,6 +367,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "R/L/CT";
         }
         return "*";
+    }
+
+    @Override
+    public boolean isDamaged() {
+        return mount.isHit() || mount.isDestroyed() || mount.isMissing();
     }
 
     @Override
@@ -602,7 +608,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 location.equals(that.location) &&
                 hasInsulator == that.hasInsulator &&
                 hasPulseModule == that.hasPulseModule &&
-                hasCapacitor == that.hasCapacitor;
+                hasCapacitor == that.hasCapacitor &&
+                isDamaged() == that.isDamaged();
     }
 
     @Override

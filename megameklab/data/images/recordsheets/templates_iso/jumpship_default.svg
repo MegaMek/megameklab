@@ -1070,7 +1070,7 @@
     <text
        font-size="5.7px"
        transform="translate (279.5 806.0)"
-       fill="#231f20"
+       fill="#000000"
        text-anchor="middle"
        font-family="Eurostile"
        id="footer"
@@ -1102,7 +1102,7 @@
            d="M 0,8.214 5.475,0 h 92.03 l 5.475,8.214 H 215.6 v 436.327 l -5.475,8.214 H 53.513 l -5.475,-8.214 H 7.845 L 0,436.941 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path223" />
         <g
            transform="translate(2.5,3)"
@@ -1125,30 +1125,30 @@
       <text
          x="6"
          y="28"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:9.67px;font-family:Eurostile"
          textLength="21.400999"
          lengthAdjust="spacingAndGlyphs"
          id="text225">Type:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="32.229"
          id="type"
          y="28"
-         style="font-style:normal;font-weight:normal;font-size:9.67px;font-family:Eurostile"
+         style="font-style:normal;font-weight:normal;font-size:9.67px;font-family:Eurostile;mml-field-width:180"
          text-anchor="start">Lorem Ipsum</text>
       <text
          x="6"
          y="38"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          textLength="21.471001"
          lengthAdjust="spacingAndGlyphs"
          id="text226">Name:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="31.315001"
          id="fluffName"
          y="38"
@@ -1159,16 +1159,16 @@
          d="m 31.315,39 h 70.843"
          stroke-width="0.72"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="6"
          y="47"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          text-anchor="start"
          id="text227">Thrust:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="9.8439999"
          y="56"
          style="font-style:normal;font-weight:normal;font-size:7.7px;font-family:Eurostile"
@@ -1177,14 +1177,14 @@
       <text
          x="112.3"
          y="38"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          textLength="29.785"
          lengthAdjust="spacingAndGlyphs"
          id="text229">Tonnage:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="154.84"
          id="tonnage"
          y="38"
@@ -1193,14 +1193,14 @@
       <text
          x="112.3"
          y="47"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          textLength="35.949001"
          lengthAdjust="spacingAndGlyphs"
          id="text230">Tech Base:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="154.84"
          id="techBase"
          y="47"
@@ -1209,14 +1209,14 @@
       <text
          x="112.3"
          y="56"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          textLength="38.696999"
          lengthAdjust="spacingAndGlyphs"
          id="text231">Rules Level:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="154.84"
          id="rulesLevel"
          y="56"
@@ -1225,14 +1225,14 @@
       <text
          x="112.3"
          y="65"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.7px;font-family:Eurostile"
          id="labelRole"
          textLength="16.16"
          lengthAdjust="spacingAndGlyphs">Role:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="154.84"
          id="role"
          y="65"
@@ -1247,7 +1247,7 @@
       <text
          x="3"
          y="79"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:8.6px;font-family:Eurostile"
          textLength="121.508"
@@ -1269,14 +1269,14 @@
       <text
          x="13.845"
          y="438.54099"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:9.67px;font-family:Eurostile"
          textLength="14.117"
          lengthAdjust="spacingAndGlyphs"
          id="text233">BV:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="32.790001"
          id="bv"
          y="438.54099"
@@ -1307,7 +1307,7 @@
            d="M 0,8.214 5.475,0 h 39.563 l 5.475,8.214 h 157.242 l 7.845,7.6 V 91.72 l -5.475,8.214 H 114.947 L 109.472,91.72 H 7.845 L 0,84.12 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path234" />
         <g
            transform="translate(2.5,3)"
@@ -1356,7 +1356,7 @@
            id="text236">ARMOR DIAGRAM</text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="292.27899"
          y="18.25"
          style="font-style:normal;font-weight:bold;font-size:6.2px;font-family:Eurostile"
@@ -1844,7 +1844,7 @@
              id="g2484"
              transform="translate(371.855,396.77)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 v 4.956 l -22.472,-20.424 v -5.797 L 1.98,-5.597 v 1.814 L 0.317,0 Z"
                id="path2486" />
           </g>
@@ -1852,7 +1852,7 @@
              id="g2488"
              transform="translate(453.396,396.77)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 H -0.318 L -2.901,-5.876 21.11,-21.265 v 5.797 L 0,3.721 Z"
                id="path2490" />
           </g>
@@ -1860,7 +1860,7 @@
              id="g2492"
              transform="translate(335.41299,366.03101)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 11.179,7.216 V 12.37 L -2.793,-0.192 Z"
                id="path2494" />
           </g>
@@ -1868,7 +1868,7 @@
              id="g2496"
              transform="translate(477.3,373.24699)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 11.178,-7.216 13.972,-7.408 0,5.154 Z"
                id="path2498" />
           </g>
@@ -1876,7 +1876,7 @@
              id="g2500"
              transform="translate(496.161,363.905)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -42.765,39.439 v 3.027 h -0.639 l -2.939,3.345 h -0.498 v 2.713 h 0.498 l 2.941,3.347 h 0.637 v 13.674 h -0.639 l -2.937,3.342 V 90.54 l 4.003,1.456 -0.107,67.319 -3.896,1.196 v 19.153 c 5.414,11.229 9.783,22.64 12.798,30.79 h -1.136 v 3.912 h 3.085 c 1.573,5.077 2.421,10.472 2.421,16.066 0,14.264 -5.508,27.239 -14.512,36.929 h -2.404 l -1.5,3.803 c -9.582,8.444 -22.237,14.388 -36.02,14.388 -14.136,0 -26.938,-6.21 -36.607,-15.044 l -0.913,-3.147 h -2.259 c -9.004,-9.69 -14.511,-22.665 -14.511,-36.929 0,-5.594 0.85,-10.989 2.422,-16.066 h 3.083 v -3.912 h -1.133 c 2.941,-7.95 7.342,-19.004 12.798,-29.966 V 68.889 h -0.001 l -2.937,-3.344 h -0.639 V 51.871 h 0.637 l 2.939,-3.347 h 0.5 v -2.713 h -0.5 l -2.937,-3.345 h -0.639 V 40.692 L -168.433,0 h -8.382 v -12.564 h 7.264 l 0.727,1.886 h 9.808 v 5.653 h 0.364 V 0 h -0.498 l 38.921,25.125 v 0.322 h 26.67 L -93.05,23.12 V 6.478 c -0.98,-2.391 -1.813,-5.148 -2.469,-8.179 h -1.607 v -10.863 h 0.152 c -0.099,-1.645 -0.152,-3.328 -0.152,-5.042 0,-3.945 0.274,-7.728 0.774,-11.248 h 25.63 c 0.501,3.52 0.777,7.303 0.777,11.248 0,1.714 -0.054,3.397 -0.153,5.042 h 0.153 v 10.863 h -1.607 c -0.654,3.031 -1.49,5.788 -2.471,8.179 V 22.19 l 0.679,3.257 H -48.2 V 25.125 L -9.281,0 h -0.498 v -5.025 h 0.364 v -5.653 h 9.808 l 0.728,-1.886 H 8.385 V 0 Z"
                id="path2502" />
           </g>
@@ -1892,7 +1892,7 @@
              id="g2508"
              transform="translate(346.591,373.24699)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -11.179,-7.216 -13.972,-7.408 0,5.154 Z"
                id="path2510" />
           </g>
@@ -1908,7 +1908,7 @@
              id="g2516"
              transform="translate(373.836,391.173)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -24.452,-15.668 v 5.797 L -1.98,10.552 V 5.597 h 0.317 L 0,1.813 Z"
                id="path2518" />
           </g>
@@ -1924,7 +1924,7 @@
              id="g2524"
              transform="translate(474.506,375.505)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 -24.012,15.389 2.583,5.876 h 0.319 v 3.721 L 0,5.797 Z"
                id="path2526" />
           </g>
@@ -1940,7 +1940,7 @@
              id="g2532"
              transform="translate(488.478,366.03101)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -11.178,7.216 V 12.37 L 2.794,-0.192 Z"
                id="path2534" />
           </g>
@@ -1956,13 +1956,13 @@
              id="g9740"
              transform="translate(446.905,419.095)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,-6.627 -4.434,-12 -9.906,-12 h -49.621 c -5.471,0 -9.907,5.373 -9.907,12 v 131.906 c 0,6.627 4.436,12 9.907,12 h 49.621 c 5.472,0 9.906,-5.373 9.906,-12 z"
                id="path9742" />
           </g>
           <text
              id="text9996"
-             style="font-variant:normal;font-size:8px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-size:8px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,412.344,459.536)"
              text-anchor="middle"><tspan
                x="0"
@@ -1991,7 +1991,7 @@
                font-weight="bold">0</tspan></text>
           <text
              id="text10172"
-             style="font-variant:normal;font-size:8px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-size:8px;font-family:Eurostile;-inkscape-font-specification:EurostileLTStd-Demi;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,412.334,548.827)"
              text-anchor="middle"><tspan
                x="0"
@@ -2009,12 +2009,12 @@
              d="m 408.638,517.646 h 8.862 v 8.859 h -8.862 z"
              id="path10174" />
           <path
-             style="fill:none;stroke:#231f20;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              d="m 417.5,517.646 h -8.862 v 8.859 h 8.862 z"
              id="path10176" />
           <text
              id="text2198"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,516.706,303.63)"
              text-anchor="middle"><tspan
                x="0"
@@ -2028,7 +2028,7 @@
                id="textArmor_AFT">( )</tspan></text>
           <text
              id="text2214"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,435.756,716.0724)"
              text-anchor="middle"><tspan
                x="0"
@@ -2042,7 +2042,7 @@
                id="textArmor_NOS">( )</tspan></text>
           <text
              id="text2230"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,543.616,366)"
              text-anchor="middle"><tspan
                x="0"
@@ -2056,7 +2056,7 @@
                id="textArmor_ARS">( )</tspan></text>
           <text
              id="text2246"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,280,366)"
              text-anchor="middle"><tspan
                x="0"
@@ -2070,7 +2070,7 @@
                id="textArmor_ALS">( )</tspan></text>
           <text
              id="text2262"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,543.924,659.379)"
              text-anchor="middle"><tspan
                x="0"
@@ -2084,7 +2084,7 @@
                id="textArmor_FRS">( )</tspan></text>
           <text
              id="text2278"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,280.302,659.379)"
              text-anchor="middle"><tspan
                x="0"
@@ -2172,7 +2172,7 @@
              id="g57733"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 h -41.12 c -1.712,0 -3.099,-1.425 -3.099,-3.182 v -20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 h 41.12 c 1.711,0 3.099,1.424 3.099,3.181 z"
                id="path57735" />
           </g>
@@ -2180,7 +2180,7 @@
              id="g57737"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.932;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.932;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 h -41.12 c -1.712,0 -3.099,-1.425 -3.099,-3.182 v -20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 h 41.12 c 1.711,0 3.099,1.424 3.099,3.181 z"
                id="path57739" />
           </g>
@@ -2336,7 +2336,7 @@
              id="g57815"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.966;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.966;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 z"
                id="path57817" />
           </g>
@@ -2344,7 +2344,7 @@
              id="g57819"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57821" />
           </g>
@@ -2352,7 +2352,7 @@
              id="g57823"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57825" />
           </g>
@@ -2360,7 +2360,7 @@
              id="g57827"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path57829" />
           </g>
@@ -2368,7 +2368,7 @@
              id="g57831"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path57833" />
           </g>
@@ -2376,7 +2376,7 @@
              id="g57835"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path57837" />
           </g>
@@ -2393,7 +2393,7 @@
              id="g239"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 h -41.12 c -1.712,0 -3.099,-1.425 -3.099,-3.182 v -20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 h 41.12 c 1.711,0 3.099,1.424 3.099,3.181 z"
                id="path238" />
           </g>
@@ -2401,7 +2401,7 @@
              id="g240"
              transform="translate(211.0787,105.8868)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:1.932;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:1.932;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,1.757 -1.388,3.182 -3.099,3.182 h -41.12 c -1.712,0 -3.099,-1.425 -3.099,-3.182 v -20.677 c 0,-1.757 1.387,-3.181 3.099,-3.181 h 41.12 c 1.711,0 3.099,1.424 3.099,3.181 z"
                id="path239" />
           </g>
@@ -2557,7 +2557,7 @@
              id="g259"
              transform="translate(197.088,106.7537)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.966;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.966;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,0 -0.345,-0.214 -0.472,-0.393 -0.048,-0.23 0.257,-0.492 0.038,-0.677 l -2.138,-1.325 -6.145,-0.34 c 0,0 -1.5,-0.014 -0.416,-1.766 l 2.875,-4.639 c 1.086,-1.753 1.765,-0.415 1.765,-0.415 l 3.038,5.353 1.953,1.21 0.188,0.116 c 0.263,0.114 0.361,-0.278 0.589,-0.337 0.215,0.034 0.562,0.25 0.562,0.25 z"
                id="path259" />
           </g>
@@ -2565,7 +2565,7 @@
              id="g260"
              transform="translate(191.3955,102.8353)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path260" />
           </g>
@@ -2573,7 +2573,7 @@
              id="g261"
              transform="translate(190.1947,102.8184)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path261" />
           </g>
@@ -2581,7 +2581,7 @@
              id="g262"
              transform="translate(193.7989,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.24"
                id="path262" />
           </g>
@@ -2589,7 +2589,7 @@
              id="g263"
              transform="translate(192.5981,102.9844)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.77,1.24"
                id="path263" />
           </g>
@@ -2597,7 +2597,7 @@
              id="g264"
              transform="translate(188.993,102.6769)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:0.483;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="M 0,0 -0.769,1.241"
                id="path264" />
           </g>
@@ -2621,7 +2621,7 @@
            d="M 0,8.214 5.475,0 h 100.844 l 5.475,8.214 h 55.694 l 7.845,7.6 v 153.451 l -5.475,8.214 -92.408,0 -5.475,-8.214 -64.13,0 -7.845,-7.6 z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path267" />
         <g
            transform="translate(2.5,3)"
@@ -2647,7 +2647,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="23.968"
@@ -2658,12 +2658,12 @@
            d="M 53.23,1.315 C 53.23,0.589 53.819,0 54.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 65.23,11.411 64.641,12 63.915,12 h -9.37 C 53.819,12 53.23,11.411 53.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path269" />
+           stroke="#000000"
+           id="avionics_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9790001"
@@ -2674,12 +2674,12 @@
            d="M 68.23,1.315 C 68.23,0.589 68.819,0 69.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 80.23,11.411 79.641,12 78.915,12 h -9.37 C 68.819,12 68.23,11.411 68.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path270" />
+           stroke="#000000"
+           id="avionics_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2690,12 +2690,12 @@
            d="M 83.23,1.315 C 83.23,0.589 83.819,0 84.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 95.23,11.411 94.641,12 93.915,12 h -9.37 C 83.819,12 83.23,11.411 83.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path271" />
+           stroke="#000000"
+           id="avionics_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2708,7 +2708,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="35.842999"
@@ -2719,12 +2719,12 @@
            d="M 45.317,1.315 C 45.317,0.589 45.906,0 46.632,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 c 0,0.726 -0.589,1.315 -1.315,1.315 h -9.37 c -0.726,0 -1.315,-0.589 -1.315,-1.315 z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path273" />
+           stroke="#000000"
+           id="life_support_hit_1" />
         <text
            x="51.317001"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2737,7 +2737,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="9.9960003"
@@ -2748,12 +2748,12 @@
            d="M 53.23,1.315 C 53.23,0.589 53.819,0 54.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 65.23,11.411 64.641,12 63.915,12 h -9.37 C 53.819,12 53.23,11.411 53.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path275" />
+           stroke="#000000"
+           id="cic_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.4879999"
@@ -2764,12 +2764,12 @@
            d="M 68.23,1.315 C 68.23,0.589 68.819,0 69.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 80.23,11.411 79.641,12 78.915,12 h -9.37 C 68.819,12 68.23,11.411 68.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path276" />
+           stroke="#000000"
+           id="cic_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.4879999"
@@ -2780,12 +2780,12 @@
            d="M 83.23,1.315 C 83.23,0.589 83.819,0 84.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 95.23,11.411 94.641,12 93.915,12 h -9.37 C 83.819,12 83.23,11.411 83.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path277" />
+           stroke="#000000"
+           id="cic_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.7160001"
@@ -2798,7 +2798,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="24.052999"
@@ -2809,12 +2809,12 @@
            d="M 53.23,1.315 C 53.23,0.589 53.819,0 54.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 65.23,11.411 64.641,12 63.915,12 h -9.37 C 53.819,12 53.23,11.411 53.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path279" />
+           stroke="#000000"
+           id="sensor_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9790001"
@@ -2825,12 +2825,12 @@
            d="M 68.23,1.315 C 68.23,0.589 68.819,0 69.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 80.23,11.411 79.641,12 78.915,12 h -9.37 C 68.819,12 68.23,11.411 68.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path280" />
+           stroke="#000000"
+           id="sensor_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2841,12 +2841,12 @@
            d="M 83.23,1.315 C 83.23,0.589 83.819,0 84.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 95.23,11.411 94.641,12 93.915,12 h -9.37 C 83.819,12 83.23,11.411 83.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path281" />
+           stroke="#000000"
+           id="sensor_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2854,7 +2854,7 @@
            id="text282">+5</text>
       </g>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="6"
          y="94.977997"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
@@ -2866,7 +2866,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="11.499"
@@ -2877,12 +2877,12 @@
            d="M 41.23,1.315 C 41.23,0.589 41.819,0 42.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 53.23,11.411 52.641,12 51.915,12 h -9.37 C 41.819,12 41.23,11.411 41.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path284" />
+           stroke="#000000"
+           id="thruster_left_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9790001"
@@ -2893,12 +2893,12 @@
            d="M 56.23,1.315 C 56.23,0.589 56.819,0 57.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 68.23,11.411 67.641,12 66.915,12 h -9.37 C 56.819,12 56.23,11.411 56.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path285" />
+           stroke="#000000"
+           id="thruster_left_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2909,12 +2909,12 @@
            d="M 71.23,1.315 C 71.23,0.589 71.819,0 72.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 83.23,11.411 82.641,12 81.915,12 h -9.37 C 71.819,12 71.23,11.411 71.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path286" />
+           stroke="#000000"
+           id="thruster_left_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2925,12 +2925,12 @@
            d="M 86.23,1.315 C 86.23,0.589 86.819,0 87.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 98.23,11.411 97.641,12 96.915,12 h -9.37 C 86.819,12 86.23,11.411 86.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path287" />
+           stroke="#000000"
+           id="thruster_left_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.7160001"
@@ -2943,7 +2943,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="15.57"
@@ -2954,12 +2954,12 @@
            d="M 41.23,1.315 C 41.23,0.589 41.819,0 42.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 53.23,11.411 52.641,12 51.915,12 h -9.37 C 41.819,12 41.23,11.411 41.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path289" />
+           stroke="#000000"
+           id="thruster_right_hit_1" />
         <text
            x="47.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9790001"
@@ -2970,12 +2970,12 @@
            d="M 56.23,1.315 C 56.23,0.589 56.819,0 57.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 68.23,11.411 67.641,12 66.915,12 h -9.37 C 56.819,12 56.23,11.411 56.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path290" />
+           stroke="#000000"
+           id="thruster_right_hit_2" />
         <text
            x="62.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -2986,12 +2986,12 @@
            d="M 71.23,1.315 C 71.23,0.589 71.819,0 72.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 83.23,11.411 82.641,12 81.915,12 h -9.37 C 71.819,12 71.23,11.411 71.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path291" />
+           stroke="#000000"
+           id="thruster_right_hit_3" />
         <text
            x="77.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="6.9759998"
@@ -3002,12 +3002,12 @@
            d="M 86.23,1.315 C 86.23,0.589 86.819,0 87.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 98.23,11.411 97.641,12 96.915,12 h -9.37 C 86.819,12 86.23,11.411 86.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path292" />
+           stroke="#000000"
+           id="thruster_right_hit_4" />
         <text
            x="92.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.7160001"
@@ -3020,7 +3020,7 @@
         <text
            x="0"
            y="9.6000004"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="start"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            textLength="19.278"
@@ -3031,12 +3031,12 @@
            d="M 53.23,1.315 C 53.23,0.589 53.819,0 54.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 65.23,11.411 64.641,12 63.915,12 h -9.37 C 53.819,12 53.23,11.411 53.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path294" />
+           stroke="#000000"
+           id="engine_hit_1" />
         <text
            x="59.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="4.671"
@@ -3047,12 +3047,12 @@
            d="M 68.23,1.315 C 68.23,0.589 68.819,0 69.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 80.23,11.411 79.641,12 78.915,12 h -9.37 C 68.819,12 68.23,11.411 68.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path295" />
+           stroke="#000000"
+           id="engine_hit_2" />
         <text
            x="74.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="4.6680002"
@@ -3063,12 +3063,12 @@
            d="M 83.23,1.315 C 83.23,0.589 83.819,0 84.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 C 95.23,11.411 94.641,12 93.915,12 h -9.37 C 83.819,12 83.23,11.411 83.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path296" />
+           stroke="#000000"
+           id="engine_hit_3" />
         <text
            x="89.230003"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="4.6680002"
@@ -3079,12 +3079,12 @@
            d="M 98.23,1.315 C 98.23,0.589 98.819,0 99.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 c 0,0.726 -0.589,1.315 -1.315,1.315 h -9.37 C 98.819,12 98.23,11.411 98.23,10.685 Z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path297" />
+           stroke="#000000"
+           id="engine_hit_4" />
         <text
            x="104.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="4.6680002"
@@ -3095,12 +3095,12 @@
            d="M 113.23,1.315 C 113.23,0.589 113.819,0 114.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 c 0,0.726 -0.589,1.315 -1.315,1.315 h -9.37 c -0.726,0 -1.315,-0.589 -1.315,-1.315 z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path298" />
+           stroke="#000000"
+           id="engine_hit_5" />
         <text
            x="119.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="4.6680002"
@@ -3111,12 +3111,12 @@
            d="M 128.23,1.315 C 128.23,0.589 128.819,0 129.545,0 h 9.37 c 0.726,0 1.315,0.589 1.315,1.315 v 9.37 c 0,0.726 -0.589,1.315 -1.315,1.315 h -9.37 c -0.726,0 -1.315,-0.589 -1.315,-1.315 z"
            stroke-width="0.96"
            stroke-linejoin="round"
-           stroke="#231f20"
-           id="path299" />
+           stroke="#000000"
+           id="engine_hit_6" />
         <text
            x="134.23"
            y="7.5999999"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:normal;font-size:5.7px;font-family:Eurostile"
            textLength="3.7160001"
@@ -3141,7 +3141,7 @@
            d="M 0,8.214 5.475,0 h 65.253 l 5.475,8.214 h 54.019 l 7.845,7.6 v 76.52 l -7.845,7.6 H 7.845 L 0,92.334 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path302" />
         <g
            transform="translate(2.5,3)"
@@ -3164,14 +3164,14 @@
       <text
          x="3"
          y="31.271999"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          id="gunnerySkillText0"
          textLength="39.172001"
          lengthAdjust="spacingAndGlyphs">Gunnery Skill:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="46.221001"
          id="gunnerySkill0"
          y="31.271999"
@@ -3182,18 +3182,18 @@
          d="M 46.221,32.272 H 63.78"
          stroke-width="0.72"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <text
          x="67.532997"
          y="31.271999"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          id="pilotingSkillText0"
          textLength="36.720001"
          lengthAdjust="spacingAndGlyphs">Piloting Skill:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="110.755"
          id="pilotingSkill0"
          y="31.271999"
@@ -3204,7 +3204,7 @@
          d="m 110.755,32.272 h 21.312"
          stroke-width="0.72"
          stroke-linejoin="round"
-         stroke="#231f20" />
+         stroke="#000000" />
       <g
          id="g318">
         <path
@@ -3212,7 +3212,7 @@
            d="m 47.273,38.922 c 0,-0.56 0.455,-1.015 1.015,-1.015 h 82.763 c 0.56,0 1.015,0.455 1.015,1.015 v 17.97 c 0,0.56 -0.455,1.015 -1.015,1.015 H 48.288 c -0.56,0 -1.015,-0.455 -1.015,-1.015 z"
            stroke-width="1"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path304" />
         <path
            fill="none"
@@ -3220,103 +3220,103 @@
            d="m 47.273,47.907 h 84.793 m -70.66,-10 v 20 m 14.132,-20 v 20 m 14.132,-20 v 20 m 14.132,-20 v 20 m 14.132,-20 v 20"
            stroke-linecap="round"
            stroke-linejoin="miter"
-           stroke="#231f20"
+           stroke="#000000"
            id="path305" />
         <text
-           fill="#231f20"
+           fill="#000000"
            x="54.339001"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text305">1</text>
+           id="crew_damage_0_1">1</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="54.339001"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
            id="text306">+1</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="68.472"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text307">2</text>
+           id="crew_damage_0_2">2</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="68.472"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
            id="text308">+2</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="82.603996"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text309">3</text>
+           id="crew_damage_0_3">3</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="82.603996"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
            id="text310">+3</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="96.736"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text311">4</text>
+           id="crew_damage_0_4">4</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="96.736"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
            id="text312">+4</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="110.868"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text313">5</text>
+           id="crew_damage_0_5">5</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="110.868"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
            id="text314">+5</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="125.001"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text315">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="125.001"
            y="54.907001"
-           fill="#231f20"
+           fill="#000000"
            text-anchor="middle"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            textLength="10.132"
            lengthAdjust="spacingAndGlyphs"
            id="text316">Incp.</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="44.272999"
            y="44.907001"
            style="font-style:normal;font-weight:bold;font-size:5.2px;font-family:Eurostile"
            text-anchor="end"
            id="text317">Hits Taken</text>
         <text
-           fill="#231f20"
+           fill="#000000"
            x="44.272999"
            y="54.907001"
            style="font-style:normal;font-weight:bold;font-size:5.2px;font-family:Eurostile"
@@ -3326,14 +3326,14 @@
       <text
          x="6"
          y="66.754997"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="16.660999"
          lengthAdjust="spacingAndGlyphs"
          id="text319">Crew:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="60.027"
          id="nCrew"
          y="66.754997"
@@ -3342,14 +3342,14 @@
       <text
          x="6"
          y="74.754997"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="35.918999"
          lengthAdjust="spacingAndGlyphs"
          id="text320">Passengers:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="60.027"
          id="nPassengers"
          y="74.754997"
@@ -3358,14 +3358,14 @@
       <text
          x="6"
          y="82.754997"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="18.233"
          lengthAdjust="spacingAndGlyphs"
          id="text321">Other:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="60.027"
          id="nOther"
          y="82.754997"
@@ -3374,14 +3374,14 @@
       <text
          x="70.532997"
          y="66.754997"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="25.681999"
          lengthAdjust="spacingAndGlyphs"
          id="text322">Marines:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="124.56"
          id="nMarines"
          y="66.754997"
@@ -3390,14 +3390,14 @@
       <text
          x="70.532997"
          y="74.754997"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          id="lblBattleArmor"
          textLength="38.285"
          lengthAdjust="spacingAndGlyphs">BattleArmor:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="124.56"
          id="nBattleArmor"
          y="74.754997"
@@ -3406,7 +3406,7 @@
       <text
          x="70.532997"
          y="95.068001"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="middle"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          id="lifeBoatsEscapePods"
@@ -3430,7 +3430,7 @@
            d="M 0,8.214 5.475,0 h 100.997 l 5.475,8.214 h 247.875 l 7.845,7.6 0,139.966 -7.845,7.6 H 7.845 L 0,155.78 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path323" />
         <g
            transform="translate(2.5,3)"
@@ -3455,7 +3455,7 @@
          d="m 4.5,33.853 c 0,-0.726 0.589,-1.315 1.315,-1.315 h 356.037 c 0.726,0 1.315,0.589 1.315,1.315 v 40.984 c 0,0.726 -0.589,1.315 -1.315,1.315 H 5.815 C 5.089,76.152 4.5,75.563 4.5,74.837 Z"
          stroke-width="1"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path325" />
       <path
          fill="none"
@@ -3463,108 +3463,108 @@
          d="M 4.5,41.261 H 363.167 M 4.5,49.984 H 363.167 M 4.5,58.706 H 363.167 M 4.5,67.429 H 363.167 M 76.233,32.538 V 76.152 M 104.477,32.538 V 76.152 M 132.72,32.538 V 76.152 M 160.963,32.538 V 76.152 M 189.207,32.538 V 76.152 M 217.45,32.538 V 76.152 M 245.693,32.538 V 76.152 M 273.937,32.538 V 76.152 M 302.18,32.538 v 43.614 m 28.243,-43.614 v 43.614"
          stroke-linecap="round"
          stroke-linejoin="miter"
-         stroke="#231f20"
+         stroke="#000000"
          id="path326" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text326">Turn #</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="49.345001"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text327">Thrust</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="58.068001"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text328">Velocity</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="66.791"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text329">Effective Velocity</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="75.513"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text330">Altitude</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="90.355003"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text331">1</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="118.598"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text332">2</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="146.842"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text333">3</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="175.08501"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text334">4</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="203.328"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text335">5</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="231.57201"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text336">6</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="259.815"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text337">7</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="288.05801"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text338">8</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="316.302"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text339">9</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="344.54501"
          y="40.622002"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
@@ -3575,7 +3575,7 @@
          d="m 4.5,99.274 c 0,-0.726 0.589,-1.315 1.315,-1.315 h 356.037 c 0.726,0 1.315,0.589 1.315,1.315 v 40.984 c 0,0.726 -0.589,1.315 -1.315,1.315 H 5.815 c -0.726,0 -1.315,-0.589 -1.315,-1.315 z"
          stroke-width="1"
          stroke-linejoin="round"
-         stroke="#231f20"
+         stroke="#000000"
          id="path340" />
       <path
          fill="none"
@@ -3583,108 +3583,108 @@
          d="M 4.5,106.682 H 363.167 M 4.5,115.405 H 363.167 M 4.5,124.127 H 363.167 M 4.5,132.85 H 363.167 M 76.233,97.959 v 43.614 m 28.244,-43.614 v 43.614 M 132.72,97.959 v 43.614 m 28.243,-43.614 v 43.614 m 28.244,-43.614 v 43.614 M 217.45,97.959 v 43.614 m 28.243,-43.614 v 43.614 m 28.244,-43.614 v 43.614 M 302.18,97.959 v 43.614 m 28.243,-43.614 v 43.614"
          stroke-linecap="round"
          stroke-linejoin="miter"
-         stroke="#231f20"
+         stroke="#000000"
          id="path341" />
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text341">Turn #</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="114.766"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text342">Thrust</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="123.489"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text343">Velocity</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="132.21201"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text344">Effective Velocity</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="7.5"
          y="140.93401"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="start"
          id="text345">Altitude</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="90.355003"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text346">11</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="118.598"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text347">12</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="146.842"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text348">13</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="175.08501"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text349">14</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="203.328"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text350">15</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="231.57201"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text351">16</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="259.815"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text352">17</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="288.05801"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text353">18</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="316.302"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          text-anchor="middle"
          id="text354">19</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="344.54501"
          y="106.043"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
@@ -3708,7 +3708,7 @@
            d="M 0,8.214 5.475,0 h 63.5 l 5.475,8.214 h 93.038 l 7.845,7.6 v 62.421 l -7.845,7.6 H 7.845 L 0,78.235 Z"
            stroke-width="1.932"
            stroke-linejoin="round"
-           stroke="#231f20"
+           stroke="#000000"
            id="path356" />
         <g
            transform="translate(2.5,3)"
@@ -3731,21 +3731,21 @@
       <text
          x="6"
          y="31"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.2px;font-family:Eurostile"
          textLength="35.077999"
          lengthAdjust="spacingAndGlyphs"
          id="text358">Heat Sinks:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="28.85"
          id="hsCount"
          y="44"
          style="font-style:normal;font-weight:bold;font-size:11.59px;font-family:Eurostile"
          text-anchor="middle">0</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="28.85"
          id="hsCountDouble"
          y="57"
@@ -3754,7 +3754,7 @@
       <text
          x="63.317001"
          y="31"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:7.2px;font-family:Eurostile"
          textLength="78.526001"
@@ -3763,14 +3763,14 @@
       <text
          x="63.317001"
          y="42.306"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="16.648001"
          lengthAdjust="spacingAndGlyphs"
          id="text360">Nose:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.867"
          id="noseHeat"
          y="42.306"
@@ -3779,14 +3779,14 @@
       <text
          x="63.317001"
          y="50.306"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="47.540001"
          lengthAdjust="spacingAndGlyphs"
          id="text361">Left/Right Fore:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.867"
          id="foreSidesHeat"
          y="50.306"
@@ -3795,14 +3795,14 @@
       <text
          x="63.317001"
          y="58.306"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="43.255001"
          lengthAdjust="spacingAndGlyphs"
          id="text362">Left/Right Aft:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.867"
          id="aftSidesHeat"
          y="58.306"
@@ -3811,14 +3811,14 @@
       <text
          x="63.317001"
          y="66.306"
-         fill="#231f20"
+         fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
          textLength="10.402"
          lengthAdjust="spacingAndGlyphs"
          id="text363">Aft:</text>
       <text
-         fill="#231f20"
+         fill="#000000"
          x="140.867"
          id="aftHeat"
          y="66.306"

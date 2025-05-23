@@ -48,6 +48,7 @@ import megamek.common.weapons.other.ISAMS;
 import megamek.common.weapons.other.ISAPDS;
 import megamek.common.weapons.other.ISLaserAMS;
 import megamek.common.weapons.ppc.CLPlasmaCannon;
+import megamek.common.weapons.prototypes.ISPrototypeTAG;
 import megamek.common.weapons.tag.CLLightTAG;
 import megamek.common.weapons.tag.CLTAG;
 import megamek.common.weapons.tag.ISTAG;
@@ -1317,7 +1318,7 @@ public final class MekUtil {
         }
 
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
-                || (eq instanceof ISC3M) || (eq instanceof ISTAG)
+                || (eq instanceof ISC3M) || (eq instanceof ISTAG) || (eq instanceof ISPrototypeTAG)
                 || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
                 || (eq instanceof CLLightTAG) || (eq instanceof ISAMS)
                 || (eq instanceof CLAMS) || (eq instanceof ISLaserAMS)

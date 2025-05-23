@@ -49,6 +49,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
+import megameklab.ui.util.OSUtil;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -109,7 +110,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     private void initialize() {
         getAccessibleContext().setAccessibleName(resources.getString("MenuBar.accessibleName"));
         add(createFileMenu());
-        add(createEditMenu());
+        if (!isStartupGui()) {
+            add(createEditMenu());
+        }
         add(createUnitValidationMenu());
         add(createForceBuildMenu());
         add(createReportsMenu());
@@ -122,19 +125,59 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 "png", "jpg", "jpeg", "gif"));
     }
 
+    private JMenuItem newUnitItem(String text, int mnemonic, long type, boolean primitive) {
+        final JMenuItem miNewUnit = new JMenuItem(text);
+        if (mnemonic > 0) {
+            miNewUnit.setMnemonic(mnemonic);
+        }
+        miNewUnit.addActionListener(evt -> {
+            MegaMekLabTabbedUI tabbedUI = null;
+            if (owner instanceof MegaMekLabTabbedUI) {
+                tabbedUI = (MegaMekLabTabbedUI) owner;
+            } else {
+                tabbedUI = new MegaMekLabTabbedUI();
+                tabbedUI.setVisible(true);
+                if (isStartupGui()) {
+                    owner.getFrame().setVisible(false);
+                    owner.getFrame().dispose();
+                }
+            }
+            tabbedUI.createNewUnit(type, primitive, false);
+        });
+        return miNewUnit;
+    }
+
     private JMenu createFileMenu() {
         fileMenu.removeAll();
         fileMenu.setName("fileMenu");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
-            final JMenuItem miNewTab = new JMenuItem(resources.getString("miNewTab.text"));
-            miNewTab.setName("miNewTab");
-            miNewTab.setMnemonic(KeyEvent.VK_N);
-            miNewTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-            miNewTab.addActionListener(e -> tabbedUI.newTab());
-            fileMenu.add(miNewTab);
+        final JMenu miNewTab = new JMenu(resources.getString("miNewTab.text"));
+        miNewTab.setName("miNewTab");
+        miNewTab.setMnemonic(KeyEvent.VK_N);
+        fileMenu.add(miNewTab);
 
+        JMenuItem newMek = newUnitItem("Mek", KeyEvent.VK_M, Entity.ETYPE_MEK, false);
+        newMek.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+        miNewTab.add(newMek);
+        miNewTab.add(newUnitItem("Fighter", KeyEvent.VK_F, Entity.ETYPE_AERO, false));
+        miNewTab.add(newUnitItem("DropShip/Small Craft", KeyEvent.VK_D, Entity.ETYPE_DROPSHIP, false));
+        miNewTab.add(newUnitItem("Advanced Aerospace", KeyEvent.VK_A, Entity.ETYPE_JUMPSHIP, false));
+        miNewTab.add(newUnitItem("Tank", KeyEvent.VK_T, Entity.ETYPE_TANK, false));
+        miNewTab.add(newUnitItem("Support Vehicle", KeyEvent.VK_V, Entity.ETYPE_SUPPORT_TANK, false));
+        miNewTab.add(newUnitItem("Battle Armor", KeyEvent.VK_B, Entity.ETYPE_BATTLEARMOR, false));
+        miNewTab.add(newUnitItem("Conventional Infantry", KeyEvent.VK_I, Entity.ETYPE_INFANTRY, false));
+        miNewTab.add(newUnitItem("ProtoMek", KeyEvent.VK_P, Entity.ETYPE_PROTOMEK, false));
+        miNewTab.add(newUnitItem("Handheld Weapon", KeyEvent.VK_H, Entity.ETYPE_HANDHELD_WEAPON, false));
+
+        JMenu primitive = new JMenu("Primitive...");
+        primitive.add(newUnitItem("Mek", KeyEvent.VK_M, Entity.ETYPE_MEK, true));
+        primitive.add(newUnitItem("Fighter", KeyEvent.VK_F, Entity.ETYPE_AERO, true));
+        primitive.add(newUnitItem("DropShip/Small Craft", KeyEvent.VK_D, Entity.ETYPE_DROPSHIP, true));
+        primitive.add(newUnitItem("JumpShip", KeyEvent.VK_J, Entity.ETYPE_JUMPSHIP, true));
+        miNewTab.add(primitive);
+
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
             final JMenuItem miCloseTab = new JMenuItem(resources.getString("miCloseTab.text"));
             miCloseTab.setName("miCloseTab");
             miCloseTab.setMnemonic(KeyEvent.VK_W);
@@ -194,7 +237,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         if (!isStartupGui() && !getUnitMainUi().safetyPrompt()) {
             return;
         }
-        owner.newUnit(type, primitive);
+        if (owner instanceof MegaMekLabTabbedUI tabbedUI) {
+            tabbedUI.switchUnit(type, primitive);
+        }
     }
 
     private JMenu createSwitchUnitTypeMenu() {
@@ -716,10 +761,18 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                 path = path.substring(0, 40) + "...";
             }
         }
-        String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
-        String style = ".small { font-size:smaller; color:gray; }";
-        String content = "<NOBR>%d. %s<BR>".formatted(fileNumber, recent.getName()) + UIUtil.spanCSS("small", path);
-        final JMenuItem miCConfig = new JMenuItem(html.formatted(style, content));
+
+        String content;
+        if (OSUtil.isMac()) {
+             content = "%d. %s ".formatted(fileNumber, recent.getName()) + "(" + path + ")";
+        } else {
+            String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
+            String style = ".small { font-size:smaller; color:gray; }";
+            content = html.formatted(style, "<NOBR>%d. %s<BR>".formatted(fileNumber,
+                  recent.getName()) + UIUtil.spanCSS("small", path));
+        }
+
+        final JMenuItem miCConfig = new JMenuItem(content);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
         miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
@@ -759,6 +812,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return false;
     }
 
+
+    private JMenuItem miSwitchUnitType;
     /**
      * * Refreshes the state of the Edit menu items based on the current state of
      * the active editor.
@@ -767,6 +822,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miUndo.setEnabled(activeEditorHasUndo());
         miRedo.setEnabled(activeEditorHasRedo());
         miReload.setEnabled(activeEditorCanReload());
+
+        if (miSwitchUnitType != null) {
+            editMenu.remove(miSwitchUnitType);
+        }
+        miSwitchUnitType = createSwitchUnitTypeMenu();
+        editMenu.add(miSwitchUnitType);
     }
 
     private void refreshForceMenu() {
@@ -830,8 +891,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miResetCurrentUnit.addActionListener(this::jMenuResetEntity_actionPerformed);
         miResetCurrentUnit.setEnabled(isUnitGui());
         editMenu.add(miResetCurrentUnit);
-
-        editMenu.add(createSwitchUnitTypeMenu());
 
         refreshEditMenu();
         return editMenu;
@@ -1046,11 +1105,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            UnitUtil.showValidation(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                UnitUtil.showValidation(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBreakdownFromCache_actionPerformed() {
@@ -1058,11 +1121,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                new CostDisplayDialog(owner.getFrame(), chosenEntity).setVisible(true);
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitWeightBreakdownFromCache_actionPerformed() {
@@ -1070,12 +1137,15 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(owner.getFrame(), unitLoadingDialog,
                 false);
-
-        Entity chosenEntity = viewer.getChosenEntity();
-        if (chosenEntity != null) {
-            showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+        try {
+            Entity chosenEntity = viewer.getChosenEntity();
+            if (chosenEntity != null) {
+                showUnitWeightBreakDown(chosenEntity, owner.getFrame());
+            }
+        } finally {
+            unitLoadingDialog.dispose();
+            viewer.dispose();
         }
-        viewer.dispose();
     }
 
     private void jMenuGetUnitBVFromFile_actionPerformed() {
@@ -1167,32 +1237,38 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         // set up the contents
         JPanel child = new JPanel();
         child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
+        child.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // set the text up.
         JLabel version = new JLabel(String.format(resources.getString("menu.help.about.version.format"),
                 MMLConstants.VERSION));
-        JLabel license1 = new JLabel(resources.getString("menu.help.about.license.1"));
-        JLabel license2 = new JLabel(resources.getString("menu.help.about.license.2"));
-        JLabel license3 = new JLabel(resources.getString("menu.help.about.info.1"));
-        JLabel license4 = new JLabel(resources.getString("menu.help.about.info.2"));
+        JEditorPane body = new JEditorPane();
+        body.setContentType("text/html");
+        body.setEditable(false);
+        body.setOpaque(false);
+        body.setText(resources.getString("menu.help.about.text"));
+
+        body.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                if (java.awt.Desktop.isDesktopSupported()) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (Exception ex) {
+                        logger.error("Could not open link: " + e.getURL(), ex);
+                    }
+                }
+            }
+        });
 
         // center everything
         version.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license3.setAlignmentX(Component.CENTER_ALIGNMENT);
-        license4.setAlignmentX(Component.CENTER_ALIGNMENT);
+        body.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // add to child panel
         child.add(new JLabel("\n"));
         child.add(version);
         child.add(new JLabel("\n"));
-        child.add(license1);
-        child.add(license2);
-        child.add(new JLabel("\n"));
-        child.add(license3);
-        child.add(license4);
-        child.add(new JLabel("\n"));
+        child.add(body);
 
         // then add child panel to the content pane.
         dlg.getContentPane().add(child);
@@ -1213,13 +1289,25 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
 
         // set the text up.
-        JTextArea recordSheetImageHelp = new JTextArea();
-
+        JEditorPane recordSheetImageHelp = new JEditorPane();
+        recordSheetImageHelp.setContentType("text/html");
         recordSheetImageHelp.setEditable(false);
+        recordSheetImageHelp.setOpaque(false);
+        recordSheetImageHelp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         recordSheetImageHelp.setText(resources.getString("menu.help.imageHelp.text"));
-        // center everything
-        recordSheetImageHelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        recordSheetImageHelp.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+                if (java.awt.Desktop.isDesktopSupported()) {
+                    try {
+                        java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (Exception ex) {
+                        logger.error("Could not open link: " + e.getURL(), ex);
+                    }
+                }
+            }
+        });
 
         // add to child panel
         child.add(recordSheetImageHelp);
@@ -1385,9 +1473,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     /**
-     * Refreshes this menubar. At least this updates the file menu, showing the
-     * latest recent unit
-     * changes.
+     * Refreshes this menubar to show options relevant to the currently selected unit.
      */
     public void refreshMenuBar() {
         createFileMenu();

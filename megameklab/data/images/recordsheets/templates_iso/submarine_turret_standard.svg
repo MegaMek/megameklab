@@ -3055,7 +3055,7 @@
          x="29.229"
          id="type"
          y="28"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000;mml-field-width:180"
          text-anchor="start">Lorem Ipsum</text>
       <text
          fill="#000000"
@@ -3387,7 +3387,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path239" />
+           id="commander_hit" />
         <text
            x="56.48"
            y="6"
@@ -3416,7 +3416,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path241" />
+           id="driver_hit" />
         <text
            x="56.48"
            y="6"
@@ -3501,7 +3501,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path247" />
+           id="turret_locked_f" />
         <text
            x="59.587002"
            y="6"
@@ -3517,7 +3517,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path248" />
+           id="turret_locked_r" />
         <text
            x="70.586998"
            y="6"
@@ -3546,7 +3546,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path250" />
+           id="engine_hit_1" />
       </g>
       <g
          transform="translate(6,34.903)"
@@ -3566,7 +3566,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path251" />
+           id="sensor_hit_1" />
         <text
            x="91.013"
            y="6"
@@ -3582,7 +3582,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path252" />
+           id="sensor_hit_2" />
         <text
            x="102.013"
            y="6"
@@ -3598,7 +3598,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path253" />
+           id="sensor_hit_3" />
         <text
            x="113.013"
            y="6"
@@ -3614,7 +3614,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path254" />
+           id="sensor_hit_4" />
         <text
            x="124.013"
            y="6"
@@ -3643,7 +3643,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path256" />
+           id="motive_system_hit_1" />
         <text
            x="91.013"
            y="6"
@@ -3659,7 +3659,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path257" />
+           id="motive_system_hit_2" />
         <text
            x="102.013"
            y="6"
@@ -3675,7 +3675,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path258" />
+           id="motive_system_hit_3" />
         <text
            x="113.013"
            y="6"
@@ -3711,7 +3711,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path261" />
+           id="stabilizer_hit_front" />
       </g>
       <g
          transform="translate(49.552,68.709)"
@@ -3731,7 +3731,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path262" />
+           id="stabilizer_hit_left" />
       </g>
       <g
          transform="translate(95.084,68.709)"
@@ -3751,7 +3751,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path263" />
+           id="stabilizer_hit_right" />
       </g>
       <g
          transform="translate(6,79.977)"
@@ -3771,7 +3771,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path264" />
+           id="stabilizer_hit_rear" />
       </g>
       <g
          transform="translate(49.552,79.977)"
@@ -3791,7 +3791,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path265" />
+           id="stabilizer_hit_turret_f" />
       </g>
       <g
          transform="translate(95.084,79.977)"
@@ -3811,7 +3811,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path266" />
+           id="stabilizer_hit_turret_r" />
       </g>
     </g>
     <g

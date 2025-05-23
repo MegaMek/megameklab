@@ -58,6 +58,7 @@ import java.awt.print.PageFormat;
 import java.awt.GraphicsEnvironment;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsConfiguration;
+import java.awt.Dimension;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -233,8 +235,9 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Record Sheet Data & Caching
     private boolean oneUnitPerSheet = false;
-    private Boolean includeC3inBV = false;
-    private Boolean showPilotData = false;
+    private Boolean includeC3inBV = null;
+    private Boolean showPilotData = null;
+    private Boolean showDamage = null;
     private List<BTObject> currentEntities = Collections.emptyList();
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
@@ -251,12 +254,57 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean isInitialRender = true; // Flag to track if this is the first render
     private boolean needsViewReset = false;
     private boolean pendingInPlaceUpdate = false;
+
+    private static final int SCROLLBARS_WIDTH = 6;
+    private final JScrollBar hScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
+    private final JScrollBar vScrollBar = new JScrollBar(JScrollBar.VERTICAL);
+    private boolean adjustingHScrollBar = false;
+    private boolean adjustingVScrollBar = false;
+    
     
     public RecordSheetPreviewPanel() {
+        hScrollBar.setMinimum(0);
+        vScrollBar.setMinimum(0);
+        hScrollBar.setUnitIncrement(50);
+        vScrollBar.setUnitIncrement(50);
+        hScrollBar.setPreferredSize(new Dimension(0, SCROLLBARS_WIDTH));
+        vScrollBar.setPreferredSize(new Dimension(SCROLLBARS_WIDTH, 0));
+        add(hScrollBar);
+        add(vScrollBar);
+        hScrollBar.addAdjustmentListener(e -> {
+            if (adjustingHScrollBar) return;
+            panOffset.setLocation(-e.getValue(), panOffset.getY());
+            // while dragging, do a quick lowres paint
+            if (e.getValueIsAdjusting()) {
+                isHighQualityPaint = false;
+                repaint();
+            } else {
+                // drag finished: restore hq and kick off full render+scrollbar sync
+                isHighQualityPaint = true;
+                repaint();
+                updateScrollbars();
+                requestRenderForAllPages();
+            }
+        });
+        vScrollBar.addAdjustmentListener(e -> {
+            if (adjustingVScrollBar) return;
+            panOffset.setLocation(panOffset.getX(), -e.getValue());
+            // while dragging, do a quick lowres paint
+            if (e.getValueIsAdjusting()) {
+                isHighQualityPaint = false;
+                repaint();
+            } else {
+                // drag finished: restore hq and kick off full render+scrollbar sync
+                isHighQualityPaint = true;
+                repaint();
+                updateScrollbars();
+                requestRenderForAllPages();
+            }
+        });
         addMouseListener(new RightClickListener());
         setupMouseHandlers();
         setDoubleBuffered(true);
-
+        setLayout(null);
         resetViewTimer = new Timer(RESET_VIEW_DELAY, e -> {
             resetViewTimer.stop();
             performResetView();
@@ -317,6 +365,27 @@ public class RecordSheetPreviewPanel extends JPanel {
         performResetView(); // Initial state
     }
 
+    private double getContentWidth() {
+        double totalWidth = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                double pageRight = page.layoutPosition.x + page.baseWidthPx;
+                totalWidth = Math.max(totalWidth, pageRight);
+            }
+        }
+        return totalWidth * zoomFactor;
+    }
+
+    private double getContentHeight() {
+        double maxHeight = 0;
+        synchronized (sheetPages) {
+            for (SheetPageInfo page : sheetPages) {
+                maxHeight = Math.max(maxHeight, page.baseHeightPx);
+            }
+        }
+        return maxHeight * zoomFactor;
+    }
+
     private void setupMouseHandlers() {
         // Zoom
         addMouseWheelListener(new MouseWheelListener() {
@@ -348,6 +417,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         
                     isHighQualityPaint = false;
                     repaint();
+                    updateScrollbars();
                     zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
                 }
             }
@@ -376,6 +446,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     lastMousePoint = null;
                     isHighQualityPaint = true;
                     repaint();
+                    updateScrollbars();
                 }
             }
 
@@ -401,6 +472,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         constrainPanY(panOffset.getY() + dy));
                     lastMousePoint = e.getPoint();
                     repaint();
+                    updateScrollbars();
                 }
             }
         });
@@ -507,6 +579,19 @@ public class RecordSheetPreviewPanel extends JPanel {
             return;
         }
         this.showPilotData = enabled;
+        updateSheetContentInPlace();
+    }
+
+    /**
+     * Set to true/false if you want to show the damage on the record sheet.
+     * 
+     * @param enabled
+     */
+    public void showDamage(Boolean enabled) {
+        if (this.showDamage == enabled) {
+            return;
+        }
+        this.showDamage = enabled;
         updateSheetContentInPlace();
     }
 
@@ -623,6 +708,9 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
         if (showPilotData != null) {
             options.setPilotData(showPilotData);
+        }
+        if (showDamage != null) {
+            options.setDamage(showDamage);
         }
         return options;
     }
@@ -927,6 +1015,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             zoomFactor = minFitZoom;
             panOffset.setLocation(0, 0);
             repaint();
+            updateScrollbars();
             return;
         }
 
@@ -952,6 +1041,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         requestRenderForAllPages(); // Render all pages at the new fit zoom
         repaint();
+        updateScrollbars();
     }
 
     /**
@@ -1125,7 +1215,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         pageInfo.pendingRenderTask = null;
                     }
                     repaint(); // Repaint the panel to show the new image or clear old one
-
+                    updateScrollbars();
                 } else {
                     // Discarding stale/cancelled result
                     if (result != null && result.image != null) {
@@ -1158,6 +1248,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                     pageInfo.cachedImage = new SoftReference<>(null);
                     pageInfo.imageRenderZoom = -1.0;
                     repaint(); // Repaint to show placeholder
+                    updateScrollbars();
                 }
             }
             return null;
@@ -1230,7 +1321,6 @@ public class RecordSheetPreviewPanel extends JPanel {
             // Background
             g2d.setColor(getBackground()); // Use panel background
             g2d.fillRect(0, 0, getWidth(), getHeight());
-
             if (sheetPages.isEmpty()) {
                 // Draw placeholder text if no sheets/pages
                 g2d.setColor(getForeground()); // Use panel foreground color
@@ -1318,11 +1408,63 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             } // End loop over pages
-
+            // Fill scrollbars little square in bottom-right
+            if (vScrollBar.isVisible() && hScrollBar.isVisible()) {
+                g2d.setColor(getBackground());
+                g2d.fillRect(getWidth() - vScrollBar.getPreferredSize().width,
+                            getHeight() - hScrollBar.getPreferredSize().height,
+                            vScrollBar.getPreferredSize().width,
+                            hScrollBar.getPreferredSize().height);
+            }
         } catch (Exception e) {
             logger.error("Error during paintComponent", e);
         } finally {
             g2d.dispose();
+        }
+    }
+
+    @Override
+    public void doLayout() {
+        super.doLayout();
+        final int w = getWidth();
+        final int h = getHeight();
+        int hsbHeight = hScrollBar.getPreferredSize().height;
+        int vsbWidth = vScrollBar.getPreferredSize().width;
+        hScrollBar.setBounds(0, h - hsbHeight, w - (vScrollBar.isVisible()?vsbWidth:0), hsbHeight);
+        vScrollBar.setBounds(w - vsbWidth, 0, vsbWidth, h - (hScrollBar.isVisible()?hsbHeight:0));
+        updateScrollbars();
+    }
+
+    private void updateScrollbars() {
+        final double contentWidth = getContentWidth();
+        final double contentHeight = getContentHeight();
+        final int w = getWidth();
+        final int h = getHeight();
+        final boolean hVisible = contentWidth - w >= 1;
+        final boolean vVisible = contentHeight - h >= 1;
+        hScrollBar.setVisible(hVisible);
+        vScrollBar.setVisible(vVisible);
+        if (hVisible) {
+            int max = (int)Math.ceil(contentWidth - w);
+            int value = (int)Math.round(-panOffset.getX());
+            value = Math.max(hScrollBar.getMinimum(), Math.min(max, value));
+            adjustingHScrollBar = true;
+            hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
+            hScrollBar.setVisibleAmount(w);
+            hScrollBar.setBlockIncrement(w / 2);
+            hScrollBar.setValue(value);
+            adjustingHScrollBar = false;
+        }
+        if (vVisible) {
+            int max = (int)Math.ceil(contentHeight - h);
+            int value = (int)Math.round(-panOffset.getY());
+            value = Math.max(vScrollBar.getMinimum(), Math.min(max, value));
+            adjustingVScrollBar = true;
+            vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
+            vScrollBar.setVisibleAmount(h);
+            vScrollBar.setBlockIncrement(h / 2);
+            vScrollBar.setValue(value);
+            adjustingVScrollBar = false;
         }
     }
 

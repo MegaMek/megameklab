@@ -44,44 +44,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import java.util.stream.IntStream;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import megamek.client.Client;
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Crew;
-import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentFlag;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.FixedWingSupport;
-import megamek.common.Game;
-import megamek.common.GunEmplacement;
-import megamek.common.HandheldWeapon;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
-import megamek.common.Infantry;
-import megamek.common.Jumpship;
-import megamek.common.LocationFullException;
-import megamek.common.Mek;
-import megamek.common.MekFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Player;
-import megamek.common.ProtoMek;
-import megamek.common.SimpleTechLevel;
-import megamek.common.SmallCraft;
-import megamek.common.SmallWeaponAmmoType;
-import megamek.common.Tank;
-import megamek.common.TechConstants;
-import megamek.common.Transporter;
-import megamek.common.VTOL;
-import megamek.common.WeaponType;
+import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.ArmorType;
@@ -90,19 +58,8 @@ import megamek.common.equipment.WeaponMounted;
 import megamek.common.loaders.BLKFile;
 import megamek.common.options.OptionsConstants;
 import megamek.common.util.BuildingBlock;
-import megamek.common.verifier.EntityVerifier;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megamek.common.verifier.TestAero;
-import megamek.common.verifier.TestBattleArmor;
-import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
-import megamek.common.verifier.TestHandheldWeapon;
-import megamek.common.verifier.TestInfantry;
-import megamek.common.verifier.TestMek;
-import megamek.common.verifier.TestProtoMek;
-import megamek.common.verifier.TestSmallCraft;
-import megamek.common.verifier.TestSupportVehicle;
-import megamek.common.verifier.TestTank;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -134,11 +91,12 @@ public class UnitUtil {
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
-    private static Client dummyClient = new Client("", "", 0);
-    private static Player dummyPlayer = new Player(1, "");
+    private static final Client dummyClient = new Client("", "", 0);
+    private static final Player dummyPlayer = new Player(1, "");
 
     static {
         final Game game = dummyClient.getGame();
+        game.getOptions().getOption(OptionsConstants.ADVANCED_STRATOPS_QUIRKS).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
         game.addPlayer(1, dummyPlayer);
@@ -147,7 +105,7 @@ public class UnitUtil {
 
     /**
      * Returns a Client object that is used for internal calculations of the units.
-     * 
+     *
      * @return A Client object
      */
     public static Client getDummyClient() {
@@ -453,6 +411,73 @@ public class UnitUtil {
     }
 
     /**
+     * Removes all criticals of the given unit.
+     */
+    synchronized public static void removeAllCriticals(Entity unit) {
+        removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
+
+        // cleanup of remnants if any (should not be needed but we never know)
+        unit.getEquipment()
+              .stream()
+              .filter(m -> (m != null) &&
+                                 (m.getLocation() != Entity.LOC_NONE) &&
+                                 (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+              .forEach(m -> {
+                  UnitUtil.removeCriticals(unit, m);
+                  UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+              });
+    }
+
+    /**
+     * Removes all criticals from the given locations for the given unit.
+     */
+    synchronized public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
+        // Special handling for BattleArmor
+        if (unit instanceof BattleArmor ba) {
+            ba.getEquipment()
+                  .stream()
+                  .filter(m -> (m != null) && (m.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE))
+                  .filter(m -> locations.contains(m.getBaMountLoc()))
+                  .forEach(m -> {
+                      m.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
+                      UnitUtil.changeMountStatus(unit, m, BattleArmor.LOC_SQUAD, BattleArmor.LOC_SQUAD, false);
+                  });
+            return;
+        }
+        // first we remove all criticals
+        for (int loc = 0; loc < unit.locations(); loc++) {
+            if (!locations.contains(loc)) {
+                continue;
+            }
+            for (int i = 0; i < unit.getNumberOfCriticals(loc); i++) {
+                CriticalSlot cs = unit.getCritical(loc, i);
+                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    Mounted<?> m1 = cs.getMount();
+                    Mounted<?> m2 = cs.getMount2();
+                    if ((m2 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m2.getType()))) {
+                        UnitUtil.removeCriticals(unit, m2);
+                        UnitUtil.changeMountStatus(unit, m2, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    }
+                    if ((m1 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m1.getType()))) {
+                        UnitUtil.removeCriticals(unit, m1);
+                        UnitUtil.changeMountStatus(unit, m1, Entity.LOC_NONE, Entity.LOC_NONE, false);
+                    }
+                }
+            }
+        }
+        // cleanup of remnants if any (should not be needed but we never know)
+        unit.getEquipment()
+              .stream()
+              .filter(m -> (m != null) && locations.contains(m.getLocation()))
+              .filter(m -> (m.getLocation() != Entity.LOC_NONE) &&
+                                 (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
+              .forEach(m -> {
+                  UnitUtil.removeCriticals(unit, m);
+                  UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
+              });
+    }
+
+    /**
      * Sets the corresponding critical slots to null for the Mounted object.
      *
      * @param unit The entity
@@ -467,7 +492,7 @@ public class UnitUtil {
             for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    if (cs.getMount().equals(eq)) {
+                    if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
                         // If there are two pieces of equipment in this slot, remove first one, and replace it with the
                         // second
                         if (cs.getMount2() != null) {
@@ -478,7 +503,7 @@ public class UnitUtil {
                             cs = null;
                             unit.setCritical(loc, slot, cs);
                         }
-                    } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
+                    } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
                         cs.setMount2(null);
                     }
                 }
@@ -501,7 +526,7 @@ public class UnitUtil {
         for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
             if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                if (cs.getMount().equals(eq)) {
+                if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
                     // If there are two pieces of equipment in this slot,
                     // remove first one, and replace it with the second
                     if (cs.getMount2() != null) {
@@ -512,7 +537,7 @@ public class UnitUtil {
                         cs = null;
                         unit.setCritical(loc, slot, cs);
                     }
-                } else if ((cs.getMount2() != null) && cs.getMount2().equals(eq)) {
+                } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
                     cs.setMount2(null);
                 }
             }
@@ -565,7 +590,7 @@ public class UnitUtil {
                 return false;
             }
         } else {
-            if (tech.getTechBase() != ITechnology.TECH_BASE_ALL && unit.isClan() != tech.isClan()) {
+            if (tech.getTechBase() != ITechnology.TechBase.ALL && unit.isClan() != tech.isClan()) {
                 return false;
             }
 
@@ -1220,6 +1245,13 @@ public class UnitUtil {
         }
 
         return engineHSCapacity;
+    }
+
+    /**
+     * Returns the total heat generation of the entity
+     */
+    public static int getTotalHeatGeneration(Entity entity) {
+        return entity.getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
     }
 
     /**
@@ -1965,13 +1997,11 @@ public class UnitUtil {
         if (unit instanceof megamek.common.Infantry pbi) {
             if ((null != pbi.getPrimaryWeapon()) && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
-                InfantryUtil.replaceMainWeapon((Infantry) unit,
-                      (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"),
-                      false);
+                InfantryUtil.replaceMainWeapon(pbi, (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"), false);
             }
             if ((null != pbi.getSecondaryWeapon()) && !techManager.isLegal(pbi.getSecondaryWeapon())) {
                 dirty = true;
-                InfantryUtil.replaceMainWeapon((Infantry) unit, null, true);
+                InfantryUtil.replaceMainWeapon(pbi, null, true);
             }
             if (techManager.getTechLevel().ordinal() <= SimpleTechLevel.STANDARD.ordinal() && pbi.hasFieldWeapon()) {
                 InfantryUtil.replaceFieldGun(pbi, null, 0);
@@ -2105,12 +2135,14 @@ public class UnitUtil {
 
     /**
      * Clone an entity. This method creates a deep copy of the entity, including all its properties and references.
+     *
      * @param entity The entity to copy
+     *
      * @return The copied entity
      */
     static public Entity cloneUnit(Entity entity) {
         try {
-            Entity newEntity = null;
+            Entity newEntity;
             try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
                     // Serialize the entities
@@ -2119,13 +2151,13 @@ public class UnitUtil {
                     byte[] serializedData = byteArrayOutputStream.toByteArray();
 
                     // Deserialize to create new instances
-                    try(ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedData)) {
+                    try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedData)) {
                         try (ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
                             newEntity = (Entity) objectInputStream.readObject();
                         }
                     }
                 }
-            }                    
+            }
             newEntity.setGame(entity.getGame());
             newEntity.setOwner(entity.getOwner());
             return newEntity;
@@ -2137,8 +2169,8 @@ public class UnitUtil {
 
     /**
      * Reset the damage of the unity to its original state.
+     *
      * @param entity The entity to reset
-     * @return The copied entity
      */
     static public void resetUnit(Entity entity) {
         for (Mounted<?> mounted : entity.getEquipment()) {
@@ -2212,7 +2244,7 @@ public class UnitUtil {
         if (includeCrew) {
             for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
                 Crew crew = entity.getCrew();
-                if ((crew.getHits(i)>0) || crew.isDead(i)) {
+                if ((crew.getHits(i) > 0) || crew.isDead(i)) {
                     return true;
                 }
             }

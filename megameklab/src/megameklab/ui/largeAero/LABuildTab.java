@@ -93,13 +93,7 @@ public class LABuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getAero().getEquipment()) {
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                UnitUtil.removeCriticals(getAero(), mount);
-                UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            }
-        }
-
+        UnitUtil.removeAllCriticals(getAero());
         refresh.refreshAll();
     }
 

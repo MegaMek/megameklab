@@ -258,7 +258,7 @@ public class BAStructureTab extends ITab
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -531,6 +531,7 @@ public class BAStructureTab extends ITab
     @Override
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
+        UnitUtil.removeAllCriticalsFrom(getBattleArmor(), List.of(BattleArmor.MOUNT_LOC_LARM, BattleArmor.MOUNT_LOC_RARM, BattleArmor.MOUNT_LOC_TURRET));
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());

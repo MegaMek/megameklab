@@ -40,6 +40,8 @@ public class RecordSheetOptions {
     private boolean alternateArmorGrouping;
     private boolean frameless;
     private boolean boldType;
+    private boolean damage;
+    private String damageColor;
     private WeaponSortOrder weaponsOrder;
 
     public RecordSheetOptions() {
@@ -64,6 +66,8 @@ public class RecordSheetOptions {
         this.alternateArmorGrouping = CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING);
         this.frameless = CConfig.getBooleanParam(CConfig.RS_FRAMELESS);
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
+        this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
+        this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
         this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
     }
 
@@ -84,6 +88,8 @@ public class RecordSheetOptions {
         alternateArmorGrouping = options.alternateArmorGrouping;
         frameless = options.frameless;
         boldType = options.boldType;
+        damage = options.damage;
+        damageColor = options.damageColor;
         weaponsOrder = options.weaponsOrder;
     }
 
@@ -98,11 +104,17 @@ public class RecordSheetOptions {
     public boolean showQuirks() {
         return quirks;
     }
-    public void setQuirks(boolean quirks) {
-        this.quirks = quirks;
+
+    public void setQuirks(boolean enabled) {
+        this.quirks = enabled;
     }
+
     public boolean showPilotData() {
         return pilotData;
+    }
+
+    public boolean showDamage() {
+        return damage;
     }
 
     public boolean showC3inBV() {
@@ -112,16 +124,21 @@ public class RecordSheetOptions {
     public boolean showRole() {
         return role;
     }
+    
     public boolean showHeatProfile() {
         return heatProfile;
     }
 
-    public void setC3inBV(boolean enable) {
-        this.c3bv = enable;
+    public void setC3inBV(boolean enabled) {
+        this.c3bv = enabled;
     }
 
-    public void setPilotData(boolean pilotData) {
-        this.pilotData = pilotData;
+    public void setPilotData(boolean enabled) {
+        this.pilotData = enabled;
+    }
+
+    public void setDamage(boolean enabled) {
+        this.damage = enabled;
     }
 
     public boolean showEraIcon() {
@@ -208,8 +225,12 @@ public class RecordSheetOptions {
         this.frameless = frameless;
     }
 
-    public void setBoldType(boolean boldType) {
-        this.boldType = boldType;
+    public void setBoldType(boolean enabled) {
+        this.boldType = enabled;
+    }
+
+    public String getDamageColor() {
+        return damageColor;
     }
     
     public WeaponSortOrder getWeaponsOrder() {
