@@ -1,13 +1,39 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.06
-+ PR #1853: 0.50.06 Deprecation Removal and Clean up
-+ Fix #1812: Max number of squads
-+ PR #1850: Adds option to show weapons quirks to record sheets
-+ Fix #1060: Adds weapon sort opion to record sheets.
-+ Fix #1854: Maintain Zoom and Position on Record Sheets
-+ PR #1835: Force Builder
-+ PR #1821: Tip of the day
+0.50.07
+
+0.50.06 (2025-05-19 1830 UTC) (MILESTONE RELEASE) - DEV NOTE - Starting with this release the History file is built on release rather than on going.
+DEV NOTE - Starting with this release the History file is built on release rather than on going.
+* 0.50.06 Deprecation Removal and Clean up by @rjhancock in https://github.com/MegaMek/megameklab/pull/1853
+* Max number of squads by @exeea in https://github.com/MegaMek/megameklab/pull/1856
+* Adds option to show weapons quirks to record sheets by @exeea in https://github.com/MegaMek/megameklab/pull/1850
+* Weapons sort order by @exeea in https://github.com/MegaMek/megameklab/pull/1847
+* Faster rendering, less repaints, maintain padding/zoom, smart autopadding by @exeea in https://github.com/MegaMek/megameklab/pull/1855
+* Force Builder view by @exeea in https://github.com/MegaMek/megameklab/pull/1835
+* Fixes MUL print from console and memory leaks on dialogs by @exeea in https://github.com/MegaMek/megameklab/pull/1862
+* Fixed misleading switch and create unit methods by @exeea in https://github.com/MegaMek/megameklab/pull/1864
+* Floatingequipment dialog memory leak by @exeea in https://github.com/MegaMek/megameklab/pull/1866
+* Fixed internal labels (protomech->protomek) and corrected pips by @exeea in https://github.com/MegaMek/megameklab/pull/1865
+* Fixed structure gun pips on quad protomek by @exeea in https://github.com/MegaMek/megameklab/pull/1869
+* Fix: resets walk MP to 0 when setting an SV engine as None by @Scoppio in https://github.com/MegaMek/megameklab/pull/1868
+* Aero fixes by @exeea in https://github.com/MegaMek/megameklab/pull/1870
+* Fixes on critical slots and unified reset of criticals by @exeea in https://github.com/MegaMek/megameklab/pull/1872
+* Heat view now displays also total dissipation and total heat by @exeea in https://github.com/MegaMek/megameklab/pull/1871
+* Don't include game state in run mp display by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1873
+* Virtual Scrollbars (native) for RS Preview by @exeea in https://github.com/MegaMek/megameklab/pull/1861
+* Refresh the available switch-unit-type targets of edit menu by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1877
+* Include full-head ejection system in record sheets. by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1878
+* Fix JavaDoc issues and very few CodeQL changes. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1880
+* Fixes display of dissipation by @exeea in https://github.com/MegaMek/megameklab/pull/1876
+* Fixed large inventory text fitting by @exeea in https://github.com/MegaMek/megameklab/pull/1883
+* Damaged Units in RS preview/print by @exeea in https://github.com/MegaMek/megameklab/pull/1836
+* Enhancedtabs moved to common by @exeea in https://github.com/MegaMek/megameklab/pull/1867
+* Various rs fixes + ammo amount allocation dialog by @exeea in https://github.com/MegaMek/megameklab/pull/1887
+* Added Default JVM Options per latest Gradle by @rjhancock in https://github.com/MegaMek/megameklab/pull/1888
+* Allow TAG on HHWs by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1889
+* Fix: checks if OS is mac and dont load the html for the recent files in the menu bar by @Scoppio in https://github.com/MegaMek/megameklab/pull/1891
+Around
+
 
 0.50.05 (2025-04-25 1800 UTC)
 + PR #1766 and #1790: enhanced tabs 
