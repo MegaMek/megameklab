@@ -257,7 +257,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         // the button width "look" reasonable.
         int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
 
-        // // no more than 50% of image width
+        // no more than 50% of image width
         if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
             maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
