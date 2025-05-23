@@ -14,6 +14,7 @@
  */
 package megameklab.ui;
 
+import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegaMekButton;
@@ -29,6 +30,7 @@ import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
 import megamek.common.util.TipOfTheDay;
+import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import org.apache.commons.collections4.CollectionUtils;
@@ -50,6 +52,7 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
  * @author Taharqa
  */
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
+    private static final MMLogger logger = MMLogger.create(MegaMek.class);
     JFrame frame;
     MenuBar mmlMenuBar;
     JLabel splash;
@@ -100,7 +103,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
                 SwingUtilities.invokeLater(this::handleDpiChange);
             });
         } catch (Exception e) {
-            System.err.println("Per-monitor DPI awareness not supported: " + e.getMessage());
+            logger.error("Per-monitor DPI awareness not supported: " + e.getMessage());
         }
     }
 
