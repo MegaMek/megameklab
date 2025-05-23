@@ -180,13 +180,18 @@ public class PrintMek extends PrintEntity {
 
     }
 
-    private int getShieldDamage(MiscMounted m) {
+    private int getShieldDADamage(MiscMounted m) {
         if (!options.showDamage()) {
             return 0;
         }
-        final int totalShield = m.getDamageAbsorption(mek, m.getLocation());
-        final int remainingShield = m.getCurrentDamageCapacity(mek, m.getLocation());
-        return totalShield - remainingShield;
+        return m.getBaseDamageAbsorptionRate() - m.getDamageAbsorption(mek, m.getLocation());
+    }
+
+    private int getShieldDCDamage(MiscMounted m) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return m.getBaseDamageCapacity() - m.getCurrentDamageCapacity(mek, m.getLocation());
     }
 
     private void printShields() {
@@ -203,13 +208,13 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDCDamage(m), useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDADamage(m), useAlternateArmorGrouping());
                 }
             }
         }
