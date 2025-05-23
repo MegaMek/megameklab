@@ -18,6 +18,7 @@ import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegaMekButton;
+import megamek.client.ui.swing.widget.RawImagePanel;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
@@ -56,16 +57,16 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private static final MMLogger logger = MMLogger.create(MegaMek.class);
     JFrame frame;
     MenuBar mmlMenuBar;
-    JLabel splash;
+    RawImagePanel splash;
     private double lastDpiScaleFactor;
     private static volatile StartupGUI instance = null;
 
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
-        startupScreenImages.put(0, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(370, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(556, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1112, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
     }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
@@ -294,9 +295,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         GridBagConstraints c = new GridBagConstraints();
         // Left Column (Splash Image)
         c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(10, 5, 10, 10);
-        c.ipadx = 10;
-        c.ipady = 5;
+        c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
