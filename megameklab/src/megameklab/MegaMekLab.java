@@ -57,7 +57,6 @@ import megameklab.ui.dialog.UiLoader;
 import megameklab.util.CConfig;
 import megameklab.util.MULManager;
 import megameklab.util.SingleInstanceService;
-import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLab {
@@ -176,20 +175,6 @@ public class MegaMekLab {
             }
         }
         return false;
-    }
-
-    /**
-     * Removes a specific argument from the command line arguments
-     *
-     * @param args Command line arguments
-     *
-     * @return Filtered arguments
-     *
-     * @deprecated no indicated uses
-     */
-    @Deprecated(since = "0.50.05", forRemoval = true)
-    private static String[] filterArgument(String[] args, String arg) {
-        return java.util.Arrays.stream(args).filter(argument -> !arg.equals(argument)).toArray(String[]::new);
     }
 
     /**

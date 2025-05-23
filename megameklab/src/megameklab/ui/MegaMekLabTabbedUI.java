@@ -42,10 +42,10 @@ import javax.swing.event.ChangeListener;
 import megamek.MegaMek;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.common.EnhancedTabbedPane;
-import megamek.common.Entity;
 import megamek.common.EnhancedTabbedPane.CloseableTab;
 import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
 import megamek.common.EnhancedTabbedPane.TabStateListener;
+import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
@@ -334,19 +334,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         menu.add(fromFile);
 
         return menu;
-    }
-
-    /**
-     * Retrieves the currently selected editor from the tabbed user interface.
-     *
-     * @return The currently selected MegaMekLabMainUI instance, which represents the active editor in the tabbed UI, or
-     *       null if no tab is selected.
-     *
-     * @deprecated Use {@link #getActiveEditor()} instead as it provides the same functionality.
-     */
-    @Deprecated(since = "0.50.05", forRemoval = true)
-    public MegaMekLabMainUI currentEditor() {
-        return getActiveEditor();
     }
 
     /**

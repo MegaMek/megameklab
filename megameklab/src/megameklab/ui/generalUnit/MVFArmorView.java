@@ -43,6 +43,7 @@ import megamek.common.ITechnology;
 import megamek.common.Mek;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
+import megamek.common.ITechnology.TechRating;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -68,7 +69,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final static String CMD_REMAINING = "REMAINING";
 
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
-    private final CustomComboBox<Integer> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<ITechnology.TechRating> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
@@ -123,7 +124,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.addActionListener(this);
 
         if (supportVee) {
-            for (int r = ITechnology.RATING_A; r <= ITechnology.RATING_F; r++) {
+            for (TechRating r : TechRating.values()) {
                 cbSVTechRating.addItem(r);
             }
             gbc.gridx = 0;
@@ -335,13 +336,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         return (armor.getTechLevel(techManager.getGameYear(), armor.isClan()));
     }
 
-    public int getTechRating() {
-        Integer selected = (Integer) cbSVTechRating.getSelectedItem();
-        if (null != selected) {
-            return selected;
-        }
-        return ITechnology.RATING_A;
+    public TechRating getTechRating() {
+        TechRating selected = (TechRating) cbSVTechRating.getSelectedItem();
+        return selected != null ? selected : ITechnology.TechRating.A;
     }
+
     public double getArmorTonnage() {
         return tonnageModel.getNumber().doubleValue();
     }

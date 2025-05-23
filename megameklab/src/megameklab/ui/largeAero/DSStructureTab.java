@@ -30,6 +30,7 @@ import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.UnitRole;
 import megamek.common.equipment.ArmorType;
@@ -157,7 +158,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 

@@ -161,7 +161,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 

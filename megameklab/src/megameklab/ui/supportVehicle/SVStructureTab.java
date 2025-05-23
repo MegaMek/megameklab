@@ -33,6 +33,7 @@ import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megamek.common.ITechnology.TechRating;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -174,7 +175,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -394,7 +395,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void structuralTechRatingChanged(int techRating) {
+    public void structuralTechRatingChanged(TechRating techRating) {
         getSV().setStructuralTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panSummary.refresh();
@@ -416,7 +417,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                     (engine.getEngineType() == Engine.MAGLEV) ? EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
         }
         // Make sure the engine tech rating is at least the minimum for the engine type
-        if (getSV().getEngineTechRating() < engine.getTechRating()) {
+        if (getSV().getEngineTechRating().getIndex() < engine.getTechRating().getIndex()) {
             getSV().setEngineTechRating(engine.getTechRating());
             getSV().recalculateTechAdvancement();
         }
@@ -442,7 +443,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void engineTechRatingChanged(int techRating) {
+    public void engineTechRatingChanged(TechRating techRating) {
         getSV().setEngineTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panFuel.setFromEntity(getSV());
