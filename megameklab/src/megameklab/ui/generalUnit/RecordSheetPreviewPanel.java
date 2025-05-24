@@ -218,13 +218,14 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Zoom and pan state
     public static final int MAX_PRINTABLE_ENTITIES = 50;
-    private final double MIN_ZOOM = 0.1;
+    private final double DEFAULT_MIN_ZOOM = 0.1;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
     private final int SPACE_BETWEEN_PAGES = 10; // Space between pages in pixels
     private final int DEFAULT_MARGINS = 5; // Default margins for the page
 
+    private volatile double minZoom = DEFAULT_MIN_ZOOM; // Minimum zoom
     private volatile double minFitZoom = 1.0; // Minimum zoom to fit content
     private volatile double zoomFactor = 1.0; // Current view zoom
     private Point2D panOffset = new Point2D.Double(0, 0);
@@ -363,6 +364,23 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         setMinimumSize(new java.awt.Dimension(200, 200));
         performResetView(); // Initial state
+    }
+    
+    /**
+     * Set the minimum zoom level for the preview.
+     * 
+     * @param minZoom
+     */
+    public void setMinZoom(double minZoom) {
+        if (minZoom == this.minZoom) {
+            return;
+        }
+        if (minZoom < DEFAULT_MIN_ZOOM) {
+            this.minZoom = DEFAULT_MIN_ZOOM;
+        } else {
+            this.minZoom = minZoom;
+        }
+        resetView();
     }
 
     private double getContentWidth() {
@@ -1051,7 +1069,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         final int VERTICAL_PADDING = 0; // Padding for vertical fit
 
         if (sheetPages.isEmpty() || getWidth() <= 0 || getHeight() <= 0) {
-            return MIN_ZOOM;
+            return minZoom;
         }
 
         RecordSheetOptions options = getRecordSheetOptions();
@@ -1066,11 +1084,11 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
 
         if (maxBaseHeight <= 0)
-            return MIN_ZOOM;
+            return minZoom;
 
         double availableHeight = getHeight() - VERTICAL_PADDING;
         double zoomY = (availableHeight > 0) ? availableHeight / maxBaseHeight : 1.0;
-        return Math.max(MIN_ZOOM, zoomY);
+        return Math.max(minZoom, zoomY);
     }
 
     /**
