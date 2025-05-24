@@ -389,7 +389,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     /**
-     * When this mode is active, the rendering of the SVG happens in a backgound thread and not in EDT.
+     * When this mode is active, the rendering of the SVG happens in a background thread and not in EDT.
      * Can cause issues during unit editing, but is much faster for viewing. Use it when you are not editing the unit.
      * 
      * @param fullAsyncMode
