@@ -1059,7 +1059,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         double yOffset = (getHeight() - maxContentHeight) / 2.0;
 
         // Make sure the first page is visible
-        panOffset.setLocation(Math.max(0, xOffset), Math.max(0, yOffset));
+        panOffset.setLocation(
+            constrainPanX(xOffset),
+            constrainPanY(yOffset)
+        );
 
         requestRenderForAllPages(); // Render all pages at the new fit zoom
         repaint();
