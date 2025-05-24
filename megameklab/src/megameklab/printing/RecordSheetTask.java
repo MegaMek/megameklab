@@ -37,8 +37,11 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
@@ -209,16 +212,16 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
                 for (int i = 0; i < rs.getPageCount(); i++) {
                     final InputStream is = rs.exportPDF(i, pageFormat);
                     if (is != null) {
-                        merger.addSource(is);
+                        merger.addSource(new RandomAccessReadBuffer(is));
                     }
                 }
                 iter.remove();
             }
-            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+            merger.mergeDocuments(null);
 
             // Load newly created document, add an outline, then write back to the file.
             File file = new File(fileName);
-            try (PDDocument doc = PDDocument.load(file)) {
+            try (PDDocument doc = Loader.loadPDF(file)) {
                 PDDocumentOutline outline = new PDDocumentOutline();
                 doc.getDocumentCatalog().setDocumentOutline(outline);
                 for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
