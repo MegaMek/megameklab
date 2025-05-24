@@ -771,7 +771,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                         entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
                         oneUnitPerSheet, options, true);
             } else {
-                tempGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+                tempGeneratedSheets = createSheetsInEDT(entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
             }
 
             long end = System.nanoTime();
