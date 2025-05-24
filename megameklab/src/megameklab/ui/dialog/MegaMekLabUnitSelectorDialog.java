@@ -148,6 +148,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         if (recordSheetPanel == null) {
             // Create the record sheet panel
             recordSheetPanel = new RecordSheetPreviewPanel();
+            recordSheetPanel.setFullAsyncMode(true);
 
             // Create a toolbar panel with print button
             JPanel toolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 10));

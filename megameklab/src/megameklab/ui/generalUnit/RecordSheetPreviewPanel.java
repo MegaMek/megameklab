@@ -218,18 +218,20 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     // Zoom and pan state
     public static final int MAX_PRINTABLE_ENTITIES = 50;
-    private final double MIN_ZOOM = 0.1;
+    private final double DEFAULT_MIN_ZOOM = 0.1;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
     private final double CLIPBOARD_ZOOM_SCALE = 4.0;
     private final int SPACE_BETWEEN_PAGES = 10; // Space between pages in pixels
     private final int DEFAULT_MARGINS = 5; // Default margins for the page
 
+    private volatile double minZoom = DEFAULT_MIN_ZOOM; // Minimum zoom
     private volatile double minFitZoom = 1.0; // Minimum zoom to fit content
     private volatile double zoomFactor = 1.0; // Current view zoom
     private Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
     private boolean isPanning = false;
+    private boolean fullAsyncMode = false; // Use full async mode for rendering (good for view only)
     private volatile boolean isHighQualityPaint = true;
     private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
@@ -324,23 +326,27 @@ public class RecordSheetPreviewPanel extends JPanel {
         addHierarchyListener(e -> {
             if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
                 if (isShowing()) {
-                    if (needsViewReset) {
-                        regenerateAndReset();
-                    } else
-                    if (pendingInPlaceUpdate) {
-                        updateSheetContentInPlace();
-                    } else
-                    if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
-                        // Maybe entities were set while hidden, trigger generation/render
-                        regenerateAndReset();
-                    } else {
-                        // Re-check minimum zoom and potentially re-render if needed
-                        minFitZoom = calculateMinimumFitZoom();
-                        if (zoomFactor < minFitZoom) {
-                            zoomFactor = minFitZoom; // Reset zoom to fit
-                            requestRenderForAllPages();
+                    SwingUtilities.invokeLater(() -> {
+                        if (isShowing() && getWidth() > 0 && getHeight() > 0) {
+                            if (needsViewReset) {
+                                regenerateAndReset();
+                            } else
+                            if (pendingInPlaceUpdate) {
+                                updateSheetContentInPlace();
+                            } else
+                            if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
+                                // Maybe entities were set while hidden, trigger generation/render
+                                regenerateAndReset();
+                            } else {
+                                // Re-check minimum zoom and potentially re-render if needed
+                                minFitZoom = calculateMinimumFitZoom();
+                                if (zoomFactor < minFitZoom) {
+                                    zoomFactor = minFitZoom; // Reset zoom to fit
+                                    requestRenderForAllPages();
+                                }
+                            }
                         }
-                    }
+                    });
                 } else {
                     // Became hidden
                     if (resetViewTimer != null) resetViewTimer.stop();
@@ -363,6 +369,33 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         setMinimumSize(new java.awt.Dimension(200, 200));
         performResetView(); // Initial state
+    }
+    
+    /**
+     * Set the minimum zoom level for the preview.
+     * 
+     * @param minZoom
+     */
+    public void setMinZoom(double minZoom) {
+        if (minZoom == this.minZoom) {
+            return;
+        }
+        if (minZoom < DEFAULT_MIN_ZOOM) {
+            this.minZoom = DEFAULT_MIN_ZOOM;
+        } else {
+            this.minZoom = minZoom;
+        }
+        resetView();
+    }
+
+    /**
+     * When this mode is active, the rendering of the SVG happens in a background thread and not in EDT.
+     * Can cause issues during unit editing, but is much faster for viewing. Use it when you are not editing the unit.
+     * 
+     * @param fullAsyncMode
+     */
+    public void setFullAsyncMode(boolean fullAsyncMode) {
+        this.fullAsyncMode = fullAsyncMode;
     }
 
     private double getContentWidth() {
@@ -609,7 +642,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             processedEntities = new ArrayList<>(selectedEntities);
         }
         boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
-        if (entitiesChanged) {
+        if (entitiesChanged || isInitialRender) {
             this.currentEntities = processedEntities;
             regenerateAndReset();
         } else {
@@ -646,11 +679,12 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Debounce regeneration and reset of the view.
      */
     private void regenerateAndReset() {
+        pendingInPlaceUpdate = false;
+        updateTimer.stop();
         if (!isShowing()) {
             needsViewReset = true;
             return;
         }
-        updateTimer.stop();
         performRegenerateAndReset(); // Perform the reset and regeneration
     }
 
@@ -680,7 +714,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 generateSheetPages(currentEntities);
                 if (isInitialRender) {
                     isInitialRender = false;
-                    SwingUtilities.invokeLater(this::performResetView); // Reset view once pages are generated
+                    performResetView(); // Reset view once pages are generated
                 } else {
                     minFitZoom = calculateMinimumFitZoom();
                     if (zoomFactor < minFitZoom) {
@@ -731,9 +765,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             // This is one of the slowest parts
             logger.debug("Starting UnitPrintManager.createSheets...");
             long start = System.nanoTime();
-            List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(
-                    entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
-                    oneUnitPerSheet, options, true);
+            List<PrintRecordSheet> tempGeneratedSheets;
+            if (fullAsyncMode) {
+                tempGeneratedSheets = UnitPrintManager.createSheets(
+                        entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
+                        oneUnitPerSheet, options, true);
+            } else {
+                tempGeneratedSheets = createSheetsInEDT(entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+            }
+
             long end = System.nanoTime();
             logger.debug("Finished UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -1032,13 +1072,13 @@ public class RecordSheetPreviewPanel extends JPanel {
             maxContentHeight = sheetPages.get(0).baseHeightPx * zoomFactor;
         }
 
-        // Center horizontally and vertically
-        double xOffset = (getWidth() - totalContentWidth) / 2.0;
-        double yOffset = (getHeight() - maxContentHeight) / 2.0;
-
-        // Make sure the first page is visible
-        panOffset.setLocation(Math.max(0, xOffset), Math.max(0, yOffset));
-
+        // Center horizontally and vertically, ensure 1st page is visible
+        double xOffset = Math.max(0, (getWidth() - totalContentWidth) / 2.0);
+        double yOffset = Math.max(0, (getHeight() - maxContentHeight) / 2.0);
+        panOffset.setLocation(
+            constrainPanX(xOffset),
+            constrainPanY(yOffset)
+        );
         requestRenderForAllPages(); // Render all pages at the new fit zoom
         repaint();
         updateScrollbars();
@@ -1049,9 +1089,11 @@ public class RecordSheetPreviewPanel extends JPanel {
      */
     private double calculateMinimumFitZoom() {
         final int VERTICAL_PADDING = 0; // Padding for vertical fit
-
-        if (sheetPages.isEmpty() || getWidth() <= 0 || getHeight() <= 0) {
-            return MIN_ZOOM;
+        int width = getWidth();
+        int height = getHeight();
+        
+        if (width <= 0 || height <= 0 || sheetPages.isEmpty()) {
+            return minZoom;
         }
 
         RecordSheetOptions options = getRecordSheetOptions();
@@ -1066,11 +1108,11 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
 
         if (maxBaseHeight <= 0)
-            return MIN_ZOOM;
+            return minZoom;
 
-        double availableHeight = getHeight() - VERTICAL_PADDING;
+        double availableHeight = height - VERTICAL_PADDING;
         double zoomY = (availableHeight > 0) ? availableHeight / maxBaseHeight : 1.0;
-        return Math.max(MIN_ZOOM, zoomY);
+        return Math.max(minZoom, zoomY);
     }
 
     /**
@@ -1350,8 +1392,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 final double cachedZoom = pageInfo.imageRenderZoom;
 
                 // Calculate position and size on screen
-                double targetDrawX = currentPan.getX() + pageInfo.layoutPosition.x * currentZoom;
-                double targetDrawY = currentPan.getY() + pageInfo.layoutPosition.y * currentZoom;
+                double targetDrawX = panOffset.getX() + pageInfo.layoutPosition.x * currentZoom;
+                double targetDrawY = panOffset.getY() + pageInfo.layoutPosition.y * currentZoom;
                 double targetDrawWidth = pageInfo.baseWidthPx * currentZoom;
                 double targetDrawHeight = pageInfo.baseHeightPx * currentZoom;
 
