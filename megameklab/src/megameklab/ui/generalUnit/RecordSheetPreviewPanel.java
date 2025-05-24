@@ -714,7 +714,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 generateSheetPages(currentEntities);
                 if (isInitialRender) {
                     isInitialRender = false;
-                    SwingUtilities.invokeLater(this::performResetView); // Reset view once pages are generated
+                    performResetView(); // Reset view once pages are generated
                 } else {
                     minFitZoom = calculateMinimumFitZoom();
                     if (zoomFactor < minFitZoom) {
@@ -1072,11 +1072,9 @@ public class RecordSheetPreviewPanel extends JPanel {
             maxContentHeight = sheetPages.get(0).baseHeightPx * zoomFactor;
         }
 
-        // Center horizontally and vertically
-        double xOffset = (getWidth() - totalContentWidth) / 2.0;
+        // Center horizontally and vertically, ensure 1st page is visible
+        double xOffset = Math.max(0, (getWidth() - totalContentWidth) / 2.0);
         double yOffset = Math.max(0, (getHeight() - maxContentHeight) / 2.0);
-
-        // Make sure the first page is visible
         panOffset.setLocation(
             constrainPanX(xOffset),
             constrainPanY(yOffset)
