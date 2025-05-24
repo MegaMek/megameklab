@@ -231,6 +231,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
     private boolean isPanning = false;
+    private boolean fullAsyncMode = false; // Use full async mode for rendering (good for view only)
     private volatile boolean isHighQualityPaint = true;
     private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
@@ -385,6 +386,16 @@ public class RecordSheetPreviewPanel extends JPanel {
             this.minZoom = minZoom;
         }
         resetView();
+    }
+
+    /**
+     * When this mode is active, the rendering of the SVG happens in a backgound thread and not in EDT.
+     * Can cause issues during unit editing, but is much faster for viewing. Use it when you are not editing the unit.
+     * 
+     * @param fullAsyncMode
+     */
+    public void setFullAsyncMode(boolean fullAsyncMode) {
+        this.fullAsyncMode = fullAsyncMode;
     }
 
     private double getContentWidth() {
@@ -631,7 +642,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             processedEntities = new ArrayList<>(selectedEntities);
         }
         boolean entitiesChanged = !areEntityListsEffectivelyEqual(this.currentEntities, processedEntities);
-        if (entitiesChanged) {
+        if (entitiesChanged || isInitialRender) {
             this.currentEntities = processedEntities;
             regenerateAndReset();
         } else {
@@ -668,11 +679,12 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Debounce regeneration and reset of the view.
      */
     private void regenerateAndReset() {
+        pendingInPlaceUpdate = false;
+        updateTimer.stop();
         if (!isShowing()) {
             needsViewReset = true;
             return;
         }
-        updateTimer.stop();
         performRegenerateAndReset(); // Perform the reset and regeneration
     }
 
@@ -753,9 +765,15 @@ public class RecordSheetPreviewPanel extends JPanel {
             // This is one of the slowest parts
             logger.debug("Starting UnitPrintManager.createSheets...");
             long start = System.nanoTime();
-            List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(
-                    entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
-                    oneUnitPerSheet, options, true);
+            List<PrintRecordSheet> tempGeneratedSheets;
+            if (fullAsyncMode) {
+                tempGeneratedSheets = UnitPrintManager.createSheets(
+                        entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
+                        oneUnitPerSheet, options, true);
+            } else {
+                tempGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+            }
+
             long end = System.nanoTime();
             logger.debug("Finished UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -1056,14 +1074,13 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         // Center horizontally and vertically
         double xOffset = (getWidth() - totalContentWidth) / 2.0;
-        double yOffset = (getHeight() - maxContentHeight) / 2.0;
+        double yOffset = Math.max(0, (getHeight() - maxContentHeight) / 2.0);
 
         // Make sure the first page is visible
         panOffset.setLocation(
             constrainPanX(xOffset),
             constrainPanY(yOffset)
         );
-
         requestRenderForAllPages(); // Render all pages at the new fit zoom
         repaint();
         updateScrollbars();
@@ -1377,8 +1394,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                 final double cachedZoom = pageInfo.imageRenderZoom;
 
                 // Calculate position and size on screen
-                double targetDrawX = currentPan.getX() + pageInfo.layoutPosition.x * currentZoom;
-                double targetDrawY = currentPan.getY() + pageInfo.layoutPosition.y * currentZoom;
+                double targetDrawX = panOffset.getX() + pageInfo.layoutPosition.x * currentZoom;
+                double targetDrawY = panOffset.getY() + pageInfo.layoutPosition.y * currentZoom;
                 double targetDrawWidth = pageInfo.baseWidthPx * currentZoom;
                 double targetDrawHeight = pageInfo.baseHeightPx * currentZoom;
 

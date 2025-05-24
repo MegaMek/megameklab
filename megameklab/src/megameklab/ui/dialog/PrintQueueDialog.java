@@ -107,6 +107,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         this.printToPdf  = printToPdf;
         this.fromMul     = fromMul;
         this.mulFileName = mulFileName;
+        recordSheetPanel.setFullAsyncMode(true);
         initialize();
         if (units != null) {
             this.units.addAll(units);
