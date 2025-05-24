@@ -325,23 +325,27 @@ public class RecordSheetPreviewPanel extends JPanel {
         addHierarchyListener(e -> {
             if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
                 if (isShowing()) {
-                    if (needsViewReset) {
-                        regenerateAndReset();
-                    } else
-                    if (pendingInPlaceUpdate) {
-                        updateSheetContentInPlace();
-                    } else
-                    if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
-                        // Maybe entities were set while hidden, trigger generation/render
-                        regenerateAndReset();
-                    } else {
-                        // Re-check minimum zoom and potentially re-render if needed
-                        minFitZoom = calculateMinimumFitZoom();
-                        if (zoomFactor < minFitZoom) {
-                            zoomFactor = minFitZoom; // Reset zoom to fit
-                            requestRenderForAllPages();
+                    SwingUtilities.invokeLater(() -> {
+                        if (isShowing() && getWidth() > 0 && getHeight() > 0) {
+                            if (needsViewReset) {
+                                regenerateAndReset();
+                            } else
+                            if (pendingInPlaceUpdate) {
+                                updateSheetContentInPlace();
+                            } else
+                            if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
+                                // Maybe entities were set while hidden, trigger generation/render
+                                regenerateAndReset();
+                            } else {
+                                // Re-check minimum zoom and potentially re-render if needed
+                                minFitZoom = calculateMinimumFitZoom();
+                                if (zoomFactor < minFitZoom) {
+                                    zoomFactor = minFitZoom; // Reset zoom to fit
+                                    requestRenderForAllPages();
+                                }
+                            }
                         }
-                    }
+                    });
                 } else {
                     // Became hidden
                     if (resetViewTimer != null) resetViewTimer.stop();
@@ -1067,8 +1071,10 @@ public class RecordSheetPreviewPanel extends JPanel {
      */
     private double calculateMinimumFitZoom() {
         final int VERTICAL_PADDING = 0; // Padding for vertical fit
-
-        if (sheetPages.isEmpty() || getWidth() <= 0 || getHeight() <= 0) {
+        int width = getWidth();
+        int height = getHeight();
+        
+        if (width <= 0 || height <= 0 || sheetPages.isEmpty()) {
             return minZoom;
         }
 
@@ -1086,7 +1092,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         if (maxBaseHeight <= 0)
             return minZoom;
 
-        double availableHeight = getHeight() - VERTICAL_PADDING;
+        double availableHeight = height - VERTICAL_PADDING;
         double zoomY = (availableHeight > 0) ? availableHeight / maxBaseHeight : 1.0;
         return Math.max(minZoom, zoomY);
     }
