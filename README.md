@@ -4,28 +4,15 @@
 
 1. [About](#about)
 2. [Status](#status)
-3. [Running MegaMek](#running-megamek)
+3. [Running MegaMek](#running-megameklab)
     1. [Installing Or Updating Your Java Runtime](#installing-or-updating-your-java-runtime)
         1. [Adoptium (Windows)](#adoptium-windows)
         2. [Adoptium (Mac)](#adoptium-mac)
         3. [Linux](#linux)
-4. [Connecting](#connecting)
-5. [Playing The Game](#playing-the-game)
-    1. [Pre-game Lobby](#pre-game-lobby)
-    2. [Initiative Report](#initiative-report)
-    3. [Movement Phase](#movement-phase)
-    4. [Movement Report](#movement-report)
-    5. [Weapons Fire Phase](#weapons-fire-phase)
-    6. [Weapons Fire Report](#weapons-fire-report)
-    7. [Physical Attacks Phase](#physical-attacks-phase)
-    8. [End of Turn Report](#end-of-turn-report)
-6. [Custom Units](#custom-units)
-7. [Advanced Map Settings](#advanced-map-settings)
-8. [Differences Between The Board Game and MegaMek](#differences-between-the-board-game-and-megamek)
-9. [Compiling](#compiling)
-10. [Support](#support)
-11. [Contact & Further Information](#contact--further-information)
-12. [Licensing](#licensing)
+4. [Compiling](#compiling)
+5. [Support](#support)
+6. [Contact & Further Information](#contact--further-information)
+7. [Licensing](#licensing)
 
 ## About
 
@@ -42,7 +29,7 @@ and [Strategic Operations](https://store.catalystgamelabs.com/collections/battle
 | Type           | MM Status                                                                                                                                                              | MML Status                                                                                                                                                                       | MHQ Status                                                                                                                                                        |
 |----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Latest Release | [![Release](https://img.shields.io/github/release/MegaMek/megamek.svg)](https://gitHub.com/MegaMek/megamek/releases/)                                                  | [![Release](https://img.shields.io/github/release/MegaMek/megameklab.svg)](https://gitHub.com/MegaMek/megameklab/releases/)                                                      | [![Release](https://img.shields.io/github/release/MegaMek/mekhq.svg)](https://gitHub.com/MegaMek/mekhq/releases/)                                                 |
-| Javadocs       | [![javadoc](https://javadoc.io/badge2/org.megamek/megamek/javadoc.svg?color=red)](https://megamek.org/megamek/)                                                        | [![javadoc](https://javadoc.io/badge2/org.megamek/megameklab/javadoc.svg?color=red)](https://megamek.org/megameklab/)                                                            | [![javadoc](https://javadoc.io/badge2/org.megamek/mekhq/javadoc.svg?color=red)](https://megamek.org/mekhq/))                                                      |
+| Javadocs | [![javadoc](https://badgen.net/badge/javadoc/master/red?icon=github)](https://megamek.org/megamek) | [![javadoc](https://badgen.net/badge/javadoc/master/red?icon=github)](https://megamek.org/megameklab) | [![javadoc](https://badgen.net/badge/javadoc/master/red?icon=github)](https://megamek.org/mekhq) |
 | License        | [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)                                                     | [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)                                                               | [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)                                                 |
 | Build (CI)     | [![MM Nightly CI](https://github.com/MegaMek/megamek/workflows/MegaMek%20Nightly%20CI/badge.svg)](https://github.com/MegaMek/megamek/actions/workflows/nightly-ci.yml) | [![MML Nightly CI](https://github.com/MegaMek/megameklab/workflows/MegaMekLab%20Nightly%20CI/badge.svg)](https://github.com/MegaMek/megameklab/actions/workflows/nightly-ci.yml) | [![MHQ Nightly CI](https://github.com/MegaMek/mekhq/workflows/MekHQ%20Nightly%20CI/badge.svg)](https://github.com/MegaMek/mekhq/actions/workflows/nightly-ci.yml) |
 | Issues         | [![GitHub Issues](https://badgen.net/github/open-issues/MegaMek/megamek)](https://gitHub.com/MegaMek/megamek/issues/)                                                  | [![GitHub Issues](https://badgen.net/github/open-issues/MegaMek/megameklab)](https://gitHub.com/MegaMek/megameklab/issues/)                                                      | [![GitHub Issues](https://badgen.net/github/open-issues/MegaMek/mekhq)](https://gitHub.com/MegaMek/mekhq/issues/)                                                 |
