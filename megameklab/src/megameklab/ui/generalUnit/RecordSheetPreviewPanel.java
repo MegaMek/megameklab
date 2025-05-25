@@ -720,6 +720,9 @@ public class RecordSheetPreviewPanel extends JPanel {
             upgradeScheduledAction(ScheduledAction.REGENERATE_AND_RESET);
             return;
         }
+        if (lastRegenerationEntitiesCount != currentEntities.size()) {
+            repaint(); // Trigger a repaint to show placeholders while generating
+        }
         regenerateTimer.restart(); // Restart regeneration timer to debounce
     }
 
