@@ -18,11 +18,11 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.client.ui.panels.EntityImagePanel;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
-import megamek.client.ui.swing.util.FluffImageHelper;
-import megamek.client.ui.swing.util.PlayerColour;
+import megamek.client.ui.dialogs.iconChooser.EntityImagePanel;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.util.FluffImageHelper;
+import megamek.client.ui.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.icons.Camouflage;
 import megamek.common.util.ImageUtil;

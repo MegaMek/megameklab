@@ -26,8 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.buttons.MMButton;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.AbstractMMLButtonDialog;

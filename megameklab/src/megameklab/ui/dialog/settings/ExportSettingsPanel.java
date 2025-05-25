@@ -18,7 +18,7 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;

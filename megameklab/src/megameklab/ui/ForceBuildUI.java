@@ -32,13 +32,13 @@
  */
 package megameklab.ui;
 
-import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
-import static megamek.client.ui.swing.util.UIUtil.CONNECTED_SIGN;
-import static megamek.client.ui.swing.util.UIUtil.DOT_SPACER;
-import static megamek.client.ui.swing.util.UIUtil.UNCONNECTED_SIGN;
-import static megamek.client.ui.swing.util.UIUtil.fontHTML;
-import static megamek.client.ui.swing.util.UIUtil.menuItem;
-import static megamek.client.ui.swing.util.UIUtil.uiC3Color;
+import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATHMUL;
+import static megamek.client.ui.util.UIUtil.CONNECTED_SIGN;
+import static megamek.client.ui.util.UIUtil.DOT_SPACER;
+import static megamek.client.ui.util.UIUtil.UNCONNECTED_SIGN;
+import static megamek.client.ui.util.UIUtil.fontHTML;
+import static megamek.client.ui.util.UIUtil.menuItem;
+import static megamek.client.ui.util.UIUtil.uiC3Color;
 import static megamek.common.util.CollectionUtil.anyOneElement;
 
 import java.awt.BorderLayout;
@@ -91,14 +91,14 @@ import javax.swing.table.TableColumnModel;
 
 import megamek.client.Client;
 import megamek.client.ui.Messages;
-import megamek.client.ui.dialogs.BVDisplayDialog;
-import megamek.client.ui.swing.CustomMekDialog;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.UnitEditorDialog;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.lobby.LobbyErrors;
-import megamek.client.ui.swing.lobby.LobbyUtility;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.customMek.CustomMekDialog;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.dialogs.UnitEditorDialog;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.panels.phaseDisplay.lobby.LobbyErrors;
+import megamek.client.ui.panels.phaseDisplay.lobby.LobbyUtility;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Crew;
 import megamek.common.Entity;
 import megamek.common.EntityListFile;

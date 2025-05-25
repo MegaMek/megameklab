@@ -18,7 +18,7 @@
  */
 package megameklab.ui.dialog;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
 import megamek.common.Entity;
 import megameklab.ui.MegaMekLabMainUI;

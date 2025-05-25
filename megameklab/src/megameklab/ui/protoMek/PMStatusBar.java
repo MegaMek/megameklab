@@ -15,7 +15,7 @@ package megameklab.ui.protoMek;
 
 import javax.swing.JLabel;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.generalUnit.StatusBar;
 

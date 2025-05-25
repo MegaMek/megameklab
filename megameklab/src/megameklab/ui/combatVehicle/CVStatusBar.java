@@ -15,7 +15,7 @@
  */
 package megameklab.ui.combatVehicle;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.Tank;
 import megameklab.ui.generalUnit.StatusBar;
 
