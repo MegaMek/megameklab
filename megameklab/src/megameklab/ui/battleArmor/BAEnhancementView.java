@@ -21,34 +21,39 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JCheckBox;
 
-import megamek.common.*;
+import megamek.common.BattleArmor;
+import megamek.common.EquipmentType;
+import megamek.common.EquipmentTypeLookup;
+import megamek.common.ITechManager;
+import megamek.common.MiscType;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 
 /**
  * Structure tab panel for BA movement enhancements
- * 
+ *
  * @author Neoancient
  */
 public class BAEnhancementView extends BuildView implements ActionListener {
-    private List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<BABuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(BABuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(BABuildListener l) {
         listeners.remove(l);
     }
-    
+
     private final JCheckBox chkPartialWing = new JCheckBox();
     private final JCheckBox chkJumpBooster = new JCheckBox();
-    private final JCheckBox chkMechJumpBooster = new JCheckBox();
+    private final JCheckBox chkMechanicalJumpBooster = new JCheckBox();
     private final JCheckBox chkMyomerBooster = new JCheckBox();
 
     private boolean ignoreEvents = false;
-    
+
     private final EquipmentType partialWing = EquipmentType.get(EquipmentTypeLookup.BA_PARTIAL_WING);
     private final EquipmentType jumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_JUMP_BOOSTER);
     private final EquipmentType mechJumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_MECHANICAL_JUMP_BOOSTER);
@@ -57,10 +62,10 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     public BAEnhancementView(ITechManager techManager) {
         initUI();
     }
-    
+
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -71,19 +76,19 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         chkPartialWing.setToolTipText(resourceMap.getString("BAEnhancementView.chkPartialWing.tooltip"));
         add(chkPartialWing, gbc);
         chkPartialWing.addActionListener(this);
-        
+
         gbc.gridx++;
         chkJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkJumpBooster.text"));
         chkJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkJumpBooster.tooltip"));
         add(chkJumpBooster, gbc);
         chkJumpBooster.addActionListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy++;
-        chkMechJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.text"));
-        chkMechJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.tooltip"));
-        add(chkMechJumpBooster, gbc);
-        chkMechJumpBooster.addActionListener(this);
+        chkMechanicalJumpBooster.setText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.text"));
+        chkMechanicalJumpBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMechJumpBooster.tooltip"));
+        add(chkMechanicalJumpBooster, gbc);
+        chkMechanicalJumpBooster.addActionListener(this);
 
         gbc.gridx++;
         chkMyomerBooster.setText(resourceMap.getString("BAEnhancementView.chkMyomerBooster.text"));
@@ -91,16 +96,16 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
     }
-    
+
     public void setFromEntity(BattleArmor ba) {
-            ignoreEvents = true;
-            chkPartialWing.setSelected(ba.hasWorkingMisc(MiscType.F_PARTIAL_WING));
-            chkJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER));
-            chkMechJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER));
-            chkMyomerBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MASC));
-            ignoreEvents = false;
+        ignoreEvents = true;
+        chkPartialWing.setSelected(ba.hasWorkingMisc(MiscType.F_PARTIAL_WING));
+        chkJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER));
+        chkMechanicalJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER));
+        chkMyomerBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MASC));
+        ignoreEvents = false;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (ignoreEvents) {
@@ -110,8 +115,8 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             listeners.forEach(l -> l.enhancementChanged(partialWing, chkPartialWing.isSelected()));
         } else if (e.getSource() == chkJumpBooster) {
             listeners.forEach(l -> l.enhancementChanged(jumpBooster, chkJumpBooster.isSelected()));
-        } else if (e.getSource() == chkMechJumpBooster) {
-            listeners.forEach(l -> l.enhancementChanged(mechJumpBooster, chkMechJumpBooster.isSelected()));
+        } else if (e.getSource() == chkMechanicalJumpBooster) {
+            listeners.forEach(l -> l.enhancementChanged(mechJumpBooster, chkMechanicalJumpBooster.isSelected()));
         } else if (e.getSource() == chkMyomerBooster) {
             listeners.forEach(l -> l.enhancementChanged(myomerBooster, chkMyomerBooster.isSelected()));
         }
