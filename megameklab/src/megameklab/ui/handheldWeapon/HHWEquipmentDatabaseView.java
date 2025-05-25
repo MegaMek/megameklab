@@ -80,7 +80,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
 
             // isMekWeapon/isMekEquipment consider some WeaponTypes to be Equipment rather than a Weapon, and the
-            // functions are mutually exclusive, so we check both to determine if the type is valid for a mech.
+            // functions are mutually exclusive, so we check both to determine if the type is valid for a mek.
             if (!MekUtil.isMekWeapon(wt, new BipedMek()) && !MekUtil.isMekEquipment(wt, new BipedMek())) {
                 return false;
             }
@@ -90,7 +90,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 return false;
             }
 
-            //  Items legal for ’Mechs to mount and belonging to one or more of the following types: AE, DB, DE, M,
+            //  Items legal for meks to mount and belonging to one or more of the following types: AE, DB, DE, M,
             //  P, PB. Also allowed are Mine Dispensers and TAG (including Light TAG) --TO:AUE
             valid = (wt instanceof ArtilleryWeapon || wt instanceof ArtilleryCannonWeapon)
                 || wt.hasAnyFlag(WeaponType.F_ENERGY, WeaponType.F_PLASMA, WeaponType.F_BALLISTIC, WeaponType.F_MISSILE, WeaponType.F_B_POD, WeaponType.F_TAG);
