@@ -943,7 +943,6 @@ public class RecordSheetPreviewPanel extends JPanel {
         if (scheduledAction.getIdx() <= ScheduledAction.UPDATE_SHEET_CONTENT.getIdx()) {
             scheduledAction = ScheduledAction.NONE;
         }
-        updateTimer.stop(); // Stop the timer to prevent multiple calls
         final double currentZoom = this.zoomFactor;
         final Point2D currentPan = new Point2D.Double(panOffset.getX(), panOffset.getY());
 
