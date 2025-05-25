@@ -933,7 +933,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private void performUpdateSheetContentInPlace() {
-        if (regenerateTimer.isRunning()) {
+        if (regenerateTimer.isRunning() || updateTimer.isRunning()) {
             return; // If regeneration is scheduled, skip in-place update
         }
         if (!isShowing()) {
