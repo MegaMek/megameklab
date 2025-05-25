@@ -200,7 +200,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             popup.add(copyItem);
 
             var resetItem = new JMenuItem("Reset view");
-            resetItem.addActionListener(l -> resetView());
+            resetItem.addActionListener(l -> scheduleResetView());
             popup.add(resetItem);
         }
 
@@ -217,7 +217,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
-    public static final int MAX_PRINTABLE_ENTITIES = 50;
+    public static final int MAX_PREVIEW_ENTITIES = 10;
     private final double DEFAULT_MIN_ZOOM = 0.1;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;
@@ -244,18 +244,36 @@ public class RecordSheetPreviewPanel extends JPanel {
     private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
     private final ReentrantLock sheetGenerationLock = new ReentrantLock(); // Lock for sheet generation
+    private int lastRegenerationEntitiesCount = 0; // Track last regeneration entities count for repaint optimization
 
     // Timers for debouncing actions
     private Timer resetViewTimer;
     private Timer zoomRenderDebounceTimer;
     private Timer updateTimer;
+    private Timer regenerateTimer;
     private static final int RESET_VIEW_DELAY = 200; // ms delay before resetting view
     private static final int ZOOM_RENDER_DEBOUNCE_DELAY = 100; // ms delay before rendering after zoom
-    private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set
+    private static final int UPDATE_DEBOUNCE_DELAY = 300; // ms delay before rendering after entity set (same entity)
+    private static final int REGENERATE_DEBOUNCE_DELAY = 50; // ms delay before rendering after entity set (new entity)
 
     private boolean isInitialRender = true; // Flag to track if this is the first render
-    private boolean needsViewReset = false;
-    private boolean pendingInPlaceUpdate = false;
+
+    private enum ScheduledAction {
+        NONE(0), // No pending action
+        RESET_VIEW(1), // Reset view pending
+        UPDATE_SHEET_CONTENT(2), // Update sheet content pending
+        REGENERATE_AND_RESET(3); // Regenerate and reset view pending
+
+        private int idx;
+        ScheduledAction(int idx) {
+            this.idx = idx;
+        }
+        public int getIdx() {
+            return idx;
+        }
+    }
+
+    private ScheduledAction scheduledAction = ScheduledAction.NONE;
 
     private static final int SCROLLBARS_WIDTH = 6;
     private final JScrollBar hScrollBar = new JScrollBar(JScrollBar.HORIZONTAL);
@@ -317,6 +335,11 @@ public class RecordSheetPreviewPanel extends JPanel {
             performUpdateSheetContentInPlace();
         });
         updateTimer.setRepeats(false);
+        regenerateTimer = new Timer(REGENERATE_DEBOUNCE_DELAY, e -> {
+            regenerateTimer.stop();
+            performRegenerateAndReset();
+        });
+        regenerateTimer.setRepeats(false);
         zoomRenderDebounceTimer = new Timer(ZOOM_RENDER_DEBOUNCE_DELAY, e -> {
             zoomRenderDebounceTimer.stop();
             requestRenderForAllPages(); // Request render for all pages after zoom stops
@@ -328,22 +351,28 @@ public class RecordSheetPreviewPanel extends JPanel {
                 if (isShowing()) {
                     SwingUtilities.invokeLater(() -> {
                         if (isShowing() && getWidth() > 0 && getHeight() > 0) {
-                            if (needsViewReset) {
-                                regenerateAndReset();
-                            } else
-                            if (pendingInPlaceUpdate) {
-                                updateSheetContentInPlace();
-                            } else
-                            if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
-                                // Maybe entities were set while hidden, trigger generation/render
-                                regenerateAndReset();
-                            } else {
-                                // Re-check minimum zoom and potentially re-render if needed
-                                minFitZoom = calculateMinimumFitZoom();
-                                if (zoomFactor < minFitZoom) {
-                                    zoomFactor = minFitZoom; // Reset zoom to fit
-                                    requestRenderForAllPages();
-                                }
+                            switch (scheduledAction) {
+                                case RESET_VIEW:
+                                    performResetView();
+                                    break;
+                                case UPDATE_SHEET_CONTENT:
+                                    updateSheetContentInPlace();
+                                    break;
+                                case REGENERATE_AND_RESET:
+                                    regenerateAndReset();
+                                    break;
+                                default:
+                                    if (sheetPages.isEmpty() && !currentEntities.isEmpty()) {
+                                        // Maybe entities were set while hidden, trigger generation/render
+                                        regenerateAndReset();
+                                    } else {
+                                        // Re-check minimum zoom and potentially re-render if needed
+                                        minFitZoom = calculateMinimumFitZoom();
+                                        if (zoomFactor < minFitZoom) {
+                                            zoomFactor = minFitZoom; // Reset zoom to fit
+                                            requestRenderForAllPages();
+                                        }
+                                    }
                             }
                         }
                     });
@@ -385,7 +414,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         } else {
             this.minZoom = minZoom;
         }
-        resetView();
+        scheduleResetView();
     }
 
     /**
@@ -396,6 +425,12 @@ public class RecordSheetPreviewPanel extends JPanel {
      */
     public void setFullAsyncMode(boolean fullAsyncMode) {
         this.fullAsyncMode = fullAsyncMode;
+    }
+
+    private void upgradeScheduledAction(ScheduledAction action) {
+        if (scheduledAction.getIdx() < action.getIdx()) {
+            scheduledAction = action;
+        }
     }
 
     private double getContentWidth() {
@@ -487,7 +522,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
                     if (!sheetPages.isEmpty()) {
-                        resetView();
+                        scheduleResetView();
                     }
                 }
             }
@@ -679,13 +714,13 @@ public class RecordSheetPreviewPanel extends JPanel {
      * Debounce regeneration and reset of the view.
      */
     private void regenerateAndReset() {
-        pendingInPlaceUpdate = false;
         updateTimer.stop();
+        resetViewTimer.stop();
         if (!isShowing()) {
-            needsViewReset = true;
+            upgradeScheduledAction(ScheduledAction.REGENERATE_AND_RESET);
             return;
         }
-        performRegenerateAndReset(); // Perform the reset and regeneration
+        regenerateTimer.restart(); // Restart regeneration timer to debounce
     }
 
     /**
@@ -693,6 +728,7 @@ public class RecordSheetPreviewPanel extends JPanel {
      * reset.
      */
     private void performRegenerateAndReset() {
+        scheduledAction = ScheduledAction.NONE;
         cleanupPageTasksAndData(); // Cancel tasks, clear page list
         generatedSheets = null; // Clear cached sheets
 
@@ -703,15 +739,18 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (isShowing()) {
                 repaint();
             } else {
-                needsViewReset = true; // Mark for reset when shown
+                upgradeScheduledAction(ScheduledAction.REGENERATE_AND_RESET); // Mark for regeneration when shown
             }
             return;
         }
-
         if (isShowing()) {
             // Generate sheets and pages in the background to avoid blocking EDT
             renderExecutor.submit(() -> {
+                if (lastRegenerationEntitiesCount != currentEntities.size()) {
+                    repaint(); // Trigger a repaint to show placeholders while generating
+                }
                 generateSheetPages(currentEntities);
+                lastRegenerationEntitiesCount = currentEntities.size(); // Update last regeneration count
                 if (isInitialRender) {
                     isInitialRender = false;
                     performResetView(); // Reset view once pages are generated
@@ -727,7 +766,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 }
             });
         } else {
-            needsViewReset = true; // Mark for reset, generation will happen when shown/reset
+            upgradeScheduledAction(ScheduledAction.REGENERATE_AND_RESET); // Mark for regeneration, generation will happen when shown
         }
     }
 
@@ -756,7 +795,6 @@ public class RecordSheetPreviewPanel extends JPanel {
         if (entitiesToGenerate == null || entitiesToGenerate.isEmpty()) {
             return;
         }
-
         sheetGenerationLock.lock(); // Ensure only one thread generates sheets at a time
         try {
             RecordSheetOptions options = getRecordSheetOptions();
@@ -768,10 +806,10 @@ public class RecordSheetPreviewPanel extends JPanel {
             List<PrintRecordSheet> tempGeneratedSheets;
             if (fullAsyncMode) {
                 tempGeneratedSheets = UnitPrintManager.createSheets(
-                        entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)),
+                        entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PREVIEW_ENTITIES)),
                         oneUnitPerSheet, options, true);
             } else {
-                tempGeneratedSheets = createSheetsInEDT(entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+                tempGeneratedSheets = createSheetsInEDT(entitiesToGenerate.subList(0, Math.min(entitiesToGenerate.size(), MAX_PREVIEW_ENTITIES)), oneUnitPerSheet, options);
             }
 
             long end = System.nanoTime();
@@ -850,10 +888,21 @@ public class RecordSheetPreviewPanel extends JPanel {
             sheetGenerationLock.unlock();
         }
     }
+    
+    private void scheduleResetView() {
+        resetViewTimer.stop();
+        if (!isShowing()) {
+            upgradeScheduledAction(ScheduledAction.RESET_VIEW);
+            return;
+        }
+        resetViewTimer.restart();
+    }
 
     private void updateSheetContentInPlace() {
+        updateTimer.stop();
+        resetViewTimer.stop();
         if (!isShowing()) {
-            pendingInPlaceUpdate = true;
+            upgradeScheduledAction(ScheduledAction.UPDATE_SHEET_CONTENT);
             return;
         }
         updateTimer.restart(); // Restart update timer to debounce
@@ -879,12 +928,17 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     private void performUpdateSheetContentInPlace() {
+        if (regenerateTimer.isRunning()) {
+            return; // If regeneration is scheduled, skip in-place update
+        }
         if (!isShowing()) {
-            pendingInPlaceUpdate = true;
+            upgradeScheduledAction(ScheduledAction.UPDATE_SHEET_CONTENT);
             return;
         }
+        if (scheduledAction.getIdx() <= ScheduledAction.UPDATE_SHEET_CONTENT.getIdx()) {
+            scheduledAction = ScheduledAction.NONE;
+        }
         updateTimer.stop(); // Stop the timer to prevent multiple calls
-        pendingInPlaceUpdate = false;
         final double currentZoom = this.zoomFactor;
         final Point2D currentPan = new Point2D.Double(panOffset.getX(), panOffset.getY());
 
@@ -902,7 +956,7 @@ public class RecordSheetPreviewPanel extends JPanel {
                 long start = System.nanoTime();
                 // Regenerate sheets based on potentially updated entity state
                 RecordSheetOptions options = getRecordSheetOptions();
-                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PRINTABLE_ENTITIES)), oneUnitPerSheet, options);
+                newGeneratedSheets = createSheetsInEDT(currentEntities.subList(0, Math.min(currentEntities.size(), MAX_PREVIEW_ENTITIES)), oneUnitPerSheet, options);
                 long end = System.nanoTime();
                 logger.debug("Finished in-place UnitPrintManager.createSheets in {} ms", (end - start) / 1_000_000);
 
@@ -973,8 +1027,8 @@ public class RecordSheetPreviewPanel extends JPanel {
             final boolean finalStructureChanged = structureChanged || (sheetPages.size() != finalNewPageInfos.size());
 
             SwingUtilities.invokeLater(() -> {
-                if (needsViewReset) {
-                    logger.debug("In-place update completion detected needsViewReset=true, aborting in-place logic.");
+                if (scheduledAction.getIdx() >= ScheduledAction.UPDATE_SHEET_CONTENT.getIdx()) {
+                    logger.debug("New pending In-place or Regenerate detected, aborting in-place logic.");
                     return;
                 }
                 if (finalStructureChanged) {
@@ -1037,16 +1091,21 @@ public class RecordSheetPreviewPanel extends JPanel {
         });
     }
 
-    private void scheduleResetView() {
-        resetViewTimer.restart();
-    }
-
     public void resetView() {
         scheduleResetView();
     }
 
     private void performResetView() {
-        needsViewReset = false;
+        if (regenerateTimer.isRunning() || updateTimer.isRunning()) {
+            return; // If update or regeneration is scheduled, skip reset (they will perform it)
+        }
+        if (!isShowing()) {
+            upgradeScheduledAction(ScheduledAction.RESET_VIEW);
+            return;
+        }
+        if (scheduledAction == ScheduledAction.RESET_VIEW) {
+            scheduledAction = ScheduledAction.NONE;
+        }
         isHighQualityPaint = true;
 
         if (sheetPages.isEmpty()) {
@@ -1450,6 +1509,11 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             } // End loop over pages
+
+            if (currentEntities.size() > MAX_PREVIEW_ENTITIES) {
+                drawPreviewLimitationNotice(g2d);
+            }
+
             // Fill scrollbars little square in bottom-right
             if (vScrollBar.isVisible() && hScrollBar.isVisible()) {
                 g2d.setColor(getBackground());
@@ -1463,6 +1527,47 @@ public class RecordSheetPreviewPanel extends JPanel {
         } finally {
             g2d.dispose();
         }
+    }
+
+    private void drawPreviewLimitationNotice(Graphics2D g2d) {
+        setupRenderingHints(g2d, true, false, null);
+        String msg = "Preview limited to " + MAX_PREVIEW_ENTITIES + " units of " + currentEntities.size();
+        
+        // Bold Font and Calculate text dimensions
+        java.awt.Font originalFont = g2d.getFont();
+        java.awt.Font boldFont = originalFont.deriveFont(java.awt.Font.BOLD);
+        g2d.setFont(boldFont);
+        java.awt.FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(msg);
+        int textHeight = fm.getHeight();
+        int textAscent = fm.getAscent();
+        
+        // Calculate position for bottom right alignment with 10px margin
+        int scrollBarWidth = vScrollBar.isVisible() ? vScrollBar.getPreferredSize().width : 0;
+        int scrollBarHeight = hScrollBar.isVisible() ? hScrollBar.getPreferredSize().height : 0;
+        
+        int margin = 10;
+        int textX = getWidth() - textWidth - margin - scrollBarWidth;
+        int textY = getHeight() - margin - scrollBarHeight;
+        
+        // Draw semi-transparent background rectangle
+        int bgPadding = 4;
+        int bgX = textX - bgPadding;
+        int bgY = textY - textHeight - bgPadding;
+        int bgWidth = textWidth + (bgPadding * 2);
+        int bgHeight = textHeight + (bgPadding * 2);
+        
+        // Background with transparency
+        g2d.setColor(new Color(255, 255, 255, 200)); // Semi-transparent white
+        g2d.fillRoundRect(bgX, bgY, bgWidth, bgHeight, 6, 6);
+        
+        // Border
+        g2d.setColor(new Color(128, 128, 128, 200)); // Semi-transparent gray
+        g2d.drawRoundRect(bgX, bgY, bgWidth, bgHeight, 6, 6);
+        
+        // Draw the text
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(msg, textX, textY - textHeight + textAscent);
     }
 
     @Override
