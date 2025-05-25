@@ -61,6 +61,8 @@ public class PreviewTab extends ITab {
         setLayout(new BorderLayout());
         panelMekView.setMinimumSize(new Dimension(400, panelMekView.getMinimumSize().height));
         panelTROView.setMinimumSize(new Dimension(400, panelTROView.getMinimumSize().height));
+        rsPanel.setMinZoom(1.0f);
+        rsPanel.setFullAsyncMode(false);
 
         // Create scroll panes for each panel
         JScrollPane mekViewScroll = new JScrollPane(panelMekView);

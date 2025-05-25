@@ -77,7 +77,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JTextField txtWalkFinal = new JTextField();
     private final JTextField txtRunFinal = new JTextField();
     private final JTextField txtJumpFinal = new JTextField();
-
+    // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
     private final JLabel lblMekMechanicalJumpMP = new JLabel("Mech. J. Booster MP:");
     private final SpinnerNumberModel spnMekMechanicalJumpModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnMekMechanicalJumpMP = new JSpinner(spnMekMechanicalJumpModel);

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <fop version="1.0">
   <fonts>
     <directory recursive="true">data/fonts</directory>
-    <auto-detect/>
+    <auto-detect />
   </fonts>
 </fop>

@@ -14,9 +14,11 @@
  */
 package megameklab.ui;
 
+import megamek.MegaMek;
 import megamek.client.ui.swing.UnitLoadingDialog;
 import megamek.client.ui.swing.util.UIUtil;
 import megamek.client.ui.swing.widget.MegaMekButton;
+import megamek.client.ui.swing.widget.RawImagePanel;
 import megamek.client.ui.swing.widget.SkinSpecification;
 import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.swing.widget.SkinXMLHandler;
@@ -29,12 +31,16 @@ import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
+import megamek.common.util.TipOfTheDay;
+import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import org.apache.commons.collections4.CollectionUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -44,26 +50,90 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 
 /**
  * A startup splash screen for MegaMekLab
+ * 
  * @author Taharqa
  */
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
+    private static final MMLogger logger = MMLogger.create(MegaMek.class);
     JFrame frame;
     MenuBar mmlMenuBar;
+    RawImagePanel splash;
+    private double lastDpiScaleFactor;
     private static volatile StartupGUI instance = null;
 
     /** A map of resolution widths to file names for the startup screen */
     private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
     {
-        startupScreenImages.put(0, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1441, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1921, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(370, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(556, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
+        startupScreenImages.put(1112, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
     }
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
+    private TipOfTheDay tipOfTheDay;
 
     private StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
+        frame = new JFrame("MegaMekLab");
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        lastDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
+        tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"), "megameklab.resources.TipOfTheDay", frame);
+        setupDpiChangeListeners();
         initComponents();
+    }
+
+    /**
+     * Sets up the DPI change listeners for multi-monitor support
+     */
+    private void setupDpiChangeListeners() {
+        try {
+            // This works on Windows 10+ for per-monitor DPI awareness
+            Toolkit.getDefaultToolkit().addPropertyChangeListener("win.displayChange", evt -> {
+                SwingUtilities.invokeLater(this::handleDpiChange);
+            });
+
+            //For all other platforms
+            frame.addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                    SwingUtilities.invokeLater(StartupGUI.this::handleDpiChange);
+                }
+            });
+
+            // Display changes
+            frame.addWindowStateListener(e -> {
+                SwingUtilities.invokeLater(this::handleDpiChange);
+            });
+        } catch (Exception e) {
+            logger.error("Per-monitor DPI awareness not supported: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles DPI changes
+     */
+    public void handleDpiChange() {
+        final double newDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
+        if (Math.abs(lastDpiScaleFactor - newDpiScaleFactor) <= 0.01) {
+            return;
+        }
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(() -> handleDpiChange());
+            return;
+        }
+        lastDpiScaleFactor = newDpiScaleFactor;
+        Rectangle oldBounds = frame.getBounds();
+        Point oldCenter = new Point(oldBounds.x + oldBounds.width / 2,
+                                    oldBounds.y + oldBounds.height / 2);
+        Container container = frame.getContentPane();
+        container.removeAll();
+        removeAll();
+        tipOfTheDay.updateScaleFactor(frame);
+        initComponents();
+        Dimension newSize = frame.getSize();
+        Point newTopLeft = new Point(oldCenter.x - newSize.width / 2,
+                                     oldCenter.y - newSize.height / 2);
+        frame.setLocation(newTopLeft);
     }
 
     /**
@@ -99,7 +169,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         CConfig.setParam(CConfig.NAG_IMPORT_SETTINGS, Boolean.toString(false));
         int choice = JOptionPane.showConfirmDialog(this,
                 "Do you wish to import settings from another MML" +
-                        "? You can also do this later from the main menu.", "Import Settings?", YES_NO_OPTION);
+                        "? You can also do this later from the main menu.",
+                "Import Settings?", YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             mmlMenuBar.importSettings();
         }
@@ -114,19 +185,22 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     private void initComponents() {
+        setLayout(new GridBagLayout());
+        setOpaque(false);
+        setBackground(UIManager.getColor("controlHighlight"));
         SkinSpecification skinSpec = SkinXMLHandler.getSkin(UIComponents.MainMenuBorder.getComp(), true);
 
-        frame = new JFrame("MegaMekLab");
-        setBackground(UIManager.getColor("controlHighlight"));
+        frame.setTitle("MegaMekLab");
         mmlMenuBar = new MenuBar(this);
         frame.setJMenuBar(mmlMenuBar);
 
+
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
-        JLabel splash = UIUtil.createSplashComponent(startupScreenImages, frame);
-        add(splash, BorderLayout.CENTER);
+        splash = UIUtil.createSplashComponent(startupScreenImages, frame);
+        splash.setOpaque(false);
 
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
-        labVersion.setPreferredSize(new Dimension(250,15));
+        labVersion.setPreferredSize(new Dimension(250, 15));
         if (!skinSpec.fontColors.isEmpty()) {
             labVersion.setForeground(skinSpec.fontColors.get(0));
         }
@@ -184,12 +258,12 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         // the button width "look" reasonable.
         int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
 
-        //no more than 50% of image width
+        // no more than 50% of image width
         if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
             maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
         }
 
-        Dimension minButtonDim = new Dimension((int)(maximumWidth / 1.618), 25);
+        Dimension minButtonDim = new Dimension((int) (maximumWidth / 1.618), 25);
         if (textDim.getWidth() > minButtonDim.getWidth()) {
             minButtonDim = textDim;
         }
@@ -218,26 +292,31 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         btnQuit.setPreferredSize(minButtonDim);
 
         // layout
-        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        // Left Column
+        // Left Column (Splash Image)
         c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(10, 5, 10, 10);
-        c.ipadx = 10; c.ipady = 5;
-        c.gridx = 0;  c.gridy = 0;
+        c.insets = new Insets(0, 0, 0, 10);
+        c.gridx = 0;
+        c.gridy = 0;
         c.fill = GridBagConstraints.NONE;
-        c.weightx = 0.0; c.weighty = 0.0;
+        c.weightx = 0.0;
+        c.weighty = 0.0;
         c.gridwidth = 1;
         c.gridheight = 12;
         add(splash, c);
-        // Right Column
+
+        // Right Column (Buttons)
         c.insets = new Insets(2, 2, 2, 10);
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1.0; c.weighty = 1.0;
-        c.ipadx = 0; c.ipady = 0;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.ipadx = 0;
+        c.ipady = 0;
         c.gridheight = 1;
-        c.gridx = 1; c.gridy = 0;
+        c.gridx = 1;
+        c.gridy = 0;
         add(labVersion, c);
+
         c.gridy++;
         add(btnLoadUnit, c);
         c.gridy++;
@@ -261,15 +340,28 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         c.gridy++;
         add(btnQuit, c);
 
-        frame.setResizable(false);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(this, BorderLayout.CENTER);
+        frame.setResizable(false);
         frame.addWindowListener(new ExitOnWindowClosingListener(this));
+        this.setTransferHandler(new MMLFileDropTransferHandler(this));
         frame.validate();
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        this.setTransferHandler(new MMLFileDropTransferHandler(this));
+    }
+
+    /**
+     * Override paint to draw the tip *after* children are painted.
+     */
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g); // Draw background, border, and children first
+
+        // Now draw the tip on top
+        if (splash != null && splash.isVisible() && splash.getWidth() > 0 && splash.getHeight() > 0) {
+            tipOfTheDay.drawTipOfTheDay((Graphics2D) g, splash.getBounds(), TipOfTheDay.Position.BOTTOM_BORDER);
+        }
     }
 
     private static String processFileName(File file, Entity newUnit) {
@@ -293,12 +385,16 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     /**
-     * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen
-     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept and updated
-     * to the chosen unit, otherwise, a new UI will be created for the unit and previousFrame will
+     * Shows the Unit Selector Window and loads the unit if the user selects one.
+     * When the chosen
+     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept
+     * and updated
+     * to the chosen unit, otherwise, a new UI will be created for the unit and
+     * previousFrame will
      * be closed and disposed.
      *
-     * @param previousFrame The active frame before loading a new unit; can be the StartupGUI or any
+     * @param previousFrame The active frame before loading a new unit; can be the
+     *                      StartupGUI or any
      *                      MegaMekLabMainUI.
      */
     public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
@@ -306,7 +402,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer;
         if (previousFrame instanceof MegaMekLabTabbedUI tabbedUI) {
-            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, dialog -> addUnits(dialog, tabbedUI));
+            viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog,
+                    dialog -> addUnits(dialog, tabbedUI));
         } else {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, true);
         }
@@ -343,7 +440,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     @Override
     public void refreshMenuBar() {
-        mmlMenuBar.refreshMenuBar();
+        if (mmlMenuBar != null) {
+            mmlMenuBar.refreshMenuBar();
+        }
     }
 
     @Override

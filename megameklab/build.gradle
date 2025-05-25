@@ -2,11 +2,12 @@ import java.time.LocalDateTime
 
 plugins {
     id 'application'
-    id 'com.palantir.git-version' version '3.2.0'
+    id 'com.palantir.git-version' version '3.3.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
     id "io.sentry.jvm.gradle" version "5.5.0"
     id 'jacoco'
     id 'java'
+    id 'checkstyle'
 }
 
 java {
@@ -97,6 +98,21 @@ application {
     applicationDefaultJvmArgs = [
             '-Xmx1024m',
     ]
+}
+
+checkstyle {
+    toolVersion = '10.24.0'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    configProperties = [
+            'suppressionFile': file("${rootDir}/config/checkstyle/checkstyle-suppressions.xml")
+    ]
+    maxWarnings = 0  // Fail on any warning
+    maxErrors = 0    // Fail on any error
+}
+
+tasks.withType(Checkstyle).configureEach {
+    minHeapSize = "1g"
+    maxHeapSize = "4g"
 }
 
 jar {
@@ -259,6 +275,7 @@ assembleDist {
 
 test {
     useJUnitPlatform()
+    dependsOn(checkstyleMain)
     // report is always generated after tests run
     finalizedBy jacocoTestReport
 }

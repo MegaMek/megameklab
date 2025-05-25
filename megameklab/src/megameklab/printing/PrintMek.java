@@ -113,6 +113,7 @@ public class PrintMek extends PrintEntity {
         }
         // mek type
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("Land-Air 'Mech");
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             if (mek.isOmni()) {
@@ -120,10 +121,13 @@ public class PrintMek extends PrintEntity {
             }
             sb.append("QuadVee");
         } else if (mek.isIndustrial()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("IndustrialMech");
         } else if (mek.isOmni()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("OmniMech");
         } else {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("BattleMech");
         }
         sb.append(" Record Sheet");
@@ -180,13 +184,18 @@ public class PrintMek extends PrintEntity {
 
     }
 
-    private int getShieldDamage(MiscMounted m) {
+    private int getShieldDADamage(MiscMounted m) {
         if (!options.showDamage()) {
             return 0;
         }
-        final int totalShield = m.getDamageAbsorption(mek, m.getLocation());
-        final int remainingShield = m.getCurrentDamageCapacity(mek, m.getLocation());
-        return totalShield - remainingShield;
+        return m.getBaseDamageAbsorptionRate() - m.getDamageAbsorption(mek, m.getLocation());
+    }
+
+    private int getShieldDCDamage(MiscMounted m) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return m.getBaseDamageCapacity() - m.getCurrentDamageCapacity(mek, m.getLocation());
     }
 
     private void printShields() {
@@ -203,13 +212,13 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDCDamage(m), useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDamage(m), useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDADamage(m), useAlternateArmorGrouping());
                 }
             }
         }
@@ -826,7 +835,7 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)
+                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TechBase.IS)
                         && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
                 } else if (!mek.isClan() && m.getType().isClan()

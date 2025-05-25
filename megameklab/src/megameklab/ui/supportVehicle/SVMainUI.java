@@ -202,8 +202,8 @@ public class SVMainUI extends MegaMekLabMainUI {
             newUnit.setChassis("New");
             newUnit.setModel("Support Tank");
             newUnit.setYear(3145);
-            newUnit.setStructuralTechRating(ITechnology.RATING_D);
-            newUnit.setArmorTechRating(ITechnology.RATING_D);
+            newUnit.setStructuralTechRating(ITechnology.TechRating.D);
+            newUnit.setArmorTechRating(ITechnology.TechRating.D);
             newUnit.setOriginalWalkMP(1);
         } else {
             newUnit.setChassis(oldEntity.getChassis());

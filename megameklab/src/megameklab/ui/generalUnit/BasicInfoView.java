@@ -49,6 +49,8 @@ import megamek.common.Mek;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechAdvancement;
 import megamek.common.UnitRole;
+import megamek.common.ITechnology.FactionAffiliation;
+import megamek.common.ITechnology.Faction;
 import megamek.logging.MMLogger;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -180,7 +182,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbFaction.setToolTipText(resourceMap.getString("BasicInfoView.cbFaction.tooltip"));
         add(cbFaction, gbc);
         cbFaction.addActionListener(this);
-        cbFaction.setPrototypeDisplayValue(0);
+        cbFaction.setPrototypeDisplayValue(Faction.NONE);
 
         gbc.gridx = 0;
         gbc.gridy++;
@@ -327,15 +329,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     @Override
-    public int getTechFaction() {
+    public ITechnology.Faction getTechFaction() {
         if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
-            return ITechnology.F_NONE;
+            return ITechnology.Faction.NONE;
         }
-        Integer retVal = (Integer) cbFaction.getSelectedItem();
-        return (retVal == null) ? ITechnology.F_NONE : retVal;
+        Faction selectedFaction = (Faction) cbFaction.getSelectedItem();
+        return (selectedFaction == null) ? ITechnology.Faction.NONE : selectedFaction;
     }
 
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         cbFaction.setSelectedItem(techFaction);
     }
 
@@ -426,10 +428,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         // Clan is available to anything that doesn't require an IS tech base, is built
         // after the Clans
         // are formed, and not built by an IS faction before the Clan invasion.
-        final boolean clanFaction = (getTechFaction() >= ITechnology.F_CLAN) || (getTechFaction() < 0);
-        final boolean sphereAvailable = baseTA.getTechBase() != ITechnology.TECH_BASE_CLAN;
+        final boolean clanFaction = getTechFaction().getAffiliation().equals(FactionAffiliation.CLAN) || (getTechFaction() == Faction.NONE);
+        final boolean sphereAvailable = baseTA.getTechBase() != ITechnology.TechBase.CLAN;
         final boolean clanAvailable = (getTechIntroYear() >= CLAN_START)
-                && (baseTA.getTechBase() != ITechnology.TECH_BASE_IS)
+                && (baseTA.getTechBase() != ITechnology.TechBase.IS)
                 && (clanFaction || (getTechIntroYear() >= IS_MIXED_START));
         final boolean mixedTechAvailable = (getTechIntroYear() >= IS_MIXED_START)
                 || ((getTechIntroYear() >= CLAN_MIXED_START) && clanFaction);
@@ -503,7 +505,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private void refreshFaction() {
         if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
             cbFaction.removeActionListener(this);
-            Integer prevFaction = (Integer) cbFaction.getSelectedItem();
+            Faction prevFaction = (Faction) cbFaction.getSelectedItem();
             cbFaction.refresh(getTechIntroYear());
             cbFaction.setSelectedItem(prevFaction);
             cbFaction.addActionListener(this);
