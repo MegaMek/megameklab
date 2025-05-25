@@ -720,9 +720,6 @@ public class RecordSheetPreviewPanel extends JPanel {
             upgradeScheduledAction(ScheduledAction.REGENERATE_AND_RESET);
             return;
         }
-        if (lastRegenerationEntitiesCount != currentEntities.size()) {
-            repaint(); // Trigger a repaint to show placeholders while generating
-        }
         regenerateTimer.restart(); // Restart regeneration timer to debounce
     }
 
@@ -731,6 +728,11 @@ public class RecordSheetPreviewPanel extends JPanel {
      * reset.
      */
     private void performRegenerateAndReset() {
+        updateTimer.stop();
+        resetViewTimer.stop();
+        if (regenerateTimer.isRunning()) {
+            return; // If regeneration is already re-scheduled, skip this regenerate (we do the next one)
+        }
         scheduledAction = ScheduledAction.NONE;
         cleanupPageTasksAndData(); // Cancel tasks, clear page list
         generatedSheets = null; // Clear cached sheets
@@ -748,10 +750,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
         if (isShowing()) {
             // Generate sheets and pages in the background to avoid blocking EDT
+            if (lastRegenerationEntitiesCount != currentEntities.size()) {
+                repaint(); // Trigger a repaint to show placeholders while generating
+            }
             renderExecutor.submit(() -> {
-                if (lastRegenerationEntitiesCount != currentEntities.size()) {
-                    repaint(); // Trigger a repaint to show placeholders while generating
-                }
                 generateSheetPages(currentEntities);
                 lastRegenerationEntitiesCount = currentEntities.size(); // Update last regeneration count
                 if (isInitialRender) {
