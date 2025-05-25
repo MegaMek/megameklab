@@ -38,3 +38,6 @@
 units.cache
 .mml_tmp
 *.iml
+
+/megameklab/docs/README.md
+/megameklab/docs/LICENSE*

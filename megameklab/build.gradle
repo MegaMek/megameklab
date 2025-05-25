@@ -140,17 +140,21 @@ ${jvmOptions}
     }
 }
 
+tasks.register("copyLicenseFiles", Exec) {
+    commandLine "cp", "../LICENSE", "../LICENSE.code", "../LICENSE.assets", "../README.md", "docs"
+}
+
 tasks.register('stageFiles', Copy) {
     description = 'Stages files that are to be copied into the distribution.'
 
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
     dependsOn generateDynamicFiles
+    dependsOn copyLicenseFiles
 
     from projectDir
     include "${mmconf}/**"
     include "${data}/**"
     include "${docs}/**"
-    include 'license.txt'
     include 'SubmitBug.html'
     include "sentry.properties"
     include "*.ini"
@@ -188,16 +192,21 @@ distributions {
             from("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
             }
+
             from(fileStagingDir) {
                 exclude 'history.txt'
             }
+
             from("${mmDir}/megamek/build/libs/MegaMek.jar") {
                 into "${lib}"
             }
+
             from("${projectDir}/scripts") {
                 rename "shell.sh", "MegaMekLab.sh"
             }
+
             from(jar)
+
             from(project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
                 into "${lib}"
@@ -206,9 +215,11 @@ distributions {
             from("${buildDir}/launch4j") {
                 include '*.exe'
             }
+
             from(jar) {
                 into "${lib}"
             }
+            
             duplicatesStrategy = 'exclude'
         }
     }
