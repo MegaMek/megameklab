@@ -64,7 +64,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
-    private record GroupInfo(String title, List<DialogOptionComponent> quirks) {
+    private record GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
     }
 
     public QuirksTab(EntitySource eSource) {
@@ -359,7 +359,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         groupPanel.removeAll();
         if (!quirks.isEmpty() && (numCols > 0)) {
             groupPanel.setLayout(new GridLayout(0, numCols, 1, 4));
-            for (DialogOptionComponent quirk : quirks) {
+            for (DialogOptionComponentYPanel quirk : quirks) {
                 groupPanel.add(quirk);
             }
         }
