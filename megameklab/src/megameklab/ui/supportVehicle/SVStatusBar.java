@@ -18,7 +18,7 @@
  */
 package megameklab.ui.supportVehicle;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.StatusBar;
 

@@ -20,11 +20,11 @@ package megameklab.ui.dialog;
 
 import megamek.client.ui.Messages;
 import megamek.client.ui.WrapLayout;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
-import megamek.client.ui.swing.tileset.EntityImage;
-import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
-import megamek.client.ui.swing.util.PlayerColour;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.dialogs.unitSelectorDialogs.AbstractUnitSelectorDialog;
+import megamek.client.ui.tileset.EntityImage;
+import megamek.client.ui.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;

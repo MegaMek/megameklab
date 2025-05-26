@@ -39,7 +39,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
+import static megamek.client.ui.util.UIUtil.alternateTableBGColor;
 
 /**
  * this model was not being used by anything, so I totally redid so that it can

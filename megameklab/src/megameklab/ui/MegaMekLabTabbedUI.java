@@ -40,7 +40,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.MegaMek;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.EnhancedTabbedPane.CloseableTab;
 import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
