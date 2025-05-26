@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
@@ -64,14 +64,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
-    private static class GroupInfo {
-        final String title;
-        final List<DialogOptionComponentYPanel> quirks;
-
-        GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
-            this.title = title;
-            this.quirks = quirks;
-        }
+    private record GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
     }
 
     public QuirksTab(EntitySource eSource) {
@@ -364,61 +357,12 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      */
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();
-        if (quirks.isEmpty() || numCols <= 0) {
-            groupPanel.revalidate();
-            groupPanel.repaint();
-            return;
-        }
-
-        int totalItems = quirks.size();
-        int itemsPerCol = (int) Math.ceil((double) totalItems / numCols);
-        if (itemsPerCol <= 0)
-            itemsPerCol = 1;
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(1, 4, 1, 4);
-        gbc.weighty = 0;
-        gbc.weightx = 1; // We auto-space them horizontally (if we put 0 they stay aligned to the left)
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Add quirks to the group panel in a grid layout
-        int lastColIndex = 0;
-        for (int i = 0; i < totalItems; i++) {
-            final int rowIndex = i % itemsPerCol;
-            gbc.gridx = i / itemsPerCol;
-            gbc.gridy = rowIndex;
-            if (gbc.gridx > lastColIndex) {
-                lastColIndex = gbc.gridx;
+        if (!quirks.isEmpty() && (numCols > 0)) {
+            groupPanel.setLayout(new GridLayout(0, numCols, 1, 4));
+            for (DialogOptionComponentYPanel quirk : quirks) {
+                groupPanel.add(quirk);
             }
-
-            DialogOptionComponentYPanel comp = quirks.get(i);
-            // Set preferred width so we match the width of the widest item
-            Dimension originalSize = originalPreferredSizes.get(comp);
-            int currentHeight = (originalSize != null) ? originalSize.height : comp.getPreferredSize().height;
-            comp.setPreferredSize(new Dimension(globalMaxItemWidth, currentHeight));
-
-            groupPanel.add(comp, gbc);
         }
-
-        // Because we are auto-spacing them horizontally (bgc.weightx = 1 above), we
-        // create fake columns in case
-        // this group doesn't have enough (usually weapons)
-        for (int i = lastColIndex + 1; i < numCols; i++) {
-            gbc.gridx = i;
-            gbc.gridy = 0;
-            groupPanel.add(Box.createHorizontalStrut(globalMaxItemWidth), gbc);
-        }
-
-        // Fill space to the right of the last column (forces everything aligned left)
-        // We need this if we don't do the trick above with the fake columns and
-        // auto-spacing
-        // gbc.gridx = numCols;
-        // gbc.gridy = 0;
-        // gbc.weightx = 1;
-        // gbc.gridheight = itemsPerCol + 1;
-        // groupPanel.add(Box.createHorizontalGlue(), gbc);
-        // gbc.gridheight = 1;
 
         groupPanel.revalidate();
         groupPanel.repaint();
