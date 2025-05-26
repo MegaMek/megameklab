@@ -33,12 +33,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLEditorKit;
 
-import megamek.client.ui.dialogs.BVDisplayDialog;
-import megamek.client.ui.dialogs.CostDisplayDialog;
-import megamek.client.ui.dialogs.WeightDisplayDialog;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;

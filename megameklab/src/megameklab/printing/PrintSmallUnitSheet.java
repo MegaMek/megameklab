@@ -30,7 +30,7 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
 import megamek.common.HandheldWeapon;

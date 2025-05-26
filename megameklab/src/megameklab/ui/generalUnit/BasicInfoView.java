@@ -41,7 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import megamek.MMConstants;
-import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.common.Entity;
 import megamek.common.ITechManager;
 import megamek.common.ITechnology;

@@ -15,7 +15,7 @@
  */
 package megameklab.ui.mek;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.util.MekUtil;
 

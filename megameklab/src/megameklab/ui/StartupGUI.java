@@ -15,14 +15,14 @@
 package megameklab.ui;
 
 import megamek.MegaMek;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.util.UIUtil;
-import megamek.client.ui.swing.widget.MegaMekButton;
-import megamek.client.ui.swing.widget.RawImagePanel;
-import megamek.client.ui.swing.widget.SkinSpecification;
-import megamek.client.ui.swing.widget.SkinSpecification.UIComponents;
-import megamek.client.ui.swing.widget.SkinXMLHandler;
-import megamek.client.ui.swing.widget.SkinnedJPanel;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.util.UIUtil;
+import megamek.client.ui.widget.MegaMekButton;
+import megamek.client.ui.widget.RawImagePanel;
+import megamek.client.ui.widget.SkinSpecification;
+import megamek.client.ui.widget.SkinSpecification.UIComponents;
+import megamek.client.ui.widget.SkinXMLHandler;
+import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
 import megameklab.MMLConstants;

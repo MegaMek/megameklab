@@ -18,12 +18,10 @@
  */
 package megameklab.ui;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
-import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
-import megameklab.util.CConfig;
 
 import javax.swing.*;
 

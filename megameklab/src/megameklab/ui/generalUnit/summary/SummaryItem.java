@@ -18,7 +18,7 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.client.ui.swing.calculationReport.CalculationReport;
+import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
 import megamek.common.Entity;
 import megamek.common.verifier.TestEntity;
 

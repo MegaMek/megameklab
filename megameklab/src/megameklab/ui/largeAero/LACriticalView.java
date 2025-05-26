@@ -14,7 +14,7 @@
  */
 package megameklab.ui.largeAero;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Jumpship;
 import megamek.common.LocationFullException;
 import megamek.common.SmallCraft;

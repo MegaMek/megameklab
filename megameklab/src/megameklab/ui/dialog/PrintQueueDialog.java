@@ -19,7 +19,7 @@
 package megameklab.ui.dialog;
 
 import static java.util.stream.Collectors.toList;
-import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
+import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATHMUL;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -45,8 +45,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.Messages;
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.buttons.MMButton;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.BTObject;
 import megamek.common.Configuration;
 import megamek.common.Entity;

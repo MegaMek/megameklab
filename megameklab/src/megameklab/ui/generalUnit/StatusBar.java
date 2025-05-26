@@ -31,12 +31,12 @@ import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
 import megamek.client.ui.WrapLayout;
-import megamek.client.ui.dialogs.BVDisplayDialog;
-import megamek.client.ui.dialogs.CostDisplayDialog;
-import megamek.client.ui.dialogs.WeightDisplayDialog;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.calculationReport.CalculationReport;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;

@@ -27,7 +27,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
-import megamek.client.ui.swing.util.UIUtil.FixedYPanel;
+import megamek.client.ui.util.UIUtil.FixedYPanel;
 import megamek.common.CriticalSlot;
 import megamek.common.FixedWingSupport;
 import megamek.common.Mounted;

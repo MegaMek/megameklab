@@ -42,10 +42,9 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 
-import megamek.client.ui.swing.DialogOptionComponent;
-import megamek.client.ui.swing.DialogOptionListener;
+import megamek.client.ui.panels.DialogOptionComponentYPanel;
+import megamek.client.ui.clientGUI.DialogOptionListener;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.options.IOption;
@@ -59,17 +58,17 @@ import megameklab.ui.util.RefreshListener;
 public class QuirksTab extends ITab implements DialogOptionListener {
 
     private static final boolean SORT_QUIRKS_ALPHABETICALLY = true;
-    private final Map<JPanel, List<DialogOptionComponent>> groupLayoutMap = new LinkedHashMap<>();
-    private final Map<DialogOptionComponent, Dimension> originalPreferredSizes = new HashMap<>();
+    private final Map<JPanel, List<DialogOptionComponentYPanel>> groupLayoutMap = new LinkedHashMap<>();
+    private final Map<DialogOptionComponentYPanel, Dimension> originalPreferredSizes = new HashMap<>();
     RefreshListener refresh = null;
     private int globalMaxItemWidth = 0;
     private int lastCalculatedNumCols = -1;
 
     private static class GroupInfo {
         final String title;
-        final List<DialogOptionComponent> quirks;
+        final List<DialogOptionComponentYPanel> quirks;
 
-        GroupInfo(String title, List<DialogOptionComponent> quirks) {
+        GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
             this.title = title;
             this.quirks = quirks;
         }
@@ -110,7 +109,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         lastCalculatedNumCols = -1;
 
         // Collect all quirks
-        List<DialogOptionComponent> allQuirks = new ArrayList<>();
+        List<DialogOptionComponentYPanel> allQuirks = new ArrayList<>();
         List<GroupInfo> groupsToDisplay = new ArrayList<>();
         collectGeneralQuirksInfo(groupsToDisplay, allQuirks);
         collectWeaponQuirksInfo(groupsToDisplay, allQuirks);
@@ -143,10 +142,10 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects general quirks
      */
     private void collectGeneralQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponent> quirksList) {
+            List<DialogOptionComponentYPanel> quirksList) {
         for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements();) {
             IOptionGroup group = i.nextElement();
-            List<DialogOptionComponent> quirks = collecQuirksForOptionGroup(group, quirksList);
+            List<DialogOptionComponentYPanel> quirks = collecQuirksForOptionGroup(group, quirksList);
             if (!quirks.isEmpty()) {
                 groupsToDisplay.add(new GroupInfo(group.getDisplayableName(), quirks));
             }
@@ -157,7 +156,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collect weapon quirks
      */
     private void collectWeaponQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponent> quirksList) {
+            List<DialogOptionComponentYPanel> quirksList) {
         List<Mounted<?>> equipmentList = new ArrayList<>(getEntity().getWeaponList());
         for (Mounted<?> miscItem : getEntity().getMisc()) {
             if (miscItem.getType().hasFlag(MiscType.F_CLUB)) {
@@ -165,7 +164,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             }
         }
         for (Mounted<?> m : equipmentList) {
-            List<DialogOptionComponent> quirks = collectQuirksForWeapon(m, quirksList);
+            List<DialogOptionComponentYPanel> quirks = collectQuirksForWeapon(m, quirksList);
             if (!quirks.isEmpty()) {
                 String title = m.getName() + " (" + getEntity().getLocationName(m.getLocation()) + ")";
                 groupsToDisplay.add(new GroupInfo(title, quirks));
@@ -176,9 +175,9 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Collects and optionally sorts quirks for a general group
      */
-    private List<DialogOptionComponent> collecQuirksForOptionGroup(IOptionGroup group,
-            List<DialogOptionComponent> quirksList) {
-        List<DialogOptionComponent> quirksInGroup = new ArrayList<>();
+    private List<DialogOptionComponentYPanel> collecQuirksForOptionGroup(IOptionGroup group,
+            List<DialogOptionComponentYPanel> quirksList) {
+        List<DialogOptionComponentYPanel> quirksInGroup = new ArrayList<>();
         for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
             IOption option = j.nextElement();
             if (null == option || Quirks.isQuirkDisallowed(option, getEntity()))
@@ -194,13 +193,13 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Collects and optionally sorts quirks for a specific weapon
      */
-    private List<DialogOptionComponent> collectQuirksForWeapon(Mounted<?> m,
-            List<DialogOptionComponent> allQuirksList) {
+    private List<DialogOptionComponentYPanel> collectQuirksForWeapon(Mounted<?> m,
+            List<DialogOptionComponentYPanel> allQuirksList) {
         WeaponQuirks wq = m.getQuirks();
         if (wq == null)
             return Collections.emptyList();
 
-        List<DialogOptionComponent> weaponComps = new ArrayList<>();
+        List<DialogOptionComponentYPanel> weaponComps = new ArrayList<>();
         for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements();) {
             IOptionGroup group = i.nextElement();
             for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
@@ -219,7 +218,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Updates the font style of a quirk component based on its selection state
      */
-    private void updateQuirkFontStyle(DialogOptionComponent comp, boolean selected) {
+    private void updateQuirkFontStyle(DialogOptionComponentYPanel comp, boolean selected) {
         for (Component child : comp.getComponents()) {
             Font currentFont = child.getFont();
             if (currentFont != null) {
@@ -237,9 +236,9 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Creates a quirk entry, stores its info, and adds it to lists.
      */
-    private void addQuirkInfo(IOption option, List<DialogOptionComponent> groupList,
-            List<DialogOptionComponent> allList) {
-        DialogOptionComponent comp = new DialogOptionComponent(this, option, true);
+    private void addQuirkInfo(IOption option, List<DialogOptionComponentYPanel> groupList,
+            List<DialogOptionComponentYPanel> allList) {
+        DialogOptionComponentYPanel comp = new DialogOptionComponentYPanel(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
         updateQuirkFontStyle(comp, option.booleanValue());
         groupList.add(comp);
@@ -249,9 +248,9 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Calculates the maximum width of all quirks
      */
-    private void calculateGlobalMaxWidth(List<DialogOptionComponent> allQuirks) {
+    private void calculateGlobalMaxWidth(List<DialogOptionComponentYPanel> allQuirks) {
         globalMaxItemWidth = 0;
-        for (DialogOptionComponent comp : allQuirks) {
+        for (DialogOptionComponentYPanel comp : allQuirks) {
             Dimension originalSize = originalPreferredSizes.get(comp);
             globalMaxItemWidth = Math.max(globalMaxItemWidth,
                     (originalSize != null) ? originalSize.width : comp.getPreferredSize().width);
@@ -352,7 +351,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Relayouts all group panels based on the calculated number of columns.
      */
     private void relayoutAllGroups(int numCols) {
-        for (Map.Entry<JPanel, List<DialogOptionComponent>> entry : groupLayoutMap.entrySet()) {
+        for (Map.Entry<JPanel, List<DialogOptionComponentYPanel>> entry : groupLayoutMap.entrySet()) {
             relayoutGroupPanel(entry.getKey(), entry.getValue(), numCols);
         }
         revalidate();
@@ -363,7 +362,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Arranges quirks within a single group panel and makes them fixed-width
      * from globalMaxItemWidth
      */
-    private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponent> quirks, int numCols) {
+    private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();
         if (quirks.isEmpty() || numCols <= 0) {
             groupPanel.revalidate();
@@ -393,7 +392,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
                 lastColIndex = gbc.gridx;
             }
 
-            DialogOptionComponent comp = quirks.get(i);
+            DialogOptionComponentYPanel comp = quirks.get(i);
             // Set preferred width so we match the width of the widest item
             Dimension originalSize = originalPreferredSizes.get(comp);
             int currentHeight = (originalSize != null) ? originalSize.height : comp.getPreferredSize().height;
@@ -426,7 +425,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     @Override
-    public void optionClicked(DialogOptionComponent comp, IOption option, boolean state) {
+    public void optionClicked(DialogOptionComponentYPanel comp, IOption option, boolean state) {
         option.setValue(state);
         updateQuirkFontStyle(comp, state);
         if (refresh != null) {
@@ -435,7 +434,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     @Override
-    public void optionSwitched(DialogOptionComponent comp, IOption option, int i) {
+    public void optionSwitched(DialogOptionComponentYPanel comp, IOption option, int i) {
     }
 
     public ComponentListener refreshOnShow = new ComponentAdapter() {
