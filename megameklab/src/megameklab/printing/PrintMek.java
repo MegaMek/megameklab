@@ -113,6 +113,7 @@ public class PrintMek extends PrintEntity {
         }
         // mek type
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("Land-Air 'Mech");
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             if (mek.isOmni()) {
@@ -120,10 +121,13 @@ public class PrintMek extends PrintEntity {
             }
             sb.append("QuadVee");
         } else if (mek.isIndustrial()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("IndustrialMech");
         } else if (mek.isOmni()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("OmniMech");
         } else {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("BattleMech");
         }
         sb.append(" Record Sheet");
