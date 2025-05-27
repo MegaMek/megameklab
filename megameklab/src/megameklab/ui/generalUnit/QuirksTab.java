@@ -376,7 +376,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
                 if (quirk != null) {
                     groupPanel.add(quirk);
                 } else {
-                    groupPanel.add(Box.createGlue());
+                    groupPanel.add(new JPanel());
                 }
             }
         }
