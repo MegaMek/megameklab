@@ -13,8 +13,8 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EntityFluff;
 import megamek.common.util.ImageUtil;

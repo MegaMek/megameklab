@@ -15,7 +15,7 @@
  */
 package megameklab.ui.infantry;
 
-import megamek.client.ui.swing.calculationReport.CalculationReport;
+import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.generalUnit.StatusBar;
 

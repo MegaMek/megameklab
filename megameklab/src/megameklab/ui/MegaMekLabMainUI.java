@@ -15,7 +15,7 @@
  */
 package megameklab.ui;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.Entity;
 import megamek.common.Mounted;

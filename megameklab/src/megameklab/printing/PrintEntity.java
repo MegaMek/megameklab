@@ -39,8 +39,8 @@ import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.client.generator.RandomNameGenerator;
-import megamek.client.ui.swing.util.FluffImageHelper;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.FluffImageHelper;
+import megamek.client.ui.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;

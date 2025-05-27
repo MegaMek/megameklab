@@ -30,11 +30,11 @@ import java.util.List;
 import javax.swing.JScrollPane;
 
 
-import megamek.client.ui.panes.ConfigurableMekViewPanel;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.MekViewPanel;
-import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
-import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
+import megamek.client.ui.dialogs.unitSelectorDialogs.ConfigurableMekViewPanel;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.dialogs.unitSelectorDialogs.MekViewPanel;
+import megamek.client.ui.panels.alphaStrike.ConfigurableASCardPanel;
+import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;

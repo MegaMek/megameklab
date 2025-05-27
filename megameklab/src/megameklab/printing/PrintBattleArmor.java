@@ -13,11 +13,10 @@
  */
 package megameklab.printing;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.*;
 import megamek.common.battlevalue.BattleArmorBVCalculator;
 import megameklab.util.BattleArmorUtil;
-import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 

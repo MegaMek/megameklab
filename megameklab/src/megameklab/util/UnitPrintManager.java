@@ -15,7 +15,7 @@
  */
 package megameklab.util;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.options.GameOptions;
 import megamek.logging.MMLogger;

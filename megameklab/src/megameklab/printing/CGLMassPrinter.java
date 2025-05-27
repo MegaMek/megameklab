@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.GunEmplacement;
