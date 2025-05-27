@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
@@ -358,9 +359,25 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();
         if (!quirks.isEmpty() && (numCols > 0)) {
-            groupPanel.setLayout(new GridLayout(0, numCols, 1, 4));
-            for (DialogOptionComponentYPanel quirk : quirks) {
-                groupPanel.add(quirk);
+            groupPanel.setLayout(new GridLayout(0, numCols, 1, 1));
+            // Reorder quirks to have them alphabetically sorted top to bottom, left to right
+            final int numQuirks = quirks.size();
+            final int numRows = (int) Math.ceil((double) numQuirks / numCols);
+            final int totalGridSize = numRows * numCols;
+            DialogOptionComponentYPanel[] reorderedQuirks = new DialogOptionComponentYPanel[totalGridSize];
+            for (int i = 0; i < numQuirks; i++) {
+                int col = i / numRows;
+                int row = i % numRows;
+                int gridLayoutIndex = row * numCols + col;
+                reorderedQuirks[gridLayoutIndex] = quirks.get(i);
+            }
+            // --- end of reordering quirks ---
+            for (DialogOptionComponentYPanel quirk : reorderedQuirks) {
+                if (quirk != null) {
+                    groupPanel.add(quirk);
+                } else {
+                    groupPanel.add(Box.createGlue());
+                }
             }
         }
 
