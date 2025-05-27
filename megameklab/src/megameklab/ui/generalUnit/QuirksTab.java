@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -45,6 +44,7 @@ import javax.swing.JViewport;
 
 import megamek.client.ui.panels.DialogOptionComponentYPanel;
 import megamek.client.ui.clientGUI.DialogOptionListener;
+import megamek.client.ui.util.VerticalGridLayout;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
 import megamek.common.options.IOption;
@@ -358,7 +358,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();
         if (!quirks.isEmpty() && (numCols > 0)) {
-            groupPanel.setLayout(new GridLayout(0, numCols, 1, 4));
+            groupPanel.setLayout(new VerticalGridLayout(0, numCols, 1, 4));
             for (DialogOptionComponentYPanel quirk : quirks) {
                 groupPanel.add(quirk);
             }
