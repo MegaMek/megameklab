@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
@@ -359,7 +358,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();
         if (!quirks.isEmpty() && (numCols > 0)) {
-            groupPanel.setLayout(new VerticalGridLayout(0, numCols, 1, 4));
+            groupPanel.setLayout(new VerticalGridLayout(0, numCols, 1, 1));
             for (DialogOptionComponentYPanel quirk : quirks) {
                 groupPanel.add(quirk);
             }
