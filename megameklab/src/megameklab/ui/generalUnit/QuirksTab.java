@@ -378,7 +378,6 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         if (!quirks.isEmpty() && (numCols > 0)) {
             groupPanel.setLayout(new GridLayout(0, numCols, 1, 1));
             DialogOptionComponentYPanel[] reorderedQuirks = sortQuirks(quirks, numCols);
-            // --- end of reordering quirks ---
             for (DialogOptionComponentYPanel quirk : reorderedQuirks) {
                 if (quirk != null) {
                     groupPanel.add(quirk);
