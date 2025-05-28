@@ -539,7 +539,11 @@ public final class CConfig {
 
     private static Optional<Dimension> getWindowSize(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
+            String param = getParam(cconfigSetting);
+            if (param.isBlank()) {
+                return Optional.empty();
+            }
+            String[] fileChooserSettings = param.split(";");
             int sizeX = Integer.parseInt(fileChooserSettings[2]);
             int sizeY = Integer.parseInt(fileChooserSettings[3]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -553,7 +557,11 @@ public final class CConfig {
 
     private static Optional<Point> getWindowPosition(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
+            String param = getParam(cconfigSetting);
+            if (param.isBlank()) {
+                return Optional.empty();
+            }
+            String[] fileChooserSettings = param.split(";");
             int posX = Integer.parseInt(fileChooserSettings[0]);
             int posY = Integer.parseInt(fileChooserSettings[1]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

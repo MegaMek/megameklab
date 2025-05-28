@@ -635,6 +635,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
         int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
         int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
+        if (scaledMonitorH <= 0 || scaledMonitorW <= 0) {
+            return; // Invalid monitor size, do not resize
+        }
         int w = Math.min(getSize().width, scaledMonitorW);
         int h = Math.min(getSize().height, scaledMonitorH);
         setSize(new Dimension(w, h));
