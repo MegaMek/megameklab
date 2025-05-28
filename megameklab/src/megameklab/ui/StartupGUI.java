@@ -469,6 +469,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     private int drawLogo(Graphics2D g2d, int panelWidth, int panelHeight) {
+        if (logoImage == null) {
+            return 0; // Skip drawing if logoImage is not initialized
+        }
         VolatileImage image = logoImage.getImage();
         int targetLogoHeight = 0;
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
