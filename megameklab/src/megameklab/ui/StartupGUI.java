@@ -374,7 +374,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(this, BorderLayout.CENTER);
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.addWindowListener(new ExitOnWindowClosingListener(this));
         this.setTransferHandler(new MMLFileDropTransferHandler(this));
         frame.validate();
