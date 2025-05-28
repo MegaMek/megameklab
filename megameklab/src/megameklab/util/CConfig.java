@@ -532,6 +532,7 @@ public final class CConfig {
         setParam(GUI_DS_MAINUI_WINDOW, "");
         setParam(GUI_WS_MAINUI_WINDOW, "");
         setParam(GUI_HHW_MAINUI_WINDOW, "");
+        setParam(GUI_TABBED_WINDOW, "");
         saveConfig();
     }
 
