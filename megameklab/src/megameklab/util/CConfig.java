@@ -543,9 +543,9 @@ public final class CConfig {
             if (param.isBlank()) {
                 return Optional.empty();
             }
-            String[] fileChooserSettings = param.split(";");
-            int sizeX = Integer.parseInt(fileChooserSettings[2]);
-            int sizeY = Integer.parseInt(fileChooserSettings[3]);
+            String[] values = param.split(";");
+            int sizeX = Integer.parseInt(values[2]);
+            int sizeY = Integer.parseInt(values[3]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             int clampedWidth  = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
             int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
@@ -561,9 +561,9 @@ public final class CConfig {
             if (param.isBlank()) {
                 return Optional.empty();
             }
-            String[] fileChooserSettings = param.split(";");
-            int posX = Integer.parseInt(fileChooserSettings[0]);
-            int posY = Integer.parseInt(fileChooserSettings[1]);
+            String[] values = param.split(";");
+            int posX = Integer.parseInt(values[0]);
+            int posY = Integer.parseInt(values[1]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             int clampedX = Math.max(0, Math.min(posX, screen.width-100)); // -100 to avoid the right edge
             int clampedY = Math.max(0, Math.min(posY, screen.height-100)); // -100 to avoid the taskbar
