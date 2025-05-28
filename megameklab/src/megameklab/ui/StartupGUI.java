@@ -210,7 +210,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
                 try {
                     int panelWidth = this.getWidth();
                     int panelHeight = this.getHeight();
-                    int padding = 20;
 
                     // Draw Tip of the Day
                     if (tipOfTheDay != null) {
@@ -331,9 +330,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 0.0;
-        c.weighty = 0.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 3.0;
+        c.weighty = 1.0;
         c.gridwidth = 1;
         c.gridheight = 12;
         add(splashPanel, c);
@@ -439,23 +438,23 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
 
-    private int drawMedal(Graphics2D g2d, int panelWidth, int panelHeight, int logoHeight) {
-        int targetMedalWidth = 0;
+    private void drawMedal(Graphics2D g2d, int panelWidth, int panelHeight, int logoHeight) {
         if (medalImage == null) {
-            return targetMedalWidth; // Skip drawing if medalImage is not initialized
+            return; // Skip drawing if medalImage is not initialized
         }
         VolatileImage image = medalImage.getImage();
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
-            double medalHeightScalePercent = 0.15; // Medal height as 15% of panel height
+            double medalScalePercent = 0.10; // Medal height as % of panel
+            
             int originalMedalWidth = image.getWidth(null);
             int originalMedalHeight = image.getHeight(null);
 
-            int targetMedalHeight = (int) (panelHeight * medalHeightScalePercent);
-            if (targetMedalHeight < 1) targetMedalHeight = 1; // Ensure minimum size
+            int targetMedalWidth = (int) (panelWidth * medalScalePercent);
+            if (targetMedalWidth < 1) targetMedalWidth = 1; // Ensure minimum size
 
-            double scaleFactor = (double) targetMedalHeight / originalMedalHeight;
-            targetMedalWidth = (int) (originalMedalWidth * scaleFactor);
-            if (targetMedalWidth < 1) targetMedalWidth = 1;
+            double scaleFactor = (double) targetMedalWidth / originalMedalWidth;
+            int targetMedalHeight = (int) (originalMedalHeight * scaleFactor);
+            if (targetMedalHeight < 1) targetMedalHeight = 1;
 
             // Position: center, under logo
             int medalX = (panelWidth - targetMedalWidth)/2;
@@ -467,7 +466,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
             g2d.drawImage(image, medalX, medalY, targetMedalWidth, targetMedalHeight, null);
         }
-        return targetMedalWidth;
     }
 
     private int drawLogo(Graphics2D g2d, int panelWidth, int panelHeight) {
