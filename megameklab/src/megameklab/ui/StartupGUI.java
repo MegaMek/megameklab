@@ -25,13 +25,17 @@ import megamek.client.ui.widget.SkinXMLHandler;
 import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
+import megamek.common.annotations.Nullable;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
+import megamek.common.util.ImageUtil;
+import megamek.common.util.ManagedVolatileImage;
 import megamek.common.util.TipOfTheDay;
+import megamek.common.util.fileUtils.MegaMekFile;
 import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
@@ -41,6 +45,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.VolatileImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -57,17 +62,15 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private static final MMLogger logger = MMLogger.create(MegaMek.class);
     JFrame frame;
     MenuBar mmlMenuBar;
-    RawImagePanel splash;
+    RawImagePanel splashPanel;
+    private Image splashImage;
+    private ManagedVolatileImage logoImage;
+    private ManagedVolatileImage medalImage;
     private double lastDpiScaleFactor;
     private static volatile StartupGUI instance = null;
-
-    /** A map of resolution widths to file names for the startup screen */
-    private final TreeMap<Integer, String> startupScreenImages = new TreeMap<>();
-    {
-        startupScreenImages.put(370, Configuration.miscImagesDir() + "/mml_start_hd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(556, Configuration.miscImagesDir() + "/mml_start_fhd.jpg"); // TODO : Remove inline filename
-        startupScreenImages.put(1112, Configuration.miscImagesDir() + "/mml_start_uhd.jpg"); // TODO : Remove inline filename
-    }
+    private static final String FILENAME_MEGAMEK_SPLASH = "../misc/background.jpg";
+    private static final String FILENAME_MEDAL = "../misc/medal.png";
+    private static final String FILENAME_LOGO = "../misc/logo.png";
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
     private TipOfTheDay tipOfTheDay;
@@ -194,10 +197,39 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         mmlMenuBar = new MenuBar(this);
         frame.setJMenuBar(mmlMenuBar);
 
-
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
-        splash = UIUtil.createSplashComponent(startupScreenImages, frame);
-        splash.setOpaque(false);
+        splashImage = getImage(FILENAME_MEGAMEK_SPLASH, scaledMonitorSize.width, scaledMonitorSize.height);
+        logoImage = new ManagedVolatileImage(getImage(FILENAME_LOGO, scaledMonitorSize.width, scaledMonitorSize.height), Transparency.TRANSLUCENT);
+        medalImage = new ManagedVolatileImage(getImage(FILENAME_MEDAL, scaledMonitorSize.width, scaledMonitorSize.height), Transparency.TRANSLUCENT);
+        Dimension splashPanelPreferredSize = calculateSplashPanelPreferredSize(scaledMonitorSize, splashImage);
+        splashPanel = new RawImagePanel(splashImage) {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g); // Draw background, border, and children first
+                Graphics2D g2d = (Graphics2D) g.create();
+                try {
+                    int panelWidth = this.getWidth();
+                    int panelHeight = this.getHeight();
+
+                    // Draw Tip of the Day
+                    if (tipOfTheDay != null) {
+                        // Absolute drawing position
+                        Rectangle bounds = this.getBounds();
+                        bounds.x = 0;
+                        bounds.y = 0;
+                        tipOfTheDay.drawTipOfTheDay(g2d, bounds, TipOfTheDay.Position.BOTTOM_BORDER, false);
+                    }
+
+                    // Draw logoImage
+                    int logoHeight = drawLogo(g2d, panelWidth, panelHeight);
+                    // Draw medalImage
+                    drawMedal(g2d, panelWidth, panelHeight, logoHeight);
+                } finally {
+                    g2d.dispose();
+                }
+            }
+        };
+        splashPanel.setPreferredSize(splashPanelPreferredSize);
 
         JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
         labVersion.setPreferredSize(new Dimension(250, 15));
@@ -256,11 +288,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         // Strive for no more than ~90% of the screen and use golden ratio to make
         // the button width "look" reasonable.
-        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splash.getPreferredSize().width;
+        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splashPanel.getPreferredSize().width;
 
         // no more than 50% of image width
-        if (maximumWidth > (int) (0.5 * splash.getPreferredSize().width)) {
-            maximumWidth = (int) (0.5 * splash.getPreferredSize().width);
+        if (maximumWidth > (int) (0.5 * splashPanel.getPreferredSize().width)) {
+            maximumWidth = (int) (0.5 * splashPanel.getPreferredSize().width);
         }
 
         Dimension minButtonDim = new Dimension((int) (maximumWidth / 1.618), 25);
@@ -298,12 +330,12 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         c.insets = new Insets(0, 0, 0, 10);
         c.gridx = 0;
         c.gridy = 0;
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 0.0;
-        c.weighty = 0.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 3.0;
+        c.weighty = 1.0;
         c.gridwidth = 1;
         c.gridheight = 12;
-        add(splash, c);
+        add(splashPanel, c);
 
         // Right Column (Buttons)
         c.insets = new Insets(2, 2, 2, 10);
@@ -351,17 +383,119 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.setVisible(true);
     }
 
-    /**
-     * Override paint to draw the tip *after* children are painted.
-     */
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g); // Draw background, border, and children first
 
-        // Now draw the tip on top
-        if (splash != null && splash.isVisible() && splash.getWidth() > 0 && splash.getHeight() > 0) {
-            tipOfTheDay.drawTipOfTheDay((Graphics2D) g, splash.getBounds(), TipOfTheDay.Position.BOTTOM_BORDER);
+    private @Nullable Image getImage(final String filename, final int screenWidth,
+          final int screenHeight) {
+        File file = new MegaMekFile(Configuration.widgetsDir(), filename).getFile();
+        if (!file.exists()) {
+            logger.error("MainMenu Error: Image doesn't exist: {}", file.getAbsolutePath());
+            return null;
         }
+        Image img = ImageUtil.loadImageFromFile(file.toString());
+        // wait for image to load completely
+        MediaTracker tracker = new MediaTracker(frame);
+        tracker.addImage(img, 0);
+        try {
+            tracker.waitForID(0);
+        } catch (InterruptedException ignored) {
+            // really should never come here
+        }
+
+        return img;
+    }
+
+    /**
+     * Calculates the preferred size for the splash panel
+     * 
+     * @param scaledMonitorSize the scaled monitor dimensions
+     * @param splashImage the reference image for the aspect ratio
+     * @return the calculated preferred size for the splash panel
+     */
+    private Dimension calculateSplashPanelPreferredSize(Dimension scaledMonitorSize, Image splashImage) {
+        // Calculate max dimensions (75% of screen)
+        int maxWidth = (int) (scaledMonitorSize.width * 0.75);
+        int maxHeight = (int) (scaledMonitorSize.height * 0.75);
+        
+        if (splashImage != null && splashImage.getWidth(null) > 0 && splashImage.getHeight(null) > 0) {
+            // Calculate aspect ratio preserving dimensions
+            double imageWidth = splashImage.getWidth(null);
+            double imageHeight = splashImage.getHeight(null);
+            double imageAspectRatio = imageWidth / imageHeight;
+            
+            int targetWidth = maxWidth;
+            int targetHeight = (int) (targetWidth / imageAspectRatio);
+            
+            if (targetHeight > maxHeight) {
+                targetHeight = maxHeight;
+                targetWidth = (int) (targetHeight * imageAspectRatio);
+            }
+            
+            return new Dimension(targetWidth, targetHeight);
+        } else {
+            // Fallback to original calculation if image is not available
+            return new Dimension(maxWidth, maxHeight);
+        }
+    }
+
+
+    private void drawMedal(Graphics2D g2d, int panelWidth, int panelHeight, int logoHeight) {
+        if (medalImage == null) {
+            return; // Skip drawing if medalImage is not initialized
+        }
+        VolatileImage image = medalImage.getImage();
+        if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
+            double medalScalePercent = 0.10; // Medal height as % of panel
+            
+            int originalMedalWidth = image.getWidth(null);
+            int originalMedalHeight = image.getHeight(null);
+
+            int targetMedalWidth = (int) (panelWidth * medalScalePercent);
+            if (targetMedalWidth < 1) targetMedalWidth = 1; // Ensure minimum size
+
+            double scaleFactor = (double) targetMedalWidth / originalMedalWidth;
+            int targetMedalHeight = (int) (originalMedalHeight * scaleFactor);
+            if (targetMedalHeight < 1) targetMedalHeight = 1;
+
+            // Position: center, under logo
+            int medalX = (panelWidth - targetMedalWidth)/2;
+            // Adjust Y position to be below the logo, 4% overlap
+            int medalY = ((((int) (panelHeight * 0.8f)) + logoHeight)/2) - (int) (logoHeight * 0.04);
+
+            if (medalX < 0) medalX = 0;
+            if (medalY < 0) medalY = 0;
+
+            g2d.drawImage(image, medalX, medalY, targetMedalWidth, targetMedalHeight, null);
+        }
+    }
+
+    private int drawLogo(Graphics2D g2d, int panelWidth, int panelHeight) {
+        if (logoImage == null) {
+            return 0; // Skip drawing if logoImage is not initialized
+        }
+        VolatileImage image = logoImage.getImage();
+        int targetLogoHeight = 0;
+        if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
+            double logoWidthScalePercent = 0.3f; // Logo width as 30% of panel width
+
+            int originalLogoWidth = image.getWidth(null);
+            int originalLogoHeight = image.getHeight(null);
+
+            int targetLogoWidth = (int) (panelWidth * logoWidthScalePercent);
+            if (targetLogoWidth < 1) targetLogoWidth = 1; // Ensure minimum size
+
+            double scaleFactor = (double) targetLogoWidth / originalLogoWidth;
+            targetLogoHeight = (int) (originalLogoHeight * scaleFactor);
+            if (targetLogoHeight < 1) targetLogoHeight = 1;
+            // Position: center of the panel
+            int logoX = (panelWidth - targetLogoWidth)/2;
+            int logoY = (((int) (panelHeight * 0.8f)) - targetLogoHeight)/2;
+
+            if (logoX < 0) logoX = 0;
+            if (logoY < 0) logoY = 0;
+
+            g2d.drawImage(image, logoX, logoY, targetLogoWidth, targetLogoHeight, null);
+        }
+        return targetLogoHeight;
     }
 
     private static String processFileName(File file, Entity newUnit) {

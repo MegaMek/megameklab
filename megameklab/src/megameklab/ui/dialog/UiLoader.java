@@ -40,10 +40,8 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 /**
@@ -58,15 +56,8 @@ public class UiLoader {
 
     private static final int MINIMUM_SPLASH_TIME = 0;
 
-    /**
-     * A map of resolution widths to file names for the startup screen
-     */
-    private static final TreeMap<Integer, String> LOAD_SCREEN_IMAGES = new TreeMap<>(Map.of(
-            0, Configuration.miscImagesDir() + "/mml_load_hd.jpg",
-            1441, Configuration.miscImagesDir() + "/mml_load_fhd.jpg",
-            1921, Configuration.miscImagesDir() + "/mml_load_uhd.jpg"));
-
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("megameklab.resources.Menu");
+    private static final String LOAD_SCREEN_IMAGE = Configuration.miscImagesDir() + "/load.jpg";
     private final JDialog splashImage;
     private final long type;
     private final boolean primitive;
@@ -120,7 +111,7 @@ public class UiLoader {
     private static JDialog makeSplash() {
         var splashImage = new JDialog((JFrame) null, "MML Loading Splash");
         splashImage.setUndecorated(true);
-        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGES, splashImage), BorderLayout.CENTER);
+        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGE, splashImage), BorderLayout.CENTER);
         splashImage.pack();
         splashImage.setLocationRelativeTo(null);
         return splashImage;
