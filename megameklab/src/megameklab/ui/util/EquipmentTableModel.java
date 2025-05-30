@@ -507,24 +507,24 @@ public class EquipmentTableModel extends AbstractTableModel {
                 int dmg;
                 if (wtype instanceof ThunderBoltWeapon) {
                     switch (wtype.getAmmoType()) {
-                        case AmmoType.T_TBOLT_5:
+                        case TBOLT_5:
                             return "5";
-                        case AmmoType.T_TBOLT_10:
+                        case TBOLT_10:
                             return "10";
-                        case AmmoType.T_TBOLT_15:
+                        case TBOLT_15:
                             return "15";
-                        case AmmoType.T_TBOLT_20:
+                        case TBOLT_20:
                             return "20";
                         default :
                             return "0";
                     }
                 } else if ((wtype instanceof ATMWeapon)
-                        ||(wtype.getAmmoType() == AmmoType.T_SRM)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_PRIMITIVE)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                        ||(wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_PRIMITIVE)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
                     dmg = 2;
                 } else {
                     dmg = 1;

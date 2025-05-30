@@ -252,13 +252,13 @@ public class InventoryWriter {
             if (m.isWeaponGroup()) {
                 continue;
             }
-            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
                 } else if ((sheet.getEntity() instanceof ProtoMek)
-                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
+                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.IATM)) {
                     // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
                     // instead of iATM3
                     ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);

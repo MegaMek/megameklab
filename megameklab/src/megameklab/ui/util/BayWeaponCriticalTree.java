@@ -38,6 +38,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.AmmoType.AmmoTypeEnum;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -1021,12 +1022,12 @@ public class BayWeaponCriticalTree extends JTree {
                 for (WeaponMounted weapon : bay.getBayWeapons()) {
                     final WeaponType wtype = weapon.getType();
                     if ((weapon.getLinkedBy() == null)
-                            && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_MML)
-                                    || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
-                                    || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
+                            && ((wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.MML)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_IMP)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
                         break;
@@ -1339,14 +1340,14 @@ public class BayWeaponCriticalTree extends JTree {
                         || eq.getType().hasFlag(MiscType.F_ARTEMIS_V))
                         || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO))) {
             for (WeaponMounted weapon : bay.getBayWeapons()) {
-                final int atype = weapon.getType().getAmmoType();
+                final AmmoTypeEnum atype = weapon.getType().getAmmoType();
                 if ((weapon.getLinkedBy() == null)
-                        && ((atype == AmmoType.T_LRM)
-                                || (atype == AmmoType.T_SRM)
-                                || (atype == AmmoType.T_MML)
-                                || (atype == AmmoType.T_LRM_IMP)
-                                || (atype == AmmoType.T_SRM_IMP)
-                                || (atype == AmmoType.T_NLRM))) {
+                        && ((atype == AmmoType.AmmoTypeEnum.LRM)
+                                || (atype == AmmoType.AmmoTypeEnum.SRM)
+                                || (atype == AmmoType.AmmoTypeEnum.MML)
+                                || (atype == AmmoType.AmmoTypeEnum.LRM_IMP)
+                                || (atype == AmmoType.AmmoTypeEnum.SRM_IMP)
+                                || (atype == AmmoType.AmmoTypeEnum.NLRM))) {
                     return true;
                 }
             }
@@ -1354,7 +1355,7 @@ public class BayWeaponCriticalTree extends JTree {
                 && eq.getType().hasFlag(MiscType.F_APOLLO)) {
             for (WeaponMounted weapon : bay.getBayWeapons()) {
                 if ((weapon.getLinkedBy() == null)
-                        && (weapon.getType().getAmmoType() == AmmoType.T_MRM)) {
+                        && (weapon.getType().getAmmoType() == AmmoType.AmmoTypeEnum.MRM)) {
                     return true;
                 }
             }

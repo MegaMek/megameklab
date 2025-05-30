@@ -47,7 +47,7 @@ public final class PrintUtil {
      */
     public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
         if (eq instanceof AmmoType) {
-            return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
+            return ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD;
         } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
         } else {
