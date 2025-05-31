@@ -294,7 +294,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         && !(eq.getType() instanceof InfantryWeapon)
                         && !((eq.getType() instanceof WeaponType)
                                 && (eq.getType().hasFlag(WeaponType.F_TASER)
-                                        || ((WeaponType) eq.getType()).getAmmoType() == AmmoType.T_NARC))) {
+                                        || ((WeaponType) eq.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.NARC))) {
                     item = new JMenuItem("Make squad weapon");
                     item.addActionListener(evt -> {
                         eq.setLocation(BattleArmor.LOC_SQUAD);
@@ -309,7 +309,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 AmmoType at = (AmmoType) eq.getType();
                 int maxNumShots = 4;
                 int stepSize = 1;
-                if (at.getAmmoType() == AmmoType.T_BA_TUBE) {
+                if (at.getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
                     maxNumShots = 8;
                     stepSize = 2;
                 }

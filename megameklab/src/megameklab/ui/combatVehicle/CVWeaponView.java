@@ -282,11 +282,11 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             if (eq instanceof WeaponType) {
                 WeaponType weapon = (WeaponType) eq;
                 if (weapon.hasFlag(WeaponType.F_ENERGY)
-                        || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+                        || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
                     masterLaserWeaponList.add(eq);
-                } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.T_NA))) {
+                } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA))) {
                     masterBallisticWeaponList.add(eq);
-                } else if ((eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.T_NA))) {
+                } else if ((eq.hasFlag(WeaponType.F_MISSILE) && (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA))) {
                     masterMissileWeaponList.add(eq);
                 } else if (weapon instanceof ArtilleryWeapon) {
                     masterArtilleryWeaponList.add(eq);
@@ -653,7 +653,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     return;
                 }
                 Vector<String> equipmentList = new Vector<>();
-                if (weapon.getAmmoType() != AmmoType.T_NA) {
+                if (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                         if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo)
                                 && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {

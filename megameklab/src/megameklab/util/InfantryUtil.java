@@ -87,8 +87,8 @@ public final class InfantryUtil {
         unit.getAmmo().removeAll(toRemove);
         final EnumSet<AmmoType.Munitions> munition;
         if (fieldGun != null && num > 0) {
-            if (fieldGun.getAmmoType() == AmmoType.T_AC_LBX
-                    || fieldGun.getAmmoType() == AmmoType.T_AC_LBX_THB) {
+            if (fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX
+                    || fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX_THB) {
                 munition = EnumSet.of(AmmoType.Munitions.M_CLUSTER);
             } else {
                 munition = EnumSet.of(AmmoType.Munitions.M_STANDARD);

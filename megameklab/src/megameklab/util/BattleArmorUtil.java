@@ -84,7 +84,7 @@ public final class BattleArmorUtil {
 
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                     || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon
-                            .getAmmoType() == AmmoType.T_PLASMA))) {
+                            .getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
                 return true;
             }
 
@@ -95,7 +95,7 @@ public final class BattleArmorUtil {
 
             if (weapon.hasFlag(WeaponType.F_ENERGY)
                     && weapon.hasFlag(WeaponType.F_PLASMA)
-                    && (weapon.getAmmoType() == AmmoType.T_NA)) {
+                    && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.NA)) {
                 return false;
             }
 
@@ -126,7 +126,7 @@ public final class BattleArmorUtil {
 
     public static boolean isBAMultiMount(EquipmentType equip) {
         return (equip instanceof WeaponType)
-                && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.T_NARC));
+                && (equip.hasFlag(WeaponType.F_TASER) || (((WeaponType) equip).getAmmoType() == AmmoType.AmmoTypeEnum.NARC));
     }
 
     private BattleArmorUtil() {

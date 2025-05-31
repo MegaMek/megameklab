@@ -154,8 +154,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (weaponType.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
-                if ((weaponType.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                        || (weaponType.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_TORPEDO)
+                        || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
                     r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getWShortRange(), false);
                     if (weaponType.getWMediumRange() > weaponType.getWShortRange()) {
                         r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getWMediumRange(), false);

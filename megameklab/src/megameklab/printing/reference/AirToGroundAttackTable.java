@@ -56,7 +56,7 @@ public class AirToGroundAttackTable extends ReferenceTable {
         }
         for (Mounted<?> mounted : aero.getIndividualWeaponList()) {
             if (mounted.getType().hasFlag(WeaponType.F_ENERGY)
-                    && ((WeaponType) mounted.getType()).getAmmoType() == AmmoType.T_NA) {
+                    && ((WeaponType) mounted.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.NA) {
                 return true;
             }
         }

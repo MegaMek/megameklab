@@ -124,10 +124,10 @@ public final class EquipmentToolTip {
             return Integer.toString(wType.getRackSize());
         } else {
             int damage = wType.getDamage();
-            if (wType.getAmmoType() == AmmoType.T_AC_ROTARY) {
+            if (wType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
                 damage *= 6;
-            } else if ((wType.getAmmoType() == AmmoType.T_AC_ULTRA)
-                    || (wType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            } else if ((wType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA)
+                    || (wType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
                 damage *= 2;
             }
             return Integer.toString(damage);

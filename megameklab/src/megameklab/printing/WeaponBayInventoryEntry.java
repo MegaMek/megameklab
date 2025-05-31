@@ -57,7 +57,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         this.ship = ship;
         this.bay = bay;
         this.isCapital = isCapital;
-        this.isAR10 = bay.weapons.keySet().stream().anyMatch(w -> w.getAmmoType() == AmmoType.T_AR10);
+        this.isAR10 = bay.weapons.keySet().stream().anyMatch(w -> w.getAmmoType() == AmmoType.AmmoTypeEnum.AR10);
         processBay();
     }
 
@@ -162,7 +162,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             if (bay.weaponAmmo.containsKey(weaponType)) {
                 List<Mounted<?>> ammoList = bay.weaponAmmo.get(weaponType);
                 Mounted<?> ammo = ammoList.get(0);
-                if (weaponType.getAmmoType() == AmmoType.T_AR10) {
+                if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
                     nameString.append(" (");
                     
                     StringJoiner ammoDetails = new StringJoiner(", ");

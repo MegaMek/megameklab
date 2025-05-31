@@ -86,7 +86,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
 
             var ammo = wt.getAmmoType();
-            if (ammo == AmmoType.T_GAUSS_HEAVY || ammo == AmmoType.T_IGAUSS_HEAVY) {
+            if (ammo == AmmoType.AmmoTypeEnum.GAUSS_HEAVY || ammo == AmmoType.AmmoTypeEnum.IGAUSS_HEAVY) {
                 return false;
             }
 
@@ -109,7 +109,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 valid = mt.hasAnyFlag(MiscType.F_VEHICLE_MINE_DISPENSER, MiscType.F_AP_POD, MiscType.F_WEAPON_ENHANCEMENT);
             }
         } else if (eq instanceof AmmoType at) {
-            valid = !(at.getAmmoType() == AmmoType.T_COOLANT_POD);
+            valid = !(at.getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD);
         }
 
         return valid && super.shouldShow(eq);
