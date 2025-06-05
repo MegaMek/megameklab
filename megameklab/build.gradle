@@ -50,6 +50,8 @@ ext {
 dependencies {
     implementation "org.megamek:megamek:${version}"
 
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.19.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
     implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
@@ -140,8 +142,10 @@ ${jvmOptions}
     }
 }
 
-tasks.register("copyLicenseFiles", Exec) {
-    commandLine "cp", "../LICENSE", "../LICENSE.code", "../LICENSE.assets", "../README.md", "docs"
+tasks.register("copyLicenseFiles", Copy) {
+    description = 'Copies license files into the distribution.'
+    from "../LICENSE", "../LICENSE.code", "../LICENSE.assets", "../README.md"
+    into "docs"
 }
 
 tasks.register('stageFiles', Copy) {
@@ -295,6 +299,14 @@ tasks.register('processSystemTest', JavaExec) {
     group = 'other'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'megameklab.printing.CGLMassPrinter'
+}
+
+tasks.register('svgexport', JavaExec) {
+    // dependsOn stageFiles
+    description = 'Internal System Test. Dev use only.'
+    group = 'export'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'megameklab.printing.SVGMassPrinter'
 }
 
 tasks.register('cleanAll') {
