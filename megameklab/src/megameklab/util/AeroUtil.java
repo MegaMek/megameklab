@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import megamek.common.*;
-import megamek.common.AmmoType.AmmoTypeEnum;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestSmallCraft;
 import megamek.common.verifier.TestTank;
@@ -54,7 +53,7 @@ public final class AeroUtil {
         }
 
         // small craft only; lacks aero weapon flag
-        if (weaponType.getAmmoType() == AmmoTypeEnum.C3_REMOTE_SENSOR) {
+        if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.C3_REMOTE_SENSOR) {
             return unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
                     && !unit.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         }
@@ -111,10 +110,10 @@ public final class AeroUtil {
         }
 
         if (weaponType.hasFlag(WeaponType.F_ENERGY)
-                || (weaponType.hasFlag(WeaponType.F_PLASMA) && (weaponType.getAmmoType() == AmmoTypeEnum.PLASMA))) {
+                || (weaponType.hasFlag(WeaponType.F_PLASMA) && (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
             return !weaponType.hasFlag(WeaponType.F_ENERGY)
                     || !weaponType.hasFlag(WeaponType.F_PLASMA)
-                    || (weaponType.getAmmoType() != AmmoTypeEnum.NA);
+                    || (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.NA);
         }
         return true;
     }
@@ -125,7 +124,7 @@ public final class AeroUtil {
         }
 
         if ((eq instanceof AmmoType)
-                && (((AmmoType) eq).getAmmoType() == AmmoTypeEnum.COOLANT_POD)) {
+                && (((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
         }
 

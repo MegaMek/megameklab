@@ -215,140 +215,62 @@ public class StatusBar extends ITab {
         if (!(getEntity() instanceof Mek) && !(getEntity() instanceof Aero)) {
             return 0;
         }
-
-        double heat = calculateMovementHeat();
-        heat += calculateWeaponHeat();
-        heat += calculateEquipmentHeat();
-        
-        return Math.round(heat);
-    }
-
-    /**
-     * Calculates heat generation from movement systems.
-     */
-    private double calculateMovementHeat() {
-        if (!(getEntity() instanceof Mek)) {
-            return 0;
-        }
-        
         double heat = 0;
-        int engineType = getEntity().getEngineType();
-        
-        if (getEntity().getOriginalJumpMP() > 0) {
-            // Calculate jump heat
-            switch (getEntity().getJumpType()) {
-                case Mek.JUMP_IMPROVED:
+
+        if (getEntity() instanceof Mek) {
+            if (getEntity().getOriginalJumpMP() > 0) {
+                if (getEntity().getJumpType() == Mek.JUMP_IMPROVED) {
                     heat += Math.max(3, Math.ceil(getMek().getOriginalJumpMP() / 2.0f));
-                    break;
-                default:
+                } else {
                     heat += Math.max(3, getEntity().getOriginalJumpMP());
-                    break;
-            }
-            
-            // Apply XXL engine modifier for jumping
-            if (engineType == Engine.XXL_ENGINE) {
-                heat *= 2;
-            }
-        } else {
-            // Calculate walking heat based on engine type
-            switch (engineType) {
-                case Engine.XXL_ENGINE:
-                    heat += 6;
-                    break;
-                default:
-                    heat += 2;
-                    break;
+                }
+                if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
+                    heat *= 2;
+                }
+            } else if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
+                heat += 6;
+            } else {
+                heat += 2;
             }
         }
-        
-        return heat;
-    }
 
-    /**
-     * Calculates heat generation from weapons.
-     */
-    private double calculateWeaponHeat() {
-        double totalHeat = 0;
-        
         for (Mounted<?> mounted : getEntity().getTotalWeaponList()) {
-            if (isWeaponInoperable(mounted)) {
+            WeaponType weaponType = (WeaponType) mounted.getType();
+            double weaponHeat = weaponType.getHeat();
+
+            if (mounted.isMissing() || mounted.isHit() || mounted.isDestroyed() || mounted.isBreached()) {
                 continue;
             }
-            
-            WeaponType weaponType = (WeaponType) mounted.getType();
-            double weaponHeat = calculateIndividualWeaponHeat(weaponType);
-            totalHeat += weaponHeat;
-        }
-        
-        return totalHeat;
-    }
 
-    /**
-     * Checks if a weapon is inoperable (missing, hit, destroyed, or breached).
-     */
-    private boolean isWeaponInoperable(Mounted<?> mounted) {
-        return mounted.isMissing() || mounted.isHit() || 
-            mounted.isDestroyed() || mounted.isBreached();
-    }
-
-    /**
-     * Calculates heat generation for an individual weapon type.
-     */
-    private double calculateIndividualWeaponHeat(WeaponType weaponType) {
-        double weaponHeat = weaponType.getHeat();
-        AmmoType.AmmoTypeEnum ammoType = weaponType.getAmmoType();
-        
-        // Apply weapon-specific heat modifiers based on ammo type
-        switch (ammoType) {
-            case ROCKET_LAUNCHER:
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
-                break;
-            case AC_ULTRA:
-            case AC_ULTRA_THB:
-                weaponHeat *= 2;
-                break;
-            case AC_ROTARY:
-                weaponHeat *= 6;
-                break;
-            case SRM_STREAK:
-            case LRM_STREAK:
-                weaponHeat *= 0.5;
-                break;
-            default:
-                // No modification for other ammo types
-                break;
-        }
-        
-        // Apply one-shot weapon modifier
-        if (weaponType.hasFlag(WeaponType.F_ONESHOT)) {
-            weaponHeat *= 0.25;
-        }
-        
-        return weaponHeat;
-    }
-
-    /**
-     * Calculates heat generation from miscellaneous equipment.
-     */
-    private double calculateEquipmentHeat() {
-        double totalHeat = 0;
-        
-        for (Mounted<?> equipment : getEntity().getMisc()) {
-            double equipmentHeat = equipment.getType().getHeat();
-            
-            // Apply equipment-specific heat modifiers
-            MiscType miscType = (MiscType) equipment.getType();
-            
-            if (miscType.hasFlag(MiscType.F_LASER_INSULATOR)) {
-                equipmentHeat += -1;
-            } else if (miscType.hasFlag(MiscType.F_PPC_CAPACITOR)) {
-                equipmentHeat += 5;
-            } else if (miscType.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)) {
-                equipmentHeat += 2;
             }
-            totalHeat += equipmentHeat;
+
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
+                weaponHeat *= 2;
+            }
+
+            if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
+                weaponHeat *= 6;
+            }
+
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_STREAK)) {
+                weaponHeat *= 0.5;
+            }
+            heat += weaponHeat;
         }
-        
-        return totalHeat;
+
+        for (Mounted<?> m : getEntity().getMisc()) {
+            heat += m.getType().getHeat();
+
+            if (m.getType().hasFlag(MiscType.F_LASER_INSULATOR)) {
+                heat--;
+            } else if (m.getType().hasFlag(MiscType.F_PPC_CAPACITOR)) {
+                heat += 5;
+            } else if (m.getType().hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)) {
+                heat += 2;
+            }
+        }
+        return Math.round(heat);
     }
 }
