@@ -26,6 +26,7 @@ public class RecordSheetOptions {
 
     private PaperSize paperSize;
     private boolean color;
+    public boolean colorLogo;
     private boolean quirks;
     private boolean c3bv;
     private boolean pilotData;

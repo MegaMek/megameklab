@@ -19,11 +19,14 @@
 
 package megameklab.printing;
 
+import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import megamek.client.ratgenerator.ModelRecord;
 import megamek.client.ui.util.FluffImageHelper;
@@ -39,11 +42,28 @@ import megameklab.MMLOptions;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.FileWriter;
-import java.io.IOException;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import org.w3c.dom.Document;
+
+import java.io.FileOutputStream;
 
 public class SVGMassPrinter {
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -51,80 +71,82 @@ public class SVGMassPrinter {
     private static final String VERSION_FILE = "version.json";
     private static final String UNIT_FILE = "units.json";
     private static final String ROOT_FOLDER = "svgexport";
+    private static final int DEFAULT_MARGINS = 5; // Default margins for the page
 
     public static class UnitData {
-        public int mulId;
-        public String chassis;
-        public String model;
-        public int year;
-        public int wc;
-        public double tons;
-        public int bv;
-        public int pv;
-        public long cost;
-        public int level;
-        public String type;
-        public String sub;
-        public String source;
-        public String role;
-        public boolean clan;
-        public int armor;
-        public int internal;
-        public int heat;
-        public int heatDiss;
-        public int walk;
-        public int run;
-        public int jump;
-        public String sheet;
+        public int id; // Unique identifier for the unit on MUL
+        public String n; // Name of the unit (Chassis)
+        public String m; // Model of the unit
+        public int y; // Year of introduction
+        public int wc; // Weight class, e.g. 0 for Light, 1 for Medium, etc.
+        public double t; // Weight in tons, rounded to the nearest integer
+        public int bv; // Battle Value, rounded to the nearest integer
+        public int pv; // Point Value, rounded to the nearest integer
+        public long c; // Cost in C-Bills, rounded to the nearest integer
+        public int l; // Tech Level
+        public String ty; // Major type, e.g. "Mek", "Vehicle", etc.
+        public String sub; // Subtype, e.g. "Assault", "Light", etc.
+        public String src; // Source of the unit, e.g. "TRO 3050"
+        public String rl; // Role, e.g. "Assault", "Scout", etc.
+        public boolean cl; // true for Clan, false for Inner Sphere
+        public int ar; // Total armor
+        public int in; // Total internal structure
+        public int h; // Total heat generation
+        public int h2; // Heat capacity
+        public int w; // Walk MP
+        public int r; // Run MP
+        public int j; // Jump MP
+        public int s; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
+        public String sh; // Path to the SVG sheet
 
         public UnitData() {
         }
 
         public UnitData(MekSummary summary) {
-            this.mulId = summary.getMulId();
-            this.chassis = summary.getFullChassis();
-            this.model = summary.getModel();
-            this.year = summary.getYear();
+            this.id = summary.getMulId();
+            this.n = summary.getFullChassis();
+            this.m = summary.getModel();
+            this.y = summary.getYear();
             this.wc = summary.getWeightClass();
-            this.tons = summary.getTons();
+            this.t = summary.getTons();
             this.bv = summary.getBV();
             this.pv = summary.getPointValue();
-            this.cost = summary.getCost();
-            this.type = summary.getUnitType();
+            this.c = summary.getCost();
+            this.ty = summary.getUnitType();
             this.sub = summary.getUnitSubType();
-            this.clan = summary.isClan();
-            this.walk = summary.getWalkMp();
-            this.run = summary.getRunMp();
-            this.jump = summary.getJumpMp();
+            this.cl = summary.isClan();
+            this.w = summary.getWalkMp();
+            this.r = summary.getRunMp();
+            this.j = summary.getJumpMp();
         }
 
         public UnitData(Entity entity) {
-            this.mulId = entity.getMulId();
-            this.chassis = entity.getFullChassis();
-            this.model = entity.getModel();
-            this.year = entity.getYear();
+            this.id = entity.getMulId();
+            this.n = entity.getFullChassis();
+            this.m = entity.getModel();
+            this.y = entity.getYear();
             this.wc = entity.getWeightClass();
-            this.tons = entity.getWeight();
+            this.t = entity.getWeight();
             this.bv = entity.getBvCalculator().calculateBV(false,true);
-            this.cost = Math.round(entity.getCost(false));
-            this.level = entity.getStaticTechLevel().ordinal();
-            this.type = Entity.getEntityMajorTypeName(entity.getEntityType());
+            this.c = Math.round(entity.getCost(false));
+            this.l = entity.getStaticTechLevel().ordinal();
+            this.ty = Entity.getEntityMajorTypeName(entity.getEntityType());
             this.sub = Entity.getEntityTypeName(entity.getEntityType());
-            this.source = entity.getSource();
+            this.src = entity.getSource();
             UnitRole role = entity.getRole();
             if (role != UnitRole.UNDETERMINED) {
-                this.role = role.toString();
+                this.rl = role.toString();
             } else {
-                this.role = "None";
+                this.rl = "None";
             }
-            this.clan = entity.isClan();
-            this.armor = entity.getTotalOArmor();
-            this.internal = entity.getTotalInternal();
-            this.heat = UnitUtil.getTotalHeatGeneration(entity);
-            this.heatDiss = entity.getHeatCapacity();
-            this.walk = entity.getWalkMP();
-            this.run = entity.getRunMP();
-            this.jump = entity.getJumpMP();
+            this.cl = entity.isClan();
+            this.ar = entity.getTotalOArmor();
+            this.in = entity.getTotalInternal();
+            this.h = UnitUtil.getTotalHeatGeneration(entity);
+            this.h2 = entity.getHeatCapacity();
+            this.w = entity.getWalkMP();
+            this.r = entity.getRunMP();
+            this.j = entity.getJumpMP();
         }
     }
 
@@ -133,11 +155,33 @@ public class SVGMassPrinter {
         final String rootPath = ROOT_FOLDER + File.separator + SHEETS_DIR;
         File sheetsDir = new File(rootPath);
 
+        if (sheetsDir.exists()) {
+            try {
+                Files.walk(sheetsDir.toPath())
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+                logger.info("Deleted existing sheets directory: {}", sheetsDir.getPath());
+            } catch (IOException e) {
+                logger.error("Failed to delete sheets directory: {}", e.getMessage());
+            }
+        }
         if (!sheetsDir.exists() || !sheetsDir.isDirectory()) {
             sheetsDir.mkdirs();
-            logger.error("Error: sheets directory does not exist, creating it.");
+            logger.error("Sheets directory does not exist, creating it.");
         }
 
+        RecordSheetOptions recordSheetOptions = new RecordSheetOptions();
+        recordSheetOptions.setC3inBV(true);
+        recordSheetOptions.setBoldType(true);
+        recordSheetOptions.setHeatProfile(true);
+        recordSheetOptions.setCondensedReferenceCharts(true);
+        recordSheetOptions.setRole(true);
+        recordSheetOptions.setEraIcon(true);
+        recordSheetOptions.setColor(false);
+        recordSheetOptions.colorLogo = true;
+        
+        HashSet<String> processedFiles = new HashSet<>();
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
@@ -159,6 +203,9 @@ public class SVGMassPrinter {
             logger.error("Failed to write version file: {}", e.getMessage());
         }
         
+        PageFormat pf = new PageFormat();
+        PaperSize paperDef = recordSheetOptions.getPaperSize();
+
         try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
             jsonWriter.write("{\"version\":"+ timestamp +",\n");
             jsonWriter.write("\"units\":[\n");
@@ -193,19 +240,70 @@ public class SVGMassPrinter {
                     System.gc();
                     continue;
                 }
-                File sheetPath = new File(sheetsDir.getPath(), FluffImageHelper.getFluffPath(entity));
+                UnitUtil.updateLoadedUnit(entity);
+                String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase();
+                File sheetPath = new File(sheetsDir.getPath(), svgPath);
 
                 if (!sheetPath.exists() && !sheetPath.mkdirs()) {
                     logger.error("Couldn't create folder {}", sheetPath);
                     System.exit(1);
                 }
 
-                File file = normalizePath(sheetPath, mekSummary);
+                String svgFilename = generateFilename(mekSummary);
+                File finalFilename = new File(sheetPath, svgFilename);
 
+                if (processedFiles.contains(finalFilename.getPath())) {
+                    logger.warn("Duplication detected! File already exists: {}", finalFilename.getPath());
+                    continue;
+                }
+                processedFiles.add(finalFilename.getPath());
+                boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();
                 try {
                     // List<Entity> units = printableListOfUnits(entity);
-                    // UnitPrintManager.exportUnits(units, file, true);
-                    logger.info("Printed: {}", file);
+                    List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(List.of(entity), true, recordSheetOptions);
+                    if (sheets.isEmpty()) {
+                        logger.error("No sheets generated for {}", mekSummary.getName());
+                        System.exit(1);
+                    }
+                    int pageIndex = 1;
+                    for (PrintRecordSheet sheet : sheets) {
+                        if (sheet instanceof PrintSmallUnitSheet) {
+                            pf.setPaper(paperDef.createPaper());
+                        } else {
+                            pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                        }
+                        sheet.createDocument(pageIndex, pf, false);
+                        pageIndex++;
+                    }
+                    List<Document> svgDocs = sheets.stream()
+                        .map(PrintRecordSheet::getSVGDocument)
+                        .filter(doc -> doc != null)
+                        .collect(Collectors.toList());
+                    if (svgDocs.isEmpty()) {
+                        logger.error("No SVG documents for {}", mekSummary.getName());
+                        System.exit(1);
+                    }
+                    Document combinedSvg;
+                    if (svgDocs.size() == 1) {
+                        // Single sheet - use as is
+                        combinedSvg = svgDocs.get(0);
+                    } else {
+                        // Multiple sheets - combine side by side
+                        combinedSvg = combineSVGDocuments(svgDocs);
+                    }
+                    
+                    // Save the combined SVG
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "no");
+                    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                    
+                    DOMSource source = new DOMSource(combinedSvg);
+                    StreamResult result = new StreamResult(new FileOutputStream(finalFilename));
+                    transformer.transform(source, result);
+                    
+                    logger.info("Printed: {}", finalFilename);
                 } catch (Exception e) {
                     logger.error(e, "Printing Error");
                     System.exit(1);
@@ -213,8 +311,9 @@ public class SVGMassPrinter {
 
                 UnitData unitData = new UnitData(entity);
                 // Set additional fields
-                unitData.sheet = file.getPath().replace(ROOT_FOLDER, "").replace(File.separator, "/");
+                unitData.sh = (svgPath + File.separator + svgFilename).replace("\\", "/");
                 unitData.pv = mekSummary.getPointValue();
+                unitData.s = isSmallUnit ? 1 : 0; // 1 for small units, 0 for others
 
                 String jsonLine = mapper.writeValueAsString(unitData);
                 if (!firstUnit) {
@@ -235,6 +334,139 @@ public class SVGMassPrinter {
         System.exit(0);
     }
 
+    /**
+     * Combines multiple SVG documents side by side into a single SVG
+     * Assumes Letter size (612x792 points) for each sheet
+     */
+    private static Document combineSVGDocuments(List<Document> svgDocs) throws Exception {
+        if (svgDocs.isEmpty()) {
+            throw new IllegalArgumentException("No SVG documents to combine");
+        }
+        Document firstDoc = svgDocs.get(0);
+        Element firstRoot = firstDoc.getDocumentElement();
+        double sheetWidth = getSheetWidth(firstRoot);
+        double sheetHeight = getSheetHeight(firstRoot);
+        logger.debug("Detected sheet dimensions: {}x{}", sheetWidth, sheetHeight);
+    
+        // Create new SVG document
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document combinedDoc = builder.newDocument();
+        
+        // Create root SVG element
+        Element svgRoot = combinedDoc.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svgRoot.setAttribute("version", "1.1");
+        svgRoot.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svgRoot.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+        
+        // Set combined dimensions (width = number of sheets * sheet width)
+        double totalWidth = svgDocs.size() * sheetWidth;
+        svgRoot.setAttribute("width", String.valueOf(totalWidth));
+        svgRoot.setAttribute("height", String.valueOf(sheetHeight));
+        svgRoot.setAttribute("viewBox", String.format("0 0 %.1f %.1f", totalWidth, sheetHeight));
+        
+        combinedDoc.appendChild(svgRoot);
+        
+        // Add each sheet side by side
+        for (int i = 0; i < svgDocs.size(); i++) {
+            Document sourceDoc = svgDocs.get(i);
+            Element sourceRoot = sourceDoc.getDocumentElement();
+            
+            // Create a group for this sheet with translation
+            Element group = combinedDoc.createElementNS("http://www.w3.org/2000/svg", "g");
+            double xOffset = i * totalWidth;
+            group.setAttribute("transform", String.format("translate(%.1f,0)", xOffset));
+            
+            // Copy all child elements from source SVG to the group
+            copyChildElements(sourceRoot, group, combinedDoc);
+            
+            svgRoot.appendChild(group);
+        }
+        
+        return combinedDoc;
+    }
+
+
+    /**
+     * Extracts the width from an SVG root element
+     */
+    private static double getSheetWidth(Element svgRoot) {
+        String widthAttr = svgRoot.getAttribute("width");
+        if (widthAttr != null && !widthAttr.isEmpty()) {
+            // Remove units (pt, px, etc.) and parse
+            String numericWidth = widthAttr.replaceAll("[^0-9.]", "");
+            try {
+                return Double.parseDouble(numericWidth);
+            } catch (NumberFormatException e) {
+                logger.warn("Could not parse width '{}', using viewBox", widthAttr);
+            }
+        }
+        
+        // Fallback to viewBox width
+        String viewBox = svgRoot.getAttribute("viewBox");
+        if (viewBox != null && !viewBox.isEmpty()) {
+            String[] parts = viewBox.split("\\s+");
+            if (parts.length >= 3) {
+                try {
+                    return Double.parseDouble(parts[2]);
+                } catch (NumberFormatException e) {
+                    logger.warn("Could not parse viewBox width from '{}'", viewBox);
+                }
+            }
+        }
+        
+        // Final fallback to Letter size width
+        logger.warn("Could not determine SVG width, using default 612pt");
+        return 612.0;
+    }
+
+    /**
+     * Extracts the height from an SVG root element
+     */
+    private static double getSheetHeight(Element svgRoot) {
+        String heightAttr = svgRoot.getAttribute("height");
+        if (heightAttr != null && !heightAttr.isEmpty()) {
+            // Remove units (pt, px, etc.) and parse
+            String numericHeight = heightAttr.replaceAll("[^0-9.]", "");
+            try {
+                return Double.parseDouble(numericHeight);
+            } catch (NumberFormatException e) {
+                logger.warn("Could not parse height '{}', using viewBox", heightAttr);
+            }
+        }
+        
+        // Fallback to viewBox height
+        String viewBox = svgRoot.getAttribute("viewBox");
+        if (viewBox != null && !viewBox.isEmpty()) {
+            String[] parts = viewBox.split("\\s+");
+            if (parts.length >= 4) {
+                try {
+                    return Double.parseDouble(parts[3]);
+                } catch (NumberFormatException e) {
+                    logger.warn("Could not parse viewBox height from '{}'", viewBox);
+                }
+            }
+        }
+        
+        // Final fallback to Letter size height
+        logger.warn("Could not determine SVG height, using default 792pt");
+        return 792.0;
+    }
+
+
+    /**
+     * Recursively copies child elements from source to target
+     */
+    private static void copyChildElements(Element source, Element target, Document targetDoc) {
+        NodeList children = source.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            Node importedNode = targetDoc.importNode(child, true);
+            target.appendChild(importedNode);
+        }
+    }
+
     private static List<Entity> printableListOfUnits(Entity entity) {
         if (entity.isBattleArmor() || entity.isProtoMek()) {
             return List.of(entity, entity, entity, entity, entity);
@@ -243,12 +475,20 @@ public class SVGMassPrinter {
         }
     }
 
-    private static File normalizePath(File path, MekSummary unit) {
-        String fileName = String.format("%s_%s_%s.svg",
-                unit.getMulId(),
+    private static String generateFilename(MekSummary unit) {
+        String fileName = String.format("%s_%s.svg",
                 sanitize(unit.getChassis()),
-                sanitize(unit.getModel()));
-        return new File(path, fileName);
+                sanitize(unit.getModel()))
+                  .replace(" ", "_")
+                  .replace("\"", "")
+                  .replace("/", "")
+                  .replace("(", "_")
+                  .replace(")", "")
+                  .replace("[", "_")
+                  .replace("]", "")
+                  .replaceAll("_+", "_")
+                .toLowerCase();
+        return fileName;
     }
 
     private static String sanitize(String original) {

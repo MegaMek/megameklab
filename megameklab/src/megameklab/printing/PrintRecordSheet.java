@@ -264,8 +264,20 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
                     String[] ids = field.substring(field.indexOf(":") + 1).split(",");
                     for (String id : ids) {
-                        hideElement(id + "Color", !options.useColor());
-                        hideElement(id + "BW", options.useColor());
+                        if (options.colorLogo && !options.useColor()) {
+                            if (id.contains("btLogo")) {
+                                hideElement(id + "Color", false);
+                                removeElement(id + "BW");
+                                continue;
+                            }
+                        }
+                        if (options.useColor()) {
+                            removeElement(id + "BW");
+                            hideElement(id + "Color", false);
+                        } else {
+                            removeElement(id + "Color");
+                            hideElement(id + "BW", false);
+                        }
                     }
                 }
             }
@@ -1067,6 +1079,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         Element element = getSVGDocument().getElementById(id);
         if (null != element) {
             hideElement(element, hide);
+        }
+    }
+
+    protected void removeElement(String id) {
+        Element element = getSVGDocument().getElementById(id);
+        if (null != element) {
+            element.getParentNode().removeChild(element);
         }
     }
 
