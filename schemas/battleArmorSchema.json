@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Battle Armor Schema",
+  "description": "Schema for Battle Armor units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "BattleArmor_Biped", "BattleArmor_Quad"],
+      "description": "Configuration of the Battle Armor (Biped or Quad)."
+    },
+    "trooper_count": {
+      "type": ["integer", "null"],
+      "description": "Number of troopers in the squad (e.g., 4, 5, 6)."
+    },
+    "weight_class": {
+      "type": ["string", "null"],
+      "enum": [null, "Light", "Medium", "Heavy", "Assault"],
+      "description": "Weight class of the Battle Armor."
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] },
+        "vtol_mp": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "description": "Battle Armor protection.",
+      "properties": {
+        "type": {
+          "type": ["string", "null"]
+        },
+        "armor_points_per_trooper": {
+          "type": ["integer", "null"]
+        },
+        "locations": { "not": {"type": "object"} }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "description": "List of weapons and equipment carried by the Battle Armor squad.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "battle_armor_weapon", "battle_armor_equipment", "ammo"] },
+          "location": { "type": ["string", "null"] },
+          "count_per_trooper": { "type": ["integer", "null"] },
+          "squad_level_item": { "type": ["boolean", "null"] }
+        }
+      }
+    },
+    "criticals": { "not": {"type": "object"} },
+    "heat_sinks": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

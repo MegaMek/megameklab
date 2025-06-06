@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Battle Armor Schema",
+  "description": "Schema for Battle Armor units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["BattleArmor_Biped", "BattleArmor_Quad"],
+      "description": "Configuration of the Battle Armor (Biped or Quad)."
+    },
+    "trooper_count": {
+      "type": "integer",
+      "description": "Number of troopers in the squad (e.g., 4, 5, 6)."
+    },
+    "weight_class": {
+      "type": "string",
+      "enum": ["Light", "Medium", "Heavy", "Assault"],
+      "description": "Weight class of the Battle Armor."
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "walk_mp": { "type": "integer", "description": "Ground MP (if applicable)." },
+        "jump_mp": { "type": "integer", "description": "Jumping MP." },
+        "vtol_mp": { "type": "integer", "description": "VTOL MP (if applicable for some specialized BA)." }
+      },
+      "required": []
+    },
+    "armor": {
+      "type": "object",
+      "description": "Battle Armor protection.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of Battle Armor armor (e.g., Basic IS Stealth, Advanced Clan Fire Resistant)."
+        },
+        "armor_points_per_trooper": {
+          "type": "integer",
+          "description": "Total armor points for a single trooper in the squad."
+        },
+        "locations": { "not": {} }
+      },
+      "required": ["type", "armor_points_per_trooper"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and equipment carried by the Battle Armor squad.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string", "description": "Name of the weapon or equipment." },
+          "item_type": { "type": "string", "enum": ["battle_armor_weapon", "battle_armor_equipment", "ammo"], "description": "Category of the item." },
+          "location": {
+            "type": "string",
+            "description": "Typically 'Body', 'RA', 'LA', or specific mount if applicable (e.g., AP Mount). Some items are per trooper, some per squad."
+          },
+          "count_per_trooper": { "type": "integer", "description": "Number of this item carried by each trooper (if applicable)." },
+          "squad_level_item": { "type": "boolean", "description": "True if this is a single item for the squad (e.g. some support weapons)." }
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "criticals": { "not": {} },
+    "heat_sinks": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "trooper_count", "movement", "armor", "weapons_and_equipment"
+  ]
+}

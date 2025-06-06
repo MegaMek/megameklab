@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Infantry Schema",
+  "description": "Schema for conventional Infantry units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Infantry_Foot", "Infantry_Motorized_Wheeled", "Infantry_Motorized_Tracked", "Infantry_Motorized_Hover", "Infantry_Motorized_VTOL", "Infantry_Jump", "Infantry_Mechanized_Wheeled", "Infantry_Mechanized_Tracked", "Infantry_Mechanized_Hover", "Infantry_Mechanized_VTOL", "Infantry_Space", "Infantry_Aquatic", "Infantry_BeastMounted"],
+      "description": "Type and primary mode of transport for the infantry unit."
+    },
+    "mass": { "not": {}, "description": "Mass is not typically applicable to infantry units in the same way as vehicles/mechs; use platoon/squad composition instead." },
+    "platoon_composition": {
+      "type": "object",
+      "properties": {
+        "squad_size": { "type": "integer", "description": "Number of troopers per squad." },
+        "squads_per_platoon": { "type": "integer", "description": "Number of squads in this platoon." },
+        "troopers_per_platoon": { "type": "integer", "description": "Total number of troopers (squad_size * squads_per_platoon)." }
+      },
+      "required": ["squad_size", "squads_per_platoon", "troopers_per_platoon"]
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "walk_mp": { "type": "integer", "description": "Ground MP for foot/mechanized/motorized." },
+        "jump_mp": { "type": "integer", "description": "Jump MP (if jump infantry)." },
+        "motorized_cruise_mp": { "type": "integer", "description": "Cruise MP if motorized/mechanized (using their transport)." },
+        "motorized_flank_mp": { "type": "integer", "description": "Flank MP if motorized/mechanized." }
+      },
+      "required": ["walk_mp"]
+    },
+    "primary_weapon": {
+      "type": "string",
+      "description": "Primary weapon type for the platoon (e.g., Auto-Rifle, Laser Rifle, SRM Launcher)."
+    },
+    "secondary_weapon": {
+      "type": "string",
+      "description": "Secondary weapon type (if any, e.g., grenades, pistols)."
+    },
+    "support_weapons_per_squad": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "weapon_name": {"type": "string"},
+          "count": {"type": "integer"}
+        }
+      }
+    },
+    "armor_type": {
+      "type": "string",
+      "description": "Type of personal armor worn by troopers (e.g., Flak Vest, Combat Armor (Basic), Clan BA Grade)."
+    },
+    "armor_value_pv": {
+        "type": "integer",
+        "description": "Battle Value or Point Value armor rating for the platoon."
+    },
+    "anti_mek_rating": {
+      "type": "integer",
+      "description": "Effectiveness rating against BattleMechs or armored vehicles."
+    },
+    "field_guns": {
+      "type": "array",
+      "description": "Any field guns attached to and operated by the infantry platoon.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gun_name": {"type": "string"},
+          "count": {"type": "integer"},
+          "towed_by": {"type": "string", "description": "How the gun is moved (e.g., own motive, towed by specific vehicle type)."}
+        }
+      }
+    },
+    "transport_type_if_mechanized": {
+      "type": "string",
+      "description": "If mechanized, refers to the type of APC or transport vehicle used (e.g., Tracked APC, Hover APC)."
+    },
+    "heat_sinks": { "not": {} },
+    "criticals": { "not": {} },
+    "myomer": { "not": {} },
+    "engine": { "not": {} },
+    "armor": { "not": {} },
+    "weapons_and_equipment": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role",
+    "platoon_composition", "movement", "primary_weapon", "armor_type"
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Common Unit Schema",
+  "description": "A baseline schema for common properties of all combat units.",
+  "type": "object",
+  "properties": {
+    "chassis": { "type": ["string", "null"], "description": "The base name of the unit's chassis or type." },
+    "model": { "type": ["string", "null"], "description": "The specific model or variant of the unit." },
+    "mul_id": { "type": ["string", "integer", "null"], "description": "Master Unit List ID." },
+    "config": {
+      "type": ["string", "null"],
+      "description": "Physical configuration of the unit (e.g., Biped, Quad, Wheeled, Tracked, Hover, VTOL, WiGE, LAM, Spheroid, Aerodyne, BattleArmor_Biped, BattleArmor_Quad, ProtoMek_Biped, ProtoMek_Quad, Infantry_Leg, Infantry_Motorized, etc.)."
+    },
+    "tech_base": {
+      "type": ["string", "null"],
+      "description": "Technological base of the unit (e.g., Inner Sphere, Clan, Mixed). Often part of a more detailed 'type' field in source files."
+    },
+    "era": { "type": ["string", "integer", "null"], "description": "The era in which the unit was introduced or is primarily used." },
+    "source": { "type": ["string", "null"], "description": "The sourcebook or origin of the unit's data." },
+    "rules_level": {
+      "type": ["integer", "string", "null"],
+      "description": "The rules complexity level associated with the unit (e.g., 1 for Introductory, 2 for Standard, 3 for Advanced). Often part of a more detailed 'type' field in source files."
+    },
+    "role": { "type": ["string", "null"], "description": "The intended combat role of the unit (e.g., Striker, Missile Boat, Juggernaut)." },
+    "mass": { "type": ["number", "null"], "description": "Tonnage of the unit." },
+    "engine": {
+      "type": ["object", "null"],
+      "description": "Details of the unit's engine or power plant.",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "structure": {
+      "type": ["object", "null"],
+      "description": "Details of the unit's internal structure.",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "myomer": {
+      "type": ["object", "null"],
+      "description": "Details of the unit's myomer (if applicable, primarily for Mechs).",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "description": "Details about the unit's heat dissipation system.",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "count": { "type": ["integer", "null"] },
+        "dissipation_per_sink": { "type": ["integer", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "description": "Movement capabilities of the unit.",
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "run_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] },
+        "cruise_mp": { "type": ["integer", "null"] },
+        "flank_mp": { "type": ["integer", "null"] },
+        "safe_thrust_mp": { "type": ["integer", "null"] },
+        "max_thrust_mp": { "type": ["integer", "null"] },
+        "dive_mp": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "description": "Details of the unit's armor protection.",
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": { "type": ["string", "null"] },
+              "armor_points": { "type": ["integer", "null"] },
+              "rear_armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "description": "List of weapons and other equipment mounted on the unit.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "weapon", "ammo", "equipment", "battle_armor_weapon", "battle_armor_equipment", "protomek_weapon", "protomek_equipment", "infantry_weapon", "ordinance"] },
+          "location": { "type": ["string", "null"] },
+          "rear_facing": { "type": ["boolean", "null"], "default": false },
+          "turret_mounted": { "type": ["boolean", "null"], "default": false },
+          "ammo_per_shot": { "type": ["integer", "null"] },
+          "related_ammo": { "type": ["string", "null"] },
+          "shots": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "criticals": {
+      "type": ["array", "null"],
+      "description": "Critical hit slot allocation (primarily for Mechs, ProtoMeks).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": { "type": ["string", "null"] },
+          "slots": {
+            "type": ["array", "null"],
+            "items": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "quirks": {
+      "type": ["array", "null"],
+      "items": { "type": ["string", "null"] }
+    },
+    "manufacturers": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": ["string", "null"], "enum": [null, "primary_factory", "system_manufacturer", "chassis_manufacturer", "engine_manufacturer", "armor_manufacturer", "jumpjet_manufacturer", "communications_manufacturer", "targeting_manufacturer"] },
+          "name": { "type": ["string", "null"] },
+          "location": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "fluff_text": {
+      "type": ["object", "null"],
+      "properties": {
+        "overview": { "type": ["string", "null"] },
+        "capabilities": { "type": ["string", "null"] },
+        "deployment": { "type": ["string", "null"] },
+        "history": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

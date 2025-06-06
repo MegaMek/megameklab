@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Space Station Schema",
+  "description": "Schema for Space Station units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "const": "SpaceStation"
+    },
+    "mass": { "type": ["number", "null"] },
+    "k_f_drive": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "mass_tons": {"type": ["number", "null"]}
+      }
+    },
+    "station_keeping_engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "thrust_rating_tons": { "type": ["number", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "station_keeping_thrust_g": { "type": ["number", "null"], "default": 0 },
+        "fuel_points": { "type": ["integer", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double", "RadiatorPanel"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Section 1", "Section 2", "Section 3", "Section 4", "Section 5", "Section 6", "Habitation Module", "Docking Bay", "Command Center", "K-F Boom", "Battery Section", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "armament_capital": {
+      "type": ["array", "null"],
+      "items": { "$ref": "warshipSchema.json#/properties/armament_capital/items" }
+    },
+    "armament_standard": {
+      "type": ["array", "null"],
+      "items": { "$ref": "warshipSchema.json#/properties/armament_standard/items" }
+    },
+    "transport_bays": {
+       "$ref": "dropshipSchema.json#/properties/cargo_bays"
+    },
+    "crew": {
+      "type": ["object", "null"],
+      "properties": {
+        "operations_staff": { "type": ["integer", "null"] },
+        "gunners_capital": { "type": ["integer", "null"] },
+        "gunners_standard": { "type": ["integer", "null"] },
+        "marines_or_security": { "type": ["integer", "null"] },
+        "aerospace_pilots": { "type": ["integer", "null"] },
+        "bay_personnel": { "type": ["integer", "null"] },
+        "technicians_engineers": { "type": ["integer", "null"] },
+        "medical_staff": { "type": ["integer", "null"] },
+        "passengers_or_residents": { "type": ["integer", "null"] }
+      }
+    },
+    "docking_collars_dropship": { "type": ["integer", "null"] },
+    "docking_collars_jumpship": { "type": ["integer", "null"] },
+    "docking_collars_warship": { "type": ["integer", "null"] },
+    "grav_decks": { "type": ["integer", "null"] },
+    "escape_pod_count": { "type": ["integer", "null"] },
+    "life_boat_count": { "type": ["integer", "null"] },
+    "operational_lifespan_years": {"type": ["integer", "null"]},
+    "facilities": {
+        "type": ["array", "null"],
+        "items": {"type": ["string", "null"]}
+    },
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

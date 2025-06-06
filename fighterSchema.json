@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Aerospace Fighter Schema",
+  "description": "Schema for Aerospace Fighter units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Aerodyne"],
+      "description": "Configuration, typically Aerodyne for fighters."
+    },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Fusion", "XL Fusion", "Light Fusion", "Compact Fusion"] },
+        "rating": { "type": "integer", "description": "Engine rating, determines thrust." },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type", "rating"]
+    },
+    "movement": {
+      "type": "object",
+      "description": "Aerospace movement capabilities.",
+      "properties": {
+        "safe_thrust_mp": { "type": "integer", "description": "Safe Thrust rating." },
+        "max_thrust_mp": { "type": "integer", "description": "Maximum Thrust rating (Safe Thrust * 1.5)." },
+        "fuel_points": { "type": "integer", "description": "Total fuel capacity." },
+        "structural_integrity": { "type": "integer", "description": "Structural Integrity value." }
+      },
+      "required": ["safe_thrust_mp", "max_thrust_mp", "fuel_points", "structural_integrity"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double"] },
+        "count": { "type": "integer" }
+      },
+      "required": ["type", "count"]
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard, Ferro-Aluminum, Lamellor Ferro-Carbide" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per aerospace location.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Nose", "Left Wing", "Right Wing", "Aft"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and equipment, mounted in aerospace locations.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string" },
+          "item_type": { "type": "string", "enum": ["weapon", "ammo", "equipment", "bomb"] },
+          "location": {
+            "type": "string",
+            "enum": ["Nose", "Left Wing", "Right Wing", "Aft", "Body", "Fuselage"]
+          },
+          "rear_facing": { "type": "boolean", "default": false }
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "cockpit": {
+      "type": "string",
+      "description": "Type of cockpit (e.g., Standard, Small, Interface)."
+    },
+    "avionics": {
+      "type": "string",
+      "description": "Type of avionics system."
+    },
+    "landing_gear": {
+      "type": "string",
+      "description": "Type of landing gear."
+    },
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "engine", "movement", "heat_sinks", "armor", "weapons_and_equipment", "cockpit", "avionics", "landing_gear"
+  ]
+}

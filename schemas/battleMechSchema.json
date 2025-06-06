@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BattleMech Schema",
+  "description": "Schema for standard BattleMech units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Biped", "Quad"],
+      "description": "Physical configuration of the BattleMech. Bipeds are standard, Quads have four legs."
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "run_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Center Torso (Rear)", "Left Torso (Rear)", "Right Torso (Rear)"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "criticals": {
+      "type": ["array", "null"],
+      "description": "Critical hit slot allocation for BattleMechs.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"]
+          },
+          "slots": {
+            "type": ["array", "null"],
+            "items": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  }
+}

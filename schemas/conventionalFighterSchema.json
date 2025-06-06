@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Conventional Fighter Schema",
+  "description": "Schema for Conventional Fighter aircraft (atmospheric only).",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "const": "ConventionalFighter"
+    },
+    "mass": { "type": ["number", "null"] },
+    "engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "ICE", "Turbine", "Electric", "Fuel Cell", "Fission", "Fusion"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "cruise_speed_kph": { "type": ["integer", "null"] },
+        "max_speed_kph": { "type": ["integer", "null"] },
+        "combat_radius_km": { "type": ["integer", "null"] },
+        "ferry_range_km": { "type": ["integer", "null"] },
+        "stall_speed_kph": { "type": ["integer", "null"] },
+        "fuel_points": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Nose", "Wings", "Aft", "Fuselage", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "weapon", "ammo", "equipment", "bomb"] },
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Nose", "Left Wing", "Right Wing", "Aft", "Body", "Fuselage", "Bomb Bay"]
+          }
+        }
+      }
+    },
+    "cockpit": { "type": ["string", "null"] },
+    "avionics": { "type": ["string", "null"] },
+    "takeoff_run_meters": {"type": ["integer", "null"]},
+    "landing_run_meters": {"type": ["integer", "null"]},
+    "is_vtol_capable": {"type": ["boolean", "null"], "default": false},
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

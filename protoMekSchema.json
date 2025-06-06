@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProtoMek Schema",
+  "description": "Schema for ProtoMek units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["ProtoMek_Biped", "ProtoMek_Quad", "ProtoMek_Ultraheavy_Biped", "ProtoMek_Ultraheavy_Quad"],
+      "description": "Configuration of the ProtoMek."
+    },
+    "mass": { "type": "number", "minimum": 2, "maximum": 15, "description": "Tonnage of the ProtoMek (typically 2-9 tons, up to 15 for Ultraheavy)." },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Fusion", "XL Fusion", "Fuel Cell"] },
+        "rating": { "type": "integer" },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type", "rating"]
+    },
+    "structure": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "ProtoMek Internal Structure type (e.g., Standard ProtoMech Structure)." },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type"]
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "walk_mp": { "type": "integer", "description": "ProtoMek Walking MP (ground)." },
+        "run_mp": { "type": "integer", "description": "ProtoMek Running MP (ground)." },
+        "jump_mp": { "type": "integer", "description": "ProtoMek Jumping MP." }
+      },
+      "required": ["walk_mp"]
+    },
+    "heat_sinks": { "not": {}, "description": "ProtoMeks typically do not have explicit heat sinks in the same way as Mechs; heat is managed differently or abstracted." },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard ProtoMech Armor, Advanced ProtoMech Stealth Armor" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per ProtoMek location.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Head", "Torso", "Main Gun", "Left Arm", "Right Arm", "Legs"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 4,
+          "maxItems": 6
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and equipment mounted on the ProtoMek.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string" },
+          "item_type": { "type": "string", "enum": ["protomek_weapon", "protomek_equipment", "ammo"] },
+          "location": {
+            "type": "string",
+            "enum": ["Head", "Torso", "Main Gun", "Left Arm", "Right Arm", "Legs", "Body"]
+          }
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "cockpit_proto": {
+        "type": "string",
+        "description": "Specific type of ProtoMek cockpit/interface."
+    },
+    "criticals": { "not": {}, "description": "ProtoMeks use a simplified damage system without detailed critical slots like BattleMechs." },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "engine", "structure", "movement", "armor", "weapons_and_equipment", "cockpit_proto"
+  ]
+}

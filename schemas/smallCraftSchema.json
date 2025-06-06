@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Small Craft Schema",
+  "description": "Schema for Small Craft units (e.g., Shuttles, Escape Pods, Life Boats).",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Spheroid", "Aerodyne"],
+      "description": "Configuration, typically Spheroid or Aerodyne for small craft."
+    },
+    "mass": { "type": ["number", "null"], "minimum": 0, "maximum": 200 },
+    "engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Fusion", "XL Fusion", "Light Fusion", "ICE", "Fuel Cell", "Fission"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "safe_thrust_mp": { "type": ["integer", "null"] },
+        "max_thrust_mp": { "type": ["integer", "null"] },
+        "fuel_points": { "type": ["integer", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Nose", "Sides", "Aft", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "weapon", "ammo", "equipment"] },
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Nose", "Left Side", "Right Side", "Aft", "Body", "Turret 1", "Turret 2", "Overall"]
+          }
+        }
+      }
+    },
+    "cargo_capacity": { "type": ["number", "null"] },
+    "passenger_capacity": { "type": ["integer", "null"] },
+    "escape_pod_count": { "type": ["integer", "null"] },
+    "is_spacecraft": { "type": ["boolean", "null"] },
+    "is_atmospheric": { "type": ["boolean", "null"] },
+    "cockpit": { "type": ["string", "null"] },
+    "avionics": { "type": ["string", "null"] },
+    "landing_gear": { "type": ["string", "null"] },
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

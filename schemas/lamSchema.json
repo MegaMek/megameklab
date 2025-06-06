@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Land-Air Mech (LAM) Schema",
+  "description": "Schema for Land-Air Mech units, extending the Common Unit Schema.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "const": "LAM",
+      "description": "Physical configuration, must be LAM."
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "description": "Movement capabilities including ground and AirMech modes.",
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "run_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] },
+        "airmech_walk_mp": { "type": ["integer", "null"] },
+        "airmech_run_mp": { "type": ["integer", "null"] },
+        "airmech_jump_mp": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Center Torso (Rear)", "Left Torso (Rear)", "Right Torso (Rear)"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "criticals": {
+      "type": ["array", "null"],
+      "description": "Critical hit slot allocation. Must include Avionics and Landing Gear for LAMs.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"]
+          },
+          "slots": {
+            "type": ["array", "null"],
+            "items": { "type": ["string", "null"] },
+            "description": "Array of strings. Should contain 'Avionics' and 'Landing Gear' distributed in Torso/Head locations."
+          }
+        }
+      }
+    }
+  }
+}

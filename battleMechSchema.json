@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BattleMech Schema",
+  "description": "Schema for standard BattleMech units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Biped", "Quad"],
+      "description": "Physical configuration of the BattleMech. Bipeds are standard, Quads have four legs."
+    },
+    "movement": {
+      "type": "object",
+      "properties": {
+        "walk_mp": { "type": "integer", "description": "Walking MP." },
+        "run_mp": { "type": "integer", "description": "Running MP (typically Walk MP * 1.5, rounded up)." },
+        "jump_mp": { "type": "integer", "description": "Jumping MP, if equipped with jump jets." }
+      },
+      "required": ["walk_mp"],
+      "additionalProperties": false
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "Center Torso (Rear)", "Left Torso (Rear)", "Right Torso (Rear)"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"],
+            "dependentSchemas": {
+                "location": {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "location": {"const": "Center Torso (Rear)"},
+                                "rear_armor_points": null
+                            }
+                        },
+                        {
+                            "properties": {
+                                "location": {"const": "Left Torso (Rear)"},
+                                "rear_armor_points": null
+                            }
+                        },
+                         {
+                            "properties": {
+                                "location": {"const": "Right Torso (Rear)"},
+                                "rear_armor_points": null
+                            }
+                        },
+                        {
+                            "properties": {
+                               "location": {"enum": ["Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"]},
+                               "rear_armor_points": {"type": "integer" }
+                            }
+                        }
+                    ]
+                }
+            }
+          },
+          "minItems": 8,
+          "maxItems": 11
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "criticals": {
+      "type": "array",
+      "description": "Critical hit slot allocation for BattleMechs.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "enum": ["Head", "Center Torso", "Left Torso", "Right Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"]
+          },
+          "slots": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Array of strings, each being an equipment name or '-Empty-'."
+          }
+        },
+        "required": ["location", "slots"]
+      },
+      "minItems": 8,
+      "maxItems": 8
+    }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "engine", "structure", "myomer", "heat_sinks", "movement", "armor", "weapons_and_equipment", "criticals"
+  ]
+}

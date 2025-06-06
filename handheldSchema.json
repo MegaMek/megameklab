@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Handheld Object Schema",
+  "description": "Schema for handheld objects like weapons or tools, not full combat units.",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string", "description": "Name of the handheld item." },
+    "model": { "type": "string", "description": "Specific model or variant, if any." },
+    "year_introduced": { "type": ["integer", "string"] },
+    "tech_base": { "type": "string", "enum": ["Inner Sphere", "Clan", "Mixed", "Generic"], "description": "Technological base of the item." },
+    "rules_level": { "type": ["integer", "string"], "description": "Rules complexity level." },
+    "source": { "type": "string", "description": "Sourcebook or origin of the item's data." },
+    "item_type": {
+      "type": "string",
+      "enum": ["handheld_weapon", "handheld_tool", "handheld_equipment", "battle_armor_weapon_portable", "infantry_support_weapon"],
+      "description": "General category of the handheld item."
+    },
+    "weapon_properties": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Flamer, Laser, Autocannon, SRM" },
+        "damage": { "type": "string", "description": "Damage value or dice (e.g., 2D6, 3 points)." },
+        "range_short_m": { "type": "integer" },
+        "range_medium_m": { "type": "integer" },
+        "range_long_m": { "type": "integer" },
+        "heat": { "type": "integer", "description": "Heat generated per shot (if applicable)." },
+        "magazine_size": { "type": "integer", "description": "Number of shots per magazine/clip." },
+        "ammo_type": { "type": "string", "description": "Type of ammunition used." }
+      }
+    },
+    "tool_properties": {
+      "type": "object",
+      "properties": {
+        "function": { "type": "string", "description": "Primary function of the tool (e.g., Mining Drill, Repair Kit)." },
+        "operational_duration_hours": { "type": "number", "description": "Battery life or operational duration." }
+      }
+    },
+    "equipment_properties": {
+        "type": "object",
+        "properties": {
+            "effect": {"type": "string", "description": "e.g., ECM, Sensor Enhancement, Targeting Computer"}
+        }
+    },
+    "mass_kg": { "type": "number", "description": "Weight of the item in kilograms." },
+    "cost_cbills": { "type": "number", "description": "Cost in C-Bills." },
+    "legality": { "type": "string", "description": "Legal status in various factions/eras (e.g., Military, Civilian, Restricted)." },
+    "manufacturer": { "type": "string" }
+  },
+  "required": [
+    "name", "tech_base", "rules_level", "source", "item_type", "mass_kg"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Unit Verifier Options Schema",
+  "description": "Schema for the UnitVerifierOptions.xml file.",
+  "type": "object",
+  "properties": {
+    "entityverifier": {
+      "type": "object",
+      "properties": {
+        "mek": { "$ref": "#/definitions/entityOptions" },
+        "protomek": { "$ref": "#/definitions/entityOptions" },
+        "tank": { "$ref": "#/definitions/tankOptions" }
+      },
+      "required": ["mek", "protomek", "tank"]
+    }
+  },
+  "required": ["entityverifier"],
+  "definitions": {
+    "ceilWeightValues": {
+      "type": "string",
+      "enum": ["HALFTON", "KILO", "TON"]
+    },
+    "commonCeilWeightProperties": {
+      "type": "object",
+      "properties": {
+        "engine": { "$ref": "#/definitions/ceilWeightValues" },
+        "structure": { "$ref": "#/definitions/ceilWeightValues" },
+        "armor": { "$ref": "#/definitions/ceilWeightValues" },
+        "controls": { "$ref": "#/definitions/ceilWeightValues" },
+        "weapons": { "$ref": "#/definitions/ceilWeightValues" },
+        "targcomp": { "$ref": "#/definitions/ceilWeightValues" }
+      },
+      "required": ["engine", "structure", "armor", "controls", "weapons", "targcomp"]
+    },
+    "entityOptions": {
+      "type": "object",
+      "properties": {
+        "ceilWeight": {
+          "allOf": [
+            { "$ref": "#/definitions/commonCeilWeightProperties" },
+            {
+              "type": "object",
+              "properties": {
+                "gyro": { "$ref": "#/definitions/ceilWeightValues" }
+              },
+              "required": ["gyro"]
+            }
+          ]
+        },
+        "showOverweighted": { "type": "boolean" },
+        "maxOverweight": { "type": "number" },
+        "showUnderweighted": { "type": "boolean" },
+        "minUnderweight": { "type": "number" },
+        "ignoreFailedEquipment": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of equipment to ignore if validation fails. Corresponds to a comma-separated string in XML."
+        },
+        "skip": { "type": "boolean" },
+        "targCompCrits": { "type": "integer" },
+        "printSize": { "type": "integer" },
+        "showCorrectArmorPlacement": { "type": "boolean" },
+        "showCorrectCriticalAllocation": { "type": "boolean" },
+        "showFailedEquip": { "type": "boolean" },
+        "showIncorrectIntroYear": { "type": "boolean" },
+        "introYearMargin": { "type": "integer" }
+      },
+      "required": [
+        "ceilWeight",
+        "showOverweighted",
+        "maxOverweight",
+        "showUnderweighted",
+        "minUnderweight",
+        "ignoreFailedEquipment",
+        "skip",
+        "targCompCrits",
+        "printSize",
+        "showCorrectArmorPlacement",
+        "showCorrectCriticalAllocation",
+        "showFailedEquip",
+        "showIncorrectIntroYear",
+        "introYearMargin"
+      ]
+    },
+    "tankOptions": {
+      "type": "object",
+      "properties": {
+        "ceilWeight": {
+          "allOf": [
+            { "$ref": "#/definitions/commonCeilWeightProperties" },
+            {
+              "type": "object",
+              "properties": {
+                "turret": { "$ref": "#/definitions/ceilWeightValues" },
+                "lifting": { "$ref": "#/definitions/ceilWeightValues" },
+                "poweramp": { "$ref": "#/definitions/ceilWeightValues" }
+              },
+              "required": ["turret", "lifting", "poweramp"]
+            }
+          ]
+        },
+        "showOverweighted": { "type": "boolean" },
+        "maxOverweight": { "type": "number" },
+        "showUnderweighted": { "type": "boolean" },
+        "minUnderweight": { "type": "number" },
+        "ignoreFailedEquipment": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "skip": { "type": "boolean" },
+        "showIncorrectIntroYear": { "type": "boolean" },
+        "introYearMargin": { "type": "integer" }
+      },
+      "required": [
+        "ceilWeight",
+        "showOverweighted",
+        "maxOverweight",
+        "showUnderweighted",
+        "minUnderweight",
+        "ignoreFailedEquipment",
+        "skip",
+        "showIncorrectIntroYear",
+        "introYearMargin"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

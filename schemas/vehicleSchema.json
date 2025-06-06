@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vehicle Schema",
+  "description": "Schema for ground vehicles (Tracked, Wheeled, Hover) and VTOLs.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Tracked", "Wheeled", "Hover", "VTOL", "Naval", "WiGE"],
+      "description": "Type of vehicle motive system."
+    },
+    "engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Fusion", "XL", "ICE", "Fuel Cell", "Turbine", "Electric", "Fission"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "cruise_mp": { "type": ["integer", "null"] },
+        "flank_mp": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "description": "Armor points per facing: Front, Left, Right, Rear, Turret (if applicable). For VTOLs: Nose, Sides, Rear, Rotor.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Front", "Left Side", "Right Side", "Rear", "Turret", "Nose", "Rotor", "Sides"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "weapon", "ammo", "equipment"] },
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Front", "Left Side", "Right Side", "Rear", "Turret", "Body", "Nose", "Wings", "Sponson Turret Left", "Sponson Turret Right"]
+          },
+          "turret_mounted": { "type": ["boolean", "null"], "default": false }
+        }
+      }
+    },
+    "criticals": { "not": { "type": "object" }, "description": "Vehicles typically do not have detailed critical slot tables like Mechs." }
+  }
+}
