@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Infantry Schema",
+  "description": "Schema for conventional Infantry units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Infantry_Foot", "Infantry_Motorized_Wheeled", "Infantry_Motorized_Tracked", "Infantry_Motorized_Hover", "Infantry_Motorized_VTOL", "Infantry_Jump", "Infantry_Mechanized_Wheeled", "Infantry_Mechanized_Tracked", "Infantry_Mechanized_Hover", "Infantry_Mechanized_VTOL", "Infantry_Space", "Infantry_Aquatic", "Infantry_BeastMounted"],
+      "description": "Type and primary mode of transport for the infantry unit."
+    },
+    "mass": { "not": {"type":"object"}, "description": "Mass is not typically applicable to infantry units in the same way as vehicles/mechs; use platoon/squad composition instead." },
+    "platoon_composition": {
+      "type": ["object", "null"],
+      "properties": {
+        "squad_size": { "type": ["integer", "null"] },
+        "squads_per_platoon": { "type": ["integer", "null"] },
+        "troopers_per_platoon": { "type": ["integer", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] },
+        "motorized_cruise_mp": { "type": ["integer", "null"] },
+        "motorized_flank_mp": { "type": ["integer", "null"] }
+      }
+    },
+    "primary_weapon": { "type": ["string", "null"] },
+    "secondary_weapon": { "type": ["string", "null"] },
+    "support_weapons_per_squad": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "weapon_name": {"type": ["string", "null"]},
+          "count": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "armor_type": { "type": ["string", "null"] },
+    "armor_value_pv": { "type": ["integer", "null"] },
+    "anti_mek_rating": { "type": ["integer", "null"] },
+    "field_guns": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "gun_name": {"type": ["string", "null"]},
+          "count": {"type": ["integer", "null"]},
+          "towed_by": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "transport_type_if_mechanized": { "type": ["string", "null"] },
+    "heat_sinks": { "not": {"type":"object"} },
+    "criticals": { "not": {"type":"object"} },
+    "myomer": { "not": {"type":"object"} },
+    "engine": { "not": {"type":"object"} },
+    "armor": { "not": {"type":"object"} },
+    "weapons_and_equipment": { "not": {"type":"object"} }
+  }
+}

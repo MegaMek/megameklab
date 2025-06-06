@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JumpShip Schema",
+  "description": "Schema for JumpShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Spheroid", "Aerodyne"]
+    },
+    "mass": { "type": ["number", "null"] },
+    "k_f_drive": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "integrity": {"type": ["integer", "null"]},
+        "mass_tons": {"type": ["number", "null"]}
+      }
+    },
+    "sail": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "deployed_diameter_meters": { "type": ["number", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] }
+      }
+    },
+    "station_keeping_engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "thrust_rating_tons": { "type": ["number", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "station_keeping_thrust_g": { "type": ["number", "null"], "default": 0 },
+        "fuel_points": { "type": ["integer", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Nose", "Forward Sides", "Aft Sides", "Aft", "K-F Boom", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "armament": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": ["string", "null"], "enum": [null, "Nose", "FL", "FR", "AL", "AR", "Aft", "Turret", "Overall"]},
+          "weapon_name": { "type": ["string", "null"] },
+          "count": {"type": ["integer", "null"], "default": 1},
+          "ammo": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "docking_collars": { "type": ["integer", "null"] },
+    "crew": {
+      "type": ["object", "null"],
+      "properties": {
+        "officers": { "type": ["integer", "null"] },
+        "enlisted_crew": { "type": ["integer", "null"] },
+        "gunners": { "type": ["integer", "null"] },
+        "passengers": { "type": ["integer", "null"] }
+      }
+    },
+    "escape_pod_count": { "type": ["integer", "null"] },
+    "life_boat_count": { "type": ["integer", "null"] },
+    "cargo_capacity_tons": {"type": ["number", "null"]},
+    "bridge_type": {"type": ["string", "null"], "default": "Standard JumpShip Bridge"},
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

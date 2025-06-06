@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WarShip Schema",
+  "description": "Schema for WarShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Spheroid", "Aerodyne"]
+    },
+    "mass": { "type": ["number", "null"] },
+    "k_f_drive": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "mass_tons": {"type": ["number", "null"]}
+      }
+    },
+    "transit_drive": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "count": { "type": ["integer", "null"] },
+        "rating_per_engine": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "acceleration_g": { "type": ["number", "null"] },
+        "fuel_points": { "type": ["integer", "null"] },
+        "fuel_burn_rate_tons_per_day_at_1g": { "type": ["number", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Nose", "FL", "FR", "AL", "AR", "Aft", "Capital Bay FL", "Capital Bay FR", "Capital Bay AL", "Capital Bay AR", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "armament_capital": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": ["string", "null"], "enum": [null, "Nose", "FL", "FR", "AL", "AR", "Aft", "BroadsideL", "BroadsideR", "Turret", "Overall"]},
+          "weapon_name": { "type": ["string", "null"] },
+          "count": {"type": ["integer", "null"], "default": 1},
+          "ammo": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "armament_standard": {
+      "type": ["array", "null"],
+       "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": ["string", "null"], "enum": [null, "Nose", "FL", "FR", "AL", "AR", "Aft", "Point Defense", "Turret", "Overall"]},
+          "weapon_name": { "type": ["string", "null"] },
+          "count": {"type": ["integer", "null"], "default": 1},
+          "ammo": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "transport_bays": {
+      "type": ["object", "null"],
+      "properties": {
+        "fighter_bays": { "type": ["integer", "null"] },
+        "small_craft_bays": { "type": ["integer", "null"] },
+        "battlemech_cubicles": { "type": ["integer", "null"] },
+        "vehicle_cubicles": { "type": ["integer", "null"] },
+        "battle_armor_squads": { "type": ["integer", "null"] },
+        "infantry_platoons": { "type": ["integer", "null"] },
+        "cargo_tons": { "type": ["number", "null"] }
+      }
+    },
+    "crew": {
+      "type": ["object", "null"],
+      "properties": {
+        "officers": { "type": ["integer", "null"] },
+        "enlisted_crew": { "type": ["integer", "null"] },
+        "gunners_capital": { "type": ["integer", "null"] },
+        "gunners_standard": { "type": ["integer", "null"] },
+        "marines": { "type": ["integer", "null"] },
+        "aerospace_pilots": { "type": ["integer", "null"] },
+        "bay_personnel": { "type": ["integer", "null"] },
+        "passengers": { "type": ["integer", "null"] }
+      }
+    },
+    "docking_collars_dropship": { "type": ["integer", "null"] },
+    "grav_decks": { "type": ["integer", "null"] },
+    "escape_pod_count": { "type": ["integer", "null"] },
+    "life_boat_count": { "type": ["integer", "null"] },
+    "bridge_type": {"type": ["string", "null"], "default": "Standard WarShip Bridge"},
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

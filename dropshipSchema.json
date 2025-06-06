@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DropShip Schema",
+  "description": "Schema for DropShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Spheroid", "Aerodyne"],
+      "description": "Configuration, typically Spheroid or Aerodyne for DropShips."
+    },
+    "mass": { "type": "number", "minimum": 200, "description": "Tonnage of the DropShip." },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Fusion", "XL Fusion", "Light Fusion"] },
+        "count": { "type": "integer", "description": "Number of engines (if more than one primary)." },
+        "rating": { "type": "integer", "description": "Total engine rating or rating per engine." },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type", "rating"]
+    },
+    "movement": {
+      "type": "object",
+      "description": "Aerospace movement capabilities.",
+      "properties": {
+        "safe_thrust_mp": { "type": "integer", "description": "Safe Thrust rating (G rating)." },
+        "max_thrust_mp": { "type": "integer", "description": "Maximum Thrust rating." },
+        "fuel_points": { "type": "integer", "description": "Total fuel capacity." },
+        "structural_integrity": { "type": "integer", "description": "Structural Integrity value." },
+        "burn_rate_kg_per_day": { "type": "number", "description": "Fuel burn rate in kg per day at 1G (for station keeping)." }
+      },
+      "required": ["safe_thrust_mp", "max_thrust_mp", "fuel_points", "structural_integrity"]
+    },
+    "k_f_drive": {
+      "type": "object",
+      "description": "Kearny-Fuchida Drive details, if the DropShip is jump-capable (rare).",
+      "properties": {
+        "type": { "type": "string" },
+        "rating": { "type": "integer" },
+        "manufacturer": { "type": "string" }
+      }
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double"] },
+        "count": { "type": "integer" }
+      },
+      "required": ["type", "count"]
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per DropShip location.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Nose", "Left Forward Side", "Right Forward Side", "Left Aft Side", "Right Aft Side", "Aft"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 6,
+          "maxItems": 6
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "armament": {
+      "type": "array",
+      "description": "Detailed list of all weapons, often grouped by arc.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": "string", "enum": ["Nose", "FL", "FR", "AL", "AR", "Aft", "Turret"]},
+          "weapon_name": { "type": "string" },
+          "count": {"type": "integer", "default": 1},
+          "ammo": {"type": "integer", "description": "Shots available for this weapon group in this arc"}
+        },
+        "required": ["arc", "weapon_name"]
+      }
+    },
+    "cargo_bays": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bay_type": { "type": "string", "enum": ["BattleMech", "Fighter", "Vehicle", "BattleArmor", "Infantry", "SmallCraft", "BulkCargo", "LiquidCargo"] },
+          "capacity": { "type": "number", "description": "Capacity in units (e.g., number of Mechs) or tons (for bulk cargo)." },
+          "doors": { "type": "integer", "description": "Number of access doors for this bay." }
+        },
+        "required": ["bay_type", "capacity"]
+      }
+    },
+    "crew": {
+      "type": "object",
+      "properties": {
+        "officers": { "type": "integer" },
+        "enlisted_crew": { "type": "integer" },
+        "gunners": { "type": "integer" },
+        "passengers": { "type": "integer" },
+        "marines": { "type": "integer" },
+        "bay_personnel": { "type": "integer" }
+      }
+    },
+    "escape_pod_count": { "type": "integer" },
+    "life_boat_count": { "type": "integer" },
+    "cockpit": { "type": "string", "description": "Typically 'Standard Bridge' or similar." },
+    "avionics": { "type": "string" },
+    "landing_gear": { "type": "string", "description": "Type and number of landing gear." },
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "engine", "movement", "heat_sinks", "armor", "armament", "cargo_bays", "crew"
+  ]
+}

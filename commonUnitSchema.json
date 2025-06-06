@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Common Unit Schema",
+  "description": "A baseline schema for common properties of all combat units.",
+  "type": "object",
+  "properties": {
+    "chassis": { "type": "string", "description": "The base name of the unit's chassis or type." },
+    "model": { "type": "string", "description": "The specific model or variant of the unit." },
+    "mul_id": { "type": ["string", "integer"], "description": "Master Unit List ID." },
+    "config": {
+      "type": "string",
+      "description": "Physical configuration of the unit (e.g., Biped, Quad, Wheeled, Tracked, Hover, VTOL, WiGE, LAM, Spheroid, Aerodyne, BattleArmor_Biped, BattleArmor_Quad, ProtoMek_Biped, ProtoMek_Quad, Infantry_Leg, Infantry_Motorized, etc.)."
+    },
+    "tech_base": {
+      "type": "string",
+      "description": "Technological base of the unit (e.g., Inner Sphere, Clan, Mixed). Often part of a more detailed 'type' field in source files."
+    },
+    "era": { "type": ["string", "integer"], "description": "The era in which the unit was introduced or is primarily used." },
+    "source": { "type": "string", "description": "The sourcebook or origin of the unit's data." },
+    "rules_level": {
+      "type": ["integer", "string"],
+      "description": "The rules complexity level associated with the unit (e.g., 1 for Introductory, 2 for Standard, 3 for Advanced). Often part of a more detailed 'type' field in source files."
+    },
+    "role": { "type": "string", "description": "The intended combat role of the unit (e.g., Striker, Missile Boat, Juggernaut)." },
+    "mass": { "type": "number", "description": "Tonnage of the unit." },
+    "engine": {
+      "type": "object",
+      "description": "Details of the unit's engine or power plant.",
+      "properties": {
+        "type": { "type": "string", "description": "Type of engine (e.g., Fusion, XL, ICE, Fuel Cell)." },
+        "rating": { "type": "integer", "description": "Engine rating (e.g., 280)." },
+        "manufacturer": { "type": "string", "description": "Manufacturer of the engine." }
+      },
+      "required": ["type", "rating"]
+    },
+    "structure": {
+      "type": "object",
+      "description": "Details of the unit's internal structure.",
+      "properties": {
+        "type": { "type": "string", "description": "Type of internal structure (e.g., Standard, Endo-Steel, Composite)." },
+        "manufacturer": { "type": "string", "description": "Manufacturer of the structure." }
+      },
+      "required": ["type"]
+    },
+    "myomer": {
+      "type": "object",
+      "description": "Details of the unit's myomer (if applicable, primarily for Mechs).",
+      "properties": {
+        "type": { "type": "string", "description": "Type of myomer (e.g., Standard, MASC)." },
+        "manufacturer": { "type": "string", "description": "Manufacturer of the myomer system." }
+      },
+      "required": ["type"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "description": "Details about the unit's heat dissipation system.",
+      "properties": {
+        "type": { "type": "string", "description": "Type of heat sinks (e.g., Single, Double, Laser, Compact)." },
+        "count": { "type": "integer", "description": "Number of heat sinks." },
+        "dissipation_per_sink": { "type": "integer", "description": "Heat dissipation capacity per sink (relevant for some types)." }
+      },
+      "required": ["type", "count"]
+    },
+    "movement": {
+      "type": "object",
+      "description": "Movement capabilities of the unit.",
+      "properties": {
+        "walk_mp": { "type": "integer", "description": "Walking/Cruising MP (ground units)." },
+        "run_mp": { "type": "integer", "description": "Running/Flanking MP (ground units, often calculated)." },
+        "jump_mp": { "type": "integer", "description": "Jumping MP (ground units, Battle Armor)." },
+        "cruise_mp": { "type": "integer", "description": "Cruising MP (vehicles, aerospace)." },
+        "flank_mp": { "type": "integer", "description": "Flanking MP (vehicles, aerospace)." },
+        "safe_thrust_mp": { "type": "integer", "description": "Safe thrust MP (aerospace fighters)." },
+        "max_thrust_mp": { "type": "integer", "description": "Maximum thrust MP (aerospace fighters, often calculated)." },
+        "dive_mp": { "type": "integer", "description": "Dive MP (aerospace units capable of diving)." }
+      },
+      "additionalProperties": true
+    },
+    "armor": {
+      "type": "object",
+      "description": "Details of the unit's armor protection.",
+      "properties": {
+        "type": { "type": "string", "description": "Type of armor (e.g., Standard, Ferro-Fibrous, Stealth)." },
+        "manufacturer": { "type": "string", "description": "Manufacturer of the armor." },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per location. For Mechs: HD, CT, RT, LT, RA, LA, RL, LL and optional rear. For Vehicles/Fighters: Front, Sides, Rear, Turret or Nose, Wings, Aft.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": { "type": "string" },
+              "armor_points": { "type": "integer" },
+              "rear_armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          }
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and other equipment mounted on the unit.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string", "description": "Name of the weapon or equipment." },
+          "item_type": { "type": "string", "enum": ["weapon", "ammo", "equipment", "battle_armor_weapon", "battle_armor_equipment", "protomek_weapon", "protomek_equipment", "infantry_weapon", "ordinance"], "description": "Category of the item." },
+          "location": { "type": "string", "description": "Mounting location (e.g., Left Arm, Turret, Nose, Body)." },
+          "rear_facing": { "type": "boolean", "default": false },
+          "turret_mounted": { "type": "boolean", "default": false },
+          "ammo_per_shot": { "type": "integer", "description": "For ammo-consuming weapons, ammo used per shot." },
+          "related_ammo": { "type": "string", "description": "For weapons requiring ammo, references the ammo item name or type." },
+          "shots": { "type": "integer", "description": "Number of shots for ammunition items." }
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "criticals": {
+      "type": "array",
+      "description": "Critical hit slot allocation (primarily for Mechs, ProtoMeks).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "location": { "type": "string", "description": "Body location (e.g., Left Arm, Torso)." },
+          "slots": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Array of strings, each being an equipment name or '-Empty-'."
+          }
+        },
+        "required": ["location", "slots"]
+      }
+    },
+    "quirks": {
+      "type": "array",
+      "description": "Special rules or characteristics of the unit.",
+      "items": { "type": "string" }
+    },
+    "manufacturers": {
+      "type": "array",
+      "description": "List of manufacturers and their roles.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["primary_factory", "system_manufacturer", "chassis_manufacturer", "engine_manufacturer", "armor_manufacturer", "jumpjet_manufacturer", "communications_manufacturer", "targeting_manufacturer"], "description": "Type of manufacturing role." },
+          "name": { "type": "string", "description": "Name of the manufacturing company." },
+          "location": { "type": "string", "description": "Planetary location of the factory (if known)." }
+        },
+        "required": ["type", "name"]
+      }
+    },
+    "fluff_text": {
+      "type": "object",
+      "description": "Descriptive text about the unit.",
+      "properties": {
+        "overview": { "type": "string" },
+        "capabilities": { "type": "string" },
+        "deployment": { "type": "string" },
+        "history": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "required": [
+    "chassis",
+    "model",
+    "mul_id",
+    "config",
+    "tech_base",
+    "era",
+    "source",
+    "rules_level",
+    "role",
+    "mass"
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WarShip Schema",
+  "description": "Schema for WarShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Spheroid", "Aerodyne"],
+      "description": "Physical structure, typically Spheroid but can be Aerodyne."
+    },
+    "mass": { "type": "number", "description": "Tonnage of the WarShip (typically very large)." },
+    "k_f_drive": {
+      "type": "object",
+      "description": "Kearny-Fuchida Drive details.",
+      "properties": {
+        "type": { "type": "string" },
+        "rating": { "type": "integer" },
+        "manufacturer": { "type": "string" },
+        "mass_tons": {"type": "number"}
+      },
+      "required": ["type", "rating", "mass_tons"]
+    },
+    "transit_drive": {
+      "type": "object",
+      "description": "Primary sublight engines.",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Fusion, XL Fusion" },
+        "count": { "type": "integer", "description": "Number of primary transit engines." },
+        "rating_per_engine": { "type": "integer", "description": "Thrust rating per engine." },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type", "count", "rating_per_engine"]
+    },
+    "movement": {
+      "type": "object",
+      "description": "Aerospace movement capabilities.",
+      "properties": {
+        "acceleration_g": { "type": "number", "description": "Sublight acceleration in Gs." },
+        "fuel_points": { "type": "integer", "description": "Total fuel capacity." },
+        "fuel_burn_rate_tons_per_day_at_1g": { "type": "number" },
+        "structural_integrity": { "type": "integer" }
+      },
+      "required": ["acceleration_g", "fuel_points", "structural_integrity"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double"] },
+        "count": { "type": "integer" }
+      },
+      "required": ["type", "count"]
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard Ferro-Carbide, Lamellor Ferro-Carbide" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per WarShip section.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Nose", "FL", "FR", "AL", "AR", "Aft", "Capital Bay FL", "Capital Bay FR", "Capital Bay AL", "Capital Bay AR"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 6
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "armament_capital": {
+      "type": "array",
+      "description": "Capital-scale weaponry.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": "string", "enum": ["Nose", "FL", "FR", "AL", "AR", "Aft", "BroadsideL", "BroadsideR", "Turret"]},
+          "weapon_name": { "type": "string", "description": "e.g., Heavy Naval Gauss, Naval PPC, Killer Whale Launcher" },
+          "count": {"type": "integer", "default": 1},
+          "ammo": {"type": "integer"}
+        },
+        "required": ["arc", "weapon_name"]
+      }
+    },
+    "armament_standard": {
+      "type": "array",
+      "description": "Standard-scale (BattleMech/Fighter scale) weaponry.",
+       "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": "string", "enum": ["Nose", "FL", "FR", "AL", "AR", "Aft", "Point Defense", "Turret"]},
+          "weapon_name": { "type": "string" },
+          "count": {"type": "integer", "default": 1},
+          "ammo": {"type": "integer"}
+        },
+        "required": ["arc", "weapon_name"]
+      }
+    },
+    "transport_bays": {
+      "type": "object",
+      "properties": {
+        "fighter_bays": { "type": "integer", "description": "Number of fighter cubicles/bays." },
+        "small_craft_bays": { "type": "integer" },
+        "battlemech_cubicles": { "type": "integer" },
+        "vehicle_cubicles": { "type": "integer" },
+        "battle_armor_squads": { "type": "integer" },
+        "infantry_platoons": { "type": "integer" },
+        "cargo_tons": { "type": "number" }
+      }
+    },
+    "crew": {
+      "type": "object",
+      "properties": {
+        "officers": { "type": "integer" },
+        "enlisted_crew": { "type": "integer" },
+        "gunners_capital": { "type": "integer" },
+        "gunners_standard": { "type": "integer" },
+        "marines": { "type": "integer" },
+        "aerospace_pilots": { "type": "integer" },
+        "bay_personnel": { "type": "integer" },
+        "passengers": { "type": "integer" }
+      }
+    },
+    "docking_collars_dropship": { "type": "integer" },
+    "grav_decks": { "type": "integer", "description": "Number of gravity decks." },
+    "escape_pod_count": { "type": "integer" },
+    "life_boat_count": { "type": "integer" },
+    "bridge_type": {"type": "string", "default": "Standard WarShip Bridge"},
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "k_f_drive", "transit_drive", "movement", "heat_sinks", "armor", "armament_capital", "armament_standard",
+    "transport_bays", "crew", "docking_collars_dropship"
+  ]
+}

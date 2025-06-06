@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Equipment Schema",
+  "description": "Schema for BattleTech equipment items. (Refined with era, tech, faction details)",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Common name of the equipment (e.g., 'Large Laser', 'LRM 15 Ammo (24)', 'Double Heat Sink')."
+    },
+    "internal_id": {
+      "type": "string",
+      "description": "Unique internal identifier used in data files (e.g., 'ISERLargeLaser', 'AmmoLRM15', 'DoubleHeatSink'). This is often how items are referenced in unit files."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "Weapon", "Ammo", "Equipment", "System", "Structural", "Actuator",
+        "HeatSink", "TargetingComputer", "CASE", "JumpJet", "Avionics",
+        "LandingGear", "Engine", "Cockpit", "Gyro", "Myomer", "Armor",
+        "IndustrialEquipment", "Special", "Unknown"
+      ],
+      "default": "Unknown",
+      "description": "Broad functional type of the item."
+    },
+    "category": {
+      "type": "string",
+      "default": "Unknown",
+      "description": "More specific category (e.g., 'EnergyWeapon', 'BallisticWeapon', 'MissileWeapon', 'Ammunition', 'ElectronicWarfare', 'TargetingSystem', 'ArmorComponent', 'EngineComponent', 'MotiveSystem', 'LifeSupport', 'Unknown'). This can be more granular than 'type'."
+    },
+    "tech_base": {
+      "type": "string",
+      "enum": ["Inner Sphere", "Clan", "Mixed", "Primitive", "Unknown"],
+      "default": "Unknown",
+      "description": "Technological origin of the equipment."
+    },
+    "rules_level": {
+      "type": "string",
+      "enum": ["Introductory", "Standard", "Advanced", "Experimental", "Custom", "EraSpecific", "Unknown"],
+      "default": "Standard",
+      "description": "Rules complexity level associated with this equipment."
+    },
+    "introduction_year": {
+      "type": ["integer", "string"],
+      "description": "Year of introduction (integer) or era name (string if specific year is not inferable)."
+    },
+    "extinction_year": {
+      "type": ["integer", "string"],
+      "description": "Year or era of technological extinction (optional)."
+    },
+    "faction_availability": {
+      "type": "array",
+      "description": "Availability by faction and era (optional).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "faction_id": { "type": "string", "description": "Identifier for the faction (e.g., 'DCMS', 'AFFS', 'CSJ')." },
+          "start_year": { "type": "integer" },
+          "end_year": { "type": "integer", "description": "Optional end year if availability ceases." }
+        },
+        "required": ["faction_id", "start_year"]
+      },
+      "default": []
+    },
+    "technology_dependencies": {
+      "type": "array",
+      "description": "List of internal_ids of other equipment or technologies required for this item to function or be built (optional).",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "critical_slots": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of critical slots the item occupies. Can be fractional for some systems (e.g. Ferro Fibrous taking 0.5 slots effectively over 14 locations)."
+    },
+    "tonnage": {
+      "type": "number",
+      "default": 0,
+      "description": "Weight of the item in tons."
+    },
+    "cost_cbills": {
+      "type": "integer",
+      "description": "Cost of the item in C-Bills (optional)."
+    },
+    "battle_value": {
+      "type": "number",
+      "description": "Battle Value of the item (optional)."
+    },
+    "source_book": {
+      "type": "string",
+      "description": "Primary sourcebook for this item's rules/stats (optional)."
+    },
+    "source_files": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of source unit files this equipment item was derived from.",
+        "default": []
+    },
+    "weapon_details": {
+      "type": "object",
+      "description": "Specific details if the item is a weapon.",
+      "properties": {
+        "heat_generated": { "type": "integer" },
+        "damage": { "type": "string", "description": "Damage string (e.g., '5', '2d6', '1/shot')." },
+        "range_min": { "type": "integer", "description": "Minimum range in hexes (0 if no min range)." },
+        "range_short": { "type": "integer" },
+        "range_medium": { "type": "integer" },
+        "range_long": { "type": "integer" },
+        "weapon_flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of special properties (e.g., 'Pulse', 'Ultra', 'LBX', 'Streak', 'One-Shot', 'DirectFire', 'IndirectFire', 'Heat', 'Cluster', 'AE', 'Flamer', 'AP')."
+        },
+        "requires_ammo_id": {
+          "type": "string",
+          "description": "Internal ID of the ammunition type required by this weapon (optional)."
+        },
+        "shots_per_ammo_ton": {
+          "type": "integer",
+          "description": "If weapon uses ammo and ammo is defined per ton, this indicates how many shots one ton provides (often on ammo entry instead)."
+        }
+      }
+    },
+    "ammo_details": {
+      "type": "object",
+      "description": "Specific details if the item is ammunition.",
+      "properties": {
+        "ammo_per_ton": { "type": "integer", "description": "Number of shots this ammunition type provides per ton." },
+        "damage_modifier": { "type": "string", "description": "Damage modifier for special ammo types (e.g., '+1 damage', 'half damage vs conventional infantry')." },
+        "range_modifier": { "type": "string" },
+        "heat_modifier": { "type": "integer" },
+        "related_weapon_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of internal_ids of weapons that can use this ammunition."
+        },
+        "ammo_flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Special properties for ammo (e.g., 'Inferno', 'Tracer', 'Armor-Piercing', 'Precision')."
+        }
+      }
+    },
+    "engine_details": {
+      "type": "object",
+      "description": "Specific details if the item is an engine.",
+      "properties": {
+        "engine_rating": { "type": "integer" },
+        "engine_type_name": { "type": "string", "enum": ["Fusion", "XL", "XXL", "Light Fusion", "Compact", "ICE", "Fuel Cell", "Fission", "Turbine"] }
+      }
+    },
+    "heatsink_details": {
+      "type": "object",
+      "description": "Specific details if the item is a heat sink.",
+      "properties": {
+        "dissipation_type": { "type": "string", "enum": ["Single", "Double", "Laser", "Compact"] },
+        "dissipation_capacity": { "type": "integer", "description": "Heat points dissipated per turn."}
+      }
+    },
+    "jumpjet_details": {
+        "type": "object",
+        "properties": {
+            "jump_mp_provided_per_jet": {"type": "integer"}
+        }
+    },
+    "armor_details": {
+        "type": "object",
+        "properties": {
+            "protection_per_ton": {"type": "integer"},
+            "tech_rating_modifier": {"type": "number"}
+        }
+    },
+    "targetingcomputer_details": {
+        "type": "object",
+        "properties": {
+            "targeting_bonus": {"type": "string", "description": "e.g., -1 to hit"}
+        }
+    }
+  },
+  "required": [
+    "name",
+    "internal_id",
+    "type",
+    "category",
+    "tech_base",
+    "rules_level",
+    "introduction_year",
+    "critical_slots",
+    "tonnage"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "type": { "const": "Weapon" } }
+      },
+      "then": {
+        "required": ["weapon_details"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "type": { "const": "Ammo" } }
+      },
+      "then": {
+        "required": ["ammo_details"]
+      }
+    }
+  ]
+}

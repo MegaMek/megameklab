@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProtoMek Schema",
+  "description": "Schema for ProtoMek units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "ProtoMek_Biped", "ProtoMek_Quad", "ProtoMek_Ultraheavy_Biped", "ProtoMek_Ultraheavy_Quad"],
+      "description": "Configuration of the ProtoMek."
+    },
+    "mass": { "type": ["number", "null"], "minimum": 0, "maximum": 15 },
+    "engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Fusion", "XL Fusion", "Fuel Cell"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "structure": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"] },
+        "run_mp": { "type": ["integer", "null"] },
+        "jump_mp": { "type": ["integer", "null"] }
+      }
+    },
+    "heat_sinks": { "not": {"type": "object"} },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Head", "Torso", "Main Gun", "Left Arm", "Right Arm", "Legs", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "protomek_weapon", "protomek_equipment", "ammo"] },
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Head", "Torso", "Main Gun", "Left Arm", "Right Arm", "Legs", "Body"]
+          }
+        }
+      }
+    },
+    "cockpit_proto": { "type": ["string", "null"] },
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

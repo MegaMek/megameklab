@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gun Emplacement Schema",
+  "description": "Schema for Gun Emplacement units (fixed defensive structures).",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "const": "GunEmplacement",
+      "description": "Configuration must be GunEmplacement."
+    },
+    "mass": { "type": "number", "description": "Effective tonnage or size class of the emplacement." },
+    "movement": {
+      "type": "object",
+      "description": "Gun Emplacements are immobile.",
+      "properties": {
+        "walk_mp": { "type": "integer", "const": 0 },
+        "run_mp": { "type": "integer", "const": 0 },
+        "jump_mp": { "type": "integer", "const": 0 }
+      },
+      "required": ["walk_mp", "run_mp", "jump_mp"]
+    },
+    "turret_type": {
+      "type": "string",
+      "enum": ["Fixed", "Limited Traverse", "Full Turret", "Pop-Up Turret"],
+      "description": "Type of turret or mounting for the weapons."
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Hardened, Concrete, Ferro-Concrete" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points for the emplacement structure/turret.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Structure", "Turret", "Barbette"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and equipment.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string" },
+          "item_type": { "type": "string", "enum": ["weapon", "ammo", "equipment"] },
+          "location": {
+            "type": "string",
+            "enum": ["Turret", "Body", "FixedMount"]
+          },
+          "arc_of_fire": {"type": "string", "description": "e.g., 360 degrees, Forward 180, etc."}
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "crew_complement": {
+      "type": "integer",
+      "description": "Number of crew required to operate the emplacement."
+    },
+    "power_plant": {
+      "type": "string",
+      "description": "Type of power plant, if not directly tied to a larger network (e.g., Internal Combustion, Fuel Cell, Power Grid)."
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "count": { "type": "integer" }
+      }
+    },
+    "criticals": { "not": {} },
+    "myomer": { "not": {} },
+    "engine": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "turret_type", "armor", "weapons_and_equipment"
+  ]
+}

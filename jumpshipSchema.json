@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JumpShip Schema",
+  "description": "Schema for JumpShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "enum": ["Spheroid", "Aerodyne"],
+      "description": "Physical structure, though most are non-aerodynamic Spheroids."
+    },
+    "mass": { "type": "number", "description": "Tonnage of the JumpShip." },
+    "k_f_drive": {
+      "type": "object",
+      "description": "Kearny-Fuchida Drive details.",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard, Compact" },
+        "rating": { "type": "integer", "description": "Jump capability in light-years (e.g., 30 LY)." },
+        "manufacturer": { "type": "string" },
+        "integrity": {"type": "integer", "description": "K-F Boom Integrity (if applicable)"},
+        "mass_tons": {"type": "number", "description": "Mass of the K-F Drive itself."}
+      },
+      "required": ["type", "rating", "mass_tons"]
+    },
+    "sail": {
+      "type": "object",
+      "description": "Details of the jump sail.",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard, Compact" },
+        "deployed_diameter_meters": { "type": "number" },
+        "structural_integrity": { "type": "integer" }
+      },
+      "required": ["type", "deployed_diameter_meters", "structural_integrity"]
+    },
+    "station_keeping_engine": {
+      "type": "object",
+      "description": "Engine used for station keeping, not primary thrust.",
+      "properties": {
+        "type": { "type": "string" },
+        "thrust_rating_tons": { "type": "number" }
+      }
+    },
+    "movement": {
+      "type": "object",
+      "description": "JumpShips have very limited sublight movement, primarily for orientation and station keeping.",
+      "properties": {
+        "station_keeping_thrust_g": { "type": "number", "description": "Thrust available for station keeping, usually very low (e.g., 0.01 G)." },
+        "fuel_points": { "type": "integer", "description": "Fuel for station keeping thrusters and K-F drive charging." },
+        "structural_integrity": { "type": "integer", "description": "Overall Structural Integrity of the hull." }
+      },
+      "required": ["station_keeping_thrust_g", "fuel_points", "structural_integrity"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double"] },
+        "count": { "type": "integer", "description": "Primarily for K-F drive charging." }
+      },
+      "required": ["type", "count"]
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per JumpShip section (simplified).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Nose", "Forward Sides", "Aft Sides", "Aft", "K-F Boom"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 4,
+          "maxItems": 5
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "armament": {
+      "type": "array",
+      "description": "JumpShips typically have minimal defensive armament.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": "string", "enum": ["Nose", "FL", "FR", "AL", "AR", "Aft", "Turret"]},
+          "weapon_name": { "type": "string" },
+          "count": {"type": "integer", "default": 1},
+          "ammo": {"type": "integer"}
+        },
+        "required": ["arc", "weapon_name"]
+      }
+    },
+    "docking_collars": {
+      "type": "integer",
+      "description": "Number of docking collars for DropShips."
+    },
+    "crew": {
+      "type": "object",
+      "properties": {
+        "officers": { "type": "integer" },
+        "enlisted_crew": { "type": "integer" },
+        "gunners": { "type": "integer" },
+        "passengers": { "type": "integer" }
+      }
+    },
+    "escape_pod_count": { "type": "integer" },
+    "life_boat_count": { "type": "integer" },
+    "cargo_capacity_tons": {"type": "number"},
+    "bridge_type": {"type": "string", "default": "Standard JumpShip Bridge"},
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "k_f_drive", "sail", "movement", "heat_sinks", "armor", "docking_collars", "crew"
+  ]
+}

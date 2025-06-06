@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DropShip Schema",
+  "description": "Schema for DropShip units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "enum": [null, "Spheroid", "Aerodyne"],
+      "description": "Configuration, typically Spheroid or Aerodyne for DropShips."
+    },
+    "mass": { "type": ["number", "null"], "minimum": 0 },
+    "engine": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Fusion", "XL Fusion", "Light Fusion", "Fission"] },
+        "count": { "type": ["integer", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "safe_thrust_mp": { "type": ["integer", "null"] },
+        "max_thrust_mp": { "type": ["integer", "null"] },
+        "fuel_points": { "type": ["integer", "null"] },
+        "structural_integrity": { "type": ["integer", "null"] },
+        "burn_rate_kg_per_day": { "type": ["number", "null"] }
+      }
+    },
+    "k_f_drive": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "rating": { "type": ["integer", "null"] },
+        "manufacturer": { "type": ["string", "null"] }
+      }
+    },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"], "enum": [null, "Single", "Double"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Nose", "Left Forward Side", "Right Forward Side", "Left Aft Side", "Right Aft Side", "Aft", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "armament": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "arc": {"type": ["string", "null"], "enum": [null, "Nose", "FL", "FR", "AL", "AR", "Aft", "Turret", "Overall"]},
+          "weapon_name": { "type": ["string", "null"] },
+          "count": {"type": ["integer", "null"], "default": 1},
+          "ammo": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "cargo_bays": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "bay_type": { "type": ["string", "null"], "enum": [null, "BattleMech", "Fighter", "Vehicle", "BattleArmor", "Infantry", "SmallCraft", "BulkCargo", "LiquidCargo"] },
+          "capacity": { "type": ["number", "null"] },
+          "doors": { "type": ["integer", "null"] }
+        }
+      }
+    },
+    "crew": {
+      "type": ["object", "null"],
+      "properties": {
+        "officers": { "type": ["integer", "null"] },
+        "enlisted_crew": { "type": ["integer", "null"] },
+        "gunners": { "type": ["integer", "null"] },
+        "passengers": { "type": ["integer", "null"] },
+        "marines": { "type": ["integer", "null"] },
+        "bay_personnel": { "type": ["integer", "null"] }
+      }
+    },
+    "escape_pod_count": { "type": ["integer", "null"] },
+    "life_boat_count": { "type": ["integer", "null"] },
+    "cockpit": { "type": ["string", "null"] },
+    "avionics": { "type": ["string", "null"] },
+    "landing_gear": { "type": ["string", "null"] },
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} }
+  }
+}

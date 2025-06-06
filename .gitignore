@@ -41,3 +41,18 @@ units.cache
 
 /megameklab/docs/README.md
 /megameklab/docs/LICENSE*
+
+# Added for converted output
+/megameklab_converted_output/
+
+# Next.js project files
+/battletech-editor-app/node_modules/
+/battletech-editor-app/.next/
+/battletech-editor-app/out/
+/battletech-editor-app/.DS_Store
+/battletech-editor-app/*.log
+/battletech-editor-app/npm-debug.log*
+/battletech-editor-app/yarn-debug.log*
+/battletech-editor-app/yarn-error.log*
+/battletech-editor-app/.pnp/
+/battletech-editor-app/.pnp.js

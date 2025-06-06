@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gun Emplacement Schema",
+  "description": "Schema for Gun Emplacement units (fixed defensive structures).",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": ["string", "null"],
+      "const": "GunEmplacement"
+    },
+    "mass": { "type": ["number", "null"] },
+    "movement": {
+      "type": ["object", "null"],
+      "properties": {
+        "walk_mp": { "type": ["integer", "null"], "const": 0 },
+        "run_mp": { "type": ["integer", "null"], "const": 0 },
+        "jump_mp": { "type": ["integer", "null"], "const": 0 }
+      }
+    },
+    "turret_type": {
+      "type": ["string", "null"],
+      "enum": [null, "Fixed", "Limited Traverse", "Full Turret", "Pop-Up Turret"]
+    },
+    "armor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "manufacturer": { "type": ["string", "null"] },
+        "locations": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": ["string", "null"],
+                "enum": [null, "Structure", "Turret", "Barbette", "Overall"]
+              },
+              "armor_points": { "type": ["integer", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "weapons_and_equipment": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": ["string", "null"] },
+          "item_type": { "type": ["string", "null"], "enum": [null, "weapon", "ammo", "equipment"] },
+          "location": {
+            "type": ["string", "null"],
+            "enum": [null, "Turret", "Body", "FixedMount"]
+          },
+          "arc_of_fire": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "crew_complement": { "type": ["integer", "null"] },
+    "power_plant": { "type": ["string", "null"] },
+    "heat_sinks": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": ["string", "null"] },
+        "count": { "type": ["integer", "null"] }
+      }
+    },
+    "criticals": { "not": {"type": "object"} },
+    "myomer": { "not": {"type": "object"} },
+    "engine": { "not": {"type": "object"} }
+  }
+}

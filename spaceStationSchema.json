@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Space Station Schema",
+  "description": "Schema for Space Station units.",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "const": "SpaceStation",
+      "description": "Configuration must be SpaceStation."
+    },
+    "mass": { "type": "number", "description": "Tonnage of the Space Station." },
+    "k_f_drive": {
+      "type": "object",
+      "description": "Kearny-Fuchida Drive details, if the station has one (rare, for mobility or as part of its core structure).",
+      "properties": {
+        "type": { "type": "string" },
+        "rating": { "type": "integer" },
+        "manufacturer": { "type": "string" },
+        "mass_tons": {"type": "number"}
+      }
+    },
+    "station_keeping_engine": {
+      "type": "object",
+      "description": "Thrusters for station keeping and orientation.",
+      "properties": {
+        "type": { "type": "string" },
+        "thrust_rating_tons": { "type": "number" }
+      }
+    },
+    "movement": {
+      "type": "object",
+      "description": "Space stations are generally immobile or have very limited movement for orientation.",
+      "properties": {
+        "station_keeping_thrust_g": { "type": "number", "default": 0, "description": "Typically 0 G or very low for minor adjustments." },
+        "fuel_points": { "type": "integer", "description": "Fuel for station keeping thrusters (if any) and K-F drive (if present)." },
+        "structural_integrity": { "type": "integer" }
+      },
+      "required": ["station_keeping_thrust_g", "fuel_points", "structural_integrity"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double", "RadiatorPanel"] },
+        "count": { "type": "integer" }
+      },
+      "required": ["type", "count"]
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per station section (simplified).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Section 1", "Section 2", "Section 3", "Section 4", "Section 5", "Section 6", "Habitation Module", "Docking Bay", "Command Center", "K-F Boom", "Battery Section"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "armament_capital": {
+      "type": "array",
+      "description": "Capital-scale weaponry.",
+       "items": { "$ref": "warshipSchema.json#/properties/armament_capital/items" }
+    },
+    "armament_standard": {
+      "type": "array",
+      "description": "Standard-scale weaponry.",
+      "items": { "$ref": "warshipSchema.json#/properties/armament_standard/items" }
+    },
+    "transport_bays": {
+       "$ref": "dropshipSchema.json#/properties/cargo_bays"
+    },
+    "crew": {
+      "type": "object",
+      "properties": {
+        "operations_staff": { "type": "integer" },
+        "gunners_capital": { "type": "integer" },
+        "gunners_standard": { "type": "integer" },
+        "marines_or_security": { "type": "integer" },
+        "aerospace_pilots": { "type": "integer" },
+        "bay_personnel": { "type": "integer" },
+        "technicians_engineers": { "type": "integer" },
+        "medical_staff": { "type": "integer" },
+        "passengers_or_residents": { "type": "integer" }
+      }
+    },
+    "docking_collars_dropship": { "type": "integer" },
+    "docking_collars_jumpship": { "type": "integer" },
+    "docking_collars_warship": { "type": "integer" },
+    "grav_decks": { "type": "integer" },
+    "escape_pod_count": { "type": "integer" },
+    "life_boat_count": { "type": "integer" },
+    "operational_lifespan_years": {"type": "integer"},
+    "facilities": {
+        "type": "array",
+        "items": {"type": "string", "description": "e.g., Repair Bays, Factory, Hospital, Training Center, Command & Control"}
+    },
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "movement", "heat_sinks", "armor", "crew"
+  ]
+}

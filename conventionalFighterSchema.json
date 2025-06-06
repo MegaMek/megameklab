@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Conventional Fighter Schema",
+  "description": "Schema for Conventional Fighter aircraft (atmospheric only).",
+  "type": "object",
+  "allOf": [
+    { "$ref": "commonUnitSchema.json" }
+  ],
+  "properties": {
+    "config": {
+      "type": "string",
+      "const": "ConventionalFighter",
+      "description": "Configuration must be ConventionalFighter."
+    },
+    "mass": { "type": "number", "description": "Tonnage of the conventional fighter." },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["ICE", "Turbine", "Electric", "Fuel Cell", "Fission", "Fusion"] },
+        "rating": { "type": "integer", "description": "Engine power rating." },
+        "manufacturer": { "type": "string" }
+      },
+      "required": ["type", "rating"]
+    },
+    "movement": {
+      "type": "object",
+      "description": "Atmospheric flight capabilities.",
+      "properties": {
+        "cruise_speed_kph": { "type": "integer", "description": "Cruising speed in kilometers per hour." },
+        "max_speed_kph": { "type": "integer", "description": "Maximum speed in kilometers per hour." },
+        "combat_radius_km": { "type": "integer", "description": "Combat radius in kilometers." },
+        "ferry_range_km": { "type": "integer", "description": "Ferry range in kilometers." },
+        "stall_speed_kph": { "type": "integer" },
+        "fuel_points": { "type": "integer", "description": "Fuel capacity (if not using fusion/fission)." }
+      },
+      "required": ["cruise_speed_kph", "max_speed_kph"]
+    },
+    "heat_sinks": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["Single", "Double"] },
+        "count": { "type": "integer" }
+      },
+      "description": "Heat sinks, if applicable (usually only for energy weapons or advanced engines)."
+    },
+    "armor": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "e.g., Standard, BAR 5, BAR 10" },
+        "manufacturer": { "type": "string" },
+        "locations": {
+          "type": "array",
+          "description": "Armor points per conventional fighter location.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": ["Nose", "Wings", "Aft", "Fuselage"]
+              },
+              "armor_points": { "type": "integer" }
+            },
+            "required": ["location", "armor_points"]
+          },
+          "minItems": 3,
+          "maxItems": 4
+        }
+      },
+      "required": ["type", "locations"]
+    },
+    "weapons_and_equipment": {
+      "type": "array",
+      "description": "List of weapons and equipment.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": { "type": "string" },
+          "item_type": { "type": "string", "enum": ["weapon", "ammo", "equipment", "bomb"] },
+          "location": {
+            "type": "string",
+            "enum": ["Nose", "Left Wing", "Right Wing", "Aft", "Body", "Fuselage", "Bomb Bay"]
+          }
+        },
+        "required": ["item_name", "item_type", "location"]
+      }
+    },
+    "cockpit": {
+      "type": "string",
+      "description": "Type of cockpit."
+    },
+    "avionics": {
+      "type": "string",
+      "description": "Avionics system."
+    },
+    "takeoff_run_meters": {"type": "integer", "description": "Required takeoff run in meters (for fixed-wing)."},
+    "landing_run_meters": {"type": "integer", "description": "Required landing run in meters (for fixed-wing)."},
+    "is_vtol_capable": {"type": "boolean", "default": false, "description": "True if the conventional fighter has VTOL capabilities."},
+    "criticals": { "not": {} },
+    "myomer": { "not": {} }
+  },
+  "required": [
+    "chassis", "model", "mul_id", "config", "tech_base", "era", "source", "rules_level", "role", "mass",
+    "engine", "movement", "armor", "weapons_and_equipment", "cockpit", "avionics"
+  ]
+}
