@@ -16,6 +16,7 @@ export default async function handler(req, res) {
     type_array, // For filtering by equipment type
     q, // For text search on name
     tech_base_array, // For filtering by tech_base
+    era_array, // For filtering by era
     sortBy,
     sortOrder = 'ASC' // Default to ascending order
   } = req.query;
@@ -64,6 +65,17 @@ export default async function handler(req, res) {
           const placeholders = techBases.map(() => `$${paramIndex++}`).join(', ');
           whereConditions.push(`tech_base IN (${placeholders})`);
           queryParams.push(...techBases);
+        }
+      }
+
+      if (era_array) {
+        const eras = Array.isArray(era_array) ? era_array : era_array.split(',');
+        if (eras.length > 0) {
+          const placeholders = eras.map(() => `$${paramIndex++}`).join(', ');
+          whereConditions.push(`era IN (${placeholders})`);
+          // Assuming era values in the DB are stored as strings that can match these.
+          // If they are numeric years, the frontend might need to send year numbers.
+          queryParams.push(...eras);
         }
       }
 
