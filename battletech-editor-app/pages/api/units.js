@@ -1,14 +1,6 @@
-import { Pool } from 'pg';
+import db from '../../lib/db'; // Changed import
 
-const pool = new Pool({
-  user: 'battletech_user',
-  host: 'db',
-  database: 'battletech_editor',
-  password: 'password',
-  port: 5432,
-});
-
-export default async function handler(req, res) {
+export default function handler(req, res) { // Removed async
   const {
     id,
     page = 1,
@@ -25,74 +17,63 @@ export default async function handler(req, res) {
     sortOrder = 'ASC'
   } = req.query;
 
-  let client;
-
   // To be populated for error logging if needed
   let mainQueryStringForLog = '';
   let finalQueryParamsForLog = [];
 
   try {
-    client = await pool.connect();
-
     if (id) {
-      // Ensure 'type' column exists or is aliased if actual column name differs
-      const result = await client.query(
-        'SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type FROM units WHERE id = $1',
-        [id]
-      );
-      if (result.rows.length === 0) {
+      mainQueryStringForLog = 'SELECT id, chassis, model, mass_tons as mass, tech_base, role as rules_level, era, source_book as source, data, unit_type as type FROM units WHERE id = ?';
+      // Aliased columns to match expected output structure from original PG query if different
+      // e.g. mass_tons as mass, role as rules_level, source_book as source, unit_type as type
+      finalQueryParamsForLog = [id];
+      const stmt = db.prepare(mainQueryStringForLog);
+      const row = stmt.get(id);
+
+      if (!row) {
         return res.status(404).json({ message: 'Unit not found' });
       }
-      return res.status(200).json(result.rows[0]);
+      if (row.data) {
+        row.data = JSON.parse(row.data);
+      }
+      return res.status(200).json(row);
     } else {
-      let mainQueryFrom = 'FROM units';
+      let mainQueryFrom = 'FROM units'; // Table name is units
       let whereConditions = [];
       let queryParams = [];
-      let paramIndex = 1;
 
       if (q) {
-        whereConditions.push(`(chassis ILIKE $${paramIndex} OR model ILIKE $${paramIndex})`);
-        queryParams.push(`%${q}%`);
-        paramIndex++;
+        // SQLite LIKE is case-insensitive by default for ASCII. For broader Unicode, ensure ICU or use lower()
+        whereConditions.push(`(chassis LIKE ? OR model LIKE ?)`);
+        queryParams.push(`%${q}%`, `%${q}%`);
       }
       if (unit_type) {
-        // Assuming 'type' column in DB matches 'unit_type' concept
-        whereConditions.push(`type = $${paramIndex}`);
+        whereConditions.push(`unit_type = ?`); // Column name is unit_type
         queryParams.push(unit_type);
-        paramIndex++;
       }
       if (tech_base_array) {
-        const techBases = Array.isArray(tech_base_array) ? tech_base_array : tech_base_array.split(','); // Also handle comma-separated string
+        const techBases = Array.isArray(tech_base_array) ? tech_base_array : tech_base_array.split(',');
         if (techBases.length > 0) {
-          const placeholders = techBases.map(() => `$${paramIndex++}`).join(', ');
-          whereConditions.push(`tech_base IN (${placeholders})`);
+          whereConditions.push(`tech_base IN (${techBases.map(() => '?').join(', ')})`);
           queryParams.push(...techBases);
         }
       }
       if (mass_gte) {
-        whereConditions.push(`mass >= $${paramIndex}`);
+        whereConditions.push(`mass_tons >= ?`); // Column name is mass_tons
         queryParams.push(parseInt(mass_gte, 10));
-        paramIndex++;
       }
       if (mass_lte) {
-        whereConditions.push(`mass <= $${paramIndex}`);
+        whereConditions.push(`mass_tons <= ?`); // Column name is mass_tons
         queryParams.push(parseInt(mass_lte, 10));
-        paramIndex++;
       }
       if (has_quirk) {
-        whereConditions.push(`EXISTS (
-          SELECT 1
-          FROM jsonb_array_elements(data->'Quirks') AS quirk_element
-          WHERE quirk_element->>'Name' ILIKE $${paramIndex}
-        )`);
-        // Using ILIKE for case-insensitive quirk search
-        queryParams.push(has_quirk);
-        paramIndex++;
+        // Robust check for quirk name within JSON array
+        whereConditions.push(`EXISTS (SELECT 1 FROM json_each(data, '$.Quirks') WHERE json_extract(value, '$.Name') LIKE ?)`);
+        queryParams.push(`%${has_quirk}%`); // Using LIKE for quirk name search
       }
       if (era) {
-        whereConditions.push(`era = $${paramIndex}`);
+        whereConditions.push(`era = ?`);
         queryParams.push(era);
-        paramIndex++;
       }
       if (weight_class) {
         const weightClassMap = {
@@ -103,12 +84,10 @@ export default async function handler(req, res) {
         };
         const selectedWeightClass = weightClassMap[weight_class];
         if (selectedWeightClass) {
-          whereConditions.push(`mass >= $${paramIndex}`);
+          whereConditions.push(`mass_tons >= ?`);
           queryParams.push(selectedWeightClass.gte);
-          paramIndex++;
-          whereConditions.push(`mass <= $${paramIndex}`);
+          whereConditions.push(`mass_tons <= ?`);
           queryParams.push(selectedWeightClass.lte);
-          paramIndex++;
         }
       }
 
@@ -118,43 +97,63 @@ export default async function handler(req, res) {
       }
 
       const countQueryString = `SELECT COUNT(*) AS total ${mainQueryFrom}${whereClause}`;
-      const totalResult = await client.query(countQueryString, queryParams);
-      const totalItems = parseInt(totalResult.rows[0].total, 10);
+      mainQueryStringForLog = countQueryString; // For logging
+      finalQueryParamsForLog = [...queryParams]; // For logging
 
-      let mainQueryString = `SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type ${mainQueryFrom}${whereClause}`;
+      const countStmt = db.prepare(countQueryString);
+      const totalResult = countStmt.get(...queryParams);
+      const totalItems = parseInt(totalResult.total, 10);
 
-      const validSortColumns = ['id', 'chassis', 'model', 'mass', 'tech_base', 'rules_level', 'era', 'type']; // era was already here, no change needed for validSortColumns based on task.
-      const effectiveSortBy = validSortColumns.includes(sortBy) ? sortBy : 'id'; // Default to 'id' if sortBy is invalid or missing
+      // Ensure selected columns match what the frontend expects, aliasing if necessary
+      let mainQueryString = `SELECT id, chassis, model, mass_tons as mass, tech_base, role as rules_level, era, source_book as source, data, unit_type as type ${mainQueryFrom}${whereClause}`;
+
+      const validSortColumns = ['id', 'chassis', 'model', 'mass_tons', 'tech_base', 'role', 'era', 'unit_type'];
+      // Map frontend sortBy to actual DB column name if different (e.g., 'mass' to 'mass_tons')
+      const sortColumnMapping = { 'mass': 'mass_tons', 'rules_level': 'role', 'source': 'source_book', 'type': 'unit_type' };
+      let effectiveSortByDb = sortBy;
+      if (sortColumnMapping[sortBy]) {
+        effectiveSortByDb = sortColumnMapping[sortBy];
+      }
+      if (!validSortColumns.includes(effectiveSortByDb)) {
+        effectiveSortByDb = 'id'; // Default to 'id'
+      }
+
       const effectiveSortOrder = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-
-      mainQueryString += ` ORDER BY "${effectiveSortBy}" ${effectiveSortOrder}`;
-
+      mainQueryString += ` ORDER BY ${effectiveSortByDb} ${effectiveSortOrder}`;
 
       const limitValue = parseInt(limit, 10);
       const offsetValue = (parseInt(page, 10) - 1) * limitValue;
-      mainQueryString += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+      mainQueryString += ` LIMIT ? OFFSET ?`;
 
-      const finalQueryParams = [...queryParams, limitValue, offsetValue];
+      const finalQueryParamsWithPagination = [...queryParams, limitValue, offsetValue];
+      mainQueryStringForLog = mainQueryString; // For logging
+      finalQueryParamsForLog = [...finalQueryParamsWithPagination]; // For logging
 
-      // For potential error logging
-      mainQueryStringForLog = mainQueryString;
-      finalQueryParamsForLog = finalQueryParams;
+      const mainStmt = db.prepare(mainQueryString);
+      const rows = mainStmt.all(...finalQueryParamsWithPagination);
 
-      const result = await client.query(mainQueryString, finalQueryParams);
+      const items = rows.map(row => {
+        if (row.data) {
+          try {
+            row.data = JSON.parse(row.data);
+          } catch (parseError) {
+            console.error(`Failed to parse data for unit ID ${row.id}:`, parseError);
+          }
+        }
+        return row;
+      });
 
       return res.status(200).json({
-        items: result.rows,
+        items,
         totalItems,
         totalPages: Math.ceil(totalItems / limitValue),
         currentPage: parseInt(page, 10),
-        sortBy: effectiveSortBy,
+        sortBy: sortBy, // Return original sortBy value
         sortOrder: effectiveSortOrder
       });
     }
   } catch (error) {
     console.error('Error fetching units from database:', error);
-    // Optionally log the query and params that caused the error
-    // This should be conditional and parameters might need sanitization if logged to a persistent store
     if (process.env.NODE_ENV === 'development') {
        console.error('Failing Query:', mainQueryStringForLog);
        console.error('Query Params:', finalQueryParamsForLog);
@@ -164,9 +163,6 @@ export default async function handler(req, res) {
       error: error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
+  // No client.release() needed
 }

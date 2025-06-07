@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "next": "^15.3.3",
-    "pg": "^8.16.0",
+    "better-sqlite3": "^8.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

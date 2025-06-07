@@ -1,14 +1,6 @@
-import { Pool } from 'pg';
+import db from '../../lib/db'; // Changed import
 
-const pool = new Pool({
-  user: 'battletech_user',
-  host: 'db', // Assuming docker-compose service name
-  database: 'battletech_editor',
-  password: 'password',
-  port: 5432,
-});
-
-export default async function handler(req, res) {
+export default function handler(req, res) { // Removed async
   const {
     id,
     page = 1,
@@ -21,40 +13,38 @@ export default async function handler(req, res) {
     sortOrder = 'ASC' // Default to ascending order
   } = req.query;
 
-  let client;
   // For logging query on error
   let queryStringForLog = '';
   let queryParamsForLog = [];
 
   try {
-    client = await pool.connect();
-
     if (id) {
-      const result = await client.query(
-        'SELECT id, name, type, tech_base, era, source, data FROM equipment WHERE id = $1',
-        [id]
-      );
-      if (result.rows.length === 0) {
+      queryStringForLog = 'SELECT id, name, type, tech_base, era, source, data FROM equipment WHERE id = ?';
+      queryParamsForLog = [id];
+      const stmt = db.prepare(queryStringForLog);
+      const row = stmt.get(id);
+
+      if (!row) {
         return res.status(404).json({ message: 'Equipment not found' });
       }
-      return res.status(200).json(result.rows[0]);
+      if (row.data) {
+        row.data = JSON.parse(row.data);
+      }
+      return res.status(200).json(row);
     } else {
       let mainQueryFrom = 'FROM equipment';
       let whereConditions = [];
       let queryParams = [];
-      let paramIndex = 1;
 
       if (q) {
-        whereConditions.push(`name ILIKE $${paramIndex}`);
+        whereConditions.push(`name LIKE ?`); // Changed ILIKE to LIKE
         queryParams.push(`%${q}%`);
-        paramIndex++;
       }
 
       if (type_array) {
         const types = Array.isArray(type_array) ? type_array : type_array.split(',');
         if (types.length > 0) {
-          const placeholders = types.map(() => `$${paramIndex++}`).join(', ');
-          whereConditions.push(`type IN (${placeholders})`);
+          whereConditions.push(`type IN (${types.map(() => '?').join(', ')})`);
           queryParams.push(...types);
         }
       }
@@ -62,8 +52,7 @@ export default async function handler(req, res) {
       if (tech_base_array) {
         const techBases = Array.isArray(tech_base_array) ? tech_base_array : tech_base_array.split(',');
         if (techBases.length > 0) {
-          const placeholders = techBases.map(() => `$${paramIndex++}`).join(', ');
-          whereConditions.push(`tech_base IN (${placeholders})`);
+          whereConditions.push(`tech_base IN (${techBases.map(() => '?').join(', ')})`);
           queryParams.push(...techBases);
         }
       }
@@ -71,10 +60,7 @@ export default async function handler(req, res) {
       if (era_array) {
         const eras = Array.isArray(era_array) ? era_array : era_array.split(',');
         if (eras.length > 0) {
-          const placeholders = eras.map(() => `$${paramIndex++}`).join(', ');
-          whereConditions.push(`era IN (${placeholders})`);
-          // Assuming era values in the DB are stored as strings that can match these.
-          // If they are numeric years, the frontend might need to send year numbers.
+          whereConditions.push(`era IN (${eras.map(() => '?').join(', ')})`);
           queryParams.push(...eras);
         }
       }
@@ -85,8 +71,12 @@ export default async function handler(req, res) {
       }
 
       const countQueryString = `SELECT COUNT(*) AS total ${mainQueryFrom}${whereClause}`;
-      const totalResult = await client.query(countQueryString, queryParams);
-      const totalItems = parseInt(totalResult.rows[0].total, 10);
+      queryStringForLog = countQueryString; // For logging
+      queryParamsForLog = queryParams; // For logging
+
+      const countStmt = db.prepare(countQueryString);
+      const totalResult = countStmt.get(...queryParams); // Spread queryParams for .get
+      const totalItems = parseInt(totalResult.total, 10);
 
       let mainQueryString = `SELECT id, name, type, tech_base, era, source, data ${mainQueryFrom}${whereClause}`;
 
@@ -94,21 +84,35 @@ export default async function handler(req, res) {
       const effectiveSortBy = validSortColumns.includes(sortBy) ? sortBy : 'name';
       const effectiveSortOrder = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-      mainQueryString += ` ORDER BY "${effectiveSortBy}" ${effectiveSortOrder}`;
+      // For SQLite, identifiers usually don't need quotes unless they are keywords or contain special chars.
+      // Since effectiveSortBy is validated, direct interpolation is safer here.
+      mainQueryString += ` ORDER BY ${effectiveSortBy} ${effectiveSortOrder}`;
 
       const limitValue = parseInt(limit, 10);
       const offsetValue = (parseInt(page, 10) - 1) * limitValue;
-      mainQueryString += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+      mainQueryString += ` LIMIT ? OFFSET ?`;
 
       const finalQueryParams = [...queryParams, limitValue, offsetValue];
+      queryStringForLog = mainQueryString; // For logging
+      queryParamsForLog = finalQueryParams; // For logging
 
-      queryStringForLog = mainQueryString;
-      queryParamsForLog = finalQueryParams;
+      const mainStmt = db.prepare(mainQueryString);
+      const rows = mainStmt.all(...finalQueryParams); // Spread finalQueryParams for .all
 
-      const result = await client.query(mainQueryString, finalQueryParams);
+      const items = rows.map(row => {
+        if (row.data) {
+          try {
+            row.data = JSON.parse(row.data);
+          } catch (parseError) {
+            console.error(`Failed to parse data for equipment ID ${row.id}:`, parseError);
+            // Keep data as string or set to null/error object if parsing fails
+          }
+        }
+        return row;
+      });
 
       return res.status(200).json({
-        items: result.rows,
+        items,
         totalItems,
         totalPages: Math.ceil(totalItems / limitValue),
         currentPage: parseInt(page, 10),
@@ -119,17 +123,14 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error fetching equipment from database:', error);
     if (process.env.NODE_ENV === 'development') {
-        console.error('Failing Query:', queryStringForLog);
-        console.error('Query Params:', queryParamsForLog);
+        console.error('Failing Query:', queryStringForLog); // Log the query string
+        console.error('Query Params:', queryParamsForLog); // Log the parameters
     }
     return res.status(500).json({
       message: 'Error fetching equipment',
-      error: error.message,
+      error: error.message, // Provide error message
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
+  // No client.release() needed for better-sqlite3
 }

@@ -1,36 +1,21 @@
 version: '3.8'
 
 services:
-  app:
+  battletech-editor-app:
     build:
       context: ./battletech-editor-app
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: db
-      DB_USER: battletech_user
-      DB_PASSWORD: battletech_pass
-      DB_NAME: battletech_editor
-      DATABASE_URL: postgresql://battletech_user:battletech_pass@db:5432/battletech_editor
-      NODE_ENV: production # Can be overridden for development
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:3000/api # Assuming API routes are part of the Next.js app
-    depends_on:
-      - db
-    restart: unless-stopped
-
-  db:
-    image: postgres:15-alpine
-    restart: always
-    environment:
-      POSTGRES_USER: battletech_user
-      POSTGRES_PASSWORD: battletech_pass
-      POSTGRES_DB: battletech_editor
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/01_schema.sql # Mount schema for auto-initialization
-    ports:
-      - "5433:5432" # Expose PostgreSQL on host port 5433 for external access if needed
-
-volumes:
-  pgdata: # Defines the named volume for persistent PostgreSQL data
+      # This SQLITE_DB_PATH must match the one defined in the Dockerfile and used by lib/db.js
+      - SQLITE_DB_PATH=/usr/src/app/battletech_editor.sqlite
+      # NODE_ENV can be set to 'production' for optimized builds if desired
+      - NODE_ENV=development
+    # Optional: If you want the database to persist across container restarts (for development)
+    # you could mount a volume. For a "self-contained, works out of the box" setup where
+    # the DB is initialized on each start, this is not strictly necessary.
+    # volumes:
+    #   - ./battletech_editor_data:/usr/src/app/data
+    #   (If using this, SQLITE_DB_PATH would be /usr/src/app/data/battletech_editor.sqlite)
+    # For now, we'll stick to the DB being inside the container and re-initialized on build.

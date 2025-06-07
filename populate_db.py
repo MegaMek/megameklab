@@ -1,15 +1,10 @@
 import os
 import json
-import psycopg2
-from psycopg2.extras import Json
+import sqlite3
 from pathlib import Path
 
 # --- Database Connection Parameters ---
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-DB_NAME = os.environ.get("DB_NAME", "battletech_editor")
-DB_USER = os.environ.get("DB_USER", "battletech_user")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "password")
-DB_PORT = os.environ.get("DB_PORT", "5432") # Added DB_PORT
+SQLITE_DB_PATH = os.environ.get("SQLITE_DB_PATH", "battletech_editor.sqlite")
 
 BASE_INPUT_DIR = "megameklab_converted_output"
 MEKFILES_INPUT_DIR = os.path.join(BASE_INPUT_DIR, "mekfiles")
@@ -17,30 +12,13 @@ MEKFILES_INPUT_DIR = os.path.join(BASE_INPUT_DIR, "mekfiles")
 def get_db_connection():
     conn = None
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            port=DB_PORT # Added port parameter
-        )
+        conn = sqlite3.connect(SQLITE_DB_PATH, check_same_thread=False)
         return conn
-    except psycopg2.OperationalError as e: # Catch specific connection errors
-        print(f"FATAL: Could not connect to PostgreSQL database: {e}")
-        print(f"Ensure PostgreSQL is running and accessible with the following parameters:")
-        print(f"  Host: {DB_HOST}")
-        print(f"  Port: {DB_PORT}") # Added Port info
-        print(f"  DB Name: {DB_NAME}")
-        print(f"  User: {DB_USER}")
-        # Do not print password directly
-        if DB_PASSWORD:
-             print(f"  Password: [set]")
-        else:
-             print(f"  Password: [not set]")
+    except sqlite3.Error as e: # Catch specific connection errors
+        print(f"FATAL: Could not connect to SQLite database: {e}")
+        print(f"Ensure the path to the SQLite database file is correct and writable:")
+        print(f"  SQLITE_DB_PATH: {SQLITE_DB_PATH}")
         return None # Explicitly return None if connection fails
-    except psycopg2.Error as e:
-        print(f"Error connecting to PostgreSQL database: {e}")
-        raise # Re-raise other psycopg2 errors
     except Exception as ex:
         print(f"An unexpected error occurred during DB connection: {ex}")
         raise # Re-raise other exceptions
@@ -58,7 +36,7 @@ def populate_equipment(conn):
     inserted_updated_count = 0
     sql = """
     INSERT INTO equipment (internal_id, name, type, category, tech_base, data, created_at, updated_at)
-    VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT (internal_id) DO UPDATE SET
         name = EXCLUDED.name,
         type = EXCLUDED.type,
@@ -82,10 +60,10 @@ def populate_equipment(conn):
 
                 cur.execute(sql, (
                     internal_id, name, item_type, category,
-                    tech_base, Json(item)
+                    tech_base, json.dumps(item)
                 ))
                 inserted_updated_count += 1
-            except psycopg2.Error as e:
+            except sqlite3.Error as e:
                 print(f"Error inserting/updating equipment {item.get('internal_id', 'N/A')}: {e}")
                 conn.rollback()
             except Exception as ex:
@@ -117,17 +95,17 @@ def populate_unit_validation_options(conn):
 
     sql = """
     INSERT INTO unit_validation_options (name, data, created_at, updated_at)
-    VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ON CONFLICT (name) DO UPDATE SET
         data = EXCLUDED.data,
         updated_at = CURRENT_TIMESTAMP;
     """
     with conn.cursor() as cur:
         try:
-            cur.execute(sql, ('DefaultSettings', Json(options_data)))
+            cur.execute(sql, ('DefaultSettings', json.dumps(options_data)))
             conn.commit()
             return 1
-        except psycopg2.Error as e:
+        except sqlite3.Error as e:
             print(f"Error inserting/updating unit_validation_options: {e}")
             conn.rollback()
             return 0
@@ -177,7 +155,7 @@ def populate_units(conn):
 
                     sql = """
                     INSERT INTO units (original_file_path, unit_type, chassis, model, mul_id, tech_base, era, mass_tons, role, source_book, data, created_at, updated_at)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                     ON CONFLICT (original_file_path) DO UPDATE SET
                         unit_type = EXCLUDED.unit_type, chassis = EXCLUDED.chassis, model = EXCLUDED.model,
                         mul_id = EXCLUDED.mul_id, tech_base = EXCLUDED.tech_base, era = EXCLUDED.era,
@@ -187,12 +165,12 @@ def populate_units(conn):
                     with conn.cursor() as cur:
                         cur.execute(sql, (
                             original_file_rel_path, unit_type, chassis, model, mul_id,
-                            tech_base, era, mass_tons, role, source_book, Json(unit_json_data)
+                            tech_base, era, mass_tons, role, source_book, json.dumps(unit_json_data)
                         ))
                     inserted_updated_count += 1
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON from {filepath}: {e}")
-                except psycopg2.Error as e:
+                except sqlite3.Error as e:
                     print(f"Database error processing unit {original_file_rel_path}: {e}")
                     conn.rollback()
                 except Exception as ex:
@@ -221,7 +199,7 @@ def main():
 
         print("Database population complete.")
 
-    except psycopg2.Error as e:
+    except sqlite3.Error as e:
         print(f"A database error occurred during main execution: {e}")
     except Exception as e:
         print(f"An unexpected error occurred during main execution: {e}")

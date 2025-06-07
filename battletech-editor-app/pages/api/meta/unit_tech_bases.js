@@ -1,19 +1,10 @@
-import { Pool } from 'pg';
+import db from '../../../lib/db'; // Changed import
 
-const pool = new Pool({
-  user: 'battletech_user',
-  host: 'db',
-  database: 'battletech_editor',
-  password: 'password',
-  port: 5432,
-});
-
-export default async function handler(req, res) {
-  let client;
+export default function handler(req, res) { // Removed async
   try {
-    client = await pool.connect();
-    const result = await client.query("SELECT DISTINCT tech_base FROM units WHERE tech_base IS NOT NULL AND TRIM(tech_base) <> '' ORDER BY tech_base ASC");
-    const values = result.rows.map(row => row.tech_base);
+    const stmt = db.prepare("SELECT DISTINCT tech_base FROM units WHERE tech_base IS NOT NULL AND TRIM(tech_base) <> '' ORDER BY tech_base ASC");
+    const rows = stmt.all();
+    const values = rows.map(row => row.tech_base);
     res.status(200).json(values);
   } catch (error) {
     console.error('Error fetching distinct unit tech bases:', error);
@@ -22,9 +13,6 @@ export default async function handler(req, res) {
       error: error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
+  // No client.release() needed
 }
