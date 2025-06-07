@@ -1,12 +1,7 @@
-import { Pool } from 'pg';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
-const pool = new Pool({
-  user: 'battletech_user',
-  host: 'db',
-  database: 'battletech_editor',
-  password: 'password',
-  port: 5432,
-});
+const SQLITE_DB_FILE = "battletech_dev.sqlite";
 
 export default async function handler(req, res) {
   const {
@@ -25,74 +20,62 @@ export default async function handler(req, res) {
     sortOrder = 'ASC'
   } = req.query;
 
-  let client;
-
-  // To be populated for error logging if needed
-  let mainQueryStringForLog = '';
-  let finalQueryParamsForLog = [];
+  let db;
+  let mainQueryStringForLog = ''; // For logging on error
+  let finalQueryParamsForLog = []; // For logging on error
 
   try {
-    client = await pool.connect();
+    db = await open({
+      filename: SQLITE_DB_FILE,
+      driver: sqlite3.Database
+    });
 
     if (id) {
-      // Ensure 'type' column exists or is aliased if actual column name differs
-      const result = await client.query(
-        'SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type FROM units WHERE id = $1',
+      const result = await db.get(
+        'SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type FROM units WHERE id = ?',
         [id]
       );
-      if (result.rows.length === 0) {
+      if (!result) {
         return res.status(404).json({ message: 'Unit not found' });
       }
-      return res.status(200).json(result.rows[0]);
+      // Parse the data field if it's a string
+      if (result.data && typeof result.data === 'string') {
+        result.data = JSON.parse(result.data);
+      }
+      return res.status(200).json(result);
     } else {
       let mainQueryFrom = 'FROM units';
       let whereConditions = [];
       let queryParams = [];
-      let paramIndex = 1;
 
       if (q) {
-        whereConditions.push(`(chassis ILIKE $${paramIndex} OR model ILIKE $${paramIndex})`);
-        queryParams.push(`%${q}%`);
-        paramIndex++;
+        // SQLite LIKE is case-insensitive by default for ASCII. For broader Unicode, use LOWER()
+        whereConditions.push(`(LOWER(chassis) LIKE LOWER(?) OR LOWER(model) LIKE LOWER(?))`);
+        queryParams.push(`%${q}%`, `%${q}%`);
       }
       if (unit_type) {
-        // Assuming 'type' column in DB matches 'unit_type' concept
-        whereConditions.push(`type = $${paramIndex}`);
+        whereConditions.push(`type = ?`);
         queryParams.push(unit_type);
-        paramIndex++;
       }
       if (tech_base_array) {
-        const techBases = Array.isArray(tech_base_array) ? tech_base_array : tech_base_array.split(','); // Also handle comma-separated string
+        const techBases = Array.isArray(tech_base_array) ? tech_base_array : tech_base_array.split(',');
         if (techBases.length > 0) {
-          const placeholders = techBases.map(() => `$${paramIndex++}`).join(', ');
+          const placeholders = techBases.map(() => `?`).join(', ');
           whereConditions.push(`tech_base IN (${placeholders})`);
           queryParams.push(...techBases);
         }
       }
       if (mass_gte) {
-        whereConditions.push(`mass >= $${paramIndex}`);
+        whereConditions.push(`mass >= ?`);
         queryParams.push(parseInt(mass_gte, 10));
-        paramIndex++;
       }
       if (mass_lte) {
-        whereConditions.push(`mass <= $${paramIndex}`);
+        whereConditions.push(`mass <= ?`);
         queryParams.push(parseInt(mass_lte, 10));
-        paramIndex++;
-      }
-      if (has_quirk) {
-        whereConditions.push(`EXISTS (
-          SELECT 1
-          FROM jsonb_array_elements(data->'Quirks') AS quirk_element
-          WHERE quirk_element->>'Name' ILIKE $${paramIndex}
-        )`);
-        // Using ILIKE for case-insensitive quirk search
-        queryParams.push(has_quirk);
-        paramIndex++;
       }
       if (era) {
-        whereConditions.push(`era = $${paramIndex}`);
+        whereConditions.push(`era = ?`);
         queryParams.push(era);
-        paramIndex++;
       }
       if (weight_class) {
         const weightClassMap = {
@@ -103,61 +86,97 @@ export default async function handler(req, res) {
         };
         const selectedWeightClass = weightClassMap[weight_class];
         if (selectedWeightClass) {
-          whereConditions.push(`mass >= $${paramIndex}`);
+          whereConditions.push(`mass >= ?`);
           queryParams.push(selectedWeightClass.gte);
-          paramIndex++;
-          whereConditions.push(`mass <= $${paramIndex}`);
+          whereConditions.push(`mass <= ?`);
           queryParams.push(selectedWeightClass.lte);
-          paramIndex++;
         }
       }
 
-      let whereClause = '';
-      if (whereConditions.length > 0) {
-        whereClause = ' WHERE ' + whereConditions.join(' AND ');
-      }
+      // Quirk filter will be applied after fetching initial data if present
+      const applyQuirkFilterLater = !!has_quirk;
+      let queryParamsForCount = [...queryParams]; // Params for count query before quirk filter
+      let whereClauseForCount = whereConditions.length > 0 ? ' WHERE ' + whereConditions.join(' AND ') : '';
 
-      const countQueryString = `SELECT COUNT(*) AS total ${mainQueryFrom}${whereClause}`;
-      const totalResult = await client.query(countQueryString, queryParams);
-      const totalItems = parseInt(totalResult.rows[0].total, 10);
+      // If not applying quirk filter later, use these params for main query too
+      let queryParamsForMain = [...queryParams];
+      let whereClauseForMain = whereClauseForCount;
 
-      let mainQueryString = `SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type ${mainQueryFrom}${whereClause}`;
+      // Count query (potentially without quirk filter if applied later)
+      const countQueryString = `SELECT COUNT(*) AS total ${mainQueryFrom}${whereClauseForCount}`;
+      mainQueryStringForLog = countQueryString; // Log this version
+      finalQueryParamsForLog = queryParamsForCount;
+      const totalResult = await db.get(countQueryString, queryParamsForCount);
+      let totalItems = parseInt(totalResult.total, 10);
 
-      const validSortColumns = ['id', 'chassis', 'model', 'mass', 'tech_base', 'rules_level', 'era', 'type']; // era was already here, no change needed for validSortColumns based on task.
-      const effectiveSortBy = validSortColumns.includes(sortBy) ? sortBy : 'id'; // Default to 'id' if sortBy is invalid or missing
+      // Main query construction
+      let mainQueryString = `SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type ${mainQueryFrom}${whereClauseForMain}`;
+      const validSortColumns = ['id', 'chassis', 'model', 'mass', 'tech_base', 'rules_level', 'era', 'type'];
+      const effectiveSortBy = validSortColumns.includes(sortBy) ? sortBy : 'id';
       const effectiveSortOrder = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-
       mainQueryString += ` ORDER BY "${effectiveSortBy}" ${effectiveSortOrder}`;
 
-
+      // If NOT applying quirk filter later, apply pagination via SQL
+      // If applying quirk filter later, fetch ALL results matching other criteria first
+      let items;
       const limitValue = parseInt(limit, 10);
-      const offsetValue = (parseInt(page, 10) - 1) * limitValue;
-      mainQueryString += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+      const pageValue = parseInt(page, 10);
+      let offsetValue;
 
-      const finalQueryParams = [...queryParams, limitValue, offsetValue];
+      if (!applyQuirkFilterLater) {
+        offsetValue = (pageValue - 1) * limitValue;
+        mainQueryString += ` LIMIT ? OFFSET ?`;
+        queryParamsForMain.push(limitValue, offsetValue);
+        mainQueryStringForLog = mainQueryString; // Log this version
+        finalQueryParamsForLog = queryParamsForMain;
+        items = await db.all(mainQueryString, queryParamsForMain);
+      } else {
+        // Fetch all matching other criteria, then filter by quirk in JS
+        mainQueryStringForLog = mainQueryString; // Log this version (without LIMIT/OFFSET yet)
+        finalQueryParamsForLog = queryParamsForMain;
+        items = await db.all(mainQueryString, queryParamsForMain);
+      }
 
-      // For potential error logging
-      mainQueryStringForLog = mainQueryString;
-      finalQueryParamsForLog = finalQueryParams;
+      // Parse data field and apply quirk filter if needed
+      items = items.map(row => {
+        if (row.data && typeof row.data === 'string') {
+          row.data = JSON.parse(row.data);
+        }
+        return row;
+      });
 
-      const result = await client.query(mainQueryString, finalQueryParams);
+      if (applyQuirkFilterLater && has_quirk) {
+        const quirkSearchTerm = has_quirk.toLowerCase();
+        items = items.filter(unit => {
+          if (unit.data && Array.isArray(unit.data.Quirks)) {
+            return unit.data.Quirks.some(quirk =>
+              typeof quirk.Name === 'string' && quirk.Name.toLowerCase().includes(quirkSearchTerm)
+            );
+          }
+          return false;
+        });
+        totalItems = items.length; // Recalculate totalItems after JS filtering
+        // Apply pagination now after JS filtering
+        offsetValue = (pageValue - 1) * limitValue;
+        items = items.slice(offsetValue, offsetValue + limitValue);
+      }
+
+      const totalPages = Math.ceil(totalItems / limitValue);
 
       return res.status(200).json({
-        items: result.rows,
+        items,
         totalItems,
-        totalPages: Math.ceil(totalItems / limitValue),
-        currentPage: parseInt(page, 10),
+        totalPages,
+        currentPage: pageValue,
         sortBy: effectiveSortBy,
         sortOrder: effectiveSortOrder
       });
     }
   } catch (error) {
-    console.error('Error fetching units from database:', error);
-    // Optionally log the query and params that caused the error
-    // This should be conditional and parameters might need sanitization if logged to a persistent store
+    console.error('Error fetching units from SQLite database:', error);
     if (process.env.NODE_ENV === 'development') {
-       console.error('Failing Query:', mainQueryStringForLog);
-       console.error('Query Params:', finalQueryParamsForLog);
+       console.error('Failing Query String (approximate for SQLite):', mainQueryStringForLog);
+       console.error('Query Params (approximate for SQLite):', finalQueryParamsForLog);
     }
     return res.status(500).json({
       message: 'Error fetching units',
@@ -165,8 +184,8 @@ export default async function handler(req, res) {
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   } finally {
-    if (client) {
-      client.release();
+    if (db) {
+      await db.close();
     }
   }
 }

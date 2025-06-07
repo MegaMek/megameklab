@@ -12,7 +12,9 @@
     "next": "^15.3.3",
     "pg": "^8.16.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/react": "19.1.6",
