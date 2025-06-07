@@ -15,6 +15,7 @@
 package megameklab.ui.handheldWeapon;
 
 import megamek.common.AmmoType;
+import megamek.common.Entity;
 import megamek.common.HandheldWeapon;
 import megamek.common.Mounted;
 import megameklab.ui.util.CritCellUtil;
@@ -29,22 +30,24 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 public class HHWEquipmentList extends JList<String> implements MouseListener {
-    private final HandheldWeapon hhw;
+
+    private static final String WIDER_CRITCELL_WIDTH_STRING = "X".repeat(32);
+    private final Entity hhw;
     private final RefreshListener refresh;
 
-    public HHWEquipmentList(HandheldWeapon hhw, RefreshListener refresh) {
+    public HHWEquipmentList(Entity hhw, RefreshListener refresh) {
         super(equipNames(hhw));
         this.hhw = hhw;
         this.refresh = refresh;
         setCellRenderer(new CritListCellRenderer());
         setVisibleRowCount(getModel().getSize());
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        setPrototypeCellValue(WIDER_CRITCELL_WIDTH_STRING);
         addMouseListener(this);
         setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, CritCellUtil.CRITCELL_BORDER_COLOR));
     }
 
-    private static Vector<String> equipNames(HandheldWeapon hhw) {
+    private static Vector<String> equipNames(Entity hhw) {
         Vector<String> critNames = new Vector<>();
         for (var m : hhw.getEquipment()) {
             if (m.getType() instanceof AmmoType) {
@@ -100,8 +103,8 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-            if (value.equals(CritCellUtil.CRITCELL_WIDTH_STRING)) {
-                setText(CritCellUtil.CRITCELL_WIDTH_STRING);
+            if (value.equals(WIDER_CRITCELL_WIDTH_STRING)) {
+                setText(WIDER_CRITCELL_WIDTH_STRING);
                 setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
                 return this;
             }

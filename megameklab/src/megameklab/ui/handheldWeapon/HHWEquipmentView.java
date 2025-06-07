@@ -45,7 +45,7 @@ public class HHWEquipmentView extends IView {
         if (critNames.isEmpty()) {
             critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
         }
-        mountList = new HHWEquipmentList((HandheldWeapon) getEntity(), refresh);
+        mountList = new HHWEquipmentList(getEntity(), refresh);
         add(mountList);
         validate();
     }
