@@ -302,7 +302,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         AmmoType at = (AmmoType) mount.getType();
                         int maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
                         int stepSize = 1;
-                        if (at.getAmmoType() == AmmoType.T_BA_TUBE) {
+                        if (at.getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
                             maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT_TA;
                             stepSize = 2;
                         }
