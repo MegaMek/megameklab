@@ -1,0 +1,34 @@
+[
+  {
+    "id": "mock-eq-001",
+    "name": "ER Large Laser",
+    "type": "Laser",
+    "tech_base": "Inner Sphere",
+    "era": "3050",
+    "data": { "Category": "Energy Weapon", "Heat": 12, "Damage": 8, "Range": "10/20/25" }
+  },
+  {
+    "id": "mock-eq-002",
+    "name": "LRM-20 (C)",
+    "type": "LRM20",
+    "tech_base": "Clan",
+    "era": "3050",
+    "data": { "Category": "Missile Weapon", "Heat": 6, "Damage": "1/Msl", "Range": "21" }
+  },
+  {
+    "id": "mock-eq-003",
+    "name": "Double Heat Sink (C)",
+    "type": "HeatSink_Double",
+    "tech_base": "Clan",
+    "era": "3050",
+    "data": { "Category": "Heat Sink", "Dissipation": 2 }
+  },
+  {
+    "id": "mock-eq-004",
+    "name": "Gauss Rifle Ammo (10)",
+    "type": "Ammunition_Gauss",
+    "tech_base": "Inner Sphere",
+    "era": "3040",
+    "data": { "Category": "Ammunition", "Shots": 10, "Tonnage": 1 }
+  }
+]
