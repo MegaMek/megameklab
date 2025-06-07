@@ -1,11 +1,12 @@
 // battletech-editor-app/pages/api/meta/categories.js
+import type { NextApiRequest, NextApiResponse } from 'next';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { open, Database } from 'sqlite';
 
-const SQLITE_DB_FILE = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
+const SQLITE_DB_FILE: string = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
 
-export default async function handler(req, res) {
-  let db;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let db: Database<sqlite3.Database, sqlite3.Statement> | undefined;
   try {
     db = await open({
       filename: SQLITE_DB_FILE,
@@ -15,12 +16,12 @@ export default async function handler(req, res) {
 
     // Fetches distinct 'type' values from the 'units' table.
     // This 'type' column is assumed to store the unit categories like "BattleMech", "Vehicle", etc.
-    const result = await db.all("SELECT DISTINCT type FROM units WHERE type IS NOT NULL AND TRIM(type) <> '' ORDER BY type ASC");
+    const result: { type: string }[] = await db.all("SELECT DISTINCT type FROM units WHERE type IS NOT NULL AND TRIM(type) <> '' ORDER BY type ASC");
     // The `sqlite` wrapper's .all() method returns rows directly as an array of objects
-    const categories = result.map(row => row.type);
+    const categories: string[] = result.map(row => row.type);
 
     res.status(200).json(categories);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching unit categories from SQLite:', error);
     res.status(500).json({
       message: 'Error fetching unit categories',

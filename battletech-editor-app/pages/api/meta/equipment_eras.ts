@@ -1,11 +1,12 @@
 // battletech-editor-app/pages/api/meta/equipment_eras.js
+import type { NextApiRequest, NextApiResponse } from 'next';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { open, Database } from 'sqlite';
 
-const SQLITE_DB_FILE = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
+const SQLITE_DB_FILE: string = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
 
-export default async function handler(req, res) {
-  let db;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let db: Database<sqlite3.Database, sqlite3.Statement> | undefined;
   try {
     db = await open({
       filename: SQLITE_DB_FILE,
@@ -14,11 +15,11 @@ export default async function handler(req, res) {
     });
 
     // The 'era' column in 'equipment' table stores introduction_year or era names.
-    const result = await db.all("SELECT DISTINCT era FROM equipment WHERE era IS NOT NULL AND TRIM(era) <> '' ORDER BY era ASC");
-    const values = result.map(row => row.era);
+    const result: { era: string }[] = await db.all("SELECT DISTINCT era FROM equipment WHERE era IS NOT NULL AND TRIM(era) <> '' ORDER BY era ASC");
+    const values: string[] = result.map(row => row.era);
 
     res.status(200).json(values);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching distinct equipment eras from SQLite:', error);
     res.status(500).json({
       message: 'Error fetching distinct equipment eras',

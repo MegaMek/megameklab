@@ -1,11 +1,12 @@
 // battletech-editor-app/pages/api/meta/unit_tech_bases.js
+import type { NextApiRequest, NextApiResponse } from 'next';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { open, Database } from 'sqlite';
 
-const SQLITE_DB_FILE = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
+const SQLITE_DB_FILE: string = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
 
-export default async function handler(req, res) {
-  let db;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let db: Database<sqlite3.Database, sqlite3.Statement> | undefined;
   try {
     db = await open({
       filename: SQLITE_DB_FILE,
@@ -13,11 +14,11 @@ export default async function handler(req, res) {
       mode: sqlite3.OPEN_READONLY // Open in readonly mode
     });
 
-    const result = await db.all("SELECT DISTINCT tech_base FROM units WHERE tech_base IS NOT NULL AND TRIM(tech_base) <> '' ORDER BY tech_base ASC");
-    const values = result.map(row => row.tech_base);
+    const result: { tech_base: string }[] = await db.all("SELECT DISTINCT tech_base FROM units WHERE tech_base IS NOT NULL AND TRIM(tech_base) <> '' ORDER BY tech_base ASC");
+    const values: string[] = result.map(row => row.tech_base);
 
     res.status(200).json(values);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching distinct unit tech bases from SQLite:', error);
     res.status(500).json({
       message: 'Error fetching distinct unit tech bases',
