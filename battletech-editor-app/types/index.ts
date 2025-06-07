@@ -137,7 +137,7 @@ export interface BasicEquipment {
 
 // Full Equipment structure (can be same as Basic if not much detail)
 export interface FullEquipment extends BasicEquipment {
-  data?: any; // The JSONB content from the equipment table
+  data?: EquipmentData; // The JSONB content from the equipment table
   // other specific fields like damage, range, heat for weapons
   damage?: string | number;
   range?: string; // S/M/L or actual numbers
@@ -149,7 +149,49 @@ export interface FullEquipment extends BasicEquipment {
   extinction_year?: number | string;
   rules?: string; // e.g. "Experimental", "Advanced"
   book_reference?: string;
+  source?: string; // Source of the equipment data, e.g., a TRO name
 }
+
+export interface EquipmentData {
+  tons?: number | string;
+  slots?: number | string;
+  cost?: number | string;
+  battle_value?: number | string;
+  battlevalue?: number | string; // alias for battle_value
+  weapon_type?: string;
+  damage?: string | number; // Could be '1d6', 5, or 'special'
+  heatmap?: number;
+  range?: {
+    short?: number;
+    medium?: number;
+    long?: number;
+    extreme?: number;
+    minimum?: number;
+  };
+  ammo_per_shot?: number;
+  shots?: number; // Total shots for ammo, or shots per ton
+  manufacturer?: string;
+  model?: string; // Sometimes distinct from name
+  tech_rating?: string; // e.g., A, B, C, D, E, F, X or Clan/IS
+  legality?: {
+    all?: string; // e.g. "Tournament Legal", "Succession Wars Legal"
+    [key: string]: any; // For specific era/faction legality
+  };
+  introduced?: number | string; // Year or approximate period
+  specials?: string | string[]; // Special properties, e.g., "AP", "Heat", "Indirect Fire"
+  // Fields that might also be on the top-level FullEquipment but could be in data blob
+  name?: string;
+  type?: string; // e.g. 'Energy Weapon', 'Ballistic Weapon', 'Equipment'
+  tech_base?: string; // 'Clan', 'Inner Sphere', 'Mixed', 'Primitive'
+  category?: string; // Broader than type, e.g., 'Lasers', 'Autocannons'
+  rules_level?: string; // 'Introductory', 'Standard', 'Advanced', 'Experimental'
+  extinction_year?: number | string;
+  source_book?: string;
+  critical_slots?: number; // alias for slots
+  tonnage?: number | string; // alias for tons
+  cost_cbills?: number | string; // alias for cost
+}
+
 
 // API response for paginated lists
 export interface PaginatedResponse<T> {

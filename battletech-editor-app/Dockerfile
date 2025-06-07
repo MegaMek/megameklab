@@ -11,6 +11,7 @@ COPY package*.json ./
 # If you use yarn, replace with:
 # COPY yarn.lock ./
 # RUN yarn install --frozen-lockfile
+RUN apk add --no-cache ca-certificates
 RUN npm install
 
 # Copy the rest of the application source code
