@@ -1,0 +1,38 @@
+[
+  {
+    "id": "mock-bm-001",
+    "chassis": "Warhammer",
+    "model": "WHM-6R",
+    "mass": 70,
+    "tech_base": "Inner Sphere",
+    "rules_level": 2,
+    "era": "Succession Wars",
+    "type": "battlemech",
+    "source": "TRO:3039",
+    "data": { "Overview": "Classic heavy BattleMech...", "Armament": [{"name": "PPC", "location": "RA"}]}
+  },
+  {
+    "id": "mock-vh-001",
+    "chassis": "SRM Carrier",
+    "model": "Standard",
+    "mass": 60,
+    "tech_base": "Inner Sphere",
+    "rules_level": 1,
+    "era": "Succession Wars",
+    "type": "vehicle",
+    "source": "TRO:3026",
+    "data": { "Overview": "A tracked vehicle known for its devastating short-range missile barrages.", "MovementType": "Tracked", "Armament": [{"name": "SRM-6", "location": "Front", "count": 10}]}
+  },
+  {
+    "id": "mock-in-001",
+    "chassis": "Foot Platoon",
+    "model": "Laser Rifle",
+    "mass": 10,
+    "tech_base": "Inner Sphere",
+    "rules_level": 1,
+    "era": "Succession Wars",
+    "type": "infantry",
+    "source": "Core Rules",
+    "data": { "Overview": "Standard Inner Sphere foot infantry platoon.", " troopers": 28, "Armament": [{"name": "Laser Rifle", "count_per_squad": 7}]}
+  }
+]

@@ -1,15 +1,10 @@
 import os
 import json
-import psycopg2
-from psycopg2.extras import Json
+import sqlite3 # Changed from psycopg2
 from pathlib import Path
 
-# --- Database Connection Parameters ---
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-DB_NAME = os.environ.get("DB_NAME", "battletech_editor")
-DB_USER = os.environ.get("DB_USER", "battletech_user")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "password")
-DB_PORT = os.environ.get("DB_PORT", "5432") # Added DB_PORT
+# --- Database File ---
+SQLITE_DB_FILE = "battletech_dev.sqlite" # New SQLite DB file
 
 BASE_INPUT_DIR = "megameklab_converted_output"
 MEKFILES_INPUT_DIR = os.path.join(BASE_INPUT_DIR, "mekfiles")
@@ -17,34 +12,40 @@ MEKFILES_INPUT_DIR = os.path.join(BASE_INPUT_DIR, "mekfiles")
 def get_db_connection():
     conn = None
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            port=DB_PORT # Added port parameter
-        )
+        conn = sqlite3.connect(SQLITE_DB_FILE)
+        print(f"Successfully connected to SQLite database: {SQLITE_DB_FILE}")
         return conn
-    except psycopg2.OperationalError as e: # Catch specific connection errors
-        print(f"FATAL: Could not connect to PostgreSQL database: {e}")
-        print(f"Ensure PostgreSQL is running and accessible with the following parameters:")
-        print(f"  Host: {DB_HOST}")
-        print(f"  Port: {DB_PORT}") # Added Port info
-        print(f"  DB Name: {DB_NAME}")
-        print(f"  User: {DB_USER}")
-        # Do not print password directly
-        if DB_PASSWORD:
-             print(f"  Password: [set]")
-        else:
-             print(f"  Password: [not set]")
-        return None # Explicitly return None if connection fails
-    except psycopg2.Error as e:
-        print(f"Error connecting to PostgreSQL database: {e}")
-        raise # Re-raise other psycopg2 errors
+    except sqlite3.Error as e:
+        print(f"Error connecting to SQLite database {SQLITE_DB_FILE}: {e}")
+        raise # Re-raise SQLite errors
     except Exception as ex:
         print(f"An unexpected error occurred during DB connection: {ex}")
-        raise # Re-raise other exceptions
+        raise
 
+def create_schema(conn):
+    """Creates database schema from schema_sqlite.sql if it doesn't exist."""
+    try:
+        schema_path = "schema_sqlite.sql" # Assuming it's in the same directory
+        if not os.path.exists(schema_path):
+            print(f"FATAL: Schema file not found: {schema_path}")
+            return False
+
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            schema_sql = f.read()
+
+        cur = conn.cursor()
+        cur.executescript(schema_sql)
+        conn.commit() # Commit schema changes
+        print("SQLite schema created/verified successfully.")
+        return True
+    except sqlite3.Error as e:
+        print(f"Error creating SQLite schema: {e}")
+        conn.rollback() # Rollback in case of error during schema creation
+        return False
+    except Exception as ex:
+        print(f"An unexpected error occurred during schema creation: {ex}")
+        conn.rollback()
+        return False
 
 def populate_equipment(conn):
     filepath = os.path.join(MEKFILES_INPUT_DIR, "derivedEquipment.json")
@@ -56,42 +57,40 @@ def populate_equipment(conn):
         equipment_list = json.load(f)
 
     inserted_updated_count = 0
+    # SQLite uses ? for placeholders. ON CONFLICT requires an indexed column.
+    # Assuming internal_id is unique and indexed for conflict resolution.
     sql = """
-    INSERT INTO equipment (internal_id, name, type, category, tech_base, data, created_at, updated_at)
-    VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    ON CONFLICT (internal_id) DO UPDATE SET
-        name = EXCLUDED.name,
-        type = EXCLUDED.type,
-        category = EXCLUDED.category,
-        tech_base = EXCLUDED.tech_base,
-        data = EXCLUDED.data,
-        updated_at = CURRENT_TIMESTAMP;
+    INSERT OR REPLACE INTO equipment
+        (internal_id, name, type, category, tech_base, data, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     """
-    with conn.cursor() as cur:
-        for item in equipment_list:
-            try:
-                internal_id = item.get('internal_id')
-                name = item.get('name')
-                item_type = item.get('type', 'Unknown')
-                category = item.get('category', 'Unknown')
-                tech_base = item.get('tech_base', 'Unknown')
+    # Note: For created_at with INSERT OR REPLACE, it will always be the time of the last operation.
+    # If strict "created_at only on first insert" is needed, a different approach is required.
 
-                if not internal_id or not name:
-                    print(f"Skipping equipment item due to missing internal_id or name: {item.get('name', 'Unnamed')}")
-                    continue
+    cur = conn.cursor()
+    for item in equipment_list:
+        try:
+            internal_id = item.get('internal_id')
+            name = item.get('name')
+            item_type = item.get('type', 'Unknown')
+            category = item.get('category', 'Unknown')
+            tech_base = item.get('tech_base', 'Unknown')
 
-                cur.execute(sql, (
-                    internal_id, name, item_type, category,
-                    tech_base, Json(item)
-                ))
-                inserted_updated_count += 1
-            except psycopg2.Error as e:
-                print(f"Error inserting/updating equipment {item.get('internal_id', 'N/A')}: {e}")
-                conn.rollback()
-            except Exception as ex:
-                print(f"Generic error processing equipment {item.get('internal_id', 'N/A')}: {ex}")
-                conn.rollback()
-        conn.commit()
+            if not internal_id or not name:
+                print(f"Skipping equipment item due to missing internal_id or name: {item.get('name', 'Unnamed')}")
+                continue
+
+            cur.execute(sql, (
+                internal_id, name, item_type, category,
+                tech_base, json.dumps(item) # Store full JSON data as TEXT
+            ))
+            inserted_updated_count += 1
+        except sqlite3.Error as e:
+            print(f"Error inserting/replacing equipment {item.get('internal_id', 'N/A')}: {e}")
+            # No conn.rollback() needed per statement in sqlite3 default mode, but good for consistency if batching
+        except Exception as ex:
+            print(f"Generic error processing equipment {item.get('internal_id', 'N/A')}: {ex}")
+    conn.commit() # Commit all equipment inserts/replaces
     return inserted_updated_count
 
 def populate_unit_validation_options(conn):
@@ -100,14 +99,16 @@ def populate_unit_validation_options(conn):
         print(f"Error: {filepath} not found.")
         return 0
 
-    options_data = None
+    options_data_root = None
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             options_data_root = json.load(f)
-            options_data = options_data_root.get('entityverifier') # Data is nested under this key
-            if not options_data:
-                print(f"Error: 'entityverifier' key not found in {filepath}")
-                return 0
+
+        options_data = options_data_root.get('entityverifier')
+        if not options_data:
+            print(f"Error: 'entityverifier' key not found in {filepath}")
+            return 0
+
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON from {filepath}: {e}")
         return 0
@@ -116,28 +117,25 @@ def populate_unit_validation_options(conn):
         return 0
 
     sql = """
-    INSERT INTO unit_validation_options (name, data, created_at, updated_at)
-    VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    ON CONFLICT (name) DO UPDATE SET
-        data = EXCLUDED.data,
-        updated_at = CURRENT_TIMESTAMP;
+    INSERT OR REPLACE INTO unit_validation_options
+        (name, data, created_at, updated_at)
+    VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     """
-    with conn.cursor() as cur:
-        try:
-            cur.execute(sql, ('DefaultSettings', Json(options_data)))
-            conn.commit()
-            return 1
-        except psycopg2.Error as e:
-            print(f"Error inserting/updating unit_validation_options: {e}")
-            conn.rollback()
-            return 0
-        except Exception as ex:
-            print(f"Generic error processing unit_validation_options: {ex}")
-            conn.rollback()
-            return 0
+    cur = conn.cursor()
+    try:
+        cur.execute(sql, ('DefaultSettings', json.dumps(options_data)))
+        conn.commit()
+        return 1
+    except sqlite3.Error as e:
+        print(f"Error inserting/replacing unit_validation_options: {e}")
+        return 0
+    except Exception as ex:
+        print(f"Generic error processing unit_validation_options: {ex}")
+        return 0
 
 def populate_units(conn):
     inserted_updated_count = 0
+    cur = conn.cursor()
 
     for dirpath, _, filenames in os.walk(MEKFILES_INPUT_DIR):
         for filename in filenames:
@@ -157,7 +155,7 @@ def populate_units(conn):
                     mul_id = str(unit_json_data.get('mul_id', '')) if unit_json_data.get('mul_id') is not None else None
 
                     tech_base = unit_json_data.get('techbase', unit_json_data.get('derived_tech_base', 'Unknown'))
-                    if not isinstance(tech_base, str): tech_base = str(tech_base) # Ensure string
+                    if not isinstance(tech_base, str): tech_base = str(tech_base)
 
                     era_raw = unit_json_data.get('era', unit_json_data.get('derived_era', 'Unknown'))
                     era = str(era_raw)
@@ -174,38 +172,39 @@ def populate_units(conn):
                     source_book = unit_json_data.get('source', unit_json_data.get('source_book'))
                     if not isinstance(source_book, str) and source_book is not None: source_book = str(source_book)
 
-
                     sql = """
-                    INSERT INTO units (original_file_path, unit_type, chassis, model, mul_id, tech_base, era, mass_tons, role, source_book, data, created_at, updated_at)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                    ON CONFLICT (original_file_path) DO UPDATE SET
-                        unit_type = EXCLUDED.unit_type, chassis = EXCLUDED.chassis, model = EXCLUDED.model,
-                        mul_id = EXCLUDED.mul_id, tech_base = EXCLUDED.tech_base, era = EXCLUDED.era,
-                        mass_tons = EXCLUDED.mass_tons, role = EXCLUDED.role, source_book = EXCLUDED.source_book,
-                        data = EXCLUDED.data, updated_at = CURRENT_TIMESTAMP;
+                    INSERT OR REPLACE INTO units
+                        (original_file_path, unit_type, chassis, model, mul_id, tech_base, era, mass_tons, role, source_book, data, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                     """
-                    with conn.cursor() as cur:
-                        cur.execute(sql, (
-                            original_file_rel_path, unit_type, chassis, model, mul_id,
-                            tech_base, era, mass_tons, role, source_book, Json(unit_json_data)
-                        ))
+                    cur.execute(sql, (
+                        original_file_rel_path, unit_type, chassis, model, mul_id,
+                        tech_base, era, mass_tons, role, source_book, json.dumps(unit_json_data)
+                    ))
                     inserted_updated_count += 1
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON from {filepath}: {e}")
-                except psycopg2.Error as e:
+                except sqlite3.Error as e:
                     print(f"Database error processing unit {original_file_rel_path}: {e}")
-                    conn.rollback()
                 except Exception as ex:
                     print(f"Generic error processing unit file {filepath}: {ex}")
-                    conn.rollback()
-        conn.commit()
+    conn.commit() # Commit all unit inserts/replaces
     return inserted_updated_count
 
 def main():
     conn = None
     try:
+        # Remove old DB file if it exists to ensure fresh start
+        if os.path.exists(SQLITE_DB_FILE):
+            print(f"Removing existing SQLite DB file: {SQLITE_DB_FILE}")
+            os.remove(SQLITE_DB_FILE)
+
         conn = get_db_connection()
-        if conn is None: # Exit if connection failed
+        if conn is None:
+            return
+
+        if not create_schema(conn):
+            print("Halting due to schema creation failure.")
             return
 
         print("Starting database population...")
@@ -221,8 +220,8 @@ def main():
 
         print("Database population complete.")
 
-    except psycopg2.Error as e:
-        print(f"A database error occurred during main execution: {e}")
+    except sqlite3.Error as e: # Catch SQLite specific errors in main
+        print(f"A SQLite database error occurred during main execution: {e}")
     except Exception as e:
         print(f"An unexpected error occurred during main execution: {e}")
     finally:
@@ -238,4 +237,3 @@ if __name__ == "__main__":
         print(f"Expected structure: {os.path.abspath(BASE_INPUT_DIR)}/mekfiles/")
     else:
         main()
-# Removed the offending line that was here: ```

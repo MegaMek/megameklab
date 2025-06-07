@@ -1,36 +1,35 @@
-import { Pool } from 'pg';
+// battletech-editor-app/pages/api/meta/categories.js
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
-const pool = new Pool({
-  user: 'battletech_user',
-  host: 'db', // Assuming docker-compose service name
-  database: 'battletech_editor',
-  password: 'password',
-  port: 5432,
-});
+const SQLITE_DB_FILE = "../../../battletech_dev.sqlite"; // Path relative to pages/api/meta
 
 export default async function handler(req, res) {
-  let client;
-
+  let db;
   try {
-    client = await pool.connect();
+    db = await open({
+      filename: SQLITE_DB_FILE,
+      driver: sqlite3.Database,
+      mode: sqlite3.OPEN_READONLY // Open in readonly mode
+    });
+
     // Fetches distinct 'type' values from the 'units' table.
     // This 'type' column is assumed to store the unit categories like "BattleMech", "Vehicle", etc.
-    const result = await client.query("SELECT DISTINCT type FROM units WHERE type IS NOT NULL AND type <> '' ORDER BY type ASC");
-
-    // Transform the result into an array of strings
-    const categories = result.rows.map(row => row.type);
+    const result = await db.all("SELECT DISTINCT type FROM units WHERE type IS NOT NULL AND TRIM(type) <> '' ORDER BY type ASC");
+    // The `sqlite` wrapper's .all() method returns rows directly as an array of objects
+    const categories = result.map(row => row.type);
 
     res.status(200).json(categories);
   } catch (error) {
-    console.error('Error fetching unit categories from database:', error);
+    console.error('Error fetching unit categories from SQLite:', error);
     res.status(500).json({
       message: 'Error fetching unit categories',
       error: error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   } finally {
-    if (client) {
-      client.release();
+    if (db) {
+      await db.close();
     }
   }
 }

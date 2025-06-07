@@ -1,0 +1,68 @@
+[
+  {
+    "id": "mock-bm-001",
+    "chassis": "Warhammer",
+    "model": "WHM-6R",
+    "mass": 70,
+    "tech_base": "Inner Sphere",
+    "rules_level": 2,
+    "era": "Succession Wars",
+    "type": "battlemech",
+    "source": "TRO:3039",
+    "data": {
+      "Overview": "A classic heavy BattleMech known for its powerful particle projector cannons...",
+      "Armament": [
+        {"name": "PPC", "location": "RA"},
+        {"name": "PPC", "location": "LA"},
+        {"name": "Medium Laser", "location": "RT"},
+        {"name": "Medium Laser", "location": "LT"},
+        {"name": "SRM-6", "location": "CT"}
+      ],
+      "Quirks": ["BattleFists", "Searchlight"]
+    }
+  },
+  {
+    "id": "mock-bm-002",
+    "chassis": "Mad Cat",
+    "model": "Prime",
+    "mass": 75,
+    "tech_base": "Clan",
+    "rules_level": 2,
+    "era": "Clan Invasion",
+    "type": "battlemech",
+    "source": "TRO:3050",
+    "data": {
+      "Overview": "The iconic Clan heavy OmniMech, the Timber Wolf is fast, well-armored, and heavily armed.",
+      "Armament": [
+        {"name": "ER Large Laser (C)", "location": "RA"},
+        {"name": "ER Large Laser (C)", "location": "LA"},
+        {"name": "LRM-20 (C)", "location": "RT", "ammo": ["LRM-20 Ammo (C)"]},
+        {"name": "LRM-20 (C)", "location": "LT", "ammo": ["LRM-20 Ammo (C)"]},
+        {"name": "Medium Pulse Laser (C)", "location": "CT"}
+      ],
+      "Quirks": ["OmniMech"]
+    }
+  },
+  {
+    "id": "mock-bm-003",
+    "chassis": "Atlas",
+    "model": "AS7-D",
+    "mass": 100,
+    "tech_base": "Inner Sphere",
+    "rules_level": 2,
+    "era": "Star League",
+    "type": "battlemech",
+    "source": "TRO:2750",
+    "data": {
+      "Overview": "The Atlas is a symbol of fear and power, one of the most recognizable assault 'Mechs.",
+      "Armament": [
+         {"name": "LRM-20", "location": "LT"},
+         {"name": "AC/20", "location": "RT"},
+         {"name": "Medium Laser", "location": "CT (R)"},
+         {"name": "Medium Laser", "location": "RA"},
+         {"name": "Medium Laser", "location": "LA"}
+      ],
+      "Quirks": ["Intimidating", "Command Mech"]
+    }
+  }
+]
