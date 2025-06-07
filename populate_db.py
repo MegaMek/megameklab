@@ -9,6 +9,7 @@ DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_NAME = os.environ.get("DB_NAME", "battletech_editor")
 DB_USER = os.environ.get("DB_USER", "battletech_user")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "password")
+DB_PORT = os.environ.get("DB_PORT", "5432") # Added DB_PORT
 
 BASE_INPUT_DIR = "megameklab_converted_output"
 MEKFILES_INPUT_DIR = os.path.join(BASE_INPUT_DIR, "mekfiles")
@@ -20,13 +21,15 @@ def get_db_connection():
             host=DB_HOST,
             dbname=DB_NAME,
             user=DB_USER,
-            password=DB_PASSWORD
+            password=DB_PASSWORD,
+            port=DB_PORT # Added port parameter
         )
         return conn
     except psycopg2.OperationalError as e: # Catch specific connection errors
         print(f"FATAL: Could not connect to PostgreSQL database: {e}")
         print(f"Ensure PostgreSQL is running and accessible with the following parameters:")
         print(f"  Host: {DB_HOST}")
+        print(f"  Port: {DB_PORT}") # Added Port info
         print(f"  DB Name: {DB_NAME}")
         print(f"  User: {DB_USER}")
         # Do not print password directly

@@ -19,6 +19,8 @@ export default async function handler(req, res) {
     mass_lte,
     has_quirk,
     unit_type,
+    era, // Added era
+    weight_class, // Added weight_class
     sortBy,
     sortOrder = 'ASC'
   } = req.query;
@@ -87,6 +89,28 @@ export default async function handler(req, res) {
         queryParams.push(has_quirk);
         paramIndex++;
       }
+      if (era) {
+        whereConditions.push(`era = $${paramIndex}`);
+        queryParams.push(era);
+        paramIndex++;
+      }
+      if (weight_class) {
+        const weightClassMap = {
+          'Light': { gte: 20, lte: 35 },
+          'Medium': { gte: 40, lte: 55 },
+          'Heavy': { gte: 60, lte: 75 },
+          'Assault': { gte: 80, lte: 100 }
+        };
+        const selectedWeightClass = weightClassMap[weight_class];
+        if (selectedWeightClass) {
+          whereConditions.push(`mass >= $${paramIndex}`);
+          queryParams.push(selectedWeightClass.gte);
+          paramIndex++;
+          whereConditions.push(`mass <= $${paramIndex}`);
+          queryParams.push(selectedWeightClass.lte);
+          paramIndex++;
+        }
+      }
 
       let whereClause = '';
       if (whereConditions.length > 0) {
@@ -99,7 +123,7 @@ export default async function handler(req, res) {
 
       let mainQueryString = `SELECT id, chassis, model, mass, tech_base, rules_level, era, source, data, type ${mainQueryFrom}${whereClause}`;
 
-      const validSortColumns = ['id', 'chassis', 'model', 'mass', 'tech_base', 'rules_level', 'era', 'type'];
+      const validSortColumns = ['id', 'chassis', 'model', 'mass', 'tech_base', 'rules_level', 'era', 'type']; // era was already here, no change needed for validSortColumns based on task.
       const effectiveSortBy = validSortColumns.includes(sortBy) ? sortBy : 'id'; // Default to 'id' if sortBy is invalid or missing
       const effectiveSortOrder = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 

@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import re
 from pathlib import Path
 import datetime
+import multiprocessing
 
 # --- Globals ---
 DERIVED_EQUIPMENT = {}
@@ -18,6 +19,96 @@ FUNDAMENTAL_IS_COMPONENTS = [ # Lowercase for matching
 VEHICLE_ARMOR_LOCATIONS = ["Front", "Left Side", "Right Side", "Rear", "Turret"]
 FIGHTER_ARMOR_LOCATIONS = ["Nose", "Left Wing", "Right Wing", "Aft"]
 VTOL_ARMOR_LOCATIONS = ["Nose", "Left Side", "Right Side", "Rear", "Rotor"]
+
+# Helper to derive a more specific type from an MTF item line
+def get_mtf_item_type_from_line(item_name_line, unit_context):
+    name_lower = item_name_line.lower().strip()
+    # Standardize and clean name for type derivation, make it TitleCase
+    # Handles "Medium Laser" -> "MediumLaser", "AC/5" -> "AC5"
+    type_str = ''.join(word.title() for word in item_name_line.replace("(","").replace(")","").replace("-"," ").replace("/"," ").split())
+
+    if not type_str: # Handle empty or only symbol names
+        return "Unknown"
+
+    if name_lower == "heat sink":
+        hs_type = unit_context.get("heat_sink_type", "SingleHeatSink")
+        return hs_type
+    if name_lower == "fusion engine":
+        engine_type = unit_context.get("engine_type", "FusionEngine")
+        return engine_type
+    if name_lower.startswith("is ammo") or name_lower.startswith("clan ammo"):
+        return "Ammo"
+
+    # Specific weapon types (prioritize keywords)
+    if "ppc" in name_lower: return type_str
+    if "laser" in name_lower: return type_str
+    if "srm" in name_lower and "ammo" not in name_lower: return type_str
+    if "lrm" in name_lower and "ammo" not in name_lower: return type_str
+    if "machine gun" in name_lower: return "MachineGun"
+    if "autocannon" in name_lower or name_lower.startswith("ac"):
+        return type_str.replace("/", "")
+    if "gauss rifle" in name_lower : return "GaussRifle"
+    if "flamer" in name_lower and "ammo" not in name_lower: return type_str
+    if "lb-x" in name_lower and "ammo" not in name_lower: return type_str.replace("LB-X", "LBX")
+    if "ultra ac" in name_lower and "ammo" not in name_lower: return type_str.replace("UltraAC", "UAC")
+    if "rotary ac" in name_lower and "ammo" not in name_lower: return type_str.replace("RotaryAC","RAC")
+    if "mrm" in name_lower and "ammo" not in name_lower: return type_str
+    if " Streak " in item_name_line and "ammo" not in name_lower: return type_str # Note: leading/trailing spaces for " Streak "
+
+    # Fundamental components
+    if name_lower == "gyro": return "Gyro"
+    if name_lower == "sensors": return "Sensors"
+    if name_lower == "cockpit": return "Cockpit"
+    if name_lower == "life support": return "LifeSupport"
+    if "actuator" in name_lower: return type_str
+    if name_lower in ["shoulder", "hip"]: return type_str
+    if name_lower == "structure": return "Structure"
+    if name_lower == "myomer": return "Myomer"
+    if "jump jet" in name_lower: return type_str
+
+    return type_str if type_str else "Unknown"
+
+# Helper to derive a more specific type from an BLK item name (from equipment tags)
+def get_blk_item_type_from_name(item_name_str): # No unit_context for BLK for now
+    name_lower = item_name_str.lower().strip()
+    type_str = ''.join(word.title() for word in item_name_str.replace("(","").replace(")","").replace("-"," ").replace("/"," ").split())
+
+    if not type_str:
+        return "Unknown"
+
+    # Specific weapon types (prioritize keywords) - similar to MTF helper
+    if "ppc" in name_lower: return type_str
+    if "laser" in name_lower: return type_str
+    if "srm" in name_lower and "ammo" not in name_lower: return type_str
+    if "lrm" in name_lower and "ammo" not in name_lower: return type_str
+    if "machine gun" in name_lower: return "MachineGun"
+    if "autocannon" in name_lower or name_lower.startswith("ac"):
+        return type_str.replace("/", "")
+    if "gauss rifle" in name_lower : return "GaussRifle"
+    if "flamer" in name_lower and "ammo" not in name_lower: return type_str
+    if "lb-x" in name_lower and "ammo" not in name_lower: return type_str.replace("LB-X", "LBX")
+    if "ultra ac" in name_lower and "ammo" not in name_lower: return type_str.replace("UltraAC", "UAC")
+    if "rotary ac" in name_lower and "ammo" not in name_lower: return type_str.replace("RotaryAC","RAC")
+    if "mrm" in name_lower and "ammo" not in name_lower: return type_str
+    if " Streak " in item_name_str and "ammo" not in name_lower: return type_str
+    if name_lower.startswith("is ammo") or name_lower.startswith("clan ammo"): return "Ammo" # Ammo check
+
+    # Fundamental components (less common in BLK equipment tags but possible)
+    if name_lower == "heat sink": return "HeatSink" # Simpler than MTF, no context for single/double easily
+    if name_lower == "fusion engine": return "FusionEngine"
+    if name_lower == "gyro": return "Gyro"
+    if name_lower == "sensors": return "Sensors"
+    if name_lower == "cockpit": return "Cockpit"
+    if name_lower == "life support": return "LifeSupport"
+    if "actuator" in name_lower: return type_str
+    if name_lower in ["shoulder", "hip"]: return type_str
+    if name_lower == "structure": return "Structure"
+    if name_lower == "myomer": return "Myomer"
+    if "jump jet" in name_lower: return type_str
+    if name_lower == "targeting computer": return "TargetingComputer"
+
+    # Default for BLK items, often names are quite descriptive
+    return type_str if type_str else "Unknown"
 
 
 def log_skipped_file(filepath, reason, output_dir_for_log):
@@ -86,8 +177,11 @@ def add_to_derived_equipment(item_name, item_type="Unknown", unit_tech_base_for_
     if not item_name or item_name == "-Empty-": return
     clean_item_name = item_name.strip()
     internal_id_base = re.sub(r'[^a-zA-Z0-9]', '', clean_item_name.upper())
-    internal_id = item_type.upper() + "_" + internal_id_base if item_type != "Unknown" else internal_id_base
-    internal_id = internal_id.replace(" ","")
+    # internal_id should be based SOLELY on the item name for consistent merging.
+    # Type will be refined later.
+    internal_id = internal_id_base
+    # internal_id = item_type.upper() + "_" + internal_id_base if item_type != "Unknown" else internal_id_base # Old logic
+    internal_id = internal_id.replace(" ","") # Should not be necessary if internal_id_base is already alphanumeric
 
     item_specific_tech_base = "Unknown"; name_upper = clean_item_name.upper()
     # Check for explicit Clan/IS markers, including suffixes like " C"
@@ -111,6 +205,9 @@ def add_to_derived_equipment(item_name, item_type="Unknown", unit_tech_base_for_
     current_intro_year = "Unknown"
     if isinstance(introduction_year, int): current_intro_year = introduction_year
     elif isinstance(introduction_year, str) and introduction_year.isdigit(): current_intro_year = int(introduction_year)
+    elif isinstance(introduction_year, str): # Keep as string if not purely digits
+        current_intro_year = introduction_year.strip() if introduction_year.strip() else "Unknown"
+
 
     if internal_id not in DERIVED_EQUIPMENT:
         DERIVED_EQUIPMENT[internal_id] = {
@@ -124,7 +221,16 @@ def add_to_derived_equipment(item_name, item_type="Unknown", unit_tech_base_for_
     else:
         entry = DERIVED_EQUIPMENT[internal_id]
         if source_file not in entry["source_files"]: entry["source_files"].append(source_file)
-        if entry["type"] == "Unknown" and item_type != "Unknown": entry["type"] = item_type
+
+        # Type refinement: Update if new type is more specific
+        current_type_is_generic = entry["type"].lower() in ["unknown", "equipment", "weapon", "ammo", "component"]
+        new_type_is_specific = item_type.lower() not in ["unknown", "equipment", "weapon", "ammo", "component"]
+
+        if current_type_is_generic and new_type_is_specific:
+            entry["type"] = item_type
+        elif entry["type"].lower() == "unknown" and item_type.lower() != "unknown": # General fallback if old type was unknown
+            entry["type"] = item_type
+
 
         # Update tech_base only if new info is more specific or clarifies "Mixed"
         if entry["tech_base"] == "Unknown" and final_tech_base != "Unknown":
@@ -144,7 +250,9 @@ def add_to_derived_equipment(item_name, item_type="Unknown", unit_tech_base_for_
                  entry["introduction_year"] = current_intro_year
 
 def parse_mtf_file(filepath, output_dir_for_log):
+    derived_equipment_accumulator = [] # To store (item_name, item_type, unit_tech_base, intro_year, source_file)
     data = {"quirks": [], "weapons_and_equipment": []}; fluff_text = {} # Initialize lists
+    unit_context_for_typing = {} # To store info like heatsink type, engine type
     current_section_name = None; current_section_items = []
     fluff_fields = ["overview", "capabilities", "deployment", "history", "variants", "notable_pilots", "additional", "notes"]
     current_fluff_field = None; fluff_text_buffer = []
@@ -192,17 +300,45 @@ def parse_mtf_file(filepath, output_dir_for_log):
             if is_fluff_header: continue
             if current_fluff_field: fluff_text_buffer.append(line); continue
 
-            if line.lower().startswith("weapons:"): weapon_section_started = True; continue
+            if line.lower().startswith("weapons:"): weapon_section_started = True; current_section_name = None; current_section_items = []; continue # Clear critical section context
             if weapon_section_started:
-                parts = line.split(','); item_name = parts[0].strip(); location = parts[1].strip() if len(parts) > 1 else "Unknown"
-                if item_name:
-                    data["weapons_and_equipment"].append({"item_name": item_name, "location": location, "item_type": "Weapon"})
-                    add_to_derived_equipment(item_name, "Weapon", file_tech_base, file_era, base_filename)
+                item_name_on_weapon_line = line.split(',')[0].strip()
+                location = line.split(',')[1].strip() if len(line.split(',')) > 1 else "Unknown"
+                if item_name_on_weapon_line:
+                    # Attempt to get a specific type from the name using the helper
+                    derived_type_for_weapon = get_mtf_item_type_from_line(item_name_on_weapon_line, unit_context_for_typing)
+
+                    # Determine the final type to use.
+                    # If the derived type is "Unknown" or just a direct TitleCase of the name (which means no specific rule in helper matched well for a weapon context)
+                    # AND it doesn't contain common weapon keywords, then classify it more generically as "Weapon".
+                    # This handles cases where non-weapon items might appear in the weapons list.
+                    is_generic_or_unclear_weapon_type = derived_type_for_weapon == "Unknown" or \
+                                                       derived_type_for_weapon == ''.join(word.title() for word in item_name_on_weapon_line.replace("(","").replace(")","").replace("-"," ").replace("/"," ").split())
+
+                    if is_generic_or_unclear_weapon_type and \
+                       not any(kw in item_name_on_weapon_line.lower() for kw in ["laser","ppc","srm","lrm","ac","autocannon","gauss","flamer","lb-x","ultra","rotary"," streak ","gun","machine gun"]):
+                        final_weapon_type = "Weapon"
+                    else: # It's likely a weapon, or the helper found a good specific type.
+                        final_weapon_type = derived_type_for_weapon
+
+                    data["weapons_and_equipment"].append({"item_name": item_name_on_weapon_line, "location": location, "item_type": final_weapon_type})
+                    derived_equipment_accumulator.append((item_name_on_weapon_line, final_weapon_type, file_tech_base, file_era, base_filename))
                 continue
 
-            if line.endswith(':') and not any(f in line.lower() for f in [" ammo:", "armor:"]) and not re.match(r"^\w+\s\w+:", line):
-                if current_section_name and current_section_items: data.setdefault("criticals", []).append({"location": current_section_name, "slots": current_section_items})
-                current_section_name = line[:-1]; current_section_items = []; continue
+            if line.endswith(':') and not any(f_key in line.lower() for f_key in [" ammo:", "armor:", "manufacturer:", "primaryfactory:", "systemmanufacturer:"]) and not re.match(r"^\w+\s\w+:", line): # Potential critical section header
+                if current_section_name and current_section_items:
+                    data.setdefault("criticals", []).append({"location": current_section_name, "slots": current_section_items})
+
+                temp_section_name = line[:-1]
+                # Standardize critical hit locations
+                if temp_section_name == "Rear Right Leg": temp_section_name = "Right Leg"
+                elif temp_section_name == "Rear Left Leg": temp_section_name = "Left Leg"
+                elif temp_section_name == "Rear Center Torso" or temp_section_name == "RTC": temp_section_name = "Center Torso (Rear)"
+                # Add other critical location standardizations here if needed
+
+                current_section_name = temp_section_name
+                current_section_items = []
+                continue
 
             if ":" in line:
                 key, value = line.split(":", 1); key_norm = key.strip().lower().replace(" ", "_").replace("(", "").replace(")", ""); value_stripped = value.strip()
@@ -215,26 +351,70 @@ def parse_mtf_file(filepath, output_dir_for_log):
                 if key_norm == "mass":
                     try: data["mass"] = int(value_stripped)
                     except ValueError: data["mass"] = value_stripped
-                elif key_norm == "engine": data["engine"] = parse_mtf_engine(value_stripped)
-                elif key_norm == "heat_sinks": data["heat_sinks"] = parse_mtf_heat_sinks(value_stripped)
+                elif key_norm == "engine":
+                    parsed_engine = parse_mtf_engine(value_stripped)
+                    data["engine"] = parsed_engine
+                    # Clean and store engine type, e.g. "FusionEngine", "XLEngine"
+                    cleaned_engine_type = ''.join(word.title() for word in parsed_engine.get("type", "FusionEngine").replace("(IS)","").replace("(Clan)","").split())
+                    if cleaned_engine_type and "engine" not in cleaned_engine_type.lower(): # e.g. XL -> XLEngine
+                        cleaned_engine_type = f"{cleaned_engine_type}Engine"
+                    elif not cleaned_engine_type:
+                        cleaned_engine_type = "FusionEngine" # Default if type was empty
+                    unit_context_for_typing["engine_type"] = cleaned_engine_type
+
+                elif key_norm == "heat_sinks":
+                    parsed_hs = parse_mtf_heat_sinks(value_stripped)
+                    data["heat_sinks"] = parsed_hs
+                    # Clean and store hs type, e.g. "SingleHeatSink", "DoubleHeatSink"
+                    cleaned_hs_type = ''.join(word.title() for word in parsed_hs.get("type", "Single").split())
+                    if cleaned_hs_type and "heatsink" not in cleaned_hs_type.lower(): # e.g. Single -> SingleHeatSink
+                         cleaned_hs_type = f"{cleaned_hs_type}HeatSink"
+                    elif not cleaned_hs_type:
+                        cleaned_hs_type = "SingleHeatSink" # Default if type was empty
+                    unit_context_for_typing["heat_sink_type"] = cleaned_hs_type
                 elif key_norm == "armor" and not current_section_name: data["armor_details_temp"] = parse_mtf_armor_type_line(value_stripped)
                 elif key_norm.endswith("_armor"):
                     loc_name = key_norm.upper().replace("_ARMOR",""); data.setdefault("armor_locations_map", {})[loc_name] = value_stripped
                 elif key_norm == "quirk": data["quirks"].append(value_stripped)
                 elif key_norm == "structure": data["structure"] = parse_mtf_structure(value_stripped)
                 elif key_norm == "myomer": data["myomer"] = parse_mtf_myomer(value_stripped)
-                elif key_norm not in ["engine", "heat_sinks", "structure", "myomer", "techbase", "era", "weapons", "armor", "conversion_notes", "mass", "manufacturer", "primaryfactory", "systemmanufacturer", "mul_id"] : data[key_norm] = value_stripped
-                elif key_norm == "manufacturer": data.setdefault("manufacturers", []).append(value_stripped)
-                elif key_norm == "primaryfactory": data.setdefault("primary_factories", []).append(value_stripped)
+                # Manufacturer and PrimaryFactory processing
+                elif key_norm == "manufacturer":
+                    current_manufacturers = data.setdefault("manufacturers", [])
+                    for man_name in value_stripped.split(','): # Handle comma-separated names
+                        man_name_stripped = man_name.strip()
+                        if man_name_stripped:
+                            current_manufacturers.append({"name": man_name_stripped})
+                elif key_norm == "primaryfactory":
+                    current_manufacturers = data.setdefault("manufacturers", []) # Consolidate into manufacturers
+                    for fac_name in value_stripped.split(','): # Handle comma-separated names
+                        fac_name_stripped = fac_name.strip()
+                        if fac_name_stripped:
+                            current_manufacturers.append({"name": fac_name_stripped}) # Could add type: "primary" here if needed later
+                elif key_norm not in ["engine", "heat_sinks", "structure", "myomer", "techbase", "era", "weapons", "armor", "conversion_notes", "mass", "systemmanufacturer", "mul_id"] : data[key_norm] = value_stripped
+                # Removed "manufacturer", "primaryfactory" from the list above as they are now handled
                 elif key_norm == "systemmanufacturer":
                     sys_type, sys_name = value_stripped.split(":", 1) if ":" in value_stripped else (key, value_stripped)
                     data.setdefault("system_manufacturers", []).append({"type": sys_type.strip(), "name": sys_name.strip()})
                 elif key_norm == "mul_id": data["mul_id"] = value_stripped
 
             elif current_section_name:
-                current_section_items.append(line); add_to_derived_equipment(line, "Unknown", file_tech_base, file_era, base_filename)
+                # Fix for model name appearing as critical slot item
+                unit_model_name = data.get('model', "") # Get the model name, default to empty string if not found
+                if line.strip() == unit_model_name:
+                    pass # Skip adding model name as a critical item
+                elif line.strip() == "-Empty-":
+                    current_section_items.append("-Empty-")
+                else: # This is a critical slot item
+                    current_section_items.append(line)
+                    item_type_for_crit = get_mtf_item_type_from_line(line, unit_context_for_typing)
+                    derived_equipment_accumulator.append((line, item_type_for_crit, file_tech_base, file_era, base_filename))
+            elif ":" not in line and current_section_name and line.strip() == "-Empty-": # Handle empty slots explicitly also here
+                 current_section_items.append("-Empty-")
 
-        if current_section_name and current_section_items : data.setdefault("criticals", []).append({"location": current_section_name, "slots": current_section_items})
+
+        if current_section_name and current_section_items: # Add the last section
+            data.setdefault("criticals", []).append({"location": current_section_name, "slots": current_section_items})
         if current_fluff_field and fluff_text_buffer: fluff_text[current_fluff_field] = "\n".join(fluff_text_buffer).strip()
         if fluff_text: data["fluff_text"] = fluff_text
 
@@ -243,10 +423,18 @@ def parse_mtf_file(filepath, output_dir_for_log):
 
         if "armor_locations_map" in data: # Mech armor
             total_armor = 0
-            for loc, points_str in data.pop("armor_locations_map").items():
+            armor_map = data.pop("armor_locations_map")
+            for loc_key, points_str in armor_map.items():
                 try: points = int(points_str); total_armor += points
                 except ValueError: points = 0
-                final_armor_obj["locations"].append({"location": loc, "armor_points": points, "rear_armor_points": None})
+
+                # Standardize armor locations from map keys
+                if loc_key == "RTC": display_loc = "Center Torso (Rear)"
+                elif loc_key == "RTR": display_loc = "Right Torso (Rear)"
+                elif loc_key == "RTL": display_loc = "Left Torso (Rear)"
+                else: display_loc = loc_key # Keep original if no mapping needed
+
+                final_armor_obj["locations"].append({"location": display_loc, "armor_points": points, "rear_armor_points": None})
             if total_armor > 0: final_armor_obj["total_armor_points"] = total_armor
         elif parsed_armor_locations: # Non-mech MTF armor
             final_armor_obj["locations"] = parsed_armor_locations
@@ -255,8 +443,8 @@ def parse_mtf_file(filepath, output_dir_for_log):
         if not data.get("quirks"): data["quirks"] = [] # Ensure quirks list exists
 
     except Exception as e:
-        log_skipped_file(filepath, f"MTF Error: {e} (line {line_number})", output_dir_for_log); return None
-    return data
+        log_skipped_file(filepath, f"MTF Error: {e} (line {line_number})", output_dir_for_log); return None, []
+    return data, derived_equipment_accumulator
 
 def parse_blk_tag_content(content_str, key_hint=""):
     items = [item.strip() for item in content_str.strip().split('\n') if item.strip()]
@@ -280,6 +468,7 @@ def parse_blk_tag_content(content_str, key_hint=""):
 
 
 def parse_blk_file(filepath, output_dir_for_log):
+    derived_equipment_accumulator = [] # To store (item_name, item_type, unit_tech_base, intro_year, source_file)
     content = ""; data = {}; base_filename = os.path.basename(filepath)
     unit_type_from_file = "unknown"
     path_lower = filepath.lower()
@@ -401,20 +590,96 @@ def parse_blk_file(filepath, output_dir_for_log):
                 else: data[key].append(parsed_value)
             else: data[key] = parsed_value
 
+        # Process manufacturers ensuring it's a list of objects
+        manufacturer_keys = ["manufacturer", "primaryfactory", "factory"] # Add other relevant keys if any
+        final_manufacturers_list = []
+        for m_key in manufacturer_keys:
+            if m_key in data:
+                m_values = data.pop(m_key) # Remove original string/list
+                if not isinstance(m_values, list):
+                    m_values = [m_values]
+                for val in m_values:
+                    if isinstance(val, str):
+                         # Handle comma-separated values within a single manufacturer string
+                        for s_val in val.split(','):
+                            s_val_stripped = s_val.strip()
+                            if s_val_stripped:
+                                final_manufacturers_list.append({"name": s_val_stripped})
+                    # If it's already an object (though current parsing makes it string), it could be handled here
+        if final_manufacturers_list:
+            # Ensure no duplicates if multiple keys contribute the same manufacturer
+            unique_manufacturers = []
+            seen_names = set()
+            for man_obj in final_manufacturers_list:
+                if man_obj["name"] not in seen_names:
+                    unique_manufacturers.append(man_obj)
+                    seen_names.add(man_obj["name"])
+            data["manufacturers"] = unique_manufacturers
+
+        # Process 'config' field (improved logic)
+        if "config" in data:
+            parsed_value = data["config"]
+            if isinstance(parsed_value, str):
+                config_val_lower = parsed_value.lower()
+                if "biped" in config_val_lower: data["config"] = "Biped"
+                elif "quad" in config_val_lower: data["config"] = "Quad"
+                elif "tripod" in config_val_lower: data["config"] = "Tripod"
+                else: data["config"] = None
+            elif isinstance(parsed_value, list): # If it was parsed as a list of strings
+                # Try to find a mappable config in the list, prioritizing Biped > Quad > Tripod
+                found_config = None
+                for item_str in parsed_value:
+                    if isinstance(item_str, str):
+                        item_lower = item_str.lower()
+                        if "biped" in item_lower: found_config = "Biped"; break
+                        if "quad" in item_lower and not found_config: found_config = "Quad"
+                        if "tripod" in item_lower and not found_config: found_config = "Tripod"
+                data["config"] = found_config # Will be None if no keywords found
+            else: # If it's neither string nor list of strings that we can interpret
+                data["config"] = None
+        # If "config" was not in data at all, it remains absent, implying null in schema
+
+
+
         data['era'] = file_era
         data['tech_base'] = file_tech_base
         if 'type' not in data or data.get('type') == 'unknown' : data['type'] = unit_type_from_file # Ensure type is set
 
         equipment_tags = ["equipment", "body_equipment", "right_arm_equipment", "left_arm_equipment", "right_leg_equipment", "left_leg_equipment", "head_equipment", "center_torso_equipment", "right_torso_equipment", "left_torso_equipment", "nose_equipment", "left_wing_equipment", "right_wing_equipment", "aft_equipment"]
-        all_items = []
+        all_items_for_derived = []
+        unit_model_name_for_blk = data.get('model', "") # Get model name for checking
+
         for tag_name in equipment_tags:
             if tag_name in data:
-                items = data[tag_name]
-                if not isinstance(items, list): items = [items]
-                for item in items:
-                    if isinstance(item, str) and item.lower() != "empty": all_items.append(item.split('(')[0].strip())
-                    elif isinstance(item, dict) and 'name' in item and item['name'].lower() != 'empty': all_items.append(item['name'].split('(')[0].strip())
-        for item_name_on_unit in set(all_items): add_to_derived_equipment(item_name_on_unit, "Unknown", file_tech_base, file_era, base_filename)
+                # It's important that data[tag_name] isn't modified if it's needed later for specific output structures
+                # For derived_equipment, we just extract names.
+                items_source = data[tag_name]
+                if not isinstance(items_source, list): items_source = [items_source]
+
+                for item_entry in items_source:
+                    item_name_candidate = None
+                    if isinstance(item_entry, str) and item_entry.lower() != "empty":
+                        item_name_candidate = item_entry.split('(')[0].strip()
+                    elif isinstance(item_entry, dict) and 'name' in item_entry and item_entry['name'].lower() != 'empty':
+                        item_name_candidate = item_entry['name'].split('(')[0].strip()
+
+                    if item_name_candidate:
+                        # Fix for model name appearing as equipment
+                        if unit_model_name_for_blk and item_name_candidate == unit_model_name_for_blk:
+                            pass # Skip adding model name as equipment
+                        else:
+                            all_items_for_derived.append(item_name_candidate)
+
+        for item_name_on_unit in set(all_items_for_derived): # Use set to get unique names
+            item_type_for_blk = get_blk_item_type_from_name(item_name_on_unit)
+            derived_equipment_accumulator.append((item_name_on_unit, item_type_for_blk, file_tech_base, file_era, base_filename))
+
+        # Review point 5: weapons_and_equipment item_type in parse_blk_file
+        # Current logic in parse_blk_file does not directly populate a structured 'weapons_and_equipment' list in 'data'.
+        # It extracts equipment names into flat lists under keys like 'body_equipment', 'right_arm_equipment', etc.
+        # These names are then added to 'derived_equipment_accumulator' with type "Unknown".
+        # This is acceptable as per the subtask instructions. No change needed here for schema compliance of item_type
+        # unless the script was also building a data["weapons_and_equipment"] list for the JSON output here.
 
         if "structure" in data and isinstance(data["structure"], str): data["structure"] = {"type": data["structure"], "manufacturer": None}
         if "myomer" in data and isinstance(data["myomer"], str): data["myomer"] = {"type": data["myomer"].strip(), "manufacturer": None}
@@ -440,33 +705,186 @@ def parse_blk_file(filepath, output_dir_for_log):
 
 
     except Exception as e:
-        log_skipped_file(filepath, f"BLK Parsing Error: {e}", output_dir_for_log); return None
-    return data
+        log_skipped_file(filepath, f"BLK Parsing Error: {e}", output_dir_for_log); return None, []
+    return data, derived_equipment_accumulator
 
 def parse_xml_file(filepath, output_dir_for_log):
+    derived_equipment_accumulator = []
+    data_for_json = {} # This will store the direct conversion for UnitVerifierOptions.json
+    source_file_basename = os.path.basename(filepath)
+
+    # Define categories that might contain equipment-like items
+    # These are typically plural forms of the item tags.
+    equipment_categories_tags = [
+        "ammos", "battlearmorequips", "battlearmorweapons", "bombs",
+        "engines", "equipments", "gyros", "heatsinks", "jumpjets",
+        "physicalweapons", "structures", "targetingcomputers", "weapons"
+    ]
+
     try:
-        tree = ET.parse(filepath); root = tree.getroot(); data = {root.tag: {}}
-        for entity_elem in root:
-            entity_name = entity_elem.tag; entity_data = {}
-            for option_elem in entity_elem:
-                option_tag = option_elem.tag
-                if option_tag == "ceilWeight": entity_data[option_tag] = {cw_elem.tag: cw_elem.text.strip() for cw_elem in option_elem}
-                elif option_tag == "ignoreFailedEquipment":
-                    if option_elem.text and option_elem.text.strip(): entity_data[option_tag] = [e.strip() for e in option_elem.text.strip().split(',')]
-                    else: entity_data[option_tag] = []
-                else:
+        tree = ET.parse(filepath)
+        root = tree.getroot()
+        data_for_json[root.tag] = {} # Initialize for the main XML structure conversion
+
+        for category_element in root: # Iterates over <ammos>, <weapons>, etc.
+            category_tag_name = category_element.tag
+            data_for_json[root.tag][category_tag_name] = {} # For direct JSON conversion
+
+            # This part handles the direct conversion for UnitVerifierOptions.json
+            # Needs to be adapted if category_element contains non-item children or just text
+            if not list(category_element): # If it's a simple tag like <foo>text</foo>
+                 data_for_json[root.tag][category_tag_name] = category_element.text.strip() if category_element.text else ""
+
+            for item_element in category_element: # Iterates over <ammo>, <weapon> in <ammos>, <weapons>
+                item_tag_name = item_element.tag # e.g. "ammo", "weapon"
+                entity_data = {} # For direct JSON conversion of this item
+
+                item_name_text = "Unknown Name"
+                tech_base = "Unknown"
+                intro_year_val = "Unknown"
+                item_type_val = item_tag_name # Default type is the tag name itself
+
+                for option_elem in item_element: # Iterates over <name>, <type>, <techlevel>, etc.
+                    option_tag = option_elem.tag
                     text_content = option_elem.text.strip() if option_elem.text else ""
-                    if text_content.lower() == "true": entity_data[option_tag] = True
-                    elif text_content.lower() == "false": entity_data[option_tag] = False
-                    elif re.fullmatch(r"-?\d+", text_content): entity_data[option_tag] = int(text_content)
-                    elif re.fullmatch(r"-?\d+\.\d+", text_content):
-                         try: entity_data[option_tag] = float(text_content)
-                         except ValueError: entity_data[option_tag] = text_content
-                    else: entity_data[option_tag] = text_content
-            data[root.tag][entity_name] = entity_data
-        return data
+
+                    # Store for direct JSON conversion
+                    if option_tag == "ceilWeight": # Example of complex tag handling
+                        entity_data[option_tag] = {cw_elem.tag: cw_elem.text.strip() for cw_elem in option_elem}
+                    elif option_tag == "ignoreFailedEquipment":
+                         entity_data[option_tag] = [e.strip() for e in text_content.split(',')] if text_content else []
+                    else: # Simple text content
+                        if text_content.lower() == "true": entity_data[option_tag] = True
+                        elif text_content.lower() == "false": entity_data[option_tag] = False
+                        elif re.fullmatch(r"-?\d+", text_content): entity_data[option_tag] = int(text_content)
+                        elif re.fullmatch(r"-?\d+\.\d+", text_content):
+                            try: entity_data[option_tag] = float(text_content)
+                            except ValueError: entity_data[option_tag] = text_content
+                        else: entity_data[option_tag] = text_content
+
+                    # Extract data for derived_equipment
+                    if option_tag == "name":
+                        item_name_text = text_content
+                    elif option_tag == "techlevel":
+                        if text_content == "0": tech_base = "Inner Sphere"
+                        elif text_content == "1": tech_base = "Clan"
+                        elif text_content == "2": tech_base = "Mixed"
+                        else: tech_base = text_content # Keep as is if not 0,1,2
+                    elif option_tag == "introyear":
+                        intro_year_val = int(text_content) if text_content.isdigit() else text_content
+                    elif option_tag == "type" and item_tag_name.lower() in ["weapon", "equipment", "ammo"]:
+                        # Use inner <type> for more specific typing
+                        if text_content: # Ensure it's not empty
+                           item_type_val = text_content.replace(" ", "") # e.g. "ERLargeLaser"
+
+                # Add to data_for_json (direct conversion)
+                # This part might need adjustment based on how item_elements are structured
+                # Assuming item_name_text is unique enough to be a key
+                if item_name_text != "Unknown Name" and item_name_text :
+                    data_for_json[root.tag][category_tag_name][item_name_text] = entity_data
+                else: # Fallback if name is not suitable as key
+                    data_for_json[root.tag][category_tag_name].setdefault(item_tag_name, []).append(entity_data)
+
+                # Add to derived_equipment_accumulator if it's an equipment category
+                if category_tag_name in equipment_categories_tags:
+                    if item_name_text and item_name_text != "Unknown Name" and item_name_text != "-":
+                        # Sanitize item_type_val for use in add_to_derived_equipment
+                        # e.g. "Flamer (Vehicle)" -> "FlamerVehicle"
+                        item_type_val_clean = re.sub(r'[^a-zA-Z0-9]', '', item_type_val.title())
+
+                        derived_equipment_accumulator.append((
+                            item_name_text,
+                            item_type_val_clean, # Use the determined specific type
+                            tech_base,
+                            intro_year_val,
+                            source_file_basename
+                        ))
+        return data_for_json, derived_equipment_accumulator
     except Exception as e:
-        log_skipped_file(filepath, f"XML Processing Error: {e}", output_dir_for_log); return None
+        log_skipped_file(filepath, f"XML Processing Error: {e}", output_dir_for_log)
+        return None, []
+
+# Worker function for multiprocessing
+def _process_file_worker(args_tuple):
+    filepath, base_output_dir, mekfiles_output_dir, root_dir_for_relative_path = args_tuple
+
+    processed_count = 0
+    derived_equipment_for_worker = []
+    skipped_file_info = None # Tuple: (filepath, reason, output_dir_for_log)
+
+    filename = os.path.basename(filepath)
+
+    # Calculate relative_path for structuring output correctly
+    if root_dir_for_relative_path:
+        relative_path = os.path.relpath(filepath, root_dir_for_relative_path)
+    else:
+        # Fallback: use filename directly, implies output files are flat in mekfiles_output_dir
+        # This might happen if root_dir_for_relative_path is not passed, though it should be.
+        relative_path = Path(filename)
+
+    # Ensure the output directory for the JSON file exists
+    # output_filepath_json needs to include any subdirectories from relative_path
+    output_json_dir = os.path.dirname(os.path.join(mekfiles_output_dir, relative_path))
+    # os.makedirs(output_json_dir, exist_ok=True) # Worker should not create dirs, main process should pre-create.
+                                                # Let's assume mekfiles_output_dir and its subdirs are prepped by main.
+                                                # For now, save_to_json handles os.makedirs for the direct parent.
+
+    output_filepath_json = os.path.join(mekfiles_output_dir, Path(relative_path).with_suffix('.json'))
+
+    parsed_data = None
+    # parse_error_occurred is used to avoid double-logging skips if the parser itself logs it.
+    parse_error_occurred = False
+
+    if filename.lower().endswith(".mtf"):
+        parsed_data, derived_eq = parse_mtf_file(filepath, base_output_dir)
+        if parsed_data:
+            derived_equipment_for_worker.extend(derived_eq)
+        else: # Error in parsing, assumed to be logged by parse_mtf_file
+            parse_error_occurred = True
+    elif filename.lower().endswith(".blk"):
+        parsed_data, derived_eq = parse_blk_file(filepath, base_output_dir)
+        if parsed_data:
+            derived_equipment_for_worker.extend(derived_eq)
+        else: # Error in parsing, assumed to be logged by parse_blk_file
+            parse_error_occurred = True
+    elif filename.lower() == "unitverifieroptions.xml":
+        # For this specific file, the output path is fixed relative to mekfiles_output_dir
+        output_filepath_json = os.path.join(mekfiles_output_dir, "UnitVerifierOptions.json")
+        parsed_data, derived_eq = parse_xml_file(filepath, base_output_dir) # Expects two values now
+        if parsed_data:
+            derived_equipment_for_worker.extend(derived_eq)
+        else: # Error in parsing, assumed to be logged by parse_xml_file
+            parse_error_occurred = True
+
+    # This part for non-MTF/BLK/XML files might need adjustment if other XMLs are to be processed for derived_equipment
+    # For now, only unitverifieroptions.xml is handled by parse_xml_file explicitly for derived_equipment.
+
+
+    if parsed_data:
+        # Ensure the specific directory for this JSON exists before saving
+        # This is important if relative_path contains subdirectories
+        os.makedirs(os.path.dirname(output_filepath_json), exist_ok=True)
+        save_to_json(parsed_data, output_filepath_json, base_output_dir)
+        processed_count = 1
+    elif not parse_error_occurred and not filename.lower().endswith(
+        ('.png', '.gif', '.jpg', '.jpeg', '.svg', '.txt', '.html', '.xml~',
+         '.psd', '.md', '.pdf', '.doc', '.docx', '.zip', '.log', '.jar',
+         '.xsl', '.css', '.js', '.tif', '.tiff', '.bmp', '.datasheet',
+         '.bk2', '.लक', '.dat', '.mmf')
+        ):
+        # This file wasn't processed by any specific parser, no error was logged by them,
+        # and it's not in the general skip list.
+        # We need to record this skip to be logged by the main process.
+        # Exception: unitverifieroptions.xml, if it failed parsing, parse_error_occurred would be true.
+        # If it's some other XML, it would fall here.
+        if not (filename.lower() == "unitverifieroptions.xml" and parse_error_occurred) :
+             skipped_file_info = (filepath, "Unsupported file type or error during processing.", base_output_dir)
+
+    return {
+        "processed_count": processed_count,
+        "derived_equipment": derived_equipment_for_worker,
+        "skipped_file_info": skipped_file_info
+    }
 
 def save_to_json(data, output_filepath, output_dir_for_log):
     try:
@@ -477,28 +895,63 @@ def save_to_json(data, output_filepath, output_dir_for_log):
         log_skipped_file(output_filepath, f"JSON Save Error: {e}", output_dir_for_log)
 
 def process_files(root_dir, base_output_dir):
-    processed_count = 0
+    total_processed_count = 0
+    all_derived_equipment_tuples = []
+    files_to_process_args_list = []
+
     mekfiles_output_dir = os.path.join(base_output_dir, "mekfiles")
+    # No need to os.makedirs for mekfiles_output_dir here,
+    # _process_file_worker -> save_to_json will create subdirectories as needed for each file.
+    # However, the main mekfiles_output_dir itself should exist.
     os.makedirs(mekfiles_output_dir, exist_ok=True)
+
+    # Collect all filepaths and arguments for the worker
     for dirpath, _, filenames in os.walk(root_dir):
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
-            relative_path = os.path.relpath(filepath, root_dir)
-            output_filepath_json = os.path.join(mekfiles_output_dir, Path(relative_path).with_suffix('.json'))
-            parsed_data = None
-            if filename.lower().endswith(".mtf"): parsed_data = parse_mtf_file(filepath, base_output_dir)
-            elif filename.lower().endswith(".blk"): parsed_data = parse_blk_file(filepath, base_output_dir)
-            elif filename.lower() == "unitverifieroptions.xml":
-                output_filepath_json = os.path.join(mekfiles_output_dir, "UnitVerifierOptions.json")
-                parsed_data = parse_xml_file(filepath, base_output_dir)
-            if parsed_data:
-                save_to_json(parsed_data, output_filepath_json, base_output_dir); processed_count +=1
-            elif not filename.lower().endswith(('.png', '.gif', '.jpg', '.jpeg', '.svg', '.txt', '.html', '.xml~', '.psd', '.md', '.pdf', '.doc', '.docx', '.zip', '.log', '.jar', '.xsl', '.css', '.js', '.tif', '.tiff', '.bmp', '.datasheet', '.bk2', '.लक', '.dat', '.mmf')): # Expanded skip list
-                 if filename.lower() != "unitverifieroptions.xml" or (filename.lower() == "unitverifieroptions.xml" and parsed_data is None) :
-                    log_skipped_file(filepath, "Unsupported or error.", base_output_dir)
+            # The worker needs: filepath, base_output_dir, mekfiles_output_dir, root_dir (for relpath calc)
+            files_to_process_args_list.append((filepath, base_output_dir, mekfiles_output_dir, root_dir))
+
+    # Use multiprocessing Pool
+    # num_processes = multiprocessing.cpu_count() # Use all available CPUs
+    # Using a fixed number for now for stability, can be tuned. e.g. max(1, num_processes -1 )
+    num_processes = multiprocessing.cpu_count()
+
+    print(f"Starting processing with {num_processes} workers...")
+
+    results = []
+    # Consider using imap_unordered for large number of files for better memory usage and progress feedback
+    # For simplicity, using map for now.
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        results = pool.map(_process_file_worker, files_to_process_args_list)
+
+    # Process results from workers
+    for result in results:
+        if result: # Ensure result is not None, though workers should always return a dict
+            total_processed_count += result["processed_count"]
+            all_derived_equipment_tuples.extend(result["derived_equipment"])
+            if result["skipped_file_info"]:
+                # skipped_file_info is (filepath, reason, output_dir_for_log)
+                log_skipped_file(result["skipped_file_info"][0], result["skipped_file_info"][1], result["skipped_file_info"][2])
+
+    # Populate DERIVED_EQUIPMENT from all collected tuples
+    # This must be done in the main process after all workers are done.
+    for equip_tuple in all_derived_equipment_tuples:
+        # Ensure the tuple has the correct number of arguments for add_to_derived_equipment
+        if len(equip_tuple) == 5:
+            add_to_derived_equipment(equip_tuple[0], equip_tuple[1], equip_tuple[2], equip_tuple[3], equip_tuple[4])
+        else:
+            # Log an error or handle malformed tuples if necessary
+            print(f"Warning: Malformed equipment tuple: {equip_tuple}")
+
+
+    # Save the aggregated DERIVED_EQUIPMENT to JSON
     derived_equipment_path = os.path.join(mekfiles_output_dir, "derivedEquipment.json")
+    # Ensure DERIVED_EQUIPMENT is not empty before trying to get values, though list() on empty dict is fine.
     save_to_json(list(DERIVED_EQUIPMENT.values()), derived_equipment_path, base_output_dir)
-    print(f"Derived equipment data saved to {derived_equipment_path}"); return processed_count
+    print(f"Derived equipment data saved to {derived_equipment_path}")
+
+    return total_processed_count
 
 if __name__ == "__main__":
     fixed_output_dir_name = os.environ.get("MEGAMEKLAB_OUTPUT_DIR", "megameklab_converted_output")
