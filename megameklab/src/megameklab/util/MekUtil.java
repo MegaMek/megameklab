@@ -1319,7 +1319,7 @@ public final class MekUtil {
 
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
                 || (eq instanceof ISC3M) || (eq instanceof ISTAG) || (eq instanceof ISPrototypeTAG)
-                || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD)
+                || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)
                 || (eq instanceof CLLightTAG) || (eq instanceof ISAMS)
                 || (eq instanceof CLAMS) || (eq instanceof ISLaserAMS)
                 || (eq instanceof CLLaserAMS) || (eq instanceof ISAPDS)) {
@@ -1420,8 +1420,8 @@ public final class MekUtil {
                 return false;
             }
             if ((unit instanceof LandAirMek)
-                    && (weapon.getAmmoType() == AmmoType.T_GAUSS_HEAVY
-                            || weapon.getAmmoType() == AmmoType.T_IGAUSS_HEAVY)) {
+                    && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.GAUSS_HEAVY
+                            || weapon.getAmmoType() == AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)) {
                 return false;
             }
 

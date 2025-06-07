@@ -242,19 +242,19 @@ public class StatusBar extends ITab {
                 continue;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
-            if (weaponType.getAmmoType() == AmmoType.T_AC_ROTARY) {
+            if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
                 weaponHeat *= 6;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;

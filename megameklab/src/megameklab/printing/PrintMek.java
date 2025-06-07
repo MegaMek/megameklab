@@ -854,7 +854,7 @@ public class PrintMek extends PrintEntity {
             } else if (m.isMekTurretMounted()) {
                 critName.append(" (T)");
             } else if ((m.getType() instanceof AmmoType)
-                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
                 AmmoType ammo = (AmmoType) m.getType();
 
                 critName = new StringBuffer("Ammo (");
