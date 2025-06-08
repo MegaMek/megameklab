@@ -26,6 +26,7 @@ import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
+import megameklab.ui.combatVehicle.GEMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
@@ -209,6 +210,8 @@ public class UiLoader {
             return new WSMainUI(primitive);
         } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
             return new HHWMainUI();
+        } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
+            return new GEMainUI();
         } else {
             return new BMMainUI(primitive, industrial);
         }
@@ -240,6 +243,8 @@ public class UiLoader {
             return new WSMainUI(entity, filename);
         } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
             return new HHWMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
+            return new GEMainUI(entity, filename);
         } else {
             return new BMMainUI(entity, filename);
         }

@@ -11,11 +11,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package megameklab.ui.handheldWeapon;
 
 import megamek.common.AmmoType;
-import megamek.common.HandheldWeapon;
+import megamek.common.Entity;
 import megamek.common.Mounted;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.RefreshListener;
@@ -29,24 +28,26 @@ import java.awt.event.MouseListener;
 import java.util.Vector;
 
 public class HHWEquipmentList extends JList<String> implements MouseListener {
-    private final HandheldWeapon hhw;
+
+    private static final String WIDER_CRITCELL_WIDTH_STRING = "X".repeat(32);
+    private final Entity entity;
     private final RefreshListener refresh;
 
-    public HHWEquipmentList(HandheldWeapon hhw, RefreshListener refresh) {
-        super(equipNames(hhw));
-        this.hhw = hhw;
+    public HHWEquipmentList(Entity entity, RefreshListener refresh) {
+        super(equipNames(entity));
+        this.entity = entity;
         this.refresh = refresh;
         setCellRenderer(new CritListCellRenderer());
         setVisibleRowCount(getModel().getSize());
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        setPrototypeCellValue(WIDER_CRITCELL_WIDTH_STRING);
         addMouseListener(this);
         setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, CritCellUtil.CRITCELL_BORDER_COLOR));
     }
 
-    private static Vector<String> equipNames(HandheldWeapon hhw) {
+    private static Vector<String> equipNames(Entity entity) {
         Vector<String> critNames = new Vector<>();
-        for (var m : hhw.getEquipment()) {
+        for (var m : entity.getEquipment()) {
             if (m.getType() instanceof AmmoType) {
                 critNames.add("%s (%d)".formatted(m.getName(), (int) m.getSize()));
             } else {
@@ -65,14 +66,16 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         setSelectedIndex(locationToIndex(e.getPoint()));
-        if (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
-            deleteItem();
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            var popup = new JPopupMenu();
-            var item = new JMenuItem("Delete " + getMount().getName());
-            item.addActionListener(ev -> deleteItem());
-            popup.add(item);
-            popup.show(e.getComponent(), e.getX(), e.getY());
+        if (entity.getEquipment(getSelectedIndex()) != null) {
+            if (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
+                deleteItem();
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                var popup = new JPopupMenu();
+                var item = new JMenuItem("Delete " + getMount().getName());
+                item.addActionListener(ev -> deleteItem());
+                popup.add(item);
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
         }
     }
 
@@ -86,13 +89,13 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
     public void mouseExited(MouseEvent e) { }
 
     private void deleteItem() {
-        UnitUtil.removeMounted(hhw, hhw.getEquipment().get(getSelectedIndex()));
+        UnitUtil.removeMounted(entity, entity.getEquipment().get(getSelectedIndex()));
         refresh.refreshEquipment();
         refresh.refreshStructure();
     }
 
     private Mounted<?> getMount() {
-        return hhw.getEquipment().get(getSelectedIndex());
+        return entity.getEquipment().get(getSelectedIndex());
     }
 
     private class CritListCellRenderer extends DefaultListCellRenderer {
@@ -100,17 +103,17 @@ public class HHWEquipmentList extends JList<String> implements MouseListener {
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-            if (value.equals(CritCellUtil.CRITCELL_WIDTH_STRING)) {
-                setText(CritCellUtil.CRITCELL_WIDTH_STRING);
+            if (value.equals(WIDER_CRITCELL_WIDTH_STRING)) {
+                setText(WIDER_CRITCELL_WIDTH_STRING);
                 setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
                 return this;
             }
 
-            if (index >= hhw.getEquipment().size()) {
-                CritCellUtil.formatCell(this, null, true, hhw, index);
+            if (index >= entity.getEquipment().size()) {
+                CritCellUtil.formatCell(this, null, true, entity, index);
             } else {
-                var m = hhw.getEquipment().get(index);
-                CritCellUtil.formatCell(this, m, true, hhw, index);
+                var m = entity.getEquipment().get(index);
+                CritCellUtil.formatCell(this, m, true, entity, index);
             }
             setBorder(BorderFactory.createMatteBorder(index == 0 ? 1 : 0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
             return this;

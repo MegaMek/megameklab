@@ -2095,6 +2095,8 @@ public class UnitUtil {
             return Entity.ETYPE_TANK;
         } else if (newUnit instanceof HandheldWeapon) {
             return Entity.ETYPE_HANDHELD_WEAPON;
+        } else if (newUnit instanceof GunEmplacement) {
+            return Entity.ETYPE_GUN_EMPLACEMENT;
         } else {
             throw new IllegalArgumentException("Cannot open this entity in an editor");
         }
