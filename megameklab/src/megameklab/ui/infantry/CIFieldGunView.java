@@ -155,15 +155,15 @@ public class CIFieldGunView extends IView implements ActionListener {
             }
 
             if ((eq instanceof GaussWeapon)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_GAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_IGAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_MAGSHOT)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_HAG)) {
+                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.GAUSS_HEAVY)
+                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)
+                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.MAGSHOT)
+                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.HAG)) {
                 allTypes.add(eq);
             }
 
             if ((eq instanceof ArtilleryWeapon) && !eq.hasFlag(WeaponType.F_BA_WEAPON)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.T_CRUISE_MISSILE)) {
+                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.CRUISE_MISSILE)) {
                 allTypes.add(eq);
             }
         }

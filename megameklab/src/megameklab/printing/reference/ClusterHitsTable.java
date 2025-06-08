@@ -109,47 +109,47 @@ public class ClusterHitsTable extends ReferenceTable {
             if (mounted.getType() instanceof WeaponType) {
                 final WeaponType weapon = (WeaponType) mounted.getType();
                 switch (weapon.getAmmoType()) {
-                    case AmmoType.T_AC_LBX:
-                    case AmmoType.T_EXLRM:
-                    case AmmoType.T_IATM:
-                    case AmmoType.T_LRM:
-                    case AmmoType.T_LRM_IMP:
-                    case AmmoType.T_LRM_PRIMITIVE:
-                    case AmmoType.T_LRM_TORPEDO:
-                    case AmmoType.T_LRM_STREAK:
-                    case AmmoType.T_MML:
-                    case AmmoType.T_MRM:
-                    case AmmoType.T_NLRM:
-                    case AmmoType.T_ROCKET_LAUNCHER:
-                    case AmmoType.T_SBGAUSS:
-                    case AmmoType.T_SRM:
-                    case AmmoType.T_SRM_ADVANCED:
-                    case AmmoType.T_SRM_IMP:
-                    case AmmoType.T_SRM_PRIMITIVE:
-                    case AmmoType.T_SRM_TORPEDO:
-                    case AmmoType.T_SRM_STREAK:
+                    case AC_LBX:
+                    case EXLRM:
+                    case IATM:
+                    case LRM:
+                    case LRM_IMP:
+                    case LRM_PRIMITIVE:
+                    case LRM_TORPEDO:
+                    case LRM_STREAK:
+                    case MML:
+                    case MRM:
+                    case NLRM:
+                    case ROCKET_LAUNCHER:
+                    case SBGAUSS:
+                    case SRM:
+                    case SRM_ADVANCED:
+                    case SRM_IMP:
+                    case SRM_PRIMITIVE:
+                    case SRM_TORPEDO:
+                    case SRM_STREAK:
                         clusterSizes.add(weapon.getRackSize());
                         break;
-                    case AmmoType.T_ATM:
+                    case ATM:
                         hasATM = true;
                         clusterSizes.add(weapon.getRackSize());
                         break;
-                    case AmmoType.T_HAG:
+                    case HAG:
                         hasHAG = true;
                         clusterSizes.add(weapon.getRackSize());
                         break;
-                    case AmmoType.T_AC_ROTARY:
+                    case AC_ROTARY:
                         for (int i = 2; i <= 6; i++) {
                             clusterSizes.add(i);
                         }
                         break;
-                    case AmmoType.T_AC_ULTRA:
-                    case AmmoType.T_AC_ULTRA_THB:
+                    case AC_ULTRA:
+                    case AC_ULTRA_THB:
                         clusterSizes.add(2);
                         break;
-                    case AmmoType.T_MG:
-                    case AmmoType.T_MG_HEAVY:
-                    case AmmoType.T_MG_LIGHT:
+                    case MG:
+                    case MG_HEAVY:
+                    case MG_LIGHT:
                         if (weapon.hasFlag(WeaponType.F_MGA)) {
                             for (int i = 2; i <= 4; i++) {
                                 clusterSizes.add(i);

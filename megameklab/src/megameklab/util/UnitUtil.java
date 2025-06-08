@@ -934,7 +934,7 @@ public class UnitUtil {
         for (Mounted<?> mount : unit.getAmmo()) {
             if ((mount.getLocation() == Entity.LOC_NONE) &&
                       !mount.isOneShotAmmo() &&
-                      (((AmmoType) mount.getType()).getAmmoType() != AmmoType.T_INFANTRY)) {
+                      (((AmmoType) mount.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.INFANTRY)) {
                 int slots = 1;
                 if (unit.usesWeaponBays()) {
                     slots = (int) Math.ceil(mount.getUsableShotsLeft() /
@@ -1894,7 +1894,7 @@ public class UnitUtil {
         EquipmentType launcherType = mounted.getType();
         if ((launcherType instanceof WeaponType) &&
                   (launcherType.hasFlag(WeaponType.F_ONESHOT) ||
-                         (((WeaponType) launcherType).getAmmoType() == AmmoType.T_INFANTRY))) {
+                         (((WeaponType) launcherType).getAmmoType() == AmmoType.AmmoTypeEnum.INFANTRY))) {
             Mounted<?> oneShotAmmo = mounted.getLinked();
             if (oneShotAmmo != null) {
                 mounted.getEntity().getEquipment().remove(oneShotAmmo);
@@ -2065,11 +2065,11 @@ public class UnitUtil {
         }
 
         if (weapon.hasFlag(WeaponType.F_ENERGY) ||
-                  (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.T_PLASMA))) {
+                  (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
 
             return weapon.hasFlag(WeaponType.F_ENERGY) &&
                          weapon.hasFlag(WeaponType.F_PLASMA) &&
-                         (weapon.getAmmoType() == AmmoType.T_NA);
+                         (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.NA);
         }
         return false;
     }

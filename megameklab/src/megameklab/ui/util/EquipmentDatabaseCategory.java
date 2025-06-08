@@ -40,7 +40,7 @@ public enum EquipmentDatabaseCategory {
     ENERGY ("Energy",
             (eq, en) -> (eq instanceof WeaponType) && !((WeaponType) eq).isCapital()
                     && (eq.hasFlag(F_ENERGY)
-                    || ((eq.hasFlag(F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.T_PLASMA))))),
+                    || ((eq.hasFlag(F_PLASMA) && (((WeaponType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))))),
 
     BALLISTIC ("Ballistic",
             (eq, en) -> (eq instanceof WeaponType) && !((WeaponType) eq).isCapital() && eq.hasFlag(F_BALLISTIC)),
@@ -108,8 +108,8 @@ public enum EquipmentDatabaseCategory {
 
     TORPEDO ("Torpedoes",
             (eq, en) -> (eq instanceof WeaponType)
-                    && (((WeaponType) eq).getAmmoType() == AmmoType.T_LRM_TORPEDO
-                    || ((WeaponType) eq).getAmmoType() == AmmoType.T_SRM_TORPEDO),
+                    && (((WeaponType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.LRM_TORPEDO
+                    || ((WeaponType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO),
             e -> !(e instanceof BattleArmor) && !(e instanceof Aero)),
 
     UNAVAILABLE ("Unavailable"),
