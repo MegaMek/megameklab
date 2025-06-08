@@ -36,6 +36,7 @@ import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.WeaponType;
+import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -80,18 +81,13 @@ public class CIFieldGunView extends IView implements ActionListener {
     private JScrollPane masterEquipmentScroll = new JScrollPane();
 
     public static String getTypeName(int type) {
-        switch (type) {
-            case T_ALL:
-                return "All Weapons";
-            case T_GUN:
-                return "Field Gun";
-            case T_ARTILLERY:
-                return "Artillery";
-            case T_ARTILLERY_CANNON:
-                return "Artillery Cannon";
-            default:
-                return "?";
-        }
+        return switch (type) {
+            case T_ALL -> "All Weapons";
+            case T_GUN -> "Field Gun";
+            case T_ARTILLERY -> "Artillery";
+            case T_ARTILLERY_CANNON -> "Artillery Cannon";
+            default -> "?";
+        };
     }
 
     public CIFieldGunView(EntitySource eSource, ITechManager techManager) {
@@ -277,29 +273,28 @@ public class CIFieldGunView extends IView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource().equals(btnSetGun)) {
+        if (e.getSource() == btnSetGun) {
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
                 //selection got filtered away
                 return;
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
-            EquipmentType equip = masterEquipmentList.getType(selected);
-            int num;
-            if ((equip instanceof ArtilleryWeapon)
-                    || (equip instanceof ArtilleryCannonWeapon)) {
-                num = 1;
+            EquipmentType equipmentType = masterEquipmentList.getType(selected);
+            int maximumFieldGuns;
+            if (TestInfantry.isFieldArtilleryType(equipmentType)) {
+                maximumFieldGuns = 1;
             } else {
-                int crewReq = Math.max(2, (int) Math.ceil(equip.getTonnage(getInfantry())));
-                num = getInfantry().getShootingStrength() / crewReq;
+                maximumFieldGuns = getInfantry().getOriginalTrooperCount()
+                      / TestInfantry.fieldGunCrewRequirement(equipmentType, getInfantry());
             }
-            InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equip, num);
-        } else if (e.getSource().equals(btnRemoveGun)) {
+            InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equipmentType, maximumFieldGuns);
+            refresh.refreshAll();
+
+        } else if (e.getSource() == btnRemoveGun) {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
-        } else {
-            return;
+            refresh.refreshAll();
         }
-        refresh.refreshAll();
     }
 
     private void filterEquipment() {
