@@ -30,37 +30,40 @@
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
  */
-package megameklab.ui.combatVehicle;
+package megameklab.ui.generalUnit;
 
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.AmmoType;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.AbstractEquipmentTab;
-import megameklab.ui.util.AbstractEquipmentDatabaseView;
-import megameklab.util.UnitUtil;
+import megameklab.ui.util.*;
 
-/**
- * The Equipment Tab for gun emplacement units showing the equipment database and the current load out list.
- *
- * @author Simon (Juliez)
- */
-class GEEquipmentTab extends AbstractEquipmentTab {
+import java.util.Vector;
 
-    GEEquipmentTab(EntitySource eSource) {
+public class SingleLocationEquipmentView extends IView {
+    private SingleLocationEquipmentList mountList;
+    private final RefreshListener refresh;
+
+    public SingleLocationEquipmentView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
+        this.refresh = refresh;
     }
 
-    @Override
-    protected AbstractEquipmentDatabaseView getEquipmentDatabaseView() {
-        return new GEEquipmentDatabaseView(eSource);
+    public synchronized void refresh() {
+        if (mountList != null) {
+            remove(mountList);
+        }
+        Vector<String> critNames = new Vector<>();
+        for (var m : getEntity().getEquipment()) {
+            if (m.getType() instanceof AmmoType) {
+                critNames.add("%s (%d)".formatted(m.getName(), (int) m.getSize()));
+            } else {
+                critNames.add(m.getName());
+            }
+        }
+        if (critNames.isEmpty()) {
+            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+        }
+        mountList = new SingleLocationEquipmentList(getEntity(), refresh);
+        add(mountList);
+        validate();
     }
-
-    @Override
-    protected boolean showInLoadOut(Mounted<?> mount) {
-        EquipmentType etype = mount.getType();
-        return !(etype instanceof MiscType) ||
-                (!etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype));
-    }
-
 }
