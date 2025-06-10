@@ -63,7 +63,7 @@ public enum EquipmentDatabaseCategory {
 
     INDUSTRIAL ("Industrial",
             (eq, en) -> isIndustrialEquipment(eq),
-            e -> (e instanceof Tank) || e.isSupportVehicle()),
+            e -> ((e instanceof Tank) || e.isSupportVehicle()) && !(e instanceof GunEmplacement)),
 
     AMMO ("Ammo",
             (eq, en) -> (eq instanceof AmmoType) && !(eq instanceof BombType) && !eq.is(COOLANT_POD),

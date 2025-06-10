@@ -169,6 +169,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miNewTab.add(newUnitItem("Conventional Infantry", KeyEvent.VK_I, Entity.ETYPE_INFANTRY, false));
         miNewTab.add(newUnitItem("ProtoMek", KeyEvent.VK_P, Entity.ETYPE_PROTOMEK, false));
         miNewTab.add(newUnitItem("Handheld Weapon", KeyEvent.VK_H, Entity.ETYPE_HANDHELD_WEAPON, false));
+        miNewTab.add(newUnitItem("Gun Emplacement", KeyEvent.VK_G, Entity.ETYPE_GUN_EMPLACEMENT, false));
 
         JMenu primitive = new JMenu("Primitive...");
         primitive.add(newUnitItem("Mek", KeyEvent.VK_M, Entity.ETYPE_MEK, true));

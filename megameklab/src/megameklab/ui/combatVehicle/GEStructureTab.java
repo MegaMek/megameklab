@@ -1,37 +1,67 @@
 /*
- * MegaMekLab - Copyright (C) 2025 The MegaMek Team
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
+package megameklab.ui.combatVehicle;
 
-package megameklab.ui.handheldWeapon;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
-import megamek.common.*;
+import megamek.common.EquipmentType;
+import megamek.common.HandheldWeapon;
+import megamek.common.ITechManager;
+import megamek.common.SimpleTechLevel;
+import megamek.common.UnitRole;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.summary.AmmoSummaryItem;
+import megameklab.ui.generalUnit.summary.MiscEquipmentSummaryItem;
+import megameklab.ui.generalUnit.summary.SummaryView;
+import megameklab.ui.generalUnit.summary.UnitTypeSummaryItem;
+import megameklab.ui.generalUnit.summary.WeaponsSummaryItem;
 import megameklab.ui.generalUnit.SingleLocationEquipmentView;
-import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class HHWStructureTab extends ITab implements HHWBuildListener, BuildListener {
+class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
     private BasicInfoView panBasicInfo;
-    private HHWChassisView panChassisView;
     private SingleLocationEquipmentView panEquipmentView;
     private SummaryView panSummary;
     private IconView panIcon;
@@ -39,25 +69,22 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     RefreshListener refresh = null;
     JPanel masterPanel;
 
-    public HHWStructureTab(EntitySource eSource, RefreshListener refresh) {
+    GEStructureTab(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
         this.refresh = refresh;
         setLayout(new BorderLayout());
         setUpPanels();
-        this.add(masterPanel, BorderLayout.CENTER);
+        add(masterPanel, BorderLayout.CENTER);
         refresh();
     }
 
     private void setUpPanels() {
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getEntity().getConstructionTechAdvancement());
-        panChassisView = new HHWChassisView();
         panEquipmentView = new SingleLocationEquipmentView(eSource, refresh);
         panSummary = new SummaryView(eSource,
             new UnitTypeSummaryItem(),
-            new ArmorSummaryItem(),
             new WeaponsSummaryItem(),
-            new HeatSinkSummaryItem(),
             new AmmoSummaryItem(),
             new MiscEquipmentSummaryItem()
         );
@@ -65,7 +92,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
 
 
         panBasicInfo.setFromEntity(getEntity());
-        panChassisView.setFromEntity(getEntity());
         panIcon.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel(), centerPanel = new JPanel(),  rightPanel = new JPanel();
@@ -74,12 +100,10 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         leftPanel.add(panBasicInfo);
-        leftPanel.add(panChassisView);
-
-        centerPanel.add(panIcon);
+        leftPanel.add(panIcon);
+        leftPanel.add(panSummary);
 
         rightPanel.add(panEquipmentView);
-        rightPanel.add(panSummary);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -98,7 +122,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         masterPanel.add(rightPanel, gbc);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
-        panChassisView.setBorder(BorderFactory.createTitledBorder("Structure"));
         panEquipmentView.setBorder(BorderFactory.createTitledBorder("Equipment"));
         panSummary.setBorder(BorderFactory.createTitledBorder("Summary"));
         panIcon.setBorder(BorderFactory.createTitledBorder("Icon"));
@@ -110,7 +133,6 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     public void refresh() {
         removeAllListeners();
         panBasicInfo.setFromEntity(getEntity());
-        panChassisView.setFromEntity(getEntity());
         panEquipmentView.refresh();
         panSummary.refresh();
         panIcon.refresh();
@@ -119,12 +141,10 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
 
     public void removeAllListeners() {
         panBasicInfo.removeListener(this);
-        panChassisView.removeListener(this);
     }
 
     public void addAllListeners() {
         panBasicInfo.addListener(this);
-        panChassisView.addListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
