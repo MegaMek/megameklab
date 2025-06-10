@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 /**
  * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable
  * controls are for changing the number of secondary weapons and field guns.
- * 
+ *
  * @author Neoancient
  */
 public class CIWeaponView extends BuildView implements ActionListener {
@@ -151,7 +151,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         } else {
             txtSecondary.setText(noneMsg);
         }
-        
+
         cbNumSecondary.removeActionListener(this);
         cbNumSecondary.removeAllItems();
         cbNumSecondary.addItem(0);
@@ -167,13 +167,8 @@ public class CIWeaponView extends BuildView implements ActionListener {
         if (cbNumSecondary.getSelectedIndex() < 0) {
             cbNumSecondary.setSelectedIndex(0);
         }
-        
-        List<EquipmentType> fieldGuns = inf.getWeaponList().stream()
-                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(Mounted::getType)
-                .filter(et -> et instanceof WeaponType)
-                .collect(Collectors.toList());
-        if (fieldGuns.isEmpty()) {
+
+        if (!inf.hasFieldWeapon()) {
             cbNumGuns.setEnabled(false);
             if (!FIELD_GUN_MODES.contains(inf.getMovementMode())) {
                 txtGuns.setText(fgMotiveMsg);
@@ -182,18 +177,15 @@ public class CIWeaponView extends BuildView implements ActionListener {
             }
         } else {
             cbNumGuns.setEnabled(true);
-            int maxNum = 1;
-            if (!(fieldGuns.get(0) instanceof ArtilleryWeapon
-                    || fieldGuns.get(0) instanceof ArtilleryCannonWeapon)) {
-                int crewReq = Math.max(2, (int) Math.ceil(fieldGuns.get(0).getTonnage(inf)));
-                maxNum = inf.getShootingStrength() / crewReq;                
-            }
             cbNumGuns.removeActionListener(this);
             cbNumGuns.removeAllItems();
-            for (int i = 0; i <= maxNum; i++) {
+            // Always allow up to 20 field guns; show as invalid when invalid; this is necessary to prevent the
+            // number that is shown to be different from the actual field guns that the infantry has
+            for (int i = 0; i <= 20; i++) {
                 cbNumGuns.addItem(i);
             }
-            cbNumGuns.setSelectedIndex(Math.min(fieldGuns.size(), maxNum));
+            List<Mounted<?>> fieldGuns = inf.originalFieldWeapons();
+            cbNumGuns.setSelectedIndex(fieldGuns.size());
             cbNumGuns.addActionListener(this);
             txtGuns.setText(fieldGuns.get(0).getName());
         }
