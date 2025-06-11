@@ -4,7 +4,7 @@ plugins {
     id 'application'
     id 'com.palantir.git-version' version '3.3.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
-    id "io.sentry.jvm.gradle" version "5.5.0"
+    id "io.sentry.jvm.gradle" version "5.7.0"
     id 'jacoco'
     id 'java'
     id 'checkstyle'
@@ -84,15 +84,15 @@ dependencies {
 
     implementation('org.apache.commons:commons-collections4:4.5.0')
 
-    testImplementation 'org.mockito:mockito-core:5.17.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testImplementation 'org.mockito:mockito-core:5.18.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.0'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Compatibility.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.12.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.0'
 }
 
 application {
@@ -103,7 +103,7 @@ application {
 }
 
 checkstyle {
-    toolVersion = '10.24.0'
+    toolVersion = '10.25.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
     configProperties = [
             'suppressionFile': file("${rootDir}/config/checkstyle/checkstyle-suppressions.xml")
@@ -142,10 +142,29 @@ ${jvmOptions}
     }
 }
 
+tasks.register("stageLicenseFiles", Sync) {
+    description = "Copy the license files to the build folder."
+    group = 'build'
+    from "../"
+    into "${layout.buildDirectory.get()}/licenses"
+
+    includes = [
+            'LICENSE',
+            'LICENSE.code',
+            'LICENSE.assets',
+            'README.md'
+    ]
+
+}
+
 tasks.register("copyLicenseFiles", Copy) {
-    description = 'Copies license files into the distribution.'
-    from "../LICENSE", "../LICENSE.code", "../LICENSE.assets", "../README.md"
-    into "docs"
+    description "Copies from the build folder to the staging folder"
+    group = 'build'
+
+    dependsOn stageLicenseFiles
+
+    from "${layout.buildDirectory.get()}/licenses"
+    into fileStagingDir
 }
 
 tasks.register('stageFiles', Copy) {
@@ -223,7 +242,7 @@ distributions {
             from(jar) {
                 into "${lib}"
             }
-            
+
             duplicatesStrategy = 'exclude'
         }
     }

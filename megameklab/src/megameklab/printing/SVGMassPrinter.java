@@ -22,15 +22,13 @@ package megameklab.printing;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import megamek.client.ratgenerator.ModelRecord;
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.codeUtilities.StringUtility;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.GunEmplacement;
@@ -78,16 +76,16 @@ public class SVGMassPrinter {
         public String n; // Name of the unit (Chassis)
         public String m; // Model of the unit
         public int y; // Year of introduction
-        public int wc; // Weight class, e.g. 0 for Light, 1 for Medium, etc.
+        public int wc; // Weight class, 0 for Light, 1 for Medium, etc.
         public double t; // Weight in tons, rounded to the nearest integer
         public int bv; // Battle Value, rounded to the nearest integer
         public int pv; // Point Value, rounded to the nearest integer
         public long c; // Cost in C-Bills, rounded to the nearest integer
         public int l; // Tech Level
-        public String ty; // Major type, e.g. "Mek", "Vehicle", etc.
-        public String sub; // Subtype, e.g. "Assault", "Light", etc.
+        public String ty; // Major type, "Mek", "Vehicle", etc.
+        public String sub; // Subtype, "Assault", "Light", etc.
         public String src; // Source of the unit, e.g. "TRO 3050"
-        public String rl; // Role, e.g. "Assault", "Scout", etc.
+        public String rl; // Role, "Assault", "Scout", etc.
         public boolean cl; // true for Clan, false for Inner Sphere
         public int ar; // Total armor
         public int in; // Total internal structure
@@ -98,9 +96,6 @@ public class SVGMassPrinter {
         public int j; // Jump MP
         public int s; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public String sh; // Path to the SVG sheet
-
-        public UnitData() {
-        }
 
         public UnitData(MekSummary summary) {
             this.id = summary.getMulId();
@@ -156,19 +151,26 @@ public class SVGMassPrinter {
         File sheetsDir = new File(rootPath);
 
         if (sheetsDir.exists()) {
-            try {
-                Files.walk(sheetsDir.toPath())
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+            try (var walk = Files.walk(sheetsDir.toPath())) {
+                walk.sorted(Comparator.reverseOrder())
+                      .map(Path::toFile)
+                      .forEach(file -> {
+                          if (!file.delete()) {
+                              logger.warn("Failed to delete file: {}", file.getPath());
+                          }
+                      });
                 logger.info("Deleted existing sheets directory: {}", sheetsDir.getPath());
             } catch (IOException e) {
                 logger.error("Failed to delete sheets directory: {}", e.getMessage());
             }
         }
         if (!sheetsDir.exists() || !sheetsDir.isDirectory()) {
-            sheetsDir.mkdirs();
-            logger.error("Sheets directory does not exist, creating it.");
+            if (!sheetsDir.mkdirs()) {
+                logger.error("Failed to create sheets directory: {}", sheetsDir.getPath());
+                System.exit(1);
+            } else {
+                logger.info("Sheets directory created: {}", sheetsDir.getPath());
+            }
         }
 
         RecordSheetOptions recordSheetOptions = new RecordSheetOptions();
@@ -197,7 +199,7 @@ public class SVGMassPrinter {
         long timestamp = System.currentTimeMillis();
         
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
-            versionWriter.write("{\"version\":"+String.valueOf(timestamp)+"}");
+            versionWriter.write("{\"version\":"+timestamp+"}");
             logger.info("Version file written: {}", timestamp);
         } catch (IOException e) {
             logger.error("Failed to write version file: {}", e.getMessage());
@@ -277,7 +279,7 @@ public class SVGMassPrinter {
                     }
                     List<Document> svgDocs = sheets.stream()
                         .map(PrintRecordSheet::getSVGDocument)
-                        .filter(doc -> doc != null)
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList());
                     if (svgDocs.isEmpty()) {
                         logger.error("No SVG documents for {}", mekSummary.getName());
@@ -303,7 +305,7 @@ public class SVGMassPrinter {
                     StreamResult result = new StreamResult(new FileOutputStream(finalFilename));
                     transformer.transform(source, result);
                     
-                    logger.info("Printed: {}", finalFilename);
+                    // logger.info("Printed: {}", finalFilename);
                 } catch (Exception e) {
                     logger.error(e, "Printing Error");
                     System.exit(1);
@@ -393,7 +395,7 @@ public class SVGMassPrinter {
      */
     private static double getSheetWidth(Element svgRoot) {
         String widthAttr = svgRoot.getAttribute("width");
-        if (widthAttr != null && !widthAttr.isEmpty()) {
+        if (!widthAttr.isEmpty()) {
             // Remove units (pt, px, etc.) and parse
             String numericWidth = widthAttr.replaceAll("[^0-9.]", "");
             try {
@@ -405,7 +407,7 @@ public class SVGMassPrinter {
         
         // Fallback to viewBox width
         String viewBox = svgRoot.getAttribute("viewBox");
-        if (viewBox != null && !viewBox.isEmpty()) {
+        if (!viewBox.isEmpty()) {
             String[] parts = viewBox.split("\\s+");
             if (parts.length >= 3) {
                 try {
@@ -426,7 +428,7 @@ public class SVGMassPrinter {
      */
     private static double getSheetHeight(Element svgRoot) {
         String heightAttr = svgRoot.getAttribute("height");
-        if (heightAttr != null && !heightAttr.isEmpty()) {
+        if (!heightAttr.isEmpty()) {
             // Remove units (pt, px, etc.) and parse
             String numericHeight = heightAttr.replaceAll("[^0-9.]", "");
             try {
@@ -438,7 +440,7 @@ public class SVGMassPrinter {
         
         // Fallback to viewBox height
         String viewBox = svgRoot.getAttribute("viewBox");
-        if (viewBox != null && !viewBox.isEmpty()) {
+        if (!viewBox.isEmpty()) {
             String[] parts = viewBox.split("\\s+");
             if (parts.length >= 4) {
                 try {
@@ -467,16 +469,8 @@ public class SVGMassPrinter {
         }
     }
 
-    private static List<Entity> printableListOfUnits(Entity entity) {
-        if (entity.isBattleArmor() || entity.isProtoMek()) {
-            return List.of(entity, entity, entity, entity, entity);
-        } else {
-            return List.of(entity);
-        }
-    }
-
     private static String generateFilename(MekSummary unit) {
-        String fileName = String.format("%s_%s.svg",
+        return String.format("%s_%s.svg",
                 sanitize(unit.getChassis()),
                 sanitize(unit.getModel()))
                   .replace(" ", "_")
@@ -488,7 +482,6 @@ public class SVGMassPrinter {
                   .replace("]", "")
                   .replaceAll("_+", "_")
                 .toLowerCase();
-        return fileName;
     }
 
     private static String sanitize(String original) {

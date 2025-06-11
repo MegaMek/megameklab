@@ -221,7 +221,7 @@ public class PrintDropship extends PrintAero {
             linesPerBlock[BLOCK_STANDARD] += 3;
         }
         if (ship.getTotalWeaponList().stream()
-                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.T_AR10)) {
+                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
         // Add lines equal to half the gravity decks (rounded up) and one each for section

@@ -56,13 +56,4 @@ public class FloatingEquipmentDatabaseDialog extends AbstractMMLDialog {
     protected Container createCenterPane() {
         return equipmentDatabase;
     }
-
-    @Override
-    protected void cancelAction() {
-        if (equipmentDatabase != null) {
-            //helping the GC
-            equipmentDatabase.removeAll();
-        }
-        dispose();
-    }
 }

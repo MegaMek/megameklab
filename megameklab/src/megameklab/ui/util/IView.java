@@ -45,6 +45,10 @@ public class IView extends JPanel {
         return (Tank) eSource.getEntity();
     }
 
+    public GunEmplacement getGunEmplacement() {
+        return (GunEmplacement) eSource.getEntity();
+    }
+
     public VTOL getVTOL() {
         return (VTOL) eSource.getEntity();
     }
