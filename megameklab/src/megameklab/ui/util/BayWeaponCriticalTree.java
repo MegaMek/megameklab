@@ -38,6 +38,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import megamek.common.Aero;
 import megamek.common.AmmoType;
+import megamek.common.AmmoType.AmmoTypeEnum;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.MiscType;
@@ -56,6 +57,7 @@ import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
+import megameklab.ui.dialog.AmountDialog;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -125,7 +127,14 @@ public class BayWeaponCriticalTree extends JTree {
         addMouseListener(mouseListener);
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource);
+        AeroBayTransferHandler cth = new AeroBayTransferHandler(eSource) {
+            @Override
+            protected int ammoTransferAmount(AmmoMounted ammo) {
+                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this);
+                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft(), "AmountDialog.add.text");
+                return amount;
+            }
+        };
         setDragEnabled(true);
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);
@@ -774,6 +783,19 @@ public class BayWeaponCriticalTree extends JTree {
             final int row = getClosestRowForLocation(e.getX(), e.getY());
             if (getPathForRow(row).getLastPathComponent() instanceof EquipmentNode) {
                 final EquipmentNode node = (EquipmentNode) getPathForRow(row).getLastPathComponent();
+                if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2)) {
+                    if (node.isLeaf()) {
+                        if (node.getMounted().getType() instanceof AmmoType at) {
+                            int shots = AmountDialog.showDialog(
+                                    (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                    at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.remove.text");
+                            if (shots <= 0) {
+                                return;
+                            }
+                            removeAmmo((AmmoMounted) node.getMounted(), shots);
+                        }
+                    }
+                } else
                 if ((e.getButton() == MouseEvent.BUTTON2)
                         || ((e.getButton() == MouseEvent.BUTTON3)
                                 && ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0))) {
@@ -797,33 +819,35 @@ public class BayWeaponCriticalTree extends JTree {
                         if (node.getMounted().getType() instanceof AmmoType) {
                             AmmoType at = (AmmoType) node.getMounted().getType();
                             if (node.getMounted().getBaseShotsLeft() > at.getShots()) {
-                                JMenu remove = new JMenu("Remove");
-                                JMenu delete = new JMenu("Delete");
-                                for (int s = at.getShots(); s < node.getMounted().getBaseShotsLeft(); s += at
-                                        .getShots()) {
-                                    final int shots = s;
-                                    info = new JMenuItem("Remove " + shots + ((shots > 1) ? " shots" : " shot"));
-                                    info.addActionListener(ev -> removeAmmo((AmmoMounted) node.getMounted(), shots));
-                                    remove.add(info);
-                                    info = new JMenuItem("Delete " + shots + ((shots > 1) ? " shots" : " shot"));
-                                    info.addActionListener(ev -> deleteAmmo((AmmoMounted) node.getMounted(), shots));
-                                    delete.add(info);
-                                }
-                                info = new JMenuItem("Remove all");
-                                info.addActionListener(ev -> removeEquipment(node));
-                                remove.add(info);
-                                info = new JMenuItem("Delete all");
-                                info.addActionListener(ev -> deleteEquipment(node));
-                                delete.add(info);
+                                JMenuItem remove = new JMenuItem("Remove...");
                                 popup.add(remove);
+                                JMenuItem delete = new JMenuItem("Delete...");
                                 popup.add(delete);
-                            } else {
-                                info = new JMenuItem("Remove all shots");
-                                info.addActionListener(ev -> removeEquipment(node));
-                                popup.add(info);
-                                info = new JMenuItem("Delete all shots");
-                                info.addActionListener(ev -> deleteEquipment(node));
+                                remove.addActionListener(ev -> {
+                                    int shots = AmountDialog.showDialog(
+                                            (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                            at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.remove.text");
+                                    if (shots <= 0) {
+                                        return;
+                                    }
+                                    removeAmmo((AmmoMounted) node.getMounted(), shots);
+                                });
+                                delete.addActionListener(ev -> {
+                                    int shots = AmountDialog.showDialog(
+                                            (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this),
+                                            at.getName(), node.getMounted().getBaseShotsLeft(), "AmountDialog.delete.text");
+                                    if (shots <= 0) {
+                                        return;
+                                    }
+                                    deleteAmmo((AmmoMounted) node.getMounted(), shots);
+                                });
+                                popup.addSeparator();
                             }
+                            info = new JMenuItem("Remove all");
+                            info.addActionListener(ev -> removeEquipment(node));
+                            popup.add(info);
+                            info = new JMenuItem("Delete all");
+                            info.addActionListener(ev -> deleteEquipment(node));
                         } else {
                             info = new JMenuItem("Remove " + mounted.getName());
                             if ((node.getParent() instanceof BayNode)
@@ -998,12 +1022,12 @@ public class BayWeaponCriticalTree extends JTree {
                 for (WeaponMounted weapon : bay.getBayWeapons()) {
                     final WeaponType wtype = weapon.getType();
                     if ((weapon.getLinkedBy() == null)
-                            && ((wtype.getAmmoType() == AmmoType.T_LRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM)
-                                    || (wtype.getAmmoType() == AmmoType.T_MML)
-                                    || (wtype.getAmmoType() == AmmoType.T_LRM_IMP)
-                                    || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
-                                    || (wtype.getAmmoType() == AmmoType.T_NLRM))) {
+                            && ((wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.MML)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_IMP)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                                    || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
                         break;
@@ -1211,6 +1235,8 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             addAmmoToBay(getBayFromPath(path), eq, shots);
         }
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     /**
@@ -1314,14 +1340,14 @@ public class BayWeaponCriticalTree extends JTree {
                         || eq.getType().hasFlag(MiscType.F_ARTEMIS_V))
                         || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO))) {
             for (WeaponMounted weapon : bay.getBayWeapons()) {
-                final int atype = weapon.getType().getAmmoType();
+                final AmmoTypeEnum atype = weapon.getType().getAmmoType();
                 if ((weapon.getLinkedBy() == null)
-                        && ((atype == AmmoType.T_LRM)
-                                || (atype == AmmoType.T_SRM)
-                                || (atype == AmmoType.T_MML)
-                                || (atype == AmmoType.T_LRM_IMP)
-                                || (atype == AmmoType.T_SRM_IMP)
-                                || (atype == AmmoType.T_NLRM))) {
+                        && ((atype == AmmoType.AmmoTypeEnum.LRM)
+                                || (atype == AmmoType.AmmoTypeEnum.SRM)
+                                || (atype == AmmoType.AmmoTypeEnum.MML)
+                                || (atype == AmmoType.AmmoTypeEnum.LRM_IMP)
+                                || (atype == AmmoType.AmmoTypeEnum.SRM_IMP)
+                                || (atype == AmmoType.AmmoTypeEnum.NLRM))) {
                     return true;
                 }
             }
@@ -1329,7 +1355,7 @@ public class BayWeaponCriticalTree extends JTree {
                 && eq.getType().hasFlag(MiscType.F_APOLLO)) {
             for (WeaponMounted weapon : bay.getBayWeapons()) {
                 if ((weapon.getLinkedBy() == null)
-                        && (weapon.getType().getAmmoType() == AmmoType.T_MRM)) {
+                        && (weapon.getType().getAmmoType() == AmmoType.AmmoTypeEnum.MRM)) {
                     return true;
                 }
             }

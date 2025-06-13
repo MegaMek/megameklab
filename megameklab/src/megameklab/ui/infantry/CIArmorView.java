@@ -15,6 +15,28 @@
  */
 package megameklab.ui.infantry;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import javax.swing.*;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
+
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
@@ -25,17 +47,6 @@ import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import javax.swing.JSpinner.DefaultEditor;
-import javax.swing.event.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
 
 public class CIArmorView extends IView implements ActionListener, ChangeListener {
     private RefreshListener refresh = null;
@@ -64,6 +75,10 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     JCheckBox chSneakIR = new JCheckBox();
     JCheckBox chSneakECM = new JCheckBox();
     private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
+
+    private final JLabel lblSneakWarning = new JLabel("Warning: Setting both DEST and Sneak properties on custom armor " +
+                                                         "may cause issues in the display of the armor kit " +
+                                                         "information.");
     
     public CIArmorView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
@@ -101,7 +116,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            btnSetArmor.setEnabled(equip.hasFlag(MiscType.F_ARMOR_KIT));
+            btnSetArmor.setEnabled((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT)));
         });
         masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
         masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
@@ -110,7 +125,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if (eq.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_ARMOR_KIT))) {
                 allTypes.add(eq);
             }
         }
@@ -255,11 +270,21 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         chSneakECM.setText("Sneak (ECM)");
         gbc.gridx = 1;
         gbc.gridy = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.01;
         customView.add(chSneakECM, gbc);
 
-        equipmentView.add(customView, CARD_CUSTOM);        
+        lblSneakWarning.setForeground(Color.RED);
+        lblSneakWarning.setVisible(false);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        customView.add(lblSneakWarning, gbc);
+
+        equipmentView.add(customView, CARD_CUSTOM);
+//        equipmentView.add(lblSneakWarning);
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -300,6 +325,16 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             chSneakIR.setEnabled(true);
             chSneakECM.setEnabled(true);
         }
+
+        if (getInfantry().hasDEST() && (
+              getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM()
+              )) {
+            lblSneakWarning.setVisible(true);
+        } else {
+            lblSneakWarning.setVisible(false);
+        }
+
+
         filterEquipment();
         btnRemoveArmor.setEnabled(hasArmor());
         rbtnCustom.setEnabled(getInfantry().getArmorKit() == null);
@@ -321,7 +356,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            if (equip.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT))) {
                 getInfantry().setArmorKit(equip);
                 rbtnCustom.setEnabled(false);
             }
@@ -381,7 +416,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     @Override
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
-        double value = (Double) field.getModel().getValue();      
+        double value = (Double) field.getModel().getValue();
         getInfantry().setArmorDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();
@@ -397,7 +432,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if (!(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
+                if (!(etype instanceof MiscType) || !(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 } else if ((null != eSource.getTechManager())
                         && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {

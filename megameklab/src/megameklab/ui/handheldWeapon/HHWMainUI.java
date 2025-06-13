@@ -14,41 +14,56 @@
 
 package megameklab.ui.handheldWeapon;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+import java.util.List;
+import javax.swing.JDialog;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.HandheldWeapon;
+import megamek.common.ITechManager;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.util.TabScrollPane;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 public class HHWMainUI extends MegaMekLabMainUI {
     private HHWStructureTab structureTab;
     private HHWEquipmentTab equipmentTab;
+    private FluffTab fluffTab;
     private PreviewTab previewTab;
     private HHWStatusBar statusbar;
+
+    public HHWMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
 
     public HHWMainUI() {
         super();
         createNewUnit(Entity.ETYPE_HANDHELD_WEAPON);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new HHWStructureTab(this, this);
         equipmentTab = new HHWEquipmentTab(this);
         equipmentTab.addRefreshedListener(this);
+        fluffTab = new FluffTab(this);
+        fluffTab.setRefreshedListener(this);
         previewTab = new PreviewTab(this);
         structureTab.addRefreshedListener(this);
 
         configPane.addTab("Structure", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", new TabScrollPane(equipmentTab));
-        configPane.addTab("Preview", new TabScrollPane(previewTab));
+        configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        configPane.addTab("Preview", previewTab);
 
         statusbar = new HHWStatusBar(this);
         statusbar.addRefreshedListener(this);
@@ -56,13 +71,15 @@ public class HHWMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         structureTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         statusbar.refresh();
         equipmentTab.refresh();
@@ -71,41 +88,49 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
+        super.refreshArmor();
         structureTab.refresh();
     }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         structureTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         structureTab.refresh();
         equipmentTab.refresh();
     }
 
     @Override
-    public void refreshTransport() { }
+    public void refreshTransport() {
+        super.refreshTransport();
+    }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
-
+        super.refreshStructure();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
         structureTab.refresh();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -116,6 +141,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refresh();
     }
 
@@ -131,28 +157,29 @@ public class HHWMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
-        HandheldWeapon hhw = new HandheldWeapon();
-        setEntity(hhw);
-        hhw.setWeight(6);
-        hhw.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-        hhw.autoSetInternal();
-        hhw.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        hhw.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
-        hhw.initializeArmor(0, HandheldWeapon.LOC_GUN);
+        HandheldWeapon newUnit = new HandheldWeapon();
+        newUnit.setWeight(6);
+        newUnit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        newUnit.autoSetInternal();
+        newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
+        newUnit.setArmorTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        newUnit.initializeArmor(0, HandheldWeapon.LOC_GUN);
 
         if (null == oldUnit) {
-            hhw.setChassis("New");
-            hhw.setModel("Handheld Weapon");
-            hhw.setYear(3145);
+            newUnit.setChassis("New");
+            newUnit.setModel("Handheld Weapon");
+            newUnit.setYear(3145);
         } else {
-            hhw.setChassis(oldUnit.getChassis());
-            hhw.setModel(oldUnit.getModel());
-            hhw.setYear(Math.max(oldUnit.getYear(), hhw.getConstructionTechAdvancement().getIntroductionDate()));
-            hhw.setSource(oldUnit.getSource());
-            hhw.setManualBV(oldUnit.getManualBV());
-            hhw.setTechLevel(oldUnit.getTechLevel());
-            hhw.setMixedTech(oldUnit.isMixedTech());
+            newUnit.setChassis(oldUnit.getChassis());
+            newUnit.setModel(oldUnit.getModel());
+            newUnit.setYear(Math.max(oldUnit.getYear(), newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldUnit.getSource());
+            newUnit.setManualBV(oldUnit.getManualBV());
+            newUnit.setTechLevel(oldUnit.getTechLevel());
+            newUnit.setMixedTech(oldUnit.isMixedTech());
         }
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override

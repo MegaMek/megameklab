@@ -19,16 +19,18 @@ import megamek.common.ITechnology;
 import megamek.common.universe.Factions2;
 
 import javax.swing.*;
+import megamek.client.ratgenerator.FactionRecord;
+import megamek.client.ratgenerator.RATGenerator;
+import megamek.common.ITechnology.Faction;
 
 /**
  * A ComboBox that provides a list of factions appropriate to a unit's intro year and with the era-appropriate name. The
- * underlying data type is the ITechnology faction constant.
+ * underlying data type is the ITechnology Faction ENUM.
  *
  * @author Neoancient
  */
-public class FactionComboBox extends CustomComboBox<Integer> {
-    private final Map<Integer, String> displayNames = new HashMap<>();
-
+public class FactionComboBox extends CustomComboBox<Faction> {
+    private final Map<Faction, String> displayNames = new HashMap<>();
     public FactionComboBox() {
         super();
         setRenderer(new Renderer<>(i -> displayNames.getOrDefault(i, "Marian Hegemony")));
@@ -36,17 +38,21 @@ public class FactionComboBox extends CustomComboBox<Integer> {
 
     public void refresh(int year) {
         displayNames.clear();
-        for (int i = 0; i < ITechnology.MM_FACTION_CODES.length; i++) {
-            int finalI = i;
-            Factions2.getInstance().getFaction(ITechnology.MM_FACTION_CODES[i])
-                  .filter(f -> f.isActiveInYear(year))
-                  .ifPresent(f -> displayNames.put(finalI, f.getName(year)));
+        for (Faction f : Faction.values()) {
+            if (f.equals(Faction.NONE)) {
+                continue;
+            }
+            final FactionRecord fRec = RATGenerator.getInstance().getFaction(f.getCodeMM());
+            // TA will generate a null value because the RAT Generator doesn't distinguish between TH and TA.
+            if ((null != fRec) && (fRec.isActiveInYear(year))) {
+                displayNames.put(f, fRec.getName(year));
+            }
         }
-        List<Integer> sorted = new ArrayList<>(displayNames.keySet());
+        List<Faction> sorted = new ArrayList<>(displayNames.keySet());
         sorted.sort(Comparator.comparing(displayNames::get));
         removeAllItems();
-        addItem(-1);
-        displayNames.put(-1, "Any");
+        addItem(Faction.NONE);
+        displayNames.put(Faction.NONE, "Any");
         ((DefaultComboBoxModel<Integer>) getModel()).addAll(sorted);
     }
 }

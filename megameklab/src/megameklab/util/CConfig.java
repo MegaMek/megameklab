@@ -19,6 +19,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,14 +34,18 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import megamek.common.Configuration;
+import megamek.common.enums.WeaponSortOrder;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
+import megameklab.printing.PrintRecordSheet;
 import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
+import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
 import megameklab.ui.largeAero.DSMainUI;
 import megameklab.ui.largeAero.WSMainUI;
@@ -60,6 +66,7 @@ public final class CConfig {
     public static final String MISC_STARTUP = "StartupGui";
     public static final String MISC_SUMMARY_FORMAT_TRO = "useTROFormat";
     public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
+    public static final String MISC_APPLICATION_EXIT_PROMPT = "applicationExitPrompt";
     public static final String MISC_MUL_OPEN_BEHAVIOUR = "mulDndBehaviour";
 
     public static final String GUI_PLAF = "lookAndFeel";
@@ -82,12 +89,14 @@ public final class CConfig {
     public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
     public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
     public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
+    public static final String GUI_HHW_MAINUI_WINDOW = "HHWWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
     public static final String FILE_RECENT_PREFIX = "Save_File_";
     public static final String FILE_LAST_DIRECTORY = "Last_directory";
     public static final String FILE_CHOOSER_WINDOW = "File_Chooser_Window";
+    public static final String FORCE_BUILD_WINDOW = "Force_Build_Window";
 
     public static final String TECH_PROGRESSION = "techProgression";
     public static final String TECH_USE_YEAR = "techUseYear";
@@ -102,6 +111,7 @@ public final class CConfig {
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
     public static final String RS_SHOW_QUIRKS = "rs_show_quirks";
+    public static final String RS_SHOW_C3BV = "rs_show_c3bv";
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
@@ -114,6 +124,10 @@ public final class CConfig {
     public static final String RS_MEK_NAMES = "rs_mek_names";
     public static final String RS_ARMOR_GROUPING = "rs_armor_grouping";
     public static final String RS_FRAMELESS = "rs_frameless";
+    public static final String RS_BOLD_TYPE = "rs_bold_type";
+    public static final String RS_DAMAGE = "rs_damage";
+    public static final String RS_DAMAGE_COLOR = "rs_damage_color";
+    public static final String RS_WEAPONS_ORDER = "rs_weapons_order";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -124,6 +138,8 @@ public final class CConfig {
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
     public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
+    public static final String PQ_DAMAGE = "pqDamage";
+    public static final String PQ_SHOW_PILOT_DATA = "pqShowPilotData";
 
     private static final Properties config = getDefaults();
 
@@ -138,15 +154,20 @@ public final class CConfig {
         defaults.setProperty(GUI_FULLSCREEN, Boolean.toString(false));
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
+        defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_C3BV, Boolean.toString(false));
         defaults.setProperty(RS_SCALE_FACTOR, "1");
         defaults.setProperty(RS_SCALE_UNITS, RSScale.HEXES.toString());
         defaults.setProperty(RS_MEK_NAMES, MekChassisArrangement.IS_CLAN.name());
+        defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
+        defaults.setProperty(RS_DAMAGE_COLOR, PrintRecordSheet.FILL_RED);
         defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
@@ -155,6 +176,8 @@ public final class CConfig {
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
+        defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
+        defaults.setProperty(RS_WEAPONS_ORDER, WeaponSortOrder.DEFAULT.name());
         return defaults;
     }
 
@@ -190,7 +213,7 @@ public final class CConfig {
     /**
      * Loads the Config file.
      */
-    public static void loadConfigFile() {
+    public synchronized static void loadConfigFile() {
         try (FileInputStream fis = new FileInputStream(CONFIG_FILE)) {
             File backupConfigurationFile = new File(CONFIG_BACKUP_FILE);
             if (backupConfigurationFile.exists()) {
@@ -309,6 +332,32 @@ public final class CConfig {
     }
 
     /**
+     * Return the enum value of a given config property.
+     * @param key
+     * @param enumClass
+     * @param defaultVal
+     * @return
+     */
+    public static <E extends Enum<E>> E getEnumParam(String key, Class<E> enumClass, E defaultVal) {
+        String name = getParam(key, defaultVal.name());
+        try {
+            return Enum.valueOf(enumClass, name);
+        } catch (IllegalArgumentException ex) {
+            return defaultVal;
+        }
+    }
+    
+    /**
+     * Set a config value to the name of the enum.
+     *
+     * @param key   the name of the parameter
+     * @param value the value to set the parameter to
+     */
+    public static <E extends Enum<E>> void setEnumParam(String key, E value) {
+        setParam(key, value.name());
+    }
+
+    /**
      * @param param the parameter's name
      * @return the boolean value of a given config property. Return a false if the
      *         property does not exist.
@@ -326,7 +375,7 @@ public final class CConfig {
     /**
      * Write the config file out to ./data/mwconfig.txt.
      */
-    public static void saveConfig() {
+    public synchronized static void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
                 PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
@@ -430,6 +479,14 @@ public final class CConfig {
         writeWindowSettings(FILE_CHOOSER_WINDOW, dialog);
     }
 
+    public static Optional<Point> getForceBuildPosition() {
+        return getWindowPosition(FORCE_BUILD_WINDOW);
+    }
+    
+    public static void writeForceBuildPosition(JFrame frame) {
+        writeWindowSettings(FORCE_BUILD_WINDOW, frame);
+    }
+
     public static Optional<Dimension> getMainUiWindowSize(MenuBarOwner mainUi) {
         return getWindowSize(settingForMainUi(mainUi));
     }
@@ -438,8 +495,16 @@ public final class CConfig {
         return getWindowPosition(settingForMainUi(mainUi));
     }
 
+    public static Optional<Dimension> getNamedWindowSize(String name) {
+        return getWindowSize(name);
+    }
+
     public static void writeMainUiWindowSettings(MenuBarOwner mainUi) {
         writeWindowSettings(settingForMainUi(mainUi), (Component) mainUi);
+    }
+
+    public static void writeNamedWindowSize(String name, Window component) {
+        writeWindowSettings(name, component);
     }
 
     public static String getRecentFile(int recentFileNumber) {
@@ -466,6 +531,8 @@ public final class CConfig {
         setParam(GUI_CI_MAINUI_WINDOW, "");
         setParam(GUI_DS_MAINUI_WINDOW, "");
         setParam(GUI_WS_MAINUI_WINDOW, "");
+        setParam(GUI_HHW_MAINUI_WINDOW, "");
+        setParam(GUI_TABBED_WINDOW, "");
         saveConfig();
     }
 
@@ -473,10 +540,17 @@ public final class CConfig {
 
     private static Optional<Dimension> getWindowSize(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
-            int sizeX = Integer.parseInt(fileChooserSettings[2]);
-            int sizeY = Integer.parseInt(fileChooserSettings[3]);
-            return Optional.of(new Dimension(sizeX, sizeY));
+            String param = getParam(cconfigSetting);
+            if (param.isBlank()) {
+                return Optional.empty();
+            }
+            String[] values = param.split(";");
+            int sizeX = Integer.parseInt(values[2]);
+            int sizeY = Integer.parseInt(values[3]);
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedWidth  = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
+            int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
+            return Optional.of(new Dimension(clampedWidth, clampedHeight));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -484,10 +558,17 @@ public final class CConfig {
 
     private static Optional<Point> getWindowPosition(String cconfigSetting) {
         try {
-            String[] fileChooserSettings = getParam(cconfigSetting).split(";");
-            int posX = Integer.parseInt(fileChooserSettings[0]);
-            int posY = Integer.parseInt(fileChooserSettings[1]);
-            return Optional.of(new Point(posX, posY));
+            String param = getParam(cconfigSetting);
+            if (param.isBlank()) {
+                return Optional.empty();
+            }
+            String[] values = param.split(";");
+            int posX = Integer.parseInt(values[0]);
+            int posY = Integer.parseInt(values[1]);
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            int clampedX = Math.max(0, Math.min(posX, screen.width-100)); // -100 to avoid the right edge
+            int clampedY = Math.max(0, Math.min(posY, screen.height-100)); // -100 to avoid the taskbar
+            return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -518,6 +599,8 @@ public final class CConfig {
         } else if (ui instanceof SVMainUI) {
             return GUI_SV_MAINUI_WINDOW;
         } else if (ui instanceof WSMainUI) {
+            return GUI_WS_MAINUI_WINDOW;
+        } else if (ui instanceof HHWMainUI) {
             return GUI_WS_MAINUI_WINDOW;
         } else if (ui instanceof MegaMekLabTabbedUI) {
             return GUI_TABBED_WINDOW;

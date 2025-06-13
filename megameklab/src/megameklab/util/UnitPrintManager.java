@@ -15,7 +15,7 @@
  */
 package megameklab.util;
 
-import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.*;
 import megamek.common.options.GameOptions;
 import megamek.logging.MMLogger;
@@ -101,7 +101,9 @@ public class UnitPrintManager {
 
     public static File getExportFile(Frame parent, String suggestedFileName) {
         JFileChooser f = new JFileChooser(System.getProperty("user.dir"));
-        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        if (parent != null) {
+            f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        }
         f.setDialogTitle("Choose export file name");
         f.setMultiSelectionEnabled(false);
         if (!suggestedFileName.isEmpty()) {
@@ -138,13 +140,21 @@ public class UnitPrintManager {
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
         List<ProtoMek> protoList = new ArrayList<>();
+        List<HandheldWeapon> hhwList = new ArrayList<>();
         List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
         int pageCount = 0;
         for (BTObject object : entities) {
-            if (object instanceof Entity) {
-                Entity unit = (Entity) object;
+            if (object instanceof Entity entity) {
+                Entity unit;
+                // assign base unit and override only if damage should be hidden and entity is damaged
+                if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
+                    unit = UnitUtil.cloneUnit(entity);
+                    UnitUtil.resetUnit(unit);
+                } else {
+                    unit = entity;
+                }
                 if (unit instanceof Mek) {
                     UnitUtil.removeOneShotAmmo(unit);
                     MekUtil.expandUnitMounts((Mek) unit);
@@ -196,6 +206,24 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         protoList = new ArrayList<>();
                     }
+                } else if (unit instanceof HandheldWeapon) {
+                    if (!singlePrint) {
+                        final PrintHandheldWeapon phw = new PrintHandheldWeapon((HandheldWeapon) unit, pageCount, options);
+                        final int reservedSpace = phw.isLargeLayout() ? 1 : 0;
+                        if (reservedSpace > 0 && PrintSmallUnitSheet.fillsSheet(hhwList, options, reservedSpace)) {
+                            PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                            pageCount += prs.getPageCount();
+                            sheets.add(prs);
+                            hhwList = new ArrayList<>();
+                        }
+                    } 
+                    hhwList.add((HandheldWeapon) unit);
+                    if (singlePrint || PrintSmallUnitSheet.fillsSheet(hhwList, options)) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        hhwList = new ArrayList<>();
+                    }
                 } else {
                     unprintable.add(unit);
                 }
@@ -219,6 +247,12 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         protoList = new ArrayList<>();
                     }
+                    if (!hhwList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        hhwList = new ArrayList<>();
+                    }
                     if (null != tank1) {
                         sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
                         tank1 = null;
@@ -238,25 +272,31 @@ public class UnitPrintManager {
         }
 
         if (null != tank1) {
-            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++));
+            sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
         }
 
         if (!baList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(baList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(baList, pageCount++, options));
         }
 
         if (!infList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(infList, pageCount++));
+            sheets.add(new PrintSmallUnitSheet(infList, pageCount++, options));
         }
 
         if (!protoList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(protoList, pageCount));
+            sheets.add(new PrintSmallUnitSheet(protoList, pageCount, options));
+        }
+        if (!hhwList.isEmpty()) {
+            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount, options));
         }
         return sheets;
     }
 
     public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {
-        RecordSheetOptions options = new RecordSheetOptions();
+        exportUnits(units, exportFile, singlePrint, new RecordSheetOptions());
+    }
+
+    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint, RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());
@@ -270,8 +310,8 @@ public class UnitPrintManager {
      * @param loadedUnits The units to print
      * @param singlePrint Whether to limit each record sheet to a single unit
      */
-    public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint) {
-        printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
+    public static boolean printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint) {
+        return printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
     }
 
     /**
@@ -281,7 +321,7 @@ public class UnitPrintManager {
      * @param singlePrint Whether to limit each record sheet to a single unit
      * @param options     The options to use for this print job
      */
-    public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
+    public static boolean printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
             RecordSheetOptions options) {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
@@ -289,7 +329,7 @@ public class UnitPrintManager {
         aset.add(DialogTypeSelection.COMMON);
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
         if (!masterPrintJob.printDialog(aset)) {
-            return;
+            return false;
         }
 
         PageFormat pageFormat = masterPrintJob.getPageFormat(aset);
@@ -319,6 +359,7 @@ public class UnitPrintManager {
 
         RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);
         task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
+        return true;
     }
 
     public static void printSelectedUnit(JFrame parent, boolean pdf) {
@@ -329,17 +370,21 @@ public class UnitPrintManager {
         viewer.setVisible(false);
         Entity entity = viewer.getChosenEntity();
 
-        if (entity != null) {
-            if (pdf) {
-                exportEntity(entity, parent);
-            } else {
-                printEntity(entity);
+        try {
+            if (entity != null) {
+                if (pdf) {
+                    exportEntity(entity, parent);
+                } else {
+                    printEntity(entity);
+                }
             }
+        } finally {
+            unitLoadingDialog.dispose();
             viewer.dispose();
         }
     }
 
-    public static void printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
+    public static boolean printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
         String filePathName = System.getProperty("user.dir") + "/data/mekfiles/"; // TODO : Remove inline file path
 
         JFileChooser f = new JFileChooser(filePathName);
@@ -355,7 +400,7 @@ public class UnitPrintManager {
         int returnVal = f.showOpenDialog(parent);
         if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
             // I want a file, y'know!
-            return;
+            return false;
         }
 
         try {
@@ -371,10 +416,12 @@ public class UnitPrintManager {
                     exportUnits(unitList, exportFile, singleUnit);
                 }
             } else {
-                printAllUnits(unitList, singleUnit);
+                return printAllUnits(unitList, singleUnit);
             }
+            return true;
         } catch (Exception ex) {
             logger.error("", ex);
+            return false;
         }
     }
 }

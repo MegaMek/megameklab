@@ -14,7 +14,7 @@
 
 package megameklab.ui.handheldWeapon;
 
-import megamek.client.ui.swing.GUIPreferences;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.AmmoType;
 import megamek.common.MiscType;
 import megameklab.ui.generalUnit.StatusBar;

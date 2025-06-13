@@ -40,18 +40,24 @@ public class PMMainUI extends MegaMekLabMainUI {
     private PMBuildTab buildTab;
     private PMStatusBar statusbar;
     private QuirksTab quirksTab;
+    private FluffTab  fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
+
+    public PMMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
 
     public PMMainUI() {
         super();
         createNewUnit(Entity.ETYPE_PROTOMEK);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new PMStructureTab(this);
         previewTab = new PreviewTab(this);
@@ -59,11 +65,12 @@ public class PMMainUI extends MegaMekLabMainUI {
         equipmentTab = new PMEquipmentTab(this);
         buildTab = new PMBuildTab(this, this);
         quirksTab = new QuirksTab(this);
-        FluffTab fluffTab = new FluffTab(this);
+        fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
@@ -78,97 +85,105 @@ public class PMMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new PMFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new PMFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-
-        ProtoMek proto = new ProtoMek();
-        setEntity(proto);
-
-        getEntity().setWeight(2);
-        proto.setMovementMode(EntityMovementMode.BIPED);
-        proto.setTechLevel(TechConstants.T_CLAN_TW);
-        proto.setOriginalWalkMP(1);
-        proto.setEngine(new Engine(TestProtoMek.calcEngineRating(proto), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
-        proto.setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
-        proto.setArmorTechLevel(getEntity().getTechLevel());
-
-        proto.autoSetInternal();
-        proto.setHasMainGun(false);
-        for (int loc = 0; loc < proto.locations(); loc++) {
-            proto.initializeArmor(0, loc);
+        ProtoMek newUnit = new ProtoMek();
+        newUnit.setWeight(2);
+        newUnit.setMovementMode(EntityMovementMode.BIPED);
+        newUnit.setTechLevel(TechConstants.T_CLAN_TW);
+        newUnit.setOriginalWalkMP(1);
+        newUnit.setEngine(new Engine(TestProtoMek.calcEngineRating(newUnit), Engine.NORMAL_ENGINE, Engine.CLAN_ENGINE));
+        newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD_PROTOMEK);
+        newUnit.setArmorTechLevel(newUnit.getTechLevel());
+        newUnit.autoSetInternal();
+        newUnit.setHasMainGun(false);
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
-
         if (null == oldEntity) {
-            proto.setChassis("New");
-            proto.setModel("Protomek");
-            proto.setYear(3145);
+            newUnit.setChassis("New");
+            newUnit.setModel("Protomek");
+            newUnit.setYear(3145);
         } else {
-            proto.setChassis(oldEntity.getChassis());
-            proto.setModel(oldEntity.getModel());
-            proto.setYear(Math.max(oldEntity.getYear(), proto.getConstructionTechAdvancement().getIntroductionDate()));
-            proto.setSource(oldEntity.getSource());
-            proto.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(proto.getStaticTechLevel(),
+            newUnit.setChassis(oldEntity.getChassis());
+            newUnit.setModel(oldEntity.getModel());
+            newUnit.setYear(Math.max(oldEntity.getYear(), newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldEntity.getSource());
+            newUnit.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            proto.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            proto.setMixedTech(oldEntity.isMixedTech());
+                    newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            newUnit.setMixedTech(oldEntity.isMixedTech());
         }
-
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
-        // not used for protomeks
+        super.refreshTransport();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshSummary() {
@@ -177,6 +192,7 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
@@ -192,6 +208,9 @@ public class PMMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getBuildView().getEquipment();
     }
 }

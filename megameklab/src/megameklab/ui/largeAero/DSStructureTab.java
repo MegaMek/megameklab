@@ -16,6 +16,7 @@ package megameklab.ui.largeAero;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -29,6 +30,7 @@ import megamek.common.Entity;
 import megamek.common.EntityMovementMode;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
 import megamek.common.UnitRole;
 import megamek.common.equipment.ArmorType;
@@ -132,6 +134,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -155,7 +158,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 
@@ -247,11 +250,14 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     @Override
     public void sourceChanged(String source) {
         getSmallCraft().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getSmallCraft().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
@@ -289,6 +295,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -296,6 +303,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         getSmallCraft().setHeatType(index);
         getSmallCraft().setHeatSinks(count);
         getSmallCraft().setOHeatSinks(count);
+        panHeat.setFromAero(getSmallCraft());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -374,6 +382,8 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panHeat.setFromAero(getSmallCraft());
         panChassis.setFromEntity(getSmallCraft());
         panFuel.setFromEntity(getSmallCraft());
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -454,7 +464,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
 
     @Override
     public void siChanged(int si) {
-        getSmallCraft().set0SI(si);
+        getSmallCraft().setOSI(si);
         panArmor.setFromEntity(getSmallCraft());
         // Change in SI can reduce the maximum armor tonnage
         if (getSmallCraft().getLabArmorTonnage() != panArmor.getArmorTonnage()) {
@@ -614,5 +624,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

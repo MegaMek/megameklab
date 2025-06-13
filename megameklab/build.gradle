@@ -2,18 +2,18 @@ import java.time.LocalDateTime
 
 plugins {
     id 'application'
-    id 'checkstyle'
-    id 'com.palantir.git-version' version '3.1.0'
+    id 'com.palantir.git-version' version '3.3.0'
     id 'edu.sc.seis.launch4j' version '3.0.6'
-    id "io.sentry.jvm.gradle" version "5.2.0"
+    id "io.sentry.jvm.gradle" version "5.7.0"
     id 'jacoco'
     id 'java'
-    id 'org.ec4j.editorconfig' version '0.1.0'
+    id 'checkstyle'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 sourceSets {
@@ -42,84 +42,93 @@ ext {
     lib = 'lib'
     log = 'logs'
     mmconf = 'mmconf'
-    fileStagingDir = "${buildDir}/files"
-
-    // Allows setting a dependency on a different MM branch.
-    mmBranch = 'master'
-    mmBranchTag = mmBranch.equals('master') ? '' : '-' + mmBranch
+    fileStagingDir = "${layout.buildDirectory.get()}/files"
 
     mmDir = "${rootDir}/../megamek"
 }
 
 dependencies {
-    implementation "org.megamek:megamek${mmBranchTag}:${version}"
+    implementation "org.megamek:megamek:${version}"
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 
     implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
 
-    implementation 'org.apache.pdfbox:pdfbox:2.0.33'
+    implementation 'org.apache.pdfbox:pdfbox:3.0.5'
 
-    implementation ('org.apache.xmlgraphics:batik-bridge:1.18') {
+    implementation('org.apache.xmlgraphics:batik-bridge:1.19') {
         // We don't need the python and javascript engine taking up space
         exclude group: 'org.python', module: 'jython'
         exclude group: 'org.mozilla', module: 'rhino'
         exclude group: 'xml-apis'
     }
 
-    implementation ('org.apache.xmlgraphics:batik-codec:1.18') {
+    implementation('org.apache.xmlgraphics:batik-codec:1.19') {
         exclude group: 'xml-apis'
     }
 
-    implementation ('org.apache.xmlgraphics:batik-dom:1.18') {
+    implementation('org.apache.xmlgraphics:batik-dom:1.19') {
         exclude group: 'xml-apis'
     }
 
-    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.18'
-    implementation 'org.apache.xmlgraphics:batik-svggen:1.18'
+    implementation 'org.apache.xmlgraphics:batik-rasterizer:1.19'
+    implementation 'org.apache.xmlgraphics:batik-svggen:1.19'
 
-    implementation ('org.apache.xmlgraphics:fop:2.10') {
+    implementation('org.apache.xmlgraphics:fop:2.11') {
         // We don't need this proprietary module
         exclude group: 'com.sun.media', module: 'jai-codec'
         exclude group: 'xml-apis'
     }
 
-    implementation ('org.apache.commons:commons-collections4:4.5.0-M3')
+    implementation('org.apache.commons:commons-collections4:4.5.0')
 
-    testImplementation 'org.mockito:mockito-core:5.15.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.mockito:mockito-core:5.18.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.0'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 
     //Required for printing scaled vector graphics (SVG) - EclipseIDE Compatibility.
     runtimeOnly 'xml-apis:xml-apis-ext:1.3.04'
 
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.0'
 }
 
 application {
     mainClass = 'megameklab.MegaMekLab'
+    applicationDefaultJvmArgs = [
+            '-Xmx1024m',
+    ]
 }
 
 checkstyle {
-    toolVersion = '10.18.1'
-    configFile = file("config/checkstyle/checkstyle.xml")
-    ignoreFailures = false
+    toolVersion = '10.25.0'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    configProperties = [
+            'suppressionFile': file("${rootDir}/config/checkstyle/checkstyle-suppressions.xml")
+    ]
+    maxWarnings = 0  // Fail on any warning
+    maxErrors = 0    // Fail on any error
+}
+
+tasks.withType(Checkstyle).configureEach {
+    minHeapSize = "1g"
+    maxHeapSize = "4g"
 }
 
 jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
-        attributes "Main-Class" : application.mainClass
-        attributes "Class-Path" : "${lib}/MegaMek.jar " + (project.sourceSets.main.runtimeClasspath.files
+        attributes "Main-Class": application.mainClass
+        attributes "Class-Path": "${lib}/MegaMek.jar " + (project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
                 .collect { "${lib}/${it.name}" }.join(' '))
-        attributes "Add-Opens" : 'java.base/java.util java.base/java.util.concurrent'
-        attributes "Build-Date" : LocalDateTime.now()
+        attributes "Add-Opens": 'java.base/java.util java.base/java.util.concurrent'
+        attributes "Build-Date": LocalDateTime.now()
+        attributes "Sealed": true
     }
 }
 
-task generateDynamicFiles() {
+tasks.register('generateDynamicFiles') {
     def jvmOptions = project.ext.mmlJvmOptions.join('\n')
 
     doLast {
@@ -131,17 +140,42 @@ ${jvmOptions}
     }
 }
 
-task stageFiles(type: Copy) {
+tasks.register("stageLicenseFiles", Sync) {
+    description = "Copy the license files to the build folder."
+    group = 'build'
+    from "../"
+    into "${layout.buildDirectory.get()}/licenses"
+
+    includes = [
+            'LICENSE',
+            'LICENSE.code',
+            'LICENSE.assets',
+            'README.md'
+    ]
+
+}
+
+tasks.register("copyLicenseFiles", Copy) {
+    description "Copies from the build folder to the staging folder"
+    group = 'build'
+
+    dependsOn stageLicenseFiles
+
+    from "${layout.buildDirectory.get()}/licenses"
+    into fileStagingDir
+}
+
+tasks.register('stageFiles', Copy) {
     description = 'Stages files that are to be copied into the distribution.'
 
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
     dependsOn generateDynamicFiles
+    dependsOn copyLicenseFiles
 
     from projectDir
     include "${mmconf}/**"
     include "${data}/**"
     include "${docs}/**"
-    include 'license.txt'
     include 'SubmitBug.html'
     include "sentry.properties"
     include "*.ini"
@@ -163,44 +197,50 @@ task stageFiles(type: Copy) {
     }
 }
 
-task createStartScripts (type: CreateStartScripts) {
+tasks.register('createStartScripts', CreateStartScripts) {
     description = 'Create shell script for generic distribution.'
     applicationName = 'MegaMekLab'
     mainClass = application.mainClass
     outputDir = startScripts.outputDir
     classpath = jar.outputs.files + files(project.sourceSets.main.runtimeClasspath.files)
             .filter { it.name.endsWith(".jar") }
-    defaultJvmOpts = project.ext.mmlJvmOptions
 }
 
 distributions {
     main {
         distributionBaseName = 'MegaMekLab'
         contents {
-            from ("${mmDir}/megamek/mmconf/log4j2.xml") {
+            from("${mmDir}/megamek/mmconf/log4j2.xml") {
                 exclude 'log4j2.xml'
             }
-            from (fileStagingDir) {
+
+            from(fileStagingDir) {
                 exclude 'history.txt'
             }
-            from ("${mmDir}/megamek/build/libs/MegaMek.jar") {
+
+            from("${mmDir}/megamek/build/libs/MegaMek.jar") {
                 into "${lib}"
             }
-            from ("${projectDir}/scripts") {
+
+            from("${projectDir}/scripts") {
                 rename "shell.sh", "MegaMekLab.sh"
             }
-            from (jar)
-            from (project.sourceSets.main.runtimeClasspath.files
+
+            from(jar)
+
+            from(project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
                 into "${lib}"
             }
 
-            from ("${buildDir}/launch4j") {
+            from("${buildDir}/launch4j") {
                 include '*.exe'
             }
+
             from(jar) {
                 into "${lib}"
             }
+
             duplicatesStrategy = 'exclude'
         }
     }
@@ -246,22 +286,17 @@ distTar {
     compression = Compression.GZIP
 }
 
-// The distribution plugin adds the distribution packages to the assemble task, which causes the build task
-// to run all the packaging tasks.
-task assemble(overwrite: true) {
+assemble {
     dependsOn jar
 }
 
-// Replace the assembleDist task created by the distributions plugin to create the packages we want to
-task assembleDist(overwrite: true) {
-    description = 'Build unix, Windows, and source packages'
-    group = 'distribution'
-    dependsOn test
+assembleDist {
     dependsOn distTar
 }
 
 test {
     useJUnitPlatform()
+    dependsOn(checkstyleMain)
     // report is always generated after tests run
     finalizedBy jacocoTestReport
 }
@@ -275,25 +310,26 @@ jacocoTestReport {
     }
 }
 
-task processSystemTest(type: JavaExec, dependsOn: stageFiles) {
+tasks.register('processSystemTest', JavaExec) {
+    dependsOn stageFiles
     description = 'Internal System Test. Dev use only.'
     group = 'other'
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'megameklab.printing.CGLMassPrinter'
 }
 
-task cleanAll() {
+tasks.register('cleanAll') {
     description = 'Cleans all related projects to ensure a proper build.'
-    group ='build'
+    group = 'build'
     dependsOn gradle.includedBuild('megamek').task(':megamek:clean')
     dependsOn clean
 }
 
-tasks.withType(Checkstyle) {
-    minHeapSize = "200m"
-    maxHeapSize = "1g"
-    reports {
-        xml.required = false
-        html.required = true
-    }
+tasks.register('testAll') {
+    description = 'Cleans all related projects then runs all tests'
+    group = 'verification'
+    dependsOn cleanAll
+
+    dependsOn gradle.includedBuild('megamek').task(':megamek:test')
+    dependsOn test
 }

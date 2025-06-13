@@ -129,5 +129,6 @@ class PrintSmallUnitSheetTest {
         assertTrue(pa.createDocument(1, pf, false));
         assertNull(testDS.getEngine());
         pa.processImage(1, pf);
+        pa.applyCoreComponentsCriticalDamage();
     }
 }

@@ -36,16 +36,21 @@ public class CIMainUI extends MegaMekLabMainUI {
     FluffTab fluffTab;
     CIStatusBar statusbar;
 
+    public CIMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public CIMainUI() {
         super();
         createNewUnit(Entity.ETYPE_INFANTRY);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         statusbar = new CIStatusBar(this);
         structureTab = new CIStructureTab(this);
@@ -54,6 +59,7 @@ public class CIMainUI extends MegaMekLabMainUI {
 
         structureTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        statusbar.addRefreshedListener(this);
 
         configPane.addTab("Build", new TabScrollPane(structureTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
@@ -62,66 +68,81 @@ public class CIMainUI extends MegaMekLabMainUI {
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        setEntity(new Infantry());
-        getEntity().setYear(3145);
-        getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        getEntity().setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ((Infantry) getEntity()).setSquadCount(4);
-        ((Infantry) getEntity()).setSquadSize(7);
-        ((Infantry) getEntity()).setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
+        Infantry newUnit = new Infantry();
+        newUnit.setYear(3145);
+        newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setSquadCount(4);
+        newUnit.setSquadSize(7);
+        newUnit.setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
         try {
-            getEntity().addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
+            newUnit.addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
             PopupMessages.showLocationFullError(this, EquipmentType.get("InfantryAssaultRifle").getName());
         }
-        getEntity().autoSetInternal();
-        getEntity().setChassis("New");
-        getEntity().setModel("Infantry");
+        newUnit.autoSetInternal();
+        newUnit.setChassis("New");
+        newUnit.setModel("Infantry");
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         refreshHeader();
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
-    public void refreshBuild() { }
+    public void refreshBuild() {
+        super.refreshBuild();
+    }
 
     @Override
-    public void refreshEquipment() { }
+    public void refreshEquipment() {
+        super.refreshEquipment();
+    }
 
     @Override
     public void refreshTransport() {
-        // not used for infantry
+        super.refreshTransport();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -136,10 +157,13 @@ public class CIMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        structureTab.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         structureTab.refreshEquipmentTable();
     }
 

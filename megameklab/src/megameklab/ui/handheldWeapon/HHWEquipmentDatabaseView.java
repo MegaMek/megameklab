@@ -76,17 +76,21 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             // AMS has type PB so it's allowed
             // Except APDS has type P*D*, whatever that means.
             if (UnitUtil.isAMS(wt) && !(wt instanceof ISAPDS)) {
-                valid = true;
-            } else if (!MekUtil.isMekWeapon(wt, new BipedMek())) {
+                return super.shouldShow(eq);
+            }
+
+            // isMekWeapon/isMekEquipment consider some WeaponTypes to be Equipment rather than a Weapon, and the
+            // functions are mutually exclusive, so we check both to determine if the type is valid for a mek.
+            if (!MekUtil.isMekWeapon(wt, new BipedMek()) && !MekUtil.isMekEquipment(wt, new BipedMek())) {
                 return false;
             }
 
             var ammo = wt.getAmmoType();
-            if (ammo == AmmoType.T_GAUSS_HEAVY || ammo == AmmoType.T_IGAUSS_HEAVY) {
+            if (ammo == AmmoType.AmmoTypeEnum.GAUSS_HEAVY || ammo == AmmoType.AmmoTypeEnum.IGAUSS_HEAVY) {
                 return false;
             }
 
-            //  Items legal for ’Mechs to mount and belonging to one or more of the following types: AE, DB, DE, M,
+            //  Items legal for meks to mount and belonging to one or more of the following types: AE, DB, DE, M,
             //  P, PB. Also allowed are Mine Dispensers and TAG (including Light TAG) --TO:AUE
             valid = (wt instanceof ArtilleryWeapon || wt instanceof ArtilleryCannonWeapon)
                 || wt.hasAnyFlag(WeaponType.F_ENERGY, WeaponType.F_PLASMA, WeaponType.F_BALLISTIC, WeaponType.F_MISSILE, WeaponType.F_B_POD, WeaponType.F_TAG);
@@ -105,7 +109,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 valid = mt.hasAnyFlag(MiscType.F_VEHICLE_MINE_DISPENSER, MiscType.F_AP_POD, MiscType.F_WEAPON_ENHANCEMENT);
             }
         } else if (eq instanceof AmmoType at) {
-            valid = !(at.getAmmoType() == AmmoType.T_COOLANT_POD);
+            valid = !(at.getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD);
         }
 
         return valid && super.shouldShow(eq);

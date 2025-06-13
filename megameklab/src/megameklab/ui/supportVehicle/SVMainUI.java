@@ -44,16 +44,21 @@ public class SVMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public SVMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public SVMainUI() {
         super();
         createNewUnit(Entity.ETYPE_SUPPORT_TANK, false, false);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         statusbar = new SVStatusBar(this);
         structureTab = new SVStructureTab(this);
@@ -69,6 +74,8 @@ public class SVMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
+        statusbar.addRefreshedListener(this);
 
         previewTab = new PreviewTab(this);
 
@@ -87,21 +94,24 @@ public class SVMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new SVFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new SVFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         structureTab.refresh();
         armorTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
         transportTab.refresh();
         statusbar.refresh();
+        quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
@@ -114,16 +124,19 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
+        super.refreshTransport();
         transportTab = new TransportTab(this);
         transportTab.addRefreshedListener(this);
         int idx = configPane.indexOfTab("Transport");
@@ -134,82 +147,89 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
     }
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
+        Entity newUnit;
         if (entityType == Entity.ETYPE_SUPPORT_VTOL) {
-            setEntity(new SupportVTOL());
-            getEntity().setMovementMode(EntityMovementMode.VTOL);
-            ((SupportVTOL) getEntity()).setHasNoDualTurret(true);
-            ((SupportVTOL) getEntity()).setHasNoTurret(true);
+            newUnit = new SupportVTOL();
+            newUnit.setMovementMode(EntityMovementMode.VTOL);
+            ((SupportVTOL) newUnit).setHasNoDualTurret(true);
+            ((SupportVTOL) newUnit).setHasNoTurret(true);
         } else if (entityType == Entity.ETYPE_FIXED_WING_SUPPORT) {
-            setEntity(new FixedWingSupport());
+            newUnit = new FixedWingSupport();
         } else if (entityType == Entity.ETYPE_LARGE_SUPPORT_TANK) {
-            setEntity(new LargeSupportTank());
-            getEntity().setWeight(51);
-            getEntity().setMovementMode(EntityMovementMode.WHEELED);
-            ((SupportTank) getEntity()).setHasNoDualTurret(true);
-            ((SupportTank) getEntity()).setHasNoTurret(true);
+            newUnit = new LargeSupportTank();
+            newUnit.setWeight(51);
+            newUnit.setMovementMode(EntityMovementMode.WHEELED);
+            ((SupportTank) newUnit).setHasNoDualTurret(true);
+            ((SupportTank) newUnit).setHasNoTurret(true);
         } else {
-            setEntity(new SupportTank());
-            getEntity().setMovementMode(EntityMovementMode.WHEELED);
-            ((SupportTank) getEntity()).setHasNoDualTurret(true);
-            ((SupportTank) getEntity()).setHasNoTurret(true);
+            newUnit = new SupportTank();
+            newUnit.setMovementMode(EntityMovementMode.WHEELED);
+            ((SupportTank) newUnit).setHasNoDualTurret(true);
+            ((SupportTank) newUnit).setHasNoTurret(true);
         }
         if (entityType != Entity.ETYPE_LARGE_SUPPORT_TANK) {
-            getEntity().setWeight(20);
+            newUnit.setWeight(20);
         }
 
-        getEntity().setEngine(new Engine(0, Engine.COMBUSTION_ENGINE,
+        newUnit.setEngine(new Engine(0, Engine.COMBUSTION_ENGINE,
                 Engine.SUPPORT_VEE_ENGINE));
 
-        getEntity().autoSetInternal();
-        getEntity().setArmorType(EquipmentType.T_ARMOR_SV_BAR_2);
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
-            getEntity().initializeArmor(0, loc);
+        newUnit.autoSetInternal();
+        newUnit.setArmorType(EquipmentType.T_ARMOR_SV_BAR_2);
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
-        getEntity().setBARRating(2);
+        newUnit.setBARRating(2);
 
         if (null == oldEntity) {
-            getEntity().setChassis("New");
-            getEntity().setModel("Support Tank");
-            getEntity().setYear(3145);
-            getEntity().setStructuralTechRating(ITechnology.RATING_D);
-            getEntity().setArmorTechRating(ITechnology.RATING_D);
-            getEntity().setOriginalWalkMP(1);
+            newUnit.setChassis("New");
+            newUnit.setModel("Support Tank");
+            newUnit.setYear(3145);
+            newUnit.setStructuralTechRating(ITechnology.TechRating.D);
+            newUnit.setArmorTechRating(ITechnology.TechRating.D);
+            newUnit.setOriginalWalkMP(1);
         } else {
-            getEntity().setChassis(oldEntity.getChassis());
-            getEntity().setModel(oldEntity.getModel());
-            getEntity().setYear(Math.max(oldEntity.getYear(),
-                    getEntity().getConstructionTechAdvancement().getIntroductionDate()));
-            getEntity().setSource(oldEntity.getSource());
-            getEntity().setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(getEntity().getStaticTechLevel(),
+            newUnit.setChassis(oldEntity.getChassis());
+            newUnit.setModel(oldEntity.getModel());
+            newUnit.setYear(Math.max(oldEntity.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldEntity.getSource());
+            newUnit.setManualBV(oldEntity.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            getEntity().setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            getEntity().setMixedTech(oldEntity.isMixedTech());
-            getEntity().setMovementMode(oldEntity.getMovementMode());
-            getEntity().setStructuralTechRating(oldEntity.getStructuralTechRating());
-            getEntity().setArmorTechRating(oldEntity.getArmorTechRating());
-            getEntity().setEngineTechRating(oldEntity.getEngineTechRating());
-            getEntity().setOriginalWalkMP(oldEntity.getOriginalWalkMP());
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
+            newUnit.setMixedTech(oldEntity.isMixedTech());
+            newUnit.setMovementMode(oldEntity.getMovementMode());
+            newUnit.setStructuralTechRating(oldEntity.getStructuralTechRating());
+            newUnit.setArmorTechRating(oldEntity.getArmorTechRating());
+            newUnit.setEngineTechRating(oldEntity.getEngineTechRating());
+            newUnit.setOriginalWalkMP(oldEntity.getOriginalWalkMP());
         }
-        getEntity().recalculateTechAdvancement();
+        newUnit.recalculateTechAdvancement();
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -220,6 +240,7 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
@@ -235,6 +256,9 @@ public class SVMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getUnallocatedView().getEquipment();
     }
 }

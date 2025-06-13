@@ -18,7 +18,7 @@
  */
 package megameklab.ui.dialog;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
 import megamek.common.Entity;
 import megameklab.ui.MegaMekLabMainUI;
@@ -26,6 +26,7 @@ import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
+import megameklab.ui.combatVehicle.GEMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
 import megameklab.ui.handheldWeapon.HHWMainUI;
 import megameklab.ui.infantry.CIMainUI;
@@ -40,10 +41,8 @@ import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 /**
@@ -56,17 +55,10 @@ import java.util.function.Consumer;
  */
 public class UiLoader {
 
-    private static final int MINIMUM_SPLASH_TIME = 2000;
-
-    /**
-     * A map of resolution widths to file names for the startup screen
-     */
-    private static final TreeMap<Integer, String> LOAD_SCREEN_IMAGES = new TreeMap<>(Map.of(
-            0, Configuration.miscImagesDir() + "/mml_load_hd.jpg",
-            1441, Configuration.miscImagesDir() + "/mml_load_fhd.jpg",
-            1921, Configuration.miscImagesDir() + "/mml_load_uhd.jpg"));
+    private static final int MINIMUM_SPLASH_TIME = 0;
 
     private static final ResourceBundle RESOURCES = ResourceBundle.getBundle("megameklab.resources.Menu");
+    private static final String LOAD_SCREEN_IMAGE = Configuration.miscImagesDir() + "/load.jpg";
     private final JDialog splashImage;
     private final long type;
     private final boolean primitive;
@@ -120,7 +112,7 @@ public class UiLoader {
     private static JDialog makeSplash() {
         var splashImage = new JDialog((JFrame) null, "MML Loading Splash");
         splashImage.setUndecorated(true);
-        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGES, splashImage), BorderLayout.CENTER);
+        splashImage.add(UIUtil.createSplashComponent(LOAD_SCREEN_IMAGE, splashImage), BorderLayout.CENTER);
         splashImage.pack();
         splashImage.setLocationRelativeTo(null);
         return splashImage;
@@ -140,17 +132,17 @@ public class UiLoader {
             long start = System.currentTimeMillis();
             MegaMekLabTabbedUI tabbedUi;
             if (!restore) {
-                MegaMekLabMainUI newUI = getUI(type, primitive, industrial);
+                MegaMekLabMainUI newUI;
+                if (newUnit != null) {
+                    UnitUtil.updateLoadedUnit(newUnit);
+                    newUI = getUI(newUnit, fileName);
+                } else {
+                    newUI = getUI(type, primitive, industrial);
+                }
                 long loadTime = System.currentTimeMillis() - start;
                 if (loadTime < MINIMUM_SPLASH_TIME) {
                     // Show the splash for at least the minimum time
                     Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
-                }
-                if (newUnit != null) {
-                    UnitUtil.updateLoadedUnit(newUnit);
-                    newUI.setEntity(newUnit, fileName);
-                    newUI.reloadTabs();
-                    newUI.refreshAll();
                 }
                 tabbedUi = new MegaMekLabTabbedUI(newUI);
                 tabbedUi.setVisible(true);
@@ -168,7 +160,7 @@ public class UiLoader {
                     tabbedUi = new MegaMekLabTabbedUI(editors);
                     tabbedUi.setVisible(true);
                 } catch (IOException | IllegalStateException e) {
-                    new StartupGUI().setVisible(true);
+                    StartupGUI.getInstance().setVisible(true);
                 }
             }
 
@@ -218,8 +210,43 @@ public class UiLoader {
             return new WSMainUI(primitive);
         } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
             return new HHWMainUI();
+        } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
+            return new GEMainUI();
         } else {
             return new BMMainUI(primitive, industrial);
+        }
+    }
+
+    /**
+     * @return The correct MainUI for an Entity
+     */
+    public static MegaMekLabMainUI getUI(Entity entity, String filename) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
+        long type = UnitUtil.getEditorTypeForEntity(entity);
+        if (type == Entity.ETYPE_TANK) {
+            return new CVMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_SUPPORT_TANK) {
+            return new SVMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_PROTOMEK) {
+            return new PMMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_BATTLEARMOR) {
+            return new BAMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_INFANTRY) {
+            return new CIMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_AERO) {
+            return new ASMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_DROPSHIP) {
+            return new DSMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_JUMPSHIP) {
+            return new WSMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_HANDHELD_WEAPON) {
+            return new HHWMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
+            return new GEMainUI(entity, filename);
+        } else {
+            return new BMMainUI(entity, filename);
         }
     }
 }

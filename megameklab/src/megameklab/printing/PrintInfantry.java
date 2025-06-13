@@ -81,8 +81,9 @@ public class PrintInfantry extends PrintEntity {
         }
         writeFieldGuns();
 
+        int infantrySize = options.showDamage() ? infantry.getShootingStrength() : infantry.getOInternal(0);
         for (int j = 1; j <= 30; j++) {
-            if (j > infantry.getShootingStrength()) {
+            if (j > infantrySize) {
                 hideElement(SOLDIER + j, true);
                 hideElement(NO_SOLDIER + j, false);
             } else {
@@ -363,22 +364,22 @@ public class PrintInfantry extends PrintEntity {
         } else {
             StringBuilder sb = new StringBuilder(Integer.toString(gun.getDamage()));
             switch (gun.getAmmoType()) {
-                case AmmoType.T_AC_ULTRA:
-                case AmmoType.T_AC_ULTRA_THB:
+                case AC_ULTRA:
+                case AC_ULTRA_THB:
                     sb.append("/Sht, R2");
                     setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
-                case AmmoType.T_AC_ROTARY:
+                case AC_ROTARY:
                     sb.append("/Sht, R6");
                     setTextField(FIELD_GUN_DMG_2, "[DB,R/S/C]");
                     break;
-                case AmmoType.T_AC:
-                case AmmoType.T_AC_PRIMITIVE:
-                case AmmoType.T_LAC:
+                case AC:
+                case AC_PRIMITIVE:
+                case LAC:
                     setTextField(FIELD_GUN_DMG_2, "[DB,C/S/F]");
                     break;
-                case AmmoType.T_AC_LBX:
-                case AmmoType.T_AC_LBX_THB:
+                case AC_LBX:
+                case AC_LBX_THB:
                     setTextField(FIELD_GUN_DMG_2, "[DB,C/F]");
                     break;
                 default:
@@ -403,21 +404,26 @@ public class PrintInfantry extends PrintEntity {
         EquipmentType armor = infantry.getArmorKit();
         if (armor != null) {
             setTextField(ARMOR_KIT, armor.getName());
-        } else if (infantry.hasDEST()) {
-            setTextField(ARMOR_KIT, "DEST");
         } else {
-            StringJoiner sj = new StringJoiner("/");
-            if (infantry.hasSneakCamo()) {
-                sj.add("Camo");
-            }
-            if (infantry.hasSneakIR()) {
-                sj.add("IR");
-            }
-            if (infantry.hasSneakECM()) {
-                sj.add("ECM");
-            }
-            if (sj.length() > 0) {
-                setTextField(ARMOR_KIT, "Sneak(" + sj + ")");
+
+            if (infantry.hasDEST()) {
+                setTextField(ARMOR_KIT, "Custom DEST");
+            } else {
+                StringJoiner sj = new StringJoiner("/");
+                if (infantry.hasSneakCamo()) {
+                    sj.add("Camo");
+                }
+                if (infantry.hasSneakIR()) {
+                    sj.add("IR");
+                }
+                if (infantry.hasSneakECM()) {
+                    sj.add("ECM");
+                }
+                if (sj.length() > 0) {
+                    setTextField(ARMOR_KIT, "Custom Sneak(" + sj + ")");
+                } else if (infantry.getArmorDamageDivisor() != 1.0) {
+                    setTextField(ARMOR_KIT, "Custom");
+                }
             }
         }
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()

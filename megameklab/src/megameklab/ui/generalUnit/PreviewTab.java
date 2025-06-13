@@ -24,14 +24,19 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.Component;
+import java.util.List;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 
-import megamek.client.ui.panes.ConfigurableMekViewPanel;
-import megamek.client.ui.swing.MekViewPanel;
-import megamek.client.ui.swing.alphaStrike.ConfigurableASCardPanel;
-import megamek.client.ui.swing.calculationReport.FlexibleCalculationReport;
+
+import megamek.client.ui.dialogs.unitSelectorDialogs.ConfigurableMekViewPanel;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.dialogs.unitSelectorDialogs.MekViewPanel;
+import megamek.client.ui.panels.alphaStrike.ConfigurableASCardPanel;
+import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
+import megamek.common.EnhancedTabbedPane;
+import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;
 import megamek.common.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
@@ -39,6 +44,7 @@ import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
+import megameklab.util.CConfig;
 
 public class PreviewTab extends ITab {
     private static final MMLogger logger = MMLogger.create(PreviewTab.class);
@@ -47,31 +53,45 @@ public class PreviewTab extends ITab {
     private final MekViewPanel panelTROView = new MekViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
-    private JTabbedPane panPreview;
+    private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
+    private EnhancedTabbedPane panPreview;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
         panelMekView.setMinimumSize(new Dimension(400, panelMekView.getMinimumSize().height));
         panelTROView.setMinimumSize(new Dimension(400, panelTROView.getMinimumSize().height));
-        
+        rsPanel.setMinZoom(1.0f);
+        rsPanel.setFullAsyncMode(false);
+
         // Create scroll panes for each panel
         JScrollPane mekViewScroll = new JScrollPane(panelMekView);
         mekViewScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         mekViewScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         mekViewScroll.setBorder(null); // Remove border if desired
-        
+
         JScrollPane troViewScroll = new JScrollPane(panelTROView);
         troViewScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         troViewScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         troViewScroll.setBorder(null);
 
-        panPreview = new JTabbedPane();
+        panPreview = new EnhancedTabbedPane(true, true);
         panPreview.addTab("Summary", mekViewScroll);
         panPreview.addTab("TRO", troViewScroll);
         panPreview.addTab("AS Card", cardPanel);
         panPreview.addTab("Record Sheet", rsPanel);
+        List<String> tabsOrder = GUIPreferences.getInstance().getTabOrder(this.getClass().getName());
+        panPreview.setTabOrder(tabsOrder);
         add(panPreview, BorderLayout.CENTER);
+
+        panPreview.addChangeListener(e -> {
+            final int selectedIndex = panPreview.getSelectedIndex();
+            CConfig.setParam(tabIndexSettingName, String.valueOf(selectedIndex));
+        });
+        final int savedTabIndex = CConfig.getIntParam(tabIndexSettingName, 0);
+        if (savedTabIndex >= 0 && savedTabIndex < panPreview.getTabCount()) {
+            panPreview.setSelectedIndex(savedTabIndex);
+        }
 
         // Add a resize listener to detect container width changes
         addComponentListener(new ComponentAdapter() {
@@ -84,28 +104,37 @@ public class PreviewTab extends ITab {
                 }
             }
         });
+        
+        panPreview.addTabStateListener(new TabStateListener() {
+            @Override
+            public void onTabMoved(int oldIndex, int newIndex, Component component) {
+                List<String> tabsOrder = panPreview.getTabOrder(); 
+                GUIPreferences.getInstance().setTabOrder(PreviewTab.this.getClass().getName(), tabsOrder);
+            }
+        });
 
         addComponentListener(refreshOnShow);
     }
 
     /**
      * Sets the preferred width of this component and its child components
+     * 
      * @param width The desired width
      */
     public void setPreferredWidth(int width) {
         // Don't change the component's preferred size, just update panel widths
         int panelWidth = Math.max(400, width - 40);
-        
+
         panelMekView.setPreferredSize(new Dimension(panelWidth, panelMekView.getPreferredSize().height));
         panelTROView.setPreferredSize(new Dimension(panelWidth, panelTROView.getPreferredSize().height));
         cardPanel.setPreferredSize(new Dimension(panelWidth, cardPanel.getPreferredSize().height));
         rsPanel.setPreferredSize(new Dimension(panelWidth, rsPanel.getPreferredSize().height));
-        
+
         // Force a refresh to ensure content uses the new width
         revalidate();
         repaint();
     }
-    
+
     public void update() {
         boolean populateTextFields = true;
         final Entity selectedUnit = eSource.getEntity();
@@ -142,6 +171,12 @@ public class PreviewTab extends ITab {
         if (isVisible()) {
             update();
         }
+    }
+
+    @Override
+    public void removeNotify() {
+        panPreview.reattachAllTabs();
+        super.removeNotify();
     }
 
     ComponentListener refreshOnShow = new ComponentAdapter() {

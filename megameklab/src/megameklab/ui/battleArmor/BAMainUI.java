@@ -37,16 +37,21 @@ public class BAMainUI extends MegaMekLabMainUI {
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    public BAMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+    }
+
     public BAMainUI() {
         super();
         createNewUnit(Entity.ETYPE_BATTLEARMOR);
-        finishSetup();
+        requestDirtyCheck();
     }
 
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new BAStructureTab(this);
         equipTab = new BAEquipmentTab(this);
@@ -59,6 +64,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         buildTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipTab);
@@ -72,85 +78,98 @@ public class BAMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this, new BAFloatingEquipmentDatabaseView(this));
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(), new BAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        setEntity(new BattleArmor());
-        BattleArmor ba = (BattleArmor) getEntity();
-
-        ba.setYear(3145);
-        ba.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        ba.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
-        ba.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
-        ba.setTroopers(4);
-        ba.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
-
-        ba.autoSetInternal();
-        for (int loc = 0; loc < ba.locations(); loc++) {
-            ba.initializeArmor(0, loc);
+        BattleArmor newUnit = new BattleArmor();
+        newUnit.setYear(3145);
+        newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+        newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
+        newUnit.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
+        newUnit.setTroopers(4);
+        newUnit.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
+            newUnit.initializeArmor(0, loc);
         }
-
-        ba.setChassis("New");
-        ba.setModel("BattleArmor");
+        newUnit.setChassis("New");
+        newUnit.setModel("BattleArmor");
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         refreshStatus();
         refreshStructure();
         refreshEquipmentTable();
+        quirksTab.refresh();
+        fluffTab.refresh();
         refreshBuild();
         refreshPreview();
         refreshHeader();
     }
 
     @Override
-    public void refreshArmor() { }
+    public void refreshArmor() {
+        super.refreshArmor();
+    }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipTab.refresh();
     }
 
     @Override
     public void refreshTransport() {
-        // not used for ba
+        super.refreshTransport();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
-    public void refreshWeapons() { }
+    public void refreshWeapons() {
+        super.refreshWeapons();
+    }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         structureTab.refreshPreview();
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {
+        super.refreshSummary();
+    }
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
@@ -166,6 +185,9 @@ public class BAMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getBuildView().getEquipment();
     }
 }

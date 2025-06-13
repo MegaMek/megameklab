@@ -18,9 +18,11 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.client.ui.baseComponents.MMComboBox;
+import megamek.client.ui.comboBoxes.MMComboBox;
+import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
+import megameklab.printing.PrintEntity;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -49,6 +51,9 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkShowCondensedTables = new JCheckBox();
     private final JCheckBox chkShowQuirks = new JCheckBox();
     private final JCheckBox chkShowPilotData = new JCheckBox();
+    private final JCheckBox chkShowForceData = new JCheckBox();
+    private final JCheckBox chkShowDamage = new JCheckBox();
+    private final JButton btnDamageColor = new JButton();
     private final JCheckBox chkShowEraIcon = new JCheckBox();
     private final JCheckBox chkShowRole = new JCheckBox();
     private final JCheckBox chkHeatProfile = new JCheckBox();
@@ -60,6 +65,8 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkRowShading = new JCheckBox();
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
+    private final JCheckBox chkBoldType = new JCheckBox();
+    private MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -97,6 +104,22 @@ class ExportSettingsPanel extends JPanel {
         fontPanel.add(Box.createHorizontalStrut(25));
         fontPanel.add(txtFontDisplay);
 
+        JLabel defaultSortOrderLabel = new JLabel(resourceMap.getString("ConfigurationDialog.weaponsOrder.text"));
+        String toolTip = resourceMap.getString("ConfigurationDialog.weaponsOrder.tooltip");
+        defaultSortOrderLabel.setToolTipText(toolTip);
+
+        final DefaultComboBoxModel<WeaponSortOrder> defaultWeaponSortOrderModel = new DefaultComboBoxModel<>(
+                WeaponSortOrder.values());
+        defaultWeaponSortOrderModel.removeElement(WeaponSortOrder.CUSTOM); // Custom makes no sense as a default
+        comboDefaultWeaponSortOrder = new MMComboBox<>("comboDefaultWeaponSortOrder", defaultWeaponSortOrderModel);
+        comboDefaultWeaponSortOrder.setToolTipText(toolTip);
+        comboDefaultWeaponSortOrder.setSelectedItem(CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT));
+
+        JPanel weaponSortOrderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        weaponSortOrderPanel.add(defaultSortOrderLabel);
+        weaponSortOrderPanel.add(Box.createHorizontalStrut(25));
+        weaponSortOrderPanel.add(comboDefaultWeaponSortOrder);
+
         chkProgressBar.setText(resourceMap.getString("ConfigurationDialog.chkProgressBar.text"));
         chkProgressBar.setToolTipText(resourceMap.getString("ConfigurationDialog.chkProgressBar.tooltip"));
         chkProgressBar.setSelected(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
@@ -112,6 +135,10 @@ class ExportSettingsPanel extends JPanel {
         chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
         chkFrameless.setToolTipText(resourceMap.getString("ConfigurationDialog.chkFrameless.tooltip"));
         chkFrameless.setSelected(CConfig.getBooleanParam(CConfig.RS_FRAMELESS));
+
+        chkBoldType.setText(resourceMap.getString("ConfigurationDialog.chkBoldType.text"));
+        chkBoldType.setToolTipText(resourceMap.getString("ConfigurationDialog.chkBoldType.tooltip"));
+        chkBoldType.setSelected(CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -133,6 +160,28 @@ class ExportSettingsPanel extends JPanel {
         chkShowPilotData.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowPilotData.tooltip"));
         chkShowPilotData.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
 
+        chkShowForceData.setText(resourceMap.getString("ConfigurationDialog.chkShowForceData.text"));
+        chkShowForceData.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowForceData.tooltip"));
+        chkShowForceData.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV));
+
+        chkShowDamage.setText(resourceMap.getString("ConfigurationDialog.chkShowDamage.text"));
+        chkShowDamage.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowDamage.tooltip"));
+        chkShowDamage.setSelected(CConfig.getBooleanParam(CConfig.RS_DAMAGE));
+
+        btnDamageColor.setText(resourceMap.getString("ConfigurationDialog.btnDamageColor.text"));
+        btnDamageColor.setToolTipText(resourceMap.getString("ConfigurationDialog.btnDamageColor.tooltip"));
+        Color initial = Color.decode(CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED));
+        btnDamageColor.setBackground(initial);
+        btnDamageColor.addActionListener(ev -> {
+            Color chosen = JColorChooser.showDialog(
+                ExportSettingsPanel.this,
+                resourceMap.getString("ConfigurationDialog.btnDamageColor.text"),
+                btnDamageColor.getBackground());
+            if (chosen != null) {
+                btnDamageColor.setBackground(chosen);
+            }
+        });
+
         chkShowEraIcon.setText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.text"));
         chkShowEraIcon.setToolTipText(resourceMap.getString("ConfigurationDialog.chkShowEraIcon.tooltip"));
         chkShowEraIcon.setSelected(CConfig.getBooleanParam(CConfig.RS_SHOW_ERA));
@@ -148,6 +197,7 @@ class ExportSettingsPanel extends JPanel {
         chkTacOpsHeat.setText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.text"));
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
+
 
         mekChassis.setRenderer(mekNameArrangementRenderer);
         mekChassis.setSelectedItem(CConfig.getMekNameArrangement());
@@ -179,25 +229,45 @@ class ExportSettingsPanel extends JPanel {
         scalePanel.add(txtScale);
         scalePanel.add(cbRSScale);
 
+        JPanel damagePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.weightx = 0.8;
+        damagePanel.add(chkShowDamage, gbc);
+        gbc.gridx = 1;
+        gbc.weightx = 0.2;
+        damagePanel.add(btnDamageColor, gbc);
+
         JPanel gridPanel = new JPanel(new SpringLayout());
+        JPanel innerGridPanel = new JPanel(new SpringLayout());
         gridPanel.add(chkProgressBar);
         gridPanel.add(paperPanel);
         gridPanel.add(fontPanel);
-        gridPanel.add(chkColor);
-        gridPanel.add(chkRowShading);
-        gridPanel.add(chkShowReferenceTables);
-        gridPanel.add(chkShowCondensedTables);
-        gridPanel.add(chkShowQuirks);
-        gridPanel.add(chkShowPilotData);
-        gridPanel.add(chkShowEraIcon);
-        gridPanel.add(chkShowRole);
-        gridPanel.add(chkHeatProfile);
-        gridPanel.add(chkTacOpsHeat);
-        gridPanel.add(chkAlternateArmorGrouping);
-        gridPanel.add(chkFrameless);
+        gridPanel.add(weaponSortOrderPanel);
+        gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
+        innerGridPanel.add(chkColor);
+        innerGridPanel.add(chkBoldType);
+        innerGridPanel.add(chkRowShading);
+        innerGridPanel.add(chkShowReferenceTables);
+        innerGridPanel.add(chkShowCondensedTables);
+        innerGridPanel.add(chkShowQuirks);
+        innerGridPanel.add(chkShowPilotData);
+        innerGridPanel.add(chkShowForceData);
+        innerGridPanel.add(damagePanel);
+        innerGridPanel.add(chkShowEraIcon);
+        innerGridPanel.add(chkShowRole);
+        innerGridPanel.add(chkHeatProfile);
+        innerGridPanel.add(chkTacOpsHeat);
+        innerGridPanel.add(chkAlternateArmorGrouping);
+        innerGridPanel.add(chkFrameless);
+        innerGridPanel.add(new JLabel("")); //filler
+        gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
-        SpringUtilities.makeCompactGrid(gridPanel, 17, 1, 0, 0, 15, 6);
+
+        SpringUtilities.makeCompactGrid(innerGridPanel, 8, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -214,16 +284,20 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_CONDENSED_REFERENCE, Boolean.toString(chkShowCondensedTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_QUIRKS, Boolean.toString(chkShowQuirks.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
+        recordSheetSettings.put(CConfig.RS_SHOW_C3BV, Boolean.toString(chkShowForceData.isSelected()));
+        recordSheetSettings.put(CConfig.RS_DAMAGE, Boolean.toString(chkShowDamage.isSelected()));
+        recordSheetSettings.put(CConfig.RS_DAMAGE_COLOR, String.format("#%06X", btnDamageColor.getBackground().getRGB() & 0xFFFFFF));
         recordSheetSettings.put(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
-        recordSheetSettings.put(CConfig.RS_MEK_NAMES,
-                Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+        recordSheetSettings.put(CConfig.RS_MEK_NAMES, Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
+        recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
+        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, comboDefaultWeaponSortOrder.getSelectedItem().name());
         return recordSheetSettings;
     }
 

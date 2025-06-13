@@ -15,97 +15,315 @@
  */
 package megameklab.ui;
 
-import megamek.MegaMek;
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.common.EnhancedTabbedPane;
 import megamek.common.Entity;
 import megamek.common.Mounted;
-import megamek.common.preference.PreferenceManager;
-import megameklab.MMLConstants;
-import megameklab.MegaMekLab;
-import megameklab.ui.util.EnhancedTabbedPane;
-import megameklab.ui.util.EnhancedTabbedPane.DetachedTabInfo;
-import megameklab.ui.util.EnhancedTabbedPane.TabStateListener;
+import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
+import megamek.common.EnhancedTabbedPane.TabStateListener;
+import megamek.logging.MMLogger;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
-import megameklab.util.MMLFileDropTransferHandler;
-
+import megameklab.util.UnitMemento;
+import megameklab.util.UnitUtil;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.ResourceBundle;
+import java.util.List;
 
-public abstract class MegaMekLabMainUI extends JFrame
-        implements RefreshListener, EntitySource, MenuBarOwner, FileNameManager {
+public abstract class MegaMekLabMainUI extends JPanel
+        implements RefreshListener, EntitySource, FileNameManager {
+    private static final int MAX_UNDO_HISTORY = 1000;
+
+    private static final MMLogger logger = MMLogger.create(MegaMekLabMainUI.class);
 
     protected EnhancedTabbedPane configPane = new EnhancedTabbedPane(true, true);
     private Entity entity = null;
     private String fileName = "";
-    protected MenuBar mmlMenuBar;
     protected boolean refreshRequired = false;
     private String originalName = "";
-    private MegaMekLabTabbedUI owner = null;
+    private MegaMekLabTabbedUI tabOwner = null;
+    private boolean initializedTabs = false;
+    private boolean dirty = false;
+    private boolean dirtyCheckPending = false;
+    private boolean forceDirtyUntilNextSave = false;
+    private UnitMemento savedUnitSnapshot = null;
+    private UnitMemento currentSnapshot = null;
+    private Deque<UnitMemento> undoStack = new LinkedList<>();
+    private Deque<UnitMemento> redoStack = new LinkedList<>();
+    private boolean ignoreNextStateChange = false;
 
     public MegaMekLabMainUI() {
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
+        setLayout(new BorderLayout());
         // Register tab reattachment listener
         configPane.addTabStateListener(new TabStateListener() {
             @Override
             public void onTabDetached(Window window, DetachedTabInfo tabInfo) {
-                getEntity().generateDisplayName();
-                final String displayName = getEntity().getDisplayName();
+                entity.generateDisplayName();
+                final String displayName = entity.getDisplayName();
                 configPane.setDetachedTabPrefixTitle(tabInfo, displayName);
+            }
+
+            @Override
+            public void onTabMoved(int oldIndex, int newIndex, Component component) {
+                List<String> tabsOrder = configPane.getTabOrder(); 
+                GUIPreferences.getInstance().setTabOrder(MegaMekLabMainUI.this.getClass().getName(), tabsOrder);
             }
         });
     }
 
-    protected void finishSetup() {
-        mmlMenuBar = new MenuBar(this);
-        setJMenuBar(mmlMenuBar);
-        reloadTabs();
-        refreshAll();
-        this.setTransferHandler(new MMLFileDropTransferHandler(this));
-    }
+    /**
+     * Called when the panel is activated or shown for the first initialization
+     * (lazy tab loading)
+     */
+    public void onActivated() {
+        if (!initializedTabs) {
+            initializedTabs = true;
+            reloadTabs();
+            List<String> tabsOrder = GUIPreferences.getInstance().getTabOrder(this.getClass().getName());
+            configPane.setTabOrder(tabsOrder);
 
-    protected void setSizeAndLocation() {
-        pack();
-        restrictToScreenSize();
-        setLocationRelativeTo(null);
-        CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
-        CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
-    }
-
-    private void restrictToScreenSize() {
-        DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
-        int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
-        int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
-        int w = Math.min(getSize().width, scaledMonitorW);
-        int h = Math.min(getSize().height, scaledMonitorH);
-        setSize(new Dimension(w, h));
+        }
     }
 
     public EnhancedTabbedPane getConfigPane() {
         return configPane;
     }
 
+    /**
+     * Reattaches all tabs to the main window.
+     */
     public void reattachAllTabs() {
         if (configPane != null) {
             configPane.reattachAllTabs();
         }
     }
 
+    /**
+     * Requests a dirty check on the unit. This is done by scheduling a
+     * dirtyCheck() call to be run on the event dispatch thread.
+     */
+    public void requestDirtyCheck() {
+        if (!dirtyCheckPending) {
+            dirtyCheckPending = true;
+            SwingUtilities.invokeLater(this::dirtyCheck);
+        }
+    }
+
+    /**
+     * Checks if the unit has been modified since it was last saved. If the unit
+     * has been modified, it updates the dirty state and refreshes the header.
+     */
+    private void dirtyCheck() {
+        dirtyCheckPending = false;
+        final UnitMemento newSnapshot = new UnitMemento(entity, this);
+        final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
+
+        if (ignoreNextStateChange) {
+            ignoreNextStateChange = false;
+        } else
+        // If we have a previous currentSnapshot, we need to push it to the undo stack
+        // before overwriting it.
+        if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))) {
+            pushUndoState(currentSnapshot);
+        } else
+        // If we don't have a currentSnapshot, the undoStack is empty and we have a
+        // savedUnitSnapshot, this is the first undo point
+        if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
+            pushUndoState(savedUnitSnapshot);
+        }
+        currentSnapshot = newSnapshot;
+        if (dirty != dirtyState) {
+            dirty = dirtyState;
+            refreshHeader();
+        }
+    }
+    
+    /**
+     * Resets the dirty state of the unit.
+     */
+    private void resetDirty() {
+        SwingUtilities.invokeLater(() -> {
+            savedUnitSnapshot = new UnitMemento(entity, this);
+            if (dirty) {
+                dirty = false;
+                refreshHeader();
+            }
+        });
+    }
+
+    /**
+     * Invalidates the current snapshot of the unit.
+     */
+    public void forceDirtyUntilNextSave() {
+        forceDirtyUntilNextSave = true;
+    }
+
+    /**
+     * Pushes the state of the unit to the undo stack.
+     * 
+     * @param state The state to push to the undo stack.
+     * @return true if the state was pushed, false if it was not (e.g., if it was
+     *         the
+     *         same as the previous state).
+     */
+    private boolean pushUndoState(UnitMemento state) {
+        if (!undoStack.isEmpty() && undoStack.peek().equals(state)) {
+            return false; // Avoid pushing the same state multiple times
+        }
+        // Clear redo stack when a new action is performed
+        redoStack.clear();
+        undoStack.push(state);
+        // Limit stack size
+        if (undoStack.size() > MAX_UNDO_HISTORY) {
+            undoStack.removeLast();
+        }
+        refreshMenuBar();
+        return true;
+    }
+
+    /**
+     * Checks if there is an undo operation available.
+     * 
+     * @return
+     */
+    public boolean hasUndo() {
+        return !undoStack.isEmpty();
+    }
+
+    /**
+     * Checks if there is a redo operation available.
+     * 
+     * @return
+     */
+    public boolean hasRedo() {
+        return !redoStack.isEmpty();
+    }
+
+    public boolean canReload() {
+        return savedUnitSnapshot != null && !savedUnitSnapshot.isEmpty() && dirty;
+    }
+
+    /**
+     * Performs undo operation if available.
+     */
+    public void undo() {
+        if (!hasUndo()) {
+            return;
+        }
+        try {
+            // Push current state to redo stack
+            final UnitMemento currentState = new UnitMemento(entity, this);
+            redoStack.push(currentState);
+            // Pop and apply state from undo stack
+            final UnitMemento previousState = undoStack.pop();
+            // Apply the state, ensuring we don't capture this as a new state
+            ignoreNextStateChange = true;
+            restoreUnitState(previousState);
+            refreshMenuBar();
+        } catch (Exception e) {
+            logger.error("Error during undo operation", e);
+        }
+    }
+
+    /**
+     * Performs redo operation if available.
+     */
+    public void redo() {
+        if (!hasRedo()) {
+            return;
+        }
+        try {
+            // Push current state to undo stack
+            final UnitMemento currentState = new UnitMemento(entity, this);
+            undoStack.push(currentState);
+            // Pop and apply state from redo stack
+            final UnitMemento nextState = redoStack.pop();
+            // Apply the state, ensuring we don't capture this as a new state
+            ignoreNextStateChange = true;
+            restoreUnitState(nextState);
+            refreshMenuBar();
+        } catch (Exception e) {
+            logger.error("Error during redo operation", e);
+        }
+    }
+
+    /**
+     * Performs reload operation if available.
+     */
+    public void reload() {
+        if (!canReload()) {
+            return;
+        }
+        try {
+            final UnitMemento currentState = new UnitMemento(entity, this);
+            if (savedUnitSnapshot == null || savedUnitSnapshot.equals(currentState)) {
+                return; // No changes to reload
+            }
+            restoreUnitState(savedUnitSnapshot);
+            refreshMenuBar();
+            requestDirtyCheck();
+        } catch (Exception e) {
+            logger.error("Error during reload operation", e);
+        }
+    }
+
+    /**
+     * Updates the undo and redo menu items in the tab owner.
+     */
+    private void refreshMenuBar() {
+        if (tabOwner != null) {
+            SwingUtilities.invokeLater(tabOwner::refreshMenuBar);
+        }
+    }
+
+    /**
+     * Returns true if the unit has been modified since it was last saved.
+     * 
+     * @return
+     */
+    public boolean isDirty() {
+        return dirty || forceDirtyUntilNextSave;
+    }
+
+    /**
+     * Apply a saved unit memento snapshot to the current entity.
+     */
+    private void restoreUnitState(UnitMemento state) {
+        try {
+            final Entity restoredEntity = state.createUnit();
+            if (restoredEntity != null) {
+                entity = restoredEntity;
+                refreshAll();
+            }
+        } catch (Exception e) {
+            logger.error("Failed to apply saved state", e);
+        }
+    }
+
+    /**
+     * Clears the undo and redo history stacks.
+     */
+    public void clearUndoRedoHistory() {
+        undoStack.clear();
+        redoStack.clear();
+    }
+
     @Override
     public void setVisible(boolean b) {
-        if (b) {
-            setSizeAndLocation();
-        }
         super.setVisible(b);
         if (!b && (getFloatingEquipmentDatabase() != null)) {
             getFloatingEquipmentDatabase().setVisible(false);
         }
     }
 
-    @Override
     public boolean safetyPrompt() {
+        if (!isDirty()) {
+            return true;
+        }
         if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS)) {
             return true;
         } else {
@@ -116,64 +334,133 @@ public abstract class MegaMekLabMainUI extends JFrame
                     JOptionPane.WARNING_MESSAGE);
             // When the user did not actually save the unit, return as if CANCEL was pressed
             return (savePrompt == JOptionPane.NO_OPTION)
-                    || ((savePrompt == JOptionPane.YES_OPTION) && mmlMenuBar.saveUnit());
+                    || ((savePrompt == JOptionPane.YES_OPTION) && saveUnit());
         }
     }
 
-    @Override
+    private void warnOnInvalid() {
+        var report = UnitUtil.validateUnit(getEntity());
+        if (!report.isBlank()) {
+            PopupMessages.showUnitInvalidWarning(getParentFrame(), report);
+        }
+    }
+
+    public boolean saveUnitAs() {
+        warnOnInvalid();
+        UnitUtil.compactCriticals(getEntity());
+        refreshAll();
+        final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+        final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
+                resources.getString("dialog.saveAs.title"));
+        String file = fileSaver.saveUnitAs(getParentFrame(), entity);
+        if (file == null) {
+            return false;
+        }
+        forceDirtyUntilNextSave = false;
+        setFileName(file);
+        resetDirty();
+        return true;
+
+    }
+
+    public boolean saveUnit() {
+        if (getEntity() == null) {
+            logger.error("Tried to save null entity.");
+            return false;
+        } else {
+            warnOnInvalid();
+        }
+        UnitUtil.compactCriticals(entity);
+        final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
+        final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
+                resources.getString("dialog.saveAs.title"));
+        refreshAll(); // The crits may have moved
+        String file = fileSaver.saveUnit(getParentFrame(), this, getEntity());
+        if (file == null) {
+            return false;
+        }
+        forceDirtyUntilNextSave = false;
+        setFileName(file);
+        resetDirty();
+        return true;
+    }
+
     public boolean exit() {
         if (!safetyPrompt()) {
             return false;
         }
         reattachAllTabs();
-        CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getExtendedState()));
-        CConfig.setParam(CConfig.GUI_PLAF, UIManager.getLookAndFeel().getClass().getName());
-        CConfig.writeMainUiWindowSettings(this);
-        CConfig.saveConfig();
-        PreferenceManager.getInstance().save();
-        MegaMek.getMMPreferences().saveToFile(MMLConstants.MM_PREFERENCES_FILE);
-        MegaMekLab.getMMLPreferences().saveToFile(MMLConstants.MML_PREFERENCES_FILE);
         return true;
     }
 
     public abstract void reloadTabs();
 
     @Override
-    public abstract void refreshAll();
-
-    @Override
-    public abstract void refreshArmor();
-
-    @Override
-    public abstract void refreshBuild();
-
-    @Override
-    public abstract void refreshEquipment();
-
-    @Override
-    public void refreshHeader() {
-        String fileInfo = fileName.isBlank() ? "" : " (" + fileName + ")";
-        Entity entity = getEntity();
-        setTitle(entity.getFullChassis() + " " + entity.getModel() + fileInfo);
-        if (configPane.hasDetachedTabs()) {
-            configPane.setDetachedTabsPrefixTitle(entity.getDisplayName());
-        }
-        if (owner != null) {
-            owner.setTabName(entity.getDisplayName(), this);
-        }
+    public void refreshAll() {
+        requestDirtyCheck();
     }
 
     @Override
-    public abstract void refreshStatus();
+    public void refreshArmor() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshStructure();
+    public void refreshBuild() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshWeapons();
+    public void refreshEquipment() {
+        requestDirtyCheck();
+    }
 
     @Override
-    public abstract void refreshPreview();
+    public void refreshEquipmentTable() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshHeader() {
+        if (configPane.hasDetachedTabs()) {
+            configPane.setDetachedTabsPrefixTitle(getEntity().getShortNameRaw());
+        }
+        if (tabOwner != null) {
+            tabOwner.setTabName(this, getEntity().getShortNameRaw());
+        }
+        ForceBuildUI.refresh();
+    }
+
+    @Override
+    public void refreshStatus() {
+        requestDirtyCheck();
+        ForceBuildUI.refresh();
+    }
+
+    @Override
+    public void refreshTransport() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshStructure() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshWeapons() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshPreview() {
+        requestDirtyCheck();
+    }
+
+    @Override
+    public void refreshSummary() {
+        requestDirtyCheck();
+    }
 
     public void setEntity(Entity en) {
         setEntity(en, "");
@@ -188,6 +475,7 @@ public abstract class MegaMekLabMainUI extends JFrame
         this.entity = entity;
         originalName = MegaMekLabFileSaver.createUnitFilename(entity);
         setFileName(currentEntityFilename);
+        resetDirty();
     }
 
     @Override
@@ -206,11 +494,6 @@ public abstract class MegaMekLabMainUI extends JFrame
     public abstract JDialog getFloatingEquipmentDatabase();
 
     @Override
-    public JFrame getFrame() {
-        return this;
-    }
-
-    @Override
     public String getFileName() {
         return fileName;
     }
@@ -224,22 +507,20 @@ public abstract class MegaMekLabMainUI extends JFrame
     }
 
     @Override
-    public void refreshMenuBar() {
-        mmlMenuBar.refreshMenuBar();
-    }
-
-    @Override
     public boolean hasEntityNameChanged() {
         return !MegaMekLabFileSaver.createUnitFilename(entity).equals(originalName);
     }
 
-    @Override
-    public MenuBar getMMLMenuBar() {
-        return mmlMenuBar;
+    public void setTabOwner(MegaMekLabTabbedUI owner) {
+        this.tabOwner = owner;
     }
 
-    public void setOwner(MegaMekLabTabbedUI owner) {
-        this.owner = owner;
+    public MegaMekLabTabbedUI getTabOwner() {
+        return tabOwner;
+    }
+
+    public JFrame getParentFrame() {
+        return tabOwner != null ? tabOwner : (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, this);
     }
 
     /**

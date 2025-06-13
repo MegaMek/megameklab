@@ -19,8 +19,9 @@
 package megameklab.ui.dialog;
 
 import static java.util.stream.Collectors.toList;
-import static megamek.client.ui.swing.ClientGUI.CG_FILEPATHMUL;
+import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATHMUL;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -44,8 +45,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.Messages;
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.UnitLoadingDialog;
+import megamek.client.ui.buttons.MMButton;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.BTObject;
 import megamek.common.Configuration;
 import megamek.common.Entity;
@@ -56,8 +57,10 @@ import megamek.common.Player;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
+import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -83,10 +86,13 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton moveBottomButton = new JButton(icon("moveBottom.png"));
 
     private final JCheckBox      oneUnitPerSheetCheck = new JCheckBox("Print each unit to a separate page");
-    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV");
+    private final JCheckBox      showPilotDataCheck      = new JCheckBox("Print crew data if available");
+    private final JCheckBox      adjustedBvCheck      = new JCheckBox("Print force-adjusted BV (C3 network)");
+    private final JCheckBox      showDamageCheck      = new JCheckBox("Print damage");
     private final JFrame         parent;
     private final List<BTObject> units                = new ArrayList<>();
     private final JList<String>  queuedUnitList       = new JList<>();
+    private final RecordSheetPreviewPanel recordSheetPanel = new RecordSheetPreviewPanel();
 
     private final boolean fromMul;
 
@@ -101,6 +107,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         this.printToPdf  = printToPdf;
         this.fromMul     = fromMul;
         this.mulFileName = mulFileName;
+        recordSheetPanel.setFullAsyncMode(true);
         initialize();
         if (units != null) {
             this.units.addAll(units);
@@ -152,16 +159,33 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
               "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
+        oneUnitPerSheetCheck.addActionListener(e -> {
+            recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        });
+
+        showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        showPilotDataCheck.setToolTipText("When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
+        showPilotDataCheck.addActionListener(e -> {
+            recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        });
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.). " +
-                                       "BV is always adjusted for pilot skill.");
+        adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
+        adjustedBvCheck.addActionListener(e -> {
+            recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+        });
+
+        showDamageCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        showDamageCheck.setToolTipText("When checked, damage will be shown on the Record Sheet.");
+        showDamageCheck.addActionListener(e -> {
+            recordSheetPanel.showDamage(showDamageCheck.isSelected());
+        });
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());
         queuedUnitList.setVisibleRowCount(15);
 
-        JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 1));
+        JPanel buttonPanel = new FixedXYPanel(new GridLayout(5, 2));
         if (!fromMul) {
             saveButton.setEnabled(false);
         }
@@ -183,26 +207,50 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitListScrollPane.setAlignmentY(JComponent.TOP_ALIGNMENT);
         queuedUnitListScrollPane.setBorder(new TitledBorder("Selected Units:"));
 
-        Box centerPanel = Box.createHorizontalBox();
-        centerPanel.add(buttonPanel);
-        centerPanel.add(Box.createHorizontalStrut(30));
-        centerPanel.add(moveButtonPanel);
-        centerPanel.add(queuedUnitListScrollPane);
-        centerPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
+        Box unitsPanel = Box.createHorizontalBox();
+        unitsPanel.add(moveButtonPanel);
+        unitsPanel.add(queuedUnitListScrollPane);
 
-        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(2, 1));
+        JPanel checkboxPanel = new FixedXYPanel(new GridLayout(4, 1));
         checkboxPanel.add(oneUnitPerSheetCheck);
         oneUnitPerSheetCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SINGLE_PRINT));
-        if (fromMul) {
-            checkboxPanel.add(adjustedBvCheck);
-            adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
-        }
+        checkboxPanel.add(showPilotDataCheck);
+        showPilotDataCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_SHOW_PILOT_DATA));
+        checkboxPanel.add(adjustedBvCheck);
+        adjustedBvCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_ADJUSTED_BV));
+        checkboxPanel.add(showDamageCheck);
+        showDamageCheck.setSelected(CConfig.getBooleanParam(CConfig.PQ_DAMAGE));
+        checkboxPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
+        
+        // Set RS settings from initial state of the checkboxes
+        recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
+        recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
+        recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
+        recordSheetPanel.showDamage(showDamageCheck.isSelected());
 
-        Box panel = Box.createVerticalBox();
-        panel.add(centerPanel);
-        panel.add(checkboxPanel);
-        panel.add(Box.createVerticalStrut(20));
-        return panel;
+        Box buttonPanelWithCheckboxes = Box.createHorizontalBox();
+        buttonPanelWithCheckboxes.add(buttonPanel);
+        buttonPanelWithCheckboxes.add(Box.createHorizontalStrut(30));
+        buttonPanelWithCheckboxes.add(checkboxPanel);
+        buttonPanelWithCheckboxes.setAlignmentY(JComponent.TOP_ALIGNMENT);
+
+        Box leftPanel = Box.createVerticalBox();
+        leftPanel.add(unitsPanel);
+        leftPanel.add(Box.createVerticalStrut(30));
+        leftPanel.add(buttonPanelWithCheckboxes);
+
+        JPanel recordSheetContainer = new JPanel(new BorderLayout());
+        recordSheetContainer.add(recordSheetPanel, BorderLayout.CENTER);
+        recordSheetContainer.setMinimumSize(new Dimension(400, 200));
+        recordSheetContainer.setPreferredSize(new Dimension(600, 200));
+        
+        Box centerPanel = Box.createHorizontalBox();
+        centerPanel.add(leftPanel);
+        centerPanel.add(Box.createHorizontalStrut(15));
+        centerPanel.add(recordSheetContainer);
+        centerPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        return centerPanel;
     }
 
     @Override
@@ -241,6 +289,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         queuedUnitList.setModel(replacementModel);
 
         saveButton.setEnabled(units.stream().anyMatch(unit -> unit instanceof Entity));
+        recordSheetPanel.setEntities(units);
     }
 
     private void linkForce() {
@@ -265,16 +314,21 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     @Override
     protected void okButtonActionPerformed(ActionEvent evt) {
+        RecordSheetOptions options = recordSheetPanel.getRecordSheetOptions();
         if (fromMul) {
             if (adjustedBvCheck.isSelected()) {
                 linkForce();
             } else {
                 unlinkForce();
             }
-            CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
-
         }
+        options.setC3inBV(adjustedBvCheck.isSelected());
+        options.setPilotData(showPilotDataCheck.isSelected());
+        options.setDamage(showDamageCheck.isSelected());
         CConfig.setParam(CConfig.PQ_SINGLE_PRINT, String.valueOf(oneUnitPerSheetCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_SHOW_PILOT_DATA, String.valueOf(showPilotDataCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_ADJUSTED_BV, String.valueOf(adjustedBvCheck.isSelected()));
+        CConfig.setParam(CConfig.PQ_DAMAGE, String.valueOf(showDamageCheck.isSelected()));
         CConfig.saveConfig();
 
         if (printToPdf) {
@@ -286,12 +340,14 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
                       FilenameUtils.removeExtension(mulFileName) + ".pdf");
             }
             if (exportFile != null) {
-                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected());
+                UnitPrintManager.exportUnits(units, exportFile, oneUnitPerSheetCheck.isSelected(), options);
             } else {
                 return;
             }
         } else {
-            UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected());
+            if (!UnitPrintManager.printAllUnits(units, oneUnitPerSheetCheck.isSelected(), options)) {
+                return;
+            }
         }
         super.okButtonActionPerformed(evt);
     }
@@ -302,30 +358,40 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             return;
         }
 
-        linkForce();
-
-        var fileChooser = new JFileChooser(".");
-        fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
-        var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
-        fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
-                                                   mulFileName :
-                                                   entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
-
-        if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
-            fileChooser.getSelectedFile() == null) {
-            return;
+        // If the first entity has no game, we link them all to a game. This is needed for C3 links.
+        boolean forcedLink = false;
+        if (entities.get(0).getGame() == null) {
+            forcedLink = true;
+            linkForce();
         }
-
-        File file = fileChooser.getSelectedFile();
-        if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
-            file = new File(file + "." + CG_FILEPATHMUL);
-        }
-
         try {
-            EntityListFile.saveTo(file, entities);
-        } catch (IOException e) {
-            logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            var fileChooser = new JFileChooser(".");
+            fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
+            var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"), CG_FILEPATHMUL);
+            fileChooser.setFileFilter(filter);
+            fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
+                                                    mulFileName :
+                                                    entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+
+            if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
+                fileChooser.getSelectedFile() == null) {
+                return;
+            }
+
+            File file = fileChooser.getSelectedFile();
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
+                file = new File(file + "." + CG_FILEPATHMUL);
+            }
+
+            try {
+                EntityListFile.saveTo(file, entities);
+            } catch (IOException e) {
+                logger.errorDialog(e, "Failed to save units to file: {}", "Error", e.getMessage());
+            }
+        } finally {
+            if (forcedLink) {
+                unlinkForce();
+            }
         }
     }
 
@@ -341,8 +407,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
               unitLoadingDialog,
               dialog -> entitiesSelected(dialog.getChosenEntities()));
         var entities = viewer.getChosenEntities();
+        unitLoadingDialog.dispose();
         viewer.dispose();
-
         entitiesSelected(entities);
     }
 
@@ -510,6 +576,16 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             var end   = indices[indices.length - 1];
             return end - start == indices.length - 1;
         }
+    }
+
+    @Override
+    protected void okAction() {
+        dispose();
+    }
+
+    @Override
+    protected void cancelAction() {
+        dispose();
     }
 
     // TODO: Move to UIUtil

@@ -28,13 +28,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.828427"
      inkscape:cx="301.05073"
-     inkscape:cy="365.57422"
+     inkscape:cy="450.60382"
      inkscape:window-width="3840"
      inkscape:window-height="2054"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="rs_template" />
+     inkscape:current-layer="g292" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1138,7 +1138,7 @@
          x="29.229"
          id="type"
          y="28"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.67px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000;mml-field-width:188"
          text-anchor="start">Lorem Ipsum</text>
       <text
          fill="#000000"
@@ -3707,19 +3707,19 @@
            d="m 64.330191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path284" />
+           id="engine_hit_1" />
         <path
            fill="none"
            d="m 73.530191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path285" />
+           id="engine_hit_2" />
         <path
            fill="none"
            d="m 82.730191,9.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path286" />
+           id="engine_hit_3" />
         <text
            x="55.93"
            y="21"
@@ -3734,16 +3734,16 @@
            d="m 64.330191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path287" />
+           id="gyro_hit_1" />
         <path
            fill="none"
            d="m 73.530191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path288" />
+           id="gyro_hit_2" />
         <path
            fill="none"
-           id="heavyDutyGyroPip"
+           id="gyro_hit_3"
            d="m 82.730191,18.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            visibility="hidden"
@@ -3762,13 +3762,13 @@
            d="m 64.330191,27.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path289" />
+           id="sensor_hit_1" />
         <path
            fill="none"
            d="m 73.530191,27.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path290" />
+           id="sensor_hit_2" />
         <text
            x="55.93"
            y="39"
@@ -3783,7 +3783,7 @@
            d="m 64.330191,36.2 c 0,-1.545 -1.255,-2.8 -2.8,-2.8 -1.545,0 -2.8,1.255 -2.8,2.8 0,1.545 1.255,2.8 2.8,2.8 1.545,0 2.8,-1.255 2.8,-2.8"
            stroke-width="1.72"
            stroke="#000000"
-           id="path291" />
+           id="life_support_hit_1" />
         <path
            fill="none"
            d="M 6,9.78 C 6,6.03 9.03,3 12.78,3 h 72.37 c 3.75,0 6.78,3.03 6.78,6.78 V 38.22 C 91.93,41.97 88.9,45 85.15,45 H 12.78 C 9.03,45 6,41.97 6,38.22 Z"
@@ -4924,25 +4924,28 @@
                    id="g1462"
                    transform="translate(475.7472,409.4425)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1464" />
+                     id="is_pip_hd_3" />
                 </g>
                 <g
                    id="g1466"
                    transform="translate(471.593,402.0341)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.961 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.8 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1468" />
+                     id="is_pip_hd_1" />
                 </g>
                 <g
                    id="g1470"
                    transform="translate(467.6313,409.4425)">
                   <path
-                     style="fill:none;stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
+                     fill="#FFFFFF"
+                     style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="path1472" />
+                     id="is_pip_hd_2" />
                 </g>
               </g>
               <g

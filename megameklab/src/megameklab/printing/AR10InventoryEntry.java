@@ -36,6 +36,12 @@ public class AR10InventoryEntry implements InventoryEntry {
     public String getQuantityField(int row) {
         return "";
     }
+    
+    @Override
+    public boolean isDamaged() {
+        return false;
+    }
+
 
     @Override
     public String getNameField(int row) {
@@ -85,5 +91,15 @@ public class AR10InventoryEntry implements InventoryEntry {
     @Override
     public boolean indentMultiline() {
         return false;
+    }
+
+    @Override
+    public boolean hasQuirks() {
+        return false;
+    }
+
+    @Override
+    public String getQuirksField() {
+        return "";
     }
 }

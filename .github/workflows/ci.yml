@@ -2,13 +2,13 @@ name: MegaMekLab CI with Gradle
 
 on:
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 env:
   GRADLE_OPTS: "-Dscan.link.VCS=${{ github.event.pull_request.html_url }}"
 
 jobs:
-  ci_cd:
+  pr_ci:
     runs-on: ${{ matrix.os }}
 
     outputs:
@@ -17,9 +17,9 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest] # For CI/CD running on *nix is sufficient
-        java-distribution: [temurin]
-        java-version: [17]
+        os: [ ubuntu-latest ] # For CI/CD running on *nix is sufficient
+        java-distribution: [ temurin ]
+        java-version: [ 17, 21 ]
       fail-fast: false
 
     steps:
@@ -50,6 +50,24 @@ jobs:
           ref: ${{ steps.find_mm.outputs.mmBranch }}
           path: megamek
 
+      - name: Add MM Hash
+        run: |
+          cd megamek
+          calculatedSha=$(git rev-parse HEAD)
+          echo "$calculatedSha" >> ../megameklab/megameklab/docs/mm-revision.txt
+
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          cd megameklab
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: "Output branch information to Version file"
+        run: |
+          echo "branch=PR-${{ github.event.number }}" >> megamek/megamek/resources/extraVersion.properties
+          echo "gitHash=${{ env.COMMIT_SHORT_SHA }}" >> megamek/megamek/resources/extraVersion.properties
+
       - name: Set up ${{ matrix.java-distribution }} JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v4
         with:
@@ -58,18 +76,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          build-scan-publish: true
-          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
-          build-scan-terms-of-use-agree: "yes"
 
       - name: Add MMLRevision file
         run: |
-          echo ${{ github.sha }} >> megameklab/megameklab//mml-revision.txt
+          echo ${{ github.sha }} >> megameklab/megameklab/mml-revision.txt
 
-      - name: Build with Gradle
+      - name: Test All
         working-directory: megameklab
-        run: ./gradlew build  -x checkstyleMain -x checkstyleTest --stacktrace --scan
+        run: ./gradlew testAll --stacktrace --scan
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v4
@@ -84,6 +98,10 @@ jobs:
           directory: ./megameklab/megameklab/build/reports/jacoco/test
           fail_ci_if_error: false
           verbose: true
+
+      - name: Build with Gradle
+        working-directory: megameklab
+        run: ./gradlew build -x test -PextraVersion="PR-${{ github.event.number }}-${{ env.COMMIT_SHORT_SHA }}"
 
       - name: Upload TarGZ Release
         uses: actions/upload-artifact@v4

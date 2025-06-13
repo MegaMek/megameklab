@@ -20,6 +20,7 @@ package megameklab.ui.listeners;
 
 import megamek.common.EquipmentType;
 import megamek.common.equipment.ArmorType;
+import megamek.common.ITechnology.TechRating;
 
 /**
  * Listener for changes to armor. No method is required by all implementing classes so all are given a default
@@ -52,7 +53,7 @@ public interface ArmorAllocationListener {
      *
      * @param techRating The new tech rating, using the rating constants from {@link megamek.common.ITechnology ITechnology}.
      */
-    default void armorTechRatingChanged(int techRating) {
+    default void armorTechRatingChanged(TechRating techRating) {
 
     }
 

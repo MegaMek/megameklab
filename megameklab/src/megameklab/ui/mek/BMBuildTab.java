@@ -29,8 +29,7 @@ import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import megamek.client.ui.swing.util.UIUtil;
-import megamek.common.Mounted;
+import megamek.client.ui.util.UIUtil;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
@@ -148,12 +147,7 @@ public class BMBuildTab extends ITab {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mounted : getMek().getEquipment()) {
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
-                UnitUtil.removeCriticals(getMek(), mounted);
-                MekUtil.clearMountedLocationAndLinked(mounted);
-            }
-        }
+        UnitUtil.removeAllCriticals(getMek());
         refresh.refreshAll();
     }
 

@@ -33,6 +33,7 @@ import megamek.common.*;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
+import megamek.common.ITechnology.TechRating;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -137,6 +138,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -173,7 +175,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -278,6 +280,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -308,6 +311,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             panSummary.refresh();
             refresh.refreshBuild();
             refresh.refreshStatus();
+            refresh.refreshSummary();
             refresh.refreshPreview();
             panMovement.removeListener(this);
             panMovement.setFromEntity(getSV());
@@ -391,7 +395,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void structuralTechRatingChanged(int techRating) {
+    public void structuralTechRatingChanged(TechRating techRating) {
         getSV().setStructuralTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panSummary.refresh();
@@ -402,13 +406,18 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void engineChanged(Engine engine) {
         getSV().setEngine(engine);
+
+        if (engine.getEngineType() == Engine.NONE) {
+            getSV().setOriginalWalkMP(0);
+        }
+
         // Switching between maglev and non-maglev engines changes movement mode
         if (TestSupportVehicle.SVType.RAIL.equals(TestSupportVehicle.SVType.getVehicleType(getSV()))) {
             getSV().setMovementMode(
                     (engine.getEngineType() == Engine.MAGLEV) ? EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
         }
         // Make sure the engine tech rating is at least the minimum for the engine type
-        if (getSV().getEngineTechRating() < engine.getTechRating()) {
+        if (getSV().getEngineTechRating().getIndex() < engine.getTechRating().getIndex()) {
             getSV().setEngineTechRating(engine.getTechRating());
             getSV().recalculateTechAdvancement();
         }
@@ -434,7 +443,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
-    public void engineTechRatingChanged(int techRating) {
+    public void engineTechRatingChanged(TechRating techRating) {
         getSV().setEngineTechRating(techRating);
         getSV().recalculateTechAdvancement();
         panFuel.setFromEntity(getSV());
@@ -458,6 +467,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
             getEntity().setOmni(installed);
@@ -551,6 +561,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().getMisc().remove(sponson);
                 getSV().getEquipment().remove(sponson);
                 UnitUtil.removeCriticals(getSV(), sponson);
+                UnitUtil.changeMountStatus(getSV(), sponson, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
         resetSponsonPintleWeight();
@@ -581,9 +592,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                     m.setPintleTurretMounted(false);
                 }
             }
-            getSV().getMisc().remove(installedPintle.get());
-            getSV().getEquipment().remove(installedPintle.get());
-            UnitUtil.removeCriticals(getSV(), installedPintle.get());
+            MiscMounted pintle = installedPintle.get();
+            getSV().getMisc().remove(pintle);
+            getSV().getEquipment().remove(pintle);
+            UnitUtil.removeCriticals(getSV(), pintle);
+            UnitUtil.changeMountStatus(getSV(), pintle, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         resetSponsonPintleWeight();
 
@@ -639,6 +652,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
             UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         EquipmentType eq = null;
         if (index == SVBuildListener.FIRECON_BASIC) {
@@ -841,10 +855,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

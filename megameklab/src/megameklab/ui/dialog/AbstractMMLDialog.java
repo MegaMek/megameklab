@@ -14,7 +14,7 @@
  */
 package megameklab.ui.dialog;
 
-import megamek.client.ui.baseComponents.AbstractDialog;
+import megamek.client.ui.dialogs.abstractDialogs.AbstractDialog;
 import megameklab.MegaMekLab;
 
 import javax.swing.*;

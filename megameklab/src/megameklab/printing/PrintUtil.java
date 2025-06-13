@@ -47,7 +47,7 @@ public final class PrintUtil {
      */
     public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
         if (eq instanceof AmmoType) {
-            return ((AmmoType) eq).getAmmoType() == AmmoType.T_COOLANT_POD;
+            return ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD;
         } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
         } else {
@@ -129,7 +129,6 @@ public final class PrintUtil {
         if ((eq instanceof MiscType)
                 && ((eq.hasFlag(MiscType.F_AP_MOUNT) && !eq.hasFlag(MiscType.F_BA_MANIPULATOR))
                         || eq.hasFlag(MiscType.F_FIRE_RESISTANT)
-                        || eq.hasFlag(MiscType.F_STEALTH)
                         || eq.hasFlag(MiscType.F_ARTEMIS)
                         || eq.hasFlag(MiscType.F_ARTEMIS_V)
                         || eq.hasFlag(MiscType.F_APOLLO)

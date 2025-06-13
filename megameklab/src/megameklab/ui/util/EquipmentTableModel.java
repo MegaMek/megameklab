@@ -39,7 +39,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import static megamek.client.ui.swing.util.UIUtil.alternateTableBGColor;
+import static megamek.client.ui.util.UIUtil.alternateTableBGColor;
 
 /**
  * this model was not being used by anything, so I totally redid so that it can
@@ -264,7 +264,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "-";
             }
         } else if (col == COL_DIVISOR) {
-            if (mtype != null && mtype.hasFlag(MiscType.F_ARMOR_KIT)) {
+            if ((mtype != null) && (mtype.hasFlag(MiscType.F_ARMOR_KIT))) {
                 if ((mtype.getSubType() & MiscType.S_ENCUMBERING) == 0) {
                     return String.valueOf(mtype.getDamageDivisor());
                 } else {
@@ -295,20 +295,20 @@ public class EquipmentTableModel extends AbstractTableModel {
                     special += "F";
                 }
             }
-            if (type.hasFlag(MiscType.F_ARMOR_KIT)) {
-                if ((type.getSubType() & MiscType.S_DEST) != 0) {
+            if ((mtype != null) && (mtype.hasFlag(MiscType.F_ARMOR_KIT))) {
+                if ((mtype.getSubType() & MiscType.S_DEST) != 0) {
                     special += "DEST ";
                 }
-                if ((type.getSubType() & MiscType.S_SNEAK_CAMO) != 0) {
+                if ((mtype.getSubType() & MiscType.S_SNEAK_CAMO) != 0) {
                     special += "Camo ";
                 }
-                if ((type.getSubType() & MiscType.S_SNEAK_IR) != 0) {
+                if ((mtype.getSubType() & MiscType.S_SNEAK_IR) != 0) {
                     special += "IR ";
                 }
-                if ((type.getSubType() & MiscType.S_SNEAK_ECM) != 0) {
+                if ((mtype.getSubType() & MiscType.S_SNEAK_ECM) != 0) {
                     special += "ECM ";
                 }
-                if ((type.getSubType() & MiscType.S_SPACE_SUIT) != 0) {
+                if ((mtype.getSubType() & MiscType.S_SPACE_SUIT) != 0) {
                     special += "SPC ";
                 }
             }
@@ -453,11 +453,11 @@ public class EquipmentTableModel extends AbstractTableModel {
      */
     public static String getTechBaseAsString(EquipmentType equipment) {
         switch(equipment.getTechBase()) {
-            case TechAdvancement.TECH_BASE_ALL:
+            case ALL:
                 return "All";
-            case TechAdvancement.TECH_BASE_IS:
+            case IS:
                 return "IS";
-            case TechAdvancement.TECH_BASE_CLAN:
+            case CLAN:
                 return "Clan";
             default:
                 return "Unknown";
@@ -507,24 +507,24 @@ public class EquipmentTableModel extends AbstractTableModel {
                 int dmg;
                 if (wtype instanceof ThunderBoltWeapon) {
                     switch (wtype.getAmmoType()) {
-                        case AmmoType.T_TBOLT_5:
+                        case TBOLT_5:
                             return "5";
-                        case AmmoType.T_TBOLT_10:
+                        case TBOLT_10:
                             return "10";
-                        case AmmoType.T_TBOLT_15:
+                        case TBOLT_15:
                             return "15";
-                        case AmmoType.T_TBOLT_20:
+                        case TBOLT_20:
                             return "20";
                         default :
                             return "0";
                     }
                 } else if ((wtype instanceof ATMWeapon)
-                        ||(wtype.getAmmoType() == AmmoType.T_SRM)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_STREAK)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_ADVANCED)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_IMP)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_PRIMITIVE)
-                        || (wtype.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                        ||(wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_PRIMITIVE)
+                        || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
                     dmg = 2;
                 } else {
                     dmg = 1;

@@ -18,10 +18,11 @@
  */
 package megameklab.ui.generalUnit;
 
-import java.awt.Event;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,11 +31,12 @@ import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
 import megamek.client.ui.WrapLayout;
-import megamek.client.ui.dialogs.BVDisplayDialog;
-import megamek.client.ui.dialogs.CostDisplayDialog;
-import megamek.client.ui.dialogs.WeightDisplayDialog;
-import megamek.client.ui.swing.GUIPreferences;
-import megamek.client.ui.swing.calculationReport.CalculationReport;
+import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
+import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
+import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
@@ -45,16 +47,18 @@ import megamek.common.Mounted;
 import megamek.common.WeaponType;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
+import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 public class StatusBar extends ITab {
 
     private static final String WEIGHT_LABEL = "Weight: %s %s / %s %s %s";
 
-    private final MegaMekLabMainUI parentFrame;
+    private final MegaMekLabMainUI parent;
     private final JLabel bvLabel = new ClickableLabel(
             e -> new BVDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     protected final JLabel tons = new ClickableLabel(
@@ -70,7 +74,7 @@ public class StatusBar extends ITab {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
         setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
-        parentFrame = parent;
+        this.parent = parent;
         formatter = new DecimalFormat();
 
         JButton btnValidate = new JButton("Validate Unit");
@@ -79,6 +83,12 @@ public class StatusBar extends ITab {
         JButton btnRefresh = new JButton("Refresh UI");
         btnRefresh.setToolTipText("Refresh the UI, possibly repairing it if it is in a broken state.");
         btnRefresh.addActionListener(evt -> refresh.refreshAll());
+
+        JButton btnAddToForce = new JButton("Add to Force");
+        btnAddToForce.setToolTipText("Add this unit to the current force.");
+        btnAddToForce.addActionListener(evt -> {
+            ForceBuildUI.showAndAddEntity(getEntity());
+        });
 
         invalid.setForeground(GUIPreferences.getInstance().getWarningColor());
         invalid.setVisible(false);
@@ -90,6 +100,7 @@ public class StatusBar extends ITab {
         }
 
         add(btnValidate);
+        add(btnAddToForce);
         add(btnRefresh);
         add(tons);
         add(bvLabel);
@@ -147,8 +158,20 @@ public class StatusBar extends ITab {
     }
 
     private void refreshBV() {
-        int bv = getEntity().calculateBattleValue();
-        bvLabel.setText("BV: " + bv);
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+        if (CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV)) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA));
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        bvLabel.setText("BV: " + bvValue);
         bvLabel.setToolTipText("Battle Value 2.0. Click to show the BV calculation.");
     }
 
@@ -166,7 +189,7 @@ public class StatusBar extends ITab {
     }
 
     private JFrame getParentFrame() {
-        return parentFrame;
+        return parent != null ? parent.getParentFrame() : null;
     }
 
     public void addRefreshedListener(RefreshListener refreshListener) {
@@ -174,7 +197,7 @@ public class StatusBar extends ITab {
     }
 
     private final ActionListener validationListener = e -> {
-        if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
+        if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
             DebugEntity.copyEquipmentState(getEntity());
         } else {
             UnitUtil.showValidation(getEntity(), getParentFrame());
@@ -219,19 +242,19 @@ public class StatusBar extends ITab {
                 continue;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.ROCKET_LAUNCHER) || weaponType.hasFlag(WeaponType.F_ONESHOT)) {
                 weaponHeat *= 0.25;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.T_AC_ULTRA_THB)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
                 weaponHeat *= 2;
             }
 
-            if (weaponType.getAmmoType() == AmmoType.T_AC_ROTARY) {
+            if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
                 weaponHeat *= 6;
             }
 
-            if ((weaponType.getAmmoType() == AmmoType.T_SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.T_LRM_STREAK)) {
+            if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK) || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_STREAK)) {
                 weaponHeat *= 0.5;
             }
             heat += weaponHeat;

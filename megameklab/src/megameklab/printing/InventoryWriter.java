@@ -32,12 +32,14 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.*;
+import megamek.common.enums.WeaponSortOrder;
 import megamek.common.equipment.WeaponMounted;
 import megameklab.util.UnitUtil;
 
@@ -55,11 +57,15 @@ public class InventoryWriter {
 
     // Proportion of the region width to indent subsequent lines of the same equipment entry
     private static final double INDENT = 0.02;
+    private static final int DAMAGE_LINETHROUGH_MARGIN = 8;
+
     /**
      * The minimum font size to use when scaling inventory text to fit into
      * available space
      */
     private static final float MIN_FONT_SIZE = 4.5f;
+    private static final float QUIRKS_FONT_SCALING = 0.9f;
+    private static final float FOOTER_TEXT_WIDTH_RATIO = 0.95f;
     /**
      * The amount of space between lines, as a factor of the font height determined
      * by {@link java.awt.FontMetrics}
@@ -224,17 +230,35 @@ public class InventoryWriter {
     }
 
     private void parseEquipment() {
-        for (Mounted<?> m : sheet.getEntity().getEquipment()) {
+        WeaponSortOrder sortOrder = sheet.options.getWeaponsOrder();
+        List<Mounted<?>> sortedMounted = sheet.getEntity().getEquipment();
+        if (sortOrder != WeaponSortOrder.DEFAULT) {
+            sortedMounted = new ArrayList<>(sortedMounted); // Copy to sort without affecting the original
+            Comparator<WeaponMounted> weaponSortComparator = sortOrder.getWeaponSortComparator(sheet.getEntity());
+            sortedMounted.sort((m1, m2) -> {
+                boolean w1 = m1 instanceof WeaponMounted;
+                boolean w2 = m2 instanceof WeaponMounted;
+                if (w1 && w2) {
+                    return weaponSortComparator.compare((WeaponMounted)m1, (WeaponMounted)m2);
+                } else if (w1) {
+                    return -1;
+                } else if (w2) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        for (Mounted<?> m : sortedMounted) {
             if (m.isWeaponGroup()) {
                 continue;
             }
-            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+            if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
                 if (m.getLocation() != Entity.LOC_NONE) {
                     String shortName = m.getType().getShortName().replace("Ammo", "");
                     shortName = shortName.replace("(Clan)", "");
                     ammo.merge(shortName.trim(), m.getBaseShotsLeft(), Integer::sum);
                 } else if ((sheet.getEntity() instanceof ProtoMek)
-                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.T_IATM)) {
+                        && (((AmmoType) m.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.IATM)) {
                     // Bit of an ugly hack to get fusillade ammo to show up and identify as fusillade
                     // instead of iATM3
                     ammo.merge("Fusillade", m.getBaseShotsLeft(), Integer::sum);
@@ -253,6 +277,17 @@ public class InventoryWriter {
                     && m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
+            /**
+             * BattleArmor have their own special mount points.
+             * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
+             * The solution is to filter out everything that has critical slots (means can't be for squad only)
+             * and is mounted on MOUNT_LOC_NONE
+             */
+            if ((sheet.getEntity() instanceof BattleArmor)
+                && (m.getCriticals() > 0)
+                && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                continue;
+            }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
             StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
             if (null == same) {
@@ -261,11 +296,22 @@ public class InventoryWriter {
                 same.incrementQty();
             }
         }
+
+        // Special entries for mek features which aren't represented by a MiscType.
         if (sheet.getEntity() instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
             var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
                 name = "RISC Heat Sink Override Kit";
                 shortName = "RISC HS Override Kit";
                 internalName = "RISC Heat Sink Override Kit";
+            }});
+            mounted.setLocation(Mek.LOC_NONE);
+            equipment.add(new StandardInventoryEntry(mounted));
+        }
+        if (sheet.getEntity() instanceof Mek mek && mek.hasFullHeadEject()) {
+            var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
+                name = "Full Head Ejection System";
+                shortName = "Full Head Eject System";
+                internalName = "Full Head Ejection System";
             }});
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
@@ -282,11 +328,12 @@ public class InventoryWriter {
                 standardWeapons.add(m);
             }
         }
-        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons);
+        List<AmmoMounted> ammos = sheet.getEntity().getAmmo();
+        List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammos);
         for (WeaponBayText text : list) {
             capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, true));
         }
-        list = computeWeaponBayTexts(standardWeapons);
+        list = computeWeaponBayTexts(standardWeapons, ammos);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
@@ -316,13 +363,19 @@ public class InventoryWriter {
      * @param weapons A list of weapon bays
      * @return A list of bays condensed by weapon type and symmetric location
      */
-    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons) {
+    private List<WeaponBayText> computeWeaponBayTexts(List<WeaponMounted> weapons, List<AmmoMounted> ammos) {
         List<WeaponBayText> weaponBayTexts = new ArrayList<>();
         // Collection info on weapons to print
         for (WeaponMounted bay : weapons) {
             WeaponBayText wbt = new WeaponBayText(bay.getLocation(), bay.isRearMounted());
             for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
-                wbt.addBayWeapon(weaponMounted);
+                if (!wbt.addBayWeapon(weaponMounted)) continue;
+                for (AmmoMounted ammo : ammos) {
+                    if (ammo.getLocation() == weaponMounted.getLocation()
+                    && weaponMounted.getType().getAmmoType() == ammo.getType().getAmmoType()) {
+                        wbt.addBayAmmo(weaponMounted.getType(), ammo);
+                    }
+                }
             }
             // Combine or add
             boolean combined = false;
@@ -357,7 +410,10 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraCapitalBayLines(float fontSize) {
-        return extraLines(equipment, bayColX, fontSize, 0);
+        if (capitalBays == null || capitalBays.isEmpty()) {
+            return 0;
+        }
+        return extraLines(capitalBays, bayColX, fontSize, 0);
     }
 
     /**
@@ -368,18 +424,25 @@ public class InventoryWriter {
      * @return         The number of extra lines required by the table
      */
     public int extraStandardBayLines(float fontSize) {
+        if (standardBays == null || standardBays.isEmpty()) {
+            return 0;
+        }
         return extraLines(standardBays, bayColX, fontSize, 0);
     }
 
     private int extraLines(List<? extends InventoryEntry> list, double[] colX, float fontSize, int nameIndex) {
         int lines = 0;
+        final double nameWidth = colX[nameIndex + 1] - colX[nameIndex] - indent;
         for (InventoryEntry entry : list) {
-            double width = colX[nameIndex + 1] - colX[nameIndex] - indent;
-            double row1Width = width - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
+            // Take in consideration the location field for possible reduction of name width on the first row
+            final double nameWidthRow0 = nameWidth - sheet.getTextLength(entry.getLocationField(0), fontSize) * 0.5;
             for (int r = 0; r < entry.nRows(); r++) {
-                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? row1Width : width)) {
+                if (sheet.getTextLength(entry.getNameField(r), fontSize) >= (r == 0 ? nameWidthRow0 : nameWidth)) {
                     lines++;
                 }
+            }
+            if (sheet.showQuirks() && entry.hasQuirks()) {
+                lines += (int) Math.ceil(sheet.getItalicTextLength(entry.getQuirksField(), fontSize) / ((viewWidth * 0.96) - (colX[0] + indent)));
             }
         }
         return lines;
@@ -404,11 +467,10 @@ public class InventoryWriter {
         } else {
             yPosition = printColumnHeaders(yPosition);
         }
-
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
         yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
         if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
-            printBayInfo(metrics[0], metrics[1], yPosition);
+            yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
@@ -462,12 +524,23 @@ public class InventoryWriter {
         return scaleText(viewHeight, calcLines);
     }
 
+    static private float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
+    static private float LINE_SPACING_REDUCTION_STEP = 0.05f; // the amount we reduce the line spacing each attempt
+    static private float FONT_SIZE_REDUCTION_STEP = 0.25f; // the amount we reduce the font each attempt
+    // the minimum line spacing during the first "line spacing only" attempts
+    // if we can't fit the text, we will rollback and we will start reducing the
+    // font size and line spacing
+    static private float MIN_LINE_SPACING_IN_SPECIAL_ATTEMPTS = 1.0f;
+    // the ratio of attempts between font size and line spacing.
+    // if this number is > 1, we will do more attempts to reduce line spacing compared to font size
+    static private float RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS = 2;
+
     /**
      * If the lines do not fit in the available space, we will need to reduce the font size
-     * and possible the amount of space between lines. We take it in steps of -0.5 instead of
-     * scaling proportionately because not only is the relationship between font size and height
-     * not directly proportional, but a smaller reduction may be sufficient to reduce the number
-     * of line required for longer fields.
+     * and possible the amount of space between lines.
+     * We first try to reduce the line spacing factor until a certain threshold,
+     * and if it fails we start an alternate cycle of attempts between font size
+     * and line spacing reduction.
      *
      * @param height The height of the region the text needs to fit in
      * @param calcLines A supplier for the number of lines. Since reducing the font size may allow for fewer
@@ -475,20 +548,83 @@ public class InventoryWriter {
      * @return A tuple of the new font height and line height, in that order
      */
     public float[] scaleText(double height, Function<Float, Integer> calcLines) {
-        float fontSize = FONT_SIZE_MEDIUM;
-        float lineSpacing = 1.2f;
-        float lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
-        int lines = calcLines.apply(fontSize);
-        while ((fontSize > MIN_FONT_SIZE) && (lineHeight * lines >= height)) {
-            if (lineSpacing > MIN_LINE_SPACING) {
-                lineSpacing -= 0.1f;
-            } else {
-                fontSize = Math.max(MIN_FONT_SIZE, fontSize - 0.5f);
+        float currentFontSize = FONT_SIZE_MEDIUM;
+        float currentLineSpacingFactor = INITIAL_LINE_SPACING;
+        int lines;
+        float actualLineHeight;
+        int alternateReductionState = 0; // 0 = prioritize font size, 1 = prioritize line spacing
+        boolean attemptForLineSpacingOnly = true;
+        while (true) {
+            lines = calcLines.apply(currentFontSize);
+            float fontMetricsHeight = sheet.getFontHeight(currentFontSize);
+            actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+
+            if (actualLineHeight * lines < height) {
+                // Text fits! break the loop
+                break;
             }
-            lines = calcLines.apply(fontSize);
-            lineHeight = sheet.getFontHeight(fontSize) * lineSpacing;
+
+            // We try first to reduce the line spacing factor to see if it is enough
+            // to fit the text. If it fails, we rollback and we start an alternate
+            // cycle of attempts between font and line spacing.
+            if (attemptForLineSpacingOnly) {
+                attemptForLineSpacingOnly = false;
+                boolean fitFoundInSpecialPhase = false;
+                final float originalLineSpacingFactor = currentLineSpacingFactor;
+                while (true) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
+                    if (currentLineSpacingFactor < MIN_LINE_SPACING_IN_SPECIAL_ATTEMPTS) {
+                        // Too much reduction, we failed
+                        break;
+                    }
+                    actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+                    if (actualLineHeight * lines < height) {
+                        fitFoundInSpecialPhase = true;
+                        break;
+                    }
+                }
+                if (fitFoundInSpecialPhase) {
+                    // We found the fit! The main loop will to the final check.
+                    continue;
+                } else {
+                    // Rollback
+                    currentLineSpacingFactor = originalLineSpacingFactor;
+                    actualLineHeight = fontMetricsHeight * currentLineSpacingFactor;
+                }
+            }
+
+
+            boolean reductionMade = false;
+            // This is the alternate reduction cycle between font size and line spacing factor
+            if (alternateReductionState == 0) { // Prioritize reducing font size
+                if (currentFontSize > MIN_FONT_SIZE) {
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
+                    reductionMade = true;
+                } else if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
+                    reductionMade = true;
+                }
+            } else { // Prioritize reducing line spacing factor
+                if (currentLineSpacingFactor > MIN_LINE_SPACING) {
+                    currentLineSpacingFactor = Math.max(MIN_LINE_SPACING, currentLineSpacingFactor - LINE_SPACING_REDUCTION_STEP);
+                    reductionMade = true;
+                } else if (currentFontSize > MIN_FONT_SIZE) {
+                    currentFontSize = Math.max(MIN_FONT_SIZE, currentFontSize - FONT_SIZE_REDUCTION_STEP);
+                    reductionMade = true;
+                }
+            }
+            
+            alternateReductionState++;
+            if (alternateReductionState > RATIO_FONT_SIZE_LINE_SPACING_ATTEMPTS) {
+                alternateReductionState = 0;
+            }
+
+            if (!reductionMade) {
+                // No more reductions possible, break the loop
+                break;
+            }
         }
-        return new float[] { fontSize, lineHeight };
+        return new float[] { currentFontSize, actualLineHeight };
     }
 
     /**
@@ -503,36 +639,39 @@ public class InventoryWriter {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
+            final double xPosition = (viewX + viewWidth * 0.025);
+            final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, 0, viewWidth * 0.95, lineHeight,
+                lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         fuelText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025,
-                        lines * lineHeight, viewWidth * 0.95, lineHeight,
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
+                        lines * lineHeight, textWidth, lineHeight,
                         miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, viewX + viewWidth * 0.025, lines * lineHeight,
-                        viewWidth * 0.95, lineHeight,
-                        quirksText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
+                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
             }
+            final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
+            // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
-                            viewY + viewHeight - lines * lineHeight));
+                            viewY + viewHeight - totalHeight - (lineHeight * 0.5)));
         }
     }
 
@@ -567,27 +706,34 @@ public class InventoryWriter {
     private int calcLineCount(float fontSize) {
         // The width of the name field varies depending on aero/ground or whether there is a heat column,
         // but is always the difference between the second and third.
-        final double nameWidth = colX[2] - colX[1] - viewWidth * INDENT;
-        double dmgWidth = Double.MAX_VALUE;
+        double damageWidth = Double.MAX_VALUE;
         for (int i = 0; i < columnTypes.length; i++) {
             if (Column.DAMAGE.equals(columnTypes[i])) {
-                dmgWidth = colX[i + 1] - colX[i];
+                damageWidth = colX[i + 1] - colX[i] - (fontSize / 2);
                 break;
             }
         }
         int lines = 0;
         for (StandardInventoryEntry line : equipment) {
             int rows = line.nRows();
-            // If the name or damage field is too long to fit in the space, make sure there is a second row
-            if ((rows == 1) &&
-                    ((sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) ||
-                        sheet.getTextLength(line.getDamageField(0), fontSize) > dmgWidth - fontSize)) {
-                rows++;
-            }
             lines += rows;
+            double baseNameWidth = colX[2] - colX[1] - viewWidth * INDENT;
+            double nameWidth = baseNameWidth;
+            if (!(sheet.getEntity() instanceof BattleArmor)) {
+                nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
+            }
+            if (sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) {
+                lines++;
+            } else
+            if (sheet.getTextLength(line.getDamageField(0), fontSize) > damageWidth) {
+                lines++;
+            }
+            if (sheet.showQuirks() && line.hasQuirks()) {
+                lines += (int) Math.ceil(sheet.getItalicTextLength(line.getQuirksField(), fontSize) / (viewWidth * 0.96));
+            }
         }
-        if (sheet.getEntity() instanceof SmallCraft && !transportBays.isEmpty()) {
-            lines += transportBays.size() + 1; // add extra for header
+        if (transportBayLines() > 0) {
+            lines += transportBayLines() + 1; // add extra for header
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
@@ -597,11 +743,13 @@ public class InventoryWriter {
     }
 
     public int footerLines(float fontSize) {
-        return (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / viewWidth)
-            + (int) Math.ceil(sheet.getTextLength(quirksText, fontSize) / viewWidth);
+        final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
+        final int footerLines = (int) Math.ceil(sheet.getTextLength(ammoText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(fuelText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(featuresText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getTextLength(miscNotesText, fontSize) / textWidth)
+            + (int) Math.ceil(sheet.getItalicTextLength(quirksText, fontSize) / textWidth);
+        return footerLines;
     }
 
     /**
@@ -654,6 +802,9 @@ public class InventoryWriter {
         for (InventoryEntry line : list) {
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
+                if (line.isDamaged()) {
+                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontSize * 0.3), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
+                }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
@@ -668,6 +819,7 @@ public class InventoryWriter {
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
+                            
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
@@ -697,9 +849,10 @@ public class InventoryWriter {
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
+                            final float rightPadding = (fontSize / 2);
                             lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
                                     yPosition,
-                                    colX[i + 1] - colX[i] - fontSize, lineHeight, line.getDamageField(row),
+                                    colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
@@ -736,6 +889,13 @@ public class InventoryWriter {
                             break;
                     }
                 }
+                yPosition += lineHeight * lines;
+            }
+            if (sheet.showQuirks() && line.hasQuirks()) {
+                int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
+                            yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
+                            line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
+                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
                 yPosition += lineHeight * lines;
             }
         }
@@ -843,7 +1003,7 @@ public class InventoryWriter {
                 case MRV:
                 case LRV:
                 case ERV:
-                    sheet.addTextElement(canvas, bayColX[i], currY, columnTypes[i].header, FONT_SIZE_MEDIUM,
+                    sheet.addTextElement(canvas, bayColX[i], currY, Column.BAY_COLUMNS[i].header, FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE);
                     break;
                 default:
@@ -876,7 +1036,7 @@ public class InventoryWriter {
             int count = 1;
             for (int size : ship.getGravDecks()) {
                 String gravityString = "Grav Deck #" + count + ": " + size + "-meters";
-                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, "start", "normal");
+                sheet.addTextElement(canvas, xPosition, yPosition, gravityString, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                 yPosition += lineHeight;
                 if (count == (ship.getGravDecks().size() / 2)) {
                     yPosition = currY;

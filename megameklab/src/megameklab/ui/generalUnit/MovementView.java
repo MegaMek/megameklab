@@ -77,7 +77,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JTextField txtWalkFinal = new JTextField();
     private final JTextField txtRunFinal = new JTextField();
     private final JTextField txtJumpFinal = new JTextField();
-
+    // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
     private final JLabel lblMekMechanicalJumpMP = new JLabel("Mech. J. Booster MP:");
     private final SpinnerNumberModel spnMekMechanicalJumpModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnMekMechanicalJumpMP = new JSpinner(spnMekMechanicalJumpModel);
@@ -247,13 +247,24 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             }
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
+        } else if (en instanceof ConvFighter asf) { // ConvFighter is a subclass of AeroSpaceFighter so should be checked first
+            if (asf.getWeight() <= 5) {
+                minWalk = 2;
+            } else {
+                minWalk = 1;
+            }
+        } else if (en instanceof AeroSpaceFighter asf) {
+            if (asf.getWeight() <= 5) {
+                minWalk = 4;
+            } else {
+                minWalk = 3;
+            }
         }
         // Trailers with no engine have a max speed of zero.
         if (en.isTrailer() && ((en.getEngine() == null)
                     || (en.getEngine().getEngineType() == Engine.NONE))) {
             maxWalk = 0;
         }
-
         spnWalkModel.setMinimum(minWalk);
         spnWalkModel.setMaximum(maxWalk);
         spnWalk.setValue(Math.max(minWalk, en.getOriginalWalkMP()));
@@ -263,7 +274,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         txtWalkFinal.setText(String.valueOf(en.getWalkMP()));
 
         txtRunBase.setText(String.valueOf((int) Math.ceil(((Number) spnWalk.getValue()).intValue() * 1.5)));
-        txtRunFinal.setText(en.getRunMPasString());
+        txtRunFinal.setText(en.getRunMPasString(false));
 
         int labelIndex = LABEL_INDEX_MEK;
         boolean showJump = true;

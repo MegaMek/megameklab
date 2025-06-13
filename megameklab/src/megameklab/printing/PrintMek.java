@@ -30,9 +30,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.GetSVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.*;
@@ -51,6 +49,9 @@ import megameklab.util.UnitUtil;
  */
 public class PrintMek extends PrintEntity {
     private static final MMLogger logger = MMLogger.create(PrintMek.class);
+    private static final String IS_PIP_HD_PREFIX = "is_pip_hd_";
+    private static final String IS_PIP_HD_SH_PREFIX = "is_pip_hd_sh_";
+    private static final int EXTEND_DAMAGE_LINETHROUGH_LENGTH = 2;
 
     /**
      * The current Mek being printed.
@@ -112,6 +113,7 @@ public class PrintMek extends PrintEntity {
         }
         // mek type
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("Land-Air 'Mech");
         } else if (mek.hasETypeFlag(Entity.ETYPE_QUADVEE)) {
             if (mek.isOmni()) {
@@ -119,10 +121,13 @@ public class PrintMek extends PrintEntity {
             }
             sb.append("QuadVee");
         } else if (mek.isIndustrial()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("IndustrialMech");
         } else if (mek.isOmni()) {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("OmniMech");
         } else {
+            // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
             sb.append("BattleMech");
         }
         sb.append(" Record Sheet");
@@ -132,6 +137,20 @@ public class PrintMek extends PrintEntity {
     @Override
     public Entity getEntity() {
         return mek;
+    }
+
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        super.applyCoreComponentsCriticalDamage();
+        fillCoreComponentCriticalDamage(ENGINE_HIT, getEngineHits());
+        fillCoreComponentCriticalDamage(GYRO_HIT, getGyroHits());
+        fillCoreComponentCriticalDamage(SENSOR_HIT, getHitsCoreComponent(Mek.SYSTEM_SENSORS));
+        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, getHitsCoreComponent(Mek.SYSTEM_LIFE_SUPPORT));
+        if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+            fillCoreComponentCriticalDamage(AVIONICS_HIT, getHitsCoreComponent(LandAirMek.LAM_AVIONICS));
+            fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, getHitsCoreComponent(LandAirMek.LAM_LANDING_GEAR));
+        }
     }
 
     @Override
@@ -151,7 +170,7 @@ public class PrintMek extends PrintEntity {
 
         Element hsRect = getSVGDocument().getElementById(HEAT_SINK_PIPS);
         if (hsRect instanceof SVGRectElement) {
-            drawHeatSinkPips((SVGRectElement) hsRect, mek.heatSinks());
+            drawHeatSinkPips((SVGRectElement) hsRect, mek.heatSinks(), getHeatsinkDamage());
         }
 
         if (mek.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
@@ -163,6 +182,20 @@ public class PrintMek extends PrintEntity {
             }
         }
 
+    }
+
+    private int getShieldDADamage(MiscMounted m) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return m.getBaseDamageAbsorptionRate() - m.getDamageAbsorption(mek, m.getLocation());
+    }
+
+    private int getShieldDCDamage(MiscMounted m) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return m.getBaseDamageCapacity() - m.getCurrentDamageCapacity(mek, m.getLocation());
     }
 
     private void printShields() {
@@ -179,13 +212,13 @@ public class PrintMek extends PrintEntity {
                 }
                 element = getSVGDocument().getElementById(SHIELD_DC + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getCurrentDamageCapacity(mek, m.getLocation()),
-                            PipType.CIRCLE, useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageCapacity(),
+                            PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDCDamage(m), useAlternateArmorGrouping());
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
-                    ArmorPipLayout.addPips(this, element, m.getDamageAbsorption(mek, m.getLocation()),
-                            PipType.DIAMOND, useAlternateArmorGrouping());
+                    ArmorPipLayout.addPips(this, element, m.getBaseDamageAbsorptionRate(),
+                            PipType.DIAMOND, DEFAULT_PIP_STROKE, FILL_WHITE, getShieldDADamage(m), useAlternateArmorGrouping());
                 }
             }
         }
@@ -297,27 +330,51 @@ public class PrintMek extends PrintEntity {
         if (null == nl) {
             return false;
         }
-        return copyPipPattern(nl, CANON_ARMOR_PIPS);
+        return copyPipPattern(nl, CANON_ARMOR_PIPS, getArmorDamage(loc, rear));
     }
 
     private boolean loadISPips() {
-        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d.svg",
-                (int) mek.getWeight()));
+        boolean result = false;
+        for (int loc = 0; loc < mek.locations(); loc++) {
+            if (!loadISPips(loc)) {
+                return false;
+            }
+            if (!result) {
+                result = true;
+            }
+        }
+        if (result) {
+            hideElement(STRUCTURE_PIPS);
+        }
+        return result;
+    }
+
+    private boolean loadISPips(int loc) {
+        String locAbbr = mek.getLocationAbbr(loc);
+        NodeList nl = loadPipSVG(String.format("data/images/recordsheets/biped_pips/BipedIS%d_%s.svg",
+                (int) mek.getWeight(), locAbbr));
         if (null == nl) {
             return false;
         }
-        hideElement(STRUCTURE_PIPS);
-        return copyPipPattern(nl, CANON_STRUCTURE_PIPS);
+        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, getStructureDamage(loc));
     }
 
-    private boolean copyPipPattern(NodeList nl, String parentName) {
+    private boolean copyPipPattern(NodeList nl, String parentName, int damage) {
         Element parent = getSVGDocument().getElementById(parentName);
         if (null == parent) {
             return false;
         }
-        for (int node = 0; node < nl.getLength(); node++) {
-            final Node wn = nl.item(node);
-            parent.appendChild(getSVGDocument().importNode(wn, true));
+        // Append nodes and apply damage
+        int remainingDamage = damage;
+        for (int i = 0; i < nl.getLength(); i++) {
+            if (nl.item(i) instanceof Element el) {
+                if (remainingDamage > 0) {
+                    remainingDamage--;
+                    // Set the fill attribute to black for damaged pips
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                }
+                parent.appendChild(getSVGDocument().importNode(el, true)); // Final append
+            }
         }
         return true;
     }
@@ -334,16 +391,15 @@ public class PrintMek extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Failed to open pip SVG " + f.getName() + ": "+ e.getMessage(), e);
             return null;
         }
 
         if (doc == null) {
-            logger.error("Failed to open pip SVG file! Path: " + f.getName());
+            logger.error("Document is null for svg file: " + f.getName());
             return null;
-        } else {
-            return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
         }
+        return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
     }
 
     // Mek armor and structure pips require special handling for rear armor and
@@ -374,13 +430,26 @@ public class PrintMek extends PrintEntity {
 
             if ((null != element) && !frontComplete) {
                 ArmorPipLayout.addPips(this, element, mek.getOArmor(loc),
-                        PipType.forAT(mek.getArmorType(loc)), alternateMethod);
-
+                        PipType.forAT(mek.getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), alternateMethod);
             }
-            if ((loc > Mek.LOC_HEAD) && !structComplete) {
-                element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
-                if (null != element) {
-                    ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), alternateMethod);
+            if (!structComplete) {
+                if ((loc == Mek.LOC_HEAD) ) {
+                    final int headDamage = getStructureDamage(loc);
+                    if (headDamage > 0) {
+                        final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+                        for (int i = 1; i <= headDamage; i++) {
+                            element = getElementById(prefixHeadPip + i);
+                            if (null != element) {
+                                element.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                            }
+                        }
+                    }
+                } else
+                if (loc > Mek.LOC_HEAD) {
+                    element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
+                    if (null != element) {
+                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod);
+                    }
                 }
             }
             if (mek.hasRearArmor(loc) && !rearComplete) {
@@ -391,7 +460,7 @@ public class PrintMek extends PrintEntity {
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "R");
                 if (null != element) {
                     ArmorPipLayout.addPips(this, element, mek.getOArmor(loc, true),
-                            PipType.forAT(mek.getArmorType(loc)), alternateMethod);
+                            PipType.forAT(mek.getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, true), alternateMethod);
 
                 }
             }
@@ -442,53 +511,73 @@ public class PrintMek extends PrintEntity {
             addTextElement(canvas, x + fontSize / 2, viewY - 1, text, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
-
         for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
                 currY += gap;
             }
+            CriticalSlot crit = mek.getCritical(loc, slot);
+            String weight = SVGConstants.SVG_BOLD_VALUE;
+            String fill = FILL_BLACK;
+            if (crit != null && crit.isDamaged()) {
+                addLineThrough(canvas, viewX-EXTEND_DAMAGE_LINETHROUGH_LENGTH, currY-(fontSize * 0.3), (critX-viewX)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+            }
             addTextElement(canvas, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
                     SVGConstants.SVG_BOLD_VALUE);
-            CriticalSlot crit = mek.getCritical(loc, slot);
-            String style = SVGConstants.SVG_BOLD_VALUE;
-            String fill = FILL_BLACK;
             if ((null == crit)
                     || ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                             && (!crit.getMount().getType().isHittable()))) {
-                style = SVGConstants.SVG_NORMAL_VALUE;
+                weight = SVGConstants.SVG_NORMAL_VALUE;
                 fill = FILL_GREY;
                 addTextElementToFit(canvas, critX, currY, critWidth, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
-                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7);
+                int damage = 0;
+                final boolean isDamagedPip = damage > 0;
+                if (damage > 0) {
+                    damage--;
+                }
+                Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() : FILL_WHITE);
                 canvas.appendChild(pip);
                 addTextElement(canvas, critX + fontSize, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                     && (crit.getMount().getType() instanceof MiscType)
                     && (crit.getMount().getType().hasFlag(MiscType.F_MODULAR_ARMOR))) {
-                String critName = formatCritName(crit);
-                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, style, fill);
-                x = critX + getTextLength(critName, fontSize);
+                final String critName = formatCritName(crit);
+                final double textLength = getTextLength(critName, fontSize, weight);
+                if (crit.isDamaged()) {
+                    addLineThrough(canvas, critX, currY-(fontSize * 0.3), textLength+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                }
+                addTextElement(canvas, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
+                x = critX + textLength;
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;
                 double radius = spacing * 0.25;
                 double y = currY - lineHeight + spacing;
                 double y2 = currY - spacing;
                 x += spacing;
+                int damage = 0;
                 for (int i = 0; i < 10; i++) {
                     if (i == 5) {
                         x -= spacing * 5.5;
                         y = y2;
                     }
-                    Element pip = createPip(x, y, radius, 0.5);
+                    final boolean isDamagedPip = damage > 0;
+                    if (damage > 0) {
+                        damage--;
+                    }
+                    Element pip = createPip(x, y, radius, 0.5, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() : FILL_WHITE);
                     canvas.appendChild(pip);
                     x += spacing;
                 }
             } else {
-                addTextElement(canvas, critX, currY, formatCritName(crit), fontSize,
-                        SVGConstants.SVG_START_VALUE, style, fill);
+                final String critName = formatCritName(crit);
+                if (crit.isDamaged()) {
+                    addLineThrough(canvas, critX, currY-(fontSize * 0.3), getTextLength(critName, fontSize, weight)+EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                }
+                addTextElement(canvas, critX, currY, critName, fontSize,
+                        SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
             }
             Mounted<?> m = null;
             if ((null != crit) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
@@ -566,7 +655,10 @@ public class PrintMek extends PrintEntity {
         int viewY = (int) bbox.getY();
 
         int si = mek.getOInternal(Mek.LOC_CT);
-
+        int damage = 0;
+        if (options.showDamage()) {
+            damage = si - mek.getInternal(Mek.LOC_CT);
+        }
         double size = 9.2;
         double radius = 2.8;
         int width = (int) (viewWidth / size);
@@ -581,7 +673,11 @@ public class PrintMek extends PrintEntity {
                 xPosition = viewX + (viewWidth - size * row2 + size - radius * 2) * 0.5;
                 yPosition += viewHeight * 0.5;
             }
-            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            final Element pip = createPip(xPosition, yPosition, radius, strokeWidth, PipType.CIRCLE, isDamaged ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
             xPosition += size;
         }
@@ -739,7 +835,7 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TECH_BASE_IS)
+                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TechBase.IS)
                         && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
                 } else if (!mek.isClan() && m.getType().isClan()
@@ -758,7 +854,7 @@ public class PrintMek extends PrintEntity {
             } else if (m.isMekTurretMounted()) {
                 critName.append(" (T)");
             } else if ((m.getType() instanceof AmmoType)
-                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.T_COOLANT_POD)) {
+                    && (((AmmoType) m.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
                 AmmoType ammo = (AmmoType) m.getType();
 
                 critName = new StringBuffer("Ammo (");
@@ -847,4 +943,20 @@ public class PrintMek extends PrintEntity {
                 pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
                 pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
+
+    protected int getHeatsinkDamage() {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        return mek.damagedHeatSinks();
+    }
+
+    protected int getEngineHits() {
+        return mek.getEngineHits();
+    }
+    
+    protected int getGyroHits() {
+        return mek.getGyroHits();
+    }
+    
 }

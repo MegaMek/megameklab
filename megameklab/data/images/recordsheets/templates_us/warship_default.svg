@@ -27,14 +27,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.3902116"
-     inkscape:cx="365.03044"
-     inkscape:cy="378.00001"
-     inkscape:window-width="1916"
-     inkscape:window-height="2041"
-     inkscape:window-x="156"
-     inkscape:window-y="37"
+     inkscape:cx="427.78639"
+     inkscape:cy="545.76758"
+     inkscape:window-width="1906"
+     inkscape:window-height="1161"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="g277" />
+     inkscape:current-layer="g329" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -1136,7 +1136,7 @@
          x="32.229"
          id="type"
          y="28"
-         style="font-style:normal;font-weight:normal;font-size:9.67px;font-family:Eurostile"
+         style="font-style:normal;font-weight:normal;font-size:9.67px;font-family:Eurostile;mml-field-width:188"
          text-anchor="start">Lorem Ipsum</text>
       <text
          x="6"
@@ -3296,7 +3296,7 @@
              id="g3236"
              transform="translate(459.162,551.95599)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c -0.773,1.326 -2.117,2.287 -3.708,2.556 l -9.695,20.105 2.534,0.765 v 10.377 l -8.99,2.254 -9.304,19.3 h -8.961 c 0,1.455 -0.89,2.636 -1.994,2.636 h -7.964 c -1.101,0 -1.99,-1.181 -1.99,-2.636 h -8.961 l -9.333,-19.359 -8.753,-2.195 V 23.426 l 2.352,-0.707 -9.723,-20.163 c -2.504,-0.421 -4.41,-2.565 -4.41,-5.148 v -2.681 c -3.297,0 -5.975,-2.36 -5.975,-5.271 0,-2.912 2.678,-5.272 5.975,-5.272 v -15.818 c -3.297,0 -5.975,-2.358 -5.975,-5.27 0,-2.912 2.678,-5.273 5.975,-5.273 v -15.815 c -3.297,0 -5.975,-2.361 -5.975,-5.274 0,-2.913 2.678,-5.271 5.975,-5.271 v -15.817 c -3.297,0 -5.975,-2.36 -5.975,-5.271 0,-2.914 2.678,-5.271 5.975,-5.271 v -15.815 c -3.297,0 -5.975,-2.362 -5.975,-5.274 0,-2.911 2.678,-5.271 5.975,-5.271 v -2.682 c 0,-2.883 2.379,-5.226 5.309,-5.226 h 2.883 c -7.047,-7.236 -18.583,-19.554 -17.15,-21.357 l 2.045,-2.578 25.321,-3.94 c -0.248,-0.891 -0.261,-1.516 0.038,-1.778 l 2.518,-2.226 h 46.328 l 2.518,2.226 c 0.301,0.262 0.289,0.887 0.039,1.778 l 25.327,3.94 2.043,2.578 c 1.429,1.803 -10.099,14.121 -17.157,21.357 h 4.234 c 2.927,0 5.306,2.343 5.306,5.226 v 2.682 c 3.301,0 5.974,2.36 5.974,5.271 0,2.912 -2.673,5.274 -5.974,5.274 v 15.815 c 3.301,0 5.974,2.357 5.974,5.271 0,2.911 -2.673,5.271 -5.974,5.271 v 15.817 c 3.301,0 5.974,2.358 5.974,5.271 0,2.913 -2.673,5.274 -5.974,5.274 v 15.815 c 3.301,0 5.974,2.361 5.974,5.273 0,2.912 -2.673,5.27 -5.974,5.27 v 15.818 c 3.301,0 5.974,2.36 5.974,5.272 0,2.911 -2.673,5.271 -5.974,5.271 v 2.638 h 5.974 c 0,-1.457 2.34,-2.638 5.226,-2.638 2.888,0 5.227,1.181 5.227,2.638 v -2.638 h 4.148 V 0 Z"
                id="path239" />
           </g>
@@ -3312,13 +3312,13 @@
              id="g39100"
              transform="translate(449.541,419.095)">
             <path
-               style="fill:none;stroke:#231f20;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
                d="m 0,0 c 0,-6.627 -4.435,-12 -9.906,-12 h -49.621 c -5.472,0 -9.907,5.373 -9.907,12 v 131.906 c 0,6.627 4.435,12 9.907,12 h 49.621 c 5.471,0 9.906,-5.373 9.906,-12 z"
                id="path39102" />
           </g>
           <text
              id="text9996"
-             style="font-variant:normal;font-size:8px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-size:8px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,414.344,459.536)"
              text-anchor="middle"><tspan
                x="0"
@@ -3347,7 +3347,7 @@
                font-weight="bold">0</tspan></text>
           <text
              id="text10172"
-             style="font-variant:normal;font-size:8px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-variant:normal;font-size:8px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,414.344,553.834)"
              text-anchor="middle"><tspan
                x="0"
@@ -3362,7 +3362,7 @@
                font-weight="bold">0</tspan></text>
           <text
              id="text2198"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,414.344,293)"
              text-anchor="middle"><tspan
                x="0"
@@ -3376,7 +3376,7 @@
                id="textArmor_AFT">( )</tspan></text>
           <text
              id="text2214"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,435.756,716.0724)"
              text-anchor="middle"><tspan
                x="0"
@@ -3390,7 +3390,7 @@
                id="textArmor_NOS">( )</tspan></text>
           <text
              id="text2230"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,532,325)"
              text-anchor="middle"><tspan
                x="0"
@@ -3404,7 +3404,7 @@
                id="textArmor_ARS">( )</tspan></text>
           <text
              id="text2246"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,297.4,325)"
              text-anchor="middle"><tspan
                x="0"
@@ -3418,7 +3418,7 @@
                id="textArmor_ALS">( )</tspan></text>
           <text
              id="text2262"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,530,659.379)"
              text-anchor="middle"><tspan
                x="0"
@@ -3432,7 +3432,7 @@
                id="textArmor_FRS">( )</tspan></text>
           <text
              id="text2278"
-             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             style="font-weight:bold;font-size:6px;font-family:Eurostile;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
              transform="matrix(1,0,0,-1,298.5,659.379)"
              text-anchor="middle"><tspan
                x="0"
@@ -4091,7 +4091,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path280" />
+           id="avionics_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4107,7 +4107,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path281" />
+           id="avionics_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4123,7 +4123,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path282" />
+           id="avionics_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4152,7 +4152,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path284" />
+           id="life_support_hit" />
         <text
            x="53.299999"
            y="7.5999999"
@@ -4181,7 +4181,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path286" />
+           id="cic_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4197,7 +4197,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path287" />
+           id="cic_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4213,7 +4213,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path288" />
+           id="cic_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4242,7 +4242,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path290" />
+           id="sensor_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4258,7 +4258,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path291" />
+           id="sensor_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4274,7 +4274,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path292" />
+           id="sensor_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4310,7 +4310,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path295" />
+           id="thruster_left_hit_1" />
         <text
            x="50.459999"
            y="7.5999999"
@@ -4326,7 +4326,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path296" />
+           id="thruster_left_hit_2" />
         <text
            x="65.459999"
            y="7.5999999"
@@ -4342,7 +4342,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path297" />
+           id="thruster_left_hit_3" />
         <text
            x="80.459999"
            y="7.5999999"
@@ -4358,7 +4358,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path298" />
+           id="thruster_left_hit_4" />
         <text
            x="95.459999"
            y="7.5999999"
@@ -4387,7 +4387,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path300" />
+           id="thruster_right_hit_1" />
         <text
            x="50.459999"
            y="7.5999999"
@@ -4403,7 +4403,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path301" />
+           id="thruster_right_hit_2" />
         <text
            x="65.459999"
            y="7.5999999"
@@ -4419,7 +4419,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path302" />
+           id="thruster_right_hit_3" />
         <text
            x="80.459999"
            y="7.5999999"
@@ -4435,7 +4435,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path303" />
+           id="thruster_right_hit_4" />
         <text
            x="95.459999"
            y="7.5999999"
@@ -4464,7 +4464,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path305" />
+           id="engine_hit_1" />
         <text
            x="62.459999"
            y="7.5999999"
@@ -4480,7 +4480,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path306" />
+           id="engine_hit_2" />
         <text
            x="77.459999"
            y="7.5999999"
@@ -4496,7 +4496,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path307" />
+           id="engine_hit_3" />
         <text
            x="92.459999"
            y="7.5999999"
@@ -4512,7 +4512,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path308" />
+           id="engine_hit_4" />
         <text
            x="107.46"
            y="7.5999999"
@@ -4528,7 +4528,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path309" />
+           id="engine_hit_5" />
         <text
            x="122.46"
            y="7.5999999"
@@ -4544,7 +4544,7 @@
            stroke-width="0.96"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path310" />
+           id="engine_hit_6" />
         <text
            x="137.46001"
            y="7.5999999"
@@ -4660,7 +4660,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text316">1</text>
+           id="crew_damage_0_1">1</text>
         <text
            fill="#000000"
            x="56.172001"
@@ -4674,7 +4674,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text318">2</text>
+           id="crew_damage_0_2">2</text>
         <text
            fill="#000000"
            x="70.794998"
@@ -4688,7 +4688,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text320">3</text>
+           id="crew_damage_0_3">3</text>
         <text
            fill="#000000"
            x="85.417999"
@@ -4702,7 +4702,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text322">4</text>
+           id="crew_damage_0_4">4</text>
         <text
            fill="#000000"
            x="100.042"
@@ -4716,7 +4716,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text324">5</text>
+           id="crew_damage_0_5">5</text>
         <text
            fill="#000000"
            x="114.665"
@@ -4730,7 +4730,7 @@
            y="42.979"
            style="font-style:normal;font-weight:bold;font-size:5.8px;font-family:Eurostile"
            text-anchor="middle"
-           id="text326">6</text>
+           id="crew_damage_0_6">6</text>
         <text
            x="129.28799"
            y="52.979"

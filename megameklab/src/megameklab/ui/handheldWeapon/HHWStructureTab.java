@@ -18,6 +18,7 @@ import megamek.common.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.SingleLocationEquipmentView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
@@ -31,7 +32,7 @@ import java.awt.*;
 public class HHWStructureTab extends ITab implements HHWBuildListener, BuildListener {
     private BasicInfoView panBasicInfo;
     private HHWChassisView panChassisView;
-    private HHWEquipmentView panEquipmentView;
+    private SingleLocationEquipmentView panEquipmentView;
     private SummaryView panSummary;
     private IconView panIcon;
 
@@ -51,7 +52,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getEntity().getConstructionTechAdvancement());
         panChassisView = new HHWChassisView();
-        panEquipmentView = new HHWEquipmentView(eSource, refresh);
+        panEquipmentView = new SingleLocationEquipmentView(eSource, refresh);
         panSummary = new SummaryView(eSource,
             new UnitTypeSummaryItem(),
             new ArmorSummaryItem(),
@@ -87,6 +88,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         gbc.weightx = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -192,11 +194,14 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     @Override
     public void sourceChanged(String source) {
         getEntity().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getEntity().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
@@ -215,6 +220,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
         refresh.refreshPreview();
     }
 

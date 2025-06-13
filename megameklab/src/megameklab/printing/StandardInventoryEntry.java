@@ -36,8 +36,11 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megamek.common.options.WeaponQuirks;
+import megamek.common.options.IOption;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
+import megamek.common.ITechnology;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -151,8 +154,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (weaponType.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
-                if ((weaponType.getAmmoType() == AmmoType.T_LRM_TORPEDO)
-                        || (weaponType.getAmmoType() == AmmoType.T_SRM_TORPEDO)) {
+                if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_TORPEDO)
+                        || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
                     r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getWShortRange(), false);
                     if (weaponType.getWMediumRange() > weaponType.getWShortRange()) {
                         r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getWMediumRange(), false);
@@ -307,7 +310,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      */
     private boolean showTechBase() {
         if (!mount.getEntity().isMixedTech()
-                || (mount.getType().getTechBase() == ITechnology.TECH_BASE_ALL)) {
+                || (mount.getType().getTechBase() == ITechnology.TechBase.ALL)) {
             return false;
         }
         if (showMixedTechBase.containsKey(mount.getType())) {
@@ -364,6 +367,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "R/L/CT";
         }
         return "*";
+    }
+
+    @Override
+    public boolean isDamaged() {
+        return mount.isHit() || mount.isDestroyed() || mount.isMissing();
     }
 
     @Override
@@ -600,7 +608,8 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 location.equals(that.location) &&
                 hasInsulator == that.hasInsulator &&
                 hasPulseModule == that.hasPulseModule &&
-                hasCapacitor == that.hasCapacitor;
+                hasCapacitor == that.hasCapacitor &&
+                isDamaged() == that.isDamaged();
     }
 
     @Override
@@ -620,5 +629,23 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     @Override
     public boolean indentMultiline() {
         return true;
+    }
+
+    @Override
+    public boolean hasQuirks() {
+        return mount.countQuirks()>0;
+    }
+
+    @Override
+    public String getQuirksField() {
+        StringBuilder sb = new StringBuilder();
+        final WeaponQuirks quirks = mount.getQuirks();
+        for (IOption quirk : quirks.activeQuirks()) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(quirk.getDisplayableName());
+        }
+        return sb.toString();
     }
 }

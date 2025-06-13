@@ -47,13 +47,20 @@ public class DSMainUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private StatusBar statusbar;
     private QuirksTab quirksTab;
+    private FluffTab  fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
+
+    public DSMainUI(Entity entity, String filename) {
+        super();
+        setEntity(entity, filename);
+        MekSummaryCache.getInstance();
+    }
 
     public DSMainUI(boolean primitive) {
         super();
         createNewUnit(Entity.ETYPE_DROPSHIP, primitive, false);
-        finishSetup();
         MekSummaryCache.getInstance();
+        requestDirtyCheck();
     }
 
     @Override
@@ -63,79 +70,79 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshEquipmentTable() {
+        super.refreshEquipmentTable();
         equipmentTab.refreshTable();
         floatingEquipmentDatabase.refresh();
     }
 
     @Override
     public void refreshTransport() {
+        super.refreshTransport();
         transportTab.refresh();
     }
 
     @Override
     public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+        SmallCraft newUnit;
         if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
-            setEntity(new SmallCraft());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new SmallCraft();
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else if (entitytype == Entity.ETYPE_DROPSHIP) {
-            setEntity(new Dropship());
-            getEntity().setTechLevel(TechConstants.T_IS_TW_NON_BOX);
+            newUnit = new Dropship();
+            newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
             logger.error("Received incorrect entityType!");
             return;
         }
-
-        SmallCraft smallCraft = (SmallCraft) getEntity();
-
         if (isPrimitive) {
-            smallCraft.setYear(2470);
-            smallCraft.setOriginalBuildYear(2470);
-            smallCraft.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
+            newUnit.setYear(2470);
+            newUnit.setOriginalBuildYear(2470);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_PRIMITIVE_AERO);
         } else {
-            smallCraft.setYear(3145);
-            smallCraft.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
+            newUnit.setYear(3145);
+            newUnit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         }
-        smallCraft.setWeight(200);
-        smallCraft.setOriginalWalkMP(2); // Start at 1G
-        smallCraft.setArmorTechLevel(getEntity().getTechLevel());
-        smallCraft.set0SI(3);
-        smallCraft.setDesignType(SmallCraft.MILITARY);
+        newUnit.setWeight(200);
+        newUnit.setOriginalWalkMP(2); // Start at 1G
+        newUnit.setArmorTechLevel(newUnit.getTechLevel());
+        newUnit.setOSI(3);
+        newUnit.setDesignType(SmallCraft.MILITARY);
 
-        smallCraft.setHeatType(Aero.HEAT_SINGLE);
+        newUnit.setHeatType(Aero.HEAT_SINGLE);
 
-        smallCraft.autoSetInternal();
-        for (int loc = 0; loc < getEntity().locations(); loc++) {
+        newUnit.autoSetInternal();
+        for (int loc = 0; loc < newUnit.locations(); loc++) {
             if (loc == SmallCraft.LOC_HULL) {
-                smallCraft.initializeArmor(IArmorState.ARMOR_NA, loc);
+                newUnit.initializeArmor(IArmorState.ARMOR_NA, loc);
             } else {
-                smallCraft.initializeArmor(smallCraft.get0SI(), loc);
+                newUnit.initializeArmor(newUnit.getOSI(), loc);
             }
         }
-
         if (null == oldUnit) {
-            getEntity().setChassis("New");
+            newUnit.setChassis("New");
             if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
-                smallCraft.setModel("Small Craft");
+                newUnit.setModel("Small Craft");
             } else {
-                smallCraft.setModel("Dropship");
+                newUnit.setModel("Dropship");
             }
-            smallCraft.setSpheroid(false);
-            smallCraft.setMovementMode(EntityMovementMode.AERODYNE);
+            newUnit.setSpheroid(false);
+            newUnit.setMovementMode(EntityMovementMode.AERODYNE);
         } else {
-            smallCraft.setChassis(oldUnit.getChassis());
-            smallCraft.setModel(oldUnit.getModel());
-            smallCraft.setYear(Math.max(oldUnit.getYear(),
-                    smallCraft.getConstructionTechAdvancement().getIntroductionDate()));
-            smallCraft.setSource(oldUnit.getSource());
-            smallCraft.setManualBV(oldUnit.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(smallCraft.getStaticTechLevel(),
+            newUnit.setChassis(oldUnit.getChassis());
+            newUnit.setModel(oldUnit.getModel());
+            newUnit.setYear(Math.max(oldUnit.getYear(),
+                    newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setSource(oldUnit.getSource());
+            newUnit.setManualBV(oldUnit.getManualBV());
+            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
                     SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
-            smallCraft.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
-            smallCraft.setMixedTech(oldUnit.isMixedTech());
-
-            smallCraft.setSpheroid(oldUnit.isSpheroid());
-            smallCraft.setMovementMode(oldUnit.getMovementMode());
+            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+            newUnit.setMixedTech(oldUnit.isMixedTech());
+            newUnit.setSpheroid(oldUnit.isSpheroid());
+            newUnit.setMovementMode(oldUnit.getMovementMode());
         }
+        setEntity(newUnit, "");
+        forceDirtyUntilNextSave();
     }
 
     @Override
@@ -146,7 +153,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     @Override
     public void reloadTabs() {
         configPane.removeAll();
-        getContentPane().removeAll();
+        removeAll();
 
         structureTab = new DSStructureTab(this);
 
@@ -157,13 +164,14 @@ public class DSMainUI extends MegaMekLabMainUI {
         buildTab = new LABuildTab(this);
         transportTab = new TransportTab(this);
         quirksTab = new QuirksTab(this);
-        FluffTab fluffTab = new FluffTab(this);
+        fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         transportTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
+        quirksTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
@@ -179,20 +187,23 @@ public class DSMainUI extends MegaMekLabMainUI {
         if (floatingEquipmentDatabase != null) {
             floatingEquipmentDatabase.setVisible(false);
         }
-        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(this,
+        floatingEquipmentDatabase = new FloatingEquipmentDatabaseDialog(getParentFrame(),
                 new LAFloatingEquipmentDatabaseView(this));
         floatingEquipmentDatabase.setRefresh(this);
 
-        refreshHeader();
+        refreshAll();
         validate();
     }
 
     @Override
     public void refreshAll() {
+        super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
         equipmentTab.refresh();
         buildTab.refresh();
+        quirksTab.refresh();
+        fluffTab.refresh();
         previewTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
@@ -200,34 +211,41 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     @Override
     public void refreshArmor() {
+        super.refreshArmor();
     }
 
     @Override
     public void refreshBuild() {
+        super.refreshBuild();
         buildTab.refresh();
     }
 
     @Override
     public void refreshEquipment() {
+        super.refreshEquipment();
         equipmentTab.refresh();
     }
 
     @Override
     public void refreshStatus() {
+        super.refreshStatus();
         statusbar.refresh();
     }
 
     @Override
     public void refreshStructure() {
+        super.refreshStructure();
         structureTab.refresh();
     }
 
     @Override
     public void refreshWeapons() {
+        super.refreshWeapons();
     }
 
     @Override
     public void refreshPreview() {
+        super.refreshPreview();
         previewTab.refresh();
     }
 
@@ -237,6 +255,9 @@ public class DSMainUI extends MegaMekLabMainUI {
 
     @Override
     public List<Mounted<?>> getUnallocatedMounted() {
+        if (buildTab == null) {
+            return List.of();
+        }
         return buildTab.getBuildView().getEquipment();
     }
 }

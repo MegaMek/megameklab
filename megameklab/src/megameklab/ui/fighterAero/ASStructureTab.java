@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,6 +136,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -159,7 +161,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 
@@ -289,7 +291,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         getAero().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
-        iconView.refresh();
+        iconView.refresh();   
     }
 
     @Override
@@ -309,6 +311,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void sourceChanged(String source) {
         getAero().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -383,6 +387,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -393,6 +398,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         if (getAero().isOmni()) {
             getAero().setPodHeatSinks(Math.max(0, count - panHeat.getBaseCount()));
         }
+        panHeat.setFromAero(getAero());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -484,6 +490,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         panHeat.setFromAero(getAero());
         panChassis.setFromEntity(getAero());
         panFuel.setFromEntity(getAero());
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -734,10 +742,14 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void mulIdChanged(int mulId) {
         getAero().setMulId(mulId);
+        refresh.refreshSummary();
+
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

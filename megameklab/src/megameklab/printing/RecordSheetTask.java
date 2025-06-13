@@ -37,8 +37,11 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
 import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
@@ -199,40 +202,79 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         public Void doInBackground() throws Exception {
-            PDFMergerUtility merger = new PDFMergerUtility();
-            merger.setDestinationFileName(fileName);
             Map<Integer, List<String>> bookmarkNames = new HashMap<>();
-            Iterator<PrintRecordSheet> iter = sheets.iterator();
-            while (iter.hasNext()) {
-                final PrintRecordSheet rs = iter.next();
-                bookmarkNames.put(rs.getFirstPage(), rs.getBookmarkNames());
-                for (int i = 0; i < rs.getPageCount(); i++) {
-                    final InputStream is = rs.exportPDF(i, pageFormat);
-                    if (is != null) {
-                        merger.addSource(is);
+            PDDocument mergedDocument = new PDDocument();
+            
+            try {
+                int currentPageOffset = 0;
+                Iterator<PrintRecordSheet> iter = sheets.iterator();
+                
+                while (iter.hasNext()) {
+                    final PrintRecordSheet rs = iter.next();
+                    bookmarkNames.put(currentPageOffset, rs.getBookmarkNames());
+                    
+                    for (int i = 0; i < rs.getPageCount(); i++) {
+                        final InputStream is = rs.exportPDF(i, pageFormat);
+                        if (is != null) {
+                            try {
+                                // Load PDF document from InputStream and append to merged document
+                                PDDocument pageDocument = Loader.loadPDF(new RandomAccessReadBuffer(is));
+                                
+                                // Count pages for bookmark offset
+                                currentPageOffset += pageDocument.getNumberOfPages();
+                                
+                                // Append the document
+                                PDFMergerUtility merger = new PDFMergerUtility();
+                                merger.appendDocument(mergedDocument, pageDocument);
+                                pageDocument.close();
+                                
+                            } finally {
+                                is.close();
+                            }
+                        }
                     }
+                    iter.remove();
                 }
-                iter.remove();
-            }
-            merger.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-
-            // Load newly created document, add an outline, then write back to the file.
-            File file = new File(fileName);
-            try (PDDocument doc = PDDocument.load(file)) {
-                PDDocumentOutline outline = new PDDocumentOutline();
-                doc.getDocumentCatalog().setDocumentOutline(outline);
-                for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
-                    for (String name : entry.getValue()) {
-                        PDOutlineItem bookmark = new PDOutlineItem();
-                        bookmark.setDestination(doc.getPage(entry.getKey()));
-                        bookmark.setTitle(name);
-                        outline.addLast(bookmark);
-                    }
+                
+                // Add bookmarks before saving
+                if (!bookmarkNames.isEmpty()) {
+                    addBookmarks(mergedDocument, bookmarkNames);
                 }
-                outline.openNode();
-                doc.save(file);
+                
+                // Save the merged document
+                mergedDocument.save(fileName);
+                mergedDocument.close();
+                
+            } catch (Exception e) {
+                logger.error("Error during PDF export", e);
+                throw e;
             }
             return null;
+    
+        }
+
+        /**
+         * Adds bookmarks to the PDF document based on the bookmark names map
+         */
+        private void addBookmarks(PDDocument document, Map<Integer, List<String>> bookmarkNames) {
+            PDDocumentOutline outline = new PDDocumentOutline();
+            document.getDocumentCatalog().setDocumentOutline(outline);
+            for (Entry<Integer, List<String>> entry : bookmarkNames.entrySet()) {
+                int pageNumber = entry.getKey();
+                List<String> names = entry.getValue();
+                if (names != null && !names.isEmpty() && pageNumber < document.getNumberOfPages()) {
+                    for (String name : names) {
+                        PDOutlineItem bookmark = new PDOutlineItem();
+                        bookmark.setTitle(name);
+                        try {
+                            bookmark.setDestination(document.getPage(pageNumber));
+                            outline.addLast(bookmark);
+                        } catch (Exception e) {
+                            logger.warn("Failed to create bookmark for page " + pageNumber + ": " + name, e);
+                        }
+                    }
+                }
+            }
         }
     }
 

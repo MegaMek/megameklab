@@ -16,6 +16,7 @@ package megameklab.ui.largeAero;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -28,6 +29,7 @@ import megamek.common.Aero;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
+import megamek.common.ITechnology;
 import megamek.common.Jumpship;
 import megamek.common.SimpleTechLevel;
 import megamek.common.SpaceStation;
@@ -144,6 +146,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         masterPanel.add(leftPanel, gbc);
         gbc.gridx = 1;
         masterPanel.add(midPanel, gbc);
@@ -168,7 +171,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 
@@ -264,6 +267,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void sourceChanged(String source) {
         getJumpship().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -302,6 +307,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -309,6 +315,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setHeatType(index);
         getJumpship().setHeatSinks(count);
         getJumpship().setOHeatSinks(count);
+        panHeat.setFromAero(getJumpship());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
@@ -389,6 +396,8 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         panHeat.setFromAero(getJumpship());
         panChassis.setFromEntity(getJumpship());
         panFuel.setFromEntity(getJumpship());
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -499,7 +508,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
 
     @Override
     public void siChanged(int si) {
-        getJumpship().set0SI(si);
+        getJumpship().setOSI(si);
         panArmor.setFromEntity(getJumpship());
         // Change in SI can reduce the maximum armor tonnage
         if (getJumpship().getLabArmorTonnage() != panArmor.getArmorTonnage()) {
@@ -681,10 +690,13 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void mulIdChanged(int mulId) {
         getJumpship().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 }

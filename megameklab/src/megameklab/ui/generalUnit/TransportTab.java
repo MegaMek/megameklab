@@ -304,6 +304,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             refresh.refreshStructure();
             refresh.refreshStatus();
             refresh.refreshPreview();
+            
         }
         tblInstalled.getColumnModel().getColumn(InstalledBaysModel.COL_TONNAGE)
                 .setHeaderValue(modelInstalled.getColumnName(InstalledBaysModel.COL_TONNAGE));

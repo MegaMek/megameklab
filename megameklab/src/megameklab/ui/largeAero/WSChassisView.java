@@ -86,6 +86,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -219,7 +220,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         cbBaseType.addActionListener(this);
         cbBaseType.setEnabled(!craft.isPrimitive());
 
-        spnSIModel.setValue(craft.get0SI());
+        spnSIModel.setValue(craft.getOSI());
         if (craft.isPrimitive()) {
             spnRange.removeChangeListener(this);
             spnRange.setValue(craft.getJumpRange());

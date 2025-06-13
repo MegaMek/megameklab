@@ -19,15 +19,14 @@
 
 package megameklab.util;
 
+import java.awt.datatransfer.DataFlavor;
+import java.io.File;
+import java.util.List;
+import javax.swing.TransferHandler;
+
 import megamek.logging.MMLogger;
 import megameklab.ui.MenuBarOwner;
 import megameklab.ui.util.TabUtil;
-
-import javax.swing.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.io.File;
-import java.util.List;
 
 public class MMLFileDropTransferHandler extends TransferHandler {
     private static final MMLogger logger = MMLogger.create(MMLFileDropTransferHandler.class);
@@ -47,6 +46,7 @@ public class MMLFileDropTransferHandler extends TransferHandler {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean importData(TransferSupport support) {
         if (!canImport(support)) {
             return false;
@@ -66,10 +66,10 @@ public class MMLFileDropTransferHandler extends TransferHandler {
                 owner.getMMLMenuBar().loadFile(file);
                 return true;
             } else if (name.toLowerCase().endsWith(".mul")) {
-                UnitPrintManager.printMUL(owner.getFrame(), CConfig.getBooleanParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR), file);
+                MULManager.processMULFile(file, owner.getFrame());
                 return true;
             } else {
-                logger.error("Can only open files of type .mtf, .blk, and .mul", "Import error");
+                logger.errorDialog("Import error", "Can only open files of type .mtf, .blk, and .mul");
                 return false;
             }
 

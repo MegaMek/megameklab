@@ -13,6 +13,23 @@
  */
 package megameklab.ui.mek;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import megamek.codeUtilities.MathUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -36,13 +53,6 @@ import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
     private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
@@ -142,6 +152,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
         add(leftPanel, gbc);
         gbc.gridx = 1;
         add(centerPanel, gbc);
@@ -191,7 +202,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    public void setTechFaction(int techFaction) {
+    public void setTechFaction(ITechnology.Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -599,11 +610,14 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void sourceChanged(String source) {
         getMek().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
     public void mulIdChanged(int mulId) {
         getMek().setMulId(mulId);
+        refresh.refreshSummary();
     }
 
     @Override
@@ -622,6 +636,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -683,6 +699,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void manualBVChanged(int manualBV) {
         UnitUtil.setManualBV(manualBV, getEntity());
         refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override
@@ -736,6 +753,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
             UnitUtil.removeISorArmorMounts(getMek(), true);
+
+            // The number of critical slots that the armor should take up may have changed.
+            // You might notice this doesn't handle patchwork armor.
+            // This is because to my knowledge how patchwork armor is
+            //      supposed to work on superheavies has never been explained.
+            if (!getMek().hasPatchworkArmor()) {
+                int at = getMek().getArmorType(0);
+                int aTechLevel = getMek().getArmorTechLevel(0);
+                UnitUtil.removeISorArmorMounts(getMek(), false);
+                createArmorMountsAndSetArmorType(at, aTechLevel);
+            }
+
             createISMounts(panChassis.getStructure());
             resetSystemCrits();
             panMovement.setFromEntity(getMek());

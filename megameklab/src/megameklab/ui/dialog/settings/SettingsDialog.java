@@ -18,15 +18,20 @@
  */
 package megameklab.ui.dialog.settings;
 
-import megamek.client.ui.baseComponents.MMButton;
-import megamek.client.ui.swing.GUIPreferences;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+
+import megamek.client.ui.buttons.MMButton;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.AbstractMMLButtonDialog;
 import megameklab.util.CConfig;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * This is MML's general preferences dialog with color, record sheet and other settings.
@@ -78,11 +83,13 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
             GUIPreferences.getInstance().setValue(GUIPreferences.GUI_SCALE, miscSettingsPanel.guiScale());
             MegaMekLab.updateGuiScaling();
         }
+        dispose();
     }
 
     @Override
     protected void cancelAction() {
         CConfig.loadConfigFile();
+        dispose();
     }
 
     private static class SettingsScrollPane extends JScrollPane {
@@ -91,5 +98,11 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
             setBorder(null);
             getVerticalScrollBar().setUnitIncrement(16);
         }
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        pack();
     }
 }

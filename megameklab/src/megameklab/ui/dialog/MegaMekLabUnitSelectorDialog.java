@@ -20,11 +20,11 @@ package megameklab.ui.dialog;
 
 import megamek.client.ui.Messages;
 import megamek.client.ui.WrapLayout;
-import megamek.client.ui.swing.UnitLoadingDialog;
-import megamek.client.ui.swing.dialog.AbstractUnitSelectorDialog;
-import megamek.client.ui.swing.tileset.EntityImage;
-import megamek.client.ui.swing.tileset.MMStaticDirectoryManager;
-import megamek.client.ui.swing.util.PlayerColour;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.dialogs.unitSelectorDialogs.AbstractUnitSelectorDialog;
+import megamek.client.ui.tileset.EntityImage;
+import megamek.client.ui.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.util.PlayerColour;
 import megamek.common.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
@@ -71,6 +71,14 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
         }
         initialize();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                closeWithoutSelection();
+            }
+        });
+        setupDoubleClickListener();
         setupRecordSheetTab();
         run();
         setVisible(true);
@@ -98,6 +106,14 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
         this.entityPickCallback = entityPickCallback;
         initialize();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                closeWithoutSelection();
+            }
+        });
+        setupDoubleClickListener();
         // This overrides the default close behavior to avoid selecting another unit
         // when closing with ESC or the Close button. AbstractUnitSelectorDialog should
         // probably be changed to make the selectedEntity null in these cases
@@ -113,10 +129,26 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     }
 
+    private void setupDoubleClickListener() {
+        // The table showing units is in the parent class
+        if (tableUnits != null) {
+            tableUnits.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    if (evt.getClickCount() == 2) {
+                        // Double click detected - select and close
+                        select(true);
+                    }
+                }
+            });
+        }
+    }
+
     private void setupRecordSheetTab() {
         if (recordSheetPanel == null) {
             // Create the record sheet panel
             recordSheetPanel = new RecordSheetPreviewPanel();
+            recordSheetPanel.setFullAsyncMode(true);
 
             // Create a toolbar panel with print button
             JPanel toolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT, 15, 10));
@@ -210,6 +242,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     void closeWithoutSelection() {
         chosenEntity = null;
+        chosenEntities = null;
         setVisible(false);
     }
 

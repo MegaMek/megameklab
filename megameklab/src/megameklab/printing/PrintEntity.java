@@ -39,7 +39,8 @@ import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
 
 import megamek.client.generator.RandomNameGenerator;
-import megamek.client.ui.swing.util.FluffImageHelper;
+import megamek.client.ui.util.FluffImageHelper;
+import megamek.client.ui.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
@@ -51,6 +52,7 @@ import megamek.common.options.PilotOptions;
 import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
+import megameklab.util.UnitUtil;
 
 /**
  * Base class for printing Entity record sheets
@@ -90,6 +92,24 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
+     * When printing from a MUL the C3 data is used in the BV calculation unless the option has been disabled.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showC3() {
+        return options.showC3inBV();
+    }
+
+    /**
+     * Show Damage on the record sheet.
+     *
+     * @return Whether the C3 data should be filled in.
+     */
+    protected boolean showDamage() {
+        return options.showDamage();
+    }
+
+    /**
      * @return Whether the total weapon heat and dissipation should be shown on the record sheet
      */
     protected boolean showHeatProfile() {
@@ -100,7 +120,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return A String showing the total weapon heat and dissipation.
      */
     protected String heatProfileText() {
-        int heat = getEntity().getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        int heat = UnitUtil.getTotalHeatGeneration(getEntity());
         return "Total Heat (Dissipation): " + heat + " (" + getEntity().formatHeat() + ")";
     }
 
@@ -120,6 +140,13 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     public String formatMiscNotes() {
         return "";
+    }
+
+    /**
+     * @return Whether the quirks block should be shown on the record sheet
+     */
+    public boolean showQuirks() {
+        return options.showQuirks();
     }
 
     /**
@@ -214,8 +241,20 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
-        setTextField(BV, NumberFormat.getInstance().format(getEntity()
-                .calculateBattleValue(!showPilotInfo(), !showPilotInfo())));
+        String bvValue;
+        int baseBvValue = getEntity().calculateBattleValue(true, !showPilotInfo());
+        if (showC3()) {
+            int adjustedBvValue = getEntity().calculateBattleValue(false, !showPilotInfo());
+            if (adjustedBvValue == baseBvValue) {
+                bvValue = NumberFormat.getInstance().format(baseBvValue);
+            } else {
+                bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
+                        + NumberFormat.getInstance().format(adjustedBvValue);
+            }
+        } else {
+            bvValue = NumberFormat.getInstance().format(baseBvValue);
+        }
+        setTextField(BV, bvValue);
         UnitRole role = getEntity().getRole();
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
@@ -230,6 +269,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             build();
         }
         hideUnusedCrewElements();
+        
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to
             // the label of the slot. This will usually require adjusting the position of the
@@ -261,7 +301,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         element.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(offset));
                     }
                 }
-                setTextField(PILOT_NAME + i, getEntity().getCrew().getName(i), true);
+                String pilotName = getEntity().getCrew().getName(i);
+                final String pilotNickname = getEntity().getCrew().getNickname(i);
+                if (pilotNickname != null && !pilotNickname.isBlank()) {
+                    pilotName += " ("+pilotNickname+")";
+                }
+                setTextField(PILOT_NAME + i, pilotName, true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
 
@@ -288,7 +333,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         Rectangle2D bbox = getRectBBox((SVGRectElement) rect);
                         Element canvas = (Element) rect.getParentNode();
                         String spaText = "Abilities: " + spaList;
-                        float fontSize = FONT_SIZE_MEDIUM;
+                        float fontSize = FONT_SIZE_MEDIUM * 0.9f;
                         if (getTextLength(spaText, fontSize) > bbox.getWidth()) {
                             fontSize = (float) bbox.getHeight() / 2.4f;
                         }
@@ -296,7 +341,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
                                 bbox.getWidth(), lineHeight, spaText, fontSize,
                                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                FILL_BLACK, ' ');
+                                SVGConstants.SVG_ITALIC_VALUE);
                     }
                 }
 
@@ -318,11 +363,16 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     protected void hideUnusedCrewElements() {
+        Crew crew = getEntity().getCrew();
         for (int i = 0; i < 3; i++) {
-            final boolean hide = i >= getEntity().getCrew().getSlotCount();
+            final boolean hide = i >= crew.getSlotCount();
+            boolean blankName = true;
+            if (!hide) {
+                blankName = crew.getName(i).isBlank() && crew.getNickname(i).isBlank() && crew.getName(i) != RandomNameGenerator.UNNAMED;
+            }
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
-            hideElement(BLANK_CREW_NAME + i, hide || showPilotInfo());
+            hideElement(BLANK_CREW_NAME + i, hide || (showPilotInfo() && !blankName));
             hideElement(CREW_NAME + i, hide);
             hideElement(GUNNERY_SKILL + i, hide);
             hideElement(BLANK_GUNNERY_SKILL + i, hide || showPilotInfo());
@@ -404,15 +454,52 @@ public abstract class PrintEntity extends PrintRecordSheet {
             }
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), 0.5, FILL_WHITE, useAlternateArmorGrouping());
+                        PipType.forAT(getEntity().getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), useAlternateArmorGrouping());
             }
 
             element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
                 ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, 0.5, structurePipFill(), useAlternateArmorGrouping());
+                        PipType.CIRCLE, DEFAULT_PIP_STROKE, structurePipFill(), getStructureDamage(loc), useAlternateArmorGrouping());
             }
         }
+    }
+
+    /**
+     * Applies the critical damage to the core components of the unit and crew.
+     * This should be overridden by subclasses that have core components.
+     */
+    @Override
+    protected void applyCoreComponentsCriticalDamage() {
+        if (!options.showDamage()) return;
+        if (options.showPilotData()) {
+            final int totalCrewMembers = getEntity().getCrew().getSlotCount();
+            for (int crewMemberId = 0; crewMemberId < totalCrewMembers; crewMemberId++) {
+                final int crewHits = getEntity().getCrew().getHits(crewMemberId);
+                for (int k = 1; k <= crewHits; k++) {
+                    final String elementId = CREW_HIT + crewMemberId + "_" + k;
+                    Element el = getSVGDocument().getElementById(elementId);
+                    if (el != null) {
+                        el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, "13pt");
+                        el.setTextContent("X");
+                        el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the number of hits on the core component of the unit.
+     * @param index
+     * @return
+     */
+    protected int getHitsCoreComponent(int index) {
+        int totalHits = 0;
+        for (int loc = 0; loc < getEntity().locations(); loc++) {
+            totalHits += getEntity().getHitCriticals(CriticalSlot.TYPE_SYSTEM, index, loc);
+        }
+        return totalHits;
     }
 
     /**
@@ -467,7 +554,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @param svgRect The <rect> defining the bounds of the heat sink pip region
      * @param hsCount The number of heat sink pips to draw
      */
-    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount) {
+    void drawHeatSinkPips(SVGRectElement svgRect, int hsCount, int damage) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
         double viewWidth = bbox.getWidth();
@@ -475,7 +562,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         double viewX = bbox.getX();
         double viewY = bbox.getY();
         if (viewWidth > viewHeight) {
-            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight);
+            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
             return;
         }
 
@@ -509,13 +596,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int row = i % rows;
             int col = i / rows;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
 
     void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
-                                   double viewWidth, double viewHeight) {
+                                   double viewWidth, double viewHeight, int damage) {
         double size = Math.min(9.66, viewWidth / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
@@ -543,7 +634,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
         for (int i = 0; i < hsCount; i++) {
             int col = i % cols;
             int row = i / cols;
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth);
+            final boolean isDamaged = damage > 0;
+            if (damage > 0) {
+                damage--;
+            }
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
             canvas.appendChild(pip);
         }
     }
@@ -642,5 +737,23 @@ public abstract class PrintEntity extends PrintRecordSheet {
             e = getSVGDocument().getElementById(id);
         }
         return e;
+    }
+
+    protected int getArmorDamage(int loc, boolean rear) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int armor = getEntity().getOArmor(loc, rear);
+        final int remainingArmor = getEntity().getArmor(loc, rear);
+        return armor - remainingArmor;
+    }
+
+    protected int getStructureDamage(int loc) {
+        if (!options.showDamage()) {
+            return 0;
+        }
+        final int structure = getEntity().getOInternal(loc);
+        final int remainingStructure = getEntity().getInternal(loc);
+        return structure - remainingStructure;
     }
 }

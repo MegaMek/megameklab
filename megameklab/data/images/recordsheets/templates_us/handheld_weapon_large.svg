@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   contentScriptType="text/ecmascript"
+   width="575.71997"
+   zoomAndPan="magnify"
+   contentStyleType="text/css"
+   height="149.06"
+   preserveAspectRatio="xMidYMid"
+   version="1.0"
+   id="svg77"
+   sodipodi:docname="handheld_weapon_large.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs77">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath78">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-581.50451,-643.39361)"
+         id="path78" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath80">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-577.25251,-647.64542)"
+         id="path80" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath82">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-445.44101,-650.48252)"
+         id="path82" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath84">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-570.64702,-650.48252)"
+         id="path84" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath82-4">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-445.44101,-650.48252)"
+         id="path82-5" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath84-5">
+      <path
+         d="M 0,783 H 603 V 0 H 0 Z"
+         transform="translate(-570.64702,-650.48252)"
+         id="path84-1" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview77"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true"
+     inkscape:zoom="2.2623728"
+     inkscape:cx="152.49476"
+     inkscape:cy="237.58242"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="ammoPips">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="575.71997"
+       height="149.06"
+       id="page14"
+       margin="0"
+       bleed="0" />
+    <sodipodi:guide
+       position="369.41304,10.726788"
+       orientation="0,-1"
+       id="guide2"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="220.69594,11.037687"
+       orientation="1,0"
+       id="guide3"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <g
+     id="rs_template"
+     transform="translate(-2.110329,0.33320985)">
+    <path
+       id="path77"
+       d="m 0,-71.723663 -5.668,-8.502 h -325.986 l -5.669,8.502 -209.764,0.001 -5.67,8.504001 V 53.861 l 5.67,8.504 h 204.094 l 5.669,-8.504 330.238,-10e-4 7.085,-8.504 z"
+       style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       transform="matrix(1.0317376,0,0,-1.0317376,577.8292,69.428561)"
+       clip-path="url(#clipPath78)"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <path
+       id="path79"
+       d="m 0,-71.723663 -5.668,-8.502 h -325.986 l -5.669,8.502 -209.764,0.001 -5.67,8.503001 V 53.861 l 5.67,8.503 h 204.094 l 5.669,-8.503 330.238,-10e-4 7.085,-8.504 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(1.0317376,0,0,-1.0317376,573.44225,65.041811)"
+       clip-path="url(#clipPath80)"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <text
+       id="ammoEntryLabel"
+       x="450.16928"
+       y="31.443361"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.66667px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;text-anchor:start;fill:#000000;stroke-width:1.03271"
+       xml:space="preserve"
+       visibility="hidden">Ammo:</text>
+    <text
+       fill="#000000"
+       x="545.83575"
+       id="bv"
+       y="19.491096"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
+       text-anchor="start">0</text>
+    <text
+       id="text85"
+       xml:space="preserve"
+       x="11.540048"
+       y="22.667534"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.6667px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.03272"><tspan
+         id="tspan86"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10.6667px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.03272"
+         x="11.540048"
+         dx="0 -0.26902759 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.074214503"
+         y="22.667534">Weapons &amp; Equipment Inventory</tspan></text>
+    <text
+       id="text86"
+       xml:space="preserve"
+       x="176.93799"
+       y="23.087242"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.03272"><tspan
+         id="tspan87"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.03272"
+         x="176.93799"
+         y="23.087242">(hexes)</tspan></text>
+    <text
+       id="text91"
+       xml:space="preserve"
+       x="263.76379"
+       y="21.208117"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;stroke-width:1.03271"><tspan
+         id="tspan92"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.03271"
+         x="251.53699"
+         dx="0 0 0.057722807"
+         y="21.208117">Armor:</tspan></text>
+    <text
+       id="text91-0-4"
+       xml:space="preserve"
+       x="530.05988"
+       y="19.491096"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.03271"><tspan
+         id="tspan92-9-8"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.03271"
+         x="530.05988"
+         y="19.491096">BV:</tspan></text>
+    <text
+       fill="#000000"
+       x="251.29971"
+       id="armorType"
+       y="38.968254"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#000000"
+       text-anchor="start">Lorem Ipsum</text>
+    <text
+       fill="#000000"
+       x="251.29971"
+       id="textArmor_GUN"
+       y="30.509987"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#000000"
+       text-anchor="start">0</text>
+    <rect
+       fill="none"
+       x="11.529018"
+       width="211.27725"
+       id="inventory"
+       height="120.62592"
+       y="22.6891"
+       style="stroke-width:0.520178" />
+    <text
+       fill="#000000"
+       x="10.851994"
+       id="type"
+       y="11.471193"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;fill:#000000"
+       text-anchor="start">Lorem Ipsum</text>
+    <g
+       style="display:inline"
+       fill="none"
+       id="armorPips"
+       transform="translate(274,27)">
+      <rect
+         x="0"
+         width="160"
+         y="1.562755"
+         height="109.43724"
+         id="armorPipsGUN"
+         style="display:inline;stroke-width:1.76979" />
+    </g>
+    <g
+       style="display:inline"
+       fill="none"
+       id="ammoPips"
+       transform="translate(450,27)">
+      <rect
+         x="-2.4624171e-08"
+         width="112"
+         y="0.0024681839"
+         height="111"
+         id="ammoPipsGUN" />
+    </g>
+    <path
+       id="path81-7"
+       d="M -9.6923867e-7,-71.889715 -3.3216467,-76.872186 H -195.5762 l -5.6838,8.524195 V 38.267 l 5.67,8.504 29.763,-0.004 6.049,-9.343 H -6.125 L 0,29.759 Z"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(1.0317376,0,0,-1.0317376,437.44736,62.114671)"
+       clip-path="url(#clipPath82-4)"
+       sodipodi:nodetypes="ccccccccccc" />
+    <path
+       id="path83-1"
+       d="M -9.6923861e-7,-71.889715 -3.3216467,-76.872186 H -110.9987 l -5.7033,8.553441 V 38.267 l 5.67,8.504 29.958571,-0.004 6.049,-9.343 H -6.125 L 0,29.759 Z"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       transform="matrix(1.0317376,0,0,-1.0317376,566.62711,62.114671)"
+       clip-path="url(#clipPath84-5)"
+       sodipodi:nodetypes="ccccccccccc" />
+    <text
+       id="ammoLabel"
+       x="467.93652"
+       y="21.208117"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#000000;stroke-width:1.03271"
+       xml:space="preserve">Ammo:</text>
+  </g>
+</svg>

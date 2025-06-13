@@ -18,12 +18,10 @@
  */
 package megameklab.ui;
 
-import megamek.client.ui.swing.util.UIUtil;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
-import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.AppCloser;
-import megameklab.util.CConfig;
 
 import javax.swing.*;
 
@@ -76,36 +74,6 @@ public interface MenuBarOwner extends AppCloser {
      * Refreshes the menu bar. Updates the recent units in the File menu.
      */
     void refreshMenuBar();
-
-    /**
-     * Creates a new main UI frame for the given unit type and disposes the
-     * existing frame (this MenuBarOwner).
-     *
-     * @param type an int corresponding to the unit type to construct
-     */
-    default void newUnit(long type) {
-        newUnit(type, false);
-    }
-
-    /**
-     * Creates a new main UI frame for the given unit type and disposes the
-     * existing frame (this MenuBarOwner).
-     *
-     * @param type an int corresponding to the unit type to construct
-     * @param primitive true when the new unit should be a primitive type
-     */
-    default void newUnit(long type, boolean primitive) {
-        if (safetyPrompt()) {
-            getFrame().setVisible(false);
-            getFrame().dispose();
-            CConfig.setParam(CConfig.GUI_FULLSCREEN, Integer.toString(getFrame().getExtendedState()));
-            if (this instanceof MegaMekLabMainUI) {
-                CConfig.writeMainUiWindowSettings((MegaMekLabMainUI) this);
-            }
-            CConfig.saveConfig();
-            UiLoader.loadUi(type, primitive, false);
-        }
-    }
 
     /**
      * Sets the look and feel for the application and lets Swing update the current
