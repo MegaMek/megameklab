@@ -30,6 +30,7 @@ import java.util.List;
 import javax.swing.JScrollPane;
 
 
+import megamek.client.ui.dialogs.unitSelectorDialogs.AvailabilityPanel;
 import megamek.client.ui.dialogs.unitSelectorDialogs.ConfigurableMekViewPanel;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.unitSelectorDialogs.MekViewPanel;
@@ -53,6 +54,7 @@ public class PreviewTab extends ITab {
     private final MekViewPanel panelTROView = new MekViewPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
+    private final AvailabilityPanel factionPanel = new AvailabilityPanel(null);
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private EnhancedTabbedPane panPreview;
 
@@ -78,6 +80,7 @@ public class PreviewTab extends ITab {
         panPreview = new EnhancedTabbedPane(true, true);
         panPreview.addTab("Summary", mekViewScroll);
         panPreview.addTab("TRO", troViewScroll);
+        panPreview.addTab("Factions", factionPanel.getPanel());
         panPreview.addTab("AS Card", cardPanel);
         panPreview.addTab("Record Sheet", rsPanel);
         List<String> tabsOrder = GUIPreferences.getInstance().getTabOrder(this.getClass().getName());
@@ -156,11 +159,13 @@ public class PreviewTab extends ITab {
                 cardPanel.setASElement(null);
             }
             rsPanel.setEntity(selectedUnit);
+            factionPanel.setUnit(selectedUnit.getModel(), selectedUnit.getChassis());
         } else {
             panelMekView.reset();
             panelTROView.reset();
             cardPanel.setASElement(null);
             rsPanel.setEntity(null);
+            factionPanel.reset();
         }
     }
 

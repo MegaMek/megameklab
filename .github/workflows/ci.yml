@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest ] # For CI/CD running on *nix is sufficient
+        os: [ ubuntu-latest ]
         java-distribution: [ temurin ]
         java-version: [ 17, 21 ]
       fail-fast: false
