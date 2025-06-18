@@ -1451,29 +1451,26 @@ public class UnitUtil {
      * Returns true if the given Equipment is available as equipment to the given Support Vehicle. Includes WeaponTypes,
      * AmmoTypes and MiscTypes.
      *
-     * @param eq   The equipment to test The tested equipment
-     * @param unit The entity The support vehicles. Maybe an Aero or Tank subtype
+     * @param type The equipment to test
+     * @param unit The support vehicle (an Aero or Tank subclass!)
      *
      * @return true if the equipment is usable by the entity
      */
-    public static boolean isSupportVehicleEquipment(EquipmentType eq, Entity unit) {
-        if ((unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) &&
-                  ((eq.getTonnage(unit) >= 5.0) ||
-                         (eq instanceof MiscType) && eq.hasFlag(MiscType.F_HEAVY_EQUIPMENT))) {
+    public static boolean isSupportVehicleEquipment(EquipmentType type, Entity unit) {
+        if (TestSupportVehicle.isSmallSupportVehicle(unit) && (type.getTonnage(unit) >= 5.0)) {
             return false;
-        }
-        if ((eq instanceof MiscType) && !eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
+        } else if ((type instanceof MiscType) && !type.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)) {
             return false;
-        } else if ((eq instanceof WeaponType) && (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
-            // Small support vehicles can only mount infantry weapons
-            return (eq instanceof InfantryWeapon) && !eq.hasFlag(WeaponType.F_INF_ARCHAIC);
-        } else if (eq instanceof AmmoType) {
+        } else if ((type instanceof WeaponType) && TestSupportVehicle.isSmallSupportVehicle(unit)) {
+            return TestSupportVehicle.isSmallSupportVehicleWeapon(type);
+        } else if (type instanceof AmmoType) {
             return true;
         }
+        //TODO: Align with TestSupportVehicle:
         if (unit.isAero()) {
-            return AeroUtil.isAeroEquipment(eq, (Aero) unit);
+            return AeroUtil.isAeroEquipment(type, (Aero) unit);
         } else {
-            return TankUtil.isTankEquipment(eq, (Tank) unit);
+            return TankUtil.isTankEquipment(type, (Tank) unit);
         }
     }
 
