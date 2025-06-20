@@ -22,12 +22,16 @@ package megameklab.printing;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.security.MessageDigest;
+import java.util.zip.Adler32;
 
+
+import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.Entity;
 import megamek.common.EquipmentType;
@@ -35,6 +39,7 @@ import megamek.common.GunEmplacement;
 import megamek.common.MekSummary;
 import megamek.common.MekSummaryCache;
 import megamek.common.UnitRole;
+import megamek.common.alphaStrike.ASUnitType;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.util.CConfig;
@@ -55,6 +60,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -70,78 +76,79 @@ public class SVGMassPrinter {
     private static final String UNIT_FILE = "units.json";
     private static final String ROOT_FOLDER = "svgexport";
     private static final int DEFAULT_MARGINS = 5; // Default margins for the page
+    private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
 
     public static class UnitData {
+        public String name; // Unique name of the unit, used for deduplication
         public int id; // Unique identifier for the unit on MUL
-        public String n; // Name of the unit (Chassis)
-        public String m; // Model of the unit
-        public int y; // Year of introduction
-        public int wc; // Weight class, 0 for Light, 1 for Medium, etc.
-        public double t; // Weight in tons, rounded to the nearest integer
+        public String chassis; // Name of the unit (Chassis)
+        public String model; // Model of the unit
+        public int year; // Year of introduction
+        public int weightClass; // Weight class, 0 for Light, 1 for Medium, etc.
+        public double tons; // Weight in tons, rounded to the nearest integer
         public int bv; // Battle Value, rounded to the nearest integer
         public int pv; // Point Value, rounded to the nearest integer
-        public long c; // Cost in C-Bills, rounded to the nearest integer
-        public int l; // Tech Level
-        public String ty; // Major type, "Mek", "Vehicle", etc.
-        public String sub; // Subtype, "Assault", "Light", etc.
-        public String src; // Source of the unit, e.g. "TRO 3050"
-        public String rl; // Role, "Assault", "Scout", etc.
-        public boolean cl; // true for Clan, false for Inner Sphere
-        public int ar; // Total armor
-        public int in; // Total internal structure
-        public int h; // Total heat generation
-        public int h2; // Heat capacity
-        public int w; // Walk MP
-        public int r; // Run MP
-        public int j; // Jump MP
-        public int s; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
-        public String sh; // Path to the SVG sheet
-
-        public UnitData(MekSummary summary) {
-            this.id = summary.getMulId();
-            this.n = summary.getFullChassis();
-            this.m = summary.getModel();
-            this.y = summary.getYear();
-            this.wc = summary.getWeightClass();
-            this.t = summary.getTons();
-            this.bv = summary.getBV();
-            this.pv = summary.getPointValue();
-            this.c = summary.getCost();
-            this.ty = summary.getUnitType();
-            this.sub = summary.getUnitSubType();
-            this.cl = summary.isClan();
-            this.w = summary.getWalkMp();
-            this.r = summary.getRunMp();
-            this.j = summary.getJumpMp();
-        }
+        public long cost; // Cost in C-Bills, rounded to the nearest integer
+        public int level; // Tech Level
+        public String techBase;
+        public String techRating;
+        public String type; // Major type, "Mek", "Vehicle", etc.
+        public String subtype; // Subtype, "Assault", "Light", etc.
+        public String source; // Source of the unit, e.g. "TRO 3050"
+        public String role; // Role, "Assault", "Scout", etc.
+        public int armor; // Total armor
+        public int internal; // Total internal structure
+        public int heat; // Total heat generation
+        public int dissipation; // Heat capacity
+        public int walk; // Walk MP
+        public int run; // Run MP
+        public int jump; // Jump MP
+        public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
+        public List<String> sheets; // Path to the SVG sheet
 
         public UnitData(Entity entity) {
             this.id = entity.getMulId();
-            this.n = entity.getFullChassis();
-            this.m = entity.getModel();
-            this.y = entity.getYear();
-            this.wc = entity.getWeightClass();
-            this.t = entity.getWeight();
+            this.chassis = entity.getFullChassis();
+            this.model = entity.getModel();
+            this.year = entity.getYear();
+            this.weightClass = entity.getWeightClass();
+            this.tons = entity.getWeight();
             this.bv = entity.getBvCalculator().calculateBV(false,true);
-            this.c = Math.round(entity.getCost(false));
-            this.l = entity.getStaticTechLevel().ordinal();
-            this.ty = Entity.getEntityMajorTypeName(entity.getEntityType());
-            this.sub = Entity.getEntityTypeName(entity.getEntityType());
-            this.src = entity.getSource();
+            this.cost = Math.round(entity.getCost(false));
+            this.level = entity.getStaticTechLevel().ordinal();
+            this.techBase = formatTechBase(entity);
+            this.techRating = entity.getFullRatingName();
+            this.type = Entity.getEntityMajorTypeName(entity.getEntityType());
+            this.subtype = Entity.getEntityTypeName(entity.getEntityType());
+            this.source = entity.getSource();
+            this.role = formatRole(entity);
+            this.armor = entity.getTotalOArmor();
+            this.internal = entity.getTotalInternal();
+            this.heat = UnitUtil.getTotalHeatGeneration(entity);
+            this.dissipation = entity.getHeatCapacity();
+            this.walk = entity.getWalkMP();
+            this.run = entity.getRunMP();
+            this.jump = entity.getJumpMP();
+            this.sheets = new ArrayList<>();
+        }
+
+        private String formatTechBase(Entity entity) {
+            if (entity.isMixedTech()) {
+                return "Mixed";
+            } else if (entity.isClan()) {
+                return "Clan";
+            } else {
+                return "Inner Sphere";
+            }
+        }
+
+        private String formatRole(Entity entity) {
             UnitRole role = entity.getRole();
             if (role != UnitRole.UNDETERMINED) {
-                this.rl = role.toString();
+                return role.toString();
             } else {
-                this.rl = "None";
+                return "None";
             }
-            this.cl = entity.isClan();
-            this.ar = entity.getTotalOArmor();
-            this.in = entity.getTotalInternal();
-            this.h = UnitUtil.getTotalHeatGeneration(entity);
-            this.h2 = entity.getHeatCapacity();
-            this.w = entity.getWalkMP();
-            this.r = entity.getRunMP();
-            this.j = entity.getJumpMP();
         }
     }
 
@@ -207,7 +214,6 @@ public class SVGMassPrinter {
         
         PageFormat pf = new PageFormat();
         PaperSize paperDef = recordSheetOptions.getPaperSize();
-
         try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
             jsonWriter.write("{\"version\":"+ timestamp +",\n");
             jsonWriter.write("\"units\":[\n");
@@ -215,7 +221,7 @@ public class SVGMassPrinter {
             for (MekSummary mekSummary : meks) {
                 // if (mekSummary.getUnitType() != "Mek") continue; // Skip non-Mek units
                 i++;
-                logger.info("{}: {}", i, mekSummary.getName());
+//                logger.info("{}: {}", i, mekSummary.getName());
 
                 // if (i > 10) break; // For testing, remove this line in production
                 /*
@@ -238,7 +244,7 @@ public class SVGMassPrinter {
                  */
                 Entity entity = mekSummary.loadEntity();
                 if ((entity == null) || (entity instanceof GunEmplacement)) {
-                    logger.info("Skipping: {}", mekSummary.getName());
+//                    logger.info("Skipping: {}", mekSummary.getName());
                     System.gc();
                     continue;
                 }
@@ -250,15 +256,19 @@ public class SVGMassPrinter {
                     logger.error("Couldn't create folder {}", sheetPath);
                     System.exit(1);
                 }
-
-                String svgFilename = generateFilename(mekSummary);
-                File finalFilename = new File(sheetPath, svgFilename);
-
-                if (processedFiles.contains(finalFilename.getPath())) {
-                    logger.warn("Duplication detected! File already exists: {}", finalFilename.getPath());
+                String name = generateName(entity);
+                if (processedFiles.contains(name)) {
+                    logger.warn("Duplication detected! Hash {} already exists for {} {}", name,
+                          mekSummary.getFullChassis(), mekSummary.getModel());
                     continue;
                 }
-                processedFiles.add(finalFilename.getPath());
+                processedFiles.add(name);
+//                if (i > 1) {
+//                    continue;
+//                }
+
+                UnitData unitData = new UnitData(entity);
+                unitData.name = name;
                 boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();
                 try {
                     // List<Entity> units = printableListOfUnits(entity);
@@ -267,55 +277,59 @@ public class SVGMassPrinter {
                         logger.error("No sheets generated for {}", mekSummary.getName());
                         System.exit(1);
                     }
-                    int pageIndex = 1;
+                    List<Document> svgDocs = new ArrayList<>();
                     for (PrintRecordSheet sheet : sheets) {
                         if (sheet instanceof PrintSmallUnitSheet) {
                             pf.setPaper(paperDef.createPaper());
                         } else {
                             pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
                         }
-                        sheet.createDocument(pageIndex, pf, false);
-                        pageIndex++;
+                        int pageCount = sheet.getPageCount();
+                        for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
+                            sheet.createDocument(pageIndexInSheet, pf, false);
+                            if (pageCount > 1) {
+                                // Multiple pages, clone the SVG document for each page to prevent overwriting
+                                svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));
+                            } else {
+                                // Single page, add directly
+                                svgDocs.add(sheet.getSVGDocument());
+                            }
+                        }
                     }
-                    List<Document> svgDocs = sheets.stream()
-                        .map(PrintRecordSheet::getSVGDocument)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
                     if (svgDocs.isEmpty()) {
                         logger.error("No SVG documents for {}", mekSummary.getName());
                         System.exit(1);
                     }
-                    Document combinedSvg;
-                    if (svgDocs.size() == 1) {
-                        // Single sheet - use as is
-                        combinedSvg = svgDocs.get(0);
-                    } else {
-                        // Multiple sheets - combine side by side
-                        combinedSvg = combineSVGDocuments(svgDocs);
+                    int idx = 0;
+                    for (Document svgDoc : svgDocs) {
+                        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                        Transformer transformer = transformerFactory.newTransformer();
+                        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+                        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                        DOMSource source = new DOMSource(svgDoc);
+                        String svgFilename;
+                        if (idx > 0) {
+                            svgFilename = unitData.name + "_" + idx + ".svg";
+                        } else {
+                            svgFilename = unitData.name + ".svg";
+                        }
+                        File finalFilename = new File(sheetPath, svgFilename);
+                        StreamResult result = new StreamResult(new FileOutputStream(finalFilename + ".svg"));
+                        transformer.transform(source, result);
+                        String pathToSave = (svgPath + File.separator + svgFilename).replace("\\", "/");
+                        unitData.sheets.add(pathToSave);
+                        idx++;
                     }
-                    
-                    // Save the combined SVG
-                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transformerFactory.newTransformer();
-                    transformer.setOutputProperty(OutputKeys.INDENT, "no");
-                    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-                    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                    
-                    DOMSource source = new DOMSource(combinedSvg);
-                    StreamResult result = new StreamResult(new FileOutputStream(finalFilename));
-                    transformer.transform(source, result);
-                    
                     // logger.info("Printed: {}", finalFilename);
                 } catch (Exception e) {
                     logger.error(e, "Printing Error");
                     System.exit(1);
                 }
 
-                UnitData unitData = new UnitData(entity);
                 // Set additional fields
-                unitData.sh = (svgPath + File.separator + svgFilename).replace("\\", "/");
                 unitData.pv = mekSummary.getPointValue();
-                unitData.s = isSmallUnit ? 1 : 0; // 1 for small units, 0 for others
+                unitData.su = isSmallUnit ? 1 : 0; // 1 for small units, 0 for others
 
                 String jsonLine = mapper.writeValueAsString(unitData);
                 if (!firstUnit) {
@@ -377,7 +391,7 @@ public class SVGMassPrinter {
             
             // Create a group for this sheet with translation
             Element group = combinedDoc.createElementNS("http://www.w3.org/2000/svg", "g");
-            double xOffset = i * totalWidth;
+            double xOffset = i * sheetWidth;
             group.setAttribute("transform", String.format("translate(%.1f,0)", xOffset));
             
             // Copy all child elements from source SVG to the group
@@ -469,23 +483,19 @@ public class SVGMassPrinter {
         }
     }
 
-    private static String generateFilename(MekSummary unit) {
-        return String.format("%s_%s.svg",
-                sanitize(unit.getChassis()),
-                sanitize(unit.getModel()))
-                  .replace(" ", "_")
-                  .replace("\"", "")
-                  .replace("/", "")
-                  .replace("(", "_")
-                  .replace(")", "")
-                  .replace("[", "_")
-                  .replace("]", "")
-                  .replaceAll("_+", "_")
-                .toLowerCase();
-    }
+    private static String generateName(Entity entity) {
+        ASUnitType asUnitType = ASUnitType.getUnitType(entity);
+        String name = String.format("%s%s_%s", (asUnitType != ASUnitType.UNKNOWN) ? asUnitType.name() : "",
+                    entity.getChassis(),
+                    entity.getModel())
+//                            .replace("\"", "")
+//                            .replace("/", "")
+                            .replaceAll("[^a-zA-Z0-9_]", "")
+//                            .replaceAll("[^a-zA-Z0-9-]", "");
+                            .replaceAll("_+", "_")
+                            .replaceAll("^_+|_+$", "");
 
-    private static String sanitize(String original) {
-        return original.replace("\"", "").replace("/", "");
+        return name;
     }
 
     private SVGMassPrinter() {
