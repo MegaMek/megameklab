@@ -284,10 +284,10 @@ public class UnitPrintManager {
         }
 
         if (!protoList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(protoList, pageCount, options));
+            sheets.add(new PrintSmallUnitSheet(protoList, pageCount++, options));
         }
         if (!hhwList.isEmpty()) {
-            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount, options));
+            sheets.add(new PrintSmallUnitSheet(hhwList, pageCount++, options));
         }
         return sheets;
     }
