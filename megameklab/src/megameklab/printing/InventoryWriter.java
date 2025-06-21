@@ -289,11 +289,15 @@ public class InventoryWriter {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
-            StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
-            if (null == same) {
-                equipment.add(entry);
+            if (sheet.options.mergeIdenticalEquipment()) {
+                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+                if (null == same) {
+                    equipment.add(entry);
+                } else {
+                    same.incrementQty();
+                }
             } else {
-                same.incrementQty();
+                equipment.add(entry);
             }
         }
 
@@ -800,16 +804,23 @@ public class InventoryWriter {
     private double printEquipmentTable(List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
+            Element rowGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            String className = line.getUniqueId();
+            if (null != className && !className.isEmpty()) {
+                rowGroup.setAttributeNS(null, "class", className);
+            }
+            canvas.appendChild(rowGroup);
+
             for (int row = 0; row < line.nRows(); row++) {
                 int lines = 1;
                 if (line.isDamaged()) {
-                    sheet.addLineThrough(canvas, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontSize * 0.3), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
+                    sheet.addLineThrough(rowGroup, DAMAGE_LINETHROUGH_MARGIN, yPosition-(fontSize * 0.3), viewWidth-DAMAGE_LINETHROUGH_MARGIN);
                 }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
                         case QUANTITY:
                             if (row == 0) {
-                                sheet.addTextElement(canvas, colX[i],
+                                sheet.addTextElement(rowGroup, colX[i],
                                         yPosition, line.getQuantityField(row),
                                         fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             }
@@ -825,12 +836,12 @@ public class InventoryWriter {
                                 width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
                             }
                             if (row == 0) {
-                                lines = sheet.addMultilineTextElement(canvas, colX[i],
+                                lines = sheet.addMultilineTextElement(rowGroup, colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
                                         SVGConstants.SVG_NORMAL_VALUE);
                             } else {
-                                lines = sheet.addMultilineTextElement(canvas, line.indentMultiline() ?
+                                lines = sheet.addMultilineTextElement(rowGroup, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
@@ -839,50 +850,50 @@ public class InventoryWriter {
                             break;
                         case LOCATION:
                         case LOCATION_NO_HEAT:
-                            sheet.addTextElement(canvas, colX[i],
+                            sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getLocationField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case HEAT:
-                            sheet.addTextElement(canvas, colX[i],
+                            sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getHeatField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case DAMAGE:
                             final float rightPadding = (fontSize / 2);
-                            lines = Math.max(lines, sheet.addMultilineTextElement(canvas, colX[i],
+                            lines = Math.max(lines, sheet.addMultilineTextElement(rowGroup, colX[i],
                                     yPosition,
                                     colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
                             break;
                         case MIN:
-                            sheet.addTextElement(canvas, colX[i],
+                            sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getMinField(row), fontSize,
                                     SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case SHORT:
                         case SRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
+                            sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i + 1] - colX[i] - 1,
                                     line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case MEDIUM:
                         case MRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
+                            sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i + 1] - colX[i] - 1,
                                     line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case LONG:
                         case LRV:
-                            sheet.addTextElementToFit(canvas, colX[i],
+                            sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
                             break;
                         case ERV:
-                            sheet.addTextElementToFit(canvas, colX[i],
+                            sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getExtremeField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
                                     SVGConstants.SVG_NORMAL_VALUE);
@@ -892,7 +903,7 @@ public class InventoryWriter {
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
-                int lines = sheet.addMultilineTextElement(canvas, colX[1] + indent,
+                int lines = sheet.addMultilineTextElement(rowGroup, colX[1] + indent,
                             yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
                             line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
                             SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);

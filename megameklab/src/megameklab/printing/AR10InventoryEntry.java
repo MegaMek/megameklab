@@ -33,6 +33,11 @@ public class AR10InventoryEntry implements InventoryEntry {
     }
 
     @Override
+    public String getUniqueId() {
+        return "";
+    }
+
+    @Override
     public String getQuantityField(int row) {
         return "";
     }
@@ -41,7 +46,6 @@ public class AR10InventoryEntry implements InventoryEntry {
     public boolean isDamaged() {
         return false;
     }
-
 
     @Override
     public String getNameField(int row) {

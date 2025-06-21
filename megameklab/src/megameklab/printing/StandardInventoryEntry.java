@@ -128,6 +128,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         ranges = setRanges();
     }
 
+    public String getUniqueId() {
+        return "id-" + System.identityHashCode(mount);
+    }
+
     private String[][] setRanges() {
         if (isMML) {
             if (mount.getEntity().isAero()) {
