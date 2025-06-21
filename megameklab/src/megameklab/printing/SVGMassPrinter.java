@@ -22,13 +22,10 @@ package megameklab.printing;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.security.MessageDigest;
-import java.util.zip.Adler32;
 
 
 import megamek.client.ratgenerator.RATGenerator;
@@ -40,9 +37,12 @@ import megamek.common.MekSummary;
 import megamek.common.MekSummaryCache;
 import megamek.common.UnitRole;
 import megamek.common.alphaStrike.ASUnitType;
+import megamek.common.enums.WeaponSortOrder;
+import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.util.CConfig;
+import megameklab.util.SVGOptimizer;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 import java.nio.file.Files;
@@ -66,9 +66,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGDocument;
 
 import java.io.FileOutputStream;
 
+/**
+ * @author drake
+ * Generates SVG sheets for all units in the Mek Summary Cache and saves them
+ */
 public class SVGMassPrinter {
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String SHEETS_DIR = "sheets";
@@ -179,16 +184,8 @@ public class SVGMassPrinter {
                 logger.info("Sheets directory created: {}", sheetsDir.getPath());
             }
         }
-
-        RecordSheetOptions recordSheetOptions = new RecordSheetOptions();
-        recordSheetOptions.setC3inBV(true);
-        recordSheetOptions.setBoldType(true);
-        recordSheetOptions.setHeatProfile(true);
-        recordSheetOptions.setCondensedReferenceCharts(true);
-        recordSheetOptions.setRole(true);
-        recordSheetOptions.setEraIcon(true);
-        recordSheetOptions.setColor(false);
-        recordSheetOptions.colorLogo = true;
+        CConfig.setParam(CConfig.RS_FONT, "Roboto");
+        RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
         
         HashSet<String> processedFiles = new HashSet<>();
         Locale.setDefault(new MMLOptions().getLocale());
@@ -199,7 +196,6 @@ public class SVGMassPrinter {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
 
-        int i = 0;
         int processedCount = 0;
         MekSummary[] meks = cache.getAllMeks();
         logger.info("Processing {} meks...", meks.length);
@@ -219,9 +215,11 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
+                if (!mekSummary.getName().contains("Archangel")) {
+                    continue;
+                }
                 // if (mekSummary.getUnitType() != "Mek") continue; // Skip non-Mek units
-                i++;
-//                logger.info("{}: {}", i, mekSummary.getName());
+                // logger.info("{}", mekSummary.getName());
 
                 // if (i > 10) break; // For testing, remove this line in production
                 /*
@@ -249,6 +247,11 @@ public class SVGMassPrinter {
                     continue;
                 }
                 UnitUtil.updateLoadedUnit(entity);
+                entity.getCrew().setName("", 0);
+                if (entity.getId() == -1) {
+                    entity.setId(entity.getGame().getNextEntityId());
+                }
+                C3Util.wireC3(entity.getGame(), entity);
                 String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase();
                 File sheetPath = new File(sheetsDir.getPath(), svgPath);
 
@@ -307,18 +310,26 @@ public class SVGMassPrinter {
                         transformer.setOutputProperty(OutputKeys.INDENT, "no");
                         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
                         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                        DOMSource source = new DOMSource(svgDoc);
-                        String svgFilename;
-                        if (idx > 0) {
-                            svgFilename = unitData.name + "_" + idx + ".svg";
-                        } else {
-                            svgFilename = unitData.name + ".svg";
+                        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                        String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
+                        String unoptimizedSvgFilename = baseSvgFilename + ".svg";
+                        File finalUnoptimizedFilename = new File(sheetPath, unoptimizedSvgFilename);
+                        try (FileOutputStream fos = new FileOutputStream(finalUnoptimizedFilename)) {
+                            DOMSource source = new DOMSource(svgDoc);
+                            StreamResult result = new StreamResult(fos);
+                            transformer.transform(source, result);
                         }
-                        File finalFilename = new File(sheetPath, svgFilename);
-                        StreamResult result = new StreamResult(new FileOutputStream(finalFilename + ".svg"));
-                        transformer.transform(source, result);
-                        String pathToSave = (svgPath + File.separator + svgFilename).replace("\\", "/");
+                        String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
                         unitData.sheets.add(pathToSave);
+                        //optimized version
+                        SVGOptimizer.optimize((SVGDocument) svgDoc);
+                        String optimizedSvgFilename = baseSvgFilename + "_optimized.svg";
+                        File finalOptimizedFilename = new File(sheetPath, optimizedSvgFilename);
+                        try (FileOutputStream fos = new FileOutputStream(finalOptimizedFilename)) {
+                            DOMSource source = new DOMSource(svgDoc);
+                            StreamResult result = new StreamResult(fos);
+                            transformer.transform(source, result);
+                        }
                         idx++;
                     }
                     // logger.info("Printed: {}", finalFilename);
@@ -348,6 +359,23 @@ public class SVGMassPrinter {
 
         logger.info("Done. Processed {} units.", processedCount);
         System.exit(0);
+    }
+
+    private static RecordSheetOptions getRecordSheetOptions() {
+        RecordSheetOptions recordSheetOptions = new RecordSheetOptions();
+        recordSheetOptions.setColor(RecordSheetOptions.ColorMode.LOGO_ONLY);
+        recordSheetOptions.setC3inBV(true);
+        recordSheetOptions.setBoldType(true);
+        recordSheetOptions.setHeatProfile(true);
+        recordSheetOptions.setCondensedReferenceCharts(true);
+        recordSheetOptions.setRole(true);
+        recordSheetOptions.setEraIcon(true);
+        recordSheetOptions.setQuirks(true);
+        recordSheetOptions.setDamage(false);
+        recordSheetOptions.setWeaponsOrder(WeaponSortOrder.RANGE_HIGH_LOW);
+        recordSheetOptions.setPaperSize(PaperSize.US_LETTER);
+        recordSheetOptions.setMergeIdenticalEquipment(false);
+        return recordSheetOptions;
     }
 
     /**
@@ -402,7 +430,6 @@ public class SVGMassPrinter {
         
         return combinedDoc;
     }
-
 
     /**
      * Extracts the width from an SVG root element
@@ -485,17 +512,12 @@ public class SVGMassPrinter {
 
     private static String generateName(Entity entity) {
         ASUnitType asUnitType = ASUnitType.getUnitType(entity);
-        String name = String.format("%s%s_%s", (asUnitType != ASUnitType.UNKNOWN) ? asUnitType.name() : "",
+        return String.format("%s%s_%s", (asUnitType != ASUnitType.UNKNOWN) ? asUnitType.name() : "",
                     entity.getChassis(),
                     entity.getModel())
-//                            .replace("\"", "")
-//                            .replace("/", "")
                             .replaceAll("[^a-zA-Z0-9_]", "")
-//                            .replaceAll("[^a-zA-Z0-9-]", "");
                             .replaceAll("_+", "_")
                             .replaceAll("^_+|_+$", "");
-
-        return name;
     }
 
     private SVGMassPrinter() {
