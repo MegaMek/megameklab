@@ -368,6 +368,11 @@ public class PrintMek extends PrintEntity {
         int remainingDamage = damage;
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element el) {
+                String currentClass = el.getAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE);
+                if (!currentClass.contains("pip")) {
+                    String newClass = currentClass.isEmpty() ? "pip" : currentClass + " pip";
+                    el.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, newClass);
+                }
                 if (remainingDamage > 0) {
                     remainingDamage--;
                     // Set the fill attribute to black for damaged pips
