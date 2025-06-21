@@ -24,9 +24,23 @@ import megameklab.util.CConfig;
  */
 public class RecordSheetOptions {
 
+    public enum ColorMode {
+        ALL("All"),
+        LOGO_ONLY("Logo Only"),
+        NONE("B&W");
+
+        private final String displayName;
+        ColorMode(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
     private PaperSize paperSize;
-    private boolean color;
-    public boolean colorLogo;
+    private ColorMode color;
     private boolean quirks;
     private boolean c3bv;
     private boolean pilotData;
@@ -44,6 +58,7 @@ public class RecordSheetOptions {
     private boolean damage;
     private String damageColor;
     private WeaponSortOrder weaponsOrder;
+    private boolean mergeIdenticalEquipment;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -52,7 +67,7 @@ public class RecordSheetOptions {
         } catch (Exception ex) {
             this.paperSize = PaperSize.US_LETTER;
         }
-        this.color = CConfig.getBooleanParam(CConfig.RS_COLOR);
+        this.color = CConfig.getEnumParam(CConfig.RS_COLOR, ColorMode.class, ColorMode.ALL);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
         this.c3bv = CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
@@ -70,6 +85,7 @@ public class RecordSheetOptions {
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
         this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
         this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
+                this.mergeIdenticalEquipment = CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -92,13 +108,14 @@ public class RecordSheetOptions {
         damage = options.damage;
         damageColor = options.damageColor;
         weaponsOrder = options.weaponsOrder;
+        mergeIdenticalEquipment = options.mergeIdenticalEquipment;
     }
 
     public PaperSize getPaperSize() {
         return paperSize;
     }
 
-    public boolean useColor() {
+    public ColorMode useColor() {
         return color;
     }
 
@@ -182,7 +199,7 @@ public class RecordSheetOptions {
         this.paperSize = paperSize;
     }
 
-    public void setColor(boolean color) {
+    public void setColor(ColorMode color) {
         this.color = color;
     }
 
@@ -240,5 +257,13 @@ public class RecordSheetOptions {
     
     public void setWeaponsOrder(WeaponSortOrder order) {
         this.weaponsOrder = order;
+    }
+
+    public boolean mergeIdenticalEquipment() {
+        return mergeIdenticalEquipment;
+    }
+
+    public void setMergeIdenticalEquipment(boolean mergeIdenticalEquipment) {
+        this.mergeIdenticalEquipment = mergeIdenticalEquipment;
     }
 }

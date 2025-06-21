@@ -264,14 +264,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
                     String[] ids = field.substring(field.indexOf(":") + 1).split(",");
                     for (String id : ids) {
-                        if (options.colorLogo && !options.useColor()) {
+                        if (options.useColor() == RecordSheetOptions.ColorMode.LOGO_ONLY) {
                             if (id.contains("btLogo")) {
                                 hideElement(id + "Color", false);
                                 removeElement(id + "BW");
                                 continue;
                             }
                         }
-                        if (options.useColor()) {
+                        if (options.useColor() == RecordSheetOptions.ColorMode.ALL) {
                             removeElement(id + "BW");
                             hideElement(id + "Color", false);
                         } else {
@@ -1006,6 +1006,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (type == PipType.DIAMOND) {
             // Use diamond shape for hardened armor pips
             Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+            path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
             path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
@@ -1019,6 +1020,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         } else {
             // Use circle element for normal pips
             Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
+            circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
             double centerX = x + radius;
             double centerY = y + radius;
             circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));

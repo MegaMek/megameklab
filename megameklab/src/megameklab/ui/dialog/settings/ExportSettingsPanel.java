@@ -23,6 +23,7 @@ import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PaperSize;
 import megameklab.printing.PrintEntity;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
@@ -43,7 +44,6 @@ import java.util.ResourceBundle;
 class ExportSettingsPanel extends JPanel {
 
     private final JComboBox<String> cbPaper = new JComboBox<>();
-    private final JCheckBox chkColor = new JCheckBox();
     private final JComboBox<String> cbFont = new JComboBox<>();
     private final JTextArea txtFontDisplay = new JTextArea();
     private final JCheckBox chkProgressBar = new JCheckBox();
@@ -66,7 +66,9 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
     private final JCheckBox chkBoldType = new JCheckBox();
-    private MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
+    private final JCheckBox chkMergeIdenticalEquipment = new JCheckBox();
+    private final MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
+    private final MMComboBox<RecordSheetOptions.ColorMode> comboColorMode;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -124,9 +126,21 @@ class ExportSettingsPanel extends JPanel {
         chkProgressBar.setToolTipText(resourceMap.getString("ConfigurationDialog.chkProgressBar.tooltip"));
         chkProgressBar.setSelected(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
 
-        chkColor.setText(resourceMap.getString("ConfigurationDialog.chkColor.text"));
-        chkColor.setToolTipText(resourceMap.getString("ConfigurationDialog.chkColor.tooltip"));
-        chkColor.setSelected(CConfig.getBooleanParam(CConfig.RS_COLOR));
+
+        JLabel colorModeLabel = new JLabel(resourceMap.getString("ConfigurationDialog.chkColor.text"));
+        String colorModeToolTip = resourceMap.getString("ConfigurationDialog.chkColor.tooltip");
+        colorModeLabel.setToolTipText(colorModeToolTip);
+        final DefaultComboBoxModel<RecordSheetOptions.ColorMode> defaultColorModeModel = new DefaultComboBoxModel<>(
+              RecordSheetOptions.ColorMode.values());
+        comboColorMode = new MMComboBox<>("comboColorMode", defaultColorModeModel);
+        comboColorMode.setToolTipText(colorModeToolTip);
+        comboColorMode.setSelectedItem(CConfig.getEnumParam(CConfig.RS_COLOR, RecordSheetOptions.ColorMode.class,
+              RecordSheetOptions.ColorMode.ALL));
+
+        JPanel colorModePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        colorModePanel.add(colorModeLabel);
+        colorModePanel.add(Box.createHorizontalStrut(25));
+        colorModePanel.add(comboColorMode);
 
         chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
         chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
@@ -139,6 +153,10 @@ class ExportSettingsPanel extends JPanel {
         chkBoldType.setText(resourceMap.getString("ConfigurationDialog.chkBoldType.text"));
         chkBoldType.setToolTipText(resourceMap.getString("ConfigurationDialog.chkBoldType.tooltip"));
         chkBoldType.setSelected(CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE));
+
+        chkMergeIdenticalEquipment.setText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.text"));
+        chkMergeIdenticalEquipment.setToolTipText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.tooltip"));
+        chkMergeIdenticalEquipment.setSelected(CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -246,7 +264,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(fontPanel);
         gridPanel.add(weaponSortOrderPanel);
         gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
-        innerGridPanel.add(chkColor);
+        innerGridPanel.add(colorModePanel);
         innerGridPanel.add(chkBoldType);
         innerGridPanel.add(chkRowShading);
         innerGridPanel.add(chkShowReferenceTables);
@@ -261,7 +279,7 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkTacOpsHeat);
         innerGridPanel.add(chkAlternateArmorGrouping);
         innerGridPanel.add(chkFrameless);
-        innerGridPanel.add(new JLabel("")); //filler
+        innerGridPanel.add(chkMergeIdenticalEquipment);
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
@@ -278,7 +296,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_PAPER_SIZE, PaperSize.values()[cbPaper.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_FONT, (String) cbFont.getSelectedItem());
         recordSheetSettings.put(CConfig.RS_PROGRESS_BAR, String.valueOf(chkProgressBar.isSelected()));
-        recordSheetSettings.put(CConfig.RS_COLOR, Boolean.toString(chkColor.isSelected()));
+        recordSheetSettings.put(CConfig.RS_COLOR, Objects.requireNonNull(comboColorMode.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_ROW_SHADING, Boolean.toString(chkRowShading.isSelected()));
         recordSheetSettings.put(CConfig.RS_REFERENCE, Boolean.toString(chkShowReferenceTables.isSelected()));
         recordSheetSettings.put(CConfig.RS_CONDENSED_REFERENCE, Boolean.toString(chkShowCondensedTables.isSelected()));
@@ -297,7 +315,8 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
-        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, comboDefaultWeaponSortOrder.getSelectedItem().name());
+        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
         return recordSheetSettings;
     }
 
