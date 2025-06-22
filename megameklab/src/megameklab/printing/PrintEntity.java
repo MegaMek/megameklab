@@ -275,27 +275,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 }
             }
 
-            // We add to the rects some attributes that will be useful for the heat scale
-            List<Element> rects = new ArrayList<>();
-            for (int j = 0; j < children.getLength(); j++) {
-                Node child = children.item(j);
-                if (child instanceof Element && "rect".equals(((Element) child).getTagName())) {
-                    rects.add((Element) child);
-                }
-            }
-            rects.sort((a, b) -> {
-                double ya = Double.parseDouble(a.getAttribute("y"));
-                double yb = Double.parseDouble(b.getAttribute("y"));
-                return Double.compare(ya, yb);
-            });
-            // Assign heat value
-            int n = rects.size();
-            for (int j = 0; j < n; j++) {
-                Element rectElement = rects.get(j);
-                rectElement.setAttribute("class", "heat");
-                rectElement.setAttribute("heat", String.valueOf(j));
-            }
-
             // Text centering and arrow creation
             for (Element text : texts) {
                 String value = text.getTextContent();
