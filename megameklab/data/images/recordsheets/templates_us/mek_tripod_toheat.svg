@@ -9386,7 +9386,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect465-7" />
+           id="rect465-7" class="heat" heat="50" />
         <rect
            x="0"
            y="46.301998"
@@ -9395,7 +9395,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect466-3" />
+           id="rect466-3" class="heat" heat="49" />
         <rect
            x="0"
            y="52.736"
@@ -9404,7 +9404,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect467-8" />
+           id="rect467-8" class="heat" heat="48" />
         <rect
            x="0"
            y="59.169998"
@@ -9413,7 +9413,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect468-4" />
+           id="rect468-4" class="heat" heat="47" />
         <rect
            x="0"
            y="65.603996"
@@ -9422,7 +9422,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect469-9" />
+           id="rect469-9" class="heat" heat="46" />
         <rect
            x="0"
            y="72.038002"
@@ -9431,7 +9431,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect470-2" />
+           id="rect470-2" class="heat" heat="45" />
         <rect
            x="0"
            y="78.472"
@@ -9440,7 +9440,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect471-6" />
+           id="rect471-6" class="heat" heat="44" />
         <rect
            x="0"
            y="84.905998"
@@ -9449,7 +9449,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect472-5" />
+           id="rect472-5" class="heat" heat="43" />
         <rect
            x="0"
            y="91.339996"
@@ -9458,7 +9458,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect473" />
+           id="rect473" class="heat" heat="42" />
         <rect
            x="0"
            y="97.774002"
@@ -9467,7 +9467,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect474" />
+           id="rect474" class="heat" heat="41" />
         <rect
            x="0"
            y="104.208"
@@ -9476,7 +9476,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect475" />
+           id="rect475" class="heat" heat="40" />
         <rect
            x="0"
            y="110.642"
@@ -9485,7 +9485,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect476" />
+           id="rect476" class="heat" heat="39" />
         <rect
            x="0"
            y="117.075"
@@ -9494,7 +9494,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect477" />
+           id="rect477" class="heat" heat="38" />
         <rect
            x="0"
            y="123.509"
@@ -9503,7 +9503,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect478" />
+           id="rect478" class="heat" heat="37" />
         <rect
            x="0"
            y="129.94299"
@@ -9512,7 +9512,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect479" />
+           id="rect479" class="heat" heat="36" />
         <rect
            x="0"
            y="136.377"
@@ -9521,7 +9521,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect480" />
+           id="rect480" class="heat" heat="35" />
         <rect
            x="0"
            y="142.811"
@@ -9530,7 +9530,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect481" />
+           id="rect481" class="heat" heat="34" />
         <rect
            x="0"
            y="149.245"
@@ -9539,7 +9539,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect482" />
+           id="rect482" class="heat" heat="33" />
         <rect
            x="0"
            y="155.679"
@@ -9548,7 +9548,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect483" />
+           id="rect483" class="heat" heat="32" />
         <rect
            x="0"
            y="162.11301"
@@ -9557,7 +9557,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect484" />
+           id="rect484" class="heat" heat="31" />
         <rect
            x="0"
            y="168.547"
@@ -9566,7 +9566,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect485" />
+           id="rect485" class="heat" heat="30" />
         <rect
            x="0"
            y="174.981"
@@ -9575,7 +9575,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect486" />
+           id="rect486" class="heat" heat="29" />
         <rect
            x="0"
            y="181.41499"
@@ -9584,7 +9584,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect487" />
+           id="rect487" class="heat" heat="28" />
         <rect
            x="0"
            y="187.849"
@@ -9593,7 +9593,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect488" />
+           id="rect488" class="heat" heat="27" />
         <rect
            x="0"
            y="194.283"
@@ -9602,7 +9602,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect489" />
+           id="rect489" class="heat" heat="26" />
         <rect
            x="0"
            y="200.717"
@@ -9611,7 +9611,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect490" />
+           id="rect490" class="heat" heat="25" />
         <rect
            x="0"
            y="207.151"
@@ -9620,7 +9620,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect491-7" />
+           id="rect491-7" class="heat" heat="24" />
         <rect
            x="0"
            y="213.58501"
@@ -9629,7 +9629,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect492" />
+           id="rect492" class="heat" heat="23" />
         <rect
            x="0"
            y="220.019"
@@ -9638,7 +9638,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect493" />
+           id="rect493" class="heat" heat="22" />
         <rect
            x="0"
            y="226.453"
@@ -9647,7 +9647,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect494" />
+           id="rect494" class="heat" heat="21" />
         <rect
            x="0"
            y="232.88699"
@@ -9656,7 +9656,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect495" />
+           id="rect495" class="heat" heat="20" />
         <rect
            x="0"
            y="239.321"
@@ -9665,7 +9665,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect496" />
+           id="rect496" class="heat" heat="19" />
         <rect
            x="0"
            y="245.755"
@@ -9674,7 +9674,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect497" />
+           id="rect497" class="heat" heat="18" />
         <rect
            x="0"
            y="252.189"
@@ -9683,7 +9683,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect498" />
+           id="rect498" class="heat" heat="17" />
         <rect
            x="0"
            y="258.62299"
@@ -9692,7 +9692,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect499" />
+           id="rect499" class="heat" heat="16" />
         <rect
            x="0"
            y="265.05701"
@@ -9701,7 +9701,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect500" />
+           id="rect500" class="heat" heat="15" />
         <rect
            x="0"
            y="271.491"
@@ -9710,7 +9710,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect501" />
+           id="rect501" class="heat" heat="14" />
         <rect
            x="0"
            y="277.92499"
@@ -9719,7 +9719,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect502" />
+           id="rect502" class="heat" heat="13" />
         <rect
            x="0"
            y="284.358"
@@ -9728,7 +9728,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect503" />
+           id="rect503" class="heat" heat="12" />
         <rect
            x="0"
            y="290.79199"
@@ -9737,7 +9737,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect504" />
+           id="rect504" class="heat" heat="11" />
         <rect
            x="0"
            y="297.22601"
@@ -9746,7 +9746,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect505" />
+           id="rect505" class="heat" heat="10" />
         <rect
            x="0"
            y="303.66"
@@ -9755,7 +9755,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect506" />
+           id="rect506" class="heat" heat="9" />
         <rect
            x="0"
            y="310.09399"
@@ -9764,7 +9764,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect507-7" />
+           id="rect507-7" class="heat" heat="8" />
         <rect
            x="0"
            y="316.52802"
@@ -9773,7 +9773,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect508-4" />
+           id="rect508-4" class="heat" heat="7" />
         <rect
            x="0"
            y="322.96201"
@@ -9782,7 +9782,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect509-5" />
+           id="rect509-5" class="heat" heat="6" />
         <rect
            x="0"
            y="329.396"
@@ -9791,7 +9791,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect510-7" />
+           id="rect510-7" class="heat" heat="5" />
         <rect
            x="0"
            y="335.82999"
@@ -9800,7 +9800,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect511-9" />
+           id="rect511-9" class="heat" heat="4" />
         <rect
            x="0"
            y="342.26401"
@@ -9809,7 +9809,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect512-8" />
+           id="rect512-8" class="heat" heat="3" />
         <rect
            x="0"
            y="348.698"
@@ -9818,7 +9818,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect513-3" />
+           id="rect513-3" class="heat" heat="2" />
         <rect
            x="0"
            y="355.13199"
@@ -9827,7 +9827,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect514-0" />
+           id="rect514-0" class="heat" heat="1" />
         <rect
            x="0"
            y="361.56601"
@@ -9836,7 +9836,7 @@
            height="6.434"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect515-2" />
+           id="rect515-2" class="heat" heat="0" />
         <text
            fill="#000000"
            x="4.7728119"
