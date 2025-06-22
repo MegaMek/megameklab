@@ -805,9 +805,9 @@ public class InventoryWriter {
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
             Element rowGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
-            String className = line.getUniqueId();
-            if (null != className && !className.isEmpty()) {
-                rowGroup.setAttributeNS(null, "class", className);
+            String uniqueId = line.getUniqueId();
+            if (null != uniqueId && !uniqueId.isEmpty()) {
+                rowGroup.setAttributeNS(null, "id", uniqueId);
             }
             canvas.appendChild(rowGroup);
 

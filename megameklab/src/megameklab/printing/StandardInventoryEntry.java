@@ -129,7 +129,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     public String getUniqueId() {
-        return "id-" + System.identityHashCode(mount);
+        return String.valueOf(System.identityHashCode(mount));
     }
 
     private String[][] setRanges() {

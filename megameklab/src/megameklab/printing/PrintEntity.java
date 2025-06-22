@@ -561,8 +561,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
         double viewHeight = bbox.getHeight();
         double viewX = bbox.getX();
         double viewY = bbox.getY();
+        Element hsGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        hsGroup.setAttributeNS(null, "class", "hsPips");
+        canvas.appendChild(hsGroup);
         if (viewWidth > viewHeight) {
-            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
+            drawHeatSinkPipsLandscape(hsGroup, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
             return;
         }
 
@@ -601,7 +604,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 damage--;
             }
             Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
-            canvas.appendChild(pip);
+            hsGroup.appendChild(pip);
         }
     }
 
