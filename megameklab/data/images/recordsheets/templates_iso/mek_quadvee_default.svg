@@ -6401,7 +6401,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text405-4">30</text>
-      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6416,7 +6416,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text407-2">28</text>
-      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6431,7 +6431,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text409-0">26</text>
-      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6439,7 +6439,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text410-1">25</text>
-      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6447,7 +6447,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text411-4">24</text>
-      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6455,7 +6455,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text412-6">23</text>
-      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6463,7 +6463,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text413-0">22</text>
-      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6478,7 +6478,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text415-1">20</text>
-      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6486,7 +6486,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text416-7">19</text>
-      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6494,7 +6494,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text417-7">18</text>
-      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6502,7 +6502,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text418-7">17</text>
-      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6517,7 +6517,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text420-3">15</text>
-      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6525,7 +6525,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text421-3">14</text>
-      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6533,7 +6533,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text422-5">13</text>
-      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6555,7 +6555,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text425-8">10</text>
-      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6570,7 +6570,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text427-8">8</text>
-      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6592,7 +6592,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text430-6">5</text>
-      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6951,7 +6951,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text405">30</text>
-      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6966,7 +6966,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text407">28</text>
-      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6981,7 +6981,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text409">26</text>
-      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6989,7 +6989,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text410">25</text>
-      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -6997,7 +6997,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text411">24</text>
-      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7005,7 +7005,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text412">23</text>
-      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7013,7 +7013,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text413">22</text>
-      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7028,7 +7028,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text415">20</text>
-      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7036,7 +7036,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text416">19</text>
-      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7044,7 +7044,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text417">18</text>
-      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7052,7 +7052,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text418">17</text>
-      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7067,7 +7067,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text420">15</text>
-      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7075,7 +7075,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text421">14</text>
-      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7083,7 +7083,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text422">13</text>
-      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7105,7 +7105,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text425">10</text>
-      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7120,7 +7120,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text427">8</text>
-      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -7142,7 +7142,7 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text430">5</text>
-      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
+      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="middle" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
            x="9.0115005"
