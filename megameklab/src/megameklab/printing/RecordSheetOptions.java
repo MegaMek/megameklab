@@ -39,8 +39,22 @@ public class RecordSheetOptions {
         }
     }
 
+    public enum HeatScaleMarker {
+        ASTERISK("Asterisk"),
+        ARROW("Arrow");
+        private final String displayName;
+        HeatScaleMarker(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
     private PaperSize paperSize;
     private ColorMode color;
+    private HeatScaleMarker heatScaleMarker;
     private boolean quirks;
     private boolean c3bv;
     private boolean pilotData;
@@ -68,6 +82,8 @@ public class RecordSheetOptions {
             this.paperSize = PaperSize.US_LETTER;
         }
         this.color = CConfig.getEnumParam(CConfig.RS_COLOR, ColorMode.class, ColorMode.ALL);
+        this.heatScaleMarker = CConfig.getEnumParam(CConfig.RS_HEAT_SCALE_MARKER, HeatScaleMarker.class,
+              HeatScaleMarker.ASTERISK);
         this.quirks = CConfig.getBooleanParam(CConfig.RS_SHOW_QUIRKS);
         this.c3bv = CConfig.getBooleanParam(CConfig.RS_SHOW_C3BV);
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
@@ -91,6 +107,7 @@ public class RecordSheetOptions {
     public RecordSheetOptions(RecordSheetOptions options) {
         paperSize = options.paperSize;
         color = options.color;
+        heatScaleMarker = options.heatScaleMarker;
         quirks = options.quirks;
         c3bv = options.c3bv;
         pilotData = options.pilotData;
@@ -265,5 +282,13 @@ public class RecordSheetOptions {
 
     public void setMergeIdenticalEquipment(boolean mergeIdenticalEquipment) {
         this.mergeIdenticalEquipment = mergeIdenticalEquipment;
+    }
+
+    public HeatScaleMarker getHeatScaleMarker() {
+        return heatScaleMarker;
+    }
+
+    public void setHeatScaleMarker(HeatScaleMarker heatScaleMarker) {
+        this.heatScaleMarker = heatScaleMarker;
     }
 }

@@ -108,6 +108,7 @@ public final class CConfig {
 
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
+    public static final String RS_HEAT_SCALE_MARKER = "rs_heat_scale_marker";
     public static final String RS_ROW_SHADING = "rs_row_shading";
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
@@ -159,6 +160,7 @@ public final class CConfig {
         defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, RecordSheetOptions.ColorMode.LOGO_ONLY.name());
+        defaults.setProperty(RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.ASTERISK.name());
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));

@@ -136,6 +136,7 @@ public class PrintDropship extends PrintAero {
             if (element instanceof SVGRectElement) {
                 writeEquipment((SVGRectElement) element, true);
             }
+            fixHeatScaleGroups(getSVGDocument());
         } else {
             super.processImage(pageNum, pageFormat);
         }

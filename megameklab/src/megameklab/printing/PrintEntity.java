@@ -24,16 +24,23 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
@@ -220,6 +227,133 @@ public abstract class PrintEntity extends PrintRecordSheet {
         drawFluffImage();
         if ((pageNum == 0) && includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
+        }
+        fixHeatScaleGroups(getSVGDocument());
+    }
+
+
+    /**
+     * Centers the heat scale values horizontally within the group (fixes font family issues).
+     * Additionally, it modifies the critical heating values by placing a left-pointing arrow for values ending with
+     * '*'.
+     * @param doc The SVG document to process
+     */
+    protected void fixHeatScaleGroups(Document doc) {
+        NodeList groups = doc.getElementsByTagName("g");
+        for (int i = 0; i < groups.getLength(); i++) {
+            Element group = (Element) groups.item(i);
+            if (!group.hasAttribute("id")) continue;
+            String id = group.getAttribute("id");
+            if (!id.toLowerCase().startsWith("heatscale")) continue;
+
+            // Find the first rect in the group
+            Element rect = null;
+            NodeList children = group.getChildNodes();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node child = children.item(j);
+                if (child instanceof Element && "rect".equals(((Element) child).getTagName())) {
+                    rect = (Element) child;
+                    break;
+                }
+            }
+            if (rect == null) continue;
+
+            double rectX = Double.parseDouble(rect.getAttribute("x"));
+            double rectWidth = Double.parseDouble(rect.getAttribute("width"));
+            double rectHeight = Double.parseDouble(rect.getAttribute("height"));
+            double centerX = rectX + rectWidth / 2.0;
+            double rightX = rectX + rectWidth;
+            double arrowHeight = rectHeight * 0.7;
+            double arrowWidth = rectHeight * 0.4;
+
+            // Collect text elements to process
+            List<Element> texts = new ArrayList<>();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node child = children.item(j);
+                if (child instanceof Element && "text".equals(((Element) child).getTagName())) {
+                    texts.add((Element) child);
+                }
+            }
+
+            // We add to the rects some attributes that will be useful for the heat scale
+            List<Element> rects = new ArrayList<>();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node child = children.item(j);
+                if (child instanceof Element && "rect".equals(((Element) child).getTagName())) {
+                    rects.add((Element) child);
+                }
+            }
+            rects.sort((a, b) -> {
+                double ya = Double.parseDouble(a.getAttribute("y"));
+                double yb = Double.parseDouble(b.getAttribute("y"));
+                return Double.compare(ya, yb);
+            });
+            // Assign heat value
+            int n = rects.size();
+            for (int j = 0; j < n; j++) {
+                Element rectElement = rects.get(j);
+                rectElement.setAttribute("class", "heat");
+                rectElement.setAttribute("heat", String.valueOf(j));
+            }
+
+            // Text centering and arrow creation
+            for (Element text : texts) {
+                String value = text.getTextContent();
+                if (value.endsWith("*")) {
+                    RecordSheetOptions.HeatScaleMarker markerType = this.options.getHeatScaleMarker();
+                    String number = value.substring(0, value.length() - 1);
+                    text.setTextContent(number);
+                    text.setAttribute("x", String.valueOf(centerX));
+                    text.setAttribute("text-anchor", "middle");
+
+                    // Get y position for vertical alignment
+                    double y = Double.parseDouble(text.getAttribute("y"));
+                    double fontSize = 6.76; // default
+                    if (text.hasAttribute("font-size")) {
+                        fontSize = Double.parseDouble(text.getAttribute("font-size"));
+                    } else if (text.hasAttribute("style")) {
+                        Matcher m = Pattern.compile("font-size:([\\d.]+)").matcher(text.getAttribute("style"));
+                        if (m.find()) {
+                            fontSize = Double.parseDouble(m.group(1));
+                        }
+                    }
+                    // We try to find the center of the text vertically
+                    double textCenterY = y - fontSize * 0.35;
+
+                    if (markerType == RecordSheetOptions.HeatScaleMarker.ARROW) {
+                        double arrowY = textCenterY - arrowHeight / 2.0;
+                        // Create a filled left-pointing triangle path
+                        String d = String.format(Locale.US,
+                              "M%.3f %.3f L%.3f %.3f L%.3f %.3f Z",
+                              rightX, arrowY,
+                              rightX - arrowWidth, arrowY + arrowHeight / 2.0,
+                              rightX, arrowY + arrowHeight);
+
+                        Element arrow = doc.createElementNS(text.getNamespaceURI(), "path");
+                        arrow.setAttribute("d", d);
+                        arrow.setAttribute("fill", "#000");
+                        arrow.setAttribute("stroke", "none");
+                        text.getParentNode().insertBefore(arrow, text.getNextSibling());
+                    } else { // Default is ASTERISK
+                        double asteriskFontSize = fontSize;
+                        if (asteriskFontSize < 8) {
+                            asteriskFontSize = 8; // Ensure minimum size for visibility
+                        }
+                        Element asterisk = doc.createElementNS(text.getNamespaceURI(), "text");
+                        asterisk.setTextContent("\u2217"); // Unicode asterisk character, vertically centered
+                        asterisk.setAttribute("x", String.valueOf(rightX - 0.5));
+                        asterisk.setAttribute("y", String.valueOf(y));
+                        asterisk.setAttribute("text-anchor", "end");
+                        asterisk.setAttribute("dominant-baseline", "middle");
+                        asterisk.setAttribute("font-size", String.valueOf(asteriskFontSize));
+                        asterisk.setAttribute("fill", "#000");
+                        text.getParentNode().insertBefore(asterisk, text.getNextSibling());
+                    }
+                } else {
+                    text.setAttribute("x", String.valueOf(centerX));
+                    text.setAttribute("text-anchor", "middle");
+                }
+            }
         }
     }
 

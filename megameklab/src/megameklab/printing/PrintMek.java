@@ -519,7 +519,7 @@ public class PrintMek extends PrintEntity {
         if ((mek.isClan() && UnitUtil.hasAmmo(mek, loc))
                 || (!mek.isClan() && (mek.hasCASEII(loc) || mek.locationHasCase(loc)))) {
             String text = "(CASE" + (mek.hasCASEII(loc) ? " II)" : ")");
-            addTextElement(locGroup, x, viewY - 1 - ((titleFontSize - fontSize)/2),
+            addTextElement(locGroup, x + 2, viewY - 1 - ((titleFontSize - fontSize)/2),
                   text, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
