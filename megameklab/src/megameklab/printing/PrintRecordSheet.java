@@ -1093,6 +1093,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             double radius, double control, double strokeWidth,
             String stroke) {
         Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_ATTRIBUTE);
+        path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "bombBox");
         path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, SVGConstants.SVG_NONE_VALUE);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(strokeWidth));
