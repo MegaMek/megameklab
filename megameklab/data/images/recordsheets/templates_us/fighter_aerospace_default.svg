@@ -4500,7 +4500,8 @@
          textLength="19.000999"
          lengthAdjust="spacingAndGlyphs"
          id="text361">Effects</text>
-      <text
+          <g class="heatEffect" heat="30">
+<text
          x="15"
          y="48.217999"
          fill="#000000"
@@ -4518,7 +4519,9 @@
          textLength="27.735001"
          lengthAdjust="spacingAndGlyphs"
          id="text363">Shutdown</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="28">
+<text
          x="15"
          y="58.291"
          fill="#000000"
@@ -4536,7 +4539,9 @@
          textLength="64.412003"
          lengthAdjust="spacingAndGlyphs"
          id="text365">Ammo Exp avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="27">
+<text
          x="15"
          y="68.363998"
          fill="#000000"
@@ -4554,7 +4559,9 @@
          textLength="72.420998"
          lengthAdjust="spacingAndGlyphs"
          id="text367">Pilot damage, avoid on 9+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="26">
+<text
          x="15"
          y="78.435997"
          fill="#000000"
@@ -4572,7 +4579,9 @@
          textLength="67.737"
          lengthAdjust="spacingAndGlyphs"
          id="text369">Shutdown, avoid on 10+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="25">
+<text
          x="15"
          y="88.509003"
          fill="#000000"
@@ -4599,7 +4608,9 @@
          textLength="38.664001"
          lengthAdjust="spacingAndGlyphs"
          id="text372">avoid on 10+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="24">
+<text
          x="15"
          y="108.655"
          fill="#000000"
@@ -4617,7 +4628,9 @@
          textLength="52.661999"
          lengthAdjust="spacingAndGlyphs"
          id="text374">+4 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="23">
+<text
          x="15"
          y="118.727"
          fill="#000000"
@@ -4635,7 +4648,9 @@
          textLength="64.404999"
          lengthAdjust="spacingAndGlyphs"
          id="text376">Ammo Exp avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="22">
+<text
          x="15"
          y="128.8"
          fill="#000000"
@@ -4653,7 +4668,9 @@
          textLength="63.598"
          lengthAdjust="spacingAndGlyphs"
          id="text378">Shutdown, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="21">
+<text
          x="15"
          y="138.873"
          fill="#000000"
@@ -4671,7 +4688,9 @@
          textLength="72.414001"
          lengthAdjust="spacingAndGlyphs"
          id="text380">Pilot damage, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="20">
+<text
          x="15"
          y="148.94501"
          fill="#000000"
@@ -4689,7 +4708,9 @@
          textLength="91.066002"
          lengthAdjust="spacingAndGlyphs"
          id="text382">Random Movement, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="19">
+<text
          x="15"
          y="159.01801"
          fill="#000000"
@@ -4707,7 +4728,9 @@
          textLength="64.407997"
          lengthAdjust="spacingAndGlyphs"
          id="text384">Ammo Exp avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="18">
+<text
          x="15"
          y="169.091"
          fill="#000000"
@@ -4725,7 +4748,9 @@
          textLength="63.591"
          lengthAdjust="spacingAndGlyphs"
          id="text386">Shutdown, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="17">
+<text
          x="15"
          y="179.164"
          fill="#000000"
@@ -4743,7 +4768,9 @@
          textLength="52.661999"
          lengthAdjust="spacingAndGlyphs"
          id="text388">+3 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="15">
+<text
          x="15"
          y="189.23599"
          fill="#000000"
@@ -4761,7 +4788,9 @@
          textLength="91.061996"
          lengthAdjust="spacingAndGlyphs"
          id="text390">Random Movement, avoid on 7+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="14">
+<text
          x="15"
          y="199.30901"
          fill="#000000"
@@ -4779,7 +4808,9 @@
          textLength="63.594002"
          lengthAdjust="spacingAndGlyphs"
          id="text392">Shutdown, avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="13">
+<text
          x="15"
          y="209.382"
          fill="#000000"
@@ -4797,7 +4828,9 @@
          textLength="52.661999"
          lengthAdjust="spacingAndGlyphs"
          id="text394">+2 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="10">
+<text
          x="15"
          y="219.455"
          fill="#000000"
@@ -4815,7 +4848,9 @@
          textLength="91.058998"
          lengthAdjust="spacingAndGlyphs"
          id="text396">Random Movement, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="8">
+<text
          x="15"
          y="229.52699"
          fill="#000000"
@@ -4833,7 +4868,9 @@
          textLength="52.665001"
          lengthAdjust="spacingAndGlyphs"
          id="text398">+1 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="5">
+<text
          x="15"
          y="239.60001"
          fill="#000000"
@@ -4851,6 +4888,7 @@
          textLength="91.061996"
          lengthAdjust="spacingAndGlyphs"
          id="text400">Random Movement, avoid on 5+</text>
+    </g>
       <text
          fill="#000000"
          x="149"

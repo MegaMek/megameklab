@@ -6683,7 +6683,8 @@
          textLength="19.001"
          lengthAdjust="spacingAndGlyphs"
          id="text344">Effects</text>
-      <text
+          <g class="heatEffect" heat="30">
+<text
          x="15.000"
          y="39.125"
          fill="#000000"
@@ -6697,7 +6698,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text346">Shutdown</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="28">
+<text
          x="15.000"
          y="46.167"
          fill="#000000"
@@ -6711,7 +6714,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text348">Ammo Exp, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="26">
+<text
          x="15.000"
          y="53.208"
          fill="#000000"
@@ -6725,7 +6730,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text350">Shutdown, avoid on 10+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="25">
+<text
          x="15.000"
          y="60.250"
          fill="#000000"
@@ -6746,7 +6753,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text352">/Rand. Movement 10+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="24">
+<text
          x="15.000"
          y="74.333"
          fill="#000000"
@@ -6760,7 +6769,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text354">+4 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="23">
+<text
          x="15.000"
          y="81.375"
          fill="#000000"
@@ -6774,7 +6785,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text356">Ammo Exp, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="22">
+<text
          x="15.000"
          y="88.417"
          fill="#000000"
@@ -6788,7 +6801,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text358">Shutdown, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="20">
+<text
          x="15.000"
          y="95.458"
          fill="#000000"
@@ -6809,7 +6824,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text360">/Rand. Movement 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="19">
+<text
          x="15.000"
          y="109.542"
          fill="#000000"
@@ -6823,7 +6840,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text362">Ammo Exp, avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="18">
+<text
          x="15.000"
          y="116.583"
          fill="#000000"
@@ -6837,7 +6856,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text364">Shutdown, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="17">
+<text
          x="15.000"
          y="123.625"
          fill="#000000"
@@ -6851,7 +6872,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text366">+3 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="15">
+<text
          x="15.000"
          y="130.667"
          fill="#000000"
@@ -6872,7 +6895,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text368">/Rand. Movement 7+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="14">
+<text
          x="15.000"
          y="144.750"
          fill="#000000"
@@ -6886,7 +6911,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text370">Shutdown, avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="13">
+<text
          x="15.000"
          y="151.792"
          fill="#000000"
@@ -6900,7 +6927,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text372">+2 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="10">
+<text
          x="15.000"
          y="158.833"
          fill="#000000"
@@ -6921,7 +6950,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text374">/Rand. Movement 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="8">
+<text
          x="15.000"
          y="172.917"
          fill="#000000"
@@ -6935,7 +6966,9 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text376">+1 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="5">
+<text
          x="15.000"
          y="179.958"
          fill="#000000"
@@ -6956,6 +6989,7 @@
          text-anchor="start"
          style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
          id="text378">/Rand. Movement 5+</text>
+    </g>
       <text
          fill="#000000"
          x="146.333"
