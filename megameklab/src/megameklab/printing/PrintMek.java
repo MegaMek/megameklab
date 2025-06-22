@@ -378,6 +378,9 @@ public class PrintMek extends PrintEntity {
                     remainingDamage--;
                     // Set the fill attribute to black for damaged pips
                     el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, getDamageFillColor());
+                } else {
+                    // Else we make it solid white
+                    el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
                 }
                 parent.appendChild(getSVGDocument().importNode(el, true)); // Final append
             }
