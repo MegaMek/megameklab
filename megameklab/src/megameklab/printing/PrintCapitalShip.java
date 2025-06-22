@@ -355,12 +355,12 @@ public class PrintCapitalShip extends PrintDropship {
     private Element createPip(double pipWidth, double pipHeight, String fillColor,
             double currX, double currY, boolean stroke) {
         Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
-        box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
         box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
         box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
         box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
         box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
         if (stroke) {
+            box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
             box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
         }
