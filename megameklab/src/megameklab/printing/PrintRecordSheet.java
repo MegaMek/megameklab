@@ -238,19 +238,32 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param doc The document to perform replacement in.
      */
     private void subFonts(SVGDocument doc) {
-        NodeList list = doc.getElementsByTagName("text");
+        NodeList list = doc.getElementsByTagName(SVGConstants.SVG_TEXT_TAG);
         if (list != null) {
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
+                boolean hasFontFamily = false;
                 if (node instanceof Element elem) {
                     // First we want to make sure it's not set in the style attribute, which could
                     // override the change
                     if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
-                        elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                                elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
-                                        .replaceAll("font-family:.*?;", ""));
+                        String style = elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+                        if (style.contains("font-family:")) {
+                            hasFontFamily = true;
+                            String newStyle = style.replaceAll("font-family:[^;]+;?", "").replaceAll(";;+", ";").replaceAll("^;+|;+$", "").trim();
+                            if (newStyle.isEmpty()) {
+                                elem.removeAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE);
+                            } else {
+                                elem.setAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE, newStyle);
+                            }
+                        }
                     }
-                    elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                    if (!hasFontFamily && elem.hasAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+                        hasFontFamily = true;
+                    }
+                    if (hasFontFamily) {
+                        elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                    }
                 }
             }
         }
