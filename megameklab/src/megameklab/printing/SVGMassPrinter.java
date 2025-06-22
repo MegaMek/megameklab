@@ -76,6 +76,7 @@ import java.io.FileOutputStream;
  */
 public class SVGMassPrinter {
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
+    private static final String TYPEFACE = "Roboto";
     private static final String SHEETS_DIR = "sheets";
     private static final String VERSION_FILE = "version.json";
     private static final String UNIT_FILE = "units.json";
@@ -188,7 +189,7 @@ public class SVGMassPrinter {
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
-        CConfig.setParam(CConfig.RS_FONT, "Roboto");
+        CConfig.setParam(CConfig.RS_FONT, TYPEFACE);
         RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
         MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
