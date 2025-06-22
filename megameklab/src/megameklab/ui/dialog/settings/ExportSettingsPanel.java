@@ -69,6 +69,7 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkMergeIdenticalEquipment = new JCheckBox();
     private final MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
     private final MMComboBox<RecordSheetOptions.ColorMode> comboColorMode;
+    private final MMComboBox<RecordSheetOptions.HeatScaleMarker> comboHeatScaleMarker;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -141,6 +142,23 @@ class ExportSettingsPanel extends JPanel {
         colorModePanel.add(colorModeLabel);
         colorModePanel.add(Box.createHorizontalStrut(25));
         colorModePanel.add(comboColorMode);
+
+
+        JLabel heatScaleMarkerLabel = new JLabel(resourceMap.getString("ConfigurationDialog.heatScaleMarker.text"));
+        String heatScaleMarkerToolTip = resourceMap.getString("ConfigurationDialog.heatScaleMarker.tooltip");
+        heatScaleMarkerLabel.setToolTipText(heatScaleMarkerToolTip);
+        final DefaultComboBoxModel<RecordSheetOptions.HeatScaleMarker> defaultHeatScaleMarkerModel =
+              new DefaultComboBoxModel<>(
+              RecordSheetOptions.HeatScaleMarker.values());
+        comboHeatScaleMarker = new MMComboBox<>("comboHeatScaleMarker", defaultHeatScaleMarkerModel);
+        comboHeatScaleMarker.setToolTipText(colorModeToolTip);
+        comboHeatScaleMarker.setSelectedItem(CConfig.getEnumParam(CConfig.RS_COLOR, RecordSheetOptions.ColorMode.class,
+              RecordSheetOptions.ColorMode.ALL));
+
+        JPanel heatScaleMarkerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        heatScaleMarkerPanel.add(heatScaleMarkerLabel);
+        heatScaleMarkerPanel.add(Box.createHorizontalStrut(25));
+        heatScaleMarkerPanel.add(comboHeatScaleMarker);
 
         chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
         chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
@@ -265,6 +283,7 @@ class ExportSettingsPanel extends JPanel {
         gridPanel.add(weaponSortOrderPanel);
         gridPanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.txtOptions.label")));
         innerGridPanel.add(colorModePanel);
+        innerGridPanel.add(heatScaleMarkerPanel);
         innerGridPanel.add(chkBoldType);
         innerGridPanel.add(chkRowShading);
         innerGridPanel.add(chkShowReferenceTables);
@@ -280,11 +299,12 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkAlternateArmorGrouping);
         innerGridPanel.add(chkFrameless);
         innerGridPanel.add(chkMergeIdenticalEquipment);
+        innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
 
-        SpringUtilities.makeCompactGrid(innerGridPanel, 8, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(innerGridPanel, 9, 2, 0, 0, 15, 6);
         SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -317,6 +337,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
         recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
+        recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         return recordSheetSettings;
     }
 
