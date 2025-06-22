@@ -4856,217 +4856,234 @@
            id="rect400" class="heat" heat="0" />
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="57.127125"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text405-4">30*</text>
+           id="text405-4">30</text>
+      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="68.218124"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text406-1">29</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="79.30912"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text407-2">28*</text>
+           id="text407-2">28</text>
+      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="90.400124"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text408-0">27</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="101.49112"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text409-0">26*</text>
+           id="text409-0">26</text>
+      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="112.58212"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text410-1">25*</text>
+           id="text410-1">25</text>
+      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="123.67312"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text411-4">24*</text>
+           id="text411-4">24</text>
+      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="134.76414"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text412-6">23*</text>
+           id="text412-6">23</text>
+      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="145.85515"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text413-0">22*</text>
+           id="text413-0">22</text>
+      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="156.94514"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text414-7">21</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="168.03615"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text415-1">20*</text>
+           id="text415-1">20</text>
+      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="179.12715"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text416-7">19*</text>
+           id="text416-7">19</text>
+      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="190.21814"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text417-7">18*</text>
+           id="text417-7">18</text>
+      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="201.30914"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text418-7">17*</text>
+           id="text418-7">17</text>
+      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="212.40015"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text419-7">16</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="223.49115"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text420-3">15*</text>
+           id="text420-3">15</text>
+      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="234.58215"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text421-3">14*</text>
+           id="text421-3">14</text>
+      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="245.67314"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text422-5">13*</text>
+           id="text422-5">13</text>
+      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="256.76416"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text423-9">12</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="267.85513"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text424-9">11</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="278.94516"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text425-8">10*</text>
+           id="text425-8">10</text>
+      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="290.03613"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text426-1">9</text>
         <text
            fill="#000000"
-           x="11.147106"
+           x="9.0115005"
            y="301.12714"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text427-8">8*</text>
+           id="text427-8">8</text>
+      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="312.21814"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text428-2">7</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="323.30914"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text429-6">6</text>
         <text
            fill="#000000"
-           x="11.147106"
+           x="9.0115005"
            y="334.40015"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text430-6">5*</text>
+           id="text430-6">5</text>
+      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="345.49115"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text431-0">4</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="356.58215"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text432-3">3</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="367.67316"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text433-8">2</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="378.76416"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text434-0">1</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="389.85513"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
@@ -5389,217 +5406,234 @@
            id="rect434-5" class="heat" heat="0" />
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="57.127125"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text405-43">30*</text>
+           id="text405-43">30</text>
+      <text x="17.323001" y="57.127125" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="68.218124"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text406-12">29</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="79.30912"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text407-3">28*</text>
+           id="text407-3">28</text>
+      <text x="17.323001" y="79.30912" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="90.400124"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text408-3">27</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="101.49112"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text409-4">26*</text>
+           id="text409-4">26</text>
+      <text x="17.323001" y="101.49112" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="112.58212"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text410-11">25*</text>
+           id="text410-11">25</text>
+      <text x="17.323001" y="112.58212" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="123.67312"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text411-3">24*</text>
+           id="text411-3">24</text>
+      <text x="17.323001" y="123.67312" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="134.76414"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text412-8">23*</text>
+           id="text412-8">23</text>
+      <text x="17.323001" y="134.76414" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="145.85515"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text413-7">22*</text>
+           id="text413-7">22</text>
+      <text x="17.323001" y="145.85515" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="156.94514"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text414-4">21</text>
         <text
            fill="#000000"
-           x="10.28899"
+           x="9.0115005"
            y="168.03615"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text415-2">20*</text>
+           id="text415-2">20</text>
+      <text x="17.323001" y="168.03615" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="179.12715"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text416-77">19*</text>
+           id="text416-77">19</text>
+      <text x="17.323001" y="179.12715" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="190.21814"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text417-9">18*</text>
+           id="text417-9">18</text>
+      <text x="17.323001" y="190.21814" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="201.30914"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text418-3">17*</text>
+           id="text418-3">17</text>
+      <text x="17.323001" y="201.30914" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="212.40015"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text419-1">16</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="223.49115"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text420-9">15*</text>
+           id="text420-9">15</text>
+      <text x="17.323001" y="223.49115" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="234.58215"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text421-8">14*</text>
+           id="text421-8">14</text>
+      <text x="17.323001" y="234.58215" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="245.67314"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text422-6">13*</text>
+           id="text422-6">13</text>
+      <text x="17.323001" y="245.67314" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="256.76416"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text423-5">12</text>
         <text
            fill="#000000"
-           x="8.1038723"
+           x="9.0115005"
            y="267.85513"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text424-0">11</text>
         <text
            fill="#000000"
-           x="10.219673"
+           x="9.0115005"
            y="278.94516"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text425-2">10*</text>
+           id="text425-2">10</text>
+      <text x="17.323001" y="278.94516" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="290.03613"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text426-8">9</text>
         <text
            fill="#000000"
-           x="11.147106"
+           x="9.0115005"
            y="301.12714"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text427-6">8*</text>
+           id="text427-6">8</text>
+      <text x="17.323001" y="301.12714" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="312.21814"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text428-0">7</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="323.30914"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text429-2">6</text>
         <text
            fill="#000000"
-           x="11.147106"
+           x="9.0115005"
            y="334.40015"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
-           id="text430-4">5*</text>
+           id="text430-4">5</text>
+      <text x="17.323001" y="334.40015" text-anchor="end" dominant-baseline="alphabetic" font-size="8" fill="#000000">∗</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="345.49115"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text431-8">4</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="356.58215"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text432-6">3</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="367.67316"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text433-5">2</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="378.76416"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text434-09">1</text>
         <text
            fill="#000000"
-           x="9.0131512"
+           x="9.0115005"
            y="389.85513"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
