@@ -215,9 +215,9 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
-                if (!mekSummary.getName().contains("Archangel")) {
-                    continue;
-                }
+//                if (!mekSummary.getName().contains("Archangel")) {
+//                    continue;
+//                }
                 // if (mekSummary.getUnitType() != "Mek") continue; // Skip non-Mek units
                 // logger.info("{}", mekSummary.getName());
 
@@ -266,9 +266,6 @@ public class SVGMassPrinter {
                     continue;
                 }
                 processedFiles.add(name);
-//                if (i > 1) {
-//                    continue;
-//                }
 
                 UnitData unitData = new UnitData(entity);
                 unitData.name = name;
@@ -305,6 +302,7 @@ public class SVGMassPrinter {
                     }
                     int idx = 0;
                     for (Document svgDoc : svgDocs) {
+                        SVGOptimizer.optimize((SVGDocument) svgDoc);
                         TransformerFactory transformerFactory = TransformerFactory.newInstance();
                         Transformer transformer = transformerFactory.newTransformer();
                         transformer.setOutputProperty(OutputKeys.INDENT, "no");
@@ -321,15 +319,6 @@ public class SVGMassPrinter {
                         }
                         String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
                         unitData.sheets.add(pathToSave);
-                        //optimized version
-                        SVGOptimizer.optimize((SVGDocument) svgDoc);
-                        String optimizedSvgFilename = baseSvgFilename + "_optimized.svg";
-                        File finalOptimizedFilename = new File(sheetPath, optimizedSvgFilename);
-                        try (FileOutputStream fos = new FileOutputStream(finalOptimizedFilename)) {
-                            DOMSource source = new DOMSource(svgDoc);
-                            StreamResult result = new StreamResult(fos);
-                            transformer.transform(source, result);
-                        }
                         idx++;
                     }
                     // logger.info("Printed: {}", finalFilename);
