@@ -234,8 +234,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     /**
      * Centers the heat scale values horizontally within the group (fixes font family issues).
-     * Additionally, sets the style for the heat scale markers (asterisk or arrow) and injects ids in Heat Data panel
-     * TODO: Ideally, most of this should be hardcoded directly into the SVG.
+     * Additionally, sets the style for the heat scale markers (asterisk or arrow)
+     * TODO: the default asterisk marker should be implemented directly into the SVG file.
      * @param doc The SVG document to process
      */
     protected void fixHeatScaleGroups(Document doc) {
