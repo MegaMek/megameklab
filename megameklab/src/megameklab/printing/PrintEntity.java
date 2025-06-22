@@ -234,8 +234,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     /**
      * Centers the heat scale values horizontally within the group (fixes font family issues).
-     * Additionally, it modifies the critical heating values by placing a left-pointing arrow for values ending with
-     * '*'.
+     * Additionally, sets the style for the heat scale markers (asterisk or arrow) and injects ids in Heat Data panel
+     * TODO: Ideally, most of this should be hardcoded directly into the SVG.
      * @param doc The SVG document to process
      */
     protected void fixHeatScaleGroups(Document doc) {
