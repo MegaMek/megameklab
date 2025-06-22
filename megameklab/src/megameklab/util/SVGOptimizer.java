@@ -20,6 +20,7 @@
 package megameklab.util;
 
 import megameklab.printing.IdConstants;
+import megameklab.printing.PrintRecordSheet;
 import org.apache.batik.parser.TransformListParser;
 import org.apache.batik.parser.TransformListHandler;
 import org.apache.batik.util.SVGConstants;
@@ -47,6 +48,7 @@ import java.util.List;
  * simplifying transforms, rounding float values, and more.
  */
 public class SVGOptimizer {
+    private static final String REPLACEMENT_FONT = "Roboto";
     private static final DecimalFormat DECIMAL_FORMAT3 = new DecimalFormat("#.###",
           DecimalFormatSymbols.getInstance(Locale.US));
     private static final DecimalFormat DECIMAL_FORMAT4 = new DecimalFormat("#.####",
@@ -116,17 +118,20 @@ public class SVGOptimizer {
         simplifyTransformsParams(root);
 //        roundTransformValues(root); //Already done by SimplifyTransformsParams
 //        simplifyTransforms(root); // This collapses all to matrix() transforms, which is not always desired.
-//        convertShapesToPaths(root);
+//        convertShapesToPaths(root); // The size of the file tends to increase, not good!
         simplifyPathData(root);
         removeInvisibleElements(root);
         removeNonRenderingElements(root);
-        replaceFonts(document, "Eurostile", "Roboto");
+        final String desiredTypeface = CConfig.getParam(CConfig.RS_FONT, PrintRecordSheet.DEFAULT_TYPEFACE);
+        if (!PrintRecordSheet.DEFAULT_TYPEFACE.equals(desiredTypeface)) {
+            replaceFonts(document, PrintRecordSheet.DEFAULT_TYPEFACE, desiredTypeface);
+        }
         optimizeColors(root);
 
-        Set<String> referencedIds = getReferencedIds(document);
+        final Set<String> referencedIds = getReferencedIds(document);
         removeUnusedDefs(document, referencedIds);
         removeUnusedPatterns(document, referencedIds);
-//            removeUnusedIds(document, referencedIds);
+//        removeUnusedIds(document, referencedIds); // This is too aggressive, it removes IDs that are later used.
         removedDefaultIds(document);
         optimizeAttributes(root);
         removeWhitespaceNodes(document);
@@ -143,17 +148,18 @@ public class SVGOptimizer {
         // Replace in CSS within <defs> or <style> elements
         replaceCSSFonts(doc, oldFont, newFont);
     }
+
     private static void replaceTextElementFonts(SVGDocument doc, String oldFont, String newFont) {
         NodeList textElements = doc.getElementsByTagName(SVGConstants.SVG_TEXT_TAG);
         for (int i = 0; i < textElements.getLength(); i++) {
             Element element = (Element) textElements.item(i);
 
             // Replace font-family attribute
-            if (element.hasAttribute("font-family")) {
-                String fontFamily = element.getAttribute("font-family");
+            if (element.hasAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+                String fontFamily = element.getAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE);
                 if (fontFamily.contains(oldFont)) {
                     String newFontFamily = fontFamily.replace(oldFont, newFont);
-                    element.setAttribute("font-family", newFontFamily);
+                    element.setAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, newFontFamily);
                 }
             }
 
@@ -172,11 +178,11 @@ public class SVGOptimizer {
         for (int i = 0; i < tspanElements.getLength(); i++) {
             Element element = (Element) tspanElements.item(i);
 
-            if (element.hasAttribute("font-family")) {
-                String fontFamily = element.getAttribute("font-family");
+            if (element.hasAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+                String fontFamily = element.getAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE);
                 if (fontFamily.contains(oldFont)) {
                     String newFontFamily = fontFamily.replace(oldFont, newFont);
-                    element.setAttribute("font-family", newFontFamily);
+                    element.setAttribute(SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, newFontFamily);
                 }
             }
 
@@ -188,6 +194,48 @@ public class SVGOptimizer {
                 }
             }
         }
+    }
+
+    private static void replaceStyleFonts(SVGDocument doc, String oldFont, String newFont) {
+        NodeList allElements = doc.getElementsByTagName("*");
+        for (int i = 0; i < allElements.getLength(); i++) {
+            Element element = (Element) allElements.item(i);
+
+            if (element.hasAttribute(SVGConstants.SVG_STYLE_TAG)) {
+                String style = element.getAttribute(SVGConstants.SVG_STYLE_TAG);
+                String newStyle = replaceFontInStyle(style, oldFont, newFont);
+                if (!newStyle.equals(style)) {
+                    element.setAttribute(SVGConstants.SVG_STYLE_TAG, newStyle);
+                }
+            }
+        }
+    }
+
+    private static void replaceCSSFonts(SVGDocument doc, String oldFont, String newFont) {
+        NodeList styleElements = doc.getElementsByTagName(SVGConstants.SVG_STYLE_TAG);
+        for (int i = 0; i < styleElements.getLength(); i++) {
+            Element styleElement = (Element) styleElements.item(i);
+            String cssContent = styleElement.getTextContent();
+
+            if (cssContent != null && cssContent.contains(oldFont)) {
+                // Replace font-family declarations in CSS
+                String newCssContent = cssContent.replaceAll(
+                      "font-family\\s*:\\s*[^;]*" + Pattern.quote(oldFont) + "[^;]*",
+                      "font-family: " + newFont
+                );
+                styleElement.setTextContent(newCssContent);
+            }
+        }
+    }
+
+    private static String replaceFontInStyle(String style, String oldFont, String newFont) {
+        if (style == null || !style.contains(oldFont)) {
+            return style;
+        }
+        return style.replaceAll(
+              "font-family\\s*:\\s*[^;]*" + Pattern.quote(oldFont) + "[^;]*",
+              "font-family: " + newFont
+        );
     }
 
     private static void optimizeColors(Element element) {
@@ -285,48 +333,6 @@ public class SVGOptimizer {
         return hexColor;
     }
 
-    private static void replaceStyleFonts(SVGDocument doc, String oldFont, String newFont) {
-        NodeList allElements = doc.getElementsByTagName("*");
-        for (int i = 0; i < allElements.getLength(); i++) {
-            Element element = (Element) allElements.item(i);
-
-            if (element.hasAttribute(SVGConstants.SVG_STYLE_TAG)) {
-                String style = element.getAttribute(SVGConstants.SVG_STYLE_TAG);
-                String newStyle = replaceFontInStyle(style, oldFont, newFont);
-                if (!newStyle.equals(style)) {
-                    element.setAttribute(SVGConstants.SVG_STYLE_TAG, newStyle);
-                }
-            }
-        }
-    }
-
-    private static void replaceCSSFonts(SVGDocument doc, String oldFont, String newFont) {
-        NodeList styleElements = doc.getElementsByTagName(SVGConstants.SVG_STYLE_TAG);
-        for (int i = 0; i < styleElements.getLength(); i++) {
-            Element styleElement = (Element) styleElements.item(i);
-            String cssContent = styleElement.getTextContent();
-
-            if (cssContent != null && cssContent.contains(oldFont)) {
-                // Replace font-family declarations in CSS
-                String newCssContent = cssContent.replaceAll(
-                      "font-family\\s*:\\s*[^;]*" + Pattern.quote(oldFont) + "[^;]*",
-                      "font-family: " + newFont
-                );
-                styleElement.setTextContent(newCssContent);
-            }
-        }
-    }
-
-    private static String replaceFontInStyle(String style, String oldFont, String newFont) {
-        if (style == null || !style.contains(oldFont)) {
-            return style;
-        }
-        return style.replaceAll(
-              "font-family\\s*:\\s*[^;]*" + Pattern.quote(oldFont) + "[^;]*",
-              "font-family: " + newFont
-        );
-    }
-
     private static void removeMetadata(Document doc) {
         NodeList metadata = doc.getElementsByTagName(SVGConstants.SVG_METADATA_TAG);
         for (int i = metadata.getLength() - 1; i >= 0; i--) {
@@ -367,6 +373,19 @@ public class SVGOptimizer {
 
                 if (remove) {
                     el.removeAttributeNode((Attr) attr);
+                }
+            }
+
+            if (el.hasAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE)) {
+                String style = el.getAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE);
+                // Remove all style properties starting with -inkscape
+                String newStyle = style.replaceAll("(?i)(?:^|;)\\s*-inkscape[^:;]*:[^;]*(;|$)", ";");
+                // Clean up extra semicolons and whitespace
+                newStyle = newStyle.replaceAll(";;+", ";").replaceAll("^;+|;+$", "").trim();
+                if (newStyle.isEmpty()) {
+                    el.removeAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE);
+                } else {
+                    el.setAttribute(SVGConstants.SVG_STYLE_ATTRIBUTE, newStyle);
                 }
             }
         }
