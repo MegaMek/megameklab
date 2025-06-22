@@ -184,13 +184,12 @@ public class SVGMassPrinter {
                 logger.info("Sheets directory created: {}", sheetsDir.getPath());
             }
         }
-        CConfig.setParam(CConfig.RS_FONT, "Roboto");
-        RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
-        
         HashSet<String> processedFiles = new HashSet<>();
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
+        CConfig.setParam(CConfig.RS_FONT, "Roboto");
+        RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
         MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
         ObjectMapper mapper = new ObjectMapper();
