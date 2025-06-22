@@ -18,6 +18,7 @@
  */
 package megameklab.printing;
 
+import static megameklab.printing.PrintRecordSheet.FILL_BLACK;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
@@ -479,7 +480,8 @@ public class InventoryWriter {
         if (sheet.showHeatProfile()) {
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
                     yPosition, sheet.heatProfileText(),
-                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile");
         }
         writeFooterBlock(metrics[0], metrics[1]);
     }
@@ -646,7 +648,10 @@ public class InventoryWriter {
             final double xPosition = (viewX + viewWidth * 0.025);
             final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
             if (!ammoText.isEmpty()) {
-                lines = sheet.addMultilineTextElement(svgGroup, xPosition, 0, textWidth, lineHeight,
+                Element ammoGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+                ammoGroup.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, "ammoProfile");
+                svgGroup.appendChild(ammoGroup);
+                lines = sheet.addMultilineTextElement(ammoGroup, xPosition, 0, textWidth, lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {

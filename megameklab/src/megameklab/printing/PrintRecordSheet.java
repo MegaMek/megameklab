@@ -786,6 +786,29 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight, String fontStyle, String fill) {
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, fontStyle, fill, null);
+    }
+
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The
+     * height of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     * @param fontStyle The font style, either normal or italic.
+     * @param fill     The fill color for the text (e.g. foreground color)
+     *
+     * @return The width of the added text element
+     */
+    protected double addTextElement(Element parent, double x, double y, String text,
+          float fontSize, String anchor, String weight, String fontStyle, String fill, String id) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -796,6 +819,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_STYLE_ATTRIBUTE, fontStyle);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (id != null && !id.isEmpty()) {
+            newText.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, id);
+        }
         parent.appendChild(newText);
         return getTextLength(text, fontSize, weight, fontStyle);
     }
