@@ -152,8 +152,8 @@ class ExportSettingsPanel extends JPanel {
               RecordSheetOptions.HeatScaleMarker.values());
         comboHeatScaleMarker = new MMComboBox<>("comboHeatScaleMarker", defaultHeatScaleMarkerModel);
         comboHeatScaleMarker.setToolTipText(colorModeToolTip);
-        comboHeatScaleMarker.setSelectedItem(CConfig.getEnumParam(CConfig.RS_HEAT_SCALE_MARKER, RecordSheetOptions.ColorMode.class,
-              RecordSheetOptions.ColorMode.ALL));
+        comboHeatScaleMarker.setSelectedItem(CConfig.getEnumParam(CConfig.RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.class,
+              RecordSheetOptions.HeatScaleMarker.ASTERISK));
 
         JPanel heatScaleMarkerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         heatScaleMarkerPanel.add(heatScaleMarkerLabel);
