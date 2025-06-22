@@ -364,6 +364,7 @@ public class SVGMassPrinter {
     private static RecordSheetOptions getRecordSheetOptions() {
         RecordSheetOptions recordSheetOptions = new RecordSheetOptions();
         recordSheetOptions.setColor(RecordSheetOptions.ColorMode.LOGO_ONLY);
+        recordSheetOptions.setHeatScaleMarker(RecordSheetOptions.HeatScaleMarker.ARROW);
         recordSheetOptions.setC3inBV(true);
         recordSheetOptions.setBoldType(true);
         recordSheetOptions.setHeatProfile(true);
