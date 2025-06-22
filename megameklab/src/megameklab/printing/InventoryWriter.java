@@ -290,7 +290,9 @@ public class InventoryWriter {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
-            if (sheet.options.mergeIdenticalEquipment()) {
+            // If the unit is a Mek, we check for the merge equipment option.
+            // If is not a mek, we always merge if possible.
+            if (!(sheet.getEntity() instanceof Mek) || sheet.options.mergeIdenticalEquipment()) {
                 StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
                 if (null == same) {
                     equipment.add(entry);
