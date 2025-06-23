@@ -252,7 +252,7 @@ public class SVGMassPrinter {
                     entity.setId(entity.getGame().getNextEntityId());
                 }
                 C3Util.wireC3(entity.getGame(), entity);
-                String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase();
+                String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase().replaceAll("[^a-zA-Z0-9_]", "");
                 File sheetPath = new File(sheetsDir.getPath(), svgPath);
 
                 if (!sheetPath.exists() && !sheetPath.mkdirs()) {
