@@ -202,7 +202,7 @@ public class SVGMassPrinter {
         long timestamp = System.currentTimeMillis();
         
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
-            versionWriter.write("{\"version\":"+timestamp+"}");
+            versionWriter.write("{\"units\":"+timestamp+"}");
             logger.info("Version file written: {}", timestamp);
         } catch (IOException e) {
             logger.error("Failed to write version file: {}", e.getMessage());
