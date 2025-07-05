@@ -75,6 +75,8 @@ import java.io.FileOutputStream;
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String TYPEFACE = "Roboto";
     private static final String SHEETS_DIR = "sheets";
@@ -277,49 +279,62 @@ public class SVGMassPrinter {
                         logger.error("No sheets generated for {}", mekSummary.getName());
                         System.exit(1);
                     }
-                    List<Document> svgDocs = new ArrayList<>();
-                    for (PrintRecordSheet sheet : sheets) {
-                        if (sheet instanceof PrintSmallUnitSheet) {
-                            pf.setPaper(paperDef.createPaper());
-                        } else {
-                            pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                    if (SKIP_SVG) {
+                        int pageCount = 0;
+                        for (PrintRecordSheet sheet : sheets) {
+                            pageCount += sheet.getPageCount();
                         }
-                        int pageCount = sheet.getPageCount();
-                        for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
-                            sheet.createDocument(pageIndexInSheet, pf, false);
-                            if (pageCount > 1) {
-                                // Multiple pages, clone the SVG document for each page to prevent overwriting
-                                svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));
+                        for (int idx = 0; idx < pageCount; idx++) {
+                            String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
+                            String unoptimizedSvgFilename = baseSvgFilename + ".svg";
+                            String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
+                            unitData.sheets.add(pathToSave);
+                        }
+                    } else {
+                        List<Document> svgDocs = new ArrayList<>();
+                        for (PrintRecordSheet sheet : sheets) {
+                            if (sheet instanceof PrintSmallUnitSheet) {
+                                pf.setPaper(paperDef.createPaper());
                             } else {
-                                // Single page, add directly
-                                svgDocs.add(sheet.getSVGDocument());
+                                pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                            }
+                            int pageCount = sheet.getPageCount();
+                            for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
+                                sheet.createDocument(pageIndexInSheet, pf, false);
+                                if (pageCount > 1) {
+                                    // Multiple pages, clone the SVG document for each page to prevent overwriting
+                                    svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));
+                                } else {
+                                    // Single page, add directly
+                                    svgDocs.add(sheet.getSVGDocument());
+                                }
                             }
                         }
-                    }
-                    if (svgDocs.isEmpty()) {
-                        logger.error("No SVG documents for {}", mekSummary.getName());
-                        System.exit(1);
-                    }
-                    int idx = 0;
-                    for (Document svgDoc : svgDocs) {
-                        SVGOptimizer.optimize((SVGDocument) svgDoc);
-                        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                        Transformer transformer = transformerFactory.newTransformer();
-                        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-                        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-                        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                        String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
-                        String unoptimizedSvgFilename = baseSvgFilename + ".svg";
-                        File finalUnoptimizedFilename = new File(sheetPath, unoptimizedSvgFilename);
-                        try (FileOutputStream fos = new FileOutputStream(finalUnoptimizedFilename)) {
-                            DOMSource source = new DOMSource(svgDoc);
-                            StreamResult result = new StreamResult(fos);
-                            transformer.transform(source, result);
+                        if (svgDocs.isEmpty()) {
+                            logger.error("No SVG documents for {}", mekSummary.getName());
+                            System.exit(1);
                         }
-                        String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
-                        unitData.sheets.add(pathToSave);
-                        idx++;
+                        int idx = 0;
+                        for (Document svgDoc : svgDocs) {
+                            SVGOptimizer.optimize((SVGDocument) svgDoc);
+                            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                            Transformer transformer = transformerFactory.newTransformer();
+                            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+                            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                            String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
+                            String unoptimizedSvgFilename = baseSvgFilename + ".svg";
+                            File finalUnoptimizedFilename = new File(sheetPath, unoptimizedSvgFilename);
+                            try (FileOutputStream fos = new FileOutputStream(finalUnoptimizedFilename)) {
+                                DOMSource source = new DOMSource(svgDoc);
+                                StreamResult result = new StreamResult(fos);
+                                transformer.transform(source, result);
+                            }
+                            String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
+                            unitData.sheets.add(pathToSave);
+                            idx++;
+                        }
                     }
                     // logger.info("Printed: {}", finalFilename);
                 } catch (Exception e) {
