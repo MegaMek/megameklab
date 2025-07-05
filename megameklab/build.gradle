@@ -325,7 +325,7 @@ tasks.register('processSystemTest', JavaExec) {
 }
 
 tasks.register('svgexport', JavaExec) {
-    // dependsOn stageFiles
+    dependsOn stageFiles
     description = 'Internal System Test. Dev use only.'
     group = 'other'
     classpath = sourceSets.main.runtimeClasspath
