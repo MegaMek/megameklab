@@ -41,6 +41,7 @@ import megamek.common.enums.WeaponSortOrder;
 import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PrintRecordSheet;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.ui.*;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
@@ -107,6 +108,7 @@ public final class CConfig {
 
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
+    public static final String RS_HEAT_SCALE_MARKER = "rs_heat_scale_marker";
     public static final String RS_ROW_SHADING = "rs_row_shading";
     public static final String RS_FONT = "rs_font";
     public static final String RS_PROGRESS_BAR = "rs_progress_bar";
@@ -128,6 +130,7 @@ public final class CConfig {
     public static final String RS_DAMAGE = "rs_damage";
     public static final String RS_DAMAGE_COLOR = "rs_damage_color";
     public static final String RS_WEAPONS_ORDER = "rs_weapons_order";
+    public static final String RS_MERGE_IDENTICAL_EQUIPMENT = "rs_merge_identical_equipment";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -156,7 +159,8 @@ public final class CConfig {
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
         defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
-        defaults.setProperty(RS_COLOR, Boolean.toString(true));
+        defaults.setProperty(RS_COLOR, RecordSheetOptions.ColorMode.LOGO_ONLY.name());
+        defaults.setProperty(RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.ASTERISK.name());
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
@@ -178,6 +182,7 @@ public final class CConfig {
         defaults.setProperty(NAG_IMPORT_SETTINGS, Boolean.toString(true));
         defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_WEAPONS_ORDER, WeaponSortOrder.DEFAULT.name());
+        defaults.setProperty(RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(true));
         return defaults;
     }
 

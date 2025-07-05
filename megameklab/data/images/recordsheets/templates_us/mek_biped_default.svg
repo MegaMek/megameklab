@@ -6544,7 +6544,7 @@
     </g>
     <g
        transform="translate(384.966,553.5)"
-       id="g369">
+       id="heatDataPanel">
       <g
          id="g338">
         <path
@@ -6608,7 +6608,8 @@
          textLength="19.000999"
          lengthAdjust="spacingAndGlyphs"
          id="text340">Effects</text>
-      <text
+          <g class="heatEffect" heat="30">
+<text
          x="15"
          y="42.710999"
          fill="#000000"
@@ -6624,7 +6625,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text342">Shutdown</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="28">
+<text
          x="15"
          y="50.946999"
          fill="#000000"
@@ -6638,7 +6641,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text344">Ammo Exp, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="26">
+<text
          x="15"
          y="59.183998"
          fill="#000000"
@@ -6652,7 +6657,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text346">Shutdown, avoid on 10+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="25">
+<text
          x="15"
          y="67.420998"
          fill="#000000"
@@ -6666,7 +6673,9 @@
          fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile">-5 Movement Points</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="24">
+<text
          x="15"
          y="75.657997"
          fill="#000000"
@@ -6682,7 +6691,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text349">+4 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="23">
+<text
          x="15"
          y="83.894997"
          fill="#000000"
@@ -6696,7 +6707,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text351">Ammo Exp, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="22">
+<text
          x="15"
          y="92.132004"
          fill="#000000"
@@ -6710,7 +6723,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text353">Shutdown, avoid on 8+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="20">
+<text
          x="15"
          y="100.368"
          fill="#000000"
@@ -6724,7 +6739,9 @@
          fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile">-4 Movement Points</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="19">
+<text
          x="15"
          y="108.605"
          fill="#000000"
@@ -6738,7 +6755,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text356">Ammo Exp, avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="18">
+<text
          x="15"
          y="116.842"
          fill="#000000"
@@ -6752,7 +6771,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text358">Shutdown, avoid on 6+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="17">
+<text
          x="15"
          y="125.079"
          fill="#000000"
@@ -6766,7 +6787,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text360">+3 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="15">
+<text
          x="15"
          y="133.31599"
          fill="#000000"
@@ -6780,7 +6803,9 @@
          fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile">-3 Movement Points</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="14">
+<text
          x="15"
          y="141.55299"
          fill="#000000"
@@ -6794,7 +6819,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text363">Shutdown, avoid on 4+</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="13">
+<text
          x="15"
          y="149.789"
          fill="#000000"
@@ -6808,7 +6835,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text365">+2 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="10">
+<text
          x="15"
          y="158.026"
          fill="#000000"
@@ -6822,7 +6851,9 @@
          fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile">-2 Movement Points</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="8">
+<text
          x="15"
          y="166.263"
          fill="#000000"
@@ -6836,7 +6867,9 @@
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile"
          id="text368">+1 Modifier to Fire</text>
-      <text
+    </g>
+          <g class="heatEffect" heat="5">
+<text
          x="15"
          y="174.5"
          fill="#000000"
@@ -6850,6 +6883,7 @@
          fill="#000000"
          text-anchor="start"
          style="font-style:normal;font-weight:normal;font-size:6.76px;font-family:Eurostile">-1 Movement Points</text>
+    </g>
       <text
          fill="#000000"
          x="152"
@@ -6929,7 +6963,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect372" />
+           id="rect372" class="heat" heat="30" />
         <rect
            x="0"
            y="58"
@@ -6938,7 +6972,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect373" />
+           id="rect373" class="heat" heat="29" />
         <rect
            x="0"
            y="68.333"
@@ -6947,7 +6981,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect374" />
+           id="rect374" class="heat" heat="28" />
         <rect
            x="0"
            y="78.667"
@@ -6956,7 +6990,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect375" />
+           id="rect375" class="heat" heat="27" />
         <rect
            x="0"
            y="89"
@@ -6965,7 +6999,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect376" />
+           id="rect376" class="heat" heat="26" />
         <rect
            x="0"
            y="99.333"
@@ -6974,7 +7008,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect377" />
+           id="rect377" class="heat" heat="25" />
         <rect
            x="0"
            y="109.667"
@@ -6983,7 +7017,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect378" />
+           id="rect378" class="heat" heat="24" />
         <rect
            x="0"
            y="120"
@@ -6992,7 +7026,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect379" />
+           id="rect379" class="heat" heat="23" />
         <rect
            x="0"
            y="130.33299"
@@ -7001,7 +7035,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect380" />
+           id="rect380" class="heat" heat="22" />
         <rect
            x="0"
            y="140.66701"
@@ -7010,7 +7044,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect381" />
+           id="rect381" class="heat" heat="21" />
         <rect
            x="0"
            y="151"
@@ -7019,7 +7053,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect382" />
+           id="rect382" class="heat" heat="20" />
         <rect
            x="0"
            y="161.33299"
@@ -7028,7 +7062,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect383" />
+           id="rect383" class="heat" heat="19" />
         <rect
            x="0"
            y="171.66701"
@@ -7037,7 +7071,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect384" />
+           id="rect384" class="heat" heat="18" />
         <rect
            x="0"
            y="182"
@@ -7046,7 +7080,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect385" />
+           id="rect385" class="heat" heat="17" />
         <rect
            x="0"
            y="192.33299"
@@ -7055,7 +7089,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect386" />
+           id="rect386" class="heat" heat="16" />
         <rect
            x="0"
            y="202.66701"
@@ -7064,7 +7098,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect387" />
+           id="rect387" class="heat" heat="15" />
         <rect
            x="0"
            y="213"
@@ -7073,7 +7107,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect388" />
+           id="rect388" class="heat" heat="14" />
         <rect
            x="0"
            y="223.33299"
@@ -7082,7 +7116,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect389" />
+           id="rect389" class="heat" heat="13" />
         <rect
            x="0"
            y="233.66701"
@@ -7091,7 +7125,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect390" />
+           id="rect390" class="heat" heat="12" />
         <rect
            x="0"
            y="244"
@@ -7100,7 +7134,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect391" />
+           id="rect391" class="heat" heat="11" />
         <rect
            x="0"
            y="254.33299"
@@ -7109,7 +7143,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect392" />
+           id="rect392" class="heat" heat="10" />
         <rect
            x="0"
            y="264.66699"
@@ -7118,7 +7152,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect393" />
+           id="rect393" class="heat" heat="9" />
         <rect
            x="0"
            y="275"
@@ -7127,7 +7161,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect394" />
+           id="rect394" class="heat" heat="8" />
         <rect
            x="0"
            y="285.33301"
@@ -7136,7 +7170,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect395" />
+           id="rect395" class="heat" heat="7" />
         <rect
            x="0"
            y="295.66699"
@@ -7145,7 +7179,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect396" />
+           id="rect396" class="heat" heat="6" />
         <rect
            x="0"
            y="306"
@@ -7154,7 +7188,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect397" />
+           id="rect397" class="heat" heat="5" />
         <rect
            x="0"
            y="316.33301"
@@ -7163,7 +7197,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect398" />
+           id="rect398" class="heat" heat="4" />
         <rect
            x="0"
            y="326.66699"
@@ -7172,7 +7206,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect399" />
+           id="rect399" class="heat" heat="3" />
         <rect
            x="0"
            y="337"
@@ -7181,7 +7215,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect400" />
+           id="rect400" class="heat" heat="2" />
         <rect
            x="0"
            y="347.33301"
@@ -7190,7 +7224,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect401" />
+           id="rect401" class="heat" heat="1" />
         <rect
            x="0"
            y="357.66699"
@@ -7199,220 +7233,237 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect402" />
+           id="rect402" class="heat" heat="0" />
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="55.067711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text407-2">30*</text>
+           id="text407-2">30</text>
+      <text x="16.092000000000002" y="55.367711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="65.401711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text408-5">29</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="75.734711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text409-4">28*</text>
+           id="text409-4">28</text>
+      <text x="16.092000000000002" y="76.034711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="86.067711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text410-4">27</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="96.401711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text411-1">26*</text>
+           id="text411-1">26</text>
+      <text x="16.092000000000002" y="96.701711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="106.7347"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text412-6">25*</text>
+           id="text412-6">25</text>
+      <text x="16.092000000000002" y="107.034700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="117.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text413-1">24*</text>
+           id="text413-1">24</text>
+      <text x="16.092000000000002" y="117.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="127.40171"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text414-6">23*</text>
+           id="text414-6">23</text>
+      <text x="16.092000000000002" y="127.701710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="137.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text415-3">22*</text>
+           id="text415-3">22</text>
+      <text x="16.092000000000002" y="138.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="148.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text416-3">21</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="158.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text417-5">20*</text>
+           id="text417-5">20</text>
+      <text x="16.092000000000002" y="158.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="168.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text418-5">19*</text>
+           id="text418-5">19</text>
+      <text x="16.092000000000002" y="169.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="179.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text419-3">18*</text>
+           id="text419-3">18</text>
+      <text x="16.092000000000002" y="179.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="189.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text420-2">17*</text>
+           id="text420-2">17</text>
+      <text x="16.092000000000002" y="189.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="199.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text421-8">16</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="210.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text422-2">15*</text>
+           id="text422-2">15</text>
+      <text x="16.092000000000002" y="210.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="220.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text423-5">14*</text>
+           id="text423-5">14</text>
+      <text x="16.092000000000002" y="220.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="230.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text424-3">13*</text>
+           id="text424-3">13</text>
+      <text x="16.092000000000002" y="231.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="241.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text425-6">12</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="251.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text426-1">11</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="261.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text427-8">10*</text>
+           id="text427-8">10</text>
+      <text x="16.092000000000002" y="262.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="272.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text428-6">9</text>
         <text
            fill="#000000"
-           x="10.822074"
+           x="8.396"
            y="282.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text429-2">8*</text>
+           id="text429-2">8</text>
+      <text x="16.092000000000002" y="282.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="292.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text430-1">7</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="303.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text431-4">6</text>
         <text
            fill="#000000"
-           x="10.822074"
+           x="8.396"
            y="313.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text432-6">5*</text>
+           id="text432-6">5</text>
+      <text x="16.092000000000002" y="313.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="323.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text433-2">4</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="334.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text434-9">3</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="344.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text435-1">2</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="354.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text436-5">1</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="365.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
@@ -7464,7 +7515,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect406" />
+           id="rect406" class="heat" heat="30" />
         <rect
            x="0"
            y="58"
@@ -7473,7 +7524,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect407" />
+           id="rect407" class="heat" heat="29" />
         <rect
            x="0"
            y="68.333"
@@ -7482,7 +7533,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect408" />
+           id="rect408" class="heat" heat="28" />
         <rect
            x="0"
            y="78.667"
@@ -7491,7 +7542,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect409" />
+           id="rect409" class="heat" heat="27" />
         <rect
            x="0"
            y="89"
@@ -7500,7 +7551,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect410" />
+           id="rect410" class="heat" heat="26" />
         <rect
            x="0"
            y="99.333"
@@ -7509,7 +7560,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect411" />
+           id="rect411" class="heat" heat="25" />
         <rect
            x="0"
            y="109.667"
@@ -7518,7 +7569,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect412" />
+           id="rect412" class="heat" heat="24" />
         <rect
            x="0"
            y="120"
@@ -7527,7 +7578,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect413" />
+           id="rect413" class="heat" heat="23" />
         <rect
            x="0"
            y="130.33299"
@@ -7536,7 +7587,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect414" />
+           id="rect414" class="heat" heat="22" />
         <rect
            x="0"
            y="140.66701"
@@ -7545,7 +7596,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect415" />
+           id="rect415" class="heat" heat="21" />
         <rect
            x="0"
            y="151"
@@ -7554,7 +7605,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect416" />
+           id="rect416" class="heat" heat="20" />
         <rect
            x="0"
            y="161.33299"
@@ -7563,7 +7614,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect417" />
+           id="rect417" class="heat" heat="19" />
         <rect
            x="0"
            y="171.66701"
@@ -7572,7 +7623,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect418" />
+           id="rect418" class="heat" heat="18" />
         <rect
            x="0"
            y="182"
@@ -7581,7 +7632,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect419" />
+           id="rect419" class="heat" heat="17" />
         <rect
            x="0"
            y="192.33299"
@@ -7590,7 +7641,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect420" />
+           id="rect420" class="heat" heat="16" />
         <rect
            x="0"
            y="202.66701"
@@ -7599,7 +7650,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect421" />
+           id="rect421" class="heat" heat="15" />
         <rect
            x="0"
            y="213"
@@ -7608,7 +7659,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect422" />
+           id="rect422" class="heat" heat="14" />
         <rect
            x="0"
            y="223.33299"
@@ -7617,7 +7668,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect423" />
+           id="rect423" class="heat" heat="13" />
         <rect
            x="0"
            y="233.66701"
@@ -7626,7 +7677,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect424" />
+           id="rect424" class="heat" heat="12" />
         <rect
            x="0"
            y="244"
@@ -7635,7 +7686,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect425" />
+           id="rect425" class="heat" heat="11" />
         <rect
            x="0"
            y="254.33299"
@@ -7644,7 +7695,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect426" />
+           id="rect426" class="heat" heat="10" />
         <rect
            x="0"
            y="264.66699"
@@ -7653,7 +7704,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect427" />
+           id="rect427" class="heat" heat="9" />
         <rect
            x="0"
            y="275"
@@ -7662,7 +7713,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect428" />
+           id="rect428" class="heat" heat="8" />
         <rect
            x="0"
            y="285.33301"
@@ -7671,7 +7722,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect429" />
+           id="rect429" class="heat" heat="7" />
         <rect
            x="0"
            y="295.66699"
@@ -7680,7 +7731,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect430" />
+           id="rect430" class="heat" heat="6" />
         <rect
            x="0"
            y="306"
@@ -7689,7 +7740,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect431" />
+           id="rect431" class="heat" heat="5" />
         <rect
            x="0"
            y="316.33301"
@@ -7698,7 +7749,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect432" />
+           id="rect432" class="heat" heat="4" />
         <rect
            x="0"
            y="326.66699"
@@ -7707,7 +7758,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect433" />
+           id="rect433" class="heat" heat="3" />
         <rect
            x="0"
            y="337"
@@ -7716,7 +7767,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect434" />
+           id="rect434" class="heat" heat="2" />
         <rect
            x="0"
            y="347.33301"
@@ -7725,7 +7776,7 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect435" />
+           id="rect435" class="heat" heat="1" />
         <rect
            x="0"
            y="357.66699"
@@ -7734,220 +7785,237 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect436" />
+           id="rect436" class="heat" heat="0" />
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="55.067711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text407">30*</text>
+           id="text407">30</text>
+      <text x="16.092000000000002" y="55.367711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="65.401711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text408">29</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="75.734711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text409">28*</text>
+           id="text409">28</text>
+      <text x="16.092000000000002" y="76.034711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="86.067711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text410">27</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="96.401711"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text411">26*</text>
+           id="text411">26</text>
+      <text x="16.092000000000002" y="96.701711" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="106.7347"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text412">25*</text>
+           id="text412">25</text>
+      <text x="16.092000000000002" y="107.034700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="117.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text413">24*</text>
+           id="text413">24</text>
+      <text x="16.092000000000002" y="117.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="127.40171"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text414">23*</text>
+           id="text414">23</text>
+      <text x="16.092000000000002" y="127.701710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="137.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text415">22*</text>
+           id="text415">22</text>
+      <text x="16.092000000000002" y="138.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="148.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text416">21</text>
         <text
            fill="#000000"
-           x="9.9313087"
+           x="8.396"
            y="158.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text417">20*</text>
+           id="text417">20</text>
+      <text x="16.092000000000002" y="158.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="168.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text418">19*</text>
+           id="text418">19</text>
+      <text x="16.092000000000002" y="169.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="179.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text419">18*</text>
+           id="text419">18</text>
+      <text x="16.092000000000002" y="179.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="189.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text420">17*</text>
+           id="text420">17</text>
+      <text x="16.092000000000002" y="189.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="199.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text421">16</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="210.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text422">15*</text>
+           id="text422">15</text>
+      <text x="16.092000000000002" y="210.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="220.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text423">14*</text>
+           id="text423">14</text>
+      <text x="16.092000000000002" y="220.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="230.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text424">13*</text>
+           id="text424">13</text>
+      <text x="16.092000000000002" y="231.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="241.0677"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text425">12</text>
         <text
            fill="#000000"
-           x="7.7461939"
+           x="8.396"
            y="251.40172"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text426">11</text>
         <text
            fill="#000000"
-           x="9.8603468"
+           x="8.396"
            y="261.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text427">10*</text>
+           id="text427">10</text>
+      <text x="16.092000000000002" y="262.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="272.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text428">9</text>
         <text
            fill="#000000"
-           x="10.822074"
+           x="8.396"
            y="282.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text429">8*</text>
+           id="text429">8</text>
+      <text x="16.092000000000002" y="282.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="292.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text430">7</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="303.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text431">6</text>
         <text
            fill="#000000"
-           x="10.822074"
+           x="8.396"
            y="313.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
-           id="text432">5*</text>
+           id="text432">5</text>
+      <text x="16.092000000000002" y="313.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="323.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text433">4</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="334.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text434">3</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="344.4017"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text435">2</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="354.73471"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text436">1</text>
         <text
            fill="#000000"
-           x="8.6881189"
+           x="8.396"
            y="365.06772"
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"

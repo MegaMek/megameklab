@@ -238,19 +238,34 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param doc The document to perform replacement in.
      */
     private void subFonts(SVGDocument doc) {
-        NodeList list = doc.getElementsByTagName("text");
+        NodeList list = doc.getElementsByTagName("*");
         if (list != null) {
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
                 if (node instanceof Element elem) {
-                    // First we want to make sure it's not set in the style attribute, which could
-                    // override the change
+                    // First we check if it has the font-family in the style attribute
                     if (elem.hasAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)) {
-                        elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                                elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE)
-                                        .replaceAll("font-family:.*?;", ""));
+                        String style = elem.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+                        if (style.contains("font-family:")) {
+                            String newStyle = style.replaceAll(
+                                  "font-family\\s*:\\s*[^;]+",
+                                  "font-family:" + getTypeface()
+                            );
+                            newStyle = newStyle.replaceAll(";;+", ";").replaceAll("^;+|;+$", "").trim();
+                            if (newStyle.isEmpty()) {
+                                elem.removeAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+                            } else {
+                                elem.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, newStyle);
+                            }
+                            if (elem.hasAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+                                elem.removeAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE);
+                            }
+                            continue;
+                        }
                     }
-                    elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                    if (elem.hasAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE)) {
+                        elem.setAttributeNS(null, SVGConstants.SVG_FONT_FAMILY_ATTRIBUTE, getTypeface());
+                    }
                 }
             }
         }
@@ -264,8 +279,20 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 if (field.startsWith(MML_COLOR_ELEMENTS + ":")) {
                     String[] ids = field.substring(field.indexOf(":") + 1).split(",");
                     for (String id : ids) {
-                        hideElement(id + "Color", !options.useColor());
-                        hideElement(id + "BW", options.useColor());
+                        if (options.useColor() == RecordSheetOptions.ColorMode.LOGO_ONLY) {
+                            if (id.contains("btLogo")) {
+                                hideElement(id + "Color", false);
+                                removeElement(id + "BW");
+                                continue;
+                            }
+                        }
+                        if (options.useColor() == RecordSheetOptions.ColorMode.ALL) {
+                            removeElement(id + "BW");
+                            hideElement(id + "Color", false);
+                        } else {
+                            removeElement(id + "Color");
+                            hideElement(id + "BW", false);
+                        }
                     }
                 }
             }
@@ -320,13 +347,46 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 return;
             }
             String style = e.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-            if (style == null || style.isEmpty()) {
+            if (style.isEmpty()) {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, "font-weight:bold;");
             } else if (!style.contains("font-weight:")) {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style + "font-weight:bold;");
             } else {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                        style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+                      style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+            }
+        }
+    }
+
+    /**
+     * Fixes the lack of unit in font-size attributes in the SVG document.
+     */
+    private void fixFontSize() {
+        if (getSVGDocument() == null) {
+            return;
+        }
+        NodeList allElements = getSVGDocument().getElementsByTagName("*");
+        for (int i = 0; i < allElements.getLength(); i++) {
+            Element el = (Element) allElements.item(i);
+
+            // Fix font-size in style attribute
+            String style = el.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (!style.isEmpty()) {
+                String fixed = style.replaceAll(
+                      "font-size:\\s*(\\d+(?:\\.\\d+)?)(?!px)(;?)", "font-size:$1px$2"
+                );
+                if (!fixed.equals(style)) {
+                    el.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, fixed);
+                }
+            }
+
+            // Fix font-size attribute directly
+            String fontSize = el.getAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE);
+            if (!fontSize.isEmpty() && !fontSize.endsWith("px")) {
+                // Only add px if it's a number (not e.g. 'small')
+                if (fontSize.matches("\\d+(\\.\\d+)?")) {
+                    el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
+                }
             }
         }
     }
@@ -774,6 +834,29 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight, String fontStyle, String fill) {
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, fontStyle, fill, null);
+    }
+
+    /**
+     * Convenience method for creating a new SVG Text element and adding it to the
+     * parent. The
+     * height of the text is returned, to aid in layout.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     * @param fontStyle The font style, either normal or italic.
+     * @param fill     The fill color for the text (e.g. foreground color)
+     *
+     * @return The width of the added text element
+     */
+    protected double addTextElement(Element parent, double x, double y, String text,
+          float fontSize, String anchor, String weight, String fontStyle, String fill, String id) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -784,6 +867,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FONT_STYLE_ATTRIBUTE, fontStyle);
         newText.setAttributeNS(null, SVGConstants.SVG_TEXT_ANCHOR_ATTRIBUTE, anchor);
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        if (id != null && !id.isEmpty()) {
+            newText.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, id);
+        }
         parent.appendChild(newText);
         return getTextLength(text, fontSize, weight, fontStyle);
     }
@@ -994,6 +1080,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (type == PipType.DIAMOND) {
             // Use diamond shape for hardened armor pips
             Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+            path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
             path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
@@ -1007,6 +1094,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         } else {
             // Use circle element for normal pips
             Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
+            circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
             double centerX = x + radius;
             double centerY = y + radius;
             circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));
@@ -1038,6 +1126,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             double radius, double control, double strokeWidth,
             String stroke) {
         Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_ATTRIBUTE);
+        path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "bombBox");
         path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, SVGConstants.SVG_NONE_VALUE);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(strokeWidth));
@@ -1067,6 +1156,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         Element element = getSVGDocument().getElementById(id);
         if (null != element) {
             hideElement(element, hide);
+        }
+    }
+
+    protected void removeElement(String id) {
+        Element element = getSVGDocument().getElementById(id);
+        if (null != element) {
+            element.getParentNode().removeChild(element);
         }
     }
 
