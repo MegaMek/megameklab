@@ -347,13 +347,46 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 return;
             }
             String style = e.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
-            if (style == null || style.isEmpty()) {
+            if (style.isEmpty()) {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, "font-weight:bold;");
             } else if (!style.contains("font-weight:")) {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, style + "font-weight:bold;");
             } else {
                 e.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE,
-                        style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+                      style.replaceAll("font-weight:.*?;", "font-weight:bold;"));
+            }
+        }
+    }
+
+    /**
+     * Fixes the lack of unit in font-size attributes in the SVG document.
+     */
+    private void fixFontSize() {
+        if (getSVGDocument() == null) {
+            return;
+        }
+        NodeList allElements = getSVGDocument().getElementsByTagName("*");
+        for (int i = 0; i < allElements.getLength(); i++) {
+            Element el = (Element) allElements.item(i);
+
+            // Fix font-size in style attribute
+            String style = el.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
+            if (!style.isEmpty()) {
+                String fixed = style.replaceAll(
+                      "font-size:\\s*(\\d+(?:\\.\\d+)?)(?!px)(;?)", "font-size:$1px$2"
+                );
+                if (!fixed.equals(style)) {
+                    el.setAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE, fixed);
+                }
+            }
+
+            // Fix font-size attribute directly
+            String fontSize = el.getAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE);
+            if (!fontSize.isEmpty() && !fontSize.endsWith("px")) {
+                // Only add px if it's a number (not e.g. 'small')
+                if (fontSize.matches("\\d+(\\.\\d+)?")) {
+                    el.setAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE, fontSize + "px");
+                }
             }
         }
     }

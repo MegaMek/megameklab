@@ -90,7 +90,7 @@ public class SVGMassPrinter {
         public String chassis; // Name of the unit (Chassis)
         public String model; // Model of the unit
         public int year; // Year of introduction
-        public int weightClass; // Weight class, 0 for Light, 1 for Medium, etc.
+        public String weightClass; // Weight class
         public double tons; // Weight in tons, rounded to the nearest integer
         public int bv; // Battle Value, rounded to the nearest integer
         public int pv; // Point Value, rounded to the nearest integer
@@ -117,7 +117,7 @@ public class SVGMassPrinter {
             this.chassis = entity.getFullChassis();
             this.model = entity.getModel();
             this.year = entity.getYear();
-            this.weightClass = entity.getWeightClass();
+            this.weightClass = entity.getWeightClassName();
             this.tons = entity.getWeight();
             this.bv = entity.getBvCalculator().calculateBV(false,true);
             this.cost = Math.round(entity.getCost(false));
