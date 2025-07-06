@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008, 2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
 
@@ -19,15 +36,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Enumeration;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import megamek.common.*;
-import megamek.common.options.IOption;
-import megamek.common.options.PilotOptions;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
@@ -36,9 +50,13 @@ import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.TabScrollPane;
 import megameklab.util.InfantryUtil;
 import megameklab.util.UnitUtil;
 
+/*
+ * Original author - jtighe (torren@users.sourceforge.net)
+ */
 public class CIStructureTab extends ITab implements InfantryBuildListener {
     private RefreshListener refresh;
 
@@ -48,186 +66,122 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public static final int T_SPECIALIZATION = 3;
     public static final int T_MOUNT = 4;
     public static final int T_AUGMENTATION = 5;
-    private static final EquipmentType antiMekGear = EquipmentType.get(EquipmentTypeLookup.ANTI_MEK_GEAR);
+    private static final EquipmentType ANTI_MEK_GEAR = EquipmentType.get(EquipmentTypeLookup.ANTI_MEK_GEAR);
 
-    private BasicInfoView panBasicInfo;
-    private CIPlatoonTypeView panPlatoonType;
-    private CIWeaponView panWeapons;
-    private IconView iconView;
+    private final BasicInfoView basicInfoView;
+    private final CIPlatoonTypeView platoonTypeView;
+    private final CIWeaponView weaponView;
+    private final IconView iconView;
+    private final CIAdvancedView advancedView;
 
-    private String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount", "Augmentation" };
-
-    private JTextField txtArmor = new JTextField("None");
-    private JTextPane txtSpecializations = new JTextPane();
-    private JTextPane txtAugmentations = new JTextPane();
+    private final String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount",
+                                         "Augmentation" };
 
     private JTabbedPane equipmentPane;
 
-    private CIEquipmentView weaponView;
-    private CIFieldGunView fieldGunView;
-    private CIArmorView armorView;
-    private CISpecializationView specializationView;
-    private CIMountView mountView;
-    private CIAugmentationView augmentationView;
+    private final CIEquipmentView weaponChoiceTable;
+    private final CIFieldGunTableView fieldGunChoiceTable;
+    private final CIArmorView armorChoiceTable;
+    private final CISpecializationView specializationChoiceTable;
+    private final CIMountView mountChoiceTable;
+    private final CIAugmentationView augmentationChoiceTable;
 
     public CIStructureTab(EntitySource eSource) {
         super(eSource);
-        panBasicInfo = new BasicInfoView(getInfantry().getConstructionTechAdvancement());
-        panPlatoonType = new CIPlatoonTypeView(panBasicInfo);
-        panWeapons = new CIWeaponView(panBasicInfo);
-        weaponView = new CIEquipmentView(eSource, panBasicInfo);
-        fieldGunView = new CIFieldGunView(eSource, panBasicInfo);
-        armorView = new CIArmorView(eSource, panBasicInfo);
-        specializationView = new CISpecializationView(eSource);
-        mountView = new CIMountView(eSource);
-        augmentationView = new CIAugmentationView(eSource);
+        basicInfoView = new BasicInfoView(getInfantry().getConstructionTechAdvancement());
+        platoonTypeView = new CIPlatoonTypeView(basicInfoView);
+        weaponView = new CIWeaponView(basicInfoView);
+        weaponChoiceTable = new CIEquipmentView(eSource, basicInfoView);
+        fieldGunChoiceTable = new CIFieldGunTableView(eSource, basicInfoView);
+        armorChoiceTable = new CIArmorView(eSource, basicInfoView);
+        specializationChoiceTable = new CISpecializationView(eSource);
+        mountChoiceTable = new CIMountView(eSource);
+        augmentationChoiceTable = new CIAugmentationView(eSource);
         iconView = new IconView();
+        advancedView = new CIAdvancedView(eSource);
         setUpPanels();
         refresh();
     }
 
     public void setUpPanels() {
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        GridBagConstraints gbc;
 
-        JPanel advancedPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        Dimension comboSize = new Dimension(200, 25);
-        Dimension labelSize = new Dimension(110, 25);
-
-        txtArmor.setEditable(false);
-        txtSpecializations.setEditable(false);
-        txtSpecializations.setContentType("text/html");
-        txtAugmentations.setEditable(false);
-        txtAugmentations.setContentType("text/html");
-
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 0, 1, 2);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        advancedPanel.add(createLabel("Armor:", labelSize), gbc);
-        gbc.gridx = 1;
-        advancedPanel.add(txtArmor, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(4, 4, 4, 4);
-        advancedPanel.add(createLabel("Specializations:", labelSize), gbc);
-        gbc.gridx = 1;
-        advancedPanel.add(txtSpecializations, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-        advancedPanel.add(createLabel("Augmentations:", labelSize), gbc);
-        gbc.gridx = 1;
-        advancedPanel.add(txtAugmentations, gbc);
-
-        setFieldSize(txtArmor, comboSize);
-
-        panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
-        panPlatoonType.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
-        panWeapons.setBorder(BorderFactory.createTitledBorder("Current Weapons"));
-        advancedPanel.setBorder(BorderFactory.createTitledBorder("Advanced"));
+        basicInfoView.setBorder(BorderFactory.createTitledBorder("Basic Information"));
+        platoonTypeView.setBorder(BorderFactory.createTitledBorder("Movement and Size"));
+        weaponView.setBorder(BorderFactory.createTitledBorder("Weapons"));
+        advancedView.setBorder(BorderFactory.createTitledBorder("Advanced"));
 
         equipmentPane = new JTabbedPane();
-        equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponView);
-        equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunView);
-        equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorView);
-        equipmentPane.addTab(tabNames[T_SPECIALIZATION], specializationView);
-        equipmentPane.addTab(tabNames[T_MOUNT], mountView);
-        equipmentPane.addTab(tabNames[T_AUGMENTATION], augmentationView);
+        equipmentPane.addTab(tabNames[T_INFANTRY_WEAPONS], weaponChoiceTable);
+        equipmentPane.addTab(tabNames[T_FIELD_GUNS], fieldGunChoiceTable);
+        equipmentPane.addTab(tabNames[T_ARMOR_KIT], armorChoiceTable);
+        equipmentPane.addTab(tabNames[T_SPECIALIZATION], specializationChoiceTable);
+        equipmentPane.addTab(tabNames[T_MOUNT], mountChoiceTable);
+        equipmentPane.addTab(tabNames[T_AUGMENTATION], augmentationChoiceTable);
 
-        leftPanel.add(panBasicInfo);
-        leftPanel.add(iconView);
-        leftPanel.add(panPlatoonType);
-        leftPanel.add(panWeapons);
-        leftPanel.add(advancedPanel);
-        leftPanel.add(Box.createVerticalGlue());
+        JPanel leftPanel = new JPanel(new GridBagLayout());
+        leftPanel.setBorder(new EmptyBorder(0, 15, 0, 15));
+        GridBagConstraints leftGbc = new GridBagConstraints();
+        leftGbc.gridx = 0;
+        leftGbc.fill = GridBagConstraints.BOTH;
+        leftGbc.anchor = GridBagConstraints.NORTH;
+        leftGbc.weighty = 0;
+        leftPanel.add(basicInfoView, leftGbc);
+        leftPanel.add(iconView, leftGbc);
+        leftPanel.add(platoonTypeView, leftGbc);
+        leftPanel.add(weaponView, leftGbc);
+        leftPanel.add(advancedView, leftGbc);
+        leftGbc.weighty = 1;
+        leftPanel.add(Box.createVerticalGlue(), leftGbc);
+        var leftPanelScrollPane = new TabScrollPane(leftPanel) {
+            @Override
+            public Dimension getMinimumSize() {
+                // The structure panel should never use horizontal scrolling, so force it to be as wide as needed
+                int preferredWidth = leftPanel.getPreferredSize().width +
+                                           getVerticalScrollBar().getPreferredSize().width;
+                return new Dimension(preferredWidth, super.getMinimumSize().height);
+            }
+        };
+
         setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = new Insets(5, 5, 5, 5);
-        add(leftPanel, gbc);
-        gbc.gridx = 1;
+        add(leftPanelScrollPane, gbc);
+
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         gbc.insets = new Insets(5, 0, 5, 0);
         add(equipmentPane, gbc);
     }
 
     public ITechManager getTechManager() {
-        return panBasicInfo;
+        return basicInfoView;
     }
 
     public void setTechFaction(ITechnology.Faction techFaction) {
-        panBasicInfo.setTechFaction(techFaction);
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-
-        JLabel label = new JLabel(text, SwingConstants.RIGHT);
-
-        setFieldSize(label, maxSize);
-        return label;
-    }
-
-    @Override
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
+        basicInfoView.setTechFaction(techFaction);
     }
 
     public void refresh() {
 
-        panBasicInfo.setFromEntity(getInfantry());
-        panPlatoonType.setFromEntity(getInfantry());
-        panWeapons.setFromEntity(getInfantry());
+        basicInfoView.setFromEntity(getInfantry());
+        platoonTypeView.setFromEntity(getInfantry());
+        weaponView.setFromEntity(getInfantry());
         iconView.setFromEntity(getEntity());
+        advancedView.setFromEntity();
 
         removeAllListeners();
 
-        EquipmentType armor = getInfantry().getArmorKit();
-        if (null != armor) {
-            txtArmor.setText(armor.getName());
-        } else {
-            String desc = getInfantry().getArmorDesc();
-            if (desc.equals("1.0")) {
-                txtArmor.setText("None");
-            } else {
-                txtArmor.setText(desc);
-            }
-        }
-        updateSpecializations();
-        StringJoiner sj = new StringJoiner("<br/>");
-        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES); e
-                .hasMoreElements();) {
-            final IOption opt = e.nextElement();
-            if (getInfantry().getCrew().getOptions().booleanOption(opt.getName())) {
-                sj.add(opt.getDisplayableName());
-            }
-        }
-        if (sj.length() > 0) {
-            txtAugmentations.setText(sj.toString());
-        } else {
-            txtAugmentations.setText("None");
-        }
-
-        weaponView.refresh();
-        fieldGunView.refresh();
-        armorView.refresh();
-        specializationView.refresh();
-        mountView.refresh();
-        augmentationView.refresh();
+        weaponChoiceTable.refresh();
+        fieldGunChoiceTable.refresh();
+        armorChoiceTable.refresh();
+        specializationChoiceTable.refresh();
+        mountChoiceTable.refresh();
+        augmentationChoiceTable.refresh();
 
         enableTabs();
 
@@ -235,44 +189,34 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     public void addAllListeners() {
-        panBasicInfo.addListener(this);
-        panPlatoonType.addListener(this);
-        panWeapons.addListener(this);
-        specializationView.addListener(this);
+        basicInfoView.addListener(this);
+        platoonTypeView.addListener(this);
+        weaponView.addListener(this);
+        specializationChoiceTable.addListener(this);
     }
 
     public void removeAllListeners() {
-        panWeapons.removeListener(this);
-        panBasicInfo.removeListener(this);
-        panPlatoonType.removeListener(this);
-        specializationView.removeListener(this);
+        weaponView.removeListener(this);
+        basicInfoView.removeListener(this);
+        platoonTypeView.removeListener(this);
+        specializationChoiceTable.removeListener(this);
     }
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-        weaponView.addRefreshedListener(refresh);
-        fieldGunView.addRefreshedListener(refresh);
-        armorView.addRefreshedListener(refresh);
-        mountView.addRefreshedListener(refresh);
-        augmentationView.addRefreshedListener(refresh);
+        weaponChoiceTable.addRefreshedListener(refresh);
+        fieldGunChoiceTable.addRefreshedListener(refresh);
+        armorChoiceTable.addRefreshedListener(refresh);
+        mountChoiceTable.addRefreshedListener(refresh);
+        augmentationChoiceTable.addRefreshedListener(refresh);
     }
 
     public void setAsCustomization() {
-        panBasicInfo.setAsCustomization();
+        basicInfoView.setAsCustomization();
     }
 
     private void updateSpecializations() {
-        if (getInfantry().getSpecializations() == 0) {
-            txtSpecializations.setText("None");
-        } else {
-            StringJoiner sj = new StringJoiner("<br/>");
-            for (int i = 0; i < Infantry.NUM_SPECIALIZATIONS; i++) {
-                if (getInfantry().hasSpecialization(1 << i)) {
-                    sj.add(Infantry.getSpecializationName(1 << i));
-                }
-            }
-            txtSpecializations.setText(sj.toString());
-        }
+        advancedView.updateSpecializations();
         if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
                 && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
                         || (getInfantry().getSecondaryWeapon() == null)
@@ -284,10 +228,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     private void enableTabs() {
-        SimpleTechLevel level = panBasicInfo.getTechLevel();
+        SimpleTechLevel level = basicInfoView.getTechLevel();
+        advancedView.enableTabs(level);
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
-            txtArmor.setEnabled(true);
-            txtSpecializations.setEnabled(true);
             equipmentPane.setEnabledAt(T_FIELD_GUNS,
                     getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
                             || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
@@ -296,12 +239,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
             equipmentPane.setEnabledAt(T_MOUNT, getInfantry().getMount() != null);
             // Experimental level
-            txtAugmentations.setEnabled(level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
             equipmentPane.setEnabledAt(T_AUGMENTATION, level.ordinal() >= SimpleTechLevel.EXPERIMENTAL.ordinal());
         } else {
-            txtArmor.setEnabled(false);
-            txtSpecializations.setEnabled(false);
-            txtAugmentations.setEnabled(false);
             equipmentPane.setEnabledAt(T_FIELD_GUNS, false);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, false);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, false);
@@ -314,14 +253,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     public void refreshEquipmentTable() {
-        weaponView.refresh();
+        weaponChoiceTable.refresh();
     }
 
     @Override
-    public void refreshSummary() {
-        // TODO Auto-generated method stub
-
-    }
+    public void refreshSummary() { }
 
     @Override
     public void chassisChanged(String chassis) {
@@ -347,21 +283,21 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
 
     @Override
     public void updateTechLevel() {
-        if (!panBasicInfo.isLegal(getInfantry().getMotiveTechAdvancement())) {
+        if (!basicInfoView.isLegal(getInfantry().getMotiveTechAdvancement())) {
             motiveTypeChanged(EntityMovementMode.INF_LEG, false);
         }
-        getInfantry().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        UnitUtil.checkEquipmentByTechLevel(getInfantry(), panBasicInfo);
+        getInfantry().setTechLevel(basicInfoView.getTechLevel().getCompoundTechLevel(basicInfoView.useClanTechBase()));
+        UnitUtil.checkEquipmentByTechLevel(getInfantry(), basicInfoView);
         InfantryUtil.resetInfantryArmor(getInfantry());
-        panPlatoonType.setFromEntity(getInfantry());
-        panWeapons.setFromEntity(getInfantry());
+        platoonTypeView.setFromEntity(getInfantry());
+        weaponView.setFromEntity(getInfantry());
         updateSpecializations();
         enableTabs();
-        weaponView.refresh();
-        fieldGunView.refresh();
-        armorView.refresh();
-        specializationView.refresh();
-        augmentationView.refresh();
+        weaponChoiceTable.refresh();
+        fieldGunChoiceTable.refresh();
+        armorChoiceTable.refresh();
+        specializationChoiceTable.refresh();
+        augmentationChoiceTable.refresh();
         refresh.refreshPreview();
     }
 
@@ -411,10 +347,10 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         enableTabs();
         TestInfantry.adaptAntiMekAttacks(getInfantry());
-        panPlatoonType.setFromEntity(getInfantry());
-        panWeapons.setFromEntity(getInfantry());
-        specializationView.refresh();
-        mountView.refresh();
+        platoonTypeView.setFromEntity(getInfantry());
+        weaponView.setFromEntity(getInfantry());
+        specializationChoiceTable.refresh();
+        mountChoiceTable.refresh();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }
@@ -424,7 +360,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setSquadCount(numSquads);
         getInfantry().setSquadSize(squadSize);
         getInfantry().autoSetInternal();
-        panPlatoonType.setFromEntity(getInfantry());
+        platoonTypeView.setFromEntity(getInfantry());
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
@@ -432,9 +368,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     @Override
     public void specializationsChanged() {
         updateSpecializations();
-        panPlatoonType.setFromEntity(getInfantry());
-        panWeapons.setFromEntity(getInfantry());
-        weaponView.refresh();
+        platoonTypeView.setFromEntity(getInfantry());
+        weaponView.setFromEntity(getInfantry());
+        weaponChoiceTable.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
     }
@@ -452,29 +388,31 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         }
         refresh.refreshStatus();
         refresh.refreshPreview();
+        weaponView.setFromEntity(getInfantry());
     }
 
     @Override
     public void numFieldGunsChanged(final int count) {
-        Optional<WeaponType> fieldGun = getInfantry().getWeaponList()
-                .stream().filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .map(Mounted::getType).findAny();
-        InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) fieldGun.orElse(null),
-                count);
+        Optional<WeaponType> fieldGun = getInfantry().getWeaponList().stream()
+              .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+              .map(Mounted::getType)
+              .findAny();
+        InfantryUtil.replaceFieldGun(getInfantry(), fieldGun.orElse(null), count);
         refresh.refreshStatus();
         refresh.refreshPreview();
+        weaponView.setFromEntity(getInfantry());
     }
 
     @Override
     public void antiMekChanged(final boolean antiMek) {
         if (antiMek) {
             try {
-                getInfantry().addEquipment(antiMekGear, Infantry.LOC_INFANTRY);
+                getInfantry().addEquipment(ANTI_MEK_GEAR, Infantry.LOC_INFANTRY);
             } catch (LocationFullException ignored) {
                 // Not on infantry
             }
         } else {
-            UnitUtil.removeAllMounteds(getInfantry(), antiMekGear);
+            UnitUtil.removeAllMounteds(getInfantry(), ANTI_MEK_GEAR);
         }
         TestInfantry.adaptAntiMekAttacks(getInfantry());
         refresh.refreshStatus();

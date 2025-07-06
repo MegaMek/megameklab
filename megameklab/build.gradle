@@ -80,6 +80,9 @@ dependencies {
         exclude group: 'xml-apis'
     }
 
+    implementation 'com.formdev:flatlaf:3.6'
+    implementation 'com.formdev:flatlaf-extras:3.6'
+
     implementation('org.apache.commons:commons-collections4:4.5.0')
 
     testImplementation 'org.mockito:mockito-core:5.18.0'

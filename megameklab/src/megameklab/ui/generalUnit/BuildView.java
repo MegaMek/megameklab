@@ -37,7 +37,7 @@ public abstract class BuildView extends JPanel {
     protected static final String CB_SIZE_VALUE = "X".repeat(23);
     protected static final Engine CB_SIZE_ENGINE = new Engine(100, Engine.NORMAL_ENGINE, 0);
     protected static final EquipmentType CB_SIZE_EQUIPMENT = EquipmentType.get(EquipmentTypeLookup.JUMP_JET);
-    protected static final Insets STANDARD_INSETS = new Insets(0, 2, 1, 2);
+    public static final Insets STANDARD_INSETS = new Insets(0, 2, 1, 2);
 
     public JLabel createLabel(ResourceBundle resources, String name, String text) {
         return createLabel(resources, name, text, null);

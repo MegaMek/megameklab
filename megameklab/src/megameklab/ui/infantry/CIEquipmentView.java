@@ -50,37 +50,32 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JButton addPrimaryButton = new JButton("Add Primary");
-    private JButton addSecondaryButton = new JButton("Add Secondary");
-    private JComboBox<String> choiceType = new JComboBox<>();
-    private JTextField txtFilter = new JTextField();
+    private final JButton addPrimaryButton = new JButton("Add Primary");
+    private final JButton addSecondaryButton = new JButton("Add Secondary");
+    private final JComboBox<String> choiceType = new JComboBox<>();
+    private final JTextField txtFilter = new JTextField();
 
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton rbtnStats = new JRadioButton("Stats");
+    private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
+    private final JScrollPane masterEquipmentScroll = new JScrollPane();
 
-    private String ADDP_COMMAND = "ADDPRIMARY";
-    private String ADDS_COMMAND = "ADDSECONDARY";
+    private final String ADDP_COMMAND = "ADDPRIMARY";
+    private final String ADDS_COMMAND = "ADDSECONDARY";
 
     public static String getTypeName(int type) {
-        switch (type) {
-            case T_WEAPON:
-                return "All Weapons";
-            case T_ARCHAIC:
-                return "Archaic Weapons";
-            case T_PERSONAL:
-                return "Personal Weapons";
-            case T_SUPPORT:
-                return "Support Weapons";
-            default:
-                return "?";
-        }
+        return switch (type) {
+            case T_WEAPON -> "All Weapons";
+            case T_ARCHAIC -> "Archaic Weapons";
+            case T_PERSONAL -> "Personal Weapons";
+            case T_SUPPORT -> "Support Weapons";
+            default -> "?";
+        };
     }
 
     public CIEquipmentView(EntitySource eSource, ITechManager techManager) {
@@ -100,7 +95,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
             column = masterEquipmentTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
@@ -207,7 +202,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         databasePanel.add(masterEquipmentScroll, gbc);
 
         setLayout(new BorderLayout());
-        this.add(databasePanel, BorderLayout.CENTER);
+        add(databasePanel, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -267,10 +262,9 @@ public class CIEquipmentView extends IView implements ActionListener {
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if (!(etype instanceof InfantryWeapon)) {
+                if (!(etype instanceof InfantryWeapon weapon)) {
                     return false;
                 }
-                InfantryWeapon weapon = (InfantryWeapon)etype;
                 if (getInfantry().getSquadSize() < (getInfantry().getSecondaryWeaponsPerSquad() * weapon.getCrew())) {
                     return false;
                 }
@@ -349,7 +343,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         }
     }
 
-    private ListSelectionListener selectionListener = new ListSelectionListener() {
+    private final ListSelectionListener selectionListener = new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent evt) {
             int selected = masterEquipmentTable.getSelectedRow();

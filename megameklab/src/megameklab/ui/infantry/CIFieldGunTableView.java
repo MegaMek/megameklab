@@ -55,7 +55,7 @@ import megameklab.util.InfantryUtil;
  *
  * @author Neoancient
  */
-public class CIFieldGunView extends IView implements ActionListener {
+public class CIFieldGunTableView extends IView implements ActionListener {
     private final static int T_ALL       = 0;
     private final static int T_GUN       = 1;
     private final static int T_ARTILLERY = 2;
@@ -64,21 +64,21 @@ public class CIFieldGunView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JButton btnSetGun = new JButton("Set Field Gun");
-    private JButton btnRemoveGun = new JButton("Remove Field Gun");
+    private final JButton btnSetGun = new JButton("Set Field Gun");
+    private final JButton btnRemoveGun = new JButton("Remove Field Gun");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private JComboBox<String> choiceType = new JComboBox<>();
-    private JTextField txtFilter = new JTextField();
+    private final JComboBox<String> choiceType = new JComboBox<>();
+    private final JTextField txtFilter = new JTextField();
 
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton rbtnStats = new JRadioButton("Stats");
+    private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
 
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
+    private final JScrollPane masterEquipmentScroll = new JScrollPane();
 
     public static String getTypeName(int type) {
         return switch (type) {
@@ -90,7 +90,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         };
     }
 
-    public CIFieldGunView(EntitySource eSource, ITechManager techManager) {
+    public CIFieldGunTableView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
 
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
@@ -137,12 +137,16 @@ public class CIFieldGunView extends IView implements ActionListener {
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if (!(eq instanceof WeaponType) || ((WeaponType) eq).isCapital()) {
+            if (!(eq instanceof WeaponType weaponType)) {
+                continue;
+            }
+
+            if (weaponType.isCapital()) {
                 continue;
             }
 
             if ((eq instanceof ACWeapon) || (eq instanceof UACWeapon)
-                    || (eq instanceof RifleWeapon) || (eq instanceof ArtilleryCannonWeapon)) {
+                  || (eq instanceof RifleWeapon) || (eq instanceof ArtilleryCannonWeapon)) {
                 allTypes.add(eq);
             }
 
@@ -151,15 +155,16 @@ public class CIFieldGunView extends IView implements ActionListener {
             }
 
             if ((eq instanceof GaussWeapon)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.GAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.MAGSHOT)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.HAG)) {
+                    && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.GAUSS_HEAVY)
+                    && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)
+                    && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.MAGSHOT)
+                    && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.HAG)) {
                 allTypes.add(eq);
             }
 
-            if ((eq instanceof ArtilleryWeapon) && !eq.hasFlag(WeaponType.F_BA_WEAPON)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.CRUISE_MISSILE)) {
+            if ((eq instanceof ArtilleryWeapon)
+                  && !eq.hasFlag(WeaponType.F_BA_WEAPON)
+                  && (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.CRUISE_MISSILE)) {
                 allTypes.add(eq);
             }
         }
@@ -175,8 +180,6 @@ public class CIFieldGunView extends IView implements ActionListener {
         choiceType.addActionListener(evt -> filterEquipment());
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new Dimension(200, 28));
-        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
@@ -247,7 +250,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         databasePanel.add(masterEquipmentScroll, gbc);
 
         setLayout(new BorderLayout());
-        this.add(databasePanel, BorderLayout.CENTER);
+        add(databasePanel, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -287,6 +290,8 @@ public class CIFieldGunView extends IView implements ActionListener {
             } else {
                 maximumFieldGuns = getInfantry().getOriginalTrooperCount()
                       / TestInfantry.fieldGunCrewRequirement(equipmentType, getInfantry());
+                // If 0 (too few troopers to operate), still add 1 field gun; will show as invalid
+                maximumFieldGuns = Math.max(maximumFieldGuns, 1);
             }
             InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equipmentType, maximumFieldGuns);
             refresh.refreshAll();
