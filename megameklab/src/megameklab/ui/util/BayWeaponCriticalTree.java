@@ -25,7 +25,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
-
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -60,8 +67,6 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.dialog.AmountDialog;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
 
 /**
  * Variant of DropTargetCriticalList for aerospace units that groups weapons
@@ -964,8 +969,9 @@ public class BayWeaponCriticalTree extends JTree {
         }
         if (TestEntity.eqRequiresLocation(eSource.getEntity(), eq.getType())) {
             return location != TestEntity.getSystemWideLocation(eSource.getEntity());
+        } else {
+            return location == TestEntity.getSystemWideLocation(eSource.getEntity());
         }
-        return true;
     }
 
     /**
