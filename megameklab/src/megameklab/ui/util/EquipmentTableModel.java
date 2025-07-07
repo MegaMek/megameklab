@@ -16,6 +16,21 @@
 
 package megameklab.ui.util;
 
+import static megamek.client.ui.util.UIUtil.alternateTableBGColor;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import megamek.common.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
@@ -28,18 +43,6 @@ import megamek.common.weapons.missiles.ThunderBoltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.util.CConfig;
 import megameklab.util.InfantryUtil;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import static megamek.client.ui.util.UIUtil.alternateTableBGColor;
 
 /**
  * this model was not being used by anything, so I totally redid so that it can
@@ -232,7 +235,7 @@ public class EquipmentTableModel extends AbstractTableModel {
 
     // The DecimalFormat constructor is *incredibly* slow. We want to call it as little as we possibly can.
     private static final DecimalFormat defaultDecimalFormatter = new DecimalFormat();
-    private static final DecimalFormat hhwAmmoWeightFormatter = new DecimalFormat("#.## kg");
+    private static final DecimalFormat kilogramWeightFormatter = new DecimalFormat("#.## kg");
 
     @Override
     public Object getValueAt(int row, int col) {
@@ -384,9 +387,9 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (type.isVariableTonnage()) {
                 return VARIABLE;
             } else if (TestEntity.usesKgStandard(entity) || ((weight > 0.0) && (weight < 0.1))) {
-                return String.format("%.0f kg", type.getTonnage(entity) * 1000);
+                return kilogramWeightFormatter.format(type.getTonnage(entity) * 1000);
             } else if (entity.isHandheldWeapon() && type instanceof AmmoType at) {
-                return hhwAmmoWeightFormatter.format(at.getKgPerShot());
+                return kilogramWeightFormatter.format(at.getKgPerShot());
             } else {
                 return defaultDecimalFormatter.format(weight);
             }
