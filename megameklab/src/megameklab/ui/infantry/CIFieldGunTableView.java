@@ -89,7 +89,7 @@ public class CIFieldGunTableView extends IView implements ActionListener {
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
     private final JComboBox<String> choiceType = new JComboBox<>();
-    private final JTextField txtFilter = new JTextField();
+    private final JTextField txtFilter = new JTextField(12);
 
     private final JRadioButton rbtnStats = new JRadioButton("Stats");
     private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
@@ -234,23 +234,22 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.WEST;
         databasePanel.add(btnPanel, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         databasePanel.add(choiceType, gbc);
         databasePanel.add(txtFilter, gbc);
-
-        gbc.weightx = 1.0;
+        gbc.weightx = 1;
         databasePanel.add(viewPanel, gbc);
 
         gbc.insets = new Insets(2,0,0,0);
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weighty = 1.0;
+        gbc.weighty = 1;
         databasePanel.add(masterEquipmentScroll, gbc);
 
         setLayout(new BorderLayout());

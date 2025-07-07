@@ -50,6 +50,8 @@ import javax.swing.JTextPane;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.StringJoiner;
 
@@ -61,7 +63,7 @@ public class CIAdvancedView extends IView {
     private final JTextPane txtSpecializations = new OptionsListTextPane(txtArmor);
     private final JTextPane txtAugmentations = new OptionsListTextPane(txtArmor);
 
-    public CIAdvancedView(EntitySource eSource) {
+    public CIAdvancedView(EntitySource eSource, CIStructureTab structureTab) {
         super(eSource);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -71,15 +73,33 @@ public class CIAdvancedView extends IView {
         gbc.gridy = 0;
         add(new StandardBuildLabel("Armor:"), gbc);
         add(txtArmor, gbc);
+        txtArmor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showArmorChoiceTable();
+            }
+        });
 
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.NORTH;
         add(new StandardBuildLabel("Specializations:"), gbc);
         add(txtSpecializations, gbc);
+        txtSpecializations.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showSpecializationChoiceTable();
+            }
+        });
 
         gbc.gridy++;
         add(new StandardBuildLabel("Augmentations:"), gbc);
         add(txtAugmentations, gbc);
+        txtAugmentations.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showAugmentationChoiceTable();
+            }
+        });
     }
 
     public void setFromEntity() {

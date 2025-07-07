@@ -36,6 +36,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -99,7 +101,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private boolean isFieldGunner = false;
     private InfantryMount mount = null;
 
-    public CIPlatoonTypeView(ITechManager techManager) {
+    public CIPlatoonTypeView(ITechManager techManager, CIStructureTab structureTab) {
         this.techManager = techManager;
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -150,6 +152,13 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
         spnSquadSize.setToolTipText(resourceMap.getString("PlatoonTypeView.spnSquadSize.tooltip"));
         spnSquadSize.addChangeListener(this);
+
+        lblBeastMountType.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showMountChoiceTable();
+            }
+        });
     }
     
     void setFromEntity(Infantry inf) {

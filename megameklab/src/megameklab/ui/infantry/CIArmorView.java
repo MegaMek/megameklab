@@ -43,6 +43,7 @@ import megamek.common.ITechManager;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
 import megameklab.ui.EntitySource;
+import megameklab.ui.generalUnit.StandardBuildLabel;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
@@ -54,27 +55,27 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
     
-    private JButton btnSetArmor = new JButton("Set Armor");    
-    private JButton btnRemoveArmor = new JButton("Remove Armor");    
-    private JTextField txtFilter = new JTextField();
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
-    private JRadioButton rbtnCustom = new JRadioButton("Custom");
+    private final JButton btnSetArmor = new JButton("Set Armor");
+    private final JButton btnRemoveArmor = new JButton("Remove Armor");
+    private final JTextField txtFilter = new JTextField(12);
+    private final JRadioButton rbtnStats = new JRadioButton("Stats");
+    private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton rbtnCustom = new JRadioButton("Custom");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
-    private JPanel equipmentView = new JPanel();
-    private CardLayout equipmentLayout = new CardLayout();
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
+    private final JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final JPanel equipmentView = new JPanel();
+    private final CardLayout equipmentLayout = new CardLayout();
 
-    JCheckBox chEncumber = new JCheckBox();
-    JCheckBox chSpaceSuit = new JCheckBox();
-    JCheckBox chDEST = new JCheckBox();
-    JCheckBox chSneakCamo = new JCheckBox();
-    JCheckBox chSneakIR = new JCheckBox();
-    JCheckBox chSneakECM = new JCheckBox();
-    private JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
+    JCheckBox chEncumber = new JCheckBox("Encumbering");
+    JCheckBox chSpaceSuit = new JCheckBox("Space Suit");
+    JCheckBox chDEST = new JCheckBox("DEST");
+    JCheckBox chSneakCamo = new JCheckBox("Sneak (CAMO)");
+    JCheckBox chSneakIR = new JCheckBox("Sneak (IR)");
+    JCheckBox chSneakECM = new JCheckBox("Sneak (ECM)");
+    private final JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
 
     private final JLabel lblSneakWarning = new JLabel("Warning: Setting both DEST and Sneak properties on custom armor " +
                                                          "may cause issues in the display of the armor kit " +
@@ -96,9 +97,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         XTableColumnModel equipColumnModel = new XTableColumnModel();
         masterEquipmentTable.setColumnModel(equipColumnModel);
         masterEquipmentTable.createDefaultColumnsFromModel();
-        TableColumn column = null;
         for (int i = 0; i < EquipmentTableModel.N_COL; i++) {
-            column = masterEquipmentTable.getColumnModel().getColumn(i);
+            TableColumn column = masterEquipmentTable.getColumnModel().getColumn(i);
             column.setPreferredWidth(masterEquipmentList.getColumnWidth(i));
             column.setCellRenderer(masterEquipmentList.getRenderer());
         }
@@ -133,8 +133,6 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentList.setData(allTypes);
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new Dimension(200, 28));
-        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -205,7 +203,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         databasePanel.add(equipmentView, gbc);
 
         setLayout(new BorderLayout());
-        this.add(databasePanel, BorderLayout.CENTER);
+        add(databasePanel, BorderLayout.CENTER);
         
         JPanel tableView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -232,71 +230,34 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        customView.add(new JLabel("Damage Divisor:"), gbc);
-        gbc.gridx = 1;
+        customView.add(new StandardBuildLabel("Damage Divisor:"), gbc);
         customView.add(armorValue, gbc);
-        JFormattedTextField tf = ((DefaultEditor) armorValue.getEditor()).getTextField();
-        tf.setEditable(false);
-        tf.setBackground(UIManager.getColor("TextField.background"));
-        
-        chEncumber.setText("Encumbering");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        JFormattedTextField textField = ((DefaultEditor) armorValue.getEditor()).getTextField();
+        textField.setEditable(false);
+
+        gbc.gridy++;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         customView.add(chEncumber, gbc);
-
-        chSpaceSuit.setText("Space Suit");
-        gbc.gridx = 1;
-        gbc.gridy = 1;
         customView.add(chSpaceSuit, gbc);
-
-        chDEST.setText("DEST");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
         customView.add(chDEST, gbc);
-
-        chSneakCamo.setText("Sneak (CAMO)");
-        gbc.gridx = 1;
-        gbc.gridy = 2;
         customView.add(chSneakCamo, gbc);
-
-        chSneakIR.setText("Sneak (IR)");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
         customView.add(chSneakIR, gbc);
-
-        chSneakECM.setText("Sneak (ECM)");
-        gbc.gridx = 1;
-        gbc.gridy = 3;
         gbc.weightx = 1;
         gbc.weighty = 0.01;
         customView.add(chSneakECM, gbc);
 
         lblSneakWarning.setForeground(Color.RED);
         lblSneakWarning.setVisible(false);
-        gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy++;
         gbc.weightx = 0;
         gbc.weighty = 1;
         gbc.gridwidth = 2;
         customView.add(lblSneakWarning, gbc);
 
         equipmentView.add(customView, CARD_CUSTOM);
-//        equipmentView.add(lblSneakWarning);
-    }
-
-    public JLabel createLabel(String text, Dimension maxSize) {
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
-        setFieldSize(label, maxSize);
-        return label;
-    }
-
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
     }
 
     public void refresh() {
@@ -326,14 +287,12 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             chSneakECM.setEnabled(true);
         }
 
-        if (getInfantry().hasDEST() && (
-              getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM()
-              )) {
+        if (getInfantry().hasDEST() &&
+              (getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM())) {
             lblSneakWarning.setVisible(true);
         } else {
             lblSneakWarning.setVisible(false);
         }
-
 
         filterEquipment();
         btnRemoveArmor.setEnabled(hasArmor());
@@ -458,7 +417,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         }
         equipmentLayout.show(equipmentView, CARD_TABLE);
         btnSetArmor.setEnabled(true);
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
         if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
@@ -513,7 +472,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 || !getInfantry().getArmorDesc().equals("1.0");
     }
 
-    private ListSelectionListener selectionListener = new ListSelectionListener() {
+    private final ListSelectionListener selectionListener = new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             int selected = masterEquipmentTable.getSelectedRow();

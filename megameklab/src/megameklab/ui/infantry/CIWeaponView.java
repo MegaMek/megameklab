@@ -45,6 +45,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -80,9 +82,8 @@ public class CIWeaponView extends BuildView implements ActionListener {
     private final String fgMotiveMsg;
     private final String noneMsg;
 
-    public CIWeaponView(ITechManager techManager) {
+    public CIWeaponView(ITechManager techManager, CIStructureTab structureTab) {
         this.techManager = techManager;
-
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         fgMotiveMsg = resourceMap.getString("InfantryWeaponView.txtGuns.badMotive");
         noneMsg = resourceMap.getString("InfantryWeaponView.none");
@@ -105,6 +106,12 @@ public class CIWeaponView extends BuildView implements ActionListener {
         gbc.weightx = 0;
         txtPrimary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtPrimary.tooltip"));
         add(txtPrimary, gbc);
+        txtPrimary.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showWeaponChoiceTable();
+            }
+        });
 
         gbc.gridy++;
         add(Box.createVerticalStrut(8), gbc);
@@ -114,6 +121,12 @@ public class CIWeaponView extends BuildView implements ActionListener {
         add(new StandardBuildLabel(resourceMap.getString("InfantryWeaponView.txtSecondary.text")), gbc);
         txtSecondary.setToolTipText(resourceMap.getString("InfantryWeaponView.txtSecondary.tooltip"));
         add(txtSecondary, gbc);
+        txtSecondary.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showWeaponChoiceTable();
+            }
+        });
 
         gbc.gridy++;
         add(new StandardBuildLabel(resourceMap.getString("InfantryWeaponView.cbNumSecondary.text")), gbc);
@@ -128,6 +141,12 @@ public class CIWeaponView extends BuildView implements ActionListener {
         add(new StandardBuildLabel(resourceMap.getString("InfantryWeaponView.txtGuns.text")), gbc);
         txtGuns.setToolTipText(resourceMap.getString("InfantryWeaponView.txtGuns.tooltip"));
         add(txtGuns, gbc);
+        txtGuns.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                structureTab.showFieldGunChoiceTable();
+            }
+        });
 
         gbc.gridy++;
         add(new StandardBuildLabel(resourceMap.getString("InfantryWeaponView.cbNumGuns.text")), gbc);

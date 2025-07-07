@@ -89,8 +89,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     public CIStructureTab(EntitySource eSource) {
         super(eSource);
         basicInfoView = new BasicInfoView(getInfantry().getConstructionTechAdvancement());
-        platoonTypeView = new CIPlatoonTypeView(basicInfoView);
-        weaponView = new CIWeaponView(basicInfoView);
+        platoonTypeView = new CIPlatoonTypeView(basicInfoView, this);
+        weaponView = new CIWeaponView(basicInfoView, this);
         weaponChoiceTable = new CIEquipmentView(eSource, basicInfoView);
         fieldGunChoiceTable = new CIFieldGunTableView(eSource, basicInfoView);
         armorChoiceTable = new CIArmorView(eSource, basicInfoView);
@@ -98,7 +98,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         mountChoiceTable = new CIMountView(eSource);
         augmentationChoiceTable = new CIAugmentationView(eSource);
         iconView = new IconView();
-        advancedView = new CIAdvancedView(eSource);
+        advancedView = new CIAdvancedView(eSource, this);
         setUpPanels();
         refresh();
     }
@@ -250,6 +250,36 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         if (!equipmentPane.isEnabledAt(equipmentPane.getSelectedIndex())) {
             equipmentPane.setSelectedIndex(T_INFANTRY_WEAPONS);
         }
+    }
+
+    private void showEquipmentChoiceTable(int choice) {
+        if ((choice >= 0) && (choice < equipmentPane.getTabCount()) && equipmentPane.isEnabledAt(choice)) {
+            equipmentPane.setSelectedIndex(choice);
+        }
+    }
+
+    void showWeaponChoiceTable() {
+        showEquipmentChoiceTable(T_INFANTRY_WEAPONS);
+    }
+
+    void showFieldGunChoiceTable() {
+        showEquipmentChoiceTable(T_FIELD_GUNS);
+    }
+
+    void showArmorChoiceTable() {
+        showEquipmentChoiceTable(T_ARMOR_KIT);
+    }
+
+    void showSpecializationChoiceTable() {
+        showEquipmentChoiceTable(T_SPECIALIZATION);
+    }
+
+    void showAugmentationChoiceTable() {
+        showEquipmentChoiceTable(T_AUGMENTATION);
+    }
+
+    void showMountChoiceTable() {
+        showEquipmentChoiceTable(T_MOUNT);
     }
 
     public void refreshEquipmentTable() {

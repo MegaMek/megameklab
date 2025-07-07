@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008, 2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is  free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
 
@@ -41,6 +58,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+/**
+ * @author (original) jtighe (torren@users.sourceforge.net)
+ */
 public class CIEquipmentView extends IView implements ActionListener {
     private static final int T_ARCHAIC = 0;
     private static final int T_PERSONAL = 1;
@@ -53,7 +73,7 @@ public class CIEquipmentView extends IView implements ActionListener {
     private final JButton addPrimaryButton = new JButton("Add Primary");
     private final JButton addSecondaryButton = new JButton("Add Secondary");
     private final JComboBox<String> choiceType = new JComboBox<>();
-    private final JTextField txtFilter = new JTextField();
+    private final JTextField txtFilter = new JTextField(12);
 
     private final JRadioButton rbtnStats = new JRadioButton("Stats");
     private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
@@ -107,8 +127,6 @@ public class CIEquipmentView extends IView implements ActionListener {
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -130,8 +148,6 @@ public class CIEquipmentView extends IView implements ActionListener {
         choiceType.addActionListener(evt -> filterEquipment());
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new Dimension(200, 28));
-        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
@@ -168,37 +184,26 @@ public class CIEquipmentView extends IView implements ActionListener {
         btnPanel.add(addSecondaryButton);
 
         // layout
+        JPanel databasePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel databasePanel = new JPanel(new GridBagLayout());
-
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.WEST;
         databasePanel.add(btnPanel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         databasePanel.add(choiceType, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
         databasePanel.add(txtFilter, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
+        gbc.weightx = 1;
         databasePanel.add(viewPanel, gbc);
 
         gbc.insets = new Insets(2,0,0,0);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weighty = 1;
         databasePanel.add(masterEquipmentScroll, gbc);
 
         setLayout(new BorderLayout());
@@ -293,7 +298,7 @@ public class CIEquipmentView extends IView implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
         if (rbtnStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
