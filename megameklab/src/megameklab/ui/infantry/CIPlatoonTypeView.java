@@ -67,7 +67,6 @@ import megameklab.ui.util.WidthControlComponent;
  * @author Neoancient
  */
 public class CIPlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
-    private static final int MAX_NUM_SQUADS = 5;
     List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
@@ -76,6 +75,8 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
+
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private final SpinnerNumberModel spnNumSquadsModel = new SpinnerNumberModel(4, 1, null, 1);
     private final SpinnerNumberModel spnSquadSizeModel = new SpinnerNumberModel(7, 1, 10, 1);
@@ -229,11 +230,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
-        int maxSquads = (isBeastMounted() && !isLargeBeastMount()) ? mount.getSize().creaturesPerPlatoon :
-                    Math.min(TestInfantry.maxSquadCount(getMovementMode(), isAltMode(),
-                    specialization, mount),
-              (maxSize / spnSquadSizeModel.getNumber().intValue()));
-        spnNumSquadsModel.setMaximum(maxSquads);
         spnNumSquadsModel.setMaximum(Math.min(TestInfantry.maxSquadCount(getMovementMode(), isAltMode(),
                     specialization, mount),
               (maxSize / spnSquadSizeModel.getNumber().intValue())));
@@ -264,14 +260,6 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
     private boolean isLargeBeastMount() {
         return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.LARGE);
-    }
-
-    private boolean isVeryLargeBeastMount() {
-        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.VERY_LARGE);
-    }
-
-    private boolean isMonstrousBeastMount() {
-        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.MONSTROUS);
     }
 
     private boolean isAltMode() {
