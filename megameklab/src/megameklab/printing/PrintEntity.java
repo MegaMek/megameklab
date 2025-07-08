@@ -24,16 +24,23 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRect;
 import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextContentElement;
@@ -220,6 +227,119 @@ public abstract class PrintEntity extends PrintRecordSheet {
         drawFluffImage();
         if ((pageNum == 0) && includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
+        }
+        setHeatScaleMarkerStyle(getSVGDocument());
+    }
+
+
+    /**
+     * Sets the style for the heat scale markers (asterisk or arrow)
+     * @param doc The SVG document to process
+     */
+    protected void setHeatScaleMarkerStyle(Document doc) {
+        RecordSheetOptions.HeatScaleMarker markerType = this.options.getHeatScaleMarker();
+        if (markerType == RecordSheetOptions.HeatScaleMarker.ASTERISK) {
+            // If we are using asterisks, we don't need to do anything special as is the default.
+            return;
+        }
+        NodeList groups = doc.getElementsByTagName("g");
+        for (int i = 0; i < groups.getLength(); i++) {
+            Element group = (Element) groups.item(i);
+            if (!group.hasAttribute("id")) continue;
+            String id = group.getAttribute("id");
+            if (!id.toLowerCase().startsWith("heatscale")) continue;
+
+            // Find the first rect in the group to get dimensions
+            Element rect = null;
+            NodeList children = group.getChildNodes();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node child = children.item(j);
+                if (child instanceof Element && "rect".equals(((Element) child).getTagName())) {
+                    rect = (Element) child;
+                    break;
+                }
+            }
+            if (rect == null) continue;
+
+            double rectX = Double.parseDouble(rect.getAttribute("x"));
+            double rectWidth = Double.parseDouble(rect.getAttribute("width"));
+            double rectHeight = Double.parseDouble(rect.getAttribute("height"));
+            double rightX = rectX + rectWidth;
+            double arrowHeight = rectHeight * 0.7;
+            double arrowWidth = rectHeight * 0.4;
+
+            // Find all asterisk text elements and replace them with arrows
+            List<Element> asterisksToReplace = new ArrayList<>();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node child = children.item(j);
+                if (child instanceof Element text && "text".equals(text.getTagName())) {
+                    String content = text.getTextContent();
+                    if ("∗".equals(content) || "*".equals(content)) {
+                        asterisksToReplace.add(text);
+                    }
+                }
+            }
+
+            // Replace asterisks with arrows
+            for (Element asterisk : asterisksToReplace) {
+                // Find the preceding sibling text element for vertical reference
+                Element siblingText = null;
+                Node sibling = asterisk.getPreviousSibling();
+                while (sibling != null) {
+                    if (sibling instanceof Element && "text".equals(((Element) sibling).getTagName())) {
+                        siblingText = (Element) sibling;
+                        break;
+                    }
+                    sibling = sibling.getPreviousSibling();
+                }
+                
+                double arrowCenterY;
+                if (siblingText != null) {
+                    // Use the sibling text's y position and font size to calculate center
+                    double siblingY = Double.parseDouble(siblingText.getAttribute("y"));
+                    double siblingFontSize = 6.76; // default
+                    if (siblingText.hasAttribute("font-size")) {
+                        siblingFontSize = Double.parseDouble(siblingText.getAttribute("font-size"));
+                    } else if (siblingText.hasAttribute("style")) {
+                        Matcher m = Pattern.compile("font-size:([\\d.]+)").matcher(siblingText.getAttribute("style"));
+                        if (m.find()) {
+                            siblingFontSize = Double.parseDouble(m.group(1));
+                        }
+                    }
+                    // Calculate the middle of the sibling text
+                    arrowCenterY = siblingY - siblingFontSize * 0.35;
+                } else {
+                    // Fallback to asterisk position if no sibling found
+                    double y = Double.parseDouble(asterisk.getAttribute("y"));
+                    double fontSize = 6.76; // default
+                    if (asterisk.hasAttribute("font-size")) {
+                        fontSize = Double.parseDouble(asterisk.getAttribute("font-size"));
+                    } else if (asterisk.hasAttribute("style")) {
+                        Matcher m = Pattern.compile("font-size:([\\d.]+)").matcher(asterisk.getAttribute("style"));
+                        if (m.find()) {
+                            fontSize = Double.parseDouble(m.group(1));
+                        }
+                    }
+                    arrowCenterY = y - fontSize * 0.35;
+                }
+                
+                double arrowY = arrowCenterY - arrowHeight / 2.0;
+                
+                // Create a filled left-pointing triangle path
+                String d = String.format(Locale.US,
+                    "M%.3f %.3f L%.3f %.3f L%.3f %.3f Z",
+                    rightX, arrowY,
+                    rightX - arrowWidth, arrowY + arrowHeight / 2.0,
+                    rightX, arrowY + arrowHeight);
+
+                Element arrow = doc.createElementNS(asterisk.getNamespaceURI(), "path");
+                arrow.setAttribute("d", d);
+                arrow.setAttribute("fill", "#000");
+                arrow.setAttribute("stroke", "none");
+                
+                // Replace the asterisk with the arrow
+                asterisk.getParentNode().replaceChild(arrow, asterisk);
+            }
         }
     }
 
@@ -561,8 +681,11 @@ public abstract class PrintEntity extends PrintRecordSheet {
         double viewHeight = bbox.getHeight();
         double viewX = bbox.getX();
         double viewY = bbox.getY();
+        Element hsGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        hsGroup.setAttributeNS(null, "class", "hsPips");
+        canvas.appendChild(hsGroup);
         if (viewWidth > viewHeight) {
-            drawHeatSinkPipsLandscape(canvas, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
+            drawHeatSinkPipsLandscape(hsGroup, hsCount, viewX, viewY, viewWidth, viewHeight, damage);
             return;
         }
 
@@ -601,7 +724,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 damage--;
             }
             Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
-            canvas.appendChild(pip);
+            hsGroup.appendChild(pip);
         }
     }
 

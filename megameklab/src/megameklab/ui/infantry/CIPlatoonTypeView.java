@@ -67,13 +67,8 @@ import megameklab.ui.util.WidthControlComponent;
  * @author Neoancient
  */
 public class CIPlatoonTypeView extends BuildView implements ActionListener, ChangeListener {
-
     private static final int MAX_NUM_SQUADS = 5;
-
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-
-    private final List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
-
+    List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
@@ -235,8 +230,13 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
         int maxSquads = (isBeastMounted() && !isLargeBeastMount()) ? mount.getSize().creaturesPerPlatoon :
-                    Math.min(MAX_NUM_SQUADS, (maxSize / spnSquadSizeModel.getNumber().intValue()));
+                    Math.min(TestInfantry.maxSquadCount(getMovementMode(), isAltMode(),
+                    specialization, mount),
+              (maxSize / spnSquadSizeModel.getNumber().intValue()));
         spnNumSquadsModel.setMaximum(maxSquads);
+        spnNumSquadsModel.setMaximum(Math.min(TestInfantry.maxSquadCount(getMovementMode(), isAltMode(),
+                    specialization, mount),
+              (maxSize / spnSquadSizeModel.getNumber().intValue())));
         spnSquadSizeModel.setMaximum(maxSquad);
         spnNumSquads.addChangeListener(this);
         spnSquadSize.addChangeListener(this);
@@ -273,7 +273,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private boolean isMonstrousBeastMount() {
         return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.MONSTROUS);
     }
-    
+
     private boolean isAltMode() {
         InfantryMotiveType type = (InfantryMotiveType) cbMotiveType.getSelectedItem();
         return (type == InfantryMotiveType.MICROLITE) || (type == InfantryMotiveType.UMU_MOTORIZED);

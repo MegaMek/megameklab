@@ -2225,18 +2225,18 @@ public class UnitUtil {
             }
         }
         if (entity instanceof Aero aero) {
-            if (aero.getSI() != aero.getOSI()) {
+            if ((aero.getOSI() > 0) && (aero.getSI() < aero.getOSI())) {
                 return true;
             }
         }
         for (int loc = 0; loc < entity.locations(); loc++) {
-            if (entity.getInternal(loc) != entity.getOInternal(loc)) {
+            if ((entity.getOInternal(loc) > 0) && (entity.getInternal(loc) < entity.getOInternal(loc))) {
                 return true;
             }
-            if (entity.getArmor(loc) != entity.getOArmor(loc)) {
+            if ((entity.getOArmor(loc) > 0) && (entity.getArmor(loc) < entity.getOArmor(loc))) {
                 return true;
             }
-            if (entity.hasRearArmor(loc) && (entity.getArmor(loc, true) != entity.getOArmor(loc, true))) {
+            if (entity.hasRearArmor(loc) && (entity.getOArmor(loc, true)> 0) && (entity.getArmor(loc, true) < entity.getOArmor(loc, true))) {
                 return true;
             }
         }

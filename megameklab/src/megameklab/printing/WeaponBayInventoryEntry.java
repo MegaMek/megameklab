@@ -61,6 +61,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         processBay();
     }
 
+    @Override
+    public String getUniqueId() {
+        return "";
+    }
+
     private void processBay() {
         for (WeaponType weaponType : bay.weapons.keySet()) {
             int numWeapons = bay.weapons.get(weaponType);
