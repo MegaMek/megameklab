@@ -402,7 +402,7 @@ public class CIMountView extends IView implements ActionListener, ChangeListener
     public void stateChanged(ChangeEvent e) {
         JSpinner field = (JSpinner) e.getSource();
         double value = (Double) field.getModel().getValue();
-        getInfantry().setArmorDamageDivisor(value);
+        getInfantry().setCustomArmorDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshStatus();
