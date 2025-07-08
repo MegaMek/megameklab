@@ -88,12 +88,14 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private final CustomComboBox<InfantryMotiveType> cbMotiveType = new CustomComboBox<>
         (i -> resourceMap.getString(i.resourceId));
 
+    private final JLabel lblNumSquads = new StandardBuildLabel(
+          resourceMap.getString("PlatoonTypeView.spnNumSquads.text"));
     private final JSpinner spnNumSquads = new JSpinner(spnNumSquadsModel);
     private final JSpinner spnSquadSize = new JSpinner(spnSquadSizeModel);
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
     private final JLabel lblBeastMountLabel = new StandardBuildLabel();
-    private final DisplayTextfield lblBeastMountType = new DisplayTextfield(15);
+    private final DisplayTextfield lblBeastMountType = new DisplayTextfield();
     
     private final ITechManager techManager;
 
@@ -114,7 +116,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         // left column, labels
         add(new StandardBuildLabel(resourceMap.getString("PlatoonTypeView.cbMotiveType.text")), gbc);
         add(lblBeastMountLabel, gbc);
-        add(new StandardBuildLabel(resourceMap.getString("PlatoonTypeView.spnNumSquads.text")), gbc);
+        add(lblNumSquads, gbc);
         add(new StandardBuildLabel(resourceMap.getString("PlatoonTypeView.spnSquadSize.text")), gbc);
 
         // right columns, values
@@ -232,7 +234,9 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);
-        spnNumSquadsModel.setMaximum(Math.min(MAX_NUM_SQUADS, (maxSize / spnSquadSizeModel.getNumber().intValue())));
+        int maxSquads = (isBeastMounted() && !isLargeBeastMount()) ? mount.getSize().creaturesPerPlatoon :
+                    Math.min(MAX_NUM_SQUADS, (maxSize / spnSquadSizeModel.getNumber().intValue()));
+        spnNumSquadsModel.setMaximum(maxSquads);
         spnSquadSizeModel.setMaximum(maxSquad);
         spnNumSquads.addChangeListener(this);
         spnSquadSize.addChangeListener(this);
@@ -242,6 +246,10 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
         lblBeastMountType.setEnabled(isBeastMounted());
         lblBeastMountLabel.setEnabled(isBeastMounted());
+
+        lblNumSquads.setText(isBeastMounted() && !isLargeBeastMount() ?
+              resourceMap.getString("PlatoonTypeView.spnNumSquads.creatures") :
+              resourceMap.getString("PlatoonTypeView.spnNumSquads.text"));
         lblBeastMountType.setText(isBeastMounted() ? mount.getName() : "");
     }
     
@@ -252,6 +260,18 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
 
     private boolean isBeastMounted() {
         return getMovementMode().isNone();
+    }
+
+    private boolean isLargeBeastMount() {
+        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.LARGE);
+    }
+
+    private boolean isVeryLargeBeastMount() {
+        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.VERY_LARGE);
+    }
+
+    private boolean isMonstrousBeastMount() {
+        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.MONSTROUS);
     }
     
     private boolean isAltMode() {
