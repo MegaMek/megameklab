@@ -18,6 +18,18 @@
  */
 package megameklab.ui.dialog;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import javax.swing.*;
+
 import megamek.client.ui.Messages;
 import megamek.client.ui.WrapLayout;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
@@ -31,13 +43,6 @@ import megamek.common.icons.Camouflage;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.function.Consumer;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     // region Variable Declarations
@@ -242,7 +247,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     void closeWithoutSelection() {
         chosenEntity = null;
-        chosenEntities = null;
+        chosenEntities = new ArrayList<>();
         setVisible(false);
     }
 
@@ -275,6 +280,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     public ArrayList<Entity> getChosenEntities() {
         if (!multiSelect) {
             throw new IllegalStateException("multiselect must true to use getChosenEntities");
+        }
+        if (chosenEntities == null) {
+            chosenEntities = new ArrayList<>();
         }
         return chosenEntities;
     }
