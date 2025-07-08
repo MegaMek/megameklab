@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -39,15 +38,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.Bay;
-import megamek.common.DockingCollar;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.InfantryBay;
-import megamek.common.Jumpship;
-import megamek.common.RoundWeight;
-import megamek.common.Transporter;
-import megamek.common.InfantryCompartment;
+import megamek.common.*;
 import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
@@ -685,8 +676,7 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                     if (bayList.get(rowIndex) instanceof InfantryBay) {
                         return "*";
                     }
-                    return bayTypeList.get(rowIndex).getPersonnel()
-                            * (int) bayList.get(rowIndex).getCapacity();
+                    return bayList.get(rowIndex).getPersonnel(getEntity().isClan());
                 case COL_TONNAGE:
                     final double weight = TestEntity.round(bayList.get(rowIndex).getWeight(), Ceil.KILO);
                     if (useKilogramStandard()) {
@@ -898,7 +888,14 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
                 return spinner;
             } else if ((column == InstalledBaysModel.COL_SIZE)
                     || (column == InstalledBaysModel.COL_TONNAGE)) {
-                double step = (isCargo && !useKilogramStandard()) ? 0.5 : 1.0;
+                double step;
+                if (modelInstalled.bayTypeList.get(row) == BayData.PROTOMEK) {
+                    step = 5.0;
+                } else if (isCargo && !useKilogramStandard()) {
+                    step = 0.5;
+                } else {
+                    step = 1.0;
+                }
                 double current;
                 if (column == InstalledBaysModel.COL_SIZE) {
                     current = modelInstalled.bayList.get(row).getUnusedSlots();
