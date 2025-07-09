@@ -1186,7 +1186,7 @@ public class UnitUtil {
 
     public static boolean hasAmmo(Entity unit, int location) {
         for (Mounted<?> mount : unit.getEquipment()) {
-            if (mount.getType().isExplosive(mount) &&
+            if (mount.getType().isExplosive(mount, true) &&
                       ((mount.getLocation() == location) || (mount.getSecondLocation() == location))) {
                 return true;
             }
