@@ -1,15 +1,34 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2022, 2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
 
@@ -32,7 +51,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.AmmoType;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.WeaponType;
@@ -50,12 +68,14 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.InfantryUtil;
 
+import static megamek.common.AmmoType.AmmoTypeEnum.*;
+
 /**
  * Shows options for infantry field guns/field artillery
  *
  * @author Neoancient
  */
-public class CIFieldGunView extends IView implements ActionListener {
+public class CIFieldGunTableView extends IView implements ActionListener {
     private final static int T_ALL       = 0;
     private final static int T_GUN       = 1;
     private final static int T_ARTILLERY = 2;
@@ -64,21 +84,21 @@ public class CIFieldGunView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JButton btnSetGun = new JButton("Set Field Gun");
-    private JButton btnRemoveGun = new JButton("Remove Field Gun");
+    private final JButton btnSetGun = new JButton("Set Field Gun");
+    private final JButton btnRemoveGun = new JButton("Remove Field Gun");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
 
-    private JComboBox<String> choiceType = new JComboBox<>();
-    private JTextField txtFilter = new JTextField();
+    private final JComboBox<String> choiceType = new JComboBox<>();
+    private final JTextField txtFilter = new JTextField(12);
 
-    private JRadioButton rbtnStats = new JRadioButton("Stats");
-    private JRadioButton rbtnFluff = new JRadioButton("Fluff");
+    private final JRadioButton rbtnStats = new JRadioButton("Stats");
+    private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
 
-    private TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
 
-    private EquipmentTableModel masterEquipmentList;
-    private JTable masterEquipmentTable = new JTable();
-    private JScrollPane masterEquipmentScroll = new JScrollPane();
+    private final EquipmentTableModel masterEquipmentList;
+    private final JTable masterEquipmentTable = new JTable();
+    private final JScrollPane masterEquipmentScroll = new JScrollPane();
 
     public static String getTypeName(int type) {
         return switch (type) {
@@ -90,7 +110,7 @@ public class CIFieldGunView extends IView implements ActionListener {
         };
     }
 
-    public CIFieldGunView(EntitySource eSource, ITechManager techManager) {
+    public CIFieldGunTableView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
 
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
@@ -137,29 +157,27 @@ public class CIFieldGunView extends IView implements ActionListener {
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
         while (miscTypes.hasMoreElements()) {
             EquipmentType eq = miscTypes.nextElement();
-            if (!(eq instanceof WeaponType) || ((WeaponType) eq).isCapital()) {
+            if (!(eq instanceof WeaponType weaponType) || (weaponType.isCapital())) {
                 continue;
             }
 
-            if ((eq instanceof ACWeapon) || (eq instanceof UACWeapon)
-                    || (eq instanceof RifleWeapon) || (eq instanceof ArtilleryCannonWeapon)) {
+            if ((eq instanceof ACWeapon)
+                  || (eq instanceof UACWeapon)
+                  || (eq instanceof RifleWeapon)
+                  || (eq instanceof ArtilleryCannonWeapon)
+                  || (eq instanceof LBXACWeapon)) {
                 allTypes.add(eq);
             }
 
-            if ((eq instanceof LBXACWeapon)) {
+            var ammoType = weaponType.getAmmoType();
+            if ((eq instanceof GaussWeapon) && !ammoType.isAnyOf(GAUSS_HEAVY, IGAUSS_HEAVY, MAGSHOT, HAG)) {
                 allTypes.add(eq);
             }
 
-            if ((eq instanceof GaussWeapon)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.GAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.MAGSHOT)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.HAG)) {
-                allTypes.add(eq);
-            }
-
-            if ((eq instanceof ArtilleryWeapon) && !eq.hasFlag(WeaponType.F_BA_WEAPON)
-                    && (((WeaponType) eq).getAmmoType() != AmmoType.AmmoTypeEnum.CRUISE_MISSILE)) {
+            if ((eq instanceof ArtilleryWeapon)
+                  && !eq.hasFlag(WeaponType.F_BA_WEAPON)
+                  && !eq.hasFlag(WeaponType.F_BOMB_WEAPON)
+                  && (ammoType != CRUISE_MISSILE)) {
                 allTypes.add(eq);
             }
         }
@@ -175,8 +193,6 @@ public class CIFieldGunView extends IView implements ActionListener {
         choiceType.addActionListener(evt -> filterEquipment());
 
         txtFilter.setText("");
-        txtFilter.setMinimumSize(new Dimension(200, 28));
-        txtFilter.setPreferredSize(new Dimension(200, 28));
         txtFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent evt) {
@@ -213,41 +229,31 @@ public class CIFieldGunView extends IView implements ActionListener {
         btnPanel.add(btnRemoveGun);
 
         // layout
-        GridBagConstraints gbc = new GridBagConstraints();
 
         JPanel databasePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.WEST;
         databasePanel.add(btnPanel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
         gbc.gridwidth = 1;
         databasePanel.add(choiceType, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
         databasePanel.add(txtFilter, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
+        gbc.weightx = 1;
         databasePanel.add(viewPanel, gbc);
 
         gbc.insets = new Insets(2,0,0,0);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weighty = 1;
         databasePanel.add(masterEquipmentScroll, gbc);
 
         setLayout(new BorderLayout());
-        this.add(databasePanel, BorderLayout.CENTER);
+        add(databasePanel, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -287,6 +293,8 @@ public class CIFieldGunView extends IView implements ActionListener {
             } else {
                 maximumFieldGuns = getInfantry().getOriginalTrooperCount()
                       / TestInfantry.fieldGunCrewRequirement(equipmentType, getInfantry());
+                // If 0 (too few troopers to operate), still add 1 field gun; will show as invalid
+                maximumFieldGuns = Math.max(maximumFieldGuns, 1);
             }
             InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equipmentType, maximumFieldGuns);
             refresh.refreshAll();
@@ -308,7 +316,7 @@ public class CIFieldGunView extends IView implements ActionListener {
                         || ((nType == T_GUN)
                                 && !(etype instanceof ArtilleryWeapon)
                                 && !(etype instanceof ArtilleryCannonWeapon))
-                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon && !(etype.hasFlag(AmmoType.F_SPACE_BOMB)))
+                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
                         || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
                         ) {
                     if (null != eSource.getTechManager()
@@ -332,52 +340,29 @@ public class CIFieldGunView extends IView implements ActionListener {
 
     public void setEquipmentView() {
         XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
-        if (rbtnStats.isSelected()) {
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
-        } else {
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
-        }
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
+
+        boolean stats = rbtnStats.isSelected();
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), stats);
     }
 }
