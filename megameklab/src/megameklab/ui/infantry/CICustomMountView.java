@@ -32,6 +32,20 @@
  */
 package megameklab.ui.infantry;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import megamek.common.EntityMovementMode;
 import megamek.common.Infantry;
 import megamek.common.InfantryMount;
@@ -41,14 +55,6 @@ import megameklab.ui.generalUnit.StandardBuildLabel;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.WidthControlComponent;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class CICustomMountView extends BuildView implements ChangeListener {
 
@@ -252,7 +258,7 @@ public class CICustomMountView extends BuildView implements ChangeListener {
         JSpinner field = (JSpinner) e.getSource();
         double value = (Double) field.getModel().getValue();
 
-        getInfantry().setArmorDamageDivisor(value);
+        getInfantry().setCustomArmorDamageDivisor(value);
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshStatus();

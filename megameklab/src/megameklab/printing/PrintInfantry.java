@@ -421,7 +421,7 @@ public class PrintInfantry extends PrintEntity {
                 }
                 if (sj.length() > 0) {
                     setTextField(ARMOR_KIT, "Custom Sneak(" + sj + ")");
-                } else if (infantry.getArmorDamageDivisor() != 1.0) {
+                } else if (infantry.getCustomArmorDamageDivisor() != 1.0) {
                     setTextField(ARMOR_KIT, "Custom");
                 }
             }

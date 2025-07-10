@@ -127,7 +127,7 @@ public final class InfantryUtil {
         unit.setSneakCamo(false);
         unit.setSneakECM(false);
         unit.setSneakIR(false);
-        unit.setArmorDamageDivisor(1.0);
+        unit.setCustomArmorDamageDivisor(1.0);
     }
 
     public static boolean isInfantryEquipment(EquipmentType eq, Entity unit) {
