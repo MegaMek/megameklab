@@ -56,6 +56,7 @@ import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.FactionComboBox;
 import megameklab.ui.util.IntRangeTextField;
+import megameklab.ui.util.WidthControlComponent;
 import megameklab.util.CConfig;
 
 /**
@@ -82,15 +83,15 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private TechAdvancement baseTA;
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-    private final JTextField txtChassis = new JTextField(5);
-    private final JTextField txtClanName = new JTextField(5);
+    private final JTextField txtChassis = new JTextField(WidthControlComponent.TEXTFIELD_COLUMNS);
+    private final JTextField txtClanName = new JTextField();
     private final JLabel lblClanName = createLabel(resourceMap, "lblClanName", "BasicInfoView.txtClanName.text",
             "BasicInfoView.txtClanName.tooltip");
-    private final JTextField txtModel = new JTextField(5);
-    private final IntRangeTextField txtYear = new IntRangeTextField(3);
+    private final JTextField txtModel = new JTextField();
+    private final IntRangeTextField txtYear = new IntRangeTextField();
     private final FactionComboBox cbFaction = new FactionComboBox();
     private final JLabel lblFaction = createLabel("lblFaction", "");
-    private final JTextField txtSource = new JTextField(3);
+    private final JTextField txtSource = new JTextField();
     private final CustomComboBox<Integer> cbTechBase = new CustomComboBox<>(i -> String.valueOf(techBaseNames[i]));
     private final JComboBox<String> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
@@ -121,9 +122,11 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.insets = STANDARD_INSETS;
+        gbc.weightx = 1;
         add(createLabel(resourceMap, "lblChassis", "BasicInfoView.txtChassis.text",
                 "BasicInfoView.txtChassis.tooltip"), gbc);
         gbc.gridx = 1;
+        gbc.weightx = 0;
         txtChassis.setToolTipText(resourceMap.getString("BasicInfoView.txtChassis.tooltip"));
         add(txtChassis, gbc);
         txtChassis.addFocusListener(this);

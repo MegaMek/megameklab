@@ -27,31 +27,39 @@ public class CIStatusBar extends StatusBar {
     private static final String MOVE_LABEL = "Movement: %d / %d";
     private static final String DAMAGE_LABEL = "Damage per Trooper: ";
     private static final String INF_WEIGHT_LABEL = "Weight: %s t";
+    private static final String PLATOON_SIZE = "Platoon Size: %d";
     private static final DecimalFormat roundFormat = new DecimalFormat("#.##");
 
     private final JLabel move = new JLabel();
     private final JLabel damage = new JLabel();
+    private final JLabel platoonSize = new JLabel();
 
     public CIStatusBar(MegaMekLabMainUI parent) {
         super(parent);
         add(move);
         add(damage);
+        add(platoonSize);
     }
 
     @Override
     protected void additionalRefresh() {
         refreshMovement();
         refreshDamage();
+        refreshPlatoonSize();
     }
 
-    public void refreshMovement() {
+    private void refreshMovement() {
         int walk = getInfantry().getWalkMP();
         int jump = getInfantry().getJumpMP();
         move.setText(String.format(MOVE_LABEL, walk, jump));
     }
 
-    public void refreshDamage() {
+    private void refreshDamage() {
         damage.setText(DAMAGE_LABEL + roundFormat.format(getInfantry().getDamagePerTrooper()));
+    }
+
+    private void refreshPlatoonSize() {
+        platoonSize.setText(PLATOON_SIZE.formatted(getInfantry().getOriginalTrooperCount()));
     }
 
     @Override

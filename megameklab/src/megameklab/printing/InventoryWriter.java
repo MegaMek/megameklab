@@ -1104,7 +1104,7 @@ public class InventoryWriter {
                 int doors = 0;
                 for (int i = 0; i < bays.size(); i++) {
                     Bay b = bays.get(i);
-                    bayTypeString.append(b.getType());
+                    bayTypeString.append(b.getNameForRecordSheets());
                     // BA bays are shown per suit rather than squad
                     double capacity = b.getCapacity();
                     if (b instanceof BattleArmorBay) {
@@ -1118,6 +1118,8 @@ public class InventoryWriter {
                     } else if (b instanceof InfantryBay) {
                         // Divide total weight by weight required by platoon to get platoon capacity
                         capacity /= ((InfantryBay) b).getPlatoonType().getWeight();
+                    } else if (b instanceof ProtoMekBay) {
+                        capacity *= 5;
                     }
                     bayCapacityString.append(NumberFormat.getInstance().format(capacity));
                     if ((i + 1) < bays.size()) {
