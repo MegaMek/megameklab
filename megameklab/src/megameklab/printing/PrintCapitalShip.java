@@ -150,13 +150,15 @@ public class PrintCapitalShip extends PrintDropship {
         setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
         if (ship instanceof Warship) {
-            printInternalRegion(SI_PIPS, ship.getOSI(), (ship.getOSI() - ship.getSI()), 100);
+            printInternalRegion(SI_PIPS, ship.getOSI(), (ship.getOSI() - ship.getSI()), 100, "structure", "SI");
         }
-        printInternalRegion(KF_PIPS, ship.getOKFIntegrity(), (ship.getOKFIntegrity() - ship.getKFIntegrity()), 30);
-        printInternalRegion(SAIL_PIPS, ship.getOSailIntegrity(), (ship.getOSailIntegrity() - ship.getSailIntegrity()), 10);
+        printInternalRegion(KF_PIPS, ship.getOKFIntegrity(), (ship.getOKFIntegrity() - ship.getKFIntegrity()), 30,
+              "structure", "KF");
+        printInternalRegion(SAIL_PIPS, ship.getOSailIntegrity(), (ship.getOSailIntegrity() - ship.getSailIntegrity())
+              , 10, "structure", "SAIL");
         final int collarCount = ship.getDockingCollars().size();
         final int collarDamage = getCollarDamage();
-        printInternalRegion(DC_PIPS, collarCount, collarDamage, 10);
+        printInternalRegion(DC_PIPS, collarCount, collarDamage, 10, "structure", "DC");
     }
 
     @Override
@@ -165,7 +167,8 @@ public class PrintCapitalShip extends PrintDropship {
             final String id = ARMOR_PIPS + ship.getLocationAbbr(loc);
             Element element = getSVGDocument().getElementById(id);
             if (element instanceof SVGRectElement) {
-                printArmorRegion((SVGRectElement) element, ship.getOArmor(loc), (ship.getOArmor(loc) - ship.getArmor(loc)));
+                printArmorRegion((SVGRectElement) element, ship.getOArmor(loc),
+                      (ship.getOArmor(loc) - ship.getArmor(loc)), ship.getLocationAbbr(loc));
             } else {
                 logger.error("No SVGRectElement found with id " + id);
             }
@@ -183,11 +186,13 @@ public class PrintCapitalShip extends PrintDropship {
      *                     The number of structure pips
      * @param pipsPerBlock
      *                     The maximum number of pips to draw in a single block
+     * @param location     Location abbreviation for the region
      */
-    private void printInternalRegion(String rectId, int structure, int damage, int pipsPerBlock) {
+    private void printInternalRegion(String rectId, int structure, int damage, int pipsPerBlock,
+          String className, String location) {
         Element element = getSVGDocument().getElementById(rectId);
         if (element instanceof SVGRectElement) {
-            printInternalRegion((SVGRectElement) element, structure, damage, pipsPerBlock);
+            printInternalRegion((SVGRectElement) element, structure, damage, pipsPerBlock, className, location);
         }
     }
 
@@ -203,7 +208,8 @@ public class PrintCapitalShip extends PrintDropship {
      * @param pipsPerBlock
      *                     The maximum number of pips to draw in a single block
      */
-    private void printInternalRegion(SVGRectElement svgRect, int structure, int damage, int pipsPerBlock) {
+    private void printInternalRegion(SVGRectElement svgRect, int structure, int damage, int pipsPerBlock,
+          String className, String location) {
         Rectangle2D bbox = getRectBBox(svgRect);
         final double blockWidth = PIPS_PER_ROW * IS_PIP_WIDTH;
         int pips;
@@ -217,10 +223,11 @@ public class PrintCapitalShip extends PrintDropship {
         }
         AtomicInteger remainingDamage = new AtomicInteger(damage);
         printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
-                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage);
+                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, className, location);
         if (structure > pips) {
             printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
-                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage);
+                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage,
+                  className, location);
         }
     }
 
@@ -234,7 +241,7 @@ public class PrintCapitalShip extends PrintDropship {
      * @param armor
      *                The amount of armor in the location
      */
-    private void printArmorRegion(SVGRectElement svgRect, int armor, int damage) {
+    private void printArmorRegion(SVGRectElement svgRect, int armor, int damage, String location) {
         Rectangle2D bbox = getRectBBox(svgRect);
 
         double pipWidth = ARMOR_PIP_WIDTH;
@@ -292,7 +299,7 @@ public class PrintCapitalShip extends PrintDropship {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage);
+                        armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location);
                 remainingBlocks--;
                 xpos += blockWidth;
             }
@@ -322,7 +329,8 @@ public class PrintCapitalShip extends PrintDropship {
      * @return The Y location of the end of the block
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
-            double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage) {
+            double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage,
+          String className, String location) {
 
         final double shadowOffsetX = pipWidth * SHADOW_OFFSET;
         final double shadowOffsetY = pipHeight * SHADOW_OFFSET;
@@ -336,9 +344,11 @@ public class PrintCapitalShip extends PrintDropship {
                 boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
                 if (shadow) {
                     parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
-                            currY + shadowOffsetY, false));
+                            currY + shadowOffsetY, false, null, null));
                 }
-                parent.appendChild(createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX, currY, true));
+                final Element pip = createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX,
+                      currY, true, className, location);
+                parent.appendChild(pip);
 
                 currX += pipWidth;
                 numPips--;
@@ -353,14 +363,21 @@ public class PrintCapitalShip extends PrintDropship {
     }
 
     private Element createPip(double pipWidth, double pipHeight, String fillColor,
-            double currX, double currY, boolean stroke) {
+            double currX, double currY, boolean stroke, String className, String location) {
         Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
         box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
         box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
         box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
         box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
         if (stroke) {
-            box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
+            String classAttr = "pip";
+            if (className != null && !className.isEmpty()) {
+                classAttr += " " + className;
+            }
+            box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+            if (location != null && !location.isEmpty()) {
+                box.setAttributeNS(null, "loc", location);
+            }
             box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
         }

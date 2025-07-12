@@ -461,7 +461,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
                                 bbox.getWidth(), lineHeight, spaText, fontSize,
                                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                SVGConstants.SVG_ITALIC_VALUE);
+                                SVGConstants.SVG_ITALIC_VALUE, "abilities");
                     }
                 }
 
@@ -723,7 +723,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (damage > 0) {
                 damage--;
             }
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE,
+                  (isDamaged) ? getDamageFillColor() : FILL_WHITE, "hsPip", "hs", false);
             hsGroup.appendChild(pip);
         }
     }
@@ -761,7 +762,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (damage > 0) {
                 damage--;
             }
-            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE, (isDamaged) ? getDamageFillColor() : FILL_WHITE);
+            Element pip = createPip(viewX + size * col, viewY + size * row, radius, strokeWidth, PipType.CIRCLE,
+                  (isDamaged) ? getDamageFillColor() : FILL_WHITE, "hsPip", "hs", false);
             canvas.appendChild(pip);
         }
     }

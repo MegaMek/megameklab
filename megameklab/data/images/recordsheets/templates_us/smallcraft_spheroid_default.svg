@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3.3802698"
-     inkscape:cx="207.52781"
-     inkscape:cy="516.97057"
-     inkscape:window-width="1920"
-     inkscape:window-height="1121"
-     inkscape:window-x="-7"
-     inkscape:window-y="-7"
+     inkscape:zoom="3.38"
+     inkscape:cx="208"
+     inkscape:cy="517"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g305" />
+     inkscape:current-layer="heatScaleBW" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale,heatScale"
      id="rs_template">
@@ -4085,395 +4085,471 @@
          textLength="19.001"
          lengthAdjust="spacingAndGlyphs"
          id="text367">Effects</text>
-          <g class="heatEffect" heat="30">
-<text
-         x="15.000"
-         y="48.218"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text368">30</text>
-      <text
-         x="27.000"
-         y="48.218"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="27.735"
-         lengthAdjust="spacingAndGlyphs"
-         id="text369">Shutdown</text>
-    </g>
-          <g class="heatEffect" heat="28">
-<text
-         x="15.000"
-         y="58.291"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text370">28</text>
-      <text
-         x="27.000"
-         y="58.291"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="64.412"
-         lengthAdjust="spacingAndGlyphs"
-         id="text371">Ammo Exp avoid on 8+</text>
-    </g>
-          <g class="heatEffect" heat="27">
-<text
-         x="15.000"
-         y="68.364"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text372">27</text>
-      <text
-         x="27.000"
-         y="68.364"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="72.421"
-         lengthAdjust="spacingAndGlyphs"
-         id="text373">Pilot damage, avoid on 9+</text>
-    </g>
-          <g class="heatEffect" heat="26">
-<text
-         x="15.000"
-         y="78.436"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.276"
-         lengthAdjust="spacingAndGlyphs"
-         id="text374">26</text>
-      <text
-         x="27.000"
-         y="78.436"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="67.737"
-         lengthAdjust="spacingAndGlyphs"
-         id="text375">Shutdown, avoid on 10+</text>
-    </g>
-          <g class="heatEffect" heat="25">
-<text
-         x="15.000"
-         y="88.509"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text376">25</text>
-      <text
-         x="27.000"
-         y="88.509"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="56.541"
-         lengthAdjust="spacingAndGlyphs"
-         id="text377">Random Movement,</text>
-      <text
-         x="30.000"
-         y="98.582"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="38.664"
-         lengthAdjust="spacingAndGlyphs"
-         id="text378"> avoid on 10+</text>
-    </g>
-          <g class="heatEffect" heat="24">
-<text
-         x="15.000"
-         y="108.655"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text379">24</text>
-      <text
-         x="27.000"
-         y="108.655"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="52.662"
-         lengthAdjust="spacingAndGlyphs"
-         id="text380">+4 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="23">
-<text
-         x="15.000"
-         y="118.727"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text381">23</text>
-      <text
-         x="27.000"
-         y="118.727"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="64.405"
-         lengthAdjust="spacingAndGlyphs"
-         id="text382">Ammo Exp avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="22">
-<text
-         x="15.000"
-         y="128.800"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text383">22</text>
-      <text
-         x="27.000"
-         y="128.800"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="63.598"
-         lengthAdjust="spacingAndGlyphs"
-         id="text384">Shutdown, avoid on 8+</text>
-    </g>
-          <g class="heatEffect" heat="21">
-<text
-         x="15.000"
-         y="138.873"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text385">21</text>
-      <text
-         x="27.000"
-         y="138.873"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="72.414"
-         lengthAdjust="spacingAndGlyphs"
-         id="text386">Pilot damage, avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="20">
-<text
-         x="15.000"
-         y="148.945"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.279"
-         lengthAdjust="spacingAndGlyphs"
-         id="text387">20</text>
-      <text
-         x="27.000"
-         y="148.945"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="91.066"
-         lengthAdjust="spacingAndGlyphs"
-         id="text388">Random Movement, avoid on 8+</text>
-    </g>
-          <g class="heatEffect" heat="19">
-<text
-         x="15.000"
-         y="159.018"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.286"
-         lengthAdjust="spacingAndGlyphs"
-         id="text389">19</text>
-      <text
-         x="27.000"
-         y="159.018"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="64.408"
-         lengthAdjust="spacingAndGlyphs"
-         id="text390">Ammo Exp avoid on 4+</text>
-    </g>
-          <g class="heatEffect" heat="18">
-<text
-         x="15.000"
-         y="169.091"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.286"
-         lengthAdjust="spacingAndGlyphs"
-         id="text391">18</text>
-      <text
-         x="27.000"
-         y="169.091"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="63.591"
-         lengthAdjust="spacingAndGlyphs"
-         id="text392">Shutdown, avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="17">
-<text
-         x="15.000"
-         y="179.164"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text393">17</text>
-      <text
-         x="27.000"
-         y="179.164"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="52.662"
-         lengthAdjust="spacingAndGlyphs"
-         id="text394">+3 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="15">
-<text
-         x="15.000"
-         y="189.236"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text395">15</text>
-      <text
-         x="27.000"
-         y="189.236"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="91.062"
-         lengthAdjust="spacingAndGlyphs"
-         id="text396">Random Movement, avoid on 7+</text>
-    </g>
-          <g class="heatEffect" heat="14">
-<text
-         x="15.000"
-         y="199.309"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text397">14</text>
-      <text
-         x="27.000"
-         y="199.309"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="63.594"
-         lengthAdjust="spacingAndGlyphs"
-         id="text398">Shutdown, avoid on 4+</text>
-    </g>
-          <g class="heatEffect" heat="13">
-<text
-         x="15.000"
-         y="209.382"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text399">13</text>
-      <text
-         x="27.000"
-         y="209.382"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="52.662"
-         lengthAdjust="spacingAndGlyphs"
-         id="text400">+2 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="10">
-<text
-         x="15.000"
-         y="219.455"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="8.283"
-         lengthAdjust="spacingAndGlyphs"
-         id="text401">10</text>
-      <text
-         x="27.000"
-         y="219.455"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="91.059"
-         lengthAdjust="spacingAndGlyphs"
-         id="text402">Random Movement, avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="8">
-<text
-         x="15.000"
-         y="229.527"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="4.143"
-         lengthAdjust="spacingAndGlyphs"
-         id="text403">8</text>
-      <text
-         x="27.000"
-         y="229.527"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="52.665"
-         lengthAdjust="spacingAndGlyphs"
-         id="text404">+1 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="5">
-<text
-         x="15.000"
-         y="239.600"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="4.140"
-         lengthAdjust="spacingAndGlyphs"
-         id="text405">5</text>
-      <text
-         x="27.000"
-         y="239.600"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         textLength="91.062"
-         lengthAdjust="spacingAndGlyphs"
-         id="text406">Random Movement, avoid on 5+</text>
-    </g>
+      <g
+         class="heatEffect"
+         heat="30"
+         id="g1"
+         h-shut="99">
+        <text
+           x="15.000"
+           y="48.218"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text368">30</text>
+        <text
+           x="27.000"
+           y="48.218"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="27.735"
+           lengthAdjust="spacingAndGlyphs"
+           id="text369">Shutdown</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="28"
+         id="g2"
+         h-ammo="8">
+        <text
+           x="15.000"
+           y="58.291"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text370">28</text>
+        <text
+           x="27.000"
+           y="58.291"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="64.412"
+           lengthAdjust="spacingAndGlyphs"
+           id="text371">Ammo Exp avoid on 8+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="27"
+         id="g3"
+         h-pilot="9">
+        <text
+           x="15.000"
+           y="68.364"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text372">27</text>
+        <text
+           x="27.000"
+           y="68.364"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="72.421"
+           lengthAdjust="spacingAndGlyphs"
+           id="text373">Pilot damage, avoid on 9+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="26"
+         id="g4"
+         h-shut="10">
+        <text
+           x="15.000"
+           y="78.436"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.276"
+           lengthAdjust="spacingAndGlyphs"
+           id="text374">26</text>
+        <text
+           x="27.000"
+           y="78.436"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="67.737"
+           lengthAdjust="spacingAndGlyphs"
+           id="text375">Shutdown, avoid on 10+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="25"
+         id="g5"
+         h-random="10">
+        <text
+           x="15.000"
+           y="88.509"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text376">25</text>
+        <text
+           x="27.000"
+           y="88.509"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="56.541"
+           lengthAdjust="spacingAndGlyphs"
+           id="text377">Random Movement,</text>
+        <text
+           x="30.000"
+           y="98.582"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="38.664"
+           lengthAdjust="spacingAndGlyphs"
+           id="text378"> avoid on 10+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="24"
+         id="g6"
+         h-fire="4">
+        <text
+           x="15.000"
+           y="108.655"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text379">24</text>
+        <text
+           x="27.000"
+           y="108.655"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="52.662"
+           lengthAdjust="spacingAndGlyphs"
+           id="text380">+4 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="23"
+         id="g7"
+         h-ammo="6">
+        <text
+           x="15.000"
+           y="118.727"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text381">23</text>
+        <text
+           x="27.000"
+           y="118.727"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="64.405"
+           lengthAdjust="spacingAndGlyphs"
+           id="text382">Ammo Exp avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="22"
+         id="g8"
+         h-shut="8">
+        <text
+           x="15.000"
+           y="128.800"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text383">22</text>
+        <text
+           x="27.000"
+           y="128.800"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="63.598"
+           lengthAdjust="spacingAndGlyphs"
+           id="text384">Shutdown, avoid on 8+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="21"
+         id="g9"
+         h-pilot="6">
+        <text
+           x="15.000"
+           y="138.873"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text385">21</text>
+        <text
+           x="27.000"
+           y="138.873"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="72.414"
+           lengthAdjust="spacingAndGlyphs"
+           id="text386">Pilot damage, avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="20"
+         id="g12"
+         h-random="8">
+        <text
+           x="15.000"
+           y="148.945"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.279"
+           lengthAdjust="spacingAndGlyphs"
+           id="text387">20</text>
+        <text
+           x="27.000"
+           y="148.945"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="91.066"
+           lengthAdjust="spacingAndGlyphs"
+           id="text388">Random Movement, avoid on 8+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="19"
+         id="g13"
+         h-ammo="4">
+        <text
+           x="15.000"
+           y="159.018"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.286"
+           lengthAdjust="spacingAndGlyphs"
+           id="text389">19</text>
+        <text
+           x="27.000"
+           y="159.018"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="64.408"
+           lengthAdjust="spacingAndGlyphs"
+           id="text390">Ammo Exp avoid on 4+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="18"
+         id="g14"
+         h-shut="6">
+        <text
+           x="15.000"
+           y="169.091"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.286"
+           lengthAdjust="spacingAndGlyphs"
+           id="text391">18</text>
+        <text
+           x="27.000"
+           y="169.091"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="63.591"
+           lengthAdjust="spacingAndGlyphs"
+           id="text392">Shutdown, avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="17"
+         id="g15"
+         h-fire="3">
+        <text
+           x="15.000"
+           y="179.164"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text393">17</text>
+        <text
+           x="27.000"
+           y="179.164"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="52.662"
+           lengthAdjust="spacingAndGlyphs"
+           id="text394">+3 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="15"
+         id="g16"
+         h-random="7">
+        <text
+           x="15.000"
+           y="189.236"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text395">15</text>
+        <text
+           x="27.000"
+           y="189.236"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="91.062"
+           lengthAdjust="spacingAndGlyphs"
+           id="text396">Random Movement, avoid on 7+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="14"
+         id="g17"
+         h-shut="4">
+        <text
+           x="15.000"
+           y="199.309"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text397">14</text>
+        <text
+           x="27.000"
+           y="199.309"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="63.594"
+           lengthAdjust="spacingAndGlyphs"
+           id="text398">Shutdown, avoid on 4+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="13"
+         id="g18"
+         h-fire="2">
+        <text
+           x="15.000"
+           y="209.382"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text399">13</text>
+        <text
+           x="27.000"
+           y="209.382"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="52.662"
+           lengthAdjust="spacingAndGlyphs"
+           id="text400">+2 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="10"
+         id="g19"
+         h-random="6">
+        <text
+           x="15.000"
+           y="219.455"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="8.283"
+           lengthAdjust="spacingAndGlyphs"
+           id="text401">10</text>
+        <text
+           x="27.000"
+           y="219.455"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="91.059"
+           lengthAdjust="spacingAndGlyphs"
+           id="text402">Random Movement, avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="8"
+         id="g20"
+         h-fire="1">
+        <text
+           x="15.000"
+           y="229.527"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="4.143"
+           lengthAdjust="spacingAndGlyphs"
+           id="text403">8</text>
+        <text
+           x="27.000"
+           y="229.527"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="52.665"
+           lengthAdjust="spacingAndGlyphs"
+           id="text404">+1 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="5"
+         id="g21"
+         h-random="5">
+        <text
+           x="15.000"
+           y="239.600"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="4.140"
+           lengthAdjust="spacingAndGlyphs"
+           id="text405">5</text>
+        <text
+           x="27.000"
+           y="239.600"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           textLength="91.062"
+           lengthAdjust="spacingAndGlyphs"
+           id="text406">Random Movement, avoid on 5+</text>
+      </g>
       <text
          fill="#000000"
          x="149.000"
@@ -4521,12 +4597,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text371-4">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.938,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 11.967 c 2.4,0 4.35,1.95 4.35,4.35 v 11.967 c 0,2.4 -1.95,4.35 -4.35,4.35 H 2.412 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path371" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="8.3959999"
            y="28.5"
@@ -4544,7 +4621,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect372" class="heat" heat="30" />
+           id="rect372"
+           class="heat"
+           heat="30" />
         <rect
            x="0"
            y="58"
@@ -4553,7 +4632,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect373" class="heat" heat="29" />
+           id="rect373"
+           class="heat"
+           heat="29" />
         <rect
            x="0"
            y="68.333"
@@ -4562,7 +4643,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect374" class="heat" heat="28" />
+           id="rect374"
+           class="heat"
+           heat="28" />
         <rect
            x="0"
            y="78.667"
@@ -4571,7 +4654,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect375" class="heat" heat="27" />
+           id="rect375"
+           class="heat"
+           heat="27" />
         <rect
            x="0"
            y="89"
@@ -4580,7 +4665,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect376" class="heat" heat="26" />
+           id="rect376"
+           class="heat"
+           heat="26" />
         <rect
            x="0"
            y="99.333"
@@ -4589,7 +4676,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect377" class="heat" heat="25" />
+           id="rect377"
+           class="heat"
+           heat="25" />
         <rect
            x="0"
            y="109.667"
@@ -4598,7 +4687,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect378" class="heat" heat="24" />
+           id="rect378"
+           class="heat"
+           heat="24" />
         <rect
            x="0"
            y="120"
@@ -4607,7 +4698,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect379" class="heat" heat="23" />
+           id="rect379"
+           class="heat"
+           heat="23" />
         <rect
            x="0"
            y="130.33299"
@@ -4616,7 +4709,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect380" class="heat" heat="22" />
+           id="rect380"
+           class="heat"
+           heat="22" />
         <rect
            x="0"
            y="140.66701"
@@ -4625,7 +4720,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect381" class="heat" heat="21" />
+           id="rect381"
+           class="heat"
+           heat="21" />
         <rect
            x="0"
            y="151"
@@ -4634,7 +4731,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect382" class="heat" heat="20" />
+           id="rect382"
+           class="heat"
+           heat="20" />
         <rect
            x="0"
            y="161.33299"
@@ -4643,7 +4742,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect383" class="heat" heat="19" />
+           id="rect383"
+           class="heat"
+           heat="19" />
         <rect
            x="0"
            y="171.66701"
@@ -4652,7 +4753,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect384" class="heat" heat="18" />
+           id="rect384"
+           class="heat"
+           heat="18" />
         <rect
            x="0"
            y="182"
@@ -4661,7 +4764,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect385" class="heat" heat="17" />
+           id="rect385"
+           class="heat"
+           heat="17" />
         <rect
            x="0"
            y="192.33299"
@@ -4670,7 +4775,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect386" class="heat" heat="16" />
+           id="rect386"
+           class="heat"
+           heat="16" />
         <rect
            x="0"
            y="202.66701"
@@ -4679,7 +4786,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect387" class="heat" heat="15" />
+           id="rect387"
+           class="heat"
+           heat="15" />
         <rect
            x="0"
            y="213"
@@ -4688,7 +4797,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect388" class="heat" heat="14" />
+           id="rect388"
+           class="heat"
+           heat="14" />
         <rect
            x="0"
            y="223.33299"
@@ -4697,7 +4808,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect389" class="heat" heat="13" />
+           id="rect389"
+           class="heat"
+           heat="13" />
         <rect
            x="0"
            y="233.66701"
@@ -4706,7 +4819,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect390" class="heat" heat="12" />
+           id="rect390"
+           class="heat"
+           heat="12" />
         <rect
            x="0"
            y="244"
@@ -4715,7 +4830,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect391" class="heat" heat="11" />
+           id="rect391"
+           class="heat"
+           heat="11" />
         <rect
            x="0"
            y="254.33299"
@@ -4724,7 +4841,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect392" class="heat" heat="10" />
+           id="rect392"
+           class="heat"
+           heat="10" />
         <rect
            x="0"
            y="264.66699"
@@ -4733,7 +4852,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect393" class="heat" heat="9" />
+           id="rect393"
+           class="heat"
+           heat="9" />
         <rect
            x="0"
            y="275"
@@ -4742,7 +4863,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect394" class="heat" heat="8" />
+           id="rect394"
+           class="heat"
+           heat="8" />
         <rect
            x="0"
            y="285.33301"
@@ -4751,7 +4874,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect395" class="heat" heat="7" />
+           id="rect395"
+           class="heat"
+           heat="7" />
         <rect
            x="0"
            y="295.66699"
@@ -4760,7 +4885,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect396" class="heat" heat="6" />
+           id="rect396"
+           class="heat"
+           heat="6" />
         <rect
            x="0"
            y="306"
@@ -4769,7 +4896,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect397" class="heat" heat="5" />
+           id="rect397"
+           class="heat"
+           heat="5" />
         <rect
            x="0"
            y="316.33301"
@@ -4778,7 +4907,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect398" class="heat" heat="4" />
+           id="rect398"
+           class="heat"
+           heat="4" />
         <rect
            x="0"
            y="326.66699"
@@ -4787,7 +4918,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect399" class="heat" heat="3" />
+           id="rect399"
+           class="heat"
+           heat="3" />
         <rect
            x="0"
            y="337"
@@ -4796,7 +4929,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect400" class="heat" heat="2" />
+           id="rect400"
+           class="heat"
+           heat="2" />
         <rect
            x="0"
            y="347.33301"
@@ -4805,7 +4940,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect401" class="heat" heat="1" />
+           id="rect401"
+           class="heat"
+           heat="1" />
         <rect
            x="0"
            y="357.66699"
@@ -4814,7 +4951,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect402" class="heat" heat="0" />
+           id="rect402"
+           class="heat"
+           heat="0" />
         <text
            fill="#000000"
            x="8.396"
@@ -4822,7 +4961,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text407-2">30</text>
-      <text x="16.092000000000002" y="55.367711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="55.367711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text21">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4837,7 +4982,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text409-4">28</text>
-      <text x="16.092000000000002" y="76.034711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="76.034711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text22">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4852,7 +5003,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text411-1">26</text>
-      <text x="16.092000000000002" y="96.701711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="96.701711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text23">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4860,7 +5017,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text412-6">25</text>
-      <text x="16.092000000000002" y="107.034700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="107.034700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text24">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4868,7 +5031,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text413-1">24</text>
-      <text x="16.092000000000002" y="117.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="117.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text25">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4876,7 +5045,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text414-6">23</text>
-      <text x="16.092000000000002" y="127.701710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="127.701710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text26">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4884,7 +5059,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text415-3">22</text>
-      <text x="16.092000000000002" y="138.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="138.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text27">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4899,7 +5080,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text417-5">20</text>
-      <text x="16.092000000000002" y="158.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="158.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text28">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4907,7 +5094,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text418-5">19</text>
-      <text x="16.092000000000002" y="169.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="169.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text29">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4915,7 +5108,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text419-3">18</text>
-      <text x="16.092000000000002" y="179.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="179.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text30">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4923,7 +5122,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text420-2">17</text>
-      <text x="16.092000000000002" y="189.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="189.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text31">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4938,7 +5143,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text422-2">15</text>
-      <text x="16.092000000000002" y="210.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="210.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text32">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4946,7 +5157,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text423-5">14</text>
-      <text x="16.092000000000002" y="220.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="220.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text33">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4954,7 +5171,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text424-3">13</text>
-      <text x="16.092000000000002" y="231.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="231.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text34">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4976,7 +5199,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text427-8">10</text>
-      <text x="16.092000000000002" y="262.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="262.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text35">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -4991,7 +5220,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text429-2">8</text>
-      <text x="16.092000000000002" y="282.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="282.701700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text36">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5013,7 +5248,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text432-6">5</text>
-      <text x="16.092000000000002" y="313.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="313.701700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text37">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5073,12 +5314,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text405-3">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.938,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 11.967 c 2.4,0 4.35,1.95 4.35,4.35 v 11.967 c 0,2.4 -1.95,4.35 -4.35,4.35 H 2.412 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path405" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="8.3959999"
            y="28.5"
@@ -5096,7 +5338,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect406" class="heat" heat="30" />
+           id="rect406"
+           class="heat"
+           heat="30" />
         <rect
            x="0"
            y="58"
@@ -5105,7 +5349,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect407" class="heat" heat="29" />
+           id="rect407"
+           class="heat"
+           heat="29" />
         <rect
            x="0"
            y="68.333"
@@ -5114,7 +5360,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect408" class="heat" heat="28" />
+           id="rect408"
+           class="heat"
+           heat="28" />
         <rect
            x="0"
            y="78.667"
@@ -5123,7 +5371,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect409-8" class="heat" heat="27" />
+           id="rect409-8"
+           class="heat"
+           heat="27" />
         <rect
            x="0"
            y="89"
@@ -5132,7 +5382,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect410-8" class="heat" heat="26" />
+           id="rect410-8"
+           class="heat"
+           heat="26" />
         <rect
            x="0"
            y="99.333"
@@ -5141,7 +5393,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect411-0" class="heat" heat="25" />
+           id="rect411-0"
+           class="heat"
+           heat="25" />
         <rect
            x="0"
            y="109.667"
@@ -5150,7 +5404,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect412-8" class="heat" heat="24" />
+           id="rect412-8"
+           class="heat"
+           heat="24" />
         <rect
            x="0"
            y="120"
@@ -5159,7 +5415,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect413-7" class="heat" heat="23" />
+           id="rect413-7"
+           class="heat"
+           heat="23" />
         <rect
            x="0"
            y="130.33299"
@@ -5168,7 +5426,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect414-7" class="heat" heat="22" />
+           id="rect414-7"
+           class="heat"
+           heat="22" />
         <rect
            x="0"
            y="140.66701"
@@ -5177,7 +5437,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect415-8" class="heat" heat="21" />
+           id="rect415-8"
+           class="heat"
+           heat="21" />
         <rect
            x="0"
            y="151"
@@ -5186,7 +5448,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect416-3" class="heat" heat="20" />
+           id="rect416-3"
+           class="heat"
+           heat="20" />
         <rect
            x="0"
            y="161.33299"
@@ -5195,7 +5459,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect417-8" class="heat" heat="19" />
+           id="rect417-8"
+           class="heat"
+           heat="19" />
         <rect
            x="0"
            y="171.66701"
@@ -5204,7 +5470,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect418-3" class="heat" heat="18" />
+           id="rect418-3"
+           class="heat"
+           heat="18" />
         <rect
            x="0"
            y="182"
@@ -5213,7 +5481,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect419-7" class="heat" heat="17" />
+           id="rect419-7"
+           class="heat"
+           heat="17" />
         <rect
            x="0"
            y="192.33299"
@@ -5222,7 +5492,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect420-1" class="heat" heat="16" />
+           id="rect420-1"
+           class="heat"
+           heat="16" />
         <rect
            x="0"
            y="202.66701"
@@ -5231,7 +5503,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect421-0" class="heat" heat="15" />
+           id="rect421-0"
+           class="heat"
+           heat="15" />
         <rect
            x="0"
            y="213"
@@ -5240,7 +5514,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect422-7" class="heat" heat="14" />
+           id="rect422-7"
+           class="heat"
+           heat="14" />
         <rect
            x="0"
            y="223.33299"
@@ -5249,7 +5525,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect423-3" class="heat" heat="13" />
+           id="rect423-3"
+           class="heat"
+           heat="13" />
         <rect
            x="0"
            y="233.66701"
@@ -5258,7 +5536,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect424-4" class="heat" heat="12" />
+           id="rect424-4"
+           class="heat"
+           heat="12" />
         <rect
            x="0"
            y="244"
@@ -5267,7 +5547,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect425-9" class="heat" heat="11" />
+           id="rect425-9"
+           class="heat"
+           heat="11" />
         <rect
            x="0"
            y="254.33299"
@@ -5276,7 +5558,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect426-6" class="heat" heat="10" />
+           id="rect426-6"
+           class="heat"
+           heat="10" />
         <rect
            x="0"
            y="264.66699"
@@ -5285,7 +5569,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect427-5" class="heat" heat="9" />
+           id="rect427-5"
+           class="heat"
+           heat="9" />
         <rect
            x="0"
            y="275"
@@ -5294,7 +5580,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect428-1" class="heat" heat="8" />
+           id="rect428-1"
+           class="heat"
+           heat="8" />
         <rect
            x="0"
            y="285.33301"
@@ -5303,7 +5591,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect429-0" class="heat" heat="7" />
+           id="rect429-0"
+           class="heat"
+           heat="7" />
         <rect
            x="0"
            y="295.66699"
@@ -5312,7 +5602,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect430-9" class="heat" heat="6" />
+           id="rect430-9"
+           class="heat"
+           heat="6" />
         <rect
            x="0"
            y="306"
@@ -5321,7 +5613,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect431-9" class="heat" heat="5" />
+           id="rect431-9"
+           class="heat"
+           heat="5" />
         <rect
            x="0"
            y="316.33301"
@@ -5330,7 +5624,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect432-6" class="heat" heat="4" />
+           id="rect432-6"
+           class="heat"
+           heat="4" />
         <rect
            x="0"
            y="326.66699"
@@ -5339,7 +5635,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect433-8" class="heat" heat="3" />
+           id="rect433-8"
+           class="heat"
+           heat="3" />
         <rect
            x="0"
            y="337"
@@ -5348,7 +5646,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect434-3" class="heat" heat="2" />
+           id="rect434-3"
+           class="heat"
+           heat="2" />
         <rect
            x="0"
            y="347.33301"
@@ -5357,7 +5657,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect435-4" class="heat" heat="1" />
+           id="rect435-4"
+           class="heat"
+           heat="1" />
         <rect
            x="0"
            y="357.66699"
@@ -5366,7 +5668,9 @@
            height="10.333"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect436-8" class="heat" heat="0" />
+           id="rect436-8"
+           class="heat"
+           heat="0" />
         <text
            fill="#000000"
            x="8.396"
@@ -5374,7 +5678,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text407-4">30</text>
-      <text x="16.092000000000002" y="55.367711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="55.367711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text104">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5389,7 +5699,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text409-9">28</text>
-      <text x="16.092000000000002" y="76.034711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="76.034711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text105">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5404,7 +5720,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text411-5">26</text>
-      <text x="16.092000000000002" y="96.701711" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="96.701711"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text106">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5412,7 +5734,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text412-5">25</text>
-      <text x="16.092000000000002" y="107.034700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="107.034700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text107">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5420,7 +5748,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text413-3">24</text>
-      <text x="16.092000000000002" y="117.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="117.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text108">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5428,7 +5762,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text414-3">23</text>
-      <text x="16.092000000000002" y="127.701710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="127.701710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text109">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5436,7 +5776,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text415-37">22</text>
-      <text x="16.092000000000002" y="138.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="138.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text110">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5451,7 +5797,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text417-3">20</text>
-      <text x="16.092000000000002" y="158.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="158.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text111">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5459,7 +5811,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text418-8">19</text>
-      <text x="16.092000000000002" y="169.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="169.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text112">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5467,7 +5825,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text419-0">18</text>
-      <text x="16.092000000000002" y="179.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="179.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text113">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5475,7 +5839,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text420-8">17</text>
-      <text x="16.092000000000002" y="189.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="189.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text114">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5490,7 +5860,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text422-6">15</text>
-      <text x="16.092000000000002" y="210.367700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="210.367700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text115">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5498,7 +5874,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text423-8">14</text>
-      <text x="16.092000000000002" y="220.701720" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="220.701720"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text116">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5506,7 +5888,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text424-1">13</text>
-      <text x="16.092000000000002" y="231.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="231.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text117">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5528,7 +5916,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text427-9">10</text>
-      <text x="16.092000000000002" y="262.034710" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="262.034710"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text118">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5543,7 +5937,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text429-22">8</text>
-      <text x="16.092000000000002" y="282.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="282.701700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text119">*</text>
         <text
            fill="#000000"
            x="8.396"
@@ -5565,7 +5965,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile"
            text-anchor="middle"
            id="text432-8">5</text>
-      <text x="16.092000000000002" y="313.701700" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="16.092000000000002"
+           y="313.701700"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text120">*</text>
         <text
            fill="#000000"
            x="8.396"

@@ -185,6 +185,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
             }
             ypos += rowSpacing * lineCount(row);
         }
+        ypos+= (rowSpacing / 2);
         for (String note : notes) {
             String[] lines = note.split("\\n");
             for (String line : lines) {

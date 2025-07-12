@@ -834,7 +834,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected double addTextElement(Element parent, double x, double y, String text,
             float fontSize, String anchor, String weight, String fontStyle, String fill) {
-        return addTextElement(parent, x, y, text, fontSize, anchor, weight, fontStyle, fill, null);
+        return addTextElement(parent, x, y, text, fontSize, anchor, weight, fontStyle, fill, null, null);
     }
 
     /**
@@ -852,11 +852,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param weight   The font weight, either normal or bold.
      * @param fontStyle The font style, either normal or italic.
      * @param fill     The fill color for the text (e.g. foreground color)
+     * @param id       The id of the text element, or null if not needed.
+     * @param className The class name of the text element, or null if not needed.
      *
      * @return The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-          float fontSize, String anchor, String weight, String fontStyle, String fill, String id) {
+          float fontSize, String anchor, String weight, String fontStyle, String fill, String id, String className) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -869,6 +871,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         newText.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
         if (id != null && !id.isEmpty()) {
             newText.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, id);
+        }
+        if (className != null && !className.isEmpty()) {
+            newText.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, className);
         }
         parent.appendChild(newText);
         return getTextLength(text, fontSize, weight, fontStyle);
@@ -912,6 +917,29 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected void addTextElementToFit(Element parent, double x, double y, double width,
             String text, float fontSize, String anchor, String weight, String fill) {
+        addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, fill, null, null);
+    }
+
+    /**
+     * Creates a new text element and adds it to the parent. If the text is wider
+     * than the available
+     * space, the text is compressed to fit.
+     *
+     * @param parent   The SVG element to add the text element to.
+     * @param x        The X position of the new element.
+     * @param y        The Y position of the new element.
+     * @param width    The width of the space the text has to fit.
+     * @param text     The text to display.
+     * @param fontSize Font size of the text.
+     * @param anchor   Set the Text elements text-anchor. Should be either start,
+     *                 middle, or end.
+     * @param weight   The font weight, either normal or bold.
+     * @param fill     The fill color for the text (e.g. foreground color)
+     * @param id      The id of the text element, or null if not needed.
+     * @param className The class name of the text element, or null if not needed.
+     */
+    protected void addTextElementToFit(Element parent, double x, double y, double width,
+          String text, float fontSize, String anchor, String weight, String fill, String id, String className) {
         Element newText = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
         newText.setTextContent(text);
         newText.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(x));
@@ -924,7 +952,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (getTextLength(text, fontSize, weight) > width) {
             newText.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE, String.valueOf(width));
             newText.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
-                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                  SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+        }
+        if (id != null && !id.isEmpty()) {
+            newText.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, id);
+        }
+        if (className != null && !className.isEmpty()) {
+            newText.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, className);
         }
         parent.appendChild(newText);
     }
@@ -954,7 +988,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
             String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, ' ');
+                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, ' ', null);
     }
 
     /**
@@ -981,9 +1015,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle) {
+            String text, float fontSize, String anchor, String weight, String fontStyle, String className) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, fontStyle, FILL_BLACK, ' ');
+                text, fontSize, anchor, weight, fontStyle, FILL_BLACK, ' ', className);
     }
 
     /**
@@ -1012,17 +1046,24 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter) {
+            String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter,
+          String className) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
         // in text
         // up to pos will fit in the available space.
         int pos = 0;
+        Element textGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        if (className != null && !className.isEmpty()) {
+            textGroup.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, className);
+        }
+        canvas.appendChild(textGroup);
+
         while (!text.isBlank()) {
             // If the remaining text fits, add a line and exit.
             double textLength = getTextLength(text, fontSize, weight, fontStyle);
             if (textLength <= width) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
+                addTextElement(textGroup, x, y, text, fontSize, anchor, weight, fontStyle, fill, null, null);
                 lines++;
                 return lines;
             }
@@ -1031,7 +1072,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             int index = text.substring(pos).indexOf(delimiter);
             // If the delimiter doesn't exist in the text, add it as is.
             if ((index < 0) && (pos == 0)) {
-                addTextElement(canvas, x, y, text, fontSize, anchor, weight, fontStyle, fill);
+                addTextElement(textGroup, x, y, text, fontSize, anchor, weight, fontStyle, fill, null, null);
                 lines++;
                 return lines;
             }
@@ -1043,7 +1084,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             if ((index < 0)
                     || ((textLength > width)
                             && (pos > 0))) {
-                addTextElement(canvas, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill);
+                addTextElement(textGroup, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill, null, null);
                 lines++;
                 y += lineHeight;
                 text = text.substring(pos);
@@ -1062,7 +1103,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     private final static String FMT_LINE = " l %f %f";
 
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
-        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE, FILL_WHITE);
+        return createPip(x, y, radius, strokeWidth, PipType.CIRCLE, FILL_WHITE, null, null, false);
     }
 
     /**
@@ -1071,30 +1112,68 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param x      Position of left of bounding rectangle.
      * @param y      Position of top of bounding rectangle.
      * @param radius Radius of the circle
+     * @param strokeWidth Width of the stroke
+     * @param type   PipType
+     * @param fill   Fill color for the pip
      * @return A Path describing the circle
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
-            PipType type, String fill) {
+          PipType type, String fill) {
+        return createPip(x, y, radius, strokeWidth, type, fill, null, null, false);
+    }
+
+    /**
+     * Approximates a circle using four Bezier curves.
+     *
+     * @param x      Position of left of bounding rectangle.
+     * @param y      Position of top of bounding rectangle.
+     * @param radius Radius of the circle
+     * @param strokeWidth Width of the stroke
+     * @param type   PipType
+     * @param fill   Fill color for the pip
+     * @param className Class name for the pip, or null if not needed
+     * @param loc    Location of the pip, or null if not needed
+     * @param rear   If true, the pip is a rear pip
+     * @return A Path describing the circle
+     */
+    protected Element createPip(double x, double y, double radius, double strokeWidth,
+            PipType type, String fill, String className, String loc, boolean rear) {
 
         // Move to start of pip, at (1, 0)
+        String classAttr = "pip";
+        if (className != null && !className.isEmpty()) {
+            classAttr += " " + className;
+        }
         if (type == PipType.DIAMOND) {
             // Use diamond shape for hardened armor pips
             Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-            path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
+            path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+            if (loc != null && !loc.isEmpty()) {
+                path.setAttributeNS(null, "loc", loc);
+            }
+            if (rear) {
+                path.setAttributeNS(null, "rear", "true");
+            }
             path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
             path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
-            StringBuilder d = new StringBuilder("M").append(x + radius * 2).append(",").append(y + radius);
-            d.append(String.format(FMT_LINE, -radius, -radius));
-            d.append(String.format(FMT_LINE, -radius, radius));
-            d.append(String.format(FMT_LINE, radius, radius));
-            d.append(String.format(FMT_LINE, radius, -radius));
-            path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d.toString());
+            String d = "M" + (x + radius * 2) + "," + (y + radius)
+                  + String.format(FMT_LINE, -radius, -radius)
+                  + String.format(FMT_LINE, -radius, radius)
+                  + String.format(FMT_LINE, radius, radius)
+                  + String.format(FMT_LINE, radius, -radius);
+            path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d);
             return path;
         } else {
             // Use circle element for normal pips
             Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
-            circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "pip");
+            circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+            if (loc != null && !loc.isEmpty()) {
+                circle.setAttributeNS(null, "loc", loc);
+            }
+            if (rear) {
+                circle.setAttributeNS(null, "rear", "true");
+            }
             double centerX = x + radius;
             double centerY = y + radius;
             circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));

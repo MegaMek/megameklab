@@ -138,7 +138,8 @@ public class PrintBattleArmor extends PrintEntity {
                             final boolean isDamaged = p > currentArmor;
                             fill = (!alive || isDamaged) ? getDamageFillColor() : FILL_WHITE;
                         }
-                        Element pip = createPip(viewX + size * p, y, radius, strokeWidth, PipType.CIRCLE, fill);
+                        Element pip = createPip(viewX + size * p, y, radius, strokeWidth, PipType.CIRCLE, fill,
+                              "armor", "T"+i, false);
                         canvas.appendChild(pip);
                     }
                 }

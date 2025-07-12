@@ -6536,12 +6536,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text410">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.206,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 4.168 c 2.4,0 4.35,1.95 4.35,4.35 v 4.168 c 0,2.4 -1.95,4.35 -4.35,4.35 H 3.144 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path410" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="5.2280002"
            y="28.5"
@@ -7408,12 +7409,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text464">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.206,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 4.168 c 2.4,0 4.35,1.95 4.35,4.35 v 4.168 c 0,2.4 -1.95,4.35 -4.35,4.35 H 3.144 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path464" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="5.2280002"
            y="28.5"

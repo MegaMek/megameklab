@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.95"
-     inkscape:cx="237"
-     inkscape:cy="145"
-     inkscape:window-width="1920"
-     inkscape:window-height="1121"
-     inkscape:window-x="-7"
-     inkscape:window-y="-7"
+     inkscape:zoom="8.35"
+     inkscape:cx="368"
+     inkscape:cy="443"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="crewDamage2" />
+     inkscape:current-layer="rs_template" />
   <g
      style="mml-color-elements:btLogo,cglLogo,heatScale"
      id="rs_template">
@@ -2083,14 +2083,16 @@
              visibility="hidden"
              id="shieldLA"
              transform="matrix(1,0,0,-1,-9.329069,788.37352)"
-             style="mml-color-elements:btLogo, cglLogo, heatScale">
+             style="mml-color-elements:btLogo, cglLogo, heatScale"
+             class="shield"
+             loc="LA">
             <path
                fill="#c7c7c7"
                d="M398.851,144.193c-0.129,0-0.258-0.034-0.374-0.101c-0.233-0.135-0.377-0.387-0.377-0.648V81.327v-0.027    l2.078-51.354c0.019-0.378,0.315-0.693,0.702-0.72l24.75-1.665c0.021-0.002,0.041-0.003,0.063-0.003    c0.186,0,0.366,0.071,0.495,0.201c0.153,0.135,0.243,0.333,0.243,0.54l0.315,30.726l3.95,0.045c0.388,0,0.702,0.297,0.739,0.684    l1.17,12.753c0.025,0.279-0.108,0.549-0.352,0.702l-8.812,5.607l-10.709,12.501l-5.644,47.961    c-0.027,0.234-0.171,0.45-0.378,0.567l-7.487,4.248C399.107,144.16,398.979,144.193,398.851,144.193"
                id="path647" />
             <polygon
                fill="#FFFFFF"
-               id="polygon649"
+               id="polygon114"
                stroke-width="1.449"
                points="404.344,137.189 396.853,141.441     396.853,79.329 398.927,27.976 423.683,26.307 424.003,57.767 428.69,57.819 429.855,70.575 420.942,76.244 410.013,89   "
                stroke="#000000"
@@ -2682,12 +2684,14 @@
                  id="path4188" />
             </g>
             <g
-               id="g4190"
+               id="armorLA"
+               class="armor"
+               loc="LA"
                transform="translate(441.0621,701.0698)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 -1.364,11.937 c 0,0 -4.929,7.242 -20.403,3.586 -15.475,-3.657 -23.767,-23.184 -23.767,-23.184 l -1.635,-9.569 5.422,-1.413 6.927,3.598 -12.197,-22.773 0.949,-1.734 1.092,-0.097 -0.048,-0.545 -1.687,-0.404 -0.095,-1.092 1.59,-0.69 -0.046,-0.547 -1.092,0.095 -1.784,-1.494 0.715,-34.205 8.456,-10.078 16.023,4.355 1.781,4.787 -2.809,29.077 -0.95,1.735 -1.094,0.095 0.049,0.548 1.687,0.403 0.096,1.092 -1.593,0.69 0.049,0.546 1.093,-0.096 1.236,1.544 9.105,14.015 10.062,-0.238 -0.322,18.114 -7.111,0 0,6.696 4.2,4.168 L 0,0 Z"
-                 id="path4192" />
+                 id="path104" />
             </g>
             <g
                id="armorOutlineLA"
@@ -2698,7 +2702,9 @@
                  id="path4196" />
             </g>
             <g
-               id="g4198"
+               id="armorCL"
+               class="armor"
+               loc="CL"
                transform="translate(493.6233,484.1367)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2714,7 +2720,9 @@
                  id="path4204" />
             </g>
             <g
-               id="g4206"
+               id="armorLL"
+               class="armor"
+               loc="LL"
                transform="translate(410.2256,579.1047)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2730,7 +2738,9 @@
                  id="path4212" />
             </g>
             <g
-               id="g4214"
+               id="armorRL"
+               class="armor"
+               loc="RL"
                transform="translate(543.3251,579.1047)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2746,12 +2756,14 @@
                  id="path4220" />
             </g>
             <g
-               id="g4222"
+               id="armorLT"
+               class="armor"
+               loc="LT"
                transform="translate(459.5426,710.3137)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
                  d="m 0,0 -6.033,-9.66 -23.926,-6.474 -0.244,-28.123 c 0,0 -0.551,-10.415 2.573,-13.749 3.127,-3.335 10.335,-5.226 10.335,-5.226 l 2.199,-20.22 -7.041,-5.06 -3.64,-14.821 1.098,-1.095 L 6.606,-119.884 2.742,-85.235 0,-56.718 0,0 Z"
-                 id="path4224" />
+                 id="path105" />
             </g>
             <g
                id="armorOutlineLT"
@@ -2938,7 +2950,9 @@
                  id="path4316" />
             </g>
             <g
-               id="g4318"
+               id="armorRA"
+               class="armor"
+               loc="RA"
                transform="translate(511.9131,701.0698)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2954,7 +2968,9 @@
                  id="path4324" />
             </g>
             <g
-               id="g4326"
+               id="armorRT"
+               class="armor"
+               loc="RT"
                transform="translate(493.4318,710.3137)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2970,7 +2986,9 @@
                  id="path4332" />
             </g>
             <g
-               id="g4334"
+               id="armorCT"
+               class="armor"
+               loc="CT"
                transform="translate(459.2124,709.6703)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -2986,7 +3004,9 @@
                  id="path4340" />
             </g>
             <g
-               id="g4342"
+               id="armorHD"
+               class="armor"
+               loc="HD"
                transform="translate(454.2993,696.6388)">
               <path
                  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -3002,109 +3022,130 @@
                  id="path4348" />
             </g>
             <g
-               id="g4350"
-               transform="translate(475.8249,698.3472)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="m 0,0 c -2.862,0 -5.58,-0.583 -8.032,-1.622 0.553,-1.616 1.237,-3.053 2.021,-4.263 1.028,0.299 2.104,0.535 3.222,0.686 0.342,0.04 0.693,1.672 1.043,1.704 0.669,0.048 3.367,0.048 4.012,0 0.351,-0.032 0.7,-1.656 1.044,-1.704 0.962,-0.127 1.885,-0.326 2.783,-0.561 0.75,1.183 1.405,2.578 1.939,4.138 C 5.579,-0.583 2.86,0 0,0"
-                 id="path4352" />
-            </g>
-            <g
-               id="g4354"
-               transform="translate(475.8249,698.3472)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -2.862,0 -5.58,-0.583 -8.032,-1.622 0.553,-1.616 1.237,-3.053 2.021,-4.263 1.028,0.299 2.104,0.535 3.222,0.686 0.342,0.04 0.693,1.672 1.043,1.704 0.669,0.048 3.367,0.048 4.012,0 0.351,-0.032 0.7,-1.656 1.044,-1.704 0.962,-0.127 1.885,-0.326 2.783,-0.561 0.75,1.183 1.405,2.578 1.939,4.138 C 5.579,-0.583 2.86,0 0,0 Z"
-                 id="path4356" />
-            </g>
-            <g
-               id="g4358"
-               transform="translate(466.363,703.6819)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="m 0,0 c 0.171,-1.927 0.499,-3.753 0.958,-5.427 2.607,1.08 5.479,1.685 8.504,1.685 3.023,0 5.897,-0.605 8.502,-1.685 0.46,1.674 0.788,3.5 0.959,5.427 C 16.117,1.46 12.891,2.292 9.462,2.292 6.032,2.292 2.806,1.46 0,0"
-                 id="path4360" />
-            </g>
-            <g
-               id="g4362"
-               transform="translate(466.363,703.6819)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c 0.171,-1.927 0.499,-3.753 0.958,-5.427 2.607,1.08 5.479,1.685 8.504,1.685 3.023,0 5.897,-0.605 8.502,-1.685 0.46,1.674 0.788,3.5 0.959,5.427 C 16.117,1.46 12.891,2.292 9.462,2.292 6.032,2.292 2.806,1.46 0,0 Z"
-                 id="path4364" />
-            </g>
-            <g
-               id="g4366"
-               transform="translate(466.2536,705.4026)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="m 0,0 c 2.878,1.38 6.128,2.164 9.571,2.164 3.443,0 6.694,-0.784 9.57,-2.164 0.017,0.452 0.03,0.907 0.03,1.368 0,1.551 -0.102,3.058 -0.292,4.499 -0.872,0.396 -1.79,0.745 -2.759,1.024 -0.581,0.173 -1.187,0.318 -1.8,0.429 -0.406,0.096 -0.827,0.16 -1.249,0.215 -0.183,0.024 -0.358,2.436 -0.541,2.46 -0.589,0.063 -1.186,0.111 -1.791,0.128 -0.279,0.015 -1.537,0.015 -1.815,0 C 8.318,10.106 7.722,10.058 7.133,9.995 6.949,9.971 6.776,7.559 6.591,7.535 6.17,7.471 5.747,7.408 5.341,7.32 4.73,7.201 4.125,7.058 3.543,6.891 3.002,6.739 2.476,6.564 1.966,6.373 1.362,6.144 0.788,5.881 0.232,5.603 0.063,4.243 -0.029,2.826 -0.029,1.368 -0.029,0.907 -0.016,0.452 0,0"
-                 id="path4368" />
-            </g>
-            <g
-               id="g4370"
-               transform="translate(466.2536,705.4026)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c 2.878,1.38 6.128,2.164 9.571,2.164 3.443,0 6.694,-0.784 9.57,-2.164 0.017,0.452 0.03,0.907 0.03,1.368 0,1.551 -0.102,3.058 -0.292,4.499 -0.872,0.396 -1.79,0.745 -2.759,1.024 -0.581,0.173 -1.187,0.318 -1.8,0.429 -0.406,0.096 -0.827,0.16 -1.249,0.215 -0.183,0.024 -0.358,2.436 -0.541,2.46 -0.589,0.063 -1.186,0.111 -1.791,0.128 -0.279,0.015 -1.537,0.015 -1.815,0 C 8.318,10.106 7.722,10.058 7.133,9.995 6.949,9.971 6.776,7.559 6.591,7.535 6.17,7.471 5.747,7.408 5.341,7.32 4.73,7.201 4.125,7.058 3.543,6.891 3.002,6.739 2.476,6.564 1.966,6.373 1.362,6.144 0.788,5.881 0.232,5.603 0.063,4.243 -0.029,2.826 -0.029,1.368 -0.029,0.907 -0.016,0.452 0,0 Z"
-                 id="path4372" />
-            </g>
-            <g
-               id="g4374"
-               transform="translate(486.8038,702.8093)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="m 0,0 c -0.202,-1.856 -0.544,-3.607 -1.006,-5.228 0.992,-0.502 1.929,-1.082 2.819,-1.721 0.047,0.092 0.096,0.181 0.141,0.274 0.617,1.257 1.144,2.52 1.59,3.782 C 2.491,-1.803 1.302,-0.83 0,0"
-                 id="path4376" />
-            </g>
-            <g
-               id="g4378"
-               transform="translate(486.8038,702.8093)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 c -0.202,-1.856 -0.544,-3.607 -1.006,-5.228 0.992,-0.502 1.929,-1.082 2.819,-1.721 0.047,0.092 0.096,0.181 0.141,0.274 0.617,1.257 1.144,2.52 1.59,3.782 C 2.491,-1.803 1.302,-0.83 0,0 Z"
-                 id="path4380" />
-            </g>
-            <g
-               id="g4382"
-               transform="translate(463.4122,696.1341)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="M 0,0 C 0.002,-0.005 0.004,-0.009 0.006,-0.013 0.783,0.52 1.587,1.017 2.437,1.447 1.977,3.068 1.634,4.819 1.433,6.675 0.287,5.945 -0.766,5.099 -1.72,4.163 -1.249,2.776 -0.68,1.384 0,0"
-                 id="path4384" />
-            </g>
-            <g
-               id="g4386"
-               transform="translate(463.4122,696.1341)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="M 0,0 C 0.002,-0.005 0.004,-0.009 0.006,-0.013 0.783,0.52 1.587,1.017 2.437,1.447 1.977,3.068 1.634,4.819 1.433,6.675 0.287,5.945 -0.766,5.099 -1.72,4.163 -1.249,2.776 -0.68,1.384 0,0 Z"
-                 id="path4388" />
-            </g>
-            <g
-               id="g4390"
-               transform="translate(472.2156,689.0127)">
-              <path
-                 style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                 d="m 0,0 7.694,0 0.796,-3.583 -9.286,0 L 0,0 Z"
-                 id="path4392" />
-            </g>
-            <g
-               id="g4394"
-               transform="translate(472.2156,689.0127)">
-              <path
-                 style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 d="m 0,0 7.694,0 0.796,-3.583 -9.286,0 L 0,0 Z"
-                 id="path4396" />
+               id="g20"
+               style="pointer-events:none">
+              <g
+                 id="g4350"
+                 transform="translate(475.8249,698.3472)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="m 0,0 c -2.862,0 -5.58,-0.583 -8.032,-1.622 0.553,-1.616 1.237,-3.053 2.021,-4.263 1.028,0.299 2.104,0.535 3.222,0.686 0.342,0.04 0.693,1.672 1.043,1.704 0.669,0.048 3.367,0.048 4.012,0 0.351,-0.032 0.7,-1.656 1.044,-1.704 0.962,-0.127 1.885,-0.326 2.783,-0.561 0.75,1.183 1.405,2.578 1.939,4.138 C 5.579,-0.583 2.86,0 0,0"
+                   id="path4352" />
+              </g>
+              <g
+                 id="g4354"
+                 transform="translate(475.8249,698.3472)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="m 0,0 c -2.862,0 -5.58,-0.583 -8.032,-1.622 0.553,-1.616 1.237,-3.053 2.021,-4.263 1.028,0.299 2.104,0.535 3.222,0.686 0.342,0.04 0.693,1.672 1.043,1.704 0.669,0.048 3.367,0.048 4.012,0 0.351,-0.032 0.7,-1.656 1.044,-1.704 0.962,-0.127 1.885,-0.326 2.783,-0.561 0.75,1.183 1.405,2.578 1.939,4.138 C 5.579,-0.583 2.86,0 0,0 Z"
+                   id="path4356" />
+              </g>
+              <g
+                 id="g4358"
+                 transform="translate(466.363,703.6819)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="m 0,0 c 0.171,-1.927 0.499,-3.753 0.958,-5.427 2.607,1.08 5.479,1.685 8.504,1.685 3.023,0 5.897,-0.605 8.502,-1.685 0.46,1.674 0.788,3.5 0.959,5.427 C 16.117,1.46 12.891,2.292 9.462,2.292 6.032,2.292 2.806,1.46 0,0"
+                   id="path4360" />
+              </g>
+              <g
+                 id="g4362"
+                 transform="translate(466.363,703.6819)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="m 0,0 c 0.171,-1.927 0.499,-3.753 0.958,-5.427 2.607,1.08 5.479,1.685 8.504,1.685 3.023,0 5.897,-0.605 8.502,-1.685 0.46,1.674 0.788,3.5 0.959,5.427 C 16.117,1.46 12.891,2.292 9.462,2.292 6.032,2.292 2.806,1.46 0,0 Z"
+                   id="path4364" />
+              </g>
+              <g
+                 id="g4366"
+                 transform="translate(466.2536,705.4026)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="m 0,0 c 2.878,1.38 6.128,2.164 9.571,2.164 3.443,0 6.694,-0.784 9.57,-2.164 0.017,0.452 0.03,0.907 0.03,1.368 0,1.551 -0.102,3.058 -0.292,4.499 -0.872,0.396 -1.79,0.745 -2.759,1.024 -0.581,0.173 -1.187,0.318 -1.8,0.429 -0.406,0.096 -0.827,0.16 -1.249,0.215 -0.183,0.024 -0.358,2.436 -0.541,2.46 -0.589,0.063 -1.186,0.111 -1.791,0.128 -0.279,0.015 -1.537,0.015 -1.815,0 C 8.318,10.106 7.722,10.058 7.133,9.995 6.949,9.971 6.776,7.559 6.591,7.535 6.17,7.471 5.747,7.408 5.341,7.32 4.73,7.201 4.125,7.058 3.543,6.891 3.002,6.739 2.476,6.564 1.966,6.373 1.362,6.144 0.788,5.881 0.232,5.603 0.063,4.243 -0.029,2.826 -0.029,1.368 -0.029,0.907 -0.016,0.452 0,0"
+                   id="path4368" />
+              </g>
+              <g
+                 id="g4370"
+                 transform="translate(466.2536,705.4026)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="m 0,0 c 2.878,1.38 6.128,2.164 9.571,2.164 3.443,0 6.694,-0.784 9.57,-2.164 0.017,0.452 0.03,0.907 0.03,1.368 0,1.551 -0.102,3.058 -0.292,4.499 -0.872,0.396 -1.79,0.745 -2.759,1.024 -0.581,0.173 -1.187,0.318 -1.8,0.429 -0.406,0.096 -0.827,0.16 -1.249,0.215 -0.183,0.024 -0.358,2.436 -0.541,2.46 -0.589,0.063 -1.186,0.111 -1.791,0.128 -0.279,0.015 -1.537,0.015 -1.815,0 C 8.318,10.106 7.722,10.058 7.133,9.995 6.949,9.971 6.776,7.559 6.591,7.535 6.17,7.471 5.747,7.408 5.341,7.32 4.73,7.201 4.125,7.058 3.543,6.891 3.002,6.739 2.476,6.564 1.966,6.373 1.362,6.144 0.788,5.881 0.232,5.603 0.063,4.243 -0.029,2.826 -0.029,1.368 -0.029,0.907 -0.016,0.452 0,0 Z"
+                   id="path4372" />
+              </g>
+              <g
+                 id="g4374"
+                 transform="translate(486.8038,702.8093)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="m 0,0 c -0.202,-1.856 -0.544,-3.607 -1.006,-5.228 0.992,-0.502 1.929,-1.082 2.819,-1.721 0.047,0.092 0.096,0.181 0.141,0.274 0.617,1.257 1.144,2.52 1.59,3.782 C 2.491,-1.803 1.302,-0.83 0,0"
+                   id="path4376" />
+              </g>
+              <g
+                 id="g4378"
+                 transform="translate(486.8038,702.8093)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="m 0,0 c -0.202,-1.856 -0.544,-3.607 -1.006,-5.228 0.992,-0.502 1.929,-1.082 2.819,-1.721 0.047,0.092 0.096,0.181 0.141,0.274 0.617,1.257 1.144,2.52 1.59,3.782 C 2.491,-1.803 1.302,-0.83 0,0 Z"
+                   id="path4380" />
+              </g>
+              <g
+                 id="g4382"
+                 transform="translate(463.4122,696.1341)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="M 0,0 C 0.002,-0.005 0.004,-0.009 0.006,-0.013 0.783,0.52 1.587,1.017 2.437,1.447 1.977,3.068 1.634,4.819 1.433,6.675 0.287,5.945 -0.766,5.099 -1.72,4.163 -1.249,2.776 -0.68,1.384 0,0"
+                   id="path4384" />
+              </g>
+              <g
+                 id="g4386"
+                 transform="translate(463.4122,696.1341)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="M 0,0 C 0.002,-0.005 0.004,-0.009 0.006,-0.013 0.783,0.52 1.587,1.017 2.437,1.447 1.977,3.068 1.634,4.819 1.433,6.675 0.287,5.945 -0.766,5.099 -1.72,4.163 -1.249,2.776 -0.68,1.384 0,0 Z"
+                   id="path4388" />
+              </g>
+              <g
+                 id="g4390"
+                 transform="translate(472.2156,689.0127)">
+                <path
+                   style="fill:#c7c8ca;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                   d="m 0,0 7.694,0 0.796,-3.583 -9.286,0 L 0,0 Z"
+                   id="path4392" />
+              </g>
+              <g
+                 id="g4394"
+                 transform="translate(472.2156,689.0127)">
+                <path
+                   style="fill:none;stroke:#c7c8ca;stroke-width:0.96600002;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                   d="m 0,0 7.694,0 0.796,-3.583 -9.286,0 L 0,0 Z"
+                   id="path4396" />
+              </g>
             </g>
           </g>
           <g
              id="g4470"
              transform="translate(435.0765,414.8281)">
             <path
+               id="armorLTR"
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
-               d="m 0,0 26.003,-1.645 2.741,0 0,-0.797 1.668,-1.646 24.624,0 1.668,1.646 0,0.797 2.742,0 26.53,1.645 2.193,2.742 2.738,35.098 -1.647,1.646 c 0,0 -21.039,2.705 -24.879,3.253 C 63.843,50.827 53.497,54.923 42.987,55.059 32.12,55.199 21.075,51.103 20.518,42.739 16.68,42.191 -3.287,39.486 -3.287,39.486 L -4.932,37.84 -2.194,2.742 0,0 Z"
-               id="path4472" />
+               d="M 20.5 42.7 C 16.6 42.2 -3.29 39.5 -3.29 39.5 L -4.93 37.8 L -2.19 2.74 L 0.000472 0.000663 L 26 -1.64 L 28.7 -1.64 L 28.7 -2.44 L 28.7 -2.44 L 28.7 -1.77 L 28.7 15.2 C 21 20.1 20.5 42.3 20.5 42.3 L 20.5 42.7 z "
+               loc="LT"
+               class="armor"
+               rear="1" />
+            <path
+               id="armorCTR"
+               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="M 20.5 42.7 L 20.5 42.3 C 20.5 42.3 21 20.1 28.7 15.2 L 28.7 -1.77 L 28.7 -2.44 L 30.4 -4.09 L 55 -4.09 L 56.7 -2.44 L 56.7 -1.64 L 57 -1.64 L 57 15.2 C 64.7 20.1 64.7 42.3 64.7 42.3 L 64.7 42.7 L 64.4 42.7 C 63.8 50.8 53.5 54.9 43 55.1 C 32.1 55.2 21.1 51.1 20.5 42.7 C 20.5 42.7 20.5 42.7 20.5 42.7 z "
+               loc="CT"
+               class="armor"
+               rear="1" />
+            <path
+               id="armorRTR"
+               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               d="M 64.7 42.7 L 64.7 42.3 C 64.7 42.3 64.7 20.1 57 15.2 L 57 -1.64 L 59.4 -1.64 L 86 0.000663 L 88.2 2.74 L 90.9 37.8 L 89.3 39.5 C 89.3 39.5 68.8 42.1 64.7 42.7 z "
+               loc="RT"
+               class="armor"
+               rear="1" />
           </g>
           <g
              id="g4474"
@@ -3134,14 +3175,16 @@
              visibility="hidden"
              id="shieldRA"
              transform="matrix(1,0,0,-1,-5.1490691,788.37352)"
-             style="mml-color-elements:btLogo, cglLogo, heatScale">
+             style="mml-color-elements:btLogo, cglLogo, heatScale"
+             class="shield"
+             loc="RA">
             <path
                fill="#c7c7c7"
                d="M587.766,144.193c-0.129,0-0.258-0.034-0.37-0.101l-7.497-4.248l0.369-0.657l0.747-0.09l-0.747,0.09     l-0.369,0.657c-0.207-0.117-0.342-0.333-0.369-0.567l-5.643-47.961l-10.71-12.501l-8.82-5.607     c-0.233-0.153-0.369-0.423-0.342-0.702l1.161-12.753c0.036-0.387,0.351-0.684,0.738-0.684l3.95-0.045l0.315-30.726     c0-0.207,0.09-0.405,0.243-0.54c0.137-0.13,0.311-0.201,0.495-0.201c0.021,0,0.042,0.001,0.063,0.003l24.759,1.665     c0.379,0.027,0.685,0.342,0.693,0.72l2.079,51.354v0.027v62.118c0,0.261-0.144,0.513-0.369,0.648     C588.025,144.16,587.895,144.193,587.766,144.193"
                id="path627" />
             <polygon
                fill="#FFFFFF"
-               id="polygon629"
+               id="polygon113"
                stroke-width="1.449"
                points="578.271,137.189 585.761,141.441      585.761,79.329 583.688,27.976 558.932,26.307 558.611,57.767 553.923,57.819 552.758,70.575 561.671,76.244 572.602,89    "
                stroke="#000000"
@@ -6399,7 +6442,9 @@
                id="path3688" />
           </g>
           <g
-             id="g4398"
+             id="isCL"
+             class="structure"
+             loc="CL"
              transform="translate(473.5524,219.3008)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6415,7 +6460,9 @@
                id="path4404" />
           </g>
           <g
-             id="g4406"
+             id="isLL"
+             class="structure"
+             loc="LL"
              transform="translate(424.9316,277.8919)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6431,7 +6478,9 @@
                id="path4412" />
           </g>
           <g
-             id="g4414"
+             id="isRL"
+             class="structure"
+             loc="RL"
              transform="translate(505.0616,277.8919)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6447,7 +6496,9 @@
                id="path4420" />
           </g>
           <g
-             id="g4422"
+             id="isCT"
+             class="structure"
+             loc="CT"
              transform="translate(478.1409,332.2879)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6463,7 +6514,9 @@
                id="path4428" />
           </g>
           <g
-             id="g4430"
+             id="isRA"
+             class="structure"
+             loc="RA"
              transform="translate(499.8335,356.653)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6479,7 +6532,9 @@
                id="path4436" />
           </g>
           <g
-             id="g4438"
+             id="isLA"
+             class="structure"
+             loc="LA"
              transform="translate(430.4078,356.653)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6495,7 +6550,9 @@
                id="path4444" />
           </g>
           <g
-             id="g4446"
+             id="isLT"
+             class="structure"
+             loc="LT"
              transform="translate(444.062,325.3353)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6511,7 +6568,9 @@
                id="path4452" />
           </g>
           <g
-             id="g4454"
+             id="isRT"
+             class="structure"
+             loc="RT"
              transform="translate(486.0519,325.4561)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6527,7 +6586,9 @@
                id="path4460" />
           </g>
           <g
-             id="g4462"
+             id="isHD"
+             class="structure"
+             loc="HD"
              transform="translate(482.6275,362.4727)">
             <path
                style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -6623,7 +6684,9 @@
                      fill="#FFFFFF"
                      style="stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="is_pip_hd_1" />
+                     id="is_pip_hd_1"
+                     class="pip structure"
+                     loc="HD" />
                 </g>
                 <g
                    id="g5608"
@@ -6645,7 +6708,9 @@
                      fill="#FFFFFF"
                      style="stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="is_pip_hd_sh_3" />
+                     id="is_pip_hd_sh_3"
+                     class="pip structure"
+                     loc="HD" />
                 </g>
                 <g
                    id="g2047"
@@ -6654,7 +6719,9 @@
                      fill="#FFFFFF"
                      style="stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="is_pip_hd_sh_1" />
+                     id="is_pip_hd_sh_1"
+                     class="pip structure"
+                     loc="HD" />
                 </g>
                 <g
                    id="g2051"
@@ -6663,7 +6730,9 @@
                      fill="#FFFFFF"
                      style="stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.961,0 -1.761,0.8 -1.761,1.758 0,0.96 0.8,1.761 1.761,1.761 0.959,0 1.758,-0.801 1.758,-1.761 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="is_pip_hd_sh_2" />
+                     id="is_pip_hd_sh_2"
+                     class="pip structure"
+                     loc="HD" />
                 </g>
                 <g
                    id="g2055"
@@ -6672,7 +6741,9 @@
                      fill="#FFFFFF"
                      style="stroke:#000000;stroke-width:0.48699999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.41400003;stroke-dasharray:none;stroke-opacity:1"
                      d="m 0,0 c -0.96,0 -1.76,0.8 -1.76,1.759 0,0.959 0.8,1.76 1.76,1.76 0.959,0 1.758,-0.801 1.758,-1.76 C 1.758,0.8 0.959,0 0,0 Z"
-                     id="is_pip_hd_sh_4" />
+                     id="is_pip_hd_sh_4"
+                     class="pip structure"
+                     loc="HD" />
                 </g>
               </g>
               <g
@@ -7747,278 +7818,329 @@
          textLength="19.001"
          lengthAdjust="spacingAndGlyphs"
          id="text353">Effects</text>
-          <g class="heatEffect" heat="30">
-<text
-         x="15.000"
-         y="44.684"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text354">30</text>
-      <text
-         x="27.000"
-         y="44.684"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text355">Shutdown</text>
-    </g>
-          <g class="heatEffect" heat="28">
-<text
-         x="15.000"
-         y="53.579"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text356">28</text>
-      <text
-         x="27.000"
-         y="53.579"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text357">Ammo Exp, avoid on 8+</text>
-    </g>
-          <g class="heatEffect" heat="26">
-<text
-         x="15.000"
-         y="62.474"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text358">26</text>
-      <text
-         x="27.000"
-         y="62.474"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text359">Shutdown, avoid on 10+</text>
-    </g>
-          <g class="heatEffect" heat="25">
-<text
-         x="15.000"
-         y="71.368"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text360">25</text>
-      <text
-         id="minus5MP"
-         x="27.000"
-         y="71.368"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-5 Movement Points</text>
-    </g>
-          <g class="heatEffect" heat="24">
-<text
-         x="15.000"
-         y="80.263"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text361">24</text>
-      <text
-         x="27.000"
-         y="80.263"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text362">+4 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="23">
-<text
-         x="15.000"
-         y="89.158"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text363">23</text>
-      <text
-         x="27.000"
-         y="89.158"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text364">Ammo Exp, avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="22">
-<text
-         x="15.000"
-         y="98.053"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text365">22</text>
-      <text
-         x="27.000"
-         y="98.053"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text366">Shutdown, avoid on 8+</text>
-    </g>
-          <g class="heatEffect" heat="20">
-<text
-         x="15.000"
-         y="106.947"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text367">20</text>
-      <text
-         id="minus4MP"
-         x="27.000"
-         y="106.947"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-4 Movement Points</text>
-    </g>
-          <g class="heatEffect" heat="19">
-<text
-         x="15.000"
-         y="115.842"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text368">19</text>
-      <text
-         x="27.000"
-         y="115.842"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text369">Ammo Exp, avoid on 4+</text>
-    </g>
-          <g class="heatEffect" heat="18">
-<text
-         x="15.000"
-         y="124.737"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text370">18</text>
-      <text
-         x="27.000"
-         y="124.737"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text371">Shutdown, avoid on 6+</text>
-    </g>
-          <g class="heatEffect" heat="17">
-<text
-         x="15.000"
-         y="133.632"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text372">17</text>
-      <text
-         x="27.000"
-         y="133.632"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text373">+3 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="15">
-<text
-         x="15.000"
-         y="142.526"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text374">15</text>
-      <text
-         id="minus3MP"
-         x="27.000"
-         y="142.526"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-3 Movement Points</text>
-    </g>
-          <g class="heatEffect" heat="14">
-<text
-         x="15.000"
-         y="151.421"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text375">14</text>
-      <text
-         x="27.000"
-         y="151.421"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text376">Shutdown, avoid on 4+</text>
-    </g>
-          <g class="heatEffect" heat="13">
-<text
-         x="15.000"
-         y="160.316"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text377">13</text>
-      <text
-         x="27.000"
-         y="160.316"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text378">+2 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="10">
-<text
-         x="15.000"
-         y="169.211"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text379">10</text>
-      <text
-         id="minus2MP"
-         x="27.000"
-         y="169.211"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-2 Movement Points</text>
-    </g>
-          <g class="heatEffect" heat="8">
-<text
-         x="15.000"
-         y="178.105"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text380">8</text>
-      <text
-         x="27.000"
-         y="178.105"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text381">+1 Modifier to Fire</text>
-    </g>
-          <g class="heatEffect" heat="5">
-<text
-         x="15.000"
-         y="187.000"
-         fill="#000000"
-         text-anchor="middle"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
-         id="text382">5</text>
-      <text
-         id="minus1MP"
-         x="27.000"
-         y="187.000"
-         fill="#000000"
-         text-anchor="start"
-         style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-1 Movement Points</text>
-    </g>
+      <g
+         class="heatEffect"
+         heat="30"
+         id="g1">
+        <text
+           x="15.000"
+           y="44.684"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text354">30</text>
+        <text
+           x="27.000"
+           y="44.684"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text355">Shutdown</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="28"
+         id="g2">
+        <text
+           x="15.000"
+           y="53.579"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text356">28</text>
+        <text
+           x="27.000"
+           y="53.579"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text357">Ammo Exp, avoid on 8+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="26"
+         id="g3">
+        <text
+           x="15.000"
+           y="62.474"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text358">26</text>
+        <text
+           x="27.000"
+           y="62.474"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text359">Shutdown, avoid on 10+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="25"
+         id="g4">
+        <text
+           x="15.000"
+           y="71.368"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text360">25</text>
+        <text
+           id="minus5MP"
+           x="27.000"
+           y="71.368"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-5 Movement Points</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="24"
+         id="g5">
+        <text
+           x="15.000"
+           y="80.263"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text361">24</text>
+        <text
+           x="27.000"
+           y="80.263"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text362">+4 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="23"
+         id="g6">
+        <text
+           x="15.000"
+           y="89.158"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text363">23</text>
+        <text
+           x="27.000"
+           y="89.158"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text364">Ammo Exp, avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="22"
+         id="g7">
+        <text
+           x="15.000"
+           y="98.053"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text365">22</text>
+        <text
+           x="27.000"
+           y="98.053"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text366">Shutdown, avoid on 8+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="20"
+         id="g8">
+        <text
+           x="15.000"
+           y="106.947"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text367">20</text>
+        <text
+           id="minus4MP"
+           x="27.000"
+           y="106.947"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-4 Movement Points</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="19"
+         id="g9">
+        <text
+           x="15.000"
+           y="115.842"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text368">19</text>
+        <text
+           x="27.000"
+           y="115.842"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text369">Ammo Exp, avoid on 4+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="18"
+         id="g12">
+        <text
+           x="15.000"
+           y="124.737"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text370">18</text>
+        <text
+           x="27.000"
+           y="124.737"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text371">Shutdown, avoid on 6+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="17"
+         id="g13">
+        <text
+           x="15.000"
+           y="133.632"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text372">17</text>
+        <text
+           x="27.000"
+           y="133.632"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text373">+3 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="15"
+         id="g14">
+        <text
+           x="15.000"
+           y="142.526"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text374">15</text>
+        <text
+           id="minus3MP"
+           x="27.000"
+           y="142.526"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-3 Movement Points</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="14"
+         id="g15">
+        <text
+           x="15.000"
+           y="151.421"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text375">14</text>
+        <text
+           x="27.000"
+           y="151.421"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text376">Shutdown, avoid on 4+</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="13"
+         id="g16">
+        <text
+           x="15.000"
+           y="160.316"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text377">13</text>
+        <text
+           x="27.000"
+           y="160.316"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text378">+2 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="10"
+         id="g17">
+        <text
+           x="15.000"
+           y="169.211"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text379">10</text>
+        <text
+           id="minus2MP"
+           x="27.000"
+           y="169.211"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-2 Movement Points</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="8"
+         id="g18">
+        <text
+           x="15.000"
+           y="178.105"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text380">8</text>
+        <text
+           x="27.000"
+           y="178.105"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text381">+1 Modifier to Fire</text>
+      </g>
+      <g
+         class="heatEffect"
+         heat="5"
+         id="g19">
+        <text
+           x="15.000"
+           y="187.000"
+           fill="#000000"
+           text-anchor="middle"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal"
+           id="text382">5</text>
+        <text
+           id="minus1MP"
+           x="27.000"
+           y="187.000"
+           fill="#000000"
+           text-anchor="start"
+           style="font-family:Eurostile;font-size:6.760px;font-weight:normal;font-style:normal">-1 Movement Points</text>
+      </g>
       <text
          fill="#000000"
          x="146.333"
@@ -8076,12 +8198,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text369-6">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -2.08,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 13.482 c 2.4,0 4.35,1.95 4.35,4.35 v 13.482 c 0,2.4 -1.95,4.35 -4.35,4.35 H 2.27 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path369" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            fill="#000000"
            x="9.0109997"
@@ -8097,7 +8220,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect370" class="heat" heat="30" />
+           id="rect370"
+           class="heat"
+           heat="30" />
         <rect
            x="0"
            y="60.272999"
@@ -8106,7 +8231,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect371" class="heat" heat="29" />
+           id="rect371"
+           class="heat"
+           heat="29" />
         <rect
            x="0"
            y="71.363998"
@@ -8115,7 +8242,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect372" class="heat" heat="28" />
+           id="rect372"
+           class="heat"
+           heat="28" />
         <rect
            x="0"
            y="82.455002"
@@ -8124,7 +8253,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect373" class="heat" heat="27" />
+           id="rect373"
+           class="heat"
+           heat="27" />
         <rect
            x="0"
            y="93.544998"
@@ -8133,7 +8264,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect374" class="heat" heat="26" />
+           id="rect374"
+           class="heat"
+           heat="26" />
         <rect
            x="0"
            y="104.636"
@@ -8142,7 +8275,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect375" class="heat" heat="25" />
+           id="rect375"
+           class="heat"
+           heat="25" />
         <rect
            x="0"
            y="115.727"
@@ -8151,7 +8286,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect376" class="heat" heat="24" />
+           id="rect376"
+           class="heat"
+           heat="24" />
         <rect
            x="0"
            y="126.818"
@@ -8160,7 +8297,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect377" class="heat" heat="23" />
+           id="rect377"
+           class="heat"
+           heat="23" />
         <rect
            x="0"
            y="137.909"
@@ -8169,7 +8308,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect378" class="heat" heat="22" />
+           id="rect378"
+           class="heat"
+           heat="22" />
         <rect
            x="0"
            y="149"
@@ -8178,7 +8319,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect379" class="heat" heat="21" />
+           id="rect379"
+           class="heat"
+           heat="21" />
         <rect
            x="0"
            y="160.091"
@@ -8187,7 +8330,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect380" class="heat" heat="20" />
+           id="rect380"
+           class="heat"
+           heat="20" />
         <rect
            x="0"
            y="171.18201"
@@ -8196,7 +8341,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect381" class="heat" heat="19" />
+           id="rect381"
+           class="heat"
+           heat="19" />
         <rect
            x="0"
            y="182.27299"
@@ -8205,7 +8352,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect382" class="heat" heat="18" />
+           id="rect382"
+           class="heat"
+           heat="18" />
         <rect
            x="0"
            y="193.364"
@@ -8214,7 +8363,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect383" class="heat" heat="17" />
+           id="rect383"
+           class="heat"
+           heat="17" />
         <rect
            x="0"
            y="204.455"
@@ -8223,7 +8374,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect384" class="heat" heat="16" />
+           id="rect384"
+           class="heat"
+           heat="16" />
         <rect
            x="0"
            y="215.545"
@@ -8232,7 +8385,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect385" class="heat" heat="15" />
+           id="rect385"
+           class="heat"
+           heat="15" />
         <rect
            x="0"
            y="226.636"
@@ -8241,7 +8396,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect386" class="heat" heat="14" />
+           id="rect386"
+           class="heat"
+           heat="14" />
         <rect
            x="0"
            y="237.72701"
@@ -8250,7 +8407,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect387" class="heat" heat="13" />
+           id="rect387"
+           class="heat"
+           heat="13" />
         <rect
            x="0"
            y="248.81799"
@@ -8259,7 +8418,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect388" class="heat" heat="12" />
+           id="rect388"
+           class="heat"
+           heat="12" />
         <rect
            x="0"
            y="259.909"
@@ -8268,7 +8429,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect389" class="heat" heat="11" />
+           id="rect389"
+           class="heat"
+           heat="11" />
         <rect
            x="0"
            y="271"
@@ -8277,7 +8440,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect390" class="heat" heat="10" />
+           id="rect390"
+           class="heat"
+           heat="10" />
         <rect
            x="0"
            y="282.091"
@@ -8286,7 +8451,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect391" class="heat" heat="9" />
+           id="rect391"
+           class="heat"
+           heat="9" />
         <rect
            x="0"
            y="293.18201"
@@ -8295,7 +8462,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect392" class="heat" heat="8" />
+           id="rect392"
+           class="heat"
+           heat="8" />
         <rect
            x="0"
            y="304.27301"
@@ -8304,7 +8473,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect393" class="heat" heat="7" />
+           id="rect393"
+           class="heat"
+           heat="7" />
         <rect
            x="0"
            y="315.36401"
@@ -8313,7 +8484,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect394" class="heat" heat="6" />
+           id="rect394"
+           class="heat"
+           heat="6" />
         <rect
            x="0"
            y="326.45499"
@@ -8322,7 +8495,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect395" class="heat" heat="5" />
+           id="rect395"
+           class="heat"
+           heat="5" />
         <rect
            x="0"
            y="337.54501"
@@ -8331,7 +8506,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect396" class="heat" heat="4" />
+           id="rect396"
+           class="heat"
+           heat="4" />
         <rect
            x="0"
            y="348.63599"
@@ -8340,7 +8517,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect397" class="heat" heat="3" />
+           id="rect397"
+           class="heat"
+           heat="3" />
         <rect
            x="0"
            y="359.72699"
@@ -8349,7 +8528,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect398" class="heat" heat="2" />
+           id="rect398"
+           class="heat"
+           heat="2" />
         <rect
            x="0"
            y="370.81799"
@@ -8358,7 +8539,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect399" class="heat" heat="1" />
+           id="rect399"
+           class="heat"
+           heat="1" />
         <rect
            x="0"
            y="381.909"
@@ -8367,7 +8550,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect400" class="heat" heat="0" />
+           id="rect400"
+           class="heat"
+           heat="0" />
         <text
            fill="#000000"
            x="9.0115005"
@@ -8375,7 +8560,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text405-4">30</text>
-      <text x="17.323001" y="57.427125" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="57.427125"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text19">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8390,7 +8581,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text407-2">28</text>
-      <text x="17.323001" y="79.609120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="79.609120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text20">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8405,7 +8602,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text409-0">26</text>
-      <text x="17.323001" y="101.791120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="101.791120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text21">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8413,7 +8616,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text410-1">25</text>
-      <text x="17.323001" y="112.882120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="112.882120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text22">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8421,7 +8630,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text411-4">24</text>
-      <text x="17.323001" y="123.973120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="123.973120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text23">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8429,7 +8644,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text412-6">23</text>
-      <text x="17.323001" y="135.064140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="135.064140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text24">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8437,7 +8658,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text413-0">22</text>
-      <text x="17.323001" y="146.155150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="146.155150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text25">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8452,7 +8679,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text415-1">20</text>
-      <text x="17.323001" y="168.336150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="168.336150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text26">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8460,7 +8693,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text416-7">19</text>
-      <text x="17.323001" y="179.427150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="179.427150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text27">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8468,7 +8707,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text417-7">18</text>
-      <text x="17.323001" y="190.518140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="190.518140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text28">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8476,7 +8721,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text418-7">17</text>
-      <text x="17.323001" y="201.609140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="201.609140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text29">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8491,7 +8742,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text420-3">15</text>
-      <text x="17.323001" y="223.791150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="223.791150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text30">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8499,7 +8756,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text421-3">14</text>
-      <text x="17.323001" y="234.882150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="234.882150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text31">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8507,7 +8770,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text422-5">13</text>
-      <text x="17.323001" y="245.973140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="245.973140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text32">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8529,7 +8798,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text425-8">10</text>
-      <text x="17.323001" y="279.245160" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="279.245160"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text33">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8544,7 +8819,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text427-8">8</text>
-      <text x="17.323001" y="301.427140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="301.427140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text34">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8566,7 +8847,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text430-6">5</text>
-      <text x="17.323001" y="334.700150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="334.700150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text35">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8626,12 +8913,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text403">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -2.08,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 13.482 c 2.4,0 4.35,1.95 4.35,4.35 v 13.482 c 0,2.4 -1.95,4.35 -4.35,4.35 H 2.27 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path403" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            fill="#000000"
            x="9.0109997"
@@ -8647,7 +8935,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect404" class="heat" heat="30" />
+           id="rect404"
+           class="heat"
+           heat="30" />
         <rect
            x="0"
            y="60.272999"
@@ -8656,7 +8946,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect405" class="heat" heat="29" />
+           id="rect405"
+           class="heat"
+           heat="29" />
         <rect
            x="0"
            y="71.363998"
@@ -8665,7 +8957,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect406" class="heat" heat="28" />
+           id="rect406"
+           class="heat"
+           heat="28" />
         <rect
            x="0"
            y="82.455002"
@@ -8674,7 +8968,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect407" class="heat" heat="27" />
+           id="rect407"
+           class="heat"
+           heat="27" />
         <rect
            x="0"
            y="93.544998"
@@ -8683,7 +8979,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect408" class="heat" heat="26" />
+           id="rect408"
+           class="heat"
+           heat="26" />
         <rect
            x="0"
            y="104.636"
@@ -8692,7 +8990,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect409" class="heat" heat="25" />
+           id="rect409"
+           class="heat"
+           heat="25" />
         <rect
            x="0"
            y="115.727"
@@ -8701,7 +9001,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect410" class="heat" heat="24" />
+           id="rect410"
+           class="heat"
+           heat="24" />
         <rect
            x="0"
            y="126.818"
@@ -8710,7 +9012,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect411" class="heat" heat="23" />
+           id="rect411"
+           class="heat"
+           heat="23" />
         <rect
            x="0"
            y="137.909"
@@ -8719,7 +9023,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect412" class="heat" heat="22" />
+           id="rect412"
+           class="heat"
+           heat="22" />
         <rect
            x="0"
            y="149"
@@ -8728,7 +9034,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect413" class="heat" heat="21" />
+           id="rect413"
+           class="heat"
+           heat="21" />
         <rect
            x="0"
            y="160.091"
@@ -8737,7 +9045,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect414" class="heat" heat="20" />
+           id="rect414"
+           class="heat"
+           heat="20" />
         <rect
            x="0"
            y="171.18201"
@@ -8746,7 +9056,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect415" class="heat" heat="19" />
+           id="rect415"
+           class="heat"
+           heat="19" />
         <rect
            x="0"
            y="182.27299"
@@ -8755,7 +9067,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect416" class="heat" heat="18" />
+           id="rect416"
+           class="heat"
+           heat="18" />
         <rect
            x="0"
            y="193.364"
@@ -8764,7 +9078,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect417" class="heat" heat="17" />
+           id="rect417"
+           class="heat"
+           heat="17" />
         <rect
            x="0"
            y="204.455"
@@ -8773,7 +9089,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect418" class="heat" heat="16" />
+           id="rect418"
+           class="heat"
+           heat="16" />
         <rect
            x="0"
            y="215.545"
@@ -8782,7 +9100,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect419" class="heat" heat="15" />
+           id="rect419"
+           class="heat"
+           heat="15" />
         <rect
            x="0"
            y="226.636"
@@ -8791,7 +9111,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect420" class="heat" heat="14" />
+           id="rect420"
+           class="heat"
+           heat="14" />
         <rect
            x="0"
            y="237.72701"
@@ -8800,7 +9122,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect421" class="heat" heat="13" />
+           id="rect421"
+           class="heat"
+           heat="13" />
         <rect
            x="0"
            y="248.81799"
@@ -8809,7 +9133,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect422" class="heat" heat="12" />
+           id="rect422"
+           class="heat"
+           heat="12" />
         <rect
            x="0"
            y="259.909"
@@ -8818,7 +9144,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect423" class="heat" heat="11" />
+           id="rect423"
+           class="heat"
+           heat="11" />
         <rect
            x="0"
            y="271"
@@ -8827,7 +9155,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect424" class="heat" heat="10" />
+           id="rect424"
+           class="heat"
+           heat="10" />
         <rect
            x="0"
            y="282.091"
@@ -8836,7 +9166,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect425" class="heat" heat="9" />
+           id="rect425"
+           class="heat"
+           heat="9" />
         <rect
            x="0"
            y="293.18201"
@@ -8845,7 +9177,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect426" class="heat" heat="8" />
+           id="rect426"
+           class="heat"
+           heat="8" />
         <rect
            x="0"
            y="304.27301"
@@ -8854,7 +9188,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect427" class="heat" heat="7" />
+           id="rect427"
+           class="heat"
+           heat="7" />
         <rect
            x="0"
            y="315.36401"
@@ -8863,7 +9199,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect428" class="heat" heat="6" />
+           id="rect428"
+           class="heat"
+           heat="6" />
         <rect
            x="0"
            y="326.45499"
@@ -8872,7 +9210,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect429" class="heat" heat="5" />
+           id="rect429"
+           class="heat"
+           heat="5" />
         <rect
            x="0"
            y="337.54501"
@@ -8881,7 +9221,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect430" class="heat" heat="4" />
+           id="rect430"
+           class="heat"
+           heat="4" />
         <rect
            x="0"
            y="348.63599"
@@ -8890,7 +9232,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect431" class="heat" heat="3" />
+           id="rect431"
+           class="heat"
+           heat="3" />
         <rect
            x="0"
            y="359.72699"
@@ -8899,7 +9243,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect432" class="heat" heat="2" />
+           id="rect432"
+           class="heat"
+           heat="2" />
         <rect
            x="0"
            y="370.81799"
@@ -8908,7 +9254,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect433" class="heat" heat="1" />
+           id="rect433"
+           class="heat"
+           heat="1" />
         <rect
            x="0"
            y="381.909"
@@ -8917,7 +9265,9 @@
            height="11.091"
            stroke="#000000"
            stroke-width="1.45"
-           id="rect434" class="heat" heat="0" />
+           id="rect434"
+           class="heat"
+           heat="0" />
         <text
            fill="#000000"
            x="9.0115005"
@@ -8925,7 +9275,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text405">30</text>
-      <text x="17.323001" y="57.427125" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="57.427125"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text104">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8940,7 +9296,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text407">28</text>
-      <text x="17.323001" y="79.609120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="79.609120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text105">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8955,7 +9317,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text409">26</text>
-      <text x="17.323001" y="101.791120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="101.791120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text106">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8963,7 +9331,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text410">25</text>
-      <text x="17.323001" y="112.882120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="112.882120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text107">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8971,7 +9345,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text411">24</text>
-      <text x="17.323001" y="123.973120" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="123.973120"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text108">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8979,7 +9359,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text412">23</text>
-      <text x="17.323001" y="135.064140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="135.064140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text109">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -8987,7 +9373,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text413">22</text>
-      <text x="17.323001" y="146.155150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="146.155150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text110">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9002,7 +9394,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text415">20</text>
-      <text x="17.323001" y="168.336150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="168.336150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text111">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9010,7 +9408,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text416">19</text>
-      <text x="17.323001" y="179.427150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="179.427150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text112">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9018,7 +9422,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text417">18</text>
-      <text x="17.323001" y="190.518140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="190.518140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text113">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9026,7 +9436,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text418">17</text>
-      <text x="17.323001" y="201.609140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="201.609140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text114">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9041,7 +9457,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text420">15</text>
-      <text x="17.323001" y="223.791150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="223.791150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text115">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9049,7 +9471,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text421">14</text>
-      <text x="17.323001" y="234.882150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="234.882150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text116">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9057,7 +9485,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text422">13</text>
-      <text x="17.323001" y="245.973140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="245.973140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text117">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9079,7 +9513,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text425">10</text>
-      <text x="17.323001" y="279.245160" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="279.245160"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text118">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9094,7 +9534,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text427">8</text>
-      <text x="17.323001" y="301.427140" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="301.427140"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text119">*</text>
         <text
            fill="#000000"
            x="9.0115005"
@@ -9116,7 +9562,13 @@
            style="font-style:normal;font-weight:bold;font-size:6.76px;font-family:Eurostile;display:inline"
            text-anchor="middle"
            id="text430">5</text>
-      <text x="17.323001" y="334.700150" text-anchor="end" font-size="8" fill="#000000">*</text>
+        <text
+           x="17.323001"
+           y="334.700150"
+           text-anchor="end"
+           font-size="8"
+           fill="#000000"
+           id="text120">*</text>
         <text
            fill="#000000"
            x="9.0115005"

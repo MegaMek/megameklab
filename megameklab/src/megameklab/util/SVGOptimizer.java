@@ -120,6 +120,7 @@ public class SVGOptimizer {
 //        simplifyTransforms(root); // This collapses all to matrix() transforms, which is not always desired.
 //        convertShapesToPaths(root); // The size of the file tends to increase, not good!
         simplifyPathData(root);
+        removeInvisiblePreservedIdGroups(root);
         removeInvisibleElements(root);
         removeNonRenderingElements(root);
         final String desiredTypeface = CConfig.getParam(CConfig.RS_FONT, PrintRecordSheet.DEFAULT_TYPEFACE);
@@ -618,6 +619,39 @@ public class SVGOptimizer {
             }
         }
         return false;
+    }
+
+    private static void removeInvisiblePreservedIdGroups(Element element) {
+        NodeList allElements = element.getElementsByTagName("*");
+        for (int testNum = 0; testNum <= 4; testNum++) {
+            boolean anyVisible = false;
+            List<Element> elementsToRemove = new ArrayList<>();
+
+            for (int i = 0; i < allElements.getLength(); i++) {
+                Element el = (Element) allElements.item(i);
+                if (el.hasAttribute("id")) {
+                    String id = el.getAttribute("id");
+                    for (String prefix : PRESERVE_IDS_PREFIXES) {
+                        if (id.equals(prefix + testNum)) {
+                            String visibility = el.getAttribute("visibility");
+                            if (!"hidden".equalsIgnoreCase(visibility)) {
+                                anyVisible = true;
+                            }
+                            elementsToRemove.add(el);
+                        }
+                    }
+                }
+            }
+
+            if (!anyVisible) {
+                for (Element el : elementsToRemove) {
+                    Node parent = el.getParentNode();
+                    if (parent != null) {
+                        parent.removeChild(el);
+                    }
+                }
+            }
+        }
     }
 
     private static void removeInvisibleElements(Element element) {

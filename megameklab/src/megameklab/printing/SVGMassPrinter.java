@@ -23,19 +23,16 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
 
 import megamek.client.ratgenerator.RATGenerator;
+import megamek.client.ui.Messages;
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.GunEmplacement;
-import megamek.common.MekSummary;
-import megamek.common.MekSummaryCache;
-import megamek.common.UnitRole;
+import megamek.common.*;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.common.util.C3Util;
@@ -75,7 +72,7 @@ import java.io.FileOutputStream;
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String TYPEFACE = "Roboto";
@@ -83,8 +80,10 @@ public class SVGMassPrinter {
     private static final String VERSION_FILE = "version.json";
     private static final String UNIT_FILE = "units.json";
     private static final String ROOT_FOLDER = "svgexport";
-    private static final int DEFAULT_MARGINS = 5; // Default margins for the page
+    private static final int DEFAULT_MARGINS = 0; // Default margins for the page
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
+
+    private static final HashMap<Integer, String> unitTypes = new HashMap<>();
 
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
@@ -97,7 +96,8 @@ public class SVGMassPrinter {
         public int bv; // Battle Value, rounded to the nearest integer
         public int pv; // Point Value, rounded to the nearest integer
         public long cost; // Cost in C-Bills, rounded to the nearest integer
-        public int level; // Tech Level
+//        public int level; // Tech Level
+        public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
         public String techBase;
         public String techRating;
         public String type; // Major type, "Mek", "Vehicle", etc.
@@ -112,9 +112,117 @@ public class SVGMassPrinter {
         public int run; // Run MP
         public int jump; // Jump MP
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
+        public int crewSize; // Number of crew members, if applicable
         public List<String> sheets; // Path to the SVG sheet
 
-        public UnitData(Entity entity) {
+
+
+        private static String unitTypeAsString(Entity entity) {
+            String result = "";
+//            if (entity.isPrimitive()) {
+//                result += Messages.getString("MekView.unitType.primitive") + " ";
+//            }
+            if ((entity.isDropShip() || entity.isSmallCraft())) {
+                if (!entity.isMilitary()) {
+                    result += Messages.getString("MekView.unitType.civilian") + " ";
+                }
+                if (entity.isAerodyne()) {
+                    result += Messages.getString("MekView.unitType.aerodyne") + " ";
+                } else {
+                    result += Messages.getString("MekView.unitType.spheroid") + " ";
+                }
+            }
+            if (entity instanceof Infantry inf && !entity.isBattleArmor() && inf.isMechanized()) {
+                result += Messages.getString("MekView.unitType.mechanized") + " ";
+            } else if (entity.getMovementMode().isMotorizedInfantry()) {
+                result += Messages.getString("MekView.unitType.motorized") + " ";
+            }
+//            if (entity.isSuperHeavy()) {
+//                result += Messages.getString("MekView.unitType.superHeavy") + " ";
+//            }
+            if (entity instanceof LandAirMek) {
+                result += "Land-Air "; // Special case for Land-Air Meks
+            } else if (entity.isTripodMek()) {
+                result += Messages.getString("MekView.unitType.tripod") + " ";
+            } else if (entity instanceof QuadVee) {
+                result += Messages.getString("MekView.unitType.quadVee") + " ";
+            } else if (entity.isQuadMek() || (entity instanceof ProtoMek pm && pm.isQuad())) {
+                result += Messages.getString("MekView.unitType.quad") + " ";
+            }
+            if (entity.isIndustrialMek()) {
+                result += Messages.getString("MekView.unitType.industrial") + " ";
+            }
+            if (entity.isConventionalFighter()) {
+                result += Messages.getString("MekView.unitType.conventional") + " ";
+            } else if (entity.isAerospaceFighter()) {
+                result += Messages.getString("MekView.unitType.aerospace") + " ";
+            }
+            if (entity.isCombatVehicle() && !(entity instanceof GunEmplacement)) {
+                result += Messages.getString("MekView.unitType.combat") + " ";
+            } else if (entity.isFixedWingSupport()) {
+                result += Messages.getString("MekView.unitType.fixedWingSupport") + " ";
+            } else if (entity.isSupportVehicle()) {
+                result += Messages.getString("MekView.unitType.support") + " ";
+            }
+
+            if (entity.isSpaceStation()) {
+                if (entity.isMilitary()) {
+                    result += Messages.getString("MekView.unitType.military") + " ";
+                } else {
+                    result += Messages.getString("MekView.unitType.civilian") + " ";
+                }
+                result += Messages.getString("MekView.unitType.spaceStation");
+            } else if (entity.isJumpShip()) {
+                result += Messages.getString("MekView.unitType.jumpShip");
+            } else if (entity.isWarShip()) {
+                result += Messages.getString("MekView.unitType.warShip");
+            } else if (entity.isDropShip()) {
+                result += Messages.getString("MekView.unitType.dropShip");
+            } else if (entity.isSmallCraft()) {
+                result += Messages.getString("MekView.unitType.smallCraft");
+            } else if (entity.isProtoMek()) {
+                result += Messages.getString("MekView.unitType.protoMek");
+            } else if (entity.isBattleArmor()) {
+                result += Messages.getString("MekView.unitType.battleArmor");
+            } else if (entity.isConventionalInfantry()) {
+                result += Messages.getString("MekView.unitType.infantry");
+            } else if (entity.isMek() && !entity.isIndustrialMek()) {
+                result += Messages.getString("MekView.unitType.battleMek");
+            } else if (entity instanceof GunEmplacement) {
+                result += Messages.getString("MekView.unitType.gunEmplacement");
+            } else if (entity.isIndustrialMek()) {
+                result += Messages.getString("MekView.unitType.onlyMek");
+            } else if (entity.isVehicle() || entity.isFixedWingSupport()) {
+                result += Messages.getString("MekView.unitType.vehicle");
+            } else if (entity.isFighter() && !entity.isSupportVehicle()) {
+                result += Messages.getString("MekView.unitType.fighter");
+            } else if (entity instanceof HandheldWeapon) {
+                result += Messages.getString("MekView.unitType.handHeld");
+            }
+            String addendum = "";
+            if (entity.isVehicle() && !entity.isSupportVehicle()) {
+                if (entity.getMovementMode().isSubmarine()) {
+                    addendum += Messages.getString("MekView.unitType.submarine");
+//                } else if (entity.getMovementMode().isVTOL()) {
+//                    addendum += Messages.getString("MekView.unitType.vtol");
+                } else if (entity.getMovementMode().isHover()) {
+                    addendum += Messages.getString("MekView.unitType.hover");
+                } else if (entity.getMovementMode().isRail()) {
+                    addendum += Messages.getString("MekView.unitType.rail");
+                } else if (entity.getMovementMode().isNaval() || entity.getMovementMode().isHydrofoil()) {
+                    addendum += Messages.getString("MekView.unitType.naval");
+                } else if (entity.getMovementMode().isWiGE()) {
+                    addendum += Messages.getString("MekView.unitType.wige");
+                }
+            }
+            if (addendum.isBlank()) {
+                return result.trim();
+            } else {
+                return addendum.trim();
+            }
+        }
+
+        public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
             this.id = entity.getMulId();
             this.chassis = entity.getFullChassis();
             this.model = entity.getModel();
@@ -123,11 +231,27 @@ public class SVGMassPrinter {
             this.tons = entity.getWeight();
             this.bv = entity.getBvCalculator().calculateBV(false,true);
             this.cost = Math.round(entity.getCost(false));
-            this.level = entity.getStaticTechLevel().ordinal();
             this.techBase = formatTechBase(entity);
             this.techRating = entity.getFullRatingName();
-            this.type = Entity.getEntityMajorTypeName(entity.getEntityType());
-            this.subtype = Entity.getEntityTypeName(entity.getEntityType());
+            this.level = formatRulesLevel(entity, options);
+            // This is over-convoluted for no reason, should be simplified and unified at the source
+            final String majorType = Entity.getEntityMajorTypeName(entity.getEntityType());
+            final String type = Entity.getEntityTypeName(entity.getEntityType());
+            int unitTypeId = UnitType.determineUnitTypeCode(mekSummary.getUnitType());
+            if (entity.isNaval()) {
+                this.type = unitTypes.get(unitTypeId);
+            } else {
+                this.type = majorType;
+            }
+            this.subtype = unitTypeAsString(entity).trim();
+//            if (mekSummary.isSupport()) {
+//                this.subtype = unitTypes.get(UnitType.SIZE);
+//            } else
+//            if (majorType.equals(type)) {
+//                this.subtype = unitTypes.get(unitTypeId);
+//            } else {
+//                this.subtype = type;
+//            }
             this.source = entity.getSource();
             this.role = formatRole(entity);
             this.armor = entity.getTotalOArmor();
@@ -137,6 +261,7 @@ public class SVGMassPrinter {
             this.walk = entity.getWalkMP();
             this.run = entity.getRunMP();
             this.jump = entity.getJumpMP();
+            this.crewSize = entity.getCrew().getSlotCount();
             this.sheets = new ArrayList<>();
         }
 
@@ -158,6 +283,17 @@ public class SVGMassPrinter {
                 return "None";
             }
         }
+    }
+
+    protected static String formatRulesLevel(Entity entity, RecordSheetOptions options) {
+        SimpleTechLevel level;
+        if (options.useEraBaseProgression()) {
+            level = entity.getSimpleLevel(entity.getYear(), entity.isClan());
+        } else {
+            level = entity.getStaticTechLevel();
+        }
+        return level.toString().substring(0, 1)
+                + level.toString().substring(1).toLowerCase();
     }
 
     public static void main(String[] args) {
@@ -187,6 +323,15 @@ public class SVGMassPrinter {
                 logger.info("Sheets directory created: {}", sheetsDir.getPath());
             }
         }
+
+        for (int i = 0; i < UnitType.SIZE; i++) {
+            // the AERO type does not match any units and there are no preconstructed life boats or escape pods
+            if (i != UnitType.AERO) {
+                unitTypes.put(i, UnitType.getTypeDisplayableName(i));
+            }
+        }
+        unitTypes.put(UnitType.SIZE, Messages.getString("MekSelectorDialog.SupportVee"));
+
         HashSet<String> processedFiles = new HashSet<>();
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
@@ -217,11 +362,10 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
-//                if (!mekSummary.getName().contains("Archangel")) {
-//                    continue;
-//                }
-                // if (mekSummary.getUnitType() != "Mek") continue; // Skip non-Mek units
-                // logger.info("{}", mekSummary.getName());
+                if (!mekSummary.getName().contains("Crab") && !mekSummary.getName().contains("Assault Commando")) {
+                    continue;
+                }
+//                 logger.info("{}", mekSummary.getName());
 
                 // if (i > 10) break; // For testing, remove this line in production
                 /*
@@ -249,10 +393,13 @@ public class SVGMassPrinter {
                     continue;
                 }
                 UnitUtil.updateLoadedUnit(entity);
-                entity.getCrew().setName("", 0);
+                for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+                    entity.getCrew().setName("", i);
+                }
                 if (entity.getId() == -1) {
                     entity.setId(entity.getGame().getNextEntityId());
                 }
+
                 C3Util.wireC3(entity.getGame(), entity);
                 String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase().replaceAll("[^a-zA-Z0-9_]", "");
                 File sheetPath = new File(sheetsDir.getPath(), svgPath);
@@ -269,7 +416,7 @@ public class SVGMassPrinter {
                 }
                 processedFiles.add(name);
 
-                UnitData unitData = new UnitData(entity);
+                UnitData unitData = new UnitData(mekSummary, entity, recordSheetOptions);
                 unitData.name = name;
                 boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();
                 try {
@@ -296,11 +443,12 @@ public class SVGMassPrinter {
                             if (sheet instanceof PrintSmallUnitSheet) {
                                 pf.setPaper(paperDef.createPaper());
                             } else {
-                                pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                                pf.setPaper(paperDef.createPaper());
+//                                pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
                             }
                             int pageCount = sheet.getPageCount();
                             for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
-                                sheet.createDocument(pageIndexInSheet, pf, false);
+                                sheet.createDocument(pageIndexInSheet, pf, true);
                                 if (pageCount > 1) {
                                     // Multiple pages, clone the SVG document for each page to prevent overwriting
                                     svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));

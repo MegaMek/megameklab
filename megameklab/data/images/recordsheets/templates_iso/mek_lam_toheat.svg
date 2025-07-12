@@ -5898,7 +5898,9 @@
                  fill="#FFFFFF"
                  style="stroke:#000000;stroke-width:0.487;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:2.414;stroke-dasharray:none;stroke-opacity:1"
                  d="m 0.262,-2.77 c -0.961,0 -1.762,0.8 -1.762,1.76 0,0.958 0.801,1.758 1.762,1.758 0.958,0 1.758,-0.8 1.758,-1.758 0,-0.96 -0.8,-1.76 -1.758,-1.76 z"
-                 id="is_pip_hd_sh_1" />
+                 id="is_pip_hd_sh_1"
+                     loc="HD"
+                     class="pip structure" />
             </g>
             <g
                id="g1701"
@@ -7405,12 +7407,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text408-2">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.295,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 5.111 c 2.4,0 4.35,1.95 4.35,4.35 v 5.111 c 0,2.4 -1.95,4.35 -4.35,4.35 H 3.055 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path408" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="5.6110001"
            y="28.5"
@@ -8277,12 +8280,13 @@
            lengthAdjust="spacingAndGlyphs"
            id="text462">Scale</text>
         <path
-           fill="none"
+           fill="white"
            d="m -1.295,26.85 c 0,-2.4 1.95,-4.35 4.35,-4.35 h 5.111 c 2.4,0 4.35,1.95 4.35,4.35 v 5.111 c 0,2.4 -1.95,4.35 -4.35,4.35 H 3.055 c -2.4,0 -4.35,-1.95 -4.35,-4.35 z"
            stroke-width="1.45"
            stroke-linejoin="round"
            stroke="#000000"
-           id="path462" />
+           id="overflowFrame"
+           class="overflowFrame" />
         <text
            x="5.6110001"
            y="28.5"
