@@ -118,6 +118,7 @@ class PrintSmallUnitSheetTest {
         Dropship testDS = new Dropship();
         testDS.setChassis("Test Dropship");
         testDS.setModel("TDS-999");
+        testDS.setEngine(null);
 
         // Create print object
         PrintAero pa = new PrintDropship(testDS, 1, rso);
