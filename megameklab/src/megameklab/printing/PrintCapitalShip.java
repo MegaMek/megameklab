@@ -14,7 +14,6 @@
 package megameklab.printing;
 
 import java.awt.geom.Rectangle2D;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.batik.util.SVGConstants;
@@ -150,15 +149,15 @@ public class PrintCapitalShip extends PrintDropship {
         setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
         if (ship instanceof Warship) {
-            printInternalRegion(SI_PIPS, ship.getOSI(), (ship.getOSI() - ship.getSI()), 100, "structure", "SI");
+            printInternalRegion(SI_PIPS, ship.getOSI(), (ship.getOSI() - ship.getSI()), 100, "SI");
         }
         printInternalRegion(KF_PIPS, ship.getOKFIntegrity(), (ship.getOKFIntegrity() - ship.getKFIntegrity()), 30,
-              "structure", "KF");
+              "KF");
         printInternalRegion(SAIL_PIPS, ship.getOSailIntegrity(), (ship.getOSailIntegrity() - ship.getSailIntegrity())
-              , 10, "structure", "SAIL");
+              , 10, "SAIL");
         final int collarCount = ship.getDockingCollars().size();
         final int collarDamage = getCollarDamage();
-        printInternalRegion(DC_PIPS, collarCount, collarDamage, 10, "structure", "DC");
+        printInternalRegion(DC_PIPS, collarCount, collarDamage, 10, "DC");
     }
 
     @Override
@@ -178,38 +177,30 @@ public class PrintCapitalShip extends PrintDropship {
     /**
      * Print pips for some internal structure region.
      *
-     * @param rectId
-     *                     The id of the rectangle element that describes the
-     *                     outline of the
-     *                     region to print pips
-     * @param structure
-     *                     The number of structure pips
-     * @param pipsPerBlock
-     *                     The maximum number of pips to draw in a single block
+     * @param rectId       The id of the rectangle element that describes the outline of the region to print pips
+     * @param structure    The number of structure pips
+     * @param damage       The number of structure pips that are damaged
+     * @param pipsPerBlock The maximum number of pips to draw in a single block
      * @param location     Location abbreviation for the region
      */
     private void printInternalRegion(String rectId, int structure, int damage, int pipsPerBlock,
-          String className, String location) {
+          String location) {
         Element element = getSVGDocument().getElementById(rectId);
         if (element instanceof SVGRectElement) {
-            printInternalRegion((SVGRectElement) element, structure, damage, pipsPerBlock, className, location);
+            printInternalRegion((SVGRectElement) element, structure, damage, pipsPerBlock, location);
         }
     }
 
     /**
      * Print pips for some internal structure region.
      *
-     * @param svgRect
-     *                     The rectangle that describes the outline of the region to
-     *                     print
-     *                     pips
-     * @param structure
-     *                     The number of structure pips
-     * @param pipsPerBlock
-     *                     The maximum number of pips to draw in a single block
+     * @param svgRect      The rectangle that describes the outline of the region to print pips
+     * @param structure    The number of structure pips
+     * @param damage       The number of structure pips that are damaged
+     * @param pipsPerBlock The maximum number of pips to draw in a single block
      */
     private void printInternalRegion(SVGRectElement svgRect, int structure, int damage, int pipsPerBlock,
-          String className, String location) {
+          String location) {
         Rectangle2D bbox = getRectBBox(svgRect);
         final double blockWidth = PIPS_PER_ROW * IS_PIP_WIDTH;
         int pips;
@@ -223,11 +214,11 @@ public class PrintCapitalShip extends PrintDropship {
         }
         AtomicInteger remainingDamage = new AtomicInteger(damage);
         printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
-                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, className, location);
+                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, "structure", location);
         if (structure > pips) {
             printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
                     structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage,
-                  className, location);
+                  "structure", location);
         }
     }
 
