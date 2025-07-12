@@ -362,9 +362,9 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
-                if (!mekSummary.getName().contains("Crab") && !mekSummary.getName().contains("Assault Commando")) {
-                    continue;
-                }
+//                if (!mekSummary.getName().contains("Crab") && !mekSummary.getName().contains("Assault Commando")) {
+//                    continue;
+//                }
 //                 logger.info("{}", mekSummary.getName());
 
                 // if (i > 10) break; // For testing, remove this line in production

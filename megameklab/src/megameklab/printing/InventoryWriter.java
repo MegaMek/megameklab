@@ -497,7 +497,7 @@ public class InventoryWriter {
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
                     yPosition, sheet.heatProfileText(),
                     FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile");
+                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile", null);
         }
         writeFooterBlock(metrics[0], metrics[1]);
     }
@@ -690,7 +690,8 @@ public class InventoryWriter {
             }
             if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
-                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE,"unitQuirks");
             }
             final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
             // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
@@ -936,7 +937,7 @@ public class InventoryWriter {
                 int lines = sheet.addMultilineTextElement(rowGroup, colX[1] + indent,
                             yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
                             line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE, "weaponQuirks");
                 yPosition += lineHeight * lines;
             }
         }

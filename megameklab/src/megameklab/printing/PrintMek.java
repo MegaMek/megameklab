@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import megamek.common.equipment.AmmoMounted;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
@@ -560,6 +561,14 @@ public class PrintMek extends PrintEntity {
                             g.setAttributeNS(null, "hs", (miscType.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ||
                                   miscType.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)) ? "2": "1");
                         }
+                    }
+                    if (crit.getMount() instanceof AmmoMounted ammo) {
+                        int shots = ammo.getBaseShotsLeft();
+                        if ((crit.getMount2() != null) && (crit.getMount2().getType() instanceof AmmoType)) {
+                            shots += crit.getMount2().getBaseShotsLeft();
+                        }
+                        g.setAttributeNS(null, "class", "critSlot ammoSlot");
+                        g.setAttributeNS(null, "totalAmmo", String.valueOf(shots));
                     }
                 } else
                 if ((crit.getType() == CriticalSlot.TYPE_SYSTEM) && (crit.getIndex() >= 0)) {
