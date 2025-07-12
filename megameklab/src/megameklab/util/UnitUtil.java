@@ -62,6 +62,7 @@ import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
+import megamek.common.weapons.autocannons.RACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.defensivepods.BPodWeapon;
@@ -1251,7 +1252,40 @@ public class UnitUtil {
      * Returns the total heat generation of the entity
      */
     public static int getTotalHeatGeneration(Entity entity) {
-        return entity.getEquipment().stream().mapToInt(m -> m.getType().getHeat()).sum();
+        return getTotalHeatGeneration(entity, true);
+    }
+
+    /**
+     * Returns the total heat generation of the entity
+     * @param countOneshots If false, one-shot weapons are excluded.
+     */
+    public static int getTotalHeatGeneration(Entity entity, boolean countOneshots) {
+        return entity.getEquipment().stream().mapToInt(m -> {
+            var heat = m.getType().getHeat();
+            if (m instanceof WeaponMounted wm) {
+                if (!countOneshots && wm.getType().hasFlag(WeaponType.F_ONESHOT)) {
+                    return 0;
+                }
+
+                if (wm.getLinkedBy() instanceof MiscMounted linkMount) {
+                    if (linkMount.getType().hasFlag(MiscTypeFlag.F_LASER_INSULATOR)) {
+                        heat--;
+                    } else if (linkMount.getType().hasFlag(MiscTypeFlag.F_PPC_CAPACITOR) && wm.hasChargedOrChargingCapacitor() == 0) {
+                        // If the capacitor is charged it will have been counted already, only add 5 heat if it's
+                        // not charged. For Lab purposes, we always pretend that the capacitor is charged.
+                        heat += 5;
+                    }
+                }
+
+                // Order matters since RACWeapons are UACWeapons
+                if (wm.getType() instanceof RACWeapon) {
+                    heat *= 6;
+                } else if (wm.getType() instanceof UACWeapon) {
+                    heat *= 2;
+                }
+            }
+            return heat;
+        }).sum();
     }
 
     /**

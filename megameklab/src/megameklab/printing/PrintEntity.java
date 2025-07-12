@@ -33,18 +33,6 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.batik.anim.dom.SVGGraphicsElement;
-import org.apache.batik.anim.dom.SVGLocatableSupport;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGRect;
-import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.svg.SVGTextContentElement;
-
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.client.ui.util.UIUtil;
@@ -60,6 +48,16 @@ import megamek.common.options.Quirks;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
+import org.apache.batik.anim.dom.SVGGraphicsElement;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGRect;
+import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextContentElement;
 
 /**
  * Base class for printing Entity record sheets
@@ -127,8 +125,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * @return A String showing the total weapon heat and dissipation.
      */
     protected String heatProfileText() {
-        int heat = UnitUtil.getTotalHeatGeneration(getEntity());
-        return "Total Heat (Dissipation): " + heat + " (" + getEntity().formatHeat() + ")";
+        int heat = UnitUtil.getTotalHeatGeneration(getEntity(), false);
+        int oneShotHeat = UnitUtil.getTotalHeatGeneration(getEntity(), true);
+        if (heat == oneShotHeat) {
+            return "Maximum Heat (Dissipation): %d (%s)".formatted(heat, getEntity().formatHeat());
+        } else {
+            return "Maximum Heat (Dissipation): %d/%d (%s)\n".formatted(heat, oneShotHeat, getEntity().formatHeat());
+        }
+
     }
 
     /**
