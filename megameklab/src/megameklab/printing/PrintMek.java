@@ -595,6 +595,7 @@ public class PrintMek extends PrintEntity {
                 addTextElementToFit(g, critX, currY, critWidth, formatCritName(crit), fontSize,
                         SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
+                g.setAttributeNS(null, "armored", "1");
                 int damage = 0;
                 final boolean isDamagedPip = damage > 0;
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE,
@@ -612,6 +613,7 @@ public class PrintMek extends PrintEntity {
                 }
                 addTextElement(g, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight,
                       SVGConstants.SVG_NORMAL_VALUE, fill);
+                g.setAttributeNS(null, "modularArmor", "1");
                 x = critX + textLength;
                 double remainingW = viewX + viewWidth - x;
                 double spacing = remainingW / 6.0;

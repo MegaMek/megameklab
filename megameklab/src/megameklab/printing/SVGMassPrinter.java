@@ -23,21 +23,30 @@ import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.*;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.enums.WeaponSortOrder;
+import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.util.C3Util;
+import megamek.common.weapons.DamageType;
+import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
+import megameklab.ui.util.EquipmentDatabaseCategory;
 import megameklab.util.CConfig;
 import megameklab.util.SVGOptimizer;
 import megameklab.util.UnitPrintManager;
@@ -67,12 +76,15 @@ import org.w3c.dom.svg.SVGDocument;
 
 import java.io.FileOutputStream;
 
+import static megamek.common.WeaponType.F_ENERGY;
+import static megamek.common.WeaponType.F_PLASMA;
+
 /**
  * @author drake
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String TYPEFACE = "Roboto";
@@ -84,6 +96,90 @@ public class SVGMassPrinter {
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
 
     private static final HashMap<Integer, String> unitTypes = new HashMap<>();
+
+    public static class WeaponEntry {
+        public int q; // Quantity of this weapon type
+        public String n; // Name of the weapon type
+        public String t; // Type of the weapon
+    }
+    public static class WeaponsComposition {
+        @JsonIgnore
+        public HashMap<String, WeaponEntry> weapons = new HashMap<>();
+
+        @JsonProperty("weapons")
+        public Collection<WeaponEntry> getWeaponEntries() {
+            return weapons.values();
+        }
+
+        private String getWeaponCategory(WeaponType eq) {
+            if (eq.hasFlag(F_ENERGY) || ((eq.hasFlag(F_PLASMA) && (eq.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) || eq.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Energy)) {
+                return "E";
+            }
+            if (eq.hasFlag(WeaponType.F_MISSILE) || eq.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Missile)) {
+                return "M";
+            }
+            if (eq.hasFlag(WeaponType.F_BALLISTIC) || eq.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Ballistic)) {
+                return "B";
+            }
+            if (eq.hasFlag(WeaponType.F_ARTILLERY) || eq.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Artillery)) {
+                return "A";
+            }
+            if (EquipmentDatabaseCategory.isIndustrialEquipment(eq) || UnitUtil.isPhysicalWeapon(eq)) {
+                return "P";
+            }
+            return "O";
+        }
+
+        private void addWeaponEntry(WeaponType type) {
+            final String name = type.getName();
+            if (weapons.containsKey(name)) {
+                weapons.get(name).q += 1;
+            } else {
+                WeaponEntry entry = new WeaponEntry();
+                entry.n = name;
+                entry.t = getWeaponCategory(type);
+                entry.q = 1;
+                weapons.put(name, entry);
+            }
+        }
+
+        public WeaponsComposition(Entity entity) {
+            if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
+                if (null != inf.getPrimaryWeapon()) {
+                    addWeaponEntry(inf.getPrimaryWeapon());
+                }
+                if (null != inf.getSecondaryWeapon()) {
+                    addWeaponEntry(inf.getSecondaryWeapon());
+                }
+            }
+
+            if (entity.getWeaponList().isEmpty()) {
+                return;
+            }
+
+            for (WeaponMounted mounted : entity.getWeaponList()) {
+                if (mounted.getType().hasFlag(WeaponTypeFlag.INTERNAL_REPRESENTATION)) {
+                    continue;
+                }
+                WeaponType wtype = mounted.getType();
+                addWeaponEntry(wtype);
+                // if this is a weapon bay, then cycle through weapons
+                if ((wtype instanceof BayWeapon)) {
+                    for (WeaponMounted m : mounted.getBayWeapons()) {
+                        addWeaponEntry(m.getType());
+                    }
+                }
+            }
+        }
+    }
+
+    static class EquipmentComposition {
+        public List<WeaponEntry> w = new ArrayList<>(); // Weapons
+
+        EquipmentComposition(Entity entity) {
+            this.w = new ArrayList<>(new WeaponsComposition(entity).getWeaponEntries());
+        }
+    }
 
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
@@ -111,9 +207,12 @@ public class SVGMassPrinter {
         public int walk; // Walk MP
         public int run; // Run MP
         public int jump; // Jump MP
+        public String c3;
+        public EquipmentComposition comp;
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public int crewSize; // Number of crew members, if applicable
         public List<String> sheets; // Path to the SVG sheet
+//        public String summary;
 
 
 
@@ -222,6 +321,20 @@ public class SVGMassPrinter {
             }
         }
 
+        private String getC3Property(Entity entity) {
+            for (WeaponMounted m : entity.getWeaponList()) {
+                if (m.getType().hasFlag(WeaponType.F_C3M) || m.getType().hasFlag(WeaponType.F_C3MBS)) {
+                    return m.getType().getShortName();
+                }
+            }
+            for (MiscMounted m : entity.getMisc()) {
+                if (m.getType().isC3Equipment()) {
+                    return m.getType().getShortName();
+                }
+            }
+            return "None";
+        }
+
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
             this.id = entity.getMulId();
             this.chassis = entity.getFullChassis();
@@ -262,7 +375,11 @@ public class SVGMassPrinter {
             this.run = entity.getRunMP();
             this.jump = entity.getJumpMP();
             this.crewSize = entity.getCrew().getSlotCount();
+            this.comp = new EquipmentComposition(entity);
+            this.c3 = getC3Property(entity);
             this.sheets = new ArrayList<>();
+//            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
+//            this.summary = mekView.getMekReadout();
         }
 
         private String formatTechBase(Entity entity) {

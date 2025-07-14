@@ -174,6 +174,7 @@ public class InventoryWriter {
     private final String featuresText;
     private final String miscNotesText;
     private final String quirksText;
+    private boolean mergeInventoryAllowed;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -183,7 +184,8 @@ public class InventoryWriter {
     public InventoryWriter(PrintEntity sheet) {
 
         this.sheet = sheet;
-        columnTypes = Column.colsFor(sheet.getEntity(), mergeInventoryAllowed());
+        this.mergeInventoryAllowed = mergeInventoryAllowed();
+        columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
         colX = new double[columnTypes.length];
         bayColX = new double[Column.BAY_COLUMNS.length];
 
@@ -302,7 +304,7 @@ public class InventoryWriter {
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
             // If the unit is a Mek, we check for the merge equipment option.
             // If is not a mek, we always merge if possible.
-            if (mergeInventoryAllowed()) {
+            if (this.mergeInventoryAllowed) {
                 StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
                 if (null == same) {
                     equipment.add(entry);
@@ -494,9 +496,10 @@ public class InventoryWriter {
             yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
+            yPosition += metrics[1]; // Add extra line for heat profile text
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
                     yPosition, sheet.heatProfileText(),
-                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                  FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
                   SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile", null);
         }
         writeFooterBlock(metrics[0], metrics[1]);
@@ -731,8 +734,15 @@ public class InventoryWriter {
      * @return The estimated line count.
      */
     private int calcLineCount(float fontSize) {
-        // The width of the name field varies depending on aero/ground or whether there is a heat column,
-        // but is always the difference between the second and third.
+        // The width of the name field varies depending on aero/ground or whether there is a heat column and if we
+        // are merging inventory or not.
+        double baseNameWidth = Double.MAX_VALUE;
+        for (int i = 0; i < columnTypes.length; i++) {
+            if (Column.NAME.equals(columnTypes[i]) || Column.NAME_NO_QTY.equals(columnTypes[i])) {
+                baseNameWidth = colX[i + 1] - colX[i] - viewWidth * INDENT;
+                break;
+            }
+        }
         double damageWidth = Double.MAX_VALUE;
         for (int i = 0; i < columnTypes.length; i++) {
             if (Column.DAMAGE.equals(columnTypes[i])) {
@@ -744,7 +754,6 @@ public class InventoryWriter {
         for (StandardInventoryEntry line : equipment) {
             int rows = line.nRows();
             lines += rows;
-            double baseNameWidth = colX[2] - colX[1] - viewWidth * INDENT;
             double nameWidth = baseNameWidth;
             if (!(sheet.getEntity() instanceof BattleArmor)) {
                 nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
@@ -764,6 +773,7 @@ public class InventoryWriter {
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
+            lines++;
             lines++;
         }
         return lines;
