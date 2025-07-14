@@ -18,6 +18,8 @@
  */
 package megameklab.printing;
 
+import static megamek.common.MiscTypeFlag.*;
+
 import megamek.common.AmmoType;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -126,15 +128,19 @@ public final class PrintUtil {
             return false;
         }
 
+
         if ((eq instanceof MiscType)
-                && ((eq.hasFlag(MiscType.F_AP_MOUNT) && !eq.hasFlag(MiscType.F_BA_MANIPULATOR))
-                        || eq.hasFlag(MiscType.F_FIRE_RESISTANT)
-                        || eq.hasFlag(MiscType.F_ARTEMIS)
-                        || eq.hasFlag(MiscType.F_ARTEMIS_V)
-                        || eq.hasFlag(MiscType.F_APOLLO)
-                        || eq.hasFlag(MiscType.F_HARJEL)
-                        || eq.hasFlag(MiscType.F_MASS)
-                        || eq.hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK))) {
+                && ((eq.hasFlag(F_AP_MOUNT) && !eq.hasFlag(F_BA_MANIPULATOR))
+                || eq.hasAnyFlag(
+                    F_FIRE_RESISTANT,
+                    F_ARTEMIS,
+                    F_ARTEMIS_V,
+                    F_APOLLO,
+                    F_HARJEL,
+                    F_MASS,
+                    F_DETACHABLE_WEAPON_PACK,
+                    F_MODULAR_WEAPON_MOUNT
+                ))) {
             return false;
         }
 
