@@ -38,15 +38,25 @@ import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.*;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.enums.WeaponSortOrder;
-import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.util.C3Util;
-import megamek.common.weapons.DamageType;
+import megamek.common.verifier.TestProtoMek;
+import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
+import megamek.common.weapons.gaussrifles.HAGWeapon;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.missiles.ATMWeapon;
+import megamek.common.weapons.missiles.MMLWeapon;
+import megamek.common.weapons.missiles.MissileWeapon;
+import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.mortars.MekMortarWeapon;
+import megamek.common.weapons.srms.SRMWeapon;
+import megamek.common.weapons.srms.SRTWeapon;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.ui.util.EquipmentDatabaseCategory;
+import megameklab.ui.util.EquipmentTableModel;
 import megameklab.util.CConfig;
 import megameklab.util.SVGOptimizer;
 import megameklab.util.UnitPrintManager;
@@ -75,6 +85,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.io.FileOutputStream;
+import java.util.Map;
 
 import static megamek.common.WeaponType.F_ENERGY;
 import static megamek.common.WeaponType.F_PLASMA;
@@ -91,6 +102,7 @@ public class SVGMassPrinter {
     private static final String SHEETS_DIR = "sheets";
     private static final String VERSION_FILE = "version.json";
     private static final String UNIT_FILE = "units.json";
+    private static final String EQUIPMENT_FILE = "equipment.json";
     private static final String ROOT_FOLDER = "svgexport";
     private static final int DEFAULT_MARGINS = 0; // Default margins for the page
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
@@ -98,9 +110,16 @@ public class SVGMassPrinter {
     private static final HashMap<Integer, String> unitTypes = new HashMap<>();
 
     public static class WeaponEntry {
+        public String id; // Internal name of the weapon type
         public int q; // Quantity of this weapon type
         public String n; // Name of the weapon type
         public String t; // Type of the weapon
+        public String l; // Location of the weapon, if applicable
+        public String r; // Range of the weapon, if applicable
+        public String m; // Min range, if applicable
+        public String d; // Damage type, if applicable
+        public String md; // Max Damage, if applicable
+        public String c; // Critical slots
     }
     public static class WeaponsComposition {
         @JsonIgnore
@@ -130,26 +149,206 @@ public class SVGMassPrinter {
             return "O";
         }
 
-        private void addWeaponEntry(WeaponType type) {
+        private String getWeaponRange(Entity entity, WeaponType wtype) {
+            if (entity instanceof Aero) {
+                switch (wtype.getMaxRange()) {
+                    case RangeType.RANGE_SHORT:
+                        return "Short";
+                    case RangeType.RANGE_MEDIUM:
+                        return "Medium";
+                    case RangeType.RANGE_LONG:
+                        return "Long";
+                    case RangeType.RANGE_EXTREME:
+                        return "Extreme";
+                }
+            }
+            if (wtype instanceof InfantryWeapon) {
+                return ((InfantryWeapon) wtype).getInfantryRange() + "";
+            }
+            return wtype.getShortRange() + "/" + wtype.getMediumRange()
+                  + "/" + wtype.getLongRange();
+        }
+
+        private String getMinRange(Entity entity, WeaponType wtype) {
+            if (entity instanceof Aero) {
+                return "-";
+            }
+            int minRange = wtype.getMinimumRange();
+            if (minRange < 0) {
+                minRange = 0;
+            }
+            return Integer.toString(minRange);
+        }
+
+        private String getCriticals(Entity entity, WeaponType type) {
+            if (type.isVariableCriticals()
+                  && (entity.isSupportVehicle() || (entity instanceof Mek))) {
+                // Only Meks and support vehicles require multiple slots for equipment
+                return "variable";
+            } else if (entity.isSupportVehicle()) {
+                return String.valueOf(type.getSupportVeeSlots(entity));
+            } else if (entity instanceof Tank) {
+                return String.valueOf(type.getTankSlots(entity));
+            } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
+                return String.valueOf(TestProtoMek.requiresSlot(type)? 1 : 0);
+            }
+            return String.valueOf(type.getCriticals(entity));
+        }
+
+        private String getDamage(Entity entity, WeaponType wtype) {
+                // Aeros should print AV instead
+                if (entity instanceof Aero) {
+                    int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
+                    attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
+                    attackValue[RangeType.RANGE_MEDIUM] = wtype.getRoundMedAV();
+                    attackValue[RangeType.RANGE_LONG] = wtype.getRoundLongAV();
+                    attackValue[RangeType.RANGE_EXTREME] = wtype.getRoundExtAV();
+                    boolean allEq = true;
+                    for (int i = 2; i <= wtype.getMaxRange(); i++) {
+                        if (attackValue[i - 1] != attackValue[i]) {
+                            allEq = false;
+                            break;
+                        }
+                    }
+                    StringBuilder avString = new StringBuilder();
+                    avString.append(attackValue[RangeType.RANGE_SHORT]);
+                    if (!allEq) {
+                        for (int i = 2; i <= wtype.getMaxRange(); i++) {
+                            avString.append('/').append(attackValue[i]);
+                        }
+                    }
+                    return avString.toString();
+                }
+                // Damage for non-Aeros
+                if (wtype instanceof InfantryWeapon wi) {
+                    return Double.toString(wi.getInfantryDamage());
+                }
+
+                if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+                    return wtype.getDamage(wtype.getShortRange()) + "/"
+                          + wtype.getDamage(wtype.getMediumRange()) + "/"
+                          + wtype.getDamage(wtype.getLongRange());
+                } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+                    if (wtype instanceof HAGWeapon) {
+                        return wtype.getRackSize() + "";
+                    } else if (wtype instanceof MekMortarWeapon) {
+                        return "Special";
+                    } else if (wtype instanceof MissileWeapon) {
+                        int dmg;
+                        if (wtype instanceof ThunderBoltWeapon) {
+                            switch (wtype.getAmmoType()) {
+                                case TBOLT_5:
+                                    return "5";
+                                case TBOLT_10:
+                                    return "10";
+                                case TBOLT_15:
+                                    return "15";
+                                case TBOLT_20:
+                                    return "20";
+                                default :
+                                    return "0";
+                            }
+                        } else if ((wtype instanceof ATMWeapon)
+                              ||(wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                              || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
+                              || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
+                              || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                              || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_PRIMITIVE)
+                              || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
+                            dmg = 2;
+                        } else {
+                            dmg = 1;
+                        }
+                        return dmg + "/msl";
+                    }
+                    return "Cluster";
+                } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+                    return wtype.getRackSize() + "A";
+                } else if (wtype instanceof UACWeapon) {
+                    return wtype.getDamage() + "/Shot";
+                } else if (wtype.getDamage() < 0) {
+                    return "Special";
+                } else {
+                    return Integer.toString(wtype.getDamage());
+                }
+            }
+
+        private String getMaxDamage(Entity entity, WeaponType wtype) {
+            if (entity instanceof Aero) {
+                int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
+                attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
+                attackValue[RangeType.RANGE_MEDIUM] = wtype.getRoundMedAV();
+                attackValue[RangeType.RANGE_LONG] = wtype.getRoundLongAV();
+                attackValue[RangeType.RANGE_EXTREME] = wtype.getRoundExtAV();
+                int maxDamage = attackValue[RangeType.RANGE_SHORT];
+                for (int i = RangeType.RANGE_SHORT + 1; i <= wtype.getMaxRange(); i++) {
+                    if (attackValue[i] > maxDamage) {
+                        maxDamage = attackValue[i];
+                    }
+                }
+                return String.valueOf(maxDamage);
+            }
+            if (wtype instanceof InfantryWeapon iw) {
+                int infantryCount = 1;
+                if (entity.isConventionalInfantry()) {
+                    infantryCount = entity.getInternal(Infantry.LOC_INFANTRY);
+                } else if (entity instanceof BattleArmor ba) {
+                    infantryCount = ba.getNumberActiverTroopers();
+                }
+                return Double.toString(iw.getInfantryDamage() * infantryCount);
+            }
+            if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+                int perMissile = 1;
+                if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
+                    perMissile = 2;
+                }
+                return Integer.toString(wtype.getRackSize() * perMissile);
+            } else if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+                return Integer.toString(wtype.getDamage(1));
+            } else if (wtype.getDamage() == WeaponType.DAMAGE_SPECIAL) {
+                return "Special";
+            } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+                return Integer.toString(wtype.getRackSize());
+            }
+            int damage = wtype.getDamage();
+            if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
+                damage *= 6;
+            } else if ((wtype.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA)
+                  || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
+                damage *= 2;
+            }
+            return Integer.toString(damage);
+
+        }
+
+        private void addWeaponEntry(Entity entity, WeaponType type, String location) {
             final String name = type.getName();
-            if (weapons.containsKey(name)) {
+            final String key = name + "|" + location;
+            if (weapons.containsKey(key)) {
                 weapons.get(name).q += 1;
             } else {
                 WeaponEntry entry = new WeaponEntry();
+                entry.id = type.getInternalName();
                 entry.n = name;
                 entry.t = getWeaponCategory(type);
                 entry.q = 1;
-                weapons.put(name, entry);
+                entry.l = location;
+                entry.d = getDamage(entity, type);
+                entry.r = getWeaponRange(entity, type);
+                entry.m = getMinRange(entity, type);
+                entry.md = getMaxDamage(entity, type);
+                entry.c = getCriticals(entity, type);
+                weapons.put(key, entry);
             }
         }
 
         public WeaponsComposition(Entity entity) {
             if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
                 if (null != inf.getPrimaryWeapon()) {
-                    addWeaponEntry(inf.getPrimaryWeapon());
+                    addWeaponEntry(entity, inf.getPrimaryWeapon(), "Primary");
                 }
                 if (null != inf.getSecondaryWeapon()) {
-                    addWeaponEntry(inf.getSecondaryWeapon());
+                    addWeaponEntry(entity, inf.getSecondaryWeapon(), "Secondary");
                 }
             }
 
@@ -162,11 +361,11 @@ public class SVGMassPrinter {
                     continue;
                 }
                 WeaponType wtype = mounted.getType();
-                addWeaponEntry(wtype);
+                addWeaponEntry(entity, wtype, entity.joinLocationAbbr(mounted.allLocations(), 2));
                 // if this is a weapon bay, then cycle through weapons
                 if ((wtype instanceof BayWeapon)) {
                     for (WeaponMounted m : mounted.getBayWeapons()) {
-                        addWeaponEntry(m.getType());
+                        addWeaponEntry(entity, m.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
                     }
                 }
             }
@@ -466,7 +665,7 @@ public class SVGMassPrinter {
         long timestamp = System.currentTimeMillis();
         
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
-            versionWriter.write("{\"units\":"+timestamp+"}");
+            versionWriter.write("{\"units\":"+timestamp+", \"equipment\":"+timestamp+"}");
             logger.info("Version file written: {}", timestamp);
         } catch (IOException e) {
             logger.error("Failed to write version file: {}", e.getMessage());
@@ -474,6 +673,7 @@ public class SVGMassPrinter {
         
         PageFormat pf = new PageFormat();
         PaperSize paperDef = recordSheetOptions.getPaperSize();
+        HashMap<String, Entity> uniqueUnitTypes = new HashMap<>();
         try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
             jsonWriter.write("{\"version\":"+ timestamp +",\n");
             jsonWriter.write("\"units\":[\n");
@@ -619,6 +819,9 @@ public class SVGMassPrinter {
 
                 firstUnit = false;
                 processedCount++;
+                if (!uniqueUnitTypes.containsKey(unitData.type)) {
+                    uniqueUnitTypes.put(unitData.type, entity);
+                }
                 System.gc();
             }
             jsonWriter.write("\n]}");
@@ -627,6 +830,57 @@ public class SVGMassPrinter {
         }
 
         logger.info("Done. Processed {} units.", processedCount);
+        processedCount=0;
+
+        Map<String, Map<String, Object>> equipmentJsonMap = new HashMap<>();
+        for (Map.Entry<String, Entity> entry : uniqueUnitTypes.entrySet()) {
+            String unitTypeKey = entry.getKey();
+            Entity entity = entry.getValue();
+            EquipmentTableModel equipmentTableModel = new EquipmentTableModel(entity, null);
+            equipmentTableModel.setData((ArrayList<EquipmentType>) EquipmentType.allTypes());
+            List<String> normalizedKeys = new ArrayList<>();
+            for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) { // Skip column 0, is the name
+                String key = equipmentTableModel.getColumnName(j);
+                if ("Slots".equals(key)) {
+                    key = "Crit";
+                }
+                // Lowercase and remove non-alphanumeric characters
+                key = key.toLowerCase().replaceAll("[^a-z0-9]", "");
+                normalizedKeys.add(key);
+            }
+
+            Map<String, Object> equipmentMap = new HashMap<>();
+            for (int i = 0; i < equipmentTableModel.getRowCount(); i++) {
+                EquipmentType eq = equipmentTableModel.getType(i);
+                Map<String, Object> rowMap = new HashMap<>();
+                rowMap.put("name", eq.getName()); // Use full name
+                for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) {
+                    String key = normalizedKeys.get(j - 1);
+                    Object value = equipmentTableModel.getValueAt(i, j);
+                    rowMap.put(key, value);
+                }
+                equipmentMap.put(eq.getInternalName(), rowMap);
+            }
+            equipmentJsonMap.put(unitTypeKey, equipmentMap);
+        }
+        try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + EQUIPMENT_FILE)) {
+            jsonWriter.write("{\"version\":"+ timestamp +",\n");
+            jsonWriter.write("\"equipment\":{\n");
+            boolean firstType = true;
+            for (Map.Entry<String, Map<String, Object>> typeEntry : equipmentJsonMap.entrySet()) {
+                if (!firstType) {
+                    jsonWriter.write(",\n");
+                }
+                jsonWriter.write("\"" + typeEntry.getKey() + "\":");
+                String equipmentJson = mapper.writeValueAsString(typeEntry.getValue());
+                jsonWriter.write(equipmentJson);
+                firstType = false;
+            }
+            jsonWriter.write("\n}}");
+        } catch (IOException e) {
+            logger.error("Failed to write JSON Lines file: {}", e.getMessage());
+        }
+        logger.info("Done. Processed {} equipments.", processedCount);
         System.exit(0);
     }
 
