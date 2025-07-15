@@ -323,9 +323,9 @@ public class SVGMassPrinter {
 
         private void addWeaponEntry(Entity entity, WeaponType type, String location) {
             final String name = type.getName();
-            final String key = name + "|" + location;
+            final String key = name + "_" + location;
             if (weapons.containsKey(key)) {
-                weapons.get(name).q += 1;
+                weapons.get(key).q += 1;
             } else {
                 WeaponEntry entry = new WeaponEntry();
                 entry.id = type.getInternalName();
