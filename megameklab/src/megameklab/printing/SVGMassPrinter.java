@@ -22,24 +22,26 @@ package megameklab.printing;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.*;
+import megamek.common.actions.ClubAttackAction;
+import megamek.common.actions.KickAttackAction;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.enums.WeaponSortOrder;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.options.IOption;
+import megamek.common.options.IOptionGroup;
+import megamek.common.options.Quirks;
 import megamek.common.util.C3Util;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -63,7 +65,6 @@ import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -85,10 +86,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.io.FileOutputStream;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import static megamek.common.WeaponType.F_ENERGY;
-import static megamek.common.WeaponType.F_PLASMA;
+import static megamek.common.MiscTypeFlag.*;
+import static megamek.common.WeaponType.*;
 
 /**
  * @author drake
@@ -96,6 +97,8 @@ import static megamek.common.WeaponType.F_PLASMA;
  */
 public class SVGMassPrinter {
     private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_EQUIPMENT = true; // Set to true to skip equipment generation
+
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String TYPEFACE = "Roboto";
@@ -109,7 +112,8 @@ public class SVGMassPrinter {
 
     private static final HashMap<Integer, String> unitTypes = new HashMap<>();
 
-    public static class WeaponEntry {
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class ExportInventoryEntry {
         public String id; // Internal name of the weapon type
         public int q; // Quantity of this weapon type
         public String n; // Name of the weapon type
@@ -120,14 +124,17 @@ public class SVGMassPrinter {
         public String d; // Damage type, if applicable
         public String md; // Max Damage, if applicable
         public String c; // Critical slots
+        public Collection<ExportInventoryEntry> bay; // Bay weapons, if applicable
     }
-    public static class WeaponsComposition {
-        @JsonIgnore
-        public HashMap<String, WeaponEntry> weapons = new HashMap<>();
 
-        @JsonProperty("weapons")
-        public Collection<WeaponEntry> getWeaponEntries() {
-            return weapons.values();
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class Components {
+        @JsonIgnore
+        public HashMap<String, ExportInventoryEntry> comps = new HashMap<>();
+
+        @JsonProperty("comp")
+        public Collection<ExportInventoryEntry> getComp() {
+            return comps.values();
         }
 
         private String getWeaponCategory(WeaponType eq) {
@@ -180,11 +187,11 @@ public class SVGMassPrinter {
             return Integer.toString(minRange);
         }
 
-        private String getCriticals(Entity entity, WeaponType type) {
+        private String getCriticals(Entity entity, EquipmentType type) {
             if (type.isVariableCriticals()
                   && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
-                return "variable";
+                return "V";
             } else if (entity.isSupportVehicle()) {
                 return String.valueOf(type.getSupportVeeSlots(entity));
             } else if (entity instanceof Tank) {
@@ -225,9 +232,13 @@ public class SVGMassPrinter {
                 }
 
                 if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
-                    return wtype.getDamage(wtype.getShortRange()) + "/"
-                          + wtype.getDamage(wtype.getMediumRange()) + "/"
-                          + wtype.getDamage(wtype.getLongRange());
+                    if (wtype.getDamage(1) <= 0) {
+                        return "0";
+                    } else {
+                        return wtype.getDamage(wtype.getShortRange()) + "/"
+                              + wtype.getDamage(wtype.getMediumRange()) + "/"
+                              + wtype.getDamage(wtype.getLongRange());
+                    }
                 } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
                     if (wtype instanceof HAGWeapon) {
                         return wtype.getRackSize() + "";
@@ -273,7 +284,7 @@ public class SVGMassPrinter {
                 }
             }
 
-        private String getMaxDamage(Entity entity, WeaponType wtype) {
+        private double getMaxDamage(Entity entity, WeaponType wtype) {
             if (entity instanceof Aero) {
                 int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
                 attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
@@ -286,7 +297,7 @@ public class SVGMassPrinter {
                         maxDamage = attackValue[i];
                     }
                 }
-                return String.valueOf(maxDamage);
+                return maxDamage;
             }
             if (wtype instanceof InfantryWeapon iw) {
                 int infantryCount = 1;
@@ -295,20 +306,20 @@ public class SVGMassPrinter {
                 } else if (entity instanceof BattleArmor ba) {
                     infantryCount = ba.getNumberActiverTroopers();
                 }
-                return Double.toString(iw.getInfantryDamage() * infantryCount);
+                return iw.getInfantryDamage() * infantryCount;
             }
             if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
                 int perMissile = 1;
                 if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
                     perMissile = 2;
                 }
-                return Integer.toString(wtype.getRackSize() * perMissile);
+                return wtype.getRackSize() * perMissile;
             } else if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
-                return Integer.toString(wtype.getDamage(1));
+                return Math.max(0, wtype.getDamage(1));
             } else if (wtype.getDamage() == WeaponType.DAMAGE_SPECIAL) {
-                return "Special";
+                return 0;
             } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
-                return Integer.toString(wtype.getRackSize());
+                return wtype.getRackSize();
             }
             int damage = wtype.getDamage();
             if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ROTARY) {
@@ -317,67 +328,247 @@ public class SVGMassPrinter {
                   || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.AC_ULTRA_THB)) {
                 damage *= 2;
             }
-            return Integer.toString(damage);
+            return damage;
 
         }
 
-        private void addWeaponEntry(Entity entity, WeaponType type, String location) {
-            final String name = type.getName();
+        private String cleanupName(String name) {
+            // Remove any text in parentheses, e.g. "Laser (Large)"
+            return name.replaceAll("\\s*[(\\[].*?[)\\]]", "");
+        }
+
+        private void addWeaponEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, WeaponType type,
+              String location) {
+            final String name = type.getShortName();
             final String key = name + "_" + location;
-            if (weapons.containsKey(key)) {
-                weapons.get(key).q += 1;
+            if (list.containsKey(key)) {
+                list.get(key).q += 1;
             } else {
-                WeaponEntry entry = new WeaponEntry();
+                ExportInventoryEntry entry = new ExportInventoryEntry();
                 entry.id = type.getInternalName();
-                entry.n = name;
+                entry.n = cleanupName(name);
                 entry.t = getWeaponCategory(type);
                 entry.q = 1;
                 entry.l = location;
                 entry.d = getDamage(entity, type);
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
-                entry.md = getMaxDamage(entity, type);
+                entry.md = String.valueOf(Math.floor(getMaxDamage(entity, type)));
                 entry.c = getCriticals(entity, type);
-                weapons.put(key, entry);
+                list.put(key, entry);
             }
         }
 
-        public WeaponsComposition(Entity entity) {
+        public Components(Entity entity) {
+            if (entity.usesWeaponBays()) {
+                parseBays(this.comps, entity);
+            } else {
+                parseComponents(this.comps, entity);
+            }
+        }
+
+        private ExportInventoryEntry addWeaponBay(HashMap<String, ExportInventoryEntry> list, Entity entity, WeaponType type,
+              String location) {
+            String key = UUID.randomUUID().toString();
+            final String name = type.getShortName();
+            ExportInventoryEntry entry = new ExportInventoryEntry();
+            entry.id = type.getInternalName();
+            entry.n = cleanupName(name);
+            entry.t = getWeaponCategory(type);
+            entry.q = 1;
+            entry.l = location;
+            list.put(key, entry);
+            return entry;
+        }
+
+
+        private void parseBays(HashMap<String, ExportInventoryEntry> list, Entity entity) {
+            for (WeaponMounted bay : entity.getWeaponList()) {
+                HashMap<String, ExportInventoryEntry> bayList = new HashMap<>();
+                for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
+                    addWeaponEntry(bayList, entity, weaponMounted.getType(),"");
+                }
+                ExportInventoryEntry weaponBay = addWeaponBay(list, entity, bay.getType(),
+                      entity.joinLocationAbbr(bay.allLocations(), 2));
+                weaponBay.bay = bayList.values();
+                //TODO: add artemisIV, artemisV and apollo
+            }
+        }
+
+        private void parseComponents(HashMap<String, ExportInventoryEntry> list, Entity entity) {
             if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
                 if (null != inf.getPrimaryWeapon()) {
-                    addWeaponEntry(entity, inf.getPrimaryWeapon(), "Primary");
+                    addWeaponEntry(list, entity, inf.getPrimaryWeapon(), "Troop");
                 }
                 if (null != inf.getSecondaryWeapon()) {
-                    addWeaponEntry(entity, inf.getSecondaryWeapon(), "Secondary");
+                    addWeaponEntry(list, entity, inf.getSecondaryWeapon(), "Field");
                 }
             }
 
-            if (entity.getWeaponList().isEmpty()) {
-                return;
-            }
-
-            for (WeaponMounted mounted : entity.getWeaponList()) {
-                if (mounted.getType().hasFlag(WeaponTypeFlag.INTERNAL_REPRESENTATION)) {
+            List<Mounted<?>> mountedList = entity.getEquipment();
+            for (Mounted<?> m : mountedList) {
+                if (m.isWeaponGroup()) {
                     continue;
                 }
-                WeaponType wtype = mounted.getType();
-                addWeaponEntry(entity, wtype, entity.joinLocationAbbr(mounted.allLocations(), 2));
-                // if this is a weapon bay, then cycle through weapons
-                if ((wtype instanceof BayWeapon)) {
-                    for (WeaponMounted m : mounted.getBayWeapons()) {
-                        addWeaponEntry(entity, m.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
+                if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType()
+                      != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
+                    continue;
+                }
+                if ((entity instanceof QuadVee)
+                      && (m.getType() instanceof MiscType)
+                      && m.getType().hasFlag(MiscType.F_TRACKS)) {
+                    continue;
+                }
+                if ((entity instanceof BattleArmor)
+                      && (m.getCriticals() > 0)
+                      && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                    continue;
+                }
+                if (m.getLocation() == Entity.LOC_NONE) {
+                    continue;
+                }
+                if (m.getType() instanceof WeaponType wtype) {
+
+                    if (wtype.hasFlag(WeaponTypeFlag.INTERNAL_REPRESENTATION)) {
+                        continue;
+                    }
+                    if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
+                        continue; // Infantry weapons are handled separately at the beginning
+                    }
+
+                    addWeaponEntry(list, entity, wtype, entity.joinLocationAbbr(m.allLocations(), 2));
+                    // if this is a weapon bay, then cycle through weapons
+                    if ((m instanceof WeaponMounted wm) && (wtype instanceof BayWeapon)) {
+                        for (WeaponMounted bm : wm.getBayWeapons()) {
+                            addWeaponEntry(list, entity, bm.getType(), entity.joinLocationAbbr(wm.allLocations(), 2));
+                        }
+                    }
+                } else if ((m instanceof MiscMounted mm)) {
+                    MiscType mtype = mm.getType();
+                    if (mtype.hasFlag(F_ARMOR_KIT)) {
+                        continue;
+                    }
+                    if (UnitUtil.isArmorOrStructure(mtype)) {
+                        continue;
+                    }
+                    if (UnitUtil.isJumpJet(mtype)) {
+                        continue;
+                    }
+                    if (UnitUtil.isHeatSink(mtype)) {
+                        continue;
+                    }
+                    if (entity instanceof BattleArmor) {
+                        if ((mtype instanceof MiscType)
+                              && ((mtype.hasFlag(F_AP_MOUNT) && !mtype.hasFlag(F_BA_MANIPULATOR))
+                              || mtype.hasAnyFlag(
+                              F_FIRE_RESISTANT,
+                              F_ARTEMIS,
+                              F_ARTEMIS_V,
+                              F_APOLLO,
+                              F_HARJEL,
+                              F_MASS,
+                              F_DETACHABLE_WEAPON_PACK,
+                              F_MODULAR_WEAPON_MOUNT
+                        ))) {
+                            continue;
+                        }
+                    } else {
+                        if (UnitUtil.isFixedLocationSpreadEquipment(mtype) && !mtype.hasFlag(MiscType.F_TALON)) {
+                            continue;
+                        }
+                    }
+                    if (mtype.hasFlag(MiscType.F_CLUB) || mtype.hasFlag(MiscType.F_HAND_WEAPON) || mtype.hasFlag(
+                          MiscType.F_TALON)) {
+                        if (mtype.isVibroblade()) {
+                            // manually set vibros to active to get correct damage
+                            m.setMode(1);
+                        }
+                        addPhysicalWeapon(list, entity, mm, entity.joinLocationAbbr(m.allLocations(), 2));
+                    } else if (m.is(EquipmentTypeLookup.COOLANT_POD)) {
+                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2));
+                    } else {
+                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2));
                     }
                 }
             }
+            // Special entries for mek features which aren't represented by a MiscType.
+            if (entity instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
+                var mounted = new MiscMounted(entity, new MiscType() {{
+                    name = "RISC Heat Sink Override Kit";
+                    shortName = "RISC HS Override Kit";
+                    internalName = "RISC Heat Sink Override Kit";
+                }});
+                mounted.setLocation(Mek.LOC_CT);
+                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
+            }
+            if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
+                var mounted = new MiscMounted(entity, new MiscType() {{
+                    name = "Full Head Ejection System";
+                    shortName = "Full Head Eject System";
+                    internalName = "Full Head Ejection System";
+                }});
+                mounted.setLocation(Mek.LOC_HEAD);
+                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
+            }
         }
-    }
 
-    static class EquipmentComposition {
-        public List<WeaponEntry> w = new ArrayList<>(); // Weapons
-
-        EquipmentComposition(Entity entity) {
-            this.w = new ArrayList<>(new WeaponsComposition(entity).getWeaponEntries());
+        private void addMiscEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscType type,
+              String location) {
+            final String name = type.getShortName();
+            final String key = name + "_" + location;
+            if (list.containsKey(key)) {
+                list.get(key).q += 1;
+            } else {
+                ExportInventoryEntry entry = new ExportInventoryEntry();
+                entry.id = type.getInternalName();
+                entry.n = cleanupName(name);
+                entry.t = "O"; // Other
+                entry.q = 1;
+                entry.l = location;
+                entry.c = getCriticals(entity, type);
+                list.put(key, entry);
+            }
         }
+
+        private void addPhysicalWeapon(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
+              String location) {
+            MiscType type = mounted.getType();
+            String damage;
+            String maxDamage;
+            if (type.hasFlag(MiscType.F_TALON)) {
+                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LLEG, false));
+                maxDamage = damage;
+            } else
+            if (type.hasSubType(MiscType.S_CLAW) || type.hasSubType(MiscType.S_CLAW_THB)) {
+                damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
+                maxDamage = damage;
+            } else {
+                damage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false, false));
+                if ((entity instanceof BipedMek) && ((BipedMek) entity).canZweihander()) {
+                    maxDamage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false,
+                          true));
+                } else {
+                    maxDamage = damage;
+                }
+            }
+            final String name = type.getShortName();
+            final String key = name + "_" + location;
+            if (list.containsKey(key)) {
+                list.get(key).q += 1;
+            } else {
+                ExportInventoryEntry entry = new ExportInventoryEntry();
+                entry.id = type.getInternalName();
+                entry.n = cleanupName(name);
+                entry.t = "P"; // Physical weapon
+                entry.q = 1;
+                entry.l = location;
+                entry.d = damage;
+                entry.md = String.valueOf(Math.floor(Double.parseDouble(maxDamage)));
+                entry.c = getCriticals(entity, type);
+                list.put(key, entry);
+            }
+        }
+
     }
 
     public static class UnitData {
@@ -395,6 +586,7 @@ public class SVGMassPrinter {
         public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
         public String techBase;
         public String techRating;
+        public String engine;
         public String type; // Major type, "Mek", "Vehicle", etc.
         public String subtype; // Subtype, "Assault", "Light", etc.
         public String source; // Source of the unit, e.g. "TRO 3050"
@@ -406,8 +598,9 @@ public class SVGMassPrinter {
         public int walk; // Walk MP
         public int run; // Run MP
         public int jump; // Jump MP
-        public String c3;
-        public EquipmentComposition comp;
+        public String c3; // C3 system, if applicable
+        public List<String> quirks;
+        public Collection<ExportInventoryEntry> comp;
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public int crewSize; // Number of crew members, if applicable
         public List<String> sheets; // Path to the SVG sheet
@@ -534,6 +727,23 @@ public class SVGMassPrinter {
             return "None";
         }
 
+        private List<String> getQuirks(Entity entity) {
+            List<String> sj = new ArrayList<>();
+            Quirks quirks = entity.getQuirks();
+            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (quirks.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        IOption option = options.nextElement();
+                        if (option != null && option.booleanValue()) {
+                            sj.add(option.getDisplayableNameWithValue());
+                        }
+                    }
+                }
+            }
+            return sj;
+        }
+
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
             this.id = entity.getMulId();
             this.chassis = entity.getFullChassis();
@@ -546,6 +756,7 @@ public class SVGMassPrinter {
             this.techBase = formatTechBase(entity);
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
+            this.engine = (entity.getEngine() != null) ? entity.getEngine().getShortEngineName() : null;
             // This is over-convoluted for no reason, should be simplified and unified at the source
             final String majorType = Entity.getEntityMajorTypeName(entity.getEntityType());
             final String type = Entity.getEntityTypeName(entity.getEntityType());
@@ -574,8 +785,9 @@ public class SVGMassPrinter {
             this.run = entity.getRunMP();
             this.jump = entity.getJumpMP();
             this.crewSize = entity.getCrew().getSlotCount();
-            this.comp = new EquipmentComposition(entity);
+            this.comp = (new Components(entity)).getComp();
             this.c3 = getC3Property(entity);
+            this.quirks = getQuirks(entity);
             this.sheets = new ArrayList<>();
 //            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
 //            this.summary = mekView.getMekReadout();
@@ -679,7 +891,7 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
-//                if (!mekSummary.getName().contains("Crab") && !mekSummary.getName().contains("Assault Commando")) {
+//                if (!mekSummary.getName().contains("Clan Anti-Infantry")) {
 //                    continue;
 //                }
 //                 logger.info("{}", mekSummary.getName());
@@ -830,57 +1042,59 @@ public class SVGMassPrinter {
         }
 
         logger.info("Done. Processed {} units.", processedCount);
-        processedCount=0;
 
-        Map<String, Map<String, Object>> equipmentJsonMap = new HashMap<>();
-        for (Map.Entry<String, Entity> entry : uniqueUnitTypes.entrySet()) {
-            String unitTypeKey = entry.getKey();
-            Entity entity = entry.getValue();
-            EquipmentTableModel equipmentTableModel = new EquipmentTableModel(entity, null);
-            equipmentTableModel.setData((ArrayList<EquipmentType>) EquipmentType.allTypes());
-            List<String> normalizedKeys = new ArrayList<>();
-            for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) { // Skip column 0, is the name
-                String key = equipmentTableModel.getColumnName(j);
-                if ("Slots".equals(key)) {
-                    key = "Crit";
+        if (!SKIP_EQUIPMENT) {
+            processedCount=0;
+            Map<String, Map<String, Object>> equipmentJsonMap = new HashMap<>();
+            for (Map.Entry<String, Entity> entry : uniqueUnitTypes.entrySet()) {
+                String unitTypeKey = entry.getKey();
+                Entity entity = entry.getValue();
+                EquipmentTableModel equipmentTableModel = new EquipmentTableModel(entity, null);
+                equipmentTableModel.setData((ArrayList<EquipmentType>) EquipmentType.allTypes());
+                List<String> normalizedKeys = new ArrayList<>();
+                for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) { // Skip column 0, is the name
+                    String key = equipmentTableModel.getColumnName(j);
+                    if ("Slots".equals(key)) {
+                        key = "Crit";
+                    }
+                    // Lowercase and remove non-alphanumeric characters
+                    key = key.toLowerCase().replaceAll("[^a-z0-9]", "");
+                    normalizedKeys.add(key);
                 }
-                // Lowercase and remove non-alphanumeric characters
-                key = key.toLowerCase().replaceAll("[^a-z0-9]", "");
-                normalizedKeys.add(key);
-            }
 
-            Map<String, Object> equipmentMap = new HashMap<>();
-            for (int i = 0; i < equipmentTableModel.getRowCount(); i++) {
-                EquipmentType eq = equipmentTableModel.getType(i);
-                Map<String, Object> rowMap = new HashMap<>();
-                rowMap.put("name", eq.getName()); // Use full name
-                for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) {
-                    String key = normalizedKeys.get(j - 1);
-                    Object value = equipmentTableModel.getValueAt(i, j);
-                    rowMap.put(key, value);
+                Map<String, Object> equipmentMap = new HashMap<>();
+                for (int i = 0; i < equipmentTableModel.getRowCount(); i++) {
+                    EquipmentType eq = equipmentTableModel.getType(i);
+                    Map<String, Object> rowMap = new HashMap<>();
+                    rowMap.put("name", eq.getName()); // Use full name
+                    for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) {
+                        String key = normalizedKeys.get(j - 1);
+                        Object value = equipmentTableModel.getValueAt(i, j);
+                        rowMap.put(key, value);
+                    }
+                    equipmentMap.put(eq.getInternalName(), rowMap);
                 }
-                equipmentMap.put(eq.getInternalName(), rowMap);
+                equipmentJsonMap.put(unitTypeKey, equipmentMap);
             }
-            equipmentJsonMap.put(unitTypeKey, equipmentMap);
-        }
-        try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + EQUIPMENT_FILE)) {
-            jsonWriter.write("{\"version\":"+ timestamp +",\n");
-            jsonWriter.write("\"equipment\":{\n");
-            boolean firstType = true;
-            for (Map.Entry<String, Map<String, Object>> typeEntry : equipmentJsonMap.entrySet()) {
-                if (!firstType) {
-                    jsonWriter.write(",\n");
+            try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + EQUIPMENT_FILE)) {
+                jsonWriter.write("{\"version\":"+ timestamp +",\n");
+                jsonWriter.write("\"equipment\":{\n");
+                boolean firstType = true;
+                for (Map.Entry<String, Map<String, Object>> typeEntry : equipmentJsonMap.entrySet()) {
+                    if (!firstType) {
+                        jsonWriter.write(",\n");
+                    }
+                    jsonWriter.write("\"" + typeEntry.getKey() + "\":");
+                    String equipmentJson = mapper.writeValueAsString(typeEntry.getValue());
+                    jsonWriter.write(equipmentJson);
+                    firstType = false;
                 }
-                jsonWriter.write("\"" + typeEntry.getKey() + "\":");
-                String equipmentJson = mapper.writeValueAsString(typeEntry.getValue());
-                jsonWriter.write(equipmentJson);
-                firstType = false;
+                jsonWriter.write("\n}}");
+            } catch (IOException e) {
+                logger.error("Failed to write JSON Lines file: {}", e.getMessage());
             }
-            jsonWriter.write("\n}}");
-        } catch (IOException e) {
-            logger.error("Failed to write JSON Lines file: {}", e.getMessage());
+            logger.info("Done. Processed {} equipments.", processedCount);
         }
-        logger.info("Done. Processed {} equipments.", processedCount);
         System.exit(0);
     }
 
