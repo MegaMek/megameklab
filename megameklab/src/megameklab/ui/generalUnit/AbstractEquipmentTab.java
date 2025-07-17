@@ -79,18 +79,11 @@ public abstract class AbstractEquipmentTab extends ITab {
         loadOutTable.setShowGrid(false);
         loadOutTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         loadOutTable.setDoubleBuffered(true);
-        TableColumn column;
-        for (int i = 0; i < loadOutModel.getColumnCount(); i++) {
-            column = loadOutTable.getColumnModel().getColumn(i);
-            if (i == CriticalTableModel.NAME) {
-                column.setPreferredWidth(200);
-            } else if (i == CriticalTableModel.SIZE) {
-                column.setCellEditor(loadOutModel.new SpinnerCellEditor());
-            }
-            column.setCellRenderer(loadOutModel.getRenderer());
-
-        }
-        loadOutModel.addTableModelListener(ev -> refreshOtherTabs());
+        setupTableColumns();
+        loadOutModel.addTableModelListener(ev -> {
+            refreshOtherTabs();
+            setupTableColumns();
+        });
         JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(loadOutTable);
         getLoadOut().forEach(loadOutModel::addCrit);
@@ -129,6 +122,20 @@ public abstract class AbstractEquipmentTab extends ITab {
         pane.setOneTouchExpandable(true);
         setLayout(new BorderLayout());
         add(pane, BorderLayout.CENTER);
+    }
+
+    private void setupTableColumns() {
+        TableColumn column;
+        for (int i = 0; i < loadOutModel.getColumnCount(); i++) {
+            column = loadOutTable.getColumnModel().getColumn(i);
+            if (i == CriticalTableModel.NAME) {
+                column.setPreferredWidth(200);
+            } else if (i == CriticalTableModel.SIZE) {
+                column.setCellEditor(loadOutModel.new SpinnerCellEditor());
+            }
+            column.setCellRenderer(loadOutModel.getRenderer());
+
+        }
     }
 
     public void addRefreshedListener(RefreshListener l) {
