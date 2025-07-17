@@ -118,12 +118,14 @@ public class SVGMassPrinter {
         public int q; // Quantity of this weapon type
         public String n; // Name of the weapon type
         public String t; // Type of the weapon
+        public int p; // Location id of the weapon, if applicable
         public String l; // Location of the weapon, if applicable
         public String r; // Range of the weapon, if applicable
         public String m; // Min range, if applicable
         public String d; // Damage type, if applicable
         public String md; // Max Damage, if applicable
         public String c; // Critical slots
+        public int os; // If is an oneshot weapon or a double oneshot weapon (1 or 2), if applicable
         public Collection<ExportInventoryEntry> bay; // Bay weapons, if applicable
     }
 
@@ -338,7 +340,7 @@ public class SVGMassPrinter {
         }
 
         private void addWeaponEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, WeaponType type,
-              String location) {
+              String location, int locId) {
             final String name = type.getShortName();
             final String key = name + "_" + location;
             if (list.containsKey(key)) {
@@ -349,11 +351,18 @@ public class SVGMassPrinter {
                 entry.n = cleanupName(name);
                 entry.t = getWeaponCategory(type);
                 entry.q = 1;
+                entry.p = locId;
                 entry.l = location;
                 entry.d = getDamage(entity, type);
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
                 entry.md = String.valueOf(Math.floor(getMaxDamage(entity, type)));
+                if (type.hasFlag(WeaponTypeFlag.F_ONESHOT)) {
+                    entry.os = 1; // If the weapon is oneshot
+                } else
+                if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONESHOT)) {
+                    entry.os = 2; // If the weapon is double oneshot
+                }
                 entry.c = getCriticals(entity, type);
                 list.put(key, entry);
             }
@@ -368,7 +377,7 @@ public class SVGMassPrinter {
         }
 
         private ExportInventoryEntry addWeaponBay(HashMap<String, ExportInventoryEntry> list, Entity entity, WeaponType type,
-              String location) {
+              String location, int locId) {
             String key = UUID.randomUUID().toString();
             final String name = type.getShortName();
             ExportInventoryEntry entry = new ExportInventoryEntry();
@@ -376,6 +385,7 @@ public class SVGMassPrinter {
             entry.n = cleanupName(name);
             entry.t = getWeaponCategory(type);
             entry.q = 1;
+            entry.p = locId;
             entry.l = location;
             list.put(key, entry);
             return entry;
@@ -386,10 +396,10 @@ public class SVGMassPrinter {
             for (WeaponMounted bay : entity.getWeaponList()) {
                 HashMap<String, ExportInventoryEntry> bayList = new HashMap<>();
                 for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
-                    addWeaponEntry(bayList, entity, weaponMounted.getType(),"");
+                    addWeaponEntry(bayList, entity, weaponMounted.getType(),"", 0);
                 }
                 ExportInventoryEntry weaponBay = addWeaponBay(list, entity, bay.getType(),
-                      entity.joinLocationAbbr(bay.allLocations(), 2));
+                      entity.joinLocationAbbr(bay.allLocations(), 2), bay.getLocation());
                 weaponBay.bay = bayList.values();
                 //TODO: add artemisIV, artemisV and apollo
             }
@@ -398,10 +408,10 @@ public class SVGMassPrinter {
         private void parseComponents(HashMap<String, ExportInventoryEntry> list, Entity entity) {
             if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
                 if (null != inf.getPrimaryWeapon()) {
-                    addWeaponEntry(list, entity, inf.getPrimaryWeapon(), "Troop");
+                    addWeaponEntry(list, entity, inf.getPrimaryWeapon(), "Troop", 0);
                 }
                 if (null != inf.getSecondaryWeapon()) {
-                    addWeaponEntry(list, entity, inf.getSecondaryWeapon(), "Field");
+                    addWeaponEntry(list, entity, inf.getSecondaryWeapon(), "Field", 1);
                 }
             }
 
@@ -436,11 +446,13 @@ public class SVGMassPrinter {
                         continue; // Infantry weapons are handled separately at the beginning
                     }
 
-                    addWeaponEntry(list, entity, wtype, entity.joinLocationAbbr(m.allLocations(), 2));
+                    addWeaponEntry(list, entity, wtype, entity.joinLocationAbbr(m.allLocations(), 2),
+                          m.getLocation());
                     // if this is a weapon bay, then cycle through weapons
                     if ((m instanceof WeaponMounted wm) && (wtype instanceof BayWeapon)) {
                         for (WeaponMounted bm : wm.getBayWeapons()) {
-                            addWeaponEntry(list, entity, bm.getType(), entity.joinLocationAbbr(wm.allLocations(), 2));
+                            addWeaponEntry(list, entity, bm.getType(), entity.joinLocationAbbr(wm.allLocations(), 2),
+                                  wm.getLocation());
                         }
                     }
                 } else if ((m instanceof MiscMounted mm)) {
@@ -483,11 +495,14 @@ public class SVGMassPrinter {
                             // manually set vibros to active to get correct damage
                             m.setMode(1);
                         }
-                        addPhysicalWeapon(list, entity, mm, entity.joinLocationAbbr(m.allLocations(), 2));
+                        addPhysicalWeapon(list, entity, mm, entity.joinLocationAbbr(m.allLocations(), 2),
+                              m.getLocation());
                     } else if (m.is(EquipmentTypeLookup.COOLANT_POD)) {
-                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2));
+                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2),
+                              m.getLocation());
                     } else {
-                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2));
+                        addMiscEntry(list, entity, mtype, entity.joinLocationAbbr(m.allLocations(), 2),
+                              m.getLocation());
                     }
                 }
             }
@@ -499,7 +514,7 @@ public class SVGMassPrinter {
                     internalName = "RISC Heat Sink Override Kit";
                 }});
                 mounted.setLocation(Mek.LOC_CT);
-                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
+                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2), mounted.getLocation());
             }
             if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
                 var mounted = new MiscMounted(entity, new MiscType() {{
@@ -508,12 +523,12 @@ public class SVGMassPrinter {
                     internalName = "Full Head Ejection System";
                 }});
                 mounted.setLocation(Mek.LOC_HEAD);
-                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2));
+                addMiscEntry(list, entity, mounted.getType(), entity.joinLocationAbbr(mounted.allLocations(), 2), mounted.getLocation());
             }
         }
 
         private void addMiscEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscType type,
-              String location) {
+              String location, int locId) {
             final String name = type.getShortName();
             final String key = name + "_" + location;
             if (list.containsKey(key)) {
@@ -524,6 +539,7 @@ public class SVGMassPrinter {
                 entry.n = cleanupName(name);
                 entry.t = "O"; // Other
                 entry.q = 1;
+                entry.p = locId;
                 entry.l = location;
                 entry.c = getCriticals(entity, type);
                 list.put(key, entry);
@@ -531,7 +547,7 @@ public class SVGMassPrinter {
         }
 
         private void addPhysicalWeapon(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
-              String location) {
+              String location, int locId) {
             MiscType type = mounted.getType();
             String damage;
             String maxDamage;
@@ -561,6 +577,7 @@ public class SVGMassPrinter {
                 entry.n = cleanupName(name);
                 entry.t = "P"; // Physical weapon
                 entry.q = 1;
+                entry.p = locId;
                 entry.l = location;
                 entry.d = damage;
                 entry.md = String.valueOf(Math.floor(Double.parseDouble(maxDamage)));
