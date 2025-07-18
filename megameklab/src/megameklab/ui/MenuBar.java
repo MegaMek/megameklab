@@ -38,7 +38,9 @@ import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.unitreadout.EntityReadout;
 import megamek.client.ui.util.UIUtil;
+import megamek.client.ui.util.ViewFormatting;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;
@@ -1369,7 +1371,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            MekView view = new MekView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
+            EntityReadout view = new EntityReadout(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
             return view.getMekReadout();
         }
     }
@@ -1509,9 +1511,9 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     public static void showUnitSpecs(Entity unit, JFrame frame) {
         HTMLEditorKit kit = new HTMLEditorKit();
 
-        MekView mekView;
+        EntityReadout mekView;
         try {
-            mekView = new MekView(unit, true);
+            mekView = new EntityReadout(unit, true);
         } catch (Exception ex) {
             // error unit didn't load right. this is bad news.
             logger.error("", ex);

@@ -39,7 +39,7 @@ import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;
-import megamek.common.ViewFormatting;
+import megamek.client.ui.util.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
