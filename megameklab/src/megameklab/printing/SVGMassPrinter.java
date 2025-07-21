@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import megamek.MMConstants;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
@@ -151,12 +152,11 @@ public class SVGMassPrinter {
             return maxDamage;
         }
         if (wtype instanceof InfantryWeapon iw) {
-            int infantryCount = 1;
-            if (entity.isConventionalInfantry()) {
-                infantryCount = entity.getInternal(Infantry.LOC_INFANTRY);
-            } else if (entity instanceof BattleArmor ba) {
+            int infantryCount = 1; // Conventional infantry is already handled as a single trooper
+            if (entity instanceof BattleArmor ba) {
                 infantryCount = ba.getNumberActiverTroopers();
             }
+
             return iw.getInfantryDamage() * infantryCount;
         }
         if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
@@ -362,7 +362,7 @@ public class SVGMassPrinter {
                 entry.d = getDamage(entity, type);
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
-                entry.md = String.valueOf(Math.floor(SVGMassPrinter.getMaxDamage(entity, type)));
+                entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
                 if (type.hasFlag(WeaponTypeFlag.F_ONESHOT)) {
                     entry.os = 1; // If the weapon is oneshot
                 } else
@@ -414,10 +414,37 @@ public class SVGMassPrinter {
         private void parseComponents(HashMap<String, ExportInventoryEntry> list, Entity entity) {
             if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
                 if (null != inf.getPrimaryWeapon()) {
-                    addWeaponEntry(list, entity, inf.getPrimaryWeapon(), "Troop", 0);
+                    InfantryWeapon primaryWeapon = inf.getPrimaryWeapon();
+                    ExportInventoryEntry entry = new ExportInventoryEntry();
+                    entry.id = primaryWeapon.getInternalName();
+                    entry.n = cleanupName(primaryWeapon.getShortName());
+                    entry.t = getWeaponCategory(primaryWeapon);
+                    entry.q = (inf.getSquadSize() - inf.getSecondaryWeaponsPerSquad()) * inf.getSquadCount();
+                    entry.p = 0;
+                    entry.l = "TROOP";
+                    double dmg = Math.min(MMConstants.INFANTRY_PRIMARY_WEAPON_DAMAGE_CAP,
+                          primaryWeapon.getInfantryDamage());
+                    entry.d = String.valueOf(dmg);
+                    entry.r = getWeaponRange(entity, primaryWeapon);
+                    entry.m = getMinRange(entity, primaryWeapon);
+                    entry.md = String.valueOf(dmg);
+                    list.put("1ST", entry);
                 }
                 if (null != inf.getSecondaryWeapon()) {
-                    addWeaponEntry(list, entity, inf.getSecondaryWeapon(), "Field", 1);
+                    InfantryWeapon secondaryWeapon = inf.getSecondaryWeapon();
+                    ExportInventoryEntry entry = new ExportInventoryEntry();
+                    entry.id = secondaryWeapon.getInternalName();
+                    entry.n = cleanupName(secondaryWeapon.getShortName());
+                    entry.t = getWeaponCategory(secondaryWeapon);
+                    entry.q = inf.getSecondaryWeaponsPerSquad() * inf.getSquadCount();
+                    entry.p = 0;
+                    entry.l = "TROOP";
+                    double dmg = secondaryWeapon.getInfantryDamage();
+                    entry.d = String.valueOf(dmg);
+                    entry.r = getWeaponRange(entity, secondaryWeapon);
+                    entry.m = getMinRange(entity, secondaryWeapon);
+                    entry.md = String.valueOf(dmg);
+                    list.put("2ND", entry);
                 }
             }
 
@@ -449,7 +476,9 @@ public class SVGMassPrinter {
                         continue;
                     }
                     if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
-                        continue; // Infantry weapons are handled separately at the beginning
+                        if (m.getLocation() == Infantry.LOC_INFANTRY) {
+                            continue; // Infantry weapons are handled separately at the beginning
+                        }
                     }
 
                     addWeaponEntry(list, entity, wtype, entity.joinLocationAbbr(m.allLocations(), 2),
@@ -586,7 +615,7 @@ public class SVGMassPrinter {
                 entry.p = locId;
                 entry.l = location;
                 entry.d = damage;
-                entry.md = String.valueOf(Math.floor(Double.parseDouble(maxDamage)));
+                entry.md = maxDamage;
                 entry.c = getCriticals(entity, type);
                 list.put(key, entry);
             }
@@ -844,15 +873,33 @@ public class SVGMassPrinter {
             this.loadASUnitData(entity);
 //            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
 //            this.summary = mekView.getMekReadout();
-            this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
+
+            if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
+                this.dpt = Math.round(calculateSustainedDPTForInfantry(entity) * 10) / 10.0;
+            } else {
+                this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
+            }
+        }
+
+        private double calculateSustainedDPTForInfantry(Entity entity) {
+            double totalDPTTroops = 0;
+            double totalDPTField = 0;
+            for (ExportInventoryEntry comp : this.comp) {
+                if (comp.l.equals("TROOP")) {
+                    totalDPTTroops += Double.parseDouble(comp.md) * comp.q;
+                } else {
+                    totalDPTField += Double.parseDouble(comp.md) * comp.q;
+                }
+            }
+            return Math.max(totalDPTTroops, totalDPTField);
         }
 
         /**
          * Calculates sustained Damage per Turn (DPT) considering heat limits.
-         * Assumes a max heat threshold of dissipation + 15.
          */
         public double calculateSustainedDPT(Entity entity) {
-            final int maxHeat = this.dissipation + 15;
+            double totalDPT = 0;
+            double fireFraction = 1;
             List<WeaponMounted> allWeapons = new ArrayList<>();
             for (WeaponMounted weapon : entity.getWeaponList()) {
                 allWeapons.add(weapon);
@@ -861,13 +908,19 @@ public class SVGMassPrinter {
                 }
             }
 
-            int totalHeat = 0;
-            for (WeaponMounted weapon : allWeapons) {
-                totalHeat += weapon.getType().getHeat();
+            if (entity.tracksHeat()) {
+                int maxHeat = this.dissipation;
+                int totalWeaponHeat = 0;
+                for (WeaponMounted weapon : allWeapons) {
+                    totalWeaponHeat += weapon.getType().getHeat();
+                }
+                if (this.heat > totalWeaponHeat) {
+                    // If the total heat is less than the heat generated by the entity, use the entity's heat
+                    totalWeaponHeat = this.heat;
+                }
+                fireFraction = totalWeaponHeat > maxHeat ? (double) maxHeat / totalWeaponHeat : 1.0;
             }
 
-            double fireFraction = totalHeat > maxHeat ? (double) maxHeat / totalHeat : 1.0;
-            double totalDPT = 0;
             for (WeaponMounted weapon : allWeapons) {
                 double damage = SVGMassPrinter.getMaxDamage(entity, weapon.getType());
                 double damageModifier = getDamageMultiplier(entity, weapon, weapon.getType());
@@ -995,7 +1048,7 @@ public class SVGMassPrinter {
             jsonWriter.write("\"units\":[\n");
             boolean firstUnit = true;
             for (MekSummary mekSummary : meks) {
-//                if (!mekSummary.getName().contains("Longbow")) {
+//                if (!mekSummary.getName().contains("Field Gun Infantry")) {
 //                    continue;
 //                }
 //                 logger.info("{}", mekSummary.getName());
