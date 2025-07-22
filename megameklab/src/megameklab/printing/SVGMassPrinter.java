@@ -883,7 +883,7 @@ public class SVGMassPrinter {
 //            this.summary = mekView.getMekReadout();
 
             if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
-                this.dpt = Math.round(calculateSustainedDPTForInfantry(entity) * 10) / 10.0;
+                this.dpt = Math.round(calculateSustainedDPTForInfantry(entity));
             } else {
                 this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
             }
