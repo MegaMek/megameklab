@@ -47,9 +47,11 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
+import megamek.common.options.OptionsConstants;
 import megamek.common.options.Quirks;
 import megamek.common.util.C3Util;
 import megamek.common.verifier.TestProtoMek;
+import megamek.common.weapons.autocannons.ACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megamek.common.weapons.gaussrifles.HAGWeapon;
@@ -104,7 +106,8 @@ import static megamek.common.WeaponType.*;
  */
 public class SVGMassPrinter {
     private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
-    private final static boolean SKIP_EQUIPMENT = true; // Set to true to skip equipment generation
+    private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
+    private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -860,8 +863,13 @@ public class SVGMassPrinter {
             this.role = formatRole(entity);
             this.armor = entity.getTotalOArmor();
             this.internal = entity.getTotalInternal();
-            this.heat = UnitUtil.getTotalHeatGeneration(entity);
-            this.dissipation = entity.getHeatCapacity();
+            if (entity.tracksHeat()) {
+                this.heat = UnitUtil.getTotalHeatGeneration(entity);
+                this.dissipation = entity.getHeatCapacity();
+            } else {
+                this.heat = -1;
+                this.dissipation = -1;
+            }
             this.walk = entity.getWalkMP();
             this.run = entity.getRunMP();
             this.jump = entity.getJumpMP();
@@ -885,6 +893,9 @@ public class SVGMassPrinter {
             double totalDPTTroops = 0;
             double totalDPTField = 0;
             for (ExportInventoryEntry comp : this.comp) {
+                if (comp.md == null || comp.md.isEmpty()) {
+                    continue; // Skip components without damage data
+                }
                 if (comp.l.equals("TROOP")) {
                     totalDPTTroops += Double.parseDouble(comp.md) * comp.q;
                 } else {
@@ -1022,180 +1033,231 @@ public class SVGMassPrinter {
         EquipmentType.initializeTypes();
         CConfig.load();
         CConfig.setParam(CConfig.RS_FONT, TYPEFACE);
-        RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
-        MekSummaryCache cache = MekSummaryCache.getInstance(true);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(SerializationFeature.INDENT_OUTPUT);
 
         int processedCount = 0;
-        MekSummary[] meks = cache.getAllMeks();
-        logger.info("Processing {} meks...", meks.length);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.INDENT_OUTPUT);
         long timestamp = System.currentTimeMillis();
-        
+        HashMap<String, Entity> uniqueUnitTypes = new HashMap<>();
+
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
-            versionWriter.write("{\"units\":"+timestamp+", \"equipment\":"+timestamp+"}");
+            versionWriter.write("{\"units\":"
+                  + timestamp
+                  + ", \"equipment\":"
+                  + timestamp
+                  + "}, \"quirks\":"
+                  + timestamp
+                  + "}");
             logger.info("Version file written: {}", timestamp);
         } catch (IOException e) {
             logger.error("Failed to write version file: {}", e.getMessage());
         }
-        
-        PageFormat pf = new PageFormat();
-        PaperSize paperDef = recordSheetOptions.getPaperSize();
-        HashMap<String, Entity> uniqueUnitTypes = new HashMap<>();
-        try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
-            jsonWriter.write("{\"version\":"+ timestamp +",\n");
-            jsonWriter.write("\"units\":[\n");
-            boolean firstUnit = true;
-            for (MekSummary mekSummary : meks) {
-//                if (!mekSummary.getName().contains("Field Gun Infantry")) {
-//                    continue;
-//                }
-//                 logger.info("{}", mekSummary.getName());
 
-                // if (i > 10) break; // For testing, remove this line in production
-                /*
-                 * if (!mekSummary.isProtoMek() && !mekSummary.isCombatVehicle()) {
-                 * continue;
-                 * }
-                 *
-                 * // 1 - uncomment this block and cycle all the start characters A-Z (only
-                 * // uppercase)
-                 * if (!mekSummary.getName().toUpperCase().startsWith("C")) {
-                 * continue;
-                 * }
-                 *
-                 * // 2 - uncomment this block, comment the above block, run once more
-                 * if (mekSummary.getName().toUpperCase().charAt(0) <= 'Z' &&
-                 * mekSummary.getName().toUpperCase().charAt(0) >= 'A') {
-                 * continue;
-                 * }
-                 *
-                 */
-                Entity entity = mekSummary.loadEntity();
-                if ((entity == null) || (entity instanceof GunEmplacement)) {
-//                    logger.info("Skipping: {}", mekSummary.getName());
-                    System.gc();
-                    continue;
-                }
-                UnitUtil.updateLoadedUnit(entity);
-                for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
-                    entity.getCrew().setName("", i);
-                }
-                if (entity.getId() == -1) {
-                    entity.setId(entity.getGame().getNextEntityId());
-                }
+        if (!SKIP_UNITS) {
+            RecordSheetOptions recordSheetOptions = getRecordSheetOptions();
+            MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
-                C3Util.wireC3(entity.getGame(), entity);
-                String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase().replaceAll("[^a-zA-Z0-9_]", "");
-                File sheetPath = new File(sheetsDir.getPath(), svgPath);
+            MekSummary[] meks = cache.getAllMeks();
+            logger.info("Processing {} meks...", meks.length);
 
-                if (!sheetPath.exists() && !sheetPath.mkdirs()) {
-                    logger.error("Couldn't create folder {}", sheetPath);
-                    System.exit(1);
-                }
-                String name = generateName(entity);
-                if (processedFiles.contains(name)) {
-                    logger.warn("Duplication detected! Hash {} already exists for {} {}", name,
-                          mekSummary.getFullChassis(), mekSummary.getModel());
-                    continue;
-                }
-                processedFiles.add(name);
+            PageFormat pf = new PageFormat();
+            PaperSize paperDef = recordSheetOptions.getPaperSize();
+            try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
+                jsonWriter.write("{\"version\":" + timestamp + ",\n");
+                jsonWriter.write("\"units\":[\n");
+                boolean firstUnit = true;
+                for (MekSummary mekSummary : meks) {
+                    //                if (!mekSummary.getName().contains("Field Gun Infantry")) {
+                    //                    continue;
+                    //                }
+                    //                 logger.info("{}", mekSummary.getName());
 
-                UnitData unitData = new UnitData(mekSummary, entity, recordSheetOptions);
-                unitData.name = name;
-                boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();
-                try {
-                    // List<Entity> units = printableListOfUnits(entity);
-                    List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(List.of(entity), true, recordSheetOptions);
-                    if (sheets.isEmpty()) {
-                        logger.error("No sheets generated for {}", mekSummary.getName());
+                    // if (i > 10) break; // For testing, remove this line in production
+                    /*
+                     * if (!mekSummary.isProtoMek() && !mekSummary.isCombatVehicle()) {
+                     * continue;
+                     * }
+                     *
+                     * // 1 - uncomment this block and cycle all the start characters A-Z (only
+                     * // uppercase)
+                     * if (!mekSummary.getName().toUpperCase().startsWith("C")) {
+                     * continue;
+                     * }
+                     *
+                     * // 2 - uncomment this block, comment the above block, run once more
+                     * if (mekSummary.getName().toUpperCase().charAt(0) <= 'Z' &&
+                     * mekSummary.getName().toUpperCase().charAt(0) >= 'A') {
+                     * continue;
+                     * }
+                     *
+                     */
+                    Entity entity = mekSummary.loadEntity();
+                    if ((entity == null) || (entity instanceof GunEmplacement)) {
+                        //                    logger.info("Skipping: {}", mekSummary.getName());
+                        System.gc();
+                        continue;
+                    }
+                    UnitUtil.updateLoadedUnit(entity);
+                    for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+                        entity.getCrew().setName("", i);
+                    }
+                    if (entity.getId() == -1) {
+                        entity.setId(entity.getGame().getNextEntityId());
+                    }
+
+                    C3Util.wireC3(entity.getGame(), entity);
+                    String svgPath = FluffImageHelper.getFluffPath(entity).toLowerCase().replaceAll("[^a-zA-Z0-9_]", "");
+                    File sheetPath = new File(sheetsDir.getPath(), svgPath);
+
+                    if (!sheetPath.exists() && !sheetPath.mkdirs()) {
+                        logger.error("Couldn't create folder {}", sheetPath);
                         System.exit(1);
                     }
-                    if (SKIP_SVG) {
-                        int pageCount = 0;
-                        for (PrintRecordSheet sheet : sheets) {
-                            pageCount += sheet.getPageCount();
-                        }
-                        for (int idx = 0; idx < pageCount; idx++) {
-                            String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
-                            String unoptimizedSvgFilename = baseSvgFilename + ".svg";
-                            String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
-                            unitData.sheets.add(pathToSave);
-                        }
-                    } else {
-                        List<Document> svgDocs = new ArrayList<>();
-                        for (PrintRecordSheet sheet : sheets) {
-                            if (sheet instanceof PrintSmallUnitSheet) {
-                                pf.setPaper(paperDef.createPaper());
-                            } else {
-                                pf.setPaper(paperDef.createPaper());
-//                                pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
-                            }
-                            int pageCount = sheet.getPageCount();
-                            for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
-                                sheet.createDocument(pageIndexInSheet, pf, true);
-                                if (pageCount > 1) {
-                                    // Multiple pages, clone the SVG document for each page to prevent overwriting
-                                    svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));
-                                } else {
-                                    // Single page, add directly
-                                    svgDocs.add(sheet.getSVGDocument());
-                                }
-                            }
-                        }
-                        if (svgDocs.isEmpty()) {
-                            logger.error("No SVG documents for {}", mekSummary.getName());
+                    String name = generateName(entity);
+                    if (processedFiles.contains(name)) {
+                        logger.warn("Duplication detected! Hash {} already exists for {} {}", name,
+                              mekSummary.getFullChassis(), mekSummary.getModel());
+                        continue;
+                    }
+                    processedFiles.add(name);
+
+                    UnitData unitData = new UnitData(mekSummary, entity, recordSheetOptions);
+                    unitData.name = name;
+                    boolean isSmallUnit = entity.isBattleArmor() || entity.isProtoMek() || entity.isInfantry();
+                    try {
+                        // List<Entity> units = printableListOfUnits(entity);
+                        List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(List.of(entity),
+                              true,
+                              recordSheetOptions);
+                        if (sheets.isEmpty()) {
+                            logger.error("No sheets generated for {}", mekSummary.getName());
                             System.exit(1);
                         }
-                        int idx = 0;
-                        for (Document svgDoc : svgDocs) {
-                            SVGOptimizer.optimize((SVGDocument) svgDoc);
-                            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                            Transformer transformer = transformerFactory.newTransformer();
-                            transformer.setOutputProperty(OutputKeys.INDENT, "no");
-                            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-                            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                            String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
-                            String unoptimizedSvgFilename = baseSvgFilename + ".svg";
-                            File finalUnoptimizedFilename = new File(sheetPath, unoptimizedSvgFilename);
-                            try (FileOutputStream fos = new FileOutputStream(finalUnoptimizedFilename)) {
-                                DOMSource source = new DOMSource(svgDoc);
-                                StreamResult result = new StreamResult(fos);
-                                transformer.transform(source, result);
+                        if (SKIP_SVG) {
+                            int pageCount = 0;
+                            for (PrintRecordSheet sheet : sheets) {
+                                pageCount += sheet.getPageCount();
                             }
-                            String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
-                            unitData.sheets.add(pathToSave);
-                            idx++;
+                            for (int idx = 0; idx < pageCount; idx++) {
+                                String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
+                                String unoptimizedSvgFilename = baseSvgFilename + ".svg";
+                                String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
+                                unitData.sheets.add(pathToSave);
+                            }
+                        } else {
+                            List<Document> svgDocs = new ArrayList<>();
+                            for (PrintRecordSheet sheet : sheets) {
+                                if (sheet instanceof PrintSmallUnitSheet) {
+                                    pf.setPaper(paperDef.createPaper());
+                                } else {
+                                    pf.setPaper(paperDef.createPaper());
+                                    //                                pf.setPaper(paperDef.createPaper(DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS, DEFAULT_MARGINS));
+                                }
+                                int pageCount = sheet.getPageCount();
+                                for (int pageIndexInSheet = 0; pageIndexInSheet < pageCount; pageIndexInSheet++) {
+                                    sheet.createDocument(pageIndexInSheet, pf, true);
+                                    if (pageCount > 1) {
+                                        // Multiple pages, clone the SVG document for each page to prevent overwriting
+                                        svgDocs.add((Document) sheet.getSVGDocument().cloneNode(true));
+                                    } else {
+                                        // Single page, add directly
+                                        svgDocs.add(sheet.getSVGDocument());
+                                    }
+                                }
+                            }
+                            if (svgDocs.isEmpty()) {
+                                logger.error("No SVG documents for {}", mekSummary.getName());
+                                System.exit(1);
+                            }
+                            int idx = 0;
+                            for (Document svgDoc : svgDocs) {
+                                SVGOptimizer.optimize((SVGDocument) svgDoc);
+                                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                                Transformer transformer = transformerFactory.newTransformer();
+                                transformer.setOutputProperty(OutputKeys.INDENT, "no");
+                                transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                                String baseSvgFilename = unitData.name + (idx > 0 ? "_" + idx : "");
+                                String unoptimizedSvgFilename = baseSvgFilename + ".svg";
+                                File finalUnoptimizedFilename = new File(sheetPath, unoptimizedSvgFilename);
+                                try (FileOutputStream fos = new FileOutputStream(finalUnoptimizedFilename)) {
+                                    DOMSource source = new DOMSource(svgDoc);
+                                    StreamResult result = new StreamResult(fos);
+                                    transformer.transform(source, result);
+                                }
+                                String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\", "/");
+                                unitData.sheets.add(pathToSave);
+                                idx++;
+                            }
                         }
+                        // logger.info("Printed: {}", finalFilename);
+                    } catch (Exception e) {
+                        logger.error(e, "Printing Error");
+                        System.exit(1);
                     }
-                    // logger.info("Printed: {}", finalFilename);
-                } catch (Exception e) {
-                    logger.error(e, "Printing Error");
-                    System.exit(1);
-                }
 
-                // Set additional fields
-                unitData.pv = mekSummary.getPointValue();
-                unitData.su = isSmallUnit ? 1 : 0; // 1 for small units, 0 for others
+                    // Set additional fields
+                    unitData.pv = mekSummary.getPointValue();
+                    unitData.su = isSmallUnit ? 1 : 0; // 1 for small units, 0 for others
 
-                String jsonLine = mapper.writeValueAsString(unitData);
-                if (!firstUnit) {
-                    jsonWriter.write(",\n");
-                }
-                jsonWriter.write(jsonLine);
+                    String jsonLine = mapper.writeValueAsString(unitData);
+                    if (!firstUnit) {
+                        jsonWriter.write(",\n");
+                    }
+                    jsonWriter.write(jsonLine);
 
-                firstUnit = false;
-                processedCount++;
-                if (!uniqueUnitTypes.containsKey(unitData.type)) {
-                    uniqueUnitTypes.put(unitData.type, entity);
+                    firstUnit = false;
+                    processedCount++;
+                    if (!uniqueUnitTypes.containsKey(unitData.type)) {
+                        uniqueUnitTypes.put(unitData.type, entity);
+                    }
+                    System.gc();
                 }
-                System.gc();
+                jsonWriter.write("\n]}");
+            } catch (IOException e) {
+                logger.error("Failed to write JSON Lines file: {}", e.getMessage());
             }
-            jsonWriter.write("\n]}");
-        } catch (IOException e) {
-            logger.error("Failed to write JSON Lines file: {}", e.getMessage());
+        }
+
+        try (FileWriter quirksWriter = new FileWriter(ROOT_FOLDER + File.separator + "quirks.json")) {
+            ResourceBundle quirksBundle = ResourceBundle.getBundle("megamek.common.options.messages");
+            List<Map<String, String>> quirksList = new ArrayList<>();
+
+            // Positive quirks
+            for (var field : OptionsConstants.class.getFields()) {
+                if (field.getName().startsWith("QUIRK_POS_")) {
+                    String key = field.get(null).toString();
+                    String name = quirksBundle.getString("QuirksInfo.option." + key + ".displayableName");
+                    String desc = quirksBundle.getString("QuirksInfo.option." + key + ".description");
+                    desc = filterQuirkDescription(desc);
+                    Map<String, String> entry = new HashMap<>();
+                    entry.put("name", name);
+                    entry.put("description", desc);
+                    entry.put("type", "positive");
+                    quirksList.add(entry);
+                }
+            }
+            // Negative quirks
+            for (var field : OptionsConstants.class.getFields()) {
+                if (field.getName().startsWith("QUIRK_NEG_")) {
+                    String key = field.get(null).toString();
+                    String name = quirksBundle.getString("QuirksInfo.option." + key + ".displayableName");
+                    String desc = quirksBundle.getString("QuirksInfo.option." + key + ".description");
+                    desc = filterQuirkDescription(desc);
+                    Map<String, String> entry = new HashMap<>();
+                    entry.put("name", name);
+                    entry.put("description", desc);
+                    entry.put("type", "negative");
+                    quirksList.add(entry);
+                }
+            }
+            quirksWriter.write("{\"version\":"+ timestamp +",\n\"quirks\":");
+            quirksWriter.write(mapper.writeValueAsString(quirksList));
+            quirksWriter.write("}");
+            logger.info("Exported quirks.json");
+        } catch (Exception e) {
+            logger.error("Failed to export quirks: {}", e.getMessage());
         }
 
         logger.info("Done. Processed {} units.", processedCount);
@@ -1224,6 +1286,15 @@ public class SVGMassPrinter {
                     EquipmentType eq = equipmentTableModel.getType(i);
                     Map<String, Object> rowMap = new HashMap<>();
                     rowMap.put("name", eq.getName()); // Use full name
+                    if (eq instanceof WeaponType weapon) {
+                        if (!(weapon instanceof ACWeapon) && (weapon.getRackSize() > 0)) {
+                            rowMap.put("rackSize", weapon.getRackSize());
+                        }
+                    } else if (eq instanceof AmmoType ammo) {
+                        rowMap.put("category", ammo.getAmmoType().getCategory().name());
+                        rowMap.put("rackSize", ammo.getRackSize());
+                        rowMap.put("kgPerShot", ammo.getKgPerShot());
+                    }
                     for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) {
                         String key = normalizedKeys.get(j - 1);
                         Object value = equipmentTableModel.getValueAt(i, j);
@@ -1252,7 +1323,45 @@ public class SVGMassPrinter {
             }
             logger.info("Done. Processed {} equipments.", processedCount);
         }
+
+        // Export Quirks
+
+
         System.exit(0);
+    }
+
+    private static String filterQuirkDescription(String desc) {
+        desc = desc.replace("\n", " ");
+        // Remove "No game effect in MegaMek, included for completeness and external programs such as MekHQ."
+        desc = desc.replaceAll("No game effect in MegaMek,\\s*included for completeness and external programs such as MekHQ\\.?", "");
+        // Remove "No game effect," and similar phrases
+        desc = desc.replaceAll("No game effect,?\\s*(included for completeness\\.?|currently\\.)?\\s*", "");
+        // Remove "Not Implemented" and "Not coded for use."
+        desc = desc.replaceAll("Not Implemented\\s*", "");
+        desc = desc.replaceAll("Not coded for use\\.\\s*", "");
+        // Remove "included for completeness." and similar phrases
+        desc = desc.replaceAll("\\.?\\s*included for completeness\\.?\\s*", "");
+        desc = desc.replaceAll("\\.?\\s*Included for completeness\\.?\\s*", "");
+        // Remove trailing "Not Implemented (...)" and keep the reference
+        desc = desc.replaceAll("\\.\\s*Not Implemented\\s*\\(([^)]+)\\)", ". ($1)");
+        // Remove trailing "Not yet implemented. (...)" and keep the reference
+        desc = desc.replaceAll("\\.\\s*Not yet implemented\\.\\s*\\(([^)]+)\\)", ". ($1)");
+        // Remove trailing "Not yet implemented." without parentheses
+        desc = desc.replaceAll("\\.\\s*Not yet implemented\\s*", ".");
+        // Remove "Not implemented (...)" if it's the whole description, keep only the reference
+        desc = desc.replaceAll("^Not implemented \\(([^)]+)\\)\\s*$", "$1");
+        // Remove trailing "Not implemented." after a parenthetical reference
+        desc = desc.replaceAll("(\\([^)]+\\))\\s*Not implemented\\.?$", "$1");
+        // Remove trailing "Not yet implemented." after a parenthetical reference
+        desc = desc.replaceAll("(\\([^)]+\\))\\s*Not yet implemented\\.?$", "$1");
+        // Remove any leading punctuation and whitespace before a parenthetical reference
+        desc = desc.replaceAll("^[\\s\\.,;:]+\\(([^)]+)\\)", "$1");
+        // If only a reference in parentheses remains, keep just that
+        desc = desc.replaceAll("^\\s*\\(([^)]+)\\)\\s*$", "$1");
+        // Ensure a space before any parenthesis that follows a word character
+        desc = desc.replaceAll("([\\w])\\(", "$1 (");
+        // Remove any leftover leading/trailing whitespace
+        return desc.trim();
     }
 
     private static RecordSheetOptions getRecordSheetOptions() {
