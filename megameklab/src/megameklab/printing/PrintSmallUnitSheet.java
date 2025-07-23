@@ -22,14 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.batik.anim.dom.SVGLocatableSupport;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.BattleArmor;
 import megamek.common.Entity;
@@ -46,6 +38,13 @@ import megameklab.printing.reference.ProtoMekSpecialHitLocation;
 import megameklab.printing.reference.ReferenceTable;
 import megameklab.printing.reference.ReferenceTableBase;
 import megameklab.printing.reference.SwarmAttackHitLocation;
+import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Lays out a record sheet for infantry, BA, or protoMeks
@@ -80,13 +79,20 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         int count = 0;
         int clusterTableBlocksSize = 1;
         int index = 0;
-        for (Entity entity : entities) {
+
+        boolean startsWithLargeBlock = false;
+
+        for (int i = 0; i < entities.size(); i++) {
+            Entity entity = entities.get(i);
             Element g = getSVGDocument().getElementById("unit_" + index);
             if (g != null) {
                 PrintEntity sheet = getBlockFor(entity, count);
-                if (sheet instanceof PrintHandheldWeapon) {
+                if (sheet instanceof PrintHandheldWeapon hhwSheet) {
+                    if (i == 0 && hhwSheet.isLargeLayout()) {
+                        startsWithLargeBlock = true;
+                    }
                     clusterTableBlocksSize = 2;
-                    index += ((PrintHandheldWeapon) sheet).isLargeLayout() ? 2 : 1;
+                    index += hhwSheet.isLargeLayout() ? 2 : 1;
                 } else {
                     index += 1;
                 }
@@ -101,7 +107,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             addReferenceCharts(pageFormat);
         } else if (options.showCondensedReferenceCharts()
                 && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
-            addClusterChart(clusterTableBlocksSize, index);
+            addClusterChart(startsWithLargeBlock ? clusterTableBlocksSize / 2 : clusterTableBlocksSize, index);
         }
     }
 
