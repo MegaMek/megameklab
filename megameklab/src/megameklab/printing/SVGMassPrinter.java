@@ -1045,7 +1045,7 @@ public class SVGMassPrinter {
                   + timestamp
                   + ", \"equipment\":"
                   + timestamp
-                  + "}, \"quirks\":"
+                  + ", \"quirks\":"
                   + timestamp
                   + "}");
             logger.info("Version file written: {}", timestamp);
@@ -1271,7 +1271,7 @@ public class SVGMassPrinter {
                 EquipmentTableModel equipmentTableModel = new EquipmentTableModel(entity, null);
                 equipmentTableModel.setData((ArrayList<EquipmentType>) EquipmentType.allTypes());
                 List<String> normalizedKeys = new ArrayList<>();
-                for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) { // Skip column 0, is the name
+                for (int j = 0; j < equipmentTableModel.getColumnCount(); j++) { // Skip column 0, is the name
                     String key = equipmentTableModel.getColumnName(j);
                     if ("Slots".equals(key)) {
                         key = "Crit";
@@ -1295,11 +1295,45 @@ public class SVGMassPrinter {
                         rowMap.put("rackSize", ammo.getRackSize());
                         rowMap.put("kgPerShot", ammo.getKgPerShot());
                     }
-                    for (int j = 1; j < equipmentTableModel.getColumnCount(); j++) {
-                        String key = normalizedKeys.get(j - 1);
+                    for (int j = 0; j < equipmentTableModel.getColumnCount(); j++) {
+                        if (j == EquipmentTableModel.COL_NAME) continue;
+                        if (j == EquipmentTableModel.COL_TRATING) continue;
+                        if (j == EquipmentTableModel.COL_DPROTOTYPE) continue;
+                        if (j == EquipmentTableModel.COL_DPRODUCTION) continue;
+                        if (j == EquipmentTableModel.COL_DCOMMON) continue;
+                        if (j == EquipmentTableModel.COL_DEXTINCT) continue;
+                        if (j == EquipmentTableModel.COL_DREINTRO) continue;
+                        String key = normalizedKeys.get(j);
                         Object value = equipmentTableModel.getValueAt(i, j);
                         rowMap.put(key, value);
                     }
+                    rowMap.put("rating", Map.of(
+                          "is", eq.getFullRatingName(false),
+                          "clan", eq.getFullRatingName(true)
+                    ));
+                    rowMap.put("dates", Map.of(
+                          "is", Map.of(
+                                "t", eq.getTechAdvancement().getPrototypeDateName(false),
+                                "p", eq.getTechAdvancement().getProductionDateName(false),
+                                "c", eq.getTechAdvancement().getCommonDateName(false),
+                                "x", eq.getTechAdvancement().getExtinctionDateName(false),
+                                "r", eq.getTechAdvancement().getReintroductionDateName(false)
+                          ),
+                          "clan", Map.of(
+                                "t", eq.getTechAdvancement().getPrototypeDateName(true),
+                                "p", eq.getTechAdvancement().getProductionDateName(true),
+                                "c", eq.getTechAdvancement().getCommonDateName(true),
+                                "x", eq.getTechAdvancement().getExtinctionDateName(true),
+                                "r", eq.getTechAdvancement().getReintroductionDateName(true)
+                          ),
+                          "mixed", Map.of(
+                                "t", eq.getTechAdvancement().getPrototypeDateName(),
+                                "p", eq.getTechAdvancement().getProductionDateName(),
+                                "c", eq.getTechAdvancement().getCommonDateName(),
+                                "x", eq.getTechAdvancement().getExtinctionDateName(),
+                                "r", eq.getTechAdvancement().getReintroductionDateName()
+                          )
+                    ));
                     equipmentMap.put(eq.getInternalName(), rowMap);
                 }
                 equipmentJsonMap.put(unitTypeKey, equipmentMap);
