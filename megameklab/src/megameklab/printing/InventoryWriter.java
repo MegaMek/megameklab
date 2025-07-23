@@ -33,16 +33,15 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import megamek.common.*;
+import megamek.common.enums.WeaponSortOrder;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.WeaponMounted;
+import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
-
-import megamek.common.*;
-import megamek.common.enums.WeaponSortOrder;
-import megamek.common.equipment.WeaponMounted;
-import megameklab.util.UnitUtil;
 
 /**
  * Formats text for the record sheet's "Weapons and Equipment Inventory" section. For most units,
@@ -201,15 +200,20 @@ public class InventoryWriter {
         } else {
             parseEquipment();
         }
-        String str = ammo.entrySet().stream()
-                .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
-                .collect(Collectors.joining(", "));
-        String ammoPrefix = "Ammo: ";
-        if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
-                && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MEK) == 0)) {
-            ammoPrefix = "Ammo (CASE): ";
+        String str;
+        if (!sheet.getEntity().isHandheldWeapon()) {
+            str = ammo.entrySet().stream()
+                  .map(e -> String.format("(%s) %d", e.getKey(), e.getValue()))
+                  .collect(Collectors.joining(", "));
+            String ammoPrefix = "Ammo: ";
+            if (sheet.getEntity().hasWorkingMisc(MiscType.F_CASE)
+                  && ((sheet.getEntity().getEntityType() & Entity.ETYPE_MEK) == 0)) {
+                ammoPrefix = "Ammo (CASE): ";
+            }
+            ammoText = str.isEmpty() ? str : ammoPrefix + str;
+        } else {
+            ammoText = "";
         }
-        ammoText = str.isEmpty() ? str : ammoPrefix + str;
         fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
         featuresText = str.isEmpty() ? str : "Features " + str;
