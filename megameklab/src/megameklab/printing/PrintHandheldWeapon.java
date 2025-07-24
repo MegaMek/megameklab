@@ -19,13 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.svg.SVGTextElement;
-import org.w3c.dom.Text;
-
 import megamek.codeUtilities.StringUtility;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -33,6 +26,12 @@ import megamek.common.EquipmentType;
 import megamek.common.HandheldWeapon;
 import megamek.common.WeaponType;
 import megameklab.util.CConfig;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
 
 /**
  * @author drake
