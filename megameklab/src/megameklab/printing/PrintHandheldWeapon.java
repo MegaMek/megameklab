@@ -19,13 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.svg.SVGTextElement;
-import org.w3c.dom.Text;
-
 import megamek.codeUtilities.StringUtility;
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -33,6 +26,12 @@ import megamek.common.EquipmentType;
 import megamek.common.HandheldWeapon;
 import megamek.common.WeaponType;
 import megameklab.util.CConfig;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
 
 /**
  * @author drake
@@ -330,7 +329,10 @@ public class PrintHandheldWeapon extends PrintEntity {
         final boolean needsLabels = pipsList.size() > 1;
         double actualLabelHeight = 0;
         SVGTextElement labelTemplate = null;
+        Element headerLabel = getSVGDocument().getElementById("ammoLabel");
         if (needsLabels) {
+            headerLabel.setTextContent("Ammo:");
+
             bbox = new Rectangle2D.Double(
                 bbox.getX(),
                 bbox.getY()+OFFSET_FIRST_LABEL,
@@ -354,6 +356,8 @@ public class PrintHandheldWeapon extends PrintEntity {
                 // Could not find label template 'ammoEntryLabel'. Using default text settings and size
                 actualLabelHeight = LABEL_DEFAULT_FONT_SIZE;
             }
+        } else {
+            headerLabel.setTextContent("Ammo (%d):".formatted(pipsList.get(0).getValue()));
         }
 
         // Find Optimal Pip Radius
@@ -476,8 +480,8 @@ public class PrintHandheldWeapon extends PrintEntity {
         double totalMinVerticalHeight = 0;
         int expandableGaps = 0;
         boolean firstBlockDrawnVertCalc = false;
-        for (int i = 0; i < pipsList.size(); i++) {
-            int pipsCount = pipsList.get(i).getValue();
+        for (Map.Entry<String, Integer> stringIntegerEntry : pipsList) {
+            int pipsCount = stringIntegerEntry.getValue();
             if (pipsCount <= 0) {
                 rowsPerAmmo.add(0);
                 continue;
@@ -553,7 +557,8 @@ public class PrintHandheldWeapon extends PrintEntity {
                 double labelBaselineY = blockContentStartY + actualLabelHeight * 0.8;
                 double labelStartX = firstPipCenterX_Base - optimalRadius - (pipStroke / 2);
                 labelStartX = Math.max(bbox.getX(), labelStartX);
-                Element label = createLabel(labelTemplate, ammoName + ":", labelStartX, labelBaselineY);
+                Element label = createLabel(labelTemplate, "%s (%d):".formatted(ammoName, pipsCount), labelStartX,
+                      labelBaselineY);
                 target.appendChild(label);
 
                 // Advance currentY past the label and its bottom margin
