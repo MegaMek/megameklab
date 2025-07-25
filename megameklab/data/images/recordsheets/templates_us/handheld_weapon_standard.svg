@@ -60,8 +60,8 @@
      inkscape:deskcolor="#d1d1d1"
      showguides="true"
      inkscape:zoom="3.1994783"
-     inkscape:cx="227.84965"
-     inkscape:cy="43.288308"
+     inkscape:cx="228.1622"
+     inkscape:cy="43.288307"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="3832"
@@ -163,7 +163,7 @@
        x="475"
        y="21.208117"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.2px;font-family:Eurostile;-inkscape-font-specification:'Eurostile, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#000000;stroke-width:1.03271"
-       xml:space="preserve">Ammo (200):</text>
+       xml:space="preserve">Ammo:</text>
     <text
        id="ammoEntryLabel"
        x="450.16928"
