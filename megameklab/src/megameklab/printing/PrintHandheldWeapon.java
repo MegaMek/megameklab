@@ -16,15 +16,10 @@ package megameklab.printing;
 import java.awt.geom.Rectangle2D;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRectElement;
-import org.w3c.dom.svg.SVGTextElement;
-import org.w3c.dom.Text;
 
 import megamek.codeUtilities.StringUtility;
 import megamek.common.AmmoType;
@@ -32,7 +27,14 @@ import megamek.common.Entity;
 import megamek.common.EquipmentType;
 import megamek.common.HandheldWeapon;
 import megamek.common.WeaponType;
+import megamek.common.equipment.WeaponMounted;
 import megameklab.util.CConfig;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
 
 /**
  * @author drake
@@ -205,6 +207,23 @@ public class PrintHandheldWeapon extends PrintEntity {
                         pipsList.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
                     }
                 });
+
+        var oneShotWeapons = new HashMap<String,Integer>();
+        for (Iterator<WeaponMounted> it = getEntity().getWeapons(); it.hasNext(); ) {
+            WeaponType weapon = it.next().getType();
+            var name = weapon.getName();
+            if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (oneShotWeapons.containsKey(name)) {
+                    oneShotWeapons.put(name, oneShotWeapons.get(name) + 1);
+                } else {
+                    oneShotWeapons.put(name, 1);
+                }
+            }
+
+        }
+
+        pipsList.addAll(oneShotWeapons.entrySet());
+
         return pipsList;
     }
 

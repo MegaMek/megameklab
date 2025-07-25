@@ -43,6 +43,7 @@ import megamek.common.icons.Camouflage;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
+import megameklab.util.UnitUtil;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     // region Variable Declarations
@@ -300,7 +301,8 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
 
         ArrayList<Entity> selectedEntities = getSelectedEntities();
-        if (selectedEntities.size() > 0) {
+        selectedEntities.forEach(UnitUtil::updateLoadedUnit);
+        if (!selectedEntities.isEmpty()) {
             recordSheetPanel.setEntities(selectedEntities);
             printRecordSheetButton.setEnabled(true);
             exportToPDFRecordSheetButton.setEnabled(true);

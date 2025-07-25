@@ -14,28 +14,34 @@
  */
 package megameklab.ui.util;
 
-import megamek.common.*;
-import megamek.common.equipment.AmmoMounted;
-import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestProtoMek;
-import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.ui.EquipmentToolTip;
-import megameklab.util.CConfig;
-import megameklab.util.UnitUtil;
-
-import javax.swing.*;
+import java.awt.Component;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-import java.awt.*;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import megamek.common.*;
+import megamek.common.equipment.AmmoMounted;
+import megamek.common.verifier.TestBattleArmor;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestProtoMek;
+import megamek.common.weapons.infantry.InfantryWeapon;
+import megameklab.ui.EquipmentToolTip;
+import megameklab.util.CConfig;
+import megameklab.util.UnitUtil;
 
 public class CriticalTableModel extends AbstractTableModel {
     private final List<Mounted<?>> crits = new ArrayList<>();
@@ -91,7 +97,7 @@ public class CriticalTableModel extends AbstractTableModel {
     public void refreshModel() {
         // Support vehicle may switch between kg and ton standards. Other units will be
         // constant
-        if (kgStandard != (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT)) {
+        if (kgStandard != TestEntity.usesKgStandard(unit)) {
             kgStandard = !kgStandard;
             fireTableStructureChanged();
         }
@@ -138,7 +144,7 @@ public class CriticalTableModel extends AbstractTableModel {
             return (row >= 0) && (row < crits.size())
                     && (crits.get(row).getType().isVariableSize()
                             || (crits.get(row).getType() instanceof InfantryWeapon)
-                            || (unit instanceof HandheldWeapon && crits.get(row) instanceof AmmoMounted));
+                            || ((unit instanceof HandheldWeapon || unit instanceof BattleArmor) && crits.get(row) instanceof AmmoMounted));
         } else {
             return false;
         }
@@ -210,6 +216,8 @@ public class CriticalTableModel extends AbstractTableModel {
             case SIZE:
                 if (crit.getType().isVariableSize() ||  (unit instanceof HandheldWeapon && crit instanceof AmmoMounted)) {
                     return NumberFormat.getInstance().format(crit.getSize());
+                } else if (unit instanceof BattleArmor && crit instanceof AmmoMounted am) {
+                    return NumberFormat.getInstance().format(am.getOriginalShots());
                 } else if (crit.getType() instanceof InfantryWeapon) {
                     return (int) (crit.getSize() * ((InfantryWeapon) crit.getType()).getShots());
                 } else {
@@ -244,7 +252,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 }
                 UnitUtil.resizeMount(crit, newSize);
                 fireTableDataChanged();
-            } else if (unit instanceof HandheldWeapon && crit instanceof AmmoMounted am) {
+            } else if ((unit instanceof HandheldWeapon || unit instanceof BattleArmor) && crit instanceof AmmoMounted am) {
                 int shots = Integer.parseInt(aValue.toString());
                 if (am.getSize() == shots) {
                     return;
@@ -367,7 +375,15 @@ public class CriticalTableModel extends AbstractTableModel {
                 spinner.setModel(new SpinnerNumberModel((int) ((mounted.getSize() * clipSize)),
                         clipSize, null, clipSize));
             } else if (unit instanceof HandheldWeapon && (mounted instanceof AmmoMounted am)) {
-                spinner.setModel(new SpinnerNumberModel((int) am.getSize(), 0, null, 1));
+                spinner.setModel(new SpinnerNumberModel((int) am.getSize(), 1, null, 1));
+            } else if ((unit instanceof BattleArmor && (mounted instanceof AmmoMounted am))) {
+                int maxShots;
+                if (am.getType().getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
+                    maxShots = TestBattleArmor.NUM_SHOTS_PER_CRIT_TA;
+                } else {
+                    maxShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
+                }
+                spinner.setModel(new SpinnerNumberModel(am.getOriginalShots(), 1, maxShots, 1));
             } else {
                 spinner.setModel(new SpinnerNumberModel(Double.valueOf(mounted.getSize()),
                         mounted.getType().variableStepSize(), mounted.getType().variableMaxSize(),
