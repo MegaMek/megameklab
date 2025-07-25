@@ -75,6 +75,7 @@ public class InventoryWriter {
     enum Column {
         QUANTITY ("Qty", 0.037),
         NAME ("Type", 0.075),
+        NAME_NO_QTY ("Type", 0.037),
         BAY ("Bay", 0.02),
         LOCATION ("Loc", 0.41, 0.5),
         LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
@@ -119,7 +120,7 @@ public class InventoryWriter {
             }
         }
 
-        static Column[] colsFor(Entity en) {
+        static Column[] colsFor(Entity en, boolean mergeInventoryAllowed) {
             if (en.isAero()) {
                 if (en.tracksHeat() || en.isLargeCraft()) {
                     return new Column[]{QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV};
@@ -129,10 +130,18 @@ public class InventoryWriter {
             } else if (en instanceof BattleArmor) {
                 return new Column[]{QUANTITY, NAME, DAMAGE, MIN, SHORT, MEDIUM, LONG};
             } else {
-                if (en.tracksHeat()) {
-                    return new Column[] {QUANTITY, NAME, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                if (mergeInventoryAllowed) {
+                    if (en.tracksHeat()) {
+                        return new Column[] {QUANTITY, NAME, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    } else {
+                        return new Column[]{QUANTITY, NAME, LOCATION_NO_HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    }
                 } else {
-                    return new Column[]{QUANTITY, NAME, LOCATION_NO_HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    if (en.tracksHeat()) {
+                        return new Column[] {NAME_NO_QTY, LOCATION, HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    } else {
+                        return new Column[]{NAME_NO_QTY, LOCATION_NO_HEAT, DAMAGE, MIN, SHORT, MEDIUM, LONG};
+                    }
                 }
             }
         }
@@ -164,6 +173,7 @@ public class InventoryWriter {
     private final String featuresText;
     private final String miscNotesText;
     private final String quirksText;
+    private boolean mergeInventoryAllowed;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -171,8 +181,10 @@ public class InventoryWriter {
      * @param sheet The record sheet layout instance
      */
     public InventoryWriter(PrintEntity sheet) {
+
         this.sheet = sheet;
-        columnTypes = Column.colsFor(sheet.getEntity());
+        this.mergeInventoryAllowed = mergeInventoryAllowed();
+        columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
         colX = new double[columnTypes.length];
         bayColX = new double[Column.BAY_COLUMNS.length];
 
@@ -296,7 +308,7 @@ public class InventoryWriter {
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
             // If the unit is a Mek, we check for the merge equipment option.
             // If is not a mek, we always merge if possible.
-            if (!(sheet.getEntity() instanceof Mek) || sheet.options.mergeIdenticalEquipment()) {
+            if (this.mergeInventoryAllowed) {
                 StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
                 if (null == same) {
                     equipment.add(entry);
@@ -327,6 +339,10 @@ public class InventoryWriter {
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
         }
+    }
+
+    private boolean mergeInventoryAllowed() {
+        return !(sheet.getEntity() instanceof Mek) || sheet.options.mergeIdenticalEquipment();
     }
 
     private void parseBays() {
@@ -484,10 +500,11 @@ public class InventoryWriter {
             yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
+            yPosition += metrics[1]; // Add extra line for heat profile text
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
                     yPosition, sheet.heatProfileText(),
-                    FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile");
+                  FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "heatProfile", null);
         }
         writeFooterBlock(metrics[0], metrics[1]);
     }
@@ -680,7 +697,8 @@ public class InventoryWriter {
             }
             if (!quirksText.isEmpty()) {
                 lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
-                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                        quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
+                      SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE,"unitQuirks");
             }
             final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
             // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
@@ -698,7 +716,8 @@ public class InventoryWriter {
         for (int i = 0; i < columnTypes.length; i++) {
             String anchor;
             if (Column.NAME.equals(columnTypes[i])
-                    || Column.BAY.equals(columnTypes[i])
+                  || Column.NAME_NO_QTY.equals(columnTypes[i])
+                  || Column.BAY.equals(columnTypes[i])
                     || Column.DAMAGE.equals(columnTypes[i])) {
                 anchor = SVGConstants.SVG_START_VALUE;
             } else {
@@ -719,8 +738,15 @@ public class InventoryWriter {
      * @return The estimated line count.
      */
     private int calcLineCount(float fontSize) {
-        // The width of the name field varies depending on aero/ground or whether there is a heat column,
-        // but is always the difference between the second and third.
+        // The width of the name field varies depending on aero/ground or whether there is a heat column and if we
+        // are merging inventory or not.
+        double baseNameWidth = Double.MAX_VALUE;
+        for (int i = 0; i < columnTypes.length; i++) {
+            if (Column.NAME.equals(columnTypes[i]) || Column.NAME_NO_QTY.equals(columnTypes[i])) {
+                baseNameWidth = colX[i + 1] - colX[i] - viewWidth * INDENT;
+                break;
+            }
+        }
         double damageWidth = Double.MAX_VALUE;
         for (int i = 0; i < columnTypes.length; i++) {
             if (Column.DAMAGE.equals(columnTypes[i])) {
@@ -732,7 +758,6 @@ public class InventoryWriter {
         for (StandardInventoryEntry line : equipment) {
             int rows = line.nRows();
             lines += rows;
-            double baseNameWidth = colX[2] - colX[1] - viewWidth * INDENT;
             double nameWidth = baseNameWidth;
             if (!(sheet.getEntity() instanceof BattleArmor)) {
                 nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
@@ -752,6 +777,7 @@ public class InventoryWriter {
         }
         lines += footerLines(fontSize);
         if (sheet.showHeatProfile()) {
+            lines++;
             lines++;
         }
         return lines;
@@ -833,10 +859,12 @@ public class InventoryWriter {
                             if (row == 0) {
                                 sheet.addTextElement(rowGroup, colX[i],
                                         yPosition, line.getQuantityField(row),
-                                        fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                        fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                        FILL_BLACK, null, "quantity");
                             }
                             break;
                         case NAME:
+                        case NAME_NO_QTY:
                         case BAY:
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
@@ -850,64 +878,70 @@ public class InventoryWriter {
                                 lines = sheet.addMultilineTextElement(rowGroup, colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                        SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "name");
                             } else {
                                 lines = sheet.addMultilineTextElement(rowGroup, line.indentMultiline() ?
                                         colX[i] + indent : colX[i],
                                         yPosition, width, lineHeight,
                                         line.getNameField(row), fontSize, SVGConstants.SVG_START_VALUE,
-                                        SVGConstants.SVG_NORMAL_VALUE);
+                                        SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, "name");
                             }
                             break;
                         case LOCATION:
                         case LOCATION_NO_HEAT:
                             sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getLocationField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "location");
                             break;
                         case HEAT:
                             sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getHeatField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "heat");
                             break;
                         case DAMAGE:
                             final float rightPadding = (fontSize / 2);
                             lines = Math.max(lines, sheet.addMultilineTextElement(rowGroup, colX[i],
                                     yPosition,
                                     colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
-                                    fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE));
+                                    fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK
+                                  , "damage"));
                             break;
                         case MIN:
                             sheet.addTextElement(rowGroup, colX[i],
                                     yPosition, line.getMinField(row), fontSize,
-                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE);
+                                    SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "range_min");
                             break;
                         case SHORT:
                         case SRV:
                             sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i + 1] - colX[i] - 1,
-                                    line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                                    line.getShortField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "range_short");
                             break;
                         case MEDIUM:
                         case MRV:
                             sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i + 1] - colX[i] - 1,
-                                    line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                                    line.getMediumField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "range_medium");
                             break;
                         case LONG:
                         case LRV:
                             sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getLongField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "range_long");
                             break;
                         case ERV:
                             sheet.addTextElementToFit(rowGroup, colX[i],
                                     yPosition, colX[i] - colX[i - 1] - 1,
                                     line.getExtremeField(row), fontSize, SVGConstants.SVG_MIDDLE_VALUE,
-                                    SVGConstants.SVG_NORMAL_VALUE);
+                                    SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK, null, "range_extreme");
                             break;
                     }
                 }
@@ -917,7 +951,7 @@ public class InventoryWriter {
                 int lines = sheet.addMultilineTextElement(rowGroup, colX[1] + indent,
                             yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight*QUIRKS_FONT_SCALING),
                             line.getQuirksField(), (float) (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
-                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE);
+                            SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE, "weaponQuirks");
                 yPosition += lineHeight * lines;
             }
         }
@@ -928,6 +962,7 @@ public class InventoryWriter {
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             switch (Column.BAY_COLUMNS[i]) {
                 case NAME:
+                case NAME_NO_QTY:
                 case BAY:
                     sheet.addTextElement(canvas, bayColX[i], currY, "Capital Scale", FONT_SIZE_MEDIUM,
                             SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
@@ -968,6 +1003,7 @@ public class InventoryWriter {
         for (int i = 0; i < columnTypes.length; i++) {
             switch (columnTypes[i]) {
                 case NAME:
+                case NAME_NO_QTY:
                 case BAY:
                     // Use first bay field to left-justify whether this unit uses bays or not
                     sheet.addTextElement(canvas, bayColX[0], currY, "Standard Scale", FONT_SIZE_MEDIUM,

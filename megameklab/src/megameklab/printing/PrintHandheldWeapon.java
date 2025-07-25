@@ -151,7 +151,8 @@ public class PrintHandheldWeapon extends PrintEntity {
             final double currY = bbox.getY() + pipRadius + (r * spaceBetweenPipsY);
             double currX = bbox.getX() + pipRadius + ((useAlternateColumns && isOdd) ? (spaceBetweenPipsX / 2) : 0);
             for (int c = 0; c < pipsInRow; c++) {
-                Element pip = createPip(currX - pipRadius, currY - pipRadius, pipRadius, strokeWidth);
+                Element pip = createPip(currX - pipRadius, currY - pipRadius, pipRadius, strokeWidth, PipType.CIRCLE,
+                      FILL_WHITE, "armor", "GUN", false);
                 target.appendChild(pip);
                 remainingArmor--;
                 currX += spaceBetweenPipsX;
@@ -616,7 +617,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                 for (int c = 0; c < numPipsThisRow; c++) {
                     double pipCenterX = rowStartX + c * (layoutDiameter + spacingX);
                     Element pip = createPip(pipCenterX - optimalRadius, pipCenterY - optimalRadius, optimalRadius,
-                            pipStroke);
+                            pipStroke, PipType.CIRCLE, FILL_WHITE, "ammo", ammoName, false);
                     target.appendChild(pip);
                 }
                 pipsDrawnInBlock += numPipsThisRow;
