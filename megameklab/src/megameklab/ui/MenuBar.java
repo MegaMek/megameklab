@@ -1371,9 +1371,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            EntityReadout view = EntityReadout.createReadout(owner.getEntity(), formatting == ViewFormatting.NONE, false,
-                  formatting);
-            return view.getReadout();
+            EntityReadout view = EntityReadout.createReadout(owner.getEntity(),
+                  formatting == ViewFormatting.NONE,
+                  false);
+            return view.getReadout(formatting);
         }
     }
 
@@ -1521,8 +1522,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             return;
         }
 
-        String unitSpecs = "<html><body>" + mekView.getBasicSection() +
-                mekView.getLoadoutSection() + "</body></html>";
+        String unitSpecs = "<html><body>" + mekView.getBasicSection(ViewFormatting.HTML) +
+                mekView.getLoadoutSection(ViewFormatting.HTML) + "</body></html>";
 
         JEditorPane textPane = new JEditorPane("text/html", "");
         JScrollPane scroll = new JScrollPane();
