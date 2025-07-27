@@ -73,6 +73,7 @@ public class InventoryWriter {
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
+        MOD("", 0.022),
         QUANTITY ("Qty", 0.037),
         NAME ("Type", 0.075),
         NAME_NO_QTY ("Type", 0.037),
@@ -110,14 +111,26 @@ public class InventoryWriter {
             this(header, x, x, x);
         }
 
-        double xFor(Entity en) {
+        double xFor(Entity en, boolean offsetForMod) {
+            double x;
             if (en.isAero()) {
-                return aeroX;
+                x = aeroX;
             } else if (en instanceof BattleArmor) {
-                return baX;
+                x = baX;
             } else {
-                return groundX;
+                x = groundX;
             }
+
+            if (offsetForMod && this == QUANTITY || this == NAME) {
+                return x + 0.025;
+            } else if (offsetForMod && this == NAME_NO_QTY) {
+                return x + 0.025;
+            } else if (offsetForMod && this == LOCATION || this == LOCATION_NO_HEAT) {
+                return x + 0.025;
+            } else if (offsetForMod && this == HEAT) {
+                return x + 0.01;
+            }
+            return x;
         }
 
         static Column[] colsFor(Entity en, boolean mergeInventoryAllowed) {
@@ -173,7 +186,8 @@ public class InventoryWriter {
     private final String featuresText;
     private final String miscNotesText;
     private final String quirksText;
-    private boolean mergeInventoryAllowed;
+    private final boolean mergeInventoryAllowed;
+    private final boolean includeHitMod;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -183,8 +197,20 @@ public class InventoryWriter {
     public InventoryWriter(PrintEntity sheet) {
 
         this.sheet = sheet;
-        this.mergeInventoryAllowed = mergeInventoryAllowed();
-        columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
+        this.mergeInventoryAllowed = sheet.options.mergeIdenticalEquipment();
+        this.includeHitMod = sheet.options.includeHitMod();
+
+        {
+            var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
+            if (includeHitMod) {
+                var newColumns = new Column[columnTypes.length + 1];
+                newColumns[0] = Column.MOD;
+                System.arraycopy(columnTypes, 0, newColumns, 1, columnTypes.length);
+                columnTypes = newColumns;
+            }
+            this.columnTypes = columnTypes;
+        }
+
         colX = new double[columnTypes.length];
         bayColX = new double[Column.BAY_COLUMNS.length];
 
@@ -239,7 +265,7 @@ public class InventoryWriter {
         this.viewY = svgRect.getY().getBaseVal().getValue();
         this.indent = viewWidth * INDENT;
         for (int i = 0; i < columnTypes.length; i++) {
-            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity());
+            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity(), includeHitMod);
         }
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
@@ -339,10 +365,6 @@ public class InventoryWriter {
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
         }
-    }
-
-    private boolean mergeInventoryAllowed() {
-        return !(sheet.getEntity() instanceof Mek) || sheet.options.mergeIdenticalEquipment();
     }
 
     private void parseBays() {
@@ -855,6 +877,11 @@ public class InventoryWriter {
                 }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
+                        case MOD:
+                            sheet.addTextElement(rowGroup, colX[i], yPosition, line.getModField(row), fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "modifier");
+                            break;
                         case QUANTITY:
                             if (row == 0) {
                                 sheet.addTextElement(rowGroup, colX[i],

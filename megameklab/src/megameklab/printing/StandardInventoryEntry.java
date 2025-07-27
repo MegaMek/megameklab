@@ -19,28 +19,26 @@
 
 package megameklab.printing;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import megamek.common.*;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.options.IOption;
+import megamek.common.options.WeaponQuirks;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
-import megamek.common.options.WeaponQuirks;
-import megamek.common.options.IOption;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
-import megamek.common.ITechnology;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -577,6 +575,35 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return ranges[row][RangeType.RANGE_EXTREME];
         }
         return "";
+    }
+
+    @Override
+    public String getModField(int row) {
+        if (mount.getLinkedBy() != null && mount.getLinkedBy().getType().hasFlag(MiscTypeFlag.F_RISC_LASER_PULSE_MODULE)) {
+            if (row == 1) {
+                return "-2";
+            } else {
+                return "";
+            }
+        }
+
+        if (row != 0) {
+            return "";
+        }
+
+        if (mount.getType() instanceof VariableSpeedPulseLaserWeapon) {
+            return "*";
+        }
+
+        var mod = mount.getType().getToHitModifier(mount);
+        var linked = mount.getLinkedBy();
+        if (linked != null) {
+            if (linked.getType().hasAnyFlag(MiscTypeFlag.F_ARTEMIS_V, MiscTypeFlag.F_APOLLO)) {
+                mod--;
+            }
+        }
+
+        return mod == 0 ? "" : "%+d".formatted(mod);
     }
 
     @Override

@@ -312,6 +312,12 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     @Override
+    public String getModField(int row) {
+        // todo: get someone who knows what an aerospace is to implement this
+        return "";
+    }
+
+    @Override
     public boolean indentMultiline() {
         return true;
     }

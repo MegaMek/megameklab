@@ -18,6 +18,20 @@
  */
 package megameklab.ui.dialog.settings;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.common.enums.WeaponSortOrder;
 import megameklab.printing.MekChassisArrangement;
@@ -29,14 +43,6 @@ import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 /**
  * A panel allowing to change MML's export (record sheet and clipboard) preferences
@@ -67,6 +73,8 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkFrameless = new JCheckBox();
     private final JCheckBox chkBoldType = new JCheckBox();
     private final JCheckBox chkMergeIdenticalEquipment = new JCheckBox();
+    private final JCheckBox chkHitMod = new JCheckBox();
+    private final JCheckBox chkIntrinsicPhysicals = new JCheckBox();
     private final MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
     private final MMComboBox<RecordSheetOptions.ColorMode> comboColorMode;
     private final MMComboBox<RecordSheetOptions.HeatScaleMarker> comboHeatScaleMarker;
@@ -175,6 +183,14 @@ class ExportSettingsPanel extends JPanel {
         chkMergeIdenticalEquipment.setText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.text"));
         chkMergeIdenticalEquipment.setToolTipText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.tooltip"));
         chkMergeIdenticalEquipment.setSelected(CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT));
+
+        chkHitMod.setText(resourceMap.getString("ConfigurationDialog.chkHitMod.text"));
+        chkHitMod.setToolTipText(resourceMap.getString("ConfigurationDialog.chkHitMod.tooltip"));
+        chkHitMod.setSelected(CConfig.getBooleanParam(CConfig.RS_HIT_MOD));
+
+        chkIntrinsicPhysicals.setText(resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.text"));
+        chkIntrinsicPhysicals.setToolTipText(resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.tooltip"));
+        chkIntrinsicPhysicals.setSelected(CConfig.getBooleanParam(CConfig.RS_INTRINSIC_PHYSICALS));
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -299,6 +315,8 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkAlternateArmorGrouping);
         innerGridPanel.add(chkFrameless);
         innerGridPanel.add(chkMergeIdenticalEquipment);
+        innerGridPanel.add(chkHitMod);
+        innerGridPanel.add(chkIntrinsicPhysicals);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
@@ -337,6 +355,8 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
         recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
+        recordSheetSettings.put(CConfig.RS_HIT_MOD,  Boolean.toString(chkHitMod.isSelected()));
+        recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Boolean.toString(chkIntrinsicPhysicals.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         return recordSheetSettings;
     }

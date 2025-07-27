@@ -105,6 +105,13 @@ public interface InventoryEntry {
     String getExtremeField(int row);
 
     /**
+     *
+     * @param row The row index within the entry
+     * @return The to-hit modifier of the item
+     */
+    String getModField(int row);
+
+    /**
      * @return Whether lines after the first line should be indented
      */
     boolean indentMultiline();
