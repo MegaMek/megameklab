@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
@@ -579,9 +580,21 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
 
     @Override
     public String getModField(int row) {
-        if (mount.getLinkedBy() != null && mount.getLinkedBy().getType().hasFlag(MiscTypeFlag.F_RISC_LASER_PULSE_MODULE)) {
-            if (row == 1) {
-                return "-2";
+        var hasTargComp = mount.getEntity().hasTargComp();
+        boolean hasAes = mount.getEntity().hasFunctionalArmAES(mount.getLocation());
+
+        if (hasPulseModule) {
+            var mod = 0;
+            if (hasTargComp) {
+                mod--;
+            }
+            if (hasAes) {
+                mod--;
+            }
+            if (row == 0) {
+                return String.valueOf(mod);
+            } else if (row == 1) {
+                return String.valueOf(mod - 2);
             } else {
                 return "";
             }
@@ -598,9 +611,29 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         var mod = mount.getType().getToHitModifier(mount);
         var linked = mount.getLinkedBy();
         if (linked != null) {
-            if (linked.getType().hasAnyFlag(MiscTypeFlag.F_ARTEMIS_V, MiscTypeFlag.F_APOLLO)) {
+            if (hasArtemisV || hasApollo) {
                 mod--;
             }
+        }
+
+        if (
+              hasTargComp
+              && mount instanceof WeaponMounted wm
+              && wm.getType().hasFlag(WeaponType.F_DIRECT_FIRE)
+              && !wm.getType().hasAnyFlag(WeaponType.F_CWS, WeaponType.F_TASER)
+        ) {
+            mod--;
+        }
+
+        if (
+              hasAes
+              && (
+                    mount instanceof WeaponMounted
+                    || (mount instanceof MiscMounted mm && mm.getType().hasFlag(MiscTypeFlag.F_CLUB))
+              )
+              && mount.getSecondLocation() == Entity.LOC_NONE
+        ) {
+            mod--;
         }
 
         return mod == 0 ? "" : "%+d".formatted(mod);
