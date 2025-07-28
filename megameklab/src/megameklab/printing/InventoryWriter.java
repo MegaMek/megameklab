@@ -204,16 +204,14 @@ public class InventoryWriter {
         this.includeHitMod = sheet.options.includeHitMod();
         this.includeIntrinsicPhysicals = sheet.options.intrinsicPhysicalAttacks();
 
-        {
-            var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
-            if (includeHitMod) {
-                var newColumns = new Column[columnTypes.length + 1];
-                newColumns[0] = Column.MOD;
-                System.arraycopy(columnTypes, 0, newColumns, 1, columnTypes.length);
-                columnTypes = newColumns;
-            }
-            this.columnTypes = columnTypes;
+        var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
+        if (includeHitMod) {
+            var newColumns = new Column[columnTypes.length + 1];
+            newColumns[0] = Column.MOD;
+            System.arraycopy(columnTypes, 0, newColumns, 1, columnTypes.length);
+            columnTypes = newColumns;
         }
+        this.columnTypes = columnTypes;
 
         colX = new double[columnTypes.length];
         bayColX = new double[Column.BAY_COLUMNS.length];
