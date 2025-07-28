@@ -34,6 +34,8 @@ import megamek.MMConstants;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
+import megamek.client.ui.tileset.MMStaticDirectoryManager;
+import megamek.client.ui.tileset.MekTileset;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.*;
 import megamek.common.actions.ClubAttackAction;
@@ -42,7 +44,6 @@ import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.alphaStrike.AlphaStrikeElement;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.enums.WeaponSortOrder;
-import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.options.IOption;
@@ -95,7 +96,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.io.FileOutputStream;
-import java.util.stream.Collectors;
 
 import static megamek.common.MiscTypeFlag.*;
 import static megamek.common.WeaponType.*;
@@ -105,7 +105,7 @@ import static megamek.common.WeaponType.*;
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
@@ -659,6 +659,7 @@ public class SVGMassPrinter {
         public Collection<ExportInventoryEntry> comp;
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public int crewSize; // Number of crew members, if applicable
+        public String icon; // Path to the unit icon
         public List<String> sheets; // Path to the SVG sheet
         public HashMap<String, Object> as = null;
 //        public String summary;
@@ -877,6 +878,7 @@ public class SVGMassPrinter {
             this.comp = (new Components(entity)).getComp();
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
+            this.icon = getEntityIcon(entity);
             this.sheets = new ArrayList<>();
             this.loadASUnitData(entity);
 //            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
@@ -887,6 +889,20 @@ public class SVGMassPrinter {
             } else {
                 this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
             }
+        }
+
+        private String getEntityIcon(Entity entity) {
+            if (entity == null || MMStaticDirectoryManager.getMekTileset() == null) {
+                return "";
+            }
+            try {
+                MekTileset.MekEntry entry = MMStaticDirectoryManager.getMekTileset().entryFor(entity, -1);
+                if (entry != null) {
+                    return entry.getImageFile();
+                }
+            } catch (Exception ignored) {
+            }
+            return "";
         }
 
         private double calculateSustainedDPTForInfantry(Entity entity) {
@@ -1413,7 +1429,7 @@ public class SVGMassPrinter {
         recordSheetOptions.setWeaponsOrder(WeaponSortOrder.RANGE_HIGH_LOW);
         recordSheetOptions.setPaperSize(PaperSize.US_LETTER);
         recordSheetOptions.setMergeIdenticalEquipment(false);
-        recordSheetOptions.setIncludeHitMod(true);
+        recordSheetOptions.setIncludeHitMod(false);
         recordSheetOptions.setIntrinsicPhysicalAttacks(true);
         return recordSheetOptions;
     }

@@ -83,11 +83,11 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 dmg += (int) Math.ceil(weight / 5);
             }
 
-            return List.of(new HeaderEntry(), e("Frenzy", DASH, String.valueOf(dmg), "*"));
+            return List.of(e("Frenzy", DASH, String.valueOf(dmg), "*"));
         } else if (entity.getMovementMode() == EntityMovementMode.RAIL) {
-            return List.of(new HeaderEntry(), e("Choo Choo", "FR", "*", "*"));
+            return List.of(e("Choo Choo", "FR", "*", "*"));
         } else if (entity.canCharge()) {
-            return List.of(new HeaderEntry(), e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*"));
+            return List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*"));
         }
 
         return List.of();
@@ -95,7 +95,6 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
     private static List<InventoryEntry> getEntriesForMek(Mek mek) {
         ArrayList<InventoryEntry> entries = new ArrayList<>();
-        entries.add(new HeaderEntry());
 
         var hasTsm = mek.hasTSM(true);
 
@@ -234,7 +233,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
     @Override
     public String getQuantityField(int row) {
-        return "1";
+        return "";
     }
 
     @Override
