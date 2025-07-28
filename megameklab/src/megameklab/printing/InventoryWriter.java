@@ -165,7 +165,7 @@ public class InventoryWriter {
         final static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
     }
 
-    private final List<StandardInventoryEntry> equipment;
+    private final List<InventoryEntry> equipment;
     private final List<WeaponBayInventoryEntry> standardBays;
     private final List<WeaponBayInventoryEntry> capitalBays;
     private final List<String> bayFootnotes;
@@ -188,6 +188,7 @@ public class InventoryWriter {
     private final String quirksText;
     private final boolean mergeInventoryAllowed;
     private final boolean includeHitMod;
+    private final boolean includeIntrinsicPhysicals;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -199,6 +200,7 @@ public class InventoryWriter {
         this.sheet = sheet;
         this.mergeInventoryAllowed = sheet.options.mergeIdenticalEquipment();
         this.includeHitMod = sheet.options.includeHitMod();
+        this.includeIntrinsicPhysicals = sheet.options.intrinsicPhysicalAttacks();
 
         {
             var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
@@ -312,7 +314,7 @@ public class InventoryWriter {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
             if ((m.getLocation() == Entity.LOC_NONE)
-                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
+                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity(), sheet.options)) {
                 continue;
             }
             if ((sheet.getEntity() instanceof QuadVee)
@@ -320,7 +322,7 @@ public class InventoryWriter {
                     && m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
-            /**
+            /*
              * BattleArmor have their own special mount points.
              * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
              * The solution is to filter out everything that has critical slots (means can't be for squad only)
@@ -335,7 +337,8 @@ public class InventoryWriter {
             // If the unit is a Mek, we check for the merge equipment option.
             // If is not a mek, we always merge if possible.
             if (this.mergeInventoryAllowed) {
-                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+                StandardInventoryEntry same =
+                      equipment.stream().filter(e -> e instanceof StandardInventoryEntry).map(e -> (StandardInventoryEntry) e).filter(entry::equals).findFirst().orElse(null);
                 if (null == same) {
                     equipment.add(entry);
                 } else {
@@ -364,6 +367,10 @@ public class InventoryWriter {
             }});
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
+        }
+
+        if (includeIntrinsicPhysicals) {
+            equipment.addAll(IntrinsicPhysicalInventoryEntry.getEntriesFor(sheet.getEntity()));
         }
     }
 
@@ -777,7 +784,7 @@ public class InventoryWriter {
             }
         }
         int lines = 0;
-        for (StandardInventoryEntry line : equipment) {
+        for (InventoryEntry line : equipment) {
             int rows = line.nRows();
             lines += rows;
             double nameWidth = baseNameWidth;
