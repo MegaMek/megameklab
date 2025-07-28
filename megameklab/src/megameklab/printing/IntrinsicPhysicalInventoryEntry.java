@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
 import megamek.common.LandAirMek;
 import megamek.common.Mek;
 import megamek.common.MiscType;
 import megamek.common.MiscTypeFlag;
+import megamek.common.ProtoMek;
 
 public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     private final static DecimalFormat doubleFormat = new DecimalFormat("#.##");
@@ -43,9 +45,35 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     }
 
     public static List<InventoryEntry> getEntriesFor(Entity entity){
-        // todo the rest of the unit types
         if (entity instanceof Mek mek) {
             return getEntriesForMek(mek);
+        } if (entity instanceof ProtoMek protoMek) {
+            int dmg;
+            var weight = protoMek.getWeight();
+            if (weight <= 5) {
+                dmg = 1;
+            } else if (weight <= 9) {
+                dmg = 2;
+            } else {
+                dmg = 3;
+            }
+
+            if (protoMek.isGlider()) {
+                dmg--;
+                if (dmg < 1) {
+                    dmg = 1;
+                }
+            }
+
+            if (protoMek.hasMisc(MiscTypeFlag.F_PROTOMEK_MELEE)) {
+                dmg += (int) Math.ceil(weight / 5);
+            }
+
+            return List.of(new HeaderEntry(), e("Frenzy", DASH, String.valueOf(dmg), "*"));
+        } else if (entity.getMovementMode() == EntityMovementMode.RAIL) {
+            return List.of(new HeaderEntry(), e("Choo Choo", "FR", "*", "*"));
+        } else if (entity.canCharge()) {
+            return List.of(new HeaderEntry(), e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*"));
         }
 
         return List.of();
