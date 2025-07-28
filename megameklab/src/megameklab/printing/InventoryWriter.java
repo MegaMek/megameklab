@@ -893,6 +893,9 @@ public class InventoryWriter {
                 if (hitMod2 != null && !hitMod2.isEmpty()) {
                     rowGroup.setAttributeNS(null, "hitMod2", hitMod2);
                 }
+                if (line instanceof IntrinsicPhysicalInventoryEntry) {
+                    rowGroup.setAttributeNS(null, "iPhysAtk", line.getNameField(0).toLowerCase());
+                }
             }
             canvas.appendChild(rowGroup);
 
