@@ -888,7 +888,10 @@ public class InventoryWriter {
             String uniqueId = line.getUniqueId();
             if (null != uniqueId && !uniqueId.isEmpty()) {
                 rowGroup.setAttributeNS(null, "id", uniqueId);
-                rowGroup.setAttributeNS(null, "hitMod", line.getModField(0));
+                final String hitMod = line.getModField(0);
+                if (hitMod != null && !hitMod.isEmpty()) {
+                    rowGroup.setAttributeNS(null, "hitMod", hitMod);
+                }
                 final String hitMod2 = line.getModField(1);
                 if (hitMod2 != null && !hitMod2.isEmpty()) {
                     rowGroup.setAttributeNS(null, "hitMod2", hitMod2);
