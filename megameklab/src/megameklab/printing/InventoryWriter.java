@@ -73,8 +73,9 @@ public class InventoryWriter {
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
-        QUANTITY ("Qty", 0.025),
-        NAME ("Type", 0.062),
+        QUANTITY ("#", 0.025),
+        NAME ("Type", 0.05),
+        // NAME ("Type", 0.062),
         NAME_NO_QTY ("Type", 0.025),
         BAY ("Bay", 0.02),
         LOCATION ("Loc", 0.40, 0.49),
