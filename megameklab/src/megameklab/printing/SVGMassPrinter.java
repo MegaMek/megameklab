@@ -105,9 +105,9 @@ import static megamek.common.WeaponType.*;
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
-    private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
+    private final static boolean SKIP_EQUIPMENT = true; // Set to true to skip equipment generation
 
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -119,6 +119,7 @@ public class SVGMassPrinter {
     private static final String ROOT_FOLDER = "svgexport";
     private static final int DEFAULT_MARGINS = 0; // Default margins for the page
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
+    private final static MekTileset tileset = MMStaticDirectoryManager.getMekTileset();
 
     private static final HashMap<Integer, String> unitTypes = new HashMap<>();
 
@@ -892,11 +893,11 @@ public class SVGMassPrinter {
         }
 
         private String getEntityIcon(Entity entity) {
-            if (entity == null || MMStaticDirectoryManager.getMekTileset() == null) {
+            if (entity == null || tileset == null) {
                 return "";
             }
             try {
-                MekTileset.MekEntry entry = MMStaticDirectoryManager.getMekTileset().entryFor(entity, -1);
+                MekTileset.MekEntry entry = tileset.entryFor(entity, -1);
                 if (entry != null) {
                     return entry.getImageFile();
                 }
@@ -1012,7 +1013,6 @@ public class SVGMassPrinter {
         logger.info("Starting SVG Mass Printer...");
         final String rootPath = ROOT_FOLDER + File.separator + SHEETS_DIR;
         File sheetsDir = new File(rootPath);
-
         if (sheetsDir.exists()) {
             try (var walk = Files.walk(sheetsDir.toPath())) {
                 walk.sorted(Comparator.reverseOrder())
