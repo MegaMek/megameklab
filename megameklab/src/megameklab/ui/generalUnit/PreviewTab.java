@@ -54,7 +54,7 @@ public class PreviewTab extends ITab {
     private final EntityReadoutPanel panelTROView = new EntityReadoutPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
-    private final AvailabilityPanel factionPanel = new AvailabilityPanel(null);
+    private final AvailabilityPanel factionPanel = new AvailabilityPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private EnhancedTabbedPane panPreview;
 
