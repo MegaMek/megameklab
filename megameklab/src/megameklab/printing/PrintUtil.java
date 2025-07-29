@@ -103,7 +103,7 @@ public final class PrintUtil {
         }
 
         if (eq instanceof MiscType mt && mt.hasFlag(MiscType.F_TALON)) {
-            return !options.intrinsicPhysicalAttacks();
+            return RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE.equals(options.intrinsicPhysicalAttacks());
         }
 
         if (UnitUtil.isHeatSink(eq)) {

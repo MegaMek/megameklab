@@ -433,6 +433,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             SAXDocumentFactory df = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(),
                     XMLResourceDescriptor.getXMLParserClassName());
             document = df.createDocument(filePath.toUri().toASCIIString(), is);
+            Element rootElement = document.getDocumentElement();
+            if (rootElement != null) {
+                rootElement.setAttributeNS(null, "overflow", "visible");
+            }
         } catch (Exception ex) {
             logger.error("", ex);
         }

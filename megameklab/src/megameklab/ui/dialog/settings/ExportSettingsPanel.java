@@ -73,11 +73,11 @@ class ExportSettingsPanel extends JPanel {
     private final JCheckBox chkFrameless = new JCheckBox();
     private final JCheckBox chkBoldType = new JCheckBox();
     private final JCheckBox chkMergeIdenticalEquipment = new JCheckBox();
-    private final JCheckBox chkHitMod = new JCheckBox();
-    private final JCheckBox chkIntrinsicPhysicals = new JCheckBox();
     private final MMComboBox<WeaponSortOrder> comboDefaultWeaponSortOrder;
     private final MMComboBox<RecordSheetOptions.ColorMode> comboColorMode;
     private final MMComboBox<RecordSheetOptions.HeatScaleMarker> comboHeatScaleMarker;
+    private final MMComboBox<RecordSheetOptions.HitModStyle> comboHitMod;
+    private final MMComboBox<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> comboIntrinsicPhysicals;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -151,22 +151,17 @@ class ExportSettingsPanel extends JPanel {
         colorModePanel.add(Box.createHorizontalStrut(25));
         colorModePanel.add(comboColorMode);
 
+        ComboBoxPanel<RecordSheetOptions.HeatScaleMarker> heatScaleMarkerCombo = createComboPanel(
+              "comboHeatScaleMarker",
+              RecordSheetOptions.HeatScaleMarker.class,
+              CConfig.getEnumParam(CConfig.RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.class,
+                    RecordSheetOptions.HeatScaleMarker.ASTERISK),
+              resourceMap.getString("ConfigurationDialog.heatScaleMarker.text"),
+              resourceMap.getString("ConfigurationDialog.heatScaleMarker.tooltip")
+        );
 
-        JLabel heatScaleMarkerLabel = new JLabel(resourceMap.getString("ConfigurationDialog.heatScaleMarker.text"));
-        String heatScaleMarkerToolTip = resourceMap.getString("ConfigurationDialog.heatScaleMarker.tooltip");
-        heatScaleMarkerLabel.setToolTipText(heatScaleMarkerToolTip);
-        final DefaultComboBoxModel<RecordSheetOptions.HeatScaleMarker> defaultHeatScaleMarkerModel =
-              new DefaultComboBoxModel<>(
-              RecordSheetOptions.HeatScaleMarker.values());
-        comboHeatScaleMarker = new MMComboBox<>("comboHeatScaleMarker", defaultHeatScaleMarkerModel);
-        comboHeatScaleMarker.setToolTipText(colorModeToolTip);
-        comboHeatScaleMarker.setSelectedItem(CConfig.getEnumParam(CConfig.RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.class,
-              RecordSheetOptions.HeatScaleMarker.ASTERISK));
-
-        JPanel heatScaleMarkerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        heatScaleMarkerPanel.add(heatScaleMarkerLabel);
-        heatScaleMarkerPanel.add(Box.createHorizontalStrut(25));
-        heatScaleMarkerPanel.add(comboHeatScaleMarker);
+        comboHeatScaleMarker = heatScaleMarkerCombo.comboBox;
+        JPanel heatScaleMarkerPanel = heatScaleMarkerCombo.panel;
 
         chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
         chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
@@ -184,13 +179,30 @@ class ExportSettingsPanel extends JPanel {
         chkMergeIdenticalEquipment.setToolTipText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.tooltip"));
         chkMergeIdenticalEquipment.setSelected(CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT));
 
-        chkHitMod.setText(resourceMap.getString("ConfigurationDialog.chkHitMod.text"));
-        chkHitMod.setToolTipText(resourceMap.getString("ConfigurationDialog.chkHitMod.tooltip"));
-        chkHitMod.setSelected(CConfig.getBooleanParam(CConfig.RS_HIT_MOD));
+        ComboBoxPanel<RecordSheetOptions.HitModStyle> hitModCombo = createComboPanel(
+              "comboHitMod",
+              RecordSheetOptions.HitModStyle.class,
+              CConfig.getEnumParam(CConfig.RS_HIT_MOD, RecordSheetOptions.HitModStyle.class,
+                    RecordSheetOptions.HitModStyle.NONE),
+              resourceMap.getString("ConfigurationDialog.chkHitMod.text"),
+              resourceMap.getString("ConfigurationDialog.chkHitMod.tooltip")
+        );
 
-        chkIntrinsicPhysicals.setText(resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.text"));
-        chkIntrinsicPhysicals.setToolTipText(resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.tooltip"));
-        chkIntrinsicPhysicals.setSelected(CConfig.getBooleanParam(CConfig.RS_INTRINSIC_PHYSICALS));
+        comboHitMod = hitModCombo.comboBox;
+        JPanel hitModPanel = hitModCombo.panel;
+
+
+        ComboBoxPanel<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> intrinsicPhysicalsCombo = createComboPanel(
+              "comboIntrinsicPhysicals",
+              RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
+              CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
+                    RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE),
+              resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.text"),
+              resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.tooltip")
+        );
+
+        comboIntrinsicPhysicals = intrinsicPhysicalsCombo.comboBox;
+        JPanel intrinsicPhysicalsPanel = intrinsicPhysicalsCombo.panel;
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -315,8 +327,8 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkAlternateArmorGrouping);
         innerGridPanel.add(chkFrameless);
         innerGridPanel.add(chkMergeIdenticalEquipment);
-        innerGridPanel.add(chkHitMod);
-        innerGridPanel.add(chkIntrinsicPhysicals);
+        innerGridPanel.add(hitModPanel);
+        innerGridPanel.add(intrinsicPhysicalsPanel);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
@@ -328,6 +340,33 @@ class ExportSettingsPanel extends JPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
     }
+
+    private record ComboBoxPanel<T extends Enum<T>>(JPanel panel, MMComboBox<T> comboBox) {
+    }
+
+    private <T extends Enum<T>> ComboBoxPanel<T> createComboPanel(
+          String comboName,
+          Class<T> enumClass,
+          T defaultValue,
+          String labelText,
+          String tooltipText) {
+
+        JLabel label = new JLabel(labelText);
+        label.setToolTipText(tooltipText);
+
+        final DefaultComboBoxModel<T> model = new DefaultComboBoxModel<>(enumClass.getEnumConstants());
+        MMComboBox<T> comboBox = new MMComboBox<>(comboName, model);
+        comboBox.setToolTipText(tooltipText);
+        comboBox.setSelectedItem(defaultValue);
+
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        panel.add(label);
+        panel.add(Box.createHorizontalStrut(25));
+        panel.add(comboBox);
+
+        return new ComboBoxPanel<>(panel, comboBox);
+    }
+
 
     Map<String, String> getRecordSheetSettings() {
         Map<String, String> recordSheetSettings = new HashMap<>();
@@ -355,8 +394,8 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
         recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
-        recordSheetSettings.put(CConfig.RS_HIT_MOD,  Boolean.toString(chkHitMod.isSelected()));
-        recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Boolean.toString(chkIntrinsicPhysicals.isSelected()));
+        recordSheetSettings.put(CConfig.RS_HIT_MOD, Objects.requireNonNull(comboHitMod.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Objects.requireNonNull(comboIntrinsicPhysicals.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         return recordSheetSettings;
     }

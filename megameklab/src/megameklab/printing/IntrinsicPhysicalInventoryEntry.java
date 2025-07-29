@@ -316,7 +316,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
         return "";
     }
 
-    private static class HeaderEntry implements InventoryEntry {
+    public static class HeaderEntry implements InventoryEntry {
 
         @Override
         public int nRows() {
@@ -335,7 +335,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
         @Override
         public String getNameField(int row) {
-            return "\u00A0- Physical Attacks -";
+            return "Physical Attacks";
         }
 
         @Override

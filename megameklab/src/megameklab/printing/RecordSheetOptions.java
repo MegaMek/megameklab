@@ -52,6 +52,34 @@ public class RecordSheetOptions {
         }
     }
 
+    public enum HitModStyle {
+        NONE("Not visible"),
+        COLUMN("Column"),
+        EDGE("Edge");
+        private final String displayName;
+        HitModStyle(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
+    public enum IntrinsicPhysicalAttacksStyle {
+        NONE("Not visible"),
+        EQUIPMENT("Equipment"),
+        FOOTER("Footer");
+        private final String displayName;
+        IntrinsicPhysicalAttacksStyle(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
     private PaperSize paperSize;
     private ColorMode color;
     private HeatScaleMarker heatScaleMarker;
@@ -73,8 +101,8 @@ public class RecordSheetOptions {
     private String damageColor;
     private WeaponSortOrder weaponsOrder;
     private boolean mergeIdenticalEquipment;
-    private boolean includeHitMod;
-    private boolean intrinsicPhysicalAttacks;
+    private HitModStyle includeHitMod;
+    private IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -104,9 +132,8 @@ public class RecordSheetOptions {
         this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
         this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
         this.mergeIdenticalEquipment = CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT);
-        this.includeHitMod = CConfig.getBooleanParam(CConfig.RS_HIT_MOD);
-        this.intrinsicPhysicalAttacks = CConfig.getBooleanParam(CConfig.RS_INTRINSIC_PHYSICALS);
-
+        this.includeHitMod = CConfig.getEnumParam(CConfig.RS_HIT_MOD, HitModStyle.class, HitModStyle.NONE);
+        this.intrinsicPhysicalAttacks = CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, IntrinsicPhysicalAttacksStyle.class, IntrinsicPhysicalAttacksStyle.NONE);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -291,19 +318,19 @@ public class RecordSheetOptions {
         this.mergeIdenticalEquipment = mergeIdenticalEquipment;
     }
 
-    public boolean includeHitMod() {
+    public HitModStyle includeHitMod() {
         return includeHitMod;
     }
 
-    public void setIncludeHitMod(boolean includeHitMod) {
+    public void setIncludeHitMod(HitModStyle includeHitMod) {
         this.includeHitMod = includeHitMod;
     }
 
-    public boolean intrinsicPhysicalAttacks() {
+    public IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks() {
         return intrinsicPhysicalAttacks;
     }
 
-    public void setIntrinsicPhysicalAttacks(boolean intrinsicPhysicalAttacks) {
+    public void setIntrinsicPhysicalAttacks(IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks) {
         this.intrinsicPhysicalAttacks = intrinsicPhysicalAttacks;
     }
 

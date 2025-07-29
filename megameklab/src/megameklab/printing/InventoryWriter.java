@@ -19,6 +19,7 @@
 package megameklab.printing;
 
 import static megameklab.printing.PrintRecordSheet.FILL_BLACK;
+import static megameklab.printing.PrintRecordSheet.FILL_WHITE;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
@@ -178,8 +179,8 @@ public class InventoryWriter {
     private final String miscNotesText;
     private final String quirksText;
     private final boolean mergeInventoryAllowed;
-    private final boolean includeHitMod;
-    private final boolean includeIntrinsicPhysicals;
+    private final RecordSheetOptions.HitModStyle includeHitMod;
+    private final RecordSheetOptions.IntrinsicPhysicalAttacksStyle includeIntrinsicPhysicals;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -196,7 +197,7 @@ public class InventoryWriter {
         this.includeIntrinsicPhysicals = sheet.options.intrinsicPhysicalAttacks();
 
         var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
-        if (includeHitMod) {
+        if (includeHitMod.equals(RecordSheetOptions.HitModStyle.COLUMN)) {
             var newColumns = new Column[columnTypes.length + 1];
 
             int minIndex = -1;
@@ -267,7 +268,7 @@ public class InventoryWriter {
         this.viewY = svgRect.getY().getBaseVal().getValue();
         this.indent = viewWidth * INDENT;
         for (int i = 0; i < columnTypes.length; i++) {
-            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity(), includeHitMod);
+            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity(), includeHitMod.equals(RecordSheetOptions.HitModStyle.COLUMN));
         }
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
@@ -369,8 +370,15 @@ public class InventoryWriter {
             equipment.add(new StandardInventoryEntry(mounted));
         }
 
-        if (includeIntrinsicPhysicals) {
-            equipment.addAll(IntrinsicPhysicalInventoryEntry.getEntriesFor(sheet.getEntity()));
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)
+        || includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            List<InventoryEntry> physicalEntries = IntrinsicPhysicalInventoryEntry.getEntriesFor(sheet.getEntity());
+            if (!physicalEntries.isEmpty()) {
+                if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)) {
+                    physicalEntries.add(0, new IntrinsicPhysicalInventoryEntry.HeaderEntry());
+                }
+                equipment.addAll(physicalEntries);
+            }
         }
     }
 
@@ -524,10 +532,14 @@ public class InventoryWriter {
             yPosition = printColumnHeaders(yPosition);
         }
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
-        List<InventoryEntry> equipmentWithoutPhysicalAttacks = equipment.stream()
-              .filter(entry -> !(entry instanceof IntrinsicPhysicalInventoryEntry))
-              .toList();
-        yPosition = printEquipmentTable(canvas, equipmentWithoutPhysicalAttacks, yPosition, metrics[0], metrics[1]);
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            List<InventoryEntry> equipmentWithoutPhysicalAttacks = equipment.stream()
+                  .filter(entry -> !(entry instanceof IntrinsicPhysicalInventoryEntry))
+                  .toList();
+            yPosition = printEquipmentTable(canvas, equipmentWithoutPhysicalAttacks, yPosition, metrics[0], metrics[1]);
+        } else {
+            yPosition = printEquipmentTable(canvas, equipment, yPosition, metrics[0], metrics[1]);
+        }
         if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
             yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
@@ -696,10 +708,14 @@ public class InventoryWriter {
      */
     public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-
-        List<InventoryEntry> equipmentOnlyPhysicalAttacks = equipment.stream()
-              .filter(entry -> (entry instanceof IntrinsicPhysicalInventoryEntry))
-              .toList();
+        List<InventoryEntry> equipmentOnlyPhysicalAttacks;
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            equipmentOnlyPhysicalAttacks = equipment.stream()
+                  .filter(entry -> (entry instanceof IntrinsicPhysicalInventoryEntry))
+                  .toList();
+        } else {
+            equipmentOnlyPhysicalAttacks = new ArrayList<>(); // No intrinsic physical attacks to display in footer
+        }
         if (equipmentOnlyPhysicalAttacks.size() + ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
@@ -887,6 +903,15 @@ public class InventoryWriter {
     private double printEquipmentTable(Element canvas, List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
+            if (line instanceof IntrinsicPhysicalInventoryEntry.HeaderEntry) {
+                // Custom print for header entry (TODO: generalize this to a generic header entry)
+                sheet.addTextElement(canvas, colX[0] - (indent/2),
+                      yPosition, line.getNameField(0),
+                      fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                      FILL_BLACK, null, "header");
+                yPosition += lineHeight;
+                continue;
+            }
             Element rowGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             String uniqueId = line.getUniqueId();
             if (null != uniqueId && !uniqueId.isEmpty()) {
@@ -970,9 +995,10 @@ public class InventoryWriter {
                                   , "damage"));
                             break;
                         case MOD:
+                            // RecordSheetOptions.HitModStyle.COLUMN
                             sheet.addTextElement(rowGroup, colX[i], yPosition, line.getModField(row), fontSize,
                                   SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "modifier");
+                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "hitmod");
                             break;
                         case MIN:
                             sheet.addTextElement(rowGroup, colX[i],
@@ -1011,6 +1037,28 @@ public class InventoryWriter {
                             break;
                     }
                 }
+
+                if (sheet.options.includeHitMod().equals(RecordSheetOptions.HitModStyle.EDGE)) {
+                    String hitMod = line.getModField(row);
+                    if (hitMod != null && !hitMod.isEmpty()) {
+                        // Create black square background for hit mod
+                        double rectHeight = fontSize * 1.25; // Height of the rectangle
+                        double rectWidth = fontSize * 1.5; // Width of the rectangle
+                        Element rect = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+                        rect.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(-rectWidth / 2));
+                        rect.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE,
+                              String.valueOf(yPosition - rectHeight * 0.75));
+                        rect.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(rectWidth));
+                        rect.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(rectHeight));
+                        rect.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                        rowGroup.appendChild(rect);
+
+                        sheet.addTextElement(rowGroup, 0, yPosition, line.getModField(row), fontSize,
+                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                              SVGConstants.SVG_NORMAL_VALUE, FILL_WHITE, null, "hitmod");
+                    }
+                }
+
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {

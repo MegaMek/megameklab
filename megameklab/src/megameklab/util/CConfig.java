@@ -185,8 +185,8 @@ public final class CConfig {
         defaults.setProperty(PQ_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_WEAPONS_ORDER, WeaponSortOrder.DEFAULT.name());
         defaults.setProperty(RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(true));
-        defaults.setProperty(RS_HIT_MOD, Boolean.toString(false));
-        defaults.setProperty(RS_INTRINSIC_PHYSICALS, Boolean.toString(false));
+        defaults.setProperty(RS_HIT_MOD, RecordSheetOptions.HitModStyle.NONE.name());
+        defaults.setProperty(RS_INTRINSIC_PHYSICALS, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE.name());
         return defaults;
     }
 

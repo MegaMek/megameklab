@@ -1429,8 +1429,8 @@ public class SVGMassPrinter {
         recordSheetOptions.setWeaponsOrder(WeaponSortOrder.RANGE_HIGH_LOW);
         recordSheetOptions.setPaperSize(PaperSize.US_LETTER);
         recordSheetOptions.setMergeIdenticalEquipment(false);
-        recordSheetOptions.setIncludeHitMod(false);
-        recordSheetOptions.setIntrinsicPhysicalAttacks(true);
+        recordSheetOptions.setIncludeHitMod(RecordSheetOptions.HitModStyle.EDGE);
+        recordSheetOptions.setIntrinsicPhysicalAttacks(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER);
         return recordSheetOptions;
     }
 
