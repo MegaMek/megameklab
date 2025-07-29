@@ -592,9 +592,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 mod--;
             }
             if (row == 0) {
-                return String.valueOf(mod);
+                return String.valueOf(mod).replace("-", MINUS);
             } else if (row == 1) {
-                return String.valueOf(mod - 2);
+                return String.valueOf(mod - 2).replace("-", MINUS);
             } else {
                 return "";
             }
@@ -636,7 +636,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             mod--;
         }
 
-        return mod == 0 ? "" : "%+d".formatted(mod);
+        return mod == 0 ? "" : "%+d".formatted(mod).replace("-", MINUS);
     }
 
     @Override

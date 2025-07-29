@@ -28,6 +28,7 @@ import megamek.common.util.AeroAVModCalculator;
  */
 public interface InventoryEntry {
     String DASH = "\u2014";
+    String MINUS = "\u2212";
     String DAGGER = "\u2020";
     String DOUBLE_DAGGER = "\u2021";
 

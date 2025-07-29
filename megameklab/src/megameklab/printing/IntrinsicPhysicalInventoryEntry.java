@@ -289,7 +289,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     @Override
     public String getModField(int row) {
         if (row == 0) {
-            return mod;
+            return mod.replace("-", MINUS);
         }
         return "";
     }
