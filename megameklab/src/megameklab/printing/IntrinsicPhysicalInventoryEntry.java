@@ -112,8 +112,10 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 dmg = "%s/%s".formatted(dmg, formatDamage(airMekDamage, hasTsm));
             }
             int mod;
+            boolean explicitZero;
 
             if (!mek.hasClaw(Mek.LOC_LARM)) {
+                explicitZero = false;
                 if (hasLHand) {
                     mod = 0;
                 } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LARM)) {
@@ -123,11 +125,13 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 }
                 if (hasLArmAES) {
                     mod--;
+                    explicitZero = true;
                 }
-                entries.add(e("Punch", "LA", dmg, mod == 0 ? "" : "%+d".formatted(mod)));
+                entries.add(e("Punch", "LA", dmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
 
             if (!mek.hasClaw(Mek.LOC_RARM)) {
+                explicitZero = false;
                 if (hasRHand) {
                     mod = 0;
                 } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RARM)) {
@@ -137,8 +141,9 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 }
                 if (hasRArmAES) {
                     mod--;
+                    explicitZero = true;
                 }
-                entries.add(e("Punch", "RA", dmg, mod == 0 ? "" : "%+d".formatted(mod)));
+                entries.add(e("Punch", "RA", dmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
         }
 
@@ -174,7 +179,9 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 mod -= 1;
             }
 
-            entries.add(e("Club", DASH, dmg, "%+d".formatted(mod)));
+            // For mod to be 0 it has to come from AES, hence explicit DASH.
+            // If in the future, this is no longer true, there should be a check for explicit DASH vs blank string
+            entries.add(e("Club", DASH, dmg, mod != 0 ? "%+d".formatted(mod) : DASH));
         }
 
         // DFA

@@ -592,9 +592,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 mod--;
             }
             if (row == 0) {
-                return String.valueOf(mod).replace("-", MINUS);
+                return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : DASH;
             } else if (row == 1) {
-                return String.valueOf(mod - 2).replace("-", MINUS);
+                return (mod != 0) ? "%+d".formatted(mod - 2).replace("-", MINUS) : DASH;
             } else {
                 return "";
             }
@@ -608,11 +608,14 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "*";
         }
 
+        boolean explicitZero = false;
+
         var mod = mount.getType().getToHitModifier(mount);
         var linked = mount.getLinkedBy();
         if (linked != null) {
             if (hasArtemisV || hasApollo) {
                 mod--;
+                explicitZero = true;
             }
         }
 
@@ -623,6 +626,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
               && !wm.getType().hasAnyFlag(WeaponType.F_CWS, WeaponType.F_TASER)
         ) {
             mod--;
+            explicitZero = true;
         }
 
         if (
@@ -634,9 +638,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
               && mount.getSecondLocation() == Entity.LOC_NONE
         ) {
             mod--;
+            explicitZero = true;
         }
 
-        return mod == 0 ? "" : "%+d".formatted(mod).replace("-", MINUS);
+        return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : (explicitZero ? DASH : "");
     }
 
     @Override
