@@ -37,7 +37,7 @@ import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.unitSelectorDialogs.EntityReadoutDialog;
-import megamek.client.ui.unitreadout.EntityReadout;
+import megamek.client.ui.entityreadout.EntityReadout;
 import megamek.client.ui.util.UIUtil;
 import megamek.client.ui.util.ViewFormatting;
 import megamek.common.*;
