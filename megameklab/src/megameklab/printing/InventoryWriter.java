@@ -73,7 +73,6 @@ public class InventoryWriter {
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
-        MOD("", 0.022),
         QUANTITY ("Qty", 0.037),
         NAME ("Type", 0.075),
         NAME_NO_QTY ("Type", 0.025),
@@ -82,6 +81,7 @@ public class InventoryWriter {
         LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
         HEAT ("Ht", 0.48, 0.6),
         DAMAGE ("Dmg", 0.53, 0.53, 0.47),
+        MOD("Mod", 0.68, 0.68, 0.60),
         MIN ("Min", 0.75, 0.75, 0.69),
         SHORT ("Sht", 0.82, 0.82, 0.78),
         MEDIUM ("Med", 0.89, 0.89, 0.87),
@@ -119,16 +119,6 @@ public class InventoryWriter {
                 x = baX;
             } else {
                 x = groundX;
-            }
-
-            if (offsetForMod && this == QUANTITY || this == NAME) {
-                return x + 0.025;
-            } else if (offsetForMod && this == NAME_NO_QTY) {
-                return x + 0.025;
-            } else if (offsetForMod && this == LOCATION || this == LOCATION_NO_HEAT) {
-                return x + 0.025;
-            } else if (offsetForMod && this == HEAT) {
-                return x + 0.01;
             }
             return x;
         }
@@ -207,8 +197,17 @@ public class InventoryWriter {
         var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
         if (includeHitMod) {
             var newColumns = new Column[columnTypes.length + 1];
-            newColumns[0] = Column.MOD;
-            System.arraycopy(columnTypes, 0, newColumns, 1, columnTypes.length);
+
+            int minIndex = -1;
+            for (int i = 0; i < columnTypes.length; i++) {
+                if (columnTypes[i] == Column.MIN) {
+                    minIndex = i;
+                    break;
+                }
+            }
+            System.arraycopy(columnTypes, 0, newColumns, 0, minIndex);
+            newColumns[minIndex] = Column.MOD;
+            System.arraycopy(columnTypes, minIndex, newColumns, minIndex + 1, columnTypes.length - minIndex);
             columnTypes = newColumns;
         }
         this.columnTypes = columnTypes;
@@ -909,11 +908,6 @@ public class InventoryWriter {
                 }
                 for (int i = 0; i < columnTypes.length; i++) {
                     switch (columnTypes[i]) {
-                        case MOD:
-                            sheet.addTextElement(rowGroup, colX[i], yPosition, line.getModField(row), fontSize,
-                                  SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "modifier");
-                            break;
                         case QUANTITY:
                             if (row == 0) {
                                 sheet.addTextElement(rowGroup, colX[i],
@@ -966,6 +960,11 @@ public class InventoryWriter {
                                     colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK
                                   , "damage"));
+                            break;
+                        case MOD:
+                            sheet.addTextElement(rowGroup, colX[i], yPosition, line.getModField(row), fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "modifier");
                             break;
                         case MIN:
                             sheet.addTextElement(rowGroup, colX[i],
