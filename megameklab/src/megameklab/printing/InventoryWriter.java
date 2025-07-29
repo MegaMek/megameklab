@@ -73,23 +73,23 @@ public class InventoryWriter {
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
-        QUANTITY ("Qty", 0.037),
-        NAME ("Type", 0.075),
+        QUANTITY ("Qty", 0.025),
+        NAME ("Type", 0.062),
         NAME_NO_QTY ("Type", 0.025),
         BAY ("Bay", 0.02),
-        LOCATION ("Loc", 0.41, 0.5),
-        LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
-        HEAT ("Ht", 0.48, 0.6),
-        DAMAGE ("Dmg", 0.53, 0.53, 0.47),
-        MOD("Mod", 0.68, 0.68, 0.60),
-        MIN ("Min", 0.75, 0.75, 0.69),
-        SHORT ("Sht", 0.82, 0.82, 0.78),
-        MEDIUM ("Med", 0.89, 0.89, 0.87),
-        LONG ("Lng", 0.96),
-        SRV ("SRV", 0.68),
-        MRV ("MRV", 0.76),
-        LRV ("LRV", 0.84),
-        ERV ("ERV", 0.92);
+        LOCATION ("Loc", 0.40, 0.49),
+        LOCATION_NO_HEAT ("Loc", 0.45, 0.54),
+        HEAT ("Ht", 0.47, 0.57),
+        DAMAGE ("Dmg", 0.5, 0.5, 0.43),
+        MOD("Tn", 0.725, 0.625, 0.65),
+        MIN ("Min", 0.785, 0.785, 0.72),
+        SHORT ("Sht", 0.843, 0.843, 0.803),
+        MEDIUM ("Med", 0.905, 0.905, 0.885),
+        LONG ("Lng", 0.97),
+        SRV ("SRV", 0.69),
+        MRV ("MRV", 0.77),
+        LRV ("LRV", 0.85),
+        ERV ("ERV", 0.93);
 
         final String header;
         final double groundX;
@@ -200,7 +200,7 @@ public class InventoryWriter {
 
             int minIndex = -1;
             for (int i = 0; i < columnTypes.length; i++) {
-                if (columnTypes[i] == Column.MIN) {
+                if (columnTypes[i] == Column.MIN || columnTypes[i] == Column.SRV) {
                     minIndex = i;
                     break;
                 }

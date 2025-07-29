@@ -181,10 +181,10 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
         if (mek.getOriginalJumpMP(true) > 0) {
             if (mek.hasMisc(MiscTypeFlag.F_TALON)) {
                 var dmg = formatDamage(Math.ceil(mek.getWeight() / 10 * 3) * 1.5);
-                entries.add(e("DFA [Talons]", DASH, dmg, "*"));
+                entries.add(e("DFA [Talons]", DASH, dmg, "Vs"));
             } else {
                 var dmg = formatDamage(mek.getWeight() / 10 * 3);
-                entries.add(e("Death From Above", DASH, dmg, "*"));
+                entries.add(e("Death From Above", DASH, dmg, "Vs"));
             }
         }
 
@@ -201,12 +201,12 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
             } else {
                 dmg = "%s/hex".formatted(doubleFormat.format(baseDmg));
             }
-            entries.add(e("Charge", DASH, dmg, "*"));
+            entries.add(e("Charge", DASH, dmg, "Vs"));
         }
         if (mek instanceof LandAirMek) {
             var dmg = "%s/hex".formatted(doubleFormat.format(mek.getWeight() / 5));
             // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
-            entries.add(e("AirMech Ram",  DASH, dmg, "*"));
+            entries.add(e("AirMech Ram",  DASH, dmg, "Vs"));
         }
 
         // Push
