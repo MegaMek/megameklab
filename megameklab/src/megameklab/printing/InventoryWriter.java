@@ -802,7 +802,10 @@ public class InventoryWriter {
             lines += rows;
             double nameWidth = baseNameWidth;
             if (!(sheet.getEntity() instanceof BattleArmor)) {
-                nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
+                // getTextLength thinks some letters are much wider than other when in reality they pretty much all
+                // have the same width. This hack prevents some weapon names from getting split on some lines but not
+                // others for no reason apparent to the user.
+                nameWidth -= sheet.getTextLength(line.getLocationField(0).replaceAll("[A-Z]", "L"), fontSize) * 0.5;
             }
             if (sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) {
                 lines++;
@@ -925,7 +928,11 @@ public class InventoryWriter {
                             
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
-                                width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
+                                // getTextLength thinks some letters are much wider than other when in reality they pretty much all
+                                // have the same width. This hack prevents some weapon names from getting split on
+                                // some lines but not
+                                // others for no reason apparent to the user.
+                                width -= sheet.getTextLength(line.getLocationField(row).replaceAll("[A-Z]", "L"), fontSize) * 0.5;
                             }
                             if (row == 0) {
                                 lines = sheet.addMultilineTextElement(rowGroup, colX[i],
