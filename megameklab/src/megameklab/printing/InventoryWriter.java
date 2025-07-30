@@ -373,6 +373,9 @@ public class InventoryWriter {
         if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)
         || includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
             List<InventoryEntry> physicalEntries = IntrinsicPhysicalInventoryEntry.getEntriesFor(sheet.getEntity());
+            if (!sheet.options.extraPhysicals()) {
+                physicalEntries.removeIf(entry -> entry instanceof IntrinsicPhysicalInventoryEntry e && e.isOptional());
+            }
             if (!physicalEntries.isEmpty()) {
                 if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)) {
                     physicalEntries.add(0, new IntrinsicPhysicalInventoryEntry.HeaderEntry());
