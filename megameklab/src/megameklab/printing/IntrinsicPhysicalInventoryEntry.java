@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
 import megamek.common.LandAirMek;
 import megamek.common.Mek;
 import megamek.common.MiscType;
@@ -58,7 +57,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
         }
     }
 
-    public static List<InventoryEntry> getEntriesFor(Entity entity){
+    public static ArrayList<InventoryEntry> getEntriesFor(Entity entity){
         if (entity instanceof Mek mek) {
             return getEntriesForMek(mek);
         } if (entity instanceof ProtoMek protoMek) {
@@ -83,17 +82,15 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 dmg += (int) Math.ceil(weight / 5);
             }
 
-            return List.of(e("Frenzy", DASH, String.valueOf(dmg), "*"));
-        } else if (entity.getMovementMode() == EntityMovementMode.RAIL) {
-            return List.of(e("Choo Choo", "FR", "*", "*"));
+            return new ArrayList<>( List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
         } else if (entity.canCharge()) {
-            return List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*"));
+            return new ArrayList<>(List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*")));
         }
 
-        return List.of();
+        return new ArrayList<>();
     }
 
-    private static List<InventoryEntry> getEntriesForMek(Mek mek) {
+    private static ArrayList<InventoryEntry> getEntriesForMek(Mek mek) {
         ArrayList<InventoryEntry> entries = new ArrayList<>();
 
         var hasTsm = mek.hasTSM(true);
