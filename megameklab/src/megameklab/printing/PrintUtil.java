@@ -35,8 +35,8 @@ import megameklab.util.UnitUtil;
 
 public final class PrintUtil {
 
-    public static boolean isPrintableEquipment(EquipmentType eq) {
-        return isPrintableEquipment(eq, false);
+    public static boolean isPrintableEquipment(EquipmentType eq, RecordSheetOptions options) {
+        return isPrintableEquipment(eq, false, options);
     }
 
     /**
@@ -47,13 +47,13 @@ public final class PrintUtil {
      * @param entity The Entity it's mounted on
      * @return Whether the equipment should be shown on the record sheet
      */
-    public static boolean isPrintableEquipment(EquipmentType eq, Entity entity) {
+    public static boolean isPrintableEquipment(EquipmentType eq, Entity entity, RecordSheetOptions options) {
         if (eq instanceof AmmoType) {
             return ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD;
         } else if (entity instanceof BattleArmor) {
             return isPrintableBAEquipment(eq);
         } else {
-            return isPrintableEquipment(eq, entity instanceof Mek);
+            return isPrintableEquipment(eq, entity instanceof Mek, options);
         }
     }
 
@@ -65,7 +65,7 @@ public final class PrintUtil {
      * @param isMek Whether the equipment is mounted on a Mek
      * @return Whether the equipment should be shown on the record sheet
      */
-    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMek) {
+    public static boolean isPrintableEquipment(EquipmentType eq, boolean isMek, RecordSheetOptions options) {
         if (UnitUtil.isArmorOrStructure(eq)) {
             return false;
         }
@@ -100,6 +100,10 @@ public final class PrintUtil {
                         || eq.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)
                         || eq.hasFlag(MiscType.F_LASER_INSULATOR))) {
             return false;
+        }
+
+        if (eq instanceof MiscType mt && mt.hasFlag(MiscType.F_TALON)) {
+            return RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE.equals(options.intrinsicPhysicalAttacks());
         }
 
         if (UnitUtil.isHeatSink(eq)) {

@@ -19,28 +19,27 @@
 
 package megameklab.printing;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import megamek.common.*;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.options.IOption;
+import megamek.common.options.WeaponQuirks;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
+import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.other.ISCenturionWeaponSystem;
-import megamek.common.options.WeaponQuirks;
-import megamek.common.options.IOption;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
-import megamek.common.ITechnology;
 
 /**
  * Formats text for an entry in the weapons and equipment inventory section of the record sheet.
@@ -577,6 +576,72 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return ranges[row][RangeType.RANGE_EXTREME];
         }
         return "";
+    }
+
+    @Override
+    public String getModField(int row) {
+        var hasTargComp = mount.getEntity().hasTargComp();
+        boolean hasAes = mount.getEntity().hasFunctionalArmAES(mount.getLocation());
+
+        if (hasPulseModule) {
+            var mod = 0;
+            if (hasTargComp) {
+                mod--;
+            }
+            if (hasAes) {
+                mod--;
+            }
+            if (row == 0) {
+                return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : DASH;
+            } else if (row == 1) {
+                return (mod != 0) ? "%+d".formatted(mod - 2).replace("-", MINUS) : DASH;
+            } else {
+                return "";
+            }
+        }
+
+        if (row != 0) {
+            return "";
+        }
+
+        if (mount.getType() instanceof VariableSpeedPulseLaserWeapon) {
+            return "*";
+        }
+
+        boolean explicitZero = false;
+
+        var mod = mount.getType().getToHitModifier(mount);
+        var linked = mount.getLinkedBy();
+        if (linked != null) {
+            if (hasArtemisV || hasApollo) {
+                mod--;
+                explicitZero = true;
+            }
+        }
+
+        if (
+              hasTargComp
+              && mount instanceof WeaponMounted wm
+              && wm.getType().hasFlag(WeaponType.F_DIRECT_FIRE)
+              && !wm.getType().hasAnyFlag(WeaponType.F_CWS, WeaponType.F_TASER)
+        ) {
+            mod--;
+            explicitZero = true;
+        }
+
+        if (
+              hasAes
+              && (
+                    mount instanceof WeaponMounted
+                    || (mount instanceof MiscMounted mm && mm.getType().hasFlag(MiscTypeFlag.F_CLUB))
+              )
+              && mount.getSecondLocation() == Entity.LOC_NONE
+        ) {
+            mod--;
+            explicitZero = true;
+        }
+
+        return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : (explicitZero ? DASH : "");
     }
 
     @Override

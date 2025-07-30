@@ -28,6 +28,7 @@ import megamek.common.util.AeroAVModCalculator;
  */
 public interface InventoryEntry {
     String DASH = "\u2014";
+    String MINUS = "\u2212";
     String DAGGER = "\u2020";
     String DOUBLE_DAGGER = "\u2021";
 
@@ -103,6 +104,13 @@ public interface InventoryEntry {
      * @return    The ERV (aero units)
      */
     String getExtremeField(int row);
+
+    /**
+     *
+     * @param row The row index within the entry
+     * @return The to-hit modifier of the item
+     */
+    String getModField(int row);
 
     /**
      * @return Whether lines after the first line should be indented

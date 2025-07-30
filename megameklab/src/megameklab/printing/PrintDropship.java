@@ -17,23 +17,20 @@ import java.awt.print.PageFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
-import megamek.common.UnitType;
 import megamek.common.Aero;
 import megamek.common.AmmoType;
-import megamek.common.DockingCollar;
 import megamek.common.Dropship;
 import megamek.common.Entity;
 import megamek.common.Jumpship;
 import megamek.common.Mounted;
+import megamek.common.UnitType;
 import megamek.common.Warship;
 import megamek.common.WeaponType;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Record sheet layout for Dropships, base class for other large craft
@@ -336,7 +333,7 @@ public class PrintDropship extends PrintAero {
         StringJoiner sj = new StringJoiner(", ");
         Map<String, Integer> eqCount = new HashMap<>();
         for (Mounted<?> mount : ship.getMisc()) {
-            if (PrintUtil.isPrintableEquipment(mount.getType())) {
+            if (PrintUtil.isPrintableEquipment(mount.getType(), options)) {
                 eqCount.merge(mount.getShortName(), 1, Integer::sum);
             }
         }

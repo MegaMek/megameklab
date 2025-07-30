@@ -19,6 +19,7 @@
 package megameklab.printing;
 
 import static megameklab.printing.PrintRecordSheet.FILL_BLACK;
+import static megameklab.printing.PrintRecordSheet.FILL_WHITE;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
@@ -73,22 +74,24 @@ public class InventoryWriter {
     public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
-        QUANTITY ("Qty", 0.037),
-        NAME ("Type", 0.075),
-        NAME_NO_QTY ("Type", 0.037),
+        QUANTITY ("#", 0.025),
+        NAME ("Type", 0.05),
+        // NAME ("Type", 0.062),
+        NAME_NO_QTY ("Type", 0.025),
         BAY ("Bay", 0.02),
-        LOCATION ("Loc", 0.41, 0.5),
-        LOCATION_NO_HEAT ("Loc", 0.46, 0.55),
-        HEAT ("Ht", 0.48, 0.6),
-        DAMAGE ("Dmg", 0.53, 0.53, 0.47),
-        MIN ("Min", 0.75, 0.75, 0.69),
-        SHORT ("Sht", 0.82, 0.82, 0.78),
-        MEDIUM ("Med", 0.89, 0.89, 0.87),
-        LONG ("Lng", 0.96),
-        SRV ("SRV", 0.68),
-        MRV ("MRV", 0.76),
-        LRV ("LRV", 0.84),
-        ERV ("ERV", 0.92);
+        LOCATION ("Loc", 0.40, 0.49),
+        LOCATION_NO_HEAT ("Loc", 0.45, 0.54),
+        HEAT ("Ht", 0.47, 0.57),
+        DAMAGE ("Dmg", 0.5, 0.5, 0.43),
+        MOD("Tn", 0.725, 0.625, 0.65),
+        MIN ("Min", 0.785, 0.785, 0.72),
+        SHORT ("Sht", 0.843, 0.843, 0.803),
+        MEDIUM ("Med", 0.905, 0.905, 0.885),
+        LONG ("Lng", 0.97),
+        SRV ("SRV", 0.69),
+        MRV ("MRV", 0.77),
+        LRV ("LRV", 0.85),
+        ERV ("ERV", 0.93);
 
         final String header;
         final double groundX;
@@ -110,14 +113,16 @@ public class InventoryWriter {
             this(header, x, x, x);
         }
 
-        double xFor(Entity en) {
+        double xFor(Entity en, boolean offsetForMod) {
+            double x;
             if (en.isAero()) {
-                return aeroX;
+                x = aeroX;
             } else if (en instanceof BattleArmor) {
-                return baX;
+                x = baX;
             } else {
-                return groundX;
+                x = groundX;
             }
+            return x;
         }
 
         static Column[] colsFor(Entity en, boolean mergeInventoryAllowed) {
@@ -152,7 +157,7 @@ public class InventoryWriter {
         final static Column[] BAY_COLUMNS = {BAY, LOCATION, HEAT, SRV, MRV, LRV, ERV};
     }
 
-    private final List<StandardInventoryEntry> equipment;
+    private final List<InventoryEntry> equipment;
     private final List<WeaponBayInventoryEntry> standardBays;
     private final List<WeaponBayInventoryEntry> capitalBays;
     private final List<String> bayFootnotes;
@@ -173,7 +178,9 @@ public class InventoryWriter {
     private final String featuresText;
     private final String miscNotesText;
     private final String quirksText;
-    private boolean mergeInventoryAllowed;
+    private final boolean mergeInventoryAllowed;
+    private final RecordSheetOptions.HitModStyle includeHitMod;
+    private final RecordSheetOptions.IntrinsicPhysicalAttacksStyle includeIntrinsicPhysicals;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -183,8 +190,30 @@ public class InventoryWriter {
     public InventoryWriter(PrintEntity sheet) {
 
         this.sheet = sheet;
-        this.mergeInventoryAllowed = mergeInventoryAllowed();
-        columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
+        boolean isSmallUnit = sheet.getEntity().isBattleArmor() || sheet.getEntity().isProtoMek() || sheet.getEntity().isInfantry();
+        // If the unit is a small unit, we always merge equipment when possible
+        this.mergeInventoryAllowed = isSmallUnit || sheet.options.mergeIdenticalEquipment();
+        this.includeHitMod = sheet.options.includeHitMod();
+        this.includeIntrinsicPhysicals = sheet.options.intrinsicPhysicalAttacks();
+
+        var columnTypes = Column.colsFor(sheet.getEntity(), this.mergeInventoryAllowed);
+        if (includeHitMod.equals(RecordSheetOptions.HitModStyle.COLUMN)) {
+            var newColumns = new Column[columnTypes.length + 1];
+
+            int minIndex = -1;
+            for (int i = 0; i < columnTypes.length; i++) {
+                if (columnTypes[i] == Column.MIN || columnTypes[i] == Column.SRV) {
+                    minIndex = i;
+                    break;
+                }
+            }
+            System.arraycopy(columnTypes, 0, newColumns, 0, minIndex);
+            newColumns[minIndex] = Column.MOD;
+            System.arraycopy(columnTypes, minIndex, newColumns, minIndex + 1, columnTypes.length - minIndex);
+            columnTypes = newColumns;
+        }
+        this.columnTypes = columnTypes;
+
         colX = new double[columnTypes.length];
         bayColX = new double[Column.BAY_COLUMNS.length];
 
@@ -239,7 +268,7 @@ public class InventoryWriter {
         this.viewY = svgRect.getY().getBaseVal().getValue();
         this.indent = viewWidth * INDENT;
         for (int i = 0; i < columnTypes.length; i++) {
-            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity());
+            colX[i] = viewX + viewWidth * columnTypes[i].xFor(sheet.getEntity(), includeHitMod.equals(RecordSheetOptions.HitModStyle.COLUMN));
         }
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
@@ -286,7 +315,7 @@ public class InventoryWriter {
                 ammo.merge(m.getShortName(), m.getBaseShotsLeft(), Integer::sum);
             }
             if ((m.getLocation() == Entity.LOC_NONE)
-                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity())) {
+                    || !PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity(), sheet.options)) {
                 continue;
             }
             if ((sheet.getEntity() instanceof QuadVee)
@@ -294,7 +323,7 @@ public class InventoryWriter {
                     && m.getType().hasFlag(MiscType.F_TRACKS)) {
                 continue;
             }
-            /**
+            /*
              * BattleArmor have their own special mount points.
              * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
              * The solution is to filter out everything that has critical slots (means can't be for squad only)
@@ -309,7 +338,8 @@ public class InventoryWriter {
             // If the unit is a Mek, we check for the merge equipment option.
             // If is not a mek, we always merge if possible.
             if (this.mergeInventoryAllowed) {
-                StandardInventoryEntry same = equipment.stream().filter(entry::equals).findFirst().orElse(null);
+                StandardInventoryEntry same =
+                      equipment.stream().filter(e -> e instanceof StandardInventoryEntry).map(e -> (StandardInventoryEntry) e).filter(entry::equals).findFirst().orElse(null);
                 if (null == same) {
                     equipment.add(entry);
                 } else {
@@ -339,10 +369,17 @@ public class InventoryWriter {
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
         }
-    }
 
-    private boolean mergeInventoryAllowed() {
-        return !(sheet.getEntity() instanceof Mek) || sheet.options.mergeIdenticalEquipment();
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)
+        || includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            List<InventoryEntry> physicalEntries = IntrinsicPhysicalInventoryEntry.getEntriesFor(sheet.getEntity());
+            if (!physicalEntries.isEmpty()) {
+                if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)) {
+                    physicalEntries.add(0, new IntrinsicPhysicalInventoryEntry.HeaderEntry());
+                }
+                equipment.addAll(physicalEntries);
+            }
+        }
     }
 
     private void parseBays() {
@@ -495,12 +532,19 @@ public class InventoryWriter {
             yPosition = printColumnHeaders(yPosition);
         }
         float[] metrics = scaleText(viewHeight - (yPosition - viewY), this::calcLineCount);
-        yPosition = printEquipmentTable(equipment, yPosition, metrics[0], metrics[1]);
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            List<InventoryEntry> equipmentWithoutPhysicalAttacks = equipment.stream()
+                  .filter(entry -> !(entry instanceof IntrinsicPhysicalInventoryEntry))
+                  .toList();
+            yPosition = printEquipmentTable(canvas, equipmentWithoutPhysicalAttacks, yPosition, metrics[0], metrics[1]);
+        } else {
+            yPosition = printEquipmentTable(canvas, equipment, yPosition, metrics[0], metrics[1]);
+        }
         if ((sheet.getEntity() instanceof SmallCraft || sheet.getEntity() instanceof SupportTank) && !transportBays.isEmpty()) {
             yPosition = printBayInfo(metrics[0], metrics[1], yPosition);
         }
         if (sheet.showHeatProfile()) {
-            yPosition += metrics[1]; // Add extra line for heat profile text
+            yPosition += metrics[1]/2; // Add half line for heat profile text spacing
             sheet.addTextElement(canvas, viewX + viewWidth * 0.025,
                     yPosition, sheet.heatProfileText(),
                   FONT_SIZE_MEDIUM, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
@@ -519,7 +563,7 @@ public class InventoryWriter {
      */
     public double writeStandardBays(float fontSize, double lineHeight, double currY) {
         currY = printAeroStandardHeader(currY, Column.BAY_COLUMNS, bayColX);
-        currY = printEquipmentTable(standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
+        currY = printEquipmentTable(canvas, standardBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
         for (String note : bayFootnotes) {
             sheet.addTextElement(canvas, bayColX[0], currY, note, fontSize,
                     SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
@@ -538,7 +582,7 @@ public class InventoryWriter {
      */
     public double writeCapitalBays(float fontSize, double lineHeight, double currY) {
         currY = printCapitalHeader(currY);
-        return printEquipmentTable(capitalBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
+        return printEquipmentTable(canvas, capitalBays, currY, fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
     }
 
     /**
@@ -664,43 +708,58 @@ public class InventoryWriter {
      */
     public void writeFooterBlock(float fontSize, float lineHeight) {
         int lines;
-        if (ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() > 0) {
+        List<InventoryEntry> equipmentOnlyPhysicalAttacks;
+        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+            equipmentOnlyPhysicalAttacks = equipment.stream()
+                  .filter(entry -> (entry instanceof IntrinsicPhysicalInventoryEntry))
+                  .toList();
+        } else {
+            equipmentOnlyPhysicalAttacks = new ArrayList<>(); // No intrinsic physical attacks to display in footer
+        }
+        if (equipmentOnlyPhysicalAttacks.size() + ammo.size() + fuelText.length() + featuresText.length() + miscNotesText.length() + quirksText.length() > 0) {
             Element svgGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             canvas.appendChild(svgGroup);
             lines = 0;
             final double xPosition = (viewX + viewWidth * 0.025);
             final double textWidth = viewWidth * FOOTER_TEXT_WIDTH_RATIO;
+            double yPosition = 0;
+            if (!equipmentOnlyPhysicalAttacks.isEmpty()) {
+                yPosition = printEquipmentTable(svgGroup, equipmentOnlyPhysicalAttacks, yPosition, fontSize,
+                      lineHeight);
+                yPosition += lineHeight * 0.5; // Add half line for spacing
+            }
             if (!ammoText.isEmpty()) {
                 Element ammoGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
                 ammoGroup.setAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE, "ammoProfile");
                 svgGroup.appendChild(ammoGroup);
-                lines = sheet.addMultilineTextElement(ammoGroup, xPosition, 0, textWidth, lineHeight,
+                yPosition += lineHeight * sheet.addMultilineTextElement(ammoGroup, xPosition, yPosition, textWidth,
+                      lineHeight,
                         ammoText, fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!fuelText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
-                        lines * lineHeight, textWidth, lineHeight,
+                yPosition += lineHeight * sheet.addMultilineTextElement(svgGroup, xPosition,
+                      yPosition, textWidth, lineHeight,
                         fuelText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!featuresText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
-                        lines * lineHeight, textWidth, lineHeight,
+                yPosition += lineHeight * sheet.addMultilineTextElement(svgGroup, xPosition,
+                      yPosition, textWidth, lineHeight,
                         featuresText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!miscNotesText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition,
-                        lines * lineHeight, textWidth, lineHeight,
+                yPosition += lineHeight * sheet.addMultilineTextElement(svgGroup, xPosition,
+                      yPosition, textWidth, lineHeight,
                         miscNotesText, fontSize,
                         SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
             }
             if (!quirksText.isEmpty()) {
-                lines += sheet.addMultilineTextElement(svgGroup, xPosition, lines * lineHeight, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
+                yPosition += lineHeight * sheet.addMultilineTextElement(svgGroup, xPosition, yPosition, textWidth, (lineHeight*QUIRKS_FONT_SCALING),
                         quirksText, (fontSize*QUIRKS_FONT_SCALING), SVGConstants.SVG_START_VALUE,
                       SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE,"unitQuirks");
             }
-            final double totalHeight = (lines > 0 ? (lines - 1) : 0) * lineHeight;
+            final double totalHeight = yPosition > 0 ? (yPosition - lineHeight) : 0; //We remove the last line from the total height
             // We position this svg group at the bottom of the inventory box with a margin equal to half of the line height
             svgGroup.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
                     String.format("%s(0,%f)", SVGConstants.SVG_TRANSLATE_VALUE,
@@ -755,12 +814,15 @@ public class InventoryWriter {
             }
         }
         int lines = 0;
-        for (StandardInventoryEntry line : equipment) {
+        for (InventoryEntry line : equipment) {
             int rows = line.nRows();
             lines += rows;
             double nameWidth = baseNameWidth;
             if (!(sheet.getEntity() instanceof BattleArmor)) {
-                nameWidth -= sheet.getTextLength(line.getLocationField(0), fontSize) * 0.5;
+                // getTextLength thinks some letters are much wider than other when in reality they pretty much all
+                // have the same width. This hack prevents some weapon names from getting split on some lines but not
+                // others for no reason apparent to the user.
+                nameWidth -= sheet.getTextLength(line.getLocationField(0).replaceAll("[A-Z]", "L"), fontSize) * 0.5;
             }
             if (sheet.getTextLength(line.getNameField(0), fontSize) > nameWidth) {
                 lines++;
@@ -811,9 +873,9 @@ public class InventoryWriter {
      * @param yPosition  The starting y coordinate relative to the parent element
      * @param lineHeight The amount to add to the y coordinate for each line
      */
-    private double printEquipmentTable(List<? extends InventoryEntry> list,
+    private double printEquipmentTable(Element canvas, List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight) {
-        return printEquipmentTable(list, yPosition, fontSize, lineHeight, columnTypes, colX);
+        return printEquipmentTable(canvas, list, yPosition, fontSize, lineHeight, columnTypes, colX);
     }
 
     /**
@@ -838,13 +900,33 @@ public class InventoryWriter {
      * @param colX        The x coordinate of each column, corresponding to the same
      *                    index in <code>columnTypes</code>
      */
-    private double printEquipmentTable(List<? extends InventoryEntry> list,
+    private double printEquipmentTable(Element canvas, List<? extends InventoryEntry> list,
                                        double yPosition, float fontSize, double lineHeight, Column[] columnTypes, double[] colX) {
         for (InventoryEntry line : list) {
+            if (line instanceof IntrinsicPhysicalInventoryEntry.HeaderEntry) {
+                // Custom print for header entry (TODO: generalize this to a generic header entry)
+                sheet.addTextElement(canvas, colX[0] - (indent/2),
+                      yPosition, line.getNameField(0),
+                      fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                      FILL_BLACK, null, "header");
+                yPosition += lineHeight;
+                continue;
+            }
             Element rowGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             String uniqueId = line.getUniqueId();
             if (null != uniqueId && !uniqueId.isEmpty()) {
                 rowGroup.setAttributeNS(null, "id", uniqueId);
+                final String hitMod = getModFieldWithSettings(line, 0);
+                if (hitMod != null && !hitMod.isEmpty()) {
+                    rowGroup.setAttributeNS(null, "hitMod", hitMod);
+                }
+                final String hitMod2 = getModFieldWithSettings(line, 1);
+                if (hitMod2 != null && !hitMod2.isEmpty()) {
+                    rowGroup.setAttributeNS(null, "hitMod2", hitMod2);
+                }
+                if (line instanceof IntrinsicPhysicalInventoryEntry) {
+                    rowGroup.setAttributeNS(null, "iPhysAtk", line.getNameField(0).toLowerCase());
+                }
             }
             canvas.appendChild(rowGroup);
 
@@ -872,7 +954,11 @@ public class InventoryWriter {
                             
                             double width = colX[i + 1] - colX[i] - indent;
                             if (!(sheet.getEntity() instanceof BattleArmor)) {
-                                width -= sheet.getTextLength(line.getLocationField(row), fontSize) * 0.5;
+                                // getTextLength thinks some letters are much wider than other when in reality they pretty much all
+                                // have the same width. This hack prevents some weapon names from getting split on
+                                // some lines but not
+                                // others for no reason apparent to the user.
+                                width -= sheet.getTextLength(line.getLocationField(row).replaceAll("[A-Z]", "L"), fontSize) * 0.5;
                             }
                             if (row == 0) {
                                 lines = sheet.addMultilineTextElement(rowGroup, colX[i],
@@ -907,6 +993,12 @@ public class InventoryWriter {
                                     colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                     fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK
                                   , "damage"));
+                            break;
+                        case MOD:
+                            // RecordSheetOptions.HitModStyle.COLUMN
+                            sheet.addTextElement(rowGroup, colX[i], yPosition, getModFieldWithSettings(line, row), fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "hitmod");
                             break;
                         case MIN:
                             sheet.addTextElement(rowGroup, colX[i],
@@ -945,6 +1037,28 @@ public class InventoryWriter {
                             break;
                     }
                 }
+
+                if (sheet.options.includeHitMod().equals(RecordSheetOptions.HitModStyle.EDGE)) {
+                    String hitMod = getModFieldWithSettings(line, row);
+                    if (hitMod != null && !hitMod.isEmpty()) {
+                        // Create black square background for hit mod
+                        double rectHeight = fontSize * 1.25; // Height of the rectangle
+                        double rectWidth = fontSize * 1.5; // Width of the rectangle
+                        Element rect = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
+                        rect.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(-rectWidth / 2));
+                        rect.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE,
+                              String.valueOf(yPosition - rectHeight * 0.75));
+                        rect.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(rectWidth));
+                        rect.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(rectHeight));
+                        rect.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
+                        rowGroup.appendChild(rect);
+
+                        sheet.addTextElement(rowGroup, 0, yPosition, getModFieldWithSettings(line, row), fontSize,
+                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                              SVGConstants.SVG_NORMAL_VALUE, FILL_WHITE, null, "hitmod");
+                    }
+                }
+
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
@@ -1069,7 +1183,7 @@ public class InventoryWriter {
             }
         }
         currY += sheet.getFontHeight(FONT_SIZE_MEDIUM) * 1.2;
-        currY = printEquipmentTable(Collections.singletonList(new AR10InventoryEntry()), currY,
+        currY = printEquipmentTable(canvas, Collections.singletonList(new AR10InventoryEntry()), currY,
                 fontSize, lineHeight, Column.BAY_COLUMNS, bayColX);
         return currY;
    }
@@ -1193,5 +1307,14 @@ public class InventoryWriter {
                 currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM,
                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
         return currY + lineHeight * 2;
+    }
+
+    private String getModFieldWithSettings(InventoryEntry line, int row) {
+        var mod = line.getModField(row);
+        if (mod != null) {
+            return mod.replace(InventoryEntry.DASH, sheet.options.explicitZeroModifier().getModString());
+        } else {
+            return null;
+        }
     }
 }

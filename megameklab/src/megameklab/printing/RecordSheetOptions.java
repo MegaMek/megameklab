@@ -52,6 +52,54 @@ public class RecordSheetOptions {
         }
     }
 
+    public enum HitModStyle {
+        NONE("Not visible"),
+        COLUMN("Column"),
+        EDGE("Edge");
+        private final String displayName;
+        HitModStyle(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
+    public enum IntrinsicPhysicalAttacksStyle {
+        NONE("Not visible"),
+        EQUIPMENT("Equipment"),
+        FOOTER("Footer");
+        private final String displayName;
+        IntrinsicPhysicalAttacksStyle(String displayName) {
+            this.displayName = displayName;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
+    public enum ExplicitZeroModifierStyle {
+        NONE("Blank", ""),
+        DASH(InventoryEntry.DASH, InventoryEntry.DASH),
+        PLUS_ZERO("+0", "+0");
+        private final String displayName;
+        private final String modString;
+        ExplicitZeroModifierStyle(String displayName, String modString) {
+            this.displayName = displayName;
+            this.modString = modString;
+        }
+        @Override
+        public String toString() {
+            return displayName;
+        }
+
+        public String getModString() {
+            return modString;
+        }
+    }
+
     private PaperSize paperSize;
     private ColorMode color;
     private HeatScaleMarker heatScaleMarker;
@@ -73,6 +121,9 @@ public class RecordSheetOptions {
     private String damageColor;
     private WeaponSortOrder weaponsOrder;
     private boolean mergeIdenticalEquipment;
+    private HitModStyle includeHitMod;
+    private IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks;
+    private ExplicitZeroModifierStyle explicitZeroModifier;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -101,7 +152,11 @@ public class RecordSheetOptions {
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
         this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
         this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
-                this.mergeIdenticalEquipment = CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT);
+        this.mergeIdenticalEquipment = CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT);
+        this.includeHitMod = CConfig.getEnumParam(CConfig.RS_HIT_MOD, HitModStyle.class, HitModStyle.NONE);
+        this.intrinsicPhysicalAttacks = CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, IntrinsicPhysicalAttacksStyle.class, IntrinsicPhysicalAttacksStyle.NONE);
+        this.explicitZeroModifier = CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD,
+              ExplicitZeroModifierStyle.class, ExplicitZeroModifierStyle.DASH);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -126,6 +181,9 @@ public class RecordSheetOptions {
         damageColor = options.damageColor;
         weaponsOrder = options.weaponsOrder;
         mergeIdenticalEquipment = options.mergeIdenticalEquipment;
+        includeHitMod = options.includeHitMod;
+        intrinsicPhysicalAttacks = options.intrinsicPhysicalAttacks;
+        explicitZeroModifier = options.explicitZeroModifier;
     }
 
     public PaperSize getPaperSize() {
@@ -282,6 +340,30 @@ public class RecordSheetOptions {
 
     public void setMergeIdenticalEquipment(boolean mergeIdenticalEquipment) {
         this.mergeIdenticalEquipment = mergeIdenticalEquipment;
+    }
+
+    public HitModStyle includeHitMod() {
+        return includeHitMod;
+    }
+
+    public void setIncludeHitMod(HitModStyle includeHitMod) {
+        this.includeHitMod = includeHitMod;
+    }
+
+    public IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks() {
+        return intrinsicPhysicalAttacks;
+    }
+
+    public void setIntrinsicPhysicalAttacks(IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks) {
+        this.intrinsicPhysicalAttacks = intrinsicPhysicalAttacks;
+    }
+
+    public ExplicitZeroModifierStyle  explicitZeroModifier() {
+        return explicitZeroModifier;
+    }
+
+    public void setExplicitZeroModifier(ExplicitZeroModifierStyle explicitZeroModifier) {
+        this.explicitZeroModifier = explicitZeroModifier;
     }
 
     public HeatScaleMarker getHeatScaleMarker() {
