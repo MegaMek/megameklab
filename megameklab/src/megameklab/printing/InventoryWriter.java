@@ -916,11 +916,11 @@ public class InventoryWriter {
             String uniqueId = line.getUniqueId();
             if (null != uniqueId && !uniqueId.isEmpty()) {
                 rowGroup.setAttributeNS(null, "id", uniqueId);
-                final String hitMod = line.getModField(0);
+                final String hitMod = getModFieldWithSettings(line, 0);
                 if (hitMod != null && !hitMod.isEmpty()) {
                     rowGroup.setAttributeNS(null, "hitMod", hitMod);
                 }
-                final String hitMod2 = line.getModField(1);
+                final String hitMod2 = getModFieldWithSettings(line, 1);
                 if (hitMod2 != null && !hitMod2.isEmpty()) {
                     rowGroup.setAttributeNS(null, "hitMod2", hitMod2);
                 }
@@ -996,7 +996,7 @@ public class InventoryWriter {
                             break;
                         case MOD:
                             // RecordSheetOptions.HitModStyle.COLUMN
-                            sheet.addTextElement(rowGroup, colX[i], yPosition, line.getModField(row), fontSize,
+                            sheet.addTextElement(rowGroup, colX[i], yPosition, getModFieldWithSettings(line, row), fontSize,
                                   SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
                                   SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, null, "hitmod");
                             break;
@@ -1039,7 +1039,7 @@ public class InventoryWriter {
                 }
 
                 if (sheet.options.includeHitMod().equals(RecordSheetOptions.HitModStyle.EDGE)) {
-                    String hitMod = line.getModField(row);
+                    String hitMod = getModFieldWithSettings(line, row);
                     if (hitMod != null && !hitMod.isEmpty()) {
                         // Create black square background for hit mod
                         double rectHeight = fontSize * 1.25; // Height of the rectangle
@@ -1053,7 +1053,7 @@ public class InventoryWriter {
                         rect.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_BLACK);
                         rowGroup.appendChild(rect);
 
-                        sheet.addTextElement(rowGroup, 0, yPosition, line.getModField(row), fontSize,
+                        sheet.addTextElement(rowGroup, 0, yPosition, getModFieldWithSettings(line, row), fontSize,
                               SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
                               SVGConstants.SVG_NORMAL_VALUE, FILL_WHITE, null, "hitmod");
                     }
@@ -1307,5 +1307,14 @@ public class InventoryWriter {
                 currY, "Standard Scale on Reverse", FONT_SIZE_MEDIUM,
                 SVGConstants.SVG_START_VALUE, SVGConstants.SVG_BOLD_VALUE);
         return currY + lineHeight * 2;
+    }
+
+    private String getModFieldWithSettings(InventoryEntry line, int row) {
+        var mod = line.getModField(row);
+        if (mod != null) {
+            return mod.replace(InventoryEntry.DASH, sheet.options.explicitZeroModifier().getModString());
+        } else {
+            return null;
+        }
     }
 }

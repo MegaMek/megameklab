@@ -78,6 +78,7 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<RecordSheetOptions.HeatScaleMarker> comboHeatScaleMarker;
     private final MMComboBox<RecordSheetOptions.HitModStyle> comboHitMod;
     private final MMComboBox<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> comboIntrinsicPhysicals;
+    private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle>  comboExplicitZeroModifier;
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -197,12 +198,24 @@ class ExportSettingsPanel extends JPanel {
               RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
               CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
                     RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE),
-              resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.text"),
-              resourceMap.getString("ConfigurationDialog.chkIntrinsicPhysicals.tooltip")
+              resourceMap.getString("ConfigurationDialog.comboIntrinsicPhysicals.text"),
+              resourceMap.getString("ConfigurationDialog.comboIntrinsicPhysicals.tooltip")
         );
 
         comboIntrinsicPhysicals = intrinsicPhysicalsCombo.comboBox;
         JPanel intrinsicPhysicalsPanel = intrinsicPhysicalsCombo.panel;
+
+        ComboBoxPanel<RecordSheetOptions.ExplicitZeroModifierStyle>  explicitZeroModifierCombo = createComboPanel(
+              "comboExplicitZeroModifier",
+              RecordSheetOptions.ExplicitZeroModifierStyle.class,
+              CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD, RecordSheetOptions.ExplicitZeroModifierStyle.class,
+                    RecordSheetOptions.ExplicitZeroModifierStyle.DASH),
+              resourceMap.getString("ConfigurationDialog.comboExplicitZeroModifier.text"),
+              resourceMap.getString("ConfigurationDialog.comboExplicitZeroModifier.tooltip")
+        );
+
+        comboExplicitZeroModifier = explicitZeroModifierCombo.comboBox;
+        JPanel explicitZeroModifierPanel = explicitZeroModifierCombo.panel;
 
         chkRowShading.setText(resourceMap.getString("ConfigurationDialog.chkRowShading.text"));
         chkRowShading.setToolTipText(resourceMap.getString("ConfigurationDialog.chkRowShading.tooltip"));
@@ -329,6 +342,7 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkMergeIdenticalEquipment);
         innerGridPanel.add(hitModPanel);
         innerGridPanel.add(intrinsicPhysicalsPanel);
+        innerGridPanel.add(explicitZeroModifierPanel);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
@@ -396,6 +410,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
         recordSheetSettings.put(CConfig.RS_HIT_MOD, Objects.requireNonNull(comboHitMod.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Objects.requireNonNull(comboIntrinsicPhysicals.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_EXPLICIT_ZERO_MOD, Objects.requireNonNull(comboExplicitZeroModifier.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         return recordSheetSettings;
     }
