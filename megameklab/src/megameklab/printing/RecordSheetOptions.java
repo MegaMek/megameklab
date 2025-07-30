@@ -124,6 +124,7 @@ public class RecordSheetOptions {
     private HitModStyle includeHitMod;
     private IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks;
     private ExplicitZeroModifierStyle explicitZeroModifier;
+    private boolean extraPhysicals;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -157,6 +158,7 @@ public class RecordSheetOptions {
         this.intrinsicPhysicalAttacks = CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, IntrinsicPhysicalAttacksStyle.class, IntrinsicPhysicalAttacksStyle.NONE);
         this.explicitZeroModifier = CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD,
               ExplicitZeroModifierStyle.class, ExplicitZeroModifierStyle.DASH);
+        this.extraPhysicals = CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -184,6 +186,7 @@ public class RecordSheetOptions {
         includeHitMod = options.includeHitMod;
         intrinsicPhysicalAttacks = options.intrinsicPhysicalAttacks;
         explicitZeroModifier = options.explicitZeroModifier;
+        extraPhysicals = options.extraPhysicals;
     }
 
     public PaperSize getPaperSize() {
@@ -372,5 +375,13 @@ public class RecordSheetOptions {
 
     public void setHeatScaleMarker(HeatScaleMarker heatScaleMarker) {
         this.heatScaleMarker = heatScaleMarker;
+    }
+
+    public boolean extraPhysicals() {
+        return extraPhysicals;
+    }
+
+    public void setExtraPhysicals(boolean extraPhysicals) {
+        this.extraPhysicals = extraPhysicals;
     }
 }

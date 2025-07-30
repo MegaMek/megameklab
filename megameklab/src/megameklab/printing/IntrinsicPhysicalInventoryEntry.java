@@ -32,16 +32,23 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     private final String location;
     private final String damage;
     private final String mod;
+    private final boolean optional;
 
-    private IntrinsicPhysicalInventoryEntry(String name, String location, String damage, String mod) {
+    private IntrinsicPhysicalInventoryEntry(String name, String location, String damage, String mod, boolean optional) {
         this.name = name;
         this.location = location;
         this.damage = damage;
         this.mod = mod;
+        this.optional = optional;
     }
 
     private static IntrinsicPhysicalInventoryEntry e(String name, String location, String damage, String mod) {
-        return new IntrinsicPhysicalInventoryEntry(name , location, damage, mod);
+        return new IntrinsicPhysicalInventoryEntry(name , location, damage, mod, false);
+    }
+
+    private static IntrinsicPhysicalInventoryEntry e(String name, String location, String damage, String mod,
+          boolean optional) {
+        return new IntrinsicPhysicalInventoryEntry(name , location, damage, mod, optional);
     }
 
     private static String formatDamage(double d) {
@@ -84,7 +91,8 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
             return new ArrayList<>( List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
         } else if (entity.canCharge()) {
-            return new ArrayList<>(List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex", "*")));
+            return new ArrayList<>(List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex",
+                  "*", true)));
         }
 
         return new ArrayList<>();
@@ -178,17 +186,17 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
             // For mod to be 0 it has to come from AES, hence explicit DASH.
             // If in the future, this is no longer true, there should be a check for explicit DASH vs blank string
-            entries.add(e("Club", DASH, dmg, mod != 0 ? "%+d".formatted(mod) : DASH));
+            entries.add(e("Club", DASH, dmg, mod != 0 ? "%+d".formatted(mod) : DASH, true));
         }
 
         // DFA
         if (mek.getOriginalJumpMP(true) > 0) {
             if (mek.hasMisc(MiscTypeFlag.F_TALON)) {
                 var dmg = formatDamage(Math.ceil(mek.getWeight() / 10 * 3) * 1.5);
-                entries.add(e("DFA [Talons]", DASH, dmg, "Vs"));
+                entries.add(e("DFA [Talons]", DASH, dmg, "Vs", true));
             } else {
                 var dmg = formatDamage(mek.getWeight() / 10 * 3);
-                entries.add(e("Death From Above", DASH, dmg, "Vs"));
+                entries.add(e("Death From Above", DASH, dmg, "Vs", true));
             }
         }
 
@@ -205,12 +213,12 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
             } else {
                 dmg = "%s/hex".formatted(doubleFormat.format(baseDmg));
             }
-            entries.add(e("Charge", DASH, dmg, "Vs"));
+            entries.add(e("Charge", DASH, dmg, "Vs", true));
         }
         if (mek instanceof LandAirMek) {
             var dmg = "%s/hex".formatted(doubleFormat.format(mek.getWeight() / 5));
             // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
-            entries.add(e("AirMech Ram",  DASH, dmg, "Vs"));
+            entries.add(e("AirMech Ram",  DASH, dmg, "Vs", true));
         }
 
         // Push
@@ -219,10 +227,18 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
             if (hasLArmAES && hasRArmAES) {
                 mod--;
             }
-            entries.add(e("Push", DASH, DASH, "%+d".formatted(mod)));
+            entries.add(e("Push", DASH, DASH, "%+d".formatted(mod), true));
         }
 
         return entries;
+    }
+
+    /**
+     *
+     * @return true if this physical should only be shown when the "Extra physicals" option is enabled.
+     */
+    public boolean isOptional() {
+        return optional;
     }
 
     @Override

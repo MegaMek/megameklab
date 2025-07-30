@@ -134,6 +134,7 @@ public final class CConfig {
     public static final String RS_HIT_MOD = "rs_hit_mod";
     public static final String RS_INTRINSIC_PHYSICALS = "rs_intrinsic_physicals";
     public static final String RS_EXPLICIT_ZERO_MOD = "rs_explicit_zero_mod";
+    public static final String RS_EXTRA_PHYSICALS = "rs_extra_physicals";
 
     public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
@@ -189,6 +190,7 @@ public final class CConfig {
         defaults.setProperty(RS_HIT_MOD, RecordSheetOptions.HitModStyle.NONE.name());
         defaults.setProperty(RS_INTRINSIC_PHYSICALS, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE.name());
         defaults.setProperty(RS_EXPLICIT_ZERO_MOD, RecordSheetOptions.ExplicitZeroModifierStyle.DASH.name());
+        defaults.setProperty(RS_EXTRA_PHYSICALS, Boolean.toString(false));
         return defaults;
     }
 

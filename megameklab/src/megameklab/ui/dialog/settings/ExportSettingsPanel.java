@@ -79,6 +79,7 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<RecordSheetOptions.HitModStyle> comboHitMod;
     private final MMComboBox<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> comboIntrinsicPhysicals;
     private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle>  comboExplicitZeroModifier;
+    private final JCheckBox chkExtraPhysicals = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -204,6 +205,10 @@ class ExportSettingsPanel extends JPanel {
 
         comboIntrinsicPhysicals = intrinsicPhysicalsCombo.comboBox;
         JPanel intrinsicPhysicalsPanel = intrinsicPhysicalsCombo.panel;
+
+        chkExtraPhysicals.setText(resourceMap.getString("ConfigurationDialog.chkExtraPhysicals.text"));
+        chkExtraPhysicals.setToolTipText(resourceMap.getString("ConfigurationDialog.chkExtraPhysicals.tooltip"));
+        chkExtraPhysicals.setSelected(CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS));
 
         ComboBoxPanel<RecordSheetOptions.ExplicitZeroModifierStyle>  explicitZeroModifierCombo = createComboPanel(
               "comboExplicitZeroModifier",
@@ -342,13 +347,14 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkMergeIdenticalEquipment);
         innerGridPanel.add(hitModPanel);
         innerGridPanel.add(intrinsicPhysicalsPanel);
+        innerGridPanel.add(chkExtraPhysicals);
         innerGridPanel.add(explicitZeroModifierPanel);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
 
-        SpringUtilities.makeCompactGrid(innerGridPanel, 10, 2, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(innerGridPanel, 11, 2, 0, 0, 15, 6);
         SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -412,6 +418,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Objects.requireNonNull(comboIntrinsicPhysicals.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_EXPLICIT_ZERO_MOD, Objects.requireNonNull(comboExplicitZeroModifier.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_EXTRA_PHYSICALS, Boolean.toString(chkExtraPhysicals.isSelected()));
         return recordSheetSettings;
     }
 
