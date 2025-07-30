@@ -30,15 +30,16 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
-import javax.swing.text.html.HTMLEditorKit;
 
 import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.abstractDialogs.CostDisplayDialog;
 import megamek.client.ui.dialogs.abstractDialogs.WeightDisplayDialog;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.dialogs.unitSelectorDialogs.EntityReadoutDialog;
+import megamek.client.ui.entityreadout.EntityReadout;
 import megamek.client.ui.util.UIUtil;
+import megamek.client.ui.util.ViewFormatting;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
 import megamek.common.templates.TROView;
@@ -1224,7 +1225,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
         try {
             Entity tempEntity = new MekFileParser(unitFile).getEntity();
-            showUnitSpecs(tempEntity, owner.getFrame());
+            new EntityReadoutDialog(owner.getFrame(), tempEntity).setVisible(true);
         } catch (Exception ex) {
             PopupMessages.showFileReadError(owner.getFrame(), unitFile.toString(), ex.getMessage());
         }
@@ -1369,8 +1370,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             TROView view = TROView.createView(owner.getEntity(), formatting);
             return view.processTemplate();
         } else {
-            MekView view = new MekView(owner.getEntity(), formatting == ViewFormatting.NONE, false, formatting);
-            return view.getMekReadout();
+            EntityReadout view = EntityReadout.createReadout(owner.getEntity(),
+                  formatting == ViewFormatting.NONE,
+                  false);
+            return view.getFullReadout(formatting);
         }
     }
 
@@ -1504,54 +1507,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         }
         File settingsFile = new File(fileChooser.getSelectedFile(), CConfig.CONFIG_FILE);
         CConfig.importSettings(owner, settingsFile);
-    }
-
-    public static void showUnitSpecs(Entity unit, JFrame frame) {
-        HTMLEditorKit kit = new HTMLEditorKit();
-
-        MekView mekView;
-        try {
-            mekView = new MekView(unit, true);
-        } catch (Exception ex) {
-            // error unit didn't load right. this is bad news.
-            logger.error("", ex);
-            return;
-        }
-
-        String unitSpecs = "<html><body>" + mekView.getMekReadoutBasic() +
-                mekView.getMekReadoutLoadout() + "</body></html>";
-
-        JEditorPane textPane = new JEditorPane("text/html", "");
-        JScrollPane scroll = new JScrollPane();
-
-        textPane.setEditable(false);
-        textPane.setCaret(new DefaultCaret());
-        textPane.setEditorKit(kit);
-
-        scroll.setViewportView(textPane);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.getVerticalScrollBar().setUnitIncrement(20);
-
-        textPane.setText(unitSpecs);
-
-        scroll.setVisible(true);
-
-        JDialog jdialog = new JDialog();
-
-        jdialog.add(scroll);
-
-        jdialog.pack();
-
-        jdialog.setLocationRelativeTo(frame);
-        jdialog.setVisible(true);
-
-        try {
-            textPane.setSelectionStart(0);
-            textPane.setSelectionEnd(0);
-        } catch (Exception ignored) {
-
-        }
     }
 
     private void warnOnInvalid() {
