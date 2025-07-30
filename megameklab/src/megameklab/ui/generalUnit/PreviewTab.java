@@ -33,13 +33,13 @@ import javax.swing.JScrollPane;
 import megamek.client.ui.dialogs.unitSelectorDialogs.AvailabilityPanel;
 import megamek.client.ui.dialogs.unitSelectorDialogs.ConfigurableMekViewPanel;
 import megamek.client.ui.clientGUI.GUIPreferences;
-import megamek.client.ui.dialogs.unitSelectorDialogs.MekViewPanel;
+import megamek.client.ui.dialogs.unitSelectorDialogs.EntityReadoutPanel;
 import megamek.client.ui.panels.alphaStrike.ConfigurableASCardPanel;
 import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.common.EnhancedTabbedPane;
 import megamek.common.EnhancedTabbedPane.TabStateListener;
 import megamek.common.Entity;
-import megamek.common.ViewFormatting;
+import megamek.client.ui.util.ViewFormatting;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.templates.TROView;
 import megamek.logging.MMLogger;
@@ -51,10 +51,10 @@ public class PreviewTab extends ITab {
     private static final MMLogger logger = MMLogger.create(PreviewTab.class);
 
     private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
-    private final MekViewPanel panelTROView = new MekViewPanel();
+    private final EntityReadoutPanel panelTROView = new EntityReadoutPanel();
     private final ConfigurableASCardPanel cardPanel = new ConfigurableASCardPanel(null);
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
-    private final AvailabilityPanel factionPanel = new AvailabilityPanel(null);
+    private final AvailabilityPanel factionPanel = new AvailabilityPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private EnhancedTabbedPane panPreview;
 
@@ -152,7 +152,7 @@ public class PreviewTab extends ITab {
         }
         if (populateTextFields) {
             panelMekView.setEntity(selectedUnit);
-            panelTROView.setMek(selectedUnit, troView);
+            panelTROView.showEntity(selectedUnit, troView);
             if (ASConverter.canConvert(selectedUnit)) {
                 cardPanel.setASElement(ASConverter.convertInMML(selectedUnit, new FlexibleCalculationReport()));
             } else {
