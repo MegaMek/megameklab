@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Armor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="612px" height="792px" viewBox="0 0 612 792" enable-background="new 0 0 612 792" xml:space="preserve">
-<switch><g>
-<path fill="none" stroke="#000000" stroke-width="0.504" stroke-miterlimit="2.4142" d="M526.183,103.18      c1.321,0,2.417,1.098,2.417,2.415c0,1.317-1.096,2.415-2.417,2.415c-1.315,0-2.411-1.097-2.411-2.415      C523.771,104.278,524.866,103.18,526.183,103.18L526.183,103.18z"/>
-<path fill="none" stroke="#000000" stroke-width="0.504" stroke-miterlimit="2.4142" d="M527.217,169.794     c1.316,0,2.413-1.097,2.413-2.488c0-1.317-1.097-2.414-2.413-2.414c-1.315,0-2.416,1.097-2.416,2.414     C524.801,168.697,525.9,169.794,527.217,169.794L527.217,169.794z"/>
-</g></switch>
-</svg>
