@@ -17,12 +17,12 @@
  * if not, see <https://www.gnu.org/licenses/>.
  *
  * NOTICE: The MegaMek organization is a non-profit group of volunteers
- * creating free software for the BattleTech community. 
+ * creating free software for the BattleTech community.
  *
- * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks 
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
  * of The Topps Company, Inc. All Rights Reserved.
- * 
- * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
  * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
@@ -34,7 +34,6 @@ package megameklab.util;
 
 import java.io.File;
 import java.util.Vector;
-
 import javax.swing.JFrame;
 
 import megamek.common.Entity;
@@ -46,7 +45,7 @@ import megameklab.ui.MulDndBehaviour;
 
 public class MULManager {
     private static final MMLogger logger = MMLogger.create(MULManager.class);
-    
+
     public static void processMULFile(File file, @Nullable JFrame owner) {
         int behaviourValue = CConfig.getIntParam(CConfig.MISC_MUL_OPEN_BEHAVIOUR);
         MulDndBehaviour[] allValues = MulDndBehaviour.values();

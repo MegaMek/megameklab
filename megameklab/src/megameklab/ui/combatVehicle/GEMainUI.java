@@ -32,17 +32,22 @@
  */
 package megameklab.ui.combatVehicle;
 
-import megamek.common.*;
+import java.awt.BorderLayout;
+import java.util.List;
+import javax.swing.JDialog;
+
+import megamek.common.Entity;
+import megamek.common.EquipmentType;
+import megamek.common.GunEmplacement;
+import megamek.common.ITechManager;
+import megamek.common.Mounted;
+import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.util.TabScrollPane;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 public class GEMainUI extends MegaMekLabMainUI {
     private GEStructureTab structureTab;
@@ -191,7 +196,8 @@ public class GEMainUI extends MegaMekLabMainUI {
         } else {
             newUnit.setChassis(oldUnit.getChassis());
             newUnit.setModel(oldUnit.getModel());
-            newUnit.setYear(Math.max(oldUnit.getYear(), newUnit.getConstructionTechAdvancement().getIntroductionDate()));
+            newUnit.setYear(Math.max(oldUnit.getYear(),
+                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
             newUnit.setSource(oldUnit.getSource());
             newUnit.setManualBV(oldUnit.getManualBV());
             newUnit.setTechLevel(oldUnit.getTechLevel());

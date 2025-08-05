@@ -1,22 +1,58 @@
 /*
- * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.supportVehicle;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import megamek.common.*;
 import megamek.common.ITechnology.TechRating;
@@ -26,34 +62,25 @@ import megameklab.ui.listeners.SVBuildListener;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.TechComboBox;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
 /**
  * Chassis panel for support vehicles
  */
 public class SVChassisView extends BuildView implements ActionListener, ChangeListener {
 
     private final List<SVBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(SVBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(SVBuildListener l) {
         listeners.remove(l);
     }
 
     /** Subset of possible types that does not include those that are not yet supported */
     private final List<TestSupportVehicle.SVType> SV_TYPES = Arrays.stream(TestSupportVehicle.SVType.values())
-            .filter(t -> !t.equals(TestSupportVehicle.SVType.AIRSHIP)
-                    && !t.equals(TestSupportVehicle.SVType.SATELLITE)).collect(Collectors.toList());
+          .filter(t -> !t.equals(TestSupportVehicle.SVType.AIRSHIP)
+                && !t.equals(TestSupportVehicle.SVType.SATELLITE)).collect(Collectors.toList());
     private final Map<TestSupportVehicle.SVType, String> typeNames = new EnumMap<>(TestSupportVehicle.SVType.class);
 
     private final static TechAdvancement TA_DUAL_TURRET = Tank.getDualTurretTA();
@@ -72,9 +99,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
     private final CustomComboBox<ITechnology.TechRating> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
-    private final CustomComboBox<TestSupportVehicle.SVType> cbType = new CustomComboBox<>(t -> typeNames.getOrDefault(t, "?"));
+    private final CustomComboBox<TestSupportVehicle.SVType> cbType = new CustomComboBox<>(t -> typeNames.getOrDefault(t,
+          "?"));
     private final TechComboBox<TestSupportVehicle.SVEngine> cbEngine = new TechComboBox<>(e -> e.engine.getEngineName()
-            .replaceAll("^\\d+ ", "").replace("[SV]", ""));
+          .replaceAll("^\\d+ ", "").replace("[SV]", ""));
     private final CustomComboBox<ITechnology.TechRating> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JCheckBox chkSponson = new JCheckBox();
@@ -116,7 +144,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblTonnage", "SVChassisView.spnTonnage.text",
-                "SVChassisView.spnTonnage.tooltip"), gbc);
+              "SVChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         spnTonnage.setToolTipText(resourceMap.getString("SVChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
@@ -135,7 +163,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblStructureTechRating", "SVChassisView.cbStructureTechRating.text",
-                "SVChassisView.cbStructureTechRating.tooltip"), gbc);
+              "SVChassisView.cbStructureTechRating.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
         cbStructureTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbStructureTechRating.tooltip"));
@@ -148,7 +176,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 1;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblType", "SVChassisView.cbType.text",
-                "SVChassisView.cbType.tooltip"), gbc);
+              "SVChassisView.cbType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         cbType.setToolTipText(resourceMap.getString("SVChassisView.cbType.tooltip"));
@@ -161,7 +189,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 1;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblEngine", "SVChassisView.cbEngine.text",
-                "SVChassisView.cbEngine.tooltip"), gbc);
+              "SVChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         cbEngine.setToolTipText(resourceMap.getString("SVChassisView.cbEngine.tooltip"));
@@ -175,7 +203,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridwidth = 2;
         gbc.gridy++;
         add(createLabel(resourceMap, "lblEngineTechRating", "SVChassisView.cbEngineTechRating.text",
-                "SVChassisView.cbEngineTechRating.tooltip"), gbc);
+              "SVChassisView.cbEngineTechRating.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 1;
         cbEngineTechRating.setToolTipText(resourceMap.getString("SVChassisView.cbEngineTechRating.tooltip"));
@@ -187,7 +215,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
-                "CVChassisView.cbTurrets.tooltip"), gbc);
+              "CVChassisView.cbTurrets.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
@@ -239,7 +267,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblFireCon", "SVChassisView.cbFireCon.text",
-                "SVChassisView.cbFireCon.tooltip"), gbc);
+              "SVChassisView.cbFireCon.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         cbFireControl.setToolTipText(resourceMap.getString("SVChassisView.cbFireCon.tooltip"));
@@ -270,7 +298,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblTurret1Wt", "SVChassisView.spnTurret1Wt.text",
-                "CVChassisView.spnTurretWt.tooltip"), gbc);
+              "CVChassisView.spnTurretWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
@@ -281,7 +309,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblTurret2Wt", "SVChassisView.spnTurret2Wt.text",
-                "CVChassisView.spnTurret2Wt.tooltip"), gbc);
+              "CVChassisView.spnTurret2Wt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         spnChassisTurret2Wt.setToolTipText(resourceMap.getString("CVChassisView.spnTurret2Wt.tooltip"));
@@ -292,7 +320,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblSponsonPintleWt", "SVChassisView.spnSponsonPintleWt.text",
-                "SVChassisView.spnSponsonPintleWt.tooltip"), gbc);
+              "SVChassisView.spnSponsonPintleWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         spnChassisSponsonPintleWt.setToolTipText(resourceMap.getString("SVChassisView.spnSponsonPintleWt.tooltip"));
@@ -303,7 +331,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy++;
         gbc.gridwidth = 1;
         omniPanel.add(createLabel(resourceMap, "lblFireConWt", "SVChassisView.spnFireConWt.text",
-                "SVChassisView.spnFireConWt.tooltip"), gbc);
+              "SVChassisView.spnFireConWt.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         spnFireConWt.setToolTipText(resourceMap.getString("SVChassisView.spnFireConWt.tooltip"));
@@ -322,8 +350,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     /**
      * Convenience method to convert weight values to tons based on whether the small size box is checked.
+     *
      * @param weight The weight value in either the ton or kg standard as determined by the checkbox
-     * @return       The weight in tons
+     *
+     * @return The weight in tons
      */
     private double convertWeight(double weight) {
         if (chkSmall.isSelected()) {
@@ -348,8 +378,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private boolean isAeroType() {
         final TestSupportVehicle.SVType type = getType();
         return type == TestSupportVehicle.SVType.FIXED_WING
-                || type == TestSupportVehicle.SVType.AIRSHIP
-                || type == TestSupportVehicle.SVType.SATELLITE;
+              || type == TestSupportVehicle.SVType.AIRSHIP
+              || type == TestSupportVehicle.SVType.SATELLITE;
     }
 
     /**
@@ -369,7 +399,8 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     /**
-     * @return The currently selected engine type, or {@link TestSupportVehicle.SVEngine#COMBUSTION COMBUSTION} if none is selected
+     * @return The currently selected engine type, or {@link TestSupportVehicle.SVEngine#COMBUSTION COMBUSTION} if none
+     *       is selected
      */
     private TestSupportVehicle.SVEngine getEngineType() {
         if (cbEngine.getSelectedItem() != null) {
@@ -398,7 +429,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbEngine.removeAllItems();
         for (TestSupportVehicle.SVEngine engine : TestSupportVehicle.SVEngine.values()) {
             if (techManager.isLegal(engine)
-                    && engine.isValidFor(entity)) {
+                  && engine.isValidFor(entity)) {
                 cbEngine.addItem(engine);
             }
         }
@@ -443,7 +474,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 cbTurrets.setSelectedItem(SVBuildListener.TURRET_DUAL);
             } else if (!tank.hasNoTurret()) {
                 cbTurrets.setSelectedItem((tank.getMovementMode() == EntityMovementMode.VTOL) ?
-                        SVBuildListener.TURRET_CHIN : SVBuildListener.TURRET_SINGLE);
+                      SVBuildListener.TURRET_CHIN : SVBuildListener.TURRET_SINGLE);
             } else {
                 cbTurrets.setSelectedItem(SVBuildListener.TURRET_NONE);
             }
@@ -493,12 +524,15 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
         omniPanel.setVisible(true);
         spnChassisTurretWt.setEnabled(!entity.isAero() && entity.isOmni()
-                && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
+              && (cbTurrets.getSelectedIndex() > SVBuildListener.TURRET_NONE));
         spnChassisTurret2Wt.setEnabled(!entity.isAero() && entity.isOmni()
-                && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
+              && Integer.valueOf(SVBuildListener.TURRET_DUAL).equals(cbTurrets.getSelectedItem()));
         spnChassisSponsonPintleWt.setEnabled(!entity.isAero()
-            && (chkSponson.isSelected()
-            || chkPintleLeft.isSelected() || chkPintleRight.isSelected() || chkPintleFront.isSelected() || chkPintleRear.isSelected()));
+              && (chkSponson.isSelected()
+              || chkPintleLeft.isSelected()
+              || chkPintleRight.isSelected()
+              || chkPintleFront.isSelected()
+              || chkPintleRear.isSelected()));
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex() > SVBuildListener.FIRECON_NONE));
     }
 
@@ -537,7 +571,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         } else if (!isAeroType()) {
             cbTurrets.addItem(SVBuildListener.TURRET_SINGLE);
             if (!TestSupportVehicle.SVType.WIGE.equals(cbType.getSelectedItem())
-                    && techManager.isLegal(TA_DUAL_TURRET)) {
+                  && techManager.isLegal(TA_DUAL_TURRET)) {
                 cbTurrets.addItem(SVBuildListener.TURRET_DUAL);
             }
         }
@@ -567,11 +601,11 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshSideTurrets() {
         final boolean showSponson = TestSupportVehicle.sponsonLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
-                chkSmall.isSelected())
-                && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET));
+              chkSmall.isSelected())
+              && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET));
         final boolean showPintle = TestSupportVehicle.pintleLegal((TestSupportVehicle.SVType) cbType.getSelectedItem(),
-                chkSmall.isSelected())
-                && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET));
+              chkSmall.isSelected())
+              && techManager.isLegal(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET));
         chkSponson.setVisible(showSponson);
         lblPintle.setVisible(showPintle);
         chkPintleLeft.setVisible(showPintle);
@@ -618,7 +652,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         spnSponsonPintleWtModel.setMaximum(max);
         spnFireConWtModel.setMaximum(max);
         spnChassisSponsonPintleWt.setEnabled(chkSponson.isSelected()
-            || chkPintleLeft.isSelected() || chkPintleRight.isSelected() || chkPintleFront.isSelected() || chkPintleRear.isSelected());
+              || chkPintleLeft.isSelected()
+              || chkPintleRight.isSelected()
+              || chkPintleFront.isSelected()
+              || chkPintleRear.isSelected());
 
         spnTonnage.addChangeListener(this);
         spnChassisTurretWt.addChangeListener(this);
@@ -715,12 +752,13 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(convertWeight((double) spnTonnage.getValue())));
         } else if ((e.getSource() == spnChassisTurretWt)
-                || (e.getSource() == spnChassisTurret2Wt)) {
+              || (e.getSource() == spnChassisTurret2Wt)) {
             listeners.forEach(l -> l.turretBaseWtChanged(
-                    convertWeight(spnTurretWtModel.getNumber().doubleValue()),
-                    convertWeight(spnTurret2WtModel.getNumber().doubleValue())));
+                  convertWeight(spnTurretWtModel.getNumber().doubleValue()),
+                  convertWeight(spnTurret2WtModel.getNumber().doubleValue())));
         } else if (e.getSource() == spnChassisSponsonPintleWt) {
-            listeners.forEach(l -> l.sponsonPintleBaseWtChanged(convertWeight(spnSponsonPintleWtModel.getNumber().doubleValue())));
+            listeners.forEach(l -> l.sponsonPintleBaseWtChanged(convertWeight(spnSponsonPintleWtModel.getNumber()
+                  .doubleValue())));
         } else if (e.getSource() == spnFireConWt) {
             listeners.forEach(l -> l.fireConWtChanged(convertWeight(spnFireConWtModel.getNumber().doubleValue())));
         }

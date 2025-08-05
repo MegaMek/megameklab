@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMekLab.ab.
+ * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
@@ -45,7 +59,7 @@ public final class AeroUtil {
         // Fixed wing, airship, and satellite vehicles use vehicle construction rules.
         if (unit.isSupportVehicle()) {
             return eq.hasFlag(WeaponType.F_TANK_WEAPON)
-                    && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
+                  && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
         }
 
         if (weaponType.hasFlag(WeaponType.F_BOMB_WEAPON)) {
@@ -55,13 +69,13 @@ public final class AeroUtil {
         // small craft only; lacks aero weapon flag
         if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.C3_REMOTE_SENSOR) {
             return unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    && !unit.hasETypeFlag(Entity.ETYPE_DROPSHIP);
+                  && !unit.hasETypeFlag(Entity.ETYPE_DROPSHIP);
         }
 
         if (weaponType.isSubCapital() || (weaponType instanceof CapitalMissileWeapon)
-                || (weaponType.getAtClass() == WeaponType.CLASS_SCREEN)) {
+              || (weaponType.getAtClass() == WeaponType.CLASS_SCREEN)) {
             return unit.hasETypeFlag(Entity.ETYPE_DROPSHIP)
-                    || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
+                  || unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP);
         }
 
         if (weaponType.isCapital()) {
@@ -78,7 +92,7 @@ public final class AeroUtil {
                 return true;
             } else if (unit.isFighter()) {
                 return weaponType.isAnyOf(EquipmentTypeLookup.THUMPER_ARTY, EquipmentTypeLookup.SNIPER_ARTY)
-                        || (eq instanceof ArrowIV);
+                      || (eq instanceof ArrowIV);
             } else {
                 return false;
             }
@@ -89,16 +103,16 @@ public final class AeroUtil {
         }
 
         if (((weaponType instanceof LRMWeapon) || (weaponType instanceof LRTWeapon))
-                && (weaponType.getRackSize() != 5)
-                && (weaponType.getRackSize() != 10)
-                && (weaponType.getRackSize() != 15)
-                && (weaponType.getRackSize() != 20)) {
+              && (weaponType.getRackSize() != 5)
+              && (weaponType.getRackSize() != 10)
+              && (weaponType.getRackSize() != 15)
+              && (weaponType.getRackSize() != 20)) {
             return false;
         }
         if (((weaponType instanceof SRMWeapon) || (weaponType instanceof SRTWeapon))
-                && (weaponType.getRackSize() != 2)
-                && (weaponType.getRackSize() != 4)
-                && (weaponType.getRackSize() != 6)) {
+              && (weaponType.getRackSize() != 2)
+              && (weaponType.getRackSize() != 4)
+              && (weaponType.getRackSize() != 6)) {
             return false;
         }
         if ((weaponType instanceof MRMWeapon) && (weaponType.getRackSize() < 10)) {
@@ -110,10 +124,11 @@ public final class AeroUtil {
         }
 
         if (weaponType.hasFlag(WeaponType.F_ENERGY)
-                || (weaponType.hasFlag(WeaponType.F_PLASMA) && (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
+              || (weaponType.hasFlag(WeaponType.F_PLASMA) && (weaponType.getAmmoType()
+              == AmmoType.AmmoTypeEnum.PLASMA))) {
             return !weaponType.hasFlag(WeaponType.F_ENERGY)
-                    || !weaponType.hasFlag(WeaponType.F_PLASMA)
-                    || (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.NA);
+                  || !weaponType.hasFlag(WeaponType.F_PLASMA)
+                  || (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.NA);
         }
         return true;
     }
@@ -124,7 +139,7 @@ public final class AeroUtil {
         }
 
         if ((eq instanceof AmmoType)
-                && (((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)) {
+              && (((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)) {
             return !unit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT);
         }
 
@@ -141,10 +156,10 @@ public final class AeroUtil {
                 return eq.hasFlag(MiscType.F_SC_EQUIPMENT);
             } else if (eq.hasFlag(MiscType.F_FLOTATION_HULL)) {
                 return unit.hasETypeFlag(Entity.ETYPE_CONV_FIGHTER)
-                        && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
+                      && !unit.hasETypeFlag(Entity.ETYPE_FIXED_WING_SUPPORT);
             } else if (unit.isSupportVehicle()) {
                 return eq.hasFlag(MiscType.F_SUPPORT_TANK_EQUIPMENT)
-                        && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
+                      && TestTank.legalForMotiveType(eq, unit.getMovementMode(), true);
             } else {
                 return eq.hasFlag(MiscType.F_FIGHTER_EQUIPMENT);
             }
@@ -205,12 +220,11 @@ public final class AeroUtil {
     }
 
     /**
-     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters
-     * are already assigned, this will put all officers in officer/first class cabins, enlisted crew
-     * in standard crew quarters, and passengers in second class cabins. If there are already more
-     * officer/first class cabins assigned than there are officers, the extra will be used as first
-     * class passenger cabins. Any steerage quarters will be assigned first to marines, then to passengers,
-     * then to remaining enlisted.
+     * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters are already
+     * assigned, this will put all officers in officer/first class cabins, enlisted crew in standard crew quarters, and
+     * passengers in second class cabins. If there are already more officer/first class cabins assigned than there are
+     * officers, the extra will be used as first class passenger cabins. Any steerage quarters will be assigned first to
+     * marines, then to passengers, then to remaining enlisted.
      *
      * @param aero The vessel to assign quarters for.
      */
@@ -229,7 +243,7 @@ public final class AeroUtil {
         // will need to
         // be done by hand.
         int officer1stC = Math.min(aero.getNOfficers() + aero.getNPassenger(),
-                quartersCount.get(TestAero.Quarters.FIRST_CLASS));
+              quartersCount.get(TestAero.Quarters.FIRST_CLASS));
         officer1stC = Math.max(officer1stC, aero.getNOfficers());
         int firstClass = Math.max(0, officer1stC - aero.getNOfficers());
         int officer = officer1stC - firstClass;
@@ -238,7 +252,7 @@ public final class AeroUtil {
         // standard
         // or officer quarters and passengers that have not been assigned first class.
         int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
-                quartersCount.get(TestAero.Quarters.STEERAGE));
+              quartersCount.get(TestAero.Quarters.STEERAGE));
         // Assign any existing steerage quarters first to marines that have not already
         // been assigned standard
         // quarters
@@ -273,16 +287,16 @@ public final class AeroUtil {
                 if (unit.getYear() < Dropship.getCollarTA().getIntroductionDate()) {
                     ((Dropship) unit).setCollarType(Dropship.COLLAR_NO_BOOM);
                 } else if ((unit.getYear() < Dropship.getCollarTA().getIntroductionDate())
-                        && (((Dropship) unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
+                      && (((Dropship) unit).getCollarType() == Dropship.COLLAR_STANDARD)) {
                     ((Dropship) unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
                 }
             }
             // Minimum crew levels
             ((SmallCraft) unit).setNGunners(Math.max(unit.getNGunners(),
-                    TestSmallCraft.requiredGunners(unit)));
+                  TestSmallCraft.requiredGunners(unit)));
             unit.setNCrew(Math.max(unit.getNCrew(),
-                    unit.getNGunners() + unit.getBayPersonnel()
-                            + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
+                  unit.getNGunners() + unit.getBayPersonnel()
+                        + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
             if (unit.getNOfficers() == 0) {
                 ((SmallCraft) unit).setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
             }
@@ -292,7 +306,7 @@ public final class AeroUtil {
                 unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
                 unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
                 int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
-                        + unit.getNMarines() + unit.getNBattleArmor();
+                      + unit.getNMarines() + unit.getNBattleArmor();
                 if (std > 0) {
                     unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
                 }
@@ -312,5 +326,5 @@ public final class AeroUtil {
         }
     }
 
-    private AeroUtil() { }
+    private AeroUtil() {}
 }

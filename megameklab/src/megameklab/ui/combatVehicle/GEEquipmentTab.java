@@ -60,7 +60,7 @@ class GEEquipmentTab extends AbstractEquipmentTab {
     protected boolean showInLoadOut(Mounted<?> mount) {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
-                (!etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype));
+              (!etype.hasFlag(MiscType.F_JUMP_JET) && !UnitUtil.isArmorOrStructure(etype));
     }
 
 }

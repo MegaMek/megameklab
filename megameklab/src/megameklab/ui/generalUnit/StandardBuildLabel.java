@@ -32,16 +32,16 @@
  */
 package megameklab.ui.generalUnit;
 
-import megamek.client.ui.util.DisplayTextfield;
-
+import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.Dimension;
+
+import megamek.client.ui.util.DisplayTextfield;
 
 /**
- * This is a JLabel that is right-aligned and uses a preferred height equal to that of a JTextField; it can be used
- * in BuildViews as a standard label class for input fields. It will align properly with JTextFields or even
- * multi-line TextPanes even if the alignment of the component in a GridBagLayout is set to NORTH.
+ * This is a JLabel that is right-aligned and uses a preferred height equal to that of a JTextField; it can be used in
+ * BuildViews as a standard label class for input fields. It will align properly with JTextFields or even multi-line
+ * TextPanes even if the alignment of the component in a GridBagLayout is set to NORTH.
  */
 public class StandardBuildLabel extends JLabel {
 

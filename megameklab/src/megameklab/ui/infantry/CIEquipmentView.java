@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008, 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,12 +25,30 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.EquipmentType;
@@ -44,19 +62,6 @@ import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.InfantryUtil;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Enumeration;
 
 /**
  * @author (original) jtighe (torren@users.sourceforge.net)
@@ -173,13 +178,13 @@ public class CIEquipmentView extends IView implements ActionListener {
         rbtnStats.addActionListener(ev -> setEquipmentView());
         rbtnFluff.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0,2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(addPrimaryButton);
         btnPanel.add(addSecondaryButton);
 
@@ -199,7 +204,7 @@ public class CIEquipmentView extends IView implements ActionListener {
         gbc.weightx = 1;
         databasePanel.add(viewPanel, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
@@ -236,7 +241,7 @@ public class CIEquipmentView extends IView implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getActionCommand().equals(ADDP_COMMAND) ||
-                evt.getActionCommand().equals(ADDS_COMMAND)) {
+              evt.getActionCommand().equals(ADDS_COMMAND)) {
             boolean isSecondary = evt.getActionCommand().equals(ADDS_COMMAND);
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
@@ -274,13 +279,15 @@ public class CIEquipmentView extends IView implements ActionListener {
                     return false;
                 }
                 if ((nType == T_WEAPON)
-                        || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
-                        || ((nType == T_PERSONAL) && !etype.hasFlag(WeaponType.F_INF_ARCHAIC) && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
-                        ) {
+                      || ((nType == T_ARCHAIC) && etype.hasFlag(WeaponType.F_INF_ARCHAIC))
+                      || ((nType == T_PERSONAL)
+                      && !etype.hasFlag(WeaponType.F_INF_ARCHAIC)
+                      && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
+                      || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
+                ) {
                     if (null != eSource.getTechManager()
-                            && !eSource.getTechManager().isLegal(etype)
-                            && !chkShowAll.isSelected()) {
+                          && !eSource.getTechManager().isLegal(etype)
+                          && !chkShowAll.isSelected()) {
                         return false;
                     }
 
@@ -357,11 +364,11 @@ public class CIEquipmentView extends IView implements ActionListener {
                 etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
             }
             addPrimaryButton.setEnabled((null != etype)
-                    && eSource.getTechManager().isLegal(etype)
-                    && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
+                  && eSource.getTechManager().isLegal(etype)
+                  && !etype.hasFlag(WeaponType.F_INF_SUPPORT));
             addSecondaryButton.setEnabled((null != etype)
-                    && eSource.getTechManager().isLegal(etype)
-                    && (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
+                  && eSource.getTechManager().isLegal(etype)
+                  && (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
         }
     };
 }

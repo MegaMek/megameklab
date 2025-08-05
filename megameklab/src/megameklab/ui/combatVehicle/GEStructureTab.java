@@ -48,12 +48,12 @@ import megamek.common.UnitRole;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.SingleLocationEquipmentView;
 import megameklab.ui.generalUnit.summary.AmmoSummaryItem;
 import megameklab.ui.generalUnit.summary.MiscEquipmentSummaryItem;
 import megameklab.ui.generalUnit.summary.SummaryView;
 import megameklab.ui.generalUnit.summary.UnitTypeSummaryItem;
 import megameklab.ui.generalUnit.summary.WeaponsSummaryItem;
-import megameklab.ui.generalUnit.SingleLocationEquipmentView;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.listeners.HHWBuildListener;
 import megameklab.ui.util.ITab;
@@ -83,10 +83,10 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
         panBasicInfo = new BasicInfoView(getEntity().getConstructionTechAdvancement());
         panEquipmentView = new SingleLocationEquipmentView(eSource, refresh);
         panSummary = new SummaryView(eSource,
-            new UnitTypeSummaryItem(),
-            new WeaponsSummaryItem(),
-            new AmmoSummaryItem(),
-            new MiscEquipmentSummaryItem()
+              new UnitTypeSummaryItem(),
+              new WeaponsSummaryItem(),
+              new AmmoSummaryItem(),
+              new MiscEquipmentSummaryItem()
         );
         panIcon = new IconView();
 
@@ -94,7 +94,7 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
         panBasicInfo.setFromEntity(getEntity());
         panIcon.setFromEntity(getEntity());
 
-        JPanel leftPanel = new JPanel(), centerPanel = new JPanel(),  rightPanel = new JPanel();
+        JPanel leftPanel = new JPanel(), centerPanel = new JPanel(), rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -252,11 +252,11 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
     }
 
     @Override
-    public void walkChanged(int walkMP) { }
+    public void walkChanged(int walkMP) {}
 
     @Override
-    public void jumpChanged(int jumpMP, EquipmentType jumpJet) { }
+    public void jumpChanged(int jumpMP, EquipmentType jumpJet) {}
 
     @Override
-    public void jumpTypeChanged(EquipmentType jumpJet) { }
+    public void jumpTypeChanged(EquipmentType jumpJet) {}
 }

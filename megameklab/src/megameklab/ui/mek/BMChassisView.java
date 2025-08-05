@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.mek;
 
@@ -27,7 +41,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -51,54 +64,56 @@ import megameklab.ui.util.TechComboBox;
  */
 public class BMChassisView extends BuildView implements ActionListener, ChangeListener {
     List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(MekBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(MekBuildListener l) {
         listeners.remove(l);
     }
 
-    public static final int BASE_TYPE_STANDARD         = 0;
-    public static final int BASE_TYPE_INDUSTRIAL       = 1;
-    public static final int BASE_TYPE_LAM              = 2;
-    public static final int BASE_TYPE_QUADVEE          = 3;
+    public static final int BASE_TYPE_STANDARD = 0;
+    public static final int BASE_TYPE_INDUSTRIAL = 1;
+    public static final int BASE_TYPE_LAM = 2;
+    public static final int BASE_TYPE_QUADVEE = 3;
 
-    public static final int MOTIVE_TYPE_BIPED          = 0;
-    public static final int MOTIVE_TYPE_QUAD           = 1;
-    public static final int MOTIVE_TYPE_TRIPOD         = 2;
+    public static final int MOTIVE_TYPE_BIPED = 0;
+    public static final int MOTIVE_TYPE_QUAD = 1;
+    public static final int MOTIVE_TYPE_TRIPOD = 2;
 
-    public static final int MOTIVE_TYPE_LAM_STD        = 0;
-    public static final int MOTIVE_TYPE_LAM_BM         = 1;
+    public static final int MOTIVE_TYPE_LAM_STD = 0;
+    public static final int MOTIVE_TYPE_LAM_BM = 1;
 
-    public static final int MOTIVE_TYPE_QV_TRACKED     = 0;
-    public static final int MOTIVE_TYPE_QV_WHEELED     = 1;
+    public static final int MOTIVE_TYPE_QV_TRACKED = 0;
+    public static final int MOTIVE_TYPE_QV_WHEELED = 1;
 
     // Engines that can be used by Meks and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
-            Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
-            Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
+          Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.FUEL_CELL, Engine.LIGHT_ENGINE,
+          Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
     // Industrial (and primitive) Meks can use non-fusion engines under standard rules, but cannot use
     // any fusion engines other than standard.
     private final static int[] INDUSTRIAL_ENGINE_TYPES = {
-            Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
+          Engine.NORMAL_ENGINE, Engine.FUEL_CELL, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
     // LAMs can only use fusion engines that are contained entirely within the center torso.
     private final static int[] LAM_ENGINE_TYPES = {
-            Engine.NORMAL_ENGINE, Engine.COMPACT_ENGINE
+          Engine.NORMAL_ENGINE, Engine.COMPACT_ENGINE
     };
 
     // Internal structure for non-industrial Meks
     private final static int[] STRUCTURE_TYPES = {
-            EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
-            EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
-            EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
+          EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+          EquipmentType.T_STRUCTURE_ENDO_PROTOTYPE, EquipmentType.T_STRUCTURE_REINFORCED,
+          EquipmentType.T_STRUCTURE_COMPOSITE, EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
     // Internal structure for superheavy battleMeks
     private final static int[] SUPERHEAVY_STRUCTURE_TYPES = {
-            EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
-            EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
+          EquipmentType.T_STRUCTURE_STANDARD, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+          EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
@@ -109,7 +124,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbGyro = new CustomComboBox<>(Mek::getGyroTypeShortString);
-    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> Mek.getCockpitTypeString(i, isIndustrial()));
+    final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(i -> Mek.getCockpitTypeString(i,
+          isIndustrial()));
     final private TechComboBox<EquipmentType> cbEnhancement = new TechComboBox<>(EquipmentType::getName);
     final private JCheckBox chkFullHeadEject = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
@@ -125,18 +141,18 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     private int engineRating = 20;
 
     private static final int[] GENERAL_COCKPITS = {
-            Mek.COCKPIT_STANDARD, Mek.COCKPIT_SMALL, Mek.COCKPIT_COMMAND_CONSOLE,
-            Mek.COCKPIT_SMALL_COMMAND_CONSOLE, Mek.COCKPIT_TORSO_MOUNTED,
-            Mek.COCKPIT_DUAL, Mek.COCKPIT_INTERFACE, Mek.COCKPIT_VRRP
+          Mek.COCKPIT_STANDARD, Mek.COCKPIT_SMALL, Mek.COCKPIT_COMMAND_CONSOLE,
+          Mek.COCKPIT_SMALL_COMMAND_CONSOLE, Mek.COCKPIT_TORSO_MOUNTED,
+          Mek.COCKPIT_DUAL, Mek.COCKPIT_INTERFACE, Mek.COCKPIT_VRRP
     };
 
     private static final int[] INDUSTRIAL_COCKPITS = {
-            Mek.COCKPIT_INDUSTRIAL, Mek.COCKPIT_STANDARD, Mek.COCKPIT_COMMAND_CONSOLE, Mek.COCKPIT_TORSO_MOUNTED
+          Mek.COCKPIT_INDUSTRIAL, Mek.COCKPIT_STANDARD, Mek.COCKPIT_COMMAND_CONSOLE, Mek.COCKPIT_TORSO_MOUNTED
     };
 
     private static final String[] ENHANCEMENT_NAMES = {
-            EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
-            EquipmentTypeLookup.TSM, EquipmentTypeLookup.P_TSM, EquipmentTypeLookup.SCM
+          EquipmentTypeLookup.IS_MASC, EquipmentTypeLookup.CLAN_MASC,
+          EquipmentTypeLookup.TSM, EquipmentTypeLookup.P_TSM, EquipmentTypeLookup.SCM
     };
 
     private final ITechManager techManager;
@@ -152,11 +168,14 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     private void initUI() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
         baseTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.baseType.values").split(","));
-        standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values").split(","));
+        standardTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.motiveType.values")
+              .split(","));
         lamTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.lamType.values").split(","));
         qvTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.qvType.values").split(","));
-        primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values").split(","));
-        primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveMotiveType.values").split(","));
+        primitiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString("MekChassisView.primitiveType.values")
+              .split(","));
+        primitiveMotiveTypesModel = new DefaultComboBoxModel<>(resourceMap.getString(
+              "MekChassisView.primitiveMotiveType.values").split(","));
         stdMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.tooltip");
         lamMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.LAM.tooltip");
         qvMotiveTooltip = resourceMap.getString("MekChassisView.cbMotiveType.QuadVee.tooltip");
@@ -170,7 +189,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = STANDARD_INSETS;
         add(createLabel(resourceMap, "lblTonnage", "MekChassisView.spnTonnage.text",
-                "MekChassisView.spnTonnage.tooltip"), gbc);
+              "MekChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         spnTonnage.setToolTipText(resourceMap.getString("MekChassisView.spnTonnage.tooltip"));
@@ -188,7 +207,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(createLabel(resourceMap, "lblBaseType", "MekChassisView.cbBaseType.text",
-                "MekChassisView.cbBaseType.tooltip"), gbc);
+              "MekChassisView.cbBaseType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 3;
@@ -201,7 +220,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblMotiveType", "MekChassisView.cbMotiveType.text",
-                "MekChassisView.cbMotiveType.tooltip"), gbc);
+              "MekChassisView.cbMotiveType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 3;
@@ -214,7 +233,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 3;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblStructure", "MekChassisView.cbStructure.text",
-                "MekChassisView.cbStructure.tooltip"), gbc);
+              "MekChassisView.cbStructure.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 3;
@@ -227,7 +246,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 4;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEngine", "MekChassisView.cbEngine.text",
-                "MekChassisView.cbEngine.tooltip"), gbc);
+              "MekChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.gridwidth = 3;
@@ -240,7 +259,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 5;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblGyro", "MekChassisView.cbGyro.text",
-                "MekChassisView.cbGyro.tooltip"), gbc);
+              "MekChassisView.cbGyro.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 5;
         gbc.gridwidth = 3;
@@ -253,7 +272,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 6;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblCockpit", "MekChassisView.cbCockpit.text",
-                "MekChassisView.cbCockpit.tooltip"), gbc);
+              "MekChassisView.cbCockpit.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 6;
         gbc.gridwidth = 3;
@@ -266,7 +285,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 7;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEnhancement", "MekChassisView.cbEnhancement.text",
-                "MekChassisView.cbEnhancement.tooltip"), gbc);
+              "MekChassisView.cbEnhancement.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 7;
         gbc.gridwidth = 3;
@@ -300,7 +319,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         setTonnage(mek.getWeight());
         setOmni(mek.isOmni());
         chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
-                && techManager.isLegal(Entity.getOmniAdvancement()));
+              && techManager.isLegal(Entity.getOmniAdvancement()));
         cbBaseType.removeActionListener(this);
         cbMotiveType.removeActionListener(this);
         if (primitive) {
@@ -338,14 +357,14 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbBaseType.addActionListener(this);
         cbMotiveType.addActionListener(this);
         setStructureType(EquipmentType.getStructureTypeName(mek.getStructureType(),
-                TechConstants.isClan(mek.getStructureTechLevel())));
+              TechConstants.isClan(mek.getStructureTechLevel())));
         setEngine(mek.getEngine());
         setGyroType(mek.getGyroType());
         setCockpitType(mek.getCockpitType());
         // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
         // the list for the first matching.
         Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
-                .filter(et -> (et.hasFlag(MiscType.F_MASC) && et.getSubType() == 0)
+              .filter(et -> (et.hasFlag(MiscType.F_MASC) && et.getSubType() == 0)
                     || et.hasFlag(MiscType.F_TSM)
                     || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || et.hasFlag(MiscType.F_SCM)).findFirst();
@@ -395,9 +414,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
         chkOmni.removeActionListener(this);
         chkOmni.setEnabled(!isPrimitive()
-                && (getBaseTypeIndex() != BASE_TYPE_INDUSTRIAL)
-                && (getBaseTypeIndex() != BASE_TYPE_LAM)
-                && techManager.isLegal(Entity.getOmniAdvancement()));
+              && (getBaseTypeIndex() != BASE_TYPE_INDUSTRIAL)
+              && (getBaseTypeIndex() != BASE_TYPE_LAM)
+              && techManager.isLegal(Entity.getOmniAdvancement()));
         chkOmni.addActionListener(this);
     }
 
@@ -408,12 +427,12 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         if (getBaseTypeIndex() == BASE_TYPE_LAM) {
             max = 55;
         } else if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
-                && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
-                getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
+              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
+              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
             max = 200;
         }
         if (techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
-                EntityWeightClass.WEIGHT_ULTRA_LIGHT))) {
+              EntityWeightClass.WEIGHT_ULTRA_LIGHT))) {
             min = 10;
         }
         tonnageModel.setMinimum(min);
@@ -442,23 +461,23 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD, isClan);
             cbStructure.addItem(EquipmentType.get(name));
         } else {
-            int[] structureTypes = isSuperheavy()?
-                    SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
+            int[] structureTypes = isSuperheavy() ?
+                  SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
             for (int i : structureTypes) {
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
                 if ((null != structure) && techManager.isLegal(structure)
-                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                                || (structure.getCriticals(null) == 0))) {
+                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                      || (structure.getCriticals(null) == 0))) {
                     cbStructure.addItem(structure);
                 }
                 name = EquipmentType.getStructureTypeName(i, !isClan);
                 EquipmentType structure2 = EquipmentType.get(name);
                 if ((null != structure2) && (structure2 != structure)
-                        && techManager.isLegal(structure2)
-                        && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                                || (structure2.getCriticals(null) == 0))) {
+                      && techManager.isLegal(structure2)
+                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
+                      || (structure2.getCriticals(null) == 0))) {
                     cbStructure.addItem(structure2);
                     // If we are allowing the opposite tech base it may be because we are using mixed
                     // tech but it also may be that we are in the transitional early Clan stage when
@@ -476,7 +495,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshEngine() {
         cbEngine.removeActionListener(this);
-        Engine prevEngine = (Engine)cbEngine.getSelectedItem();
+        Engine prevEngine = (Engine) cbEngine.getSelectedItem();
         cbEngine.removeAllItems();
         for (Engine e : getAvailableEngines()) {
             cbEngine.addItem(e);
@@ -499,13 +518,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else {
             for (int i = 0; i < Mek.GYRO_NONE; i++) {
                 if (techManager.isLegal(Mek.getGyroTechAdvancement(i))
-                        && ((i != Mek.GYRO_XL) || (getBaseTypeIndex() != BASE_TYPE_LAM))) {
+                      && ((i != Mek.GYRO_XL) || (getBaseTypeIndex() != BASE_TYPE_LAM))) {
                     cbGyro.addItem(i);
                 }
             }
         }
         if ((cbCockpit.getSelectedItem() != null)
-                && cbCockpit.getSelectedItem().equals(Mek.COCKPIT_INTERFACE)) {
+              && cbCockpit.getSelectedItem().equals(Mek.COCKPIT_INTERFACE)) {
             cbGyro.addItem(Mek.GYRO_NONE);
         }
         cbGyro.setSelectedItem(prev);
@@ -520,10 +539,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         Integer prev = (Integer) cbCockpit.getSelectedItem();
         cbCockpit.removeAllItems();
         if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL)
-                && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
+              && (getMotiveTypeIndex() == MOTIVE_TYPE_TRIPOD)) {
             if (isIndustrial()) {
                 cbCockpit.addItem(isSuperheavy() ?
-                        Mek.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL : Mek.COCKPIT_TRIPOD_INDUSTRIAL);
+                      Mek.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL : Mek.COCKPIT_TRIPOD_INDUSTRIAL);
             }
             cbCockpit.addItem(isSuperheavy() ? Mek.COCKPIT_SUPERHEAVY_TRIPOD : Mek.COCKPIT_TRIPOD);
         } else if (getBaseTypeIndex() == BASE_TYPE_LAM) {
@@ -565,7 +584,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbCockpit.setSelectedItem(prev);
         cbCockpit.addActionListener(this);
         if ((cbCockpit.getSelectedIndex() < 0)
-                && (cbCockpit.getModel().getSize() > 0)) {
+              && (cbCockpit.getModel().getSize() > 0)) {
             cbCockpit.setSelectedIndex(0);
         }
     }
@@ -602,13 +621,12 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkFullHeadEject.removeActionListener(this);
         final Integer cockpitType = (Integer) cbCockpit.getSelectedItem();
         chkFullHeadEject.setEnabled((cockpitType != null)
-                && (cockpitType != Mek.COCKPIT_TORSO_MOUNTED)
-                && (cockpitType != Mek.COCKPIT_VRRP)
-                && (cockpitType != Mek.COCKPIT_COMMAND_CONSOLE)
-                && techManager.isLegal(Mek.getFullHeadEjectAdvancement()));
+              && (cockpitType != Mek.COCKPIT_TORSO_MOUNTED)
+              && (cockpitType != Mek.COCKPIT_VRRP)
+              && (cockpitType != Mek.COCKPIT_COMMAND_CONSOLE)
+              && techManager.isLegal(Mek.getFullHeadEjectAdvancement()));
         chkFullHeadEject.addActionListener(this);
     }
-
 
 
     public List<Engine> getAvailableEngines() {
@@ -631,18 +649,18 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         // Non-superheavies can use non-fusion engines under experimental rules
         // industrials and primitives can use non-fusion under standard rules
         boolean allowNonFusion = isIndustrial() || isPrimitive() || (!isSuperheavy()
-                && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
+              && techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0);
         for (int i : engineTypes) {
             Engine e = new Engine(getEngineRating(), i, flags);
             if (e.engineValid && (e.isFusion() || allowNonFusion)
-                    && techManager.isLegal(e)) {
+                  && techManager.isLegal(e)) {
                 retVal.add(e);
             }
             // Only add the opposite tech base if the engine is different.
             if (isMixed && e.getSideTorsoCriticalSlots().length > 0) {
                 e = new Engine(getEngineRating(), i, altFlags);
                 if (e.engineValid && (e.isFusion() || allowNonFusion)
-                        && techManager.isLegal(e)) {
+                      && techManager.isLegal(e)) {
                     retVal.add(e);
                 }
             }
@@ -697,7 +715,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public EquipmentType getStructure() {
-        return (EquipmentType)cbStructure.getSelectedItem();
+        return (EquipmentType) cbStructure.getSelectedItem();
     }
 
     public void setStructureType(EquipmentType structure) {
@@ -727,9 +745,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     /**
-     * Select the first engine in the list that matches engine type and flags,
-     * ignoring any flags other than Clan. If no match can be found based on type and flags,
-     * disregards Clan flag as well.
+     * Select the first engine in the list that matches engine type and flags, ignoring any flags other than Clan. If no
+     * match can be found based on type and flags, disregards Clan flag as well.
      *
      * @param engine The engine to match
      */
@@ -772,7 +789,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public EquipmentType getEnhancement() {
-        return (EquipmentType)cbEnhancement.getSelectedItem();
+        return (EquipmentType) cbEnhancement.getSelectedItem();
     }
 
     public void setEnhancement(EquipmentType enhancement) {

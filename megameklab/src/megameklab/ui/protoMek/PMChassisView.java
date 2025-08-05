@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2018-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.protoMek;
 
@@ -26,7 +40,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -49,16 +62,18 @@ import megameklab.ui.util.CustomComboBox;
  */
 public class PMChassisView extends BuildView implements ActionListener, ChangeListener {
     List<ProtoMekBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(ProtoMekBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ProtoMekBuildListener l) {
         listeners.remove(l);
     }
 
-    public static final int MOTIVE_TYPE_BIPED          = 0;
-    public static final int MOTIVE_TYPE_QUAD           = 1;
-    public static final int MOTIVE_TYPE_GLIDER         = 2;
+    public static final int MOTIVE_TYPE_BIPED = 0;
+    public static final int MOTIVE_TYPE_QUAD = 1;
+    public static final int MOTIVE_TYPE_GLIDER = 2;
 
     private String[] motiveTypeNames;
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(2, 2, 15, 1);
@@ -105,7 +120,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(createLabel(resourceMap, "lblTonnage", "ProtomekChassisView.spnTonnage.text",
-                "ProtomekChassisView.spnTonnage.tooltip"), gbc);
+              "ProtomekChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         spnTonnage.setToolTipText(resourceMap.getString("ProtomekChassisView.spnTonnage.tooltip"));
@@ -202,8 +217,8 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         chkMyomerBooster.setVisible((null != myomerBooster) && techManager.isLegal(myomerBooster));
         chkPartialWing.setVisible((null != partialWing) && techManager.isLegal(partialWing));
         chkMagneticClamps.setVisible((null != magneticClamps)
-                && (getMotiveType() == MOTIVE_TYPE_BIPED)
-                && techManager.isLegal(magneticClamps));
+              && (getMotiveType() == MOTIVE_TYPE_BIPED)
+              && techManager.isLegal(magneticClamps));
         chkISInterface.setVisible(techManager.isLegal(ProtoMek.TA_INTERFACE_COCKPIT));
     }
 

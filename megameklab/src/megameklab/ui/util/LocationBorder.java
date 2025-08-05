@@ -1,25 +1,51 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.util;
 
-import javax.swing.border.AbstractBorder;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Path2D;
+import javax.swing.border.AbstractBorder;
 
 /**
- * A Java Swing Border with slightly curved top and bottom lines. Used as a frame
- * for the Large Aerospace crit locations.
+ * A Java Swing Border with slightly curved top and bottom lines. Used as a frame for the Large Aerospace crit
+ * locations.
  *
  * @author Simon (Juliez)
  */
@@ -35,7 +61,7 @@ public class LocationBorder extends AbstractBorder {
     /** Color of the border. */
     protected Color lineColor;
 
-    public LocationBorder(Color color, float thickness)  {
+    public LocationBorder(Color color, float thickness) {
         this.thickness = thickness;
         lineColor = color;
     }
@@ -44,10 +70,10 @@ public class LocationBorder extends AbstractBorder {
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         if ((thickness > 0) && (lineColor != null) && (width > 0) && (height > 0) && (g instanceof Graphics2D)) {
             Graphics2D g2d = (Graphics2D) g;
-            
+
             Color oldColor = g2d.getColor();
             Stroke oldStroke = g2d.getStroke();
-            
+
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(this.lineColor);
             g2d.setStroke(new BasicStroke(thickness));
@@ -57,7 +83,7 @@ public class LocationBorder extends AbstractBorder {
             float xw = x + width - thickness;
             float yc = y + thickness;
             float yh = y + height - thickness;
-            
+
             if (width < 2 * CL) {
                 float hcl = 0.5f * HCL / CL * width;
                 line.moveTo(xc, yc + HCH);
@@ -87,7 +113,7 @@ public class LocationBorder extends AbstractBorder {
     @Override
     public Insets getBorderInsets(Component c, Insets insets) {
         insets.set((int) (HCH + 1.5 * thickness), (int) (3 + 1.5 * thickness),
-                (int) (HCH + 1.5 * thickness), (int) (3 + 1.5 * thickness));
+              (int) (HCH + 1.5 * thickness), (int) (3 + 1.5 * thickness));
         return insets;
     }
 

@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.dialog.settings;
 
@@ -67,7 +81,7 @@ class ExportSettingsPanel extends JPanel {
     private final JComboBox<String> cbRSScale = new JComboBox<>();
     private final IntRangeTextField txtScale = new IntRangeTextField(3);
     private final MMComboBox<MekChassisArrangement> mekChassis =
-            new MMComboBox<>("Mek Names", MekChassisArrangement.values());
+          new MMComboBox<>("Mek Names", MekChassisArrangement.values());
     private final JCheckBox chkRowShading = new JCheckBox();
     private final JCheckBox chkAlternateArmorGrouping = new JCheckBox();
     private final JCheckBox chkFrameless = new JCheckBox();
@@ -78,7 +92,7 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<RecordSheetOptions.HeatScaleMarker> comboHeatScaleMarker;
     private final MMComboBox<RecordSheetOptions.HitModStyle> comboHitMod;
     private final MMComboBox<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> comboIntrinsicPhysicals;
-    private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle>  comboExplicitZeroModifier;
+    private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle> comboExplicitZeroModifier;
     private final JCheckBox chkExtraPhysicals = new JCheckBox();
 
     ExportSettingsPanel() {
@@ -122,11 +136,13 @@ class ExportSettingsPanel extends JPanel {
         defaultSortOrderLabel.setToolTipText(toolTip);
 
         final DefaultComboBoxModel<WeaponSortOrder> defaultWeaponSortOrderModel = new DefaultComboBoxModel<>(
-                WeaponSortOrder.values());
+              WeaponSortOrder.values());
         defaultWeaponSortOrderModel.removeElement(WeaponSortOrder.CUSTOM); // Custom makes no sense as a default
         comboDefaultWeaponSortOrder = new MMComboBox<>("comboDefaultWeaponSortOrder", defaultWeaponSortOrderModel);
         comboDefaultWeaponSortOrder.setToolTipText(toolTip);
-        comboDefaultWeaponSortOrder.setSelectedItem(CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT));
+        comboDefaultWeaponSortOrder.setSelectedItem(CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER,
+              WeaponSortOrder.class,
+              WeaponSortOrder.DEFAULT));
 
         JPanel weaponSortOrderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         weaponSortOrderPanel.add(defaultSortOrderLabel);
@@ -166,7 +182,8 @@ class ExportSettingsPanel extends JPanel {
         JPanel heatScaleMarkerPanel = heatScaleMarkerCombo.panel;
 
         chkAlternateArmorGrouping.setText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.text"));
-        chkAlternateArmorGrouping.setToolTipText(resourceMap.getString("ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
+        chkAlternateArmorGrouping.setToolTipText(resourceMap.getString(
+              "ConfigurationDialog.chkAlternateArmorGrouping.tooltip"));
         chkAlternateArmorGrouping.setSelected(CConfig.getBooleanParam(CConfig.RS_ARMOR_GROUPING));
 
         chkFrameless.setText(resourceMap.getString("ConfigurationDialog.chkFrameless.text"));
@@ -178,7 +195,8 @@ class ExportSettingsPanel extends JPanel {
         chkBoldType.setSelected(CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE));
 
         chkMergeIdenticalEquipment.setText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.text"));
-        chkMergeIdenticalEquipment.setToolTipText(resourceMap.getString("ConfigurationDialog.chkMergeIdenticalEquipment.tooltip"));
+        chkMergeIdenticalEquipment.setToolTipText(resourceMap.getString(
+              "ConfigurationDialog.chkMergeIdenticalEquipment.tooltip"));
         chkMergeIdenticalEquipment.setSelected(CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT));
 
         ComboBoxPanel<RecordSheetOptions.HitModStyle> hitModCombo = createComboPanel(
@@ -197,7 +215,8 @@ class ExportSettingsPanel extends JPanel {
         ComboBoxPanel<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> intrinsicPhysicalsCombo = createComboPanel(
               "comboIntrinsicPhysicals",
               RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
-              CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
+              CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS,
+                    RecordSheetOptions.IntrinsicPhysicalAttacksStyle.class,
                     RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE),
               resourceMap.getString("ConfigurationDialog.comboIntrinsicPhysicals.text"),
               resourceMap.getString("ConfigurationDialog.comboIntrinsicPhysicals.tooltip")
@@ -210,7 +229,7 @@ class ExportSettingsPanel extends JPanel {
         chkExtraPhysicals.setToolTipText(resourceMap.getString("ConfigurationDialog.chkExtraPhysicals.tooltip"));
         chkExtraPhysicals.setSelected(CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS));
 
-        ComboBoxPanel<RecordSheetOptions.ExplicitZeroModifierStyle>  explicitZeroModifierCombo = createComboPanel(
+        ComboBoxPanel<RecordSheetOptions.ExplicitZeroModifierStyle> explicitZeroModifierCombo = createComboPanel(
               "comboExplicitZeroModifier",
               RecordSheetOptions.ExplicitZeroModifierStyle.class,
               CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD, RecordSheetOptions.ExplicitZeroModifierStyle.class,
@@ -256,9 +275,9 @@ class ExportSettingsPanel extends JPanel {
         btnDamageColor.setBackground(initial);
         btnDamageColor.addActionListener(ev -> {
             Color chosen = JColorChooser.showDialog(
-                ExportSettingsPanel.this,
-                resourceMap.getString("ConfigurationDialog.btnDamageColor.text"),
-                btnDamageColor.getBackground());
+                  ExportSettingsPanel.this,
+                  resourceMap.getString("ConfigurationDialog.btnDamageColor.text"),
+                  btnDamageColor.getBackground());
             if (chosen != null) {
                 btnDamageColor.setBackground(chosen);
             }
@@ -401,23 +420,30 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_SHOW_PILOT_DATA, Boolean.toString(chkShowPilotData.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_C3BV, Boolean.toString(chkShowForceData.isSelected()));
         recordSheetSettings.put(CConfig.RS_DAMAGE, Boolean.toString(chkShowDamage.isSelected()));
-        recordSheetSettings.put(CConfig.RS_DAMAGE_COLOR, String.format("#%06X", btnDamageColor.getBackground().getRGB() & 0xFFFFFF));
+        recordSheetSettings.put(CConfig.RS_DAMAGE_COLOR,
+              String.format("#%06X", btnDamageColor.getBackground().getRGB() & 0xFFFFFF));
         recordSheetSettings.put(CConfig.RS_SHOW_ERA, Boolean.toString(chkShowEraIcon.isSelected()));
         recordSheetSettings.put(CConfig.RS_SHOW_ROLE, Boolean.toString(chkShowRole.isSelected()));
         recordSheetSettings.put(CConfig.RS_HEAT_PROFILE, Boolean.toString(chkHeatProfile.isSelected()));
         recordSheetSettings.put(CConfig.RS_TAC_OPS_HEAT, Boolean.toString(chkTacOpsHeat.isSelected()));
         recordSheetSettings.put(CConfig.RS_SCALE_UNITS, RSScale.values()[cbRSScale.getSelectedIndex()].toString());
         recordSheetSettings.put(CConfig.RS_SCALE_FACTOR, Integer.toString(txtScale.getIntVal(getDefaultScale())));
-        recordSheetSettings.put(CConfig.RS_MEK_NAMES, Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
+        recordSheetSettings.put(CConfig.RS_MEK_NAMES,
+              Objects.requireNonNullElse(mekChassis.getSelectedItem(), MekChassisArrangement.CLAN_IS).name());
         recordSheetSettings.put(CConfig.RS_ARMOR_GROUPING, Boolean.toString(chkAlternateArmorGrouping.isSelected()));
         recordSheetSettings.put(CConfig.RS_FRAMELESS, Boolean.toString(chkFrameless.isSelected()));
         recordSheetSettings.put(CConfig.RS_BOLD_TYPE, Boolean.toString(chkBoldType.isSelected()));
-        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER, Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
-        recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT, Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
+        recordSheetSettings.put(CConfig.RS_WEAPONS_ORDER,
+              Objects.requireNonNull(comboDefaultWeaponSortOrder.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT,
+              Boolean.toString(chkMergeIdenticalEquipment.isSelected()));
         recordSheetSettings.put(CConfig.RS_HIT_MOD, Objects.requireNonNull(comboHitMod.getSelectedItem()).name());
-        recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS, Objects.requireNonNull(comboIntrinsicPhysicals.getSelectedItem()).name());
-        recordSheetSettings.put(CConfig.RS_EXPLICIT_ZERO_MOD, Objects.requireNonNull(comboExplicitZeroModifier.getSelectedItem()).name());
-        recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER, Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_INTRINSIC_PHYSICALS,
+              Objects.requireNonNull(comboIntrinsicPhysicals.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_EXPLICIT_ZERO_MOD,
+              Objects.requireNonNull(comboExplicitZeroModifier.getSelectedItem()).name());
+        recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER,
+              Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_EXTRA_PHYSICALS, Boolean.toString(chkExtraPhysicals.isSelected()));
         return recordSheetSettings;
     }
@@ -439,7 +465,8 @@ class ExportSettingsPanel extends JPanel {
 
     DefaultListCellRenderer mekNameArrangementRenderer = new DefaultListCellRenderer() {
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+              boolean cellHasFocus) {
             return super.getListCellRendererComponent(list, displayName(value), index, isSelected, cellHasFocus);
         }
     };

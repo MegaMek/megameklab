@@ -1,16 +1,34 @@
 /*
- * MegaMekLab
- * Copyright (C) 2008-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.battleArmor;
 
@@ -21,12 +39,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -57,7 +72,7 @@ import megameklab.util.UnitUtil;
  * @author jtighe (torren@users.sourceforge.net)
  */
 public class BAStructureTab extends ITab
-        implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
+      implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
     private static final MMLogger logger = MMLogger.create(BAStructureTab.class);
 
     private RefreshListener refresh;
@@ -76,9 +91,9 @@ public class BAStructureTab extends ITab
     private final CustomComboBox<String> rightManipulatorSelect = new CustomComboBox<>(this::manipulatorDisplayName);
 
     private final SpinnerNumberModel spnLeftManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
-            0.5);
+          0.5);
     private final SpinnerNumberModel spnRightManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
-            0.5);
+          0.5);
     private final JSpinner spnLeftManipulatorSize = new JSpinner(spnLeftManipulatorSizeModel);
     private final JSpinner spnRightManipulatorSize = new JSpinner(spnRightManipulatorSizeModel);
     private final JLabel lblSize = createLabel("Size:", new Dimension(40, 25));
@@ -211,13 +226,13 @@ public class BAStructureTab extends ITab
             }
         }
         BAManipulator manipulator = BAManipulator.getManipulator(
-                getBattleArmor().getLeftManipulatorName());
+              getBattleArmor().getLeftManipulatorName());
         leftManipulatorSelect.setSelectedItem(
-                BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+              BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
         manipulator = BAManipulator.getManipulator(
-                getBattleArmor().getRightManipulatorName());
+              getBattleArmor().getRightManipulatorName());
         rightManipulatorSelect.setSelectedItem(
-                BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+              BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
         refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSize, spnLeftManipulatorSizeModel);
         // For variable-sized pair-mounted manipulators, we'll only use one spinner
         spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
@@ -230,8 +245,7 @@ public class BAStructureTab extends ITab
     }
 
     /**
-     * Sets values for the size control if the manipulator has a variable size;
-     * otherwise hides it.
+     * Sets values for the size control if the manipulator has a variable size; otherwise hides it.
      *
      * @param mountLoc The mount location
      * @param spinner  The spinner to show/hide
@@ -239,8 +253,8 @@ public class BAStructureTab extends ITab
      */
     private void refreshManipulatorSizes(int mountLoc, JSpinner spinner, SpinnerNumberModel model) {
         Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
-                .findFirst();
+              .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
+              .findFirst();
         if (mounted.isPresent() && mounted.get().getType().isVariableSize()) {
             model.setValue(mounted.get().getSize());
             model.setStepSize(mounted.get().getType().variableStepSize());
@@ -299,9 +313,9 @@ public class BAStructureTab extends ITab
             if (e.getSource().equals(leftManipulatorSelect) || e.getSource().equals(rightManipulatorSelect)) {
                 String name = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
                 setManipulator(BAManipulator.getManipulator(name),
-                        e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
-                                : BattleArmor.MOUNT_LOC_RARM,
-                        true);
+                      e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
+                            : BattleArmor.MOUNT_LOC_RARM,
+                      true);
             }
         }
         refresh.refreshAll();
@@ -314,7 +328,7 @@ public class BAStructureTab extends ITab
         }
         if (manipulator != BAManipulator.NONE) {
             MiscMounted newMount = new MiscMounted(getBattleArmor(),
-                    (MiscType) EquipmentType.get(manipulator.internalName));
+                  (MiscType) EquipmentType.get(manipulator.internalName));
             newMount.setBaMountLoc(mountLoc);
             try {
                 getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
@@ -324,7 +338,7 @@ public class BAStructureTab extends ITab
         }
         if (checkPaired) {
             int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LARM) ? BattleArmor.MOUNT_LOC_RARM
-                    : BattleArmor.MOUNT_LOC_LARM;
+                  : BattleArmor.MOUNT_LOC_LARM;
             if (manipulator.pairMounted) {
                 setManipulator(manipulator, otherArm, false);
             } else if ((current != null) && isPairedManipulator(current.getType())) {
@@ -340,8 +354,8 @@ public class BAStructureTab extends ITab
 
     private @Nullable MiscMounted getManipulator(int mountLoc) {
         return getBattleArmor().getMisc().stream()
-                .filter(m -> (m.getBaMountLoc() == mountLoc) && m.getType().hasFlag(MiscType.F_BA_MANIPULATOR))
-                .findFirst().orElse(null);
+              .filter(m -> (m.getBaMountLoc() == mountLoc) && m.getType().hasFlag(MiscType.F_BA_MANIPULATOR))
+              .findFirst().orElse(null);
     }
 
     private boolean isPairedManipulator(EquipmentType eq) {
@@ -368,8 +382,8 @@ public class BAStructureTab extends ITab
 
     private void setManipulatorSize(int mountLoc, double size) {
         Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
-                .findFirst();
+              .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
+              .findFirst();
         mounted.ifPresent(value -> value.setSize(size));
     }
 
@@ -461,8 +475,8 @@ public class BAStructureTab extends ITab
         ArmorType armor = panArmor.getArmor();
         // If the current armor is no longer available, switch to the current selection
         if (EquipmentType.getArmorType(armor) != getBattleArmor().getArmorType(BattleArmor.LOC_SQUAD)
-                || (armor.getTechLevel(getBattleArmor().getYear()) != getBattleArmor()
-                        .getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
+              || (armor.getTechLevel(getBattleArmor().getYear()) != getBattleArmor()
+              .getArmorTechLevel(BattleArmor.LOC_SQUAD))) {
             armorTypeChanged(armor);
         }
         addAllListeners();
@@ -531,7 +545,8 @@ public class BAStructureTab extends ITab
     @Override
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
-        UnitUtil.removeAllCriticalsFrom(getBattleArmor(), List.of(BattleArmor.MOUNT_LOC_LARM, BattleArmor.MOUNT_LOC_RARM, BattleArmor.MOUNT_LOC_TURRET));
+        UnitUtil.removeAllCriticalsFrom(getBattleArmor(),
+              List.of(BattleArmor.MOUNT_LOC_LARM, BattleArmor.MOUNT_LOC_RARM, BattleArmor.MOUNT_LOC_TURRET));
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());
@@ -654,8 +669,8 @@ public class BAStructureTab extends ITab
             }
         } else {
             List<Mounted<?>> mounts = getBattleArmor().getMisc().stream()
-                    .filter(m -> m.getType().equals(eq))
-                    .collect(Collectors.toList());
+                  .filter(m -> m.getType().equals(eq))
+                  .collect(Collectors.toList());
             for (Mounted<?> mount : mounts) {
                 UnitUtil.removeMounted(getBattleArmor(), mount);
             }
@@ -687,7 +702,7 @@ public class BAStructureTab extends ITab
         for (; armorCount > 0; armorCount--) {
             try {
                 getBattleArmor().addEquipment(Mounted.createMounted(getBattleArmor(), armor),
-                        BattleArmor.LOC_SQUAD, false);
+                      BattleArmor.LOC_SQUAD, false);
             } catch (Exception ex) {
                 logger.error("", ex);
             }
@@ -713,10 +728,10 @@ public class BAStructureTab extends ITab
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
         double totalTonnage = getBattleArmor().getTrooperWeight();
         double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+              totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
         int points = (int) TestEntity.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
-                points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
+              points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         armorFactorChanged(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getBattleArmor());

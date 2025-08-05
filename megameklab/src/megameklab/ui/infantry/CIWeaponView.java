@@ -32,17 +32,8 @@
  */
 package megameklab.ui.infantry;
 
-import megamek.client.ui.util.DisplayTextfield;
-import megamek.common.*;
-import megamek.common.verifier.TestInfantry;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.generalUnit.StandardBuildLabel;
-import megameklab.ui.listeners.InfantryBuildListener;
-import megameklab.ui.util.WidthControlComponent;
-import megameklab.util.InfantryUtil;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -52,24 +43,44 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import megamek.client.ui.util.DisplayTextfield;
+import megamek.common.EntityMovementMode;
+import megamek.common.ITechManager;
+import megamek.common.Infantry;
+import megamek.common.Mounted;
+import megamek.common.SimpleTechLevel;
+import megamek.common.verifier.TestInfantry;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.generalUnit.StandardBuildLabel;
+import megameklab.ui.listeners.InfantryBuildListener;
+import megameklab.ui.util.WidthControlComponent;
+import megameklab.util.InfantryUtil;
 
 /**
- * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable
- * controls are for changing the number of secondary weapons and field guns.
+ * Panel for conventional infantry weapons (primary, secondary, field gun). The only editable controls are for changing
+ * the number of secondary weapons and field guns.
  *
  * @author Neoancient
  */
 public class CIWeaponView extends BuildView implements ActionListener {
     private final List<InfantryBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(InfantryBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(InfantryBuildListener l) {
         listeners.remove(l);
     }
 
     private final EnumSet<EntityMovementMode> FIELD_GUN_MODES = EnumSet.of(
-            EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.INF_MOTORIZED);
+          EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.INF_MOTORIZED);
 
     private final DisplayTextfield txtPrimary = new DisplayTextfield(WidthControlComponent.TEXTFIELD_COLUMNS);
     private final DisplayTextfield txtSecondary = new DisplayTextfield(WidthControlComponent.TEXTFIELD_COLUMNS);

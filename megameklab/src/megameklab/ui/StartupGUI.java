@@ -1,18 +1,51 @@
 /*
- * MegaMekLab
- * Copyright (c) 2019-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui;
+
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.VolatileImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import megamek.MegaMek;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
@@ -26,36 +59,24 @@ import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
 import megamek.common.Entity;
 import megamek.common.annotations.Nullable;
+import megamek.common.util.ImageUtil;
+import megamek.common.util.ManagedVolatileImage;
+import megamek.common.util.TipOfTheDay;
+import megamek.common.util.fileUtils.MegaMekFile;
+import megamek.logging.MMLogger;
 import megameklab.MMLConstants;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.util.ExitOnWindowClosingListener;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.TabUtil;
-import megamek.common.util.ImageUtil;
-import megamek.common.util.ManagedVolatileImage;
-import megamek.common.util.TipOfTheDay;
-import megamek.common.util.fileUtils.MegaMekFile;
-import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.MMLFileDropTransferHandler;
 import org.apache.commons.collections4.CollectionUtils;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.image.VolatileImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
-
-import static javax.swing.JOptionPane.YES_NO_OPTION;
-
 /**
  * A startup splash screen for MegaMekLab
- * 
+ *
  * @author Taharqa
  */
 public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
@@ -80,7 +101,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame = new JFrame("MegaMekLab");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         lastDpiScaleFactor = UIUtil.getMonitorScaleFactor(frame);
-        tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"), "megameklab.resources.TipOfTheDay", frame);
+        tipOfTheDay = new TipOfTheDay(resourceMap.getString("TipOfTheDay.title.text"),
+              "megameklab.resources.TipOfTheDay",
+              frame);
         setupDpiChangeListeners();
         initComponents();
     }
@@ -127,7 +150,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         lastDpiScaleFactor = newDpiScaleFactor;
         Rectangle oldBounds = frame.getBounds();
         Point oldCenter = new Point(oldBounds.x + oldBounds.width / 2,
-                                    oldBounds.y + oldBounds.height / 2);
+              oldBounds.y + oldBounds.height / 2);
         Container container = frame.getContentPane();
         container.removeAll();
         removeAll();
@@ -135,13 +158,13 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         initComponents();
         Dimension newSize = frame.getSize();
         Point newTopLeft = new Point(oldCenter.x - newSize.width / 2,
-                                     oldCenter.y - newSize.height / 2);
+              oldCenter.y - newSize.height / 2);
         frame.setLocation(newTopLeft);
     }
 
     /**
      * Checks if the StartupGUI instance is already created.
-     * 
+     *
      * @return
      */
     static public boolean hasInstance() {
@@ -150,7 +173,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     /**
      * Returns the instance of the StartupGUI. If it does not exist, it creates a new one.
-     * 
+     *
      * @return The instance of the StartupGUI.
      */
     static public StartupGUI getInstance() {
@@ -171,9 +194,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private void showImportSettingsDialog() {
         CConfig.setParam(CConfig.NAG_IMPORT_SETTINGS, Boolean.toString(false));
         int choice = JOptionPane.showConfirmDialog(this,
-                "Do you wish to import settings from another MML" +
-                        "? You can also do this later from the main menu.",
-                "Import Settings?", YES_NO_OPTION);
+              "Do you wish to import settings from another MML" +
+                    "? You can also do this later from the main menu.",
+              "Import Settings?", YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             mmlMenuBar.importSettings();
         }
@@ -199,8 +222,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
         splashImage = getImage(FILENAME_MEGAMEK_SPLASH, scaledMonitorSize.width, scaledMonitorSize.height);
-        logoImage = new ManagedVolatileImage(getImage(FILENAME_LOGO, scaledMonitorSize.width, scaledMonitorSize.height), Transparency.TRANSLUCENT);
-        medalImage = new ManagedVolatileImage(getImage(FILENAME_MEDAL, scaledMonitorSize.width, scaledMonitorSize.height), Transparency.TRANSLUCENT);
+        logoImage = new ManagedVolatileImage(getImage(FILENAME_LOGO, scaledMonitorSize.width, scaledMonitorSize.height),
+              Transparency.TRANSLUCENT);
+        medalImage = new ManagedVolatileImage(getImage(FILENAME_MEDAL,
+              scaledMonitorSize.width,
+              scaledMonitorSize.height), Transparency.TRANSLUCENT);
         Dimension splashPanelPreferredSize = calculateSplashPanelPreferredSize(scaledMonitorSize, splashImage);
         splashPanel = new RawImagePanel(splashImage) {
             @Override
@@ -238,47 +264,47 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         }
 
         MegaMekButton btnLoadUnit = new MegaMekButton(resourceMap.getString("btnLoadUnit.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnLoadUnit.addActionListener(evt -> selectAndLoadUnitFromCache(this));
 
         MegaMekButton btnNewMek = new MegaMekButton(resourceMap.getString("btnNewMek.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewMek.addActionListener(evt -> createNewUnit(Entity.ETYPE_MEK));
 
         MegaMekButton btnNewVee = new MegaMekButton(resourceMap.getString("btnNewVee.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewVee.addActionListener(evt -> createNewUnit(Entity.ETYPE_TANK));
 
         MegaMekButton btnNewSupportVee = new MegaMekButton(resourceMap.getString("btnNewSupportVee.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewSupportVee.addActionListener(evt -> createNewUnit(Entity.ETYPE_SUPPORT_TANK));
 
         MegaMekButton btnNewBA = new MegaMekButton(resourceMap.getString("btnNewBA.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewBA.addActionListener(evt -> createNewUnit(Entity.ETYPE_BATTLEARMOR));
 
         MegaMekButton btnNewAero = new MegaMekButton(resourceMap.getString("btnNewAero.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewAero.addActionListener(evt -> createNewUnit(Entity.ETYPE_AERO));
 
         MegaMekButton btnNewDropper = new MegaMekButton(resourceMap.getString("btnNewDropper.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewDropper.addActionListener(evt -> createNewUnit(Entity.ETYPE_DROPSHIP));
 
         MegaMekButton btnNewLargeCraft = new MegaMekButton(resourceMap.getString("btnNewLargeCraft.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewLargeCraft.addActionListener(evt -> createNewUnit(Entity.ETYPE_JUMPSHIP));
 
         MegaMekButton btnNewProto = new MegaMekButton(resourceMap.getString("btnNewProto.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewProto.addActionListener(evt -> createNewUnit(Entity.ETYPE_PROTOMEK));
 
         MegaMekButton btnNewPbi = new MegaMekButton(resourceMap.getString("btnNewPbi.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(evt -> createNewUnit(Entity.ETYPE_INFANTRY));
 
         MegaMekButton btnQuit = new MegaMekButton(resourceMap.getString("btnQuit.text"),
-                UIComponents.MainMenuButton.getComp(), true);
+              UIComponents.MainMenuButton.getComp(), true);
         btnQuit.addActionListener(evt -> System.exit(0));
 
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
@@ -406,30 +432,31 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
     /**
      * Calculates the preferred size for the splash panel
-     * 
+     *
      * @param scaledMonitorSize the scaled monitor dimensions
-     * @param splashImage the reference image for the aspect ratio
+     * @param splashImage       the reference image for the aspect ratio
+     *
      * @return the calculated preferred size for the splash panel
      */
     private Dimension calculateSplashPanelPreferredSize(Dimension scaledMonitorSize, Image splashImage) {
         // Calculate max dimensions (75% of screen)
         int maxWidth = (int) (scaledMonitorSize.width * 0.75);
         int maxHeight = (int) (scaledMonitorSize.height * 0.75);
-        
+
         if (splashImage != null && splashImage.getWidth(null) > 0 && splashImage.getHeight(null) > 0) {
             // Calculate aspect ratio preserving dimensions
             double imageWidth = splashImage.getWidth(null);
             double imageHeight = splashImage.getHeight(null);
             double imageAspectRatio = imageWidth / imageHeight;
-            
+
             int targetWidth = maxWidth;
             int targetHeight = (int) (targetWidth / imageAspectRatio);
-            
+
             if (targetHeight > maxHeight) {
                 targetHeight = maxHeight;
                 targetWidth = (int) (targetHeight * imageAspectRatio);
             }
-            
+
             return new Dimension(targetWidth, targetHeight);
         } else {
             // Fallback to original calculation if image is not available
@@ -445,24 +472,26 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         VolatileImage image = medalImage.getImage();
         if (image.getWidth(null) > 0 && image.getHeight(null) > 0) {
             double medalScalePercent = 0.10; // Medal height as % of panel
-            
+
             int originalMedalWidth = image.getWidth(null);
             int originalMedalHeight = image.getHeight(null);
 
             int targetMedalWidth = (int) (panelWidth * medalScalePercent);
-            if (targetMedalWidth < 1) targetMedalWidth = 1; // Ensure minimum size
+            if (targetMedalWidth < 1) {
+                targetMedalWidth = 1; // Ensure minimum size
+            }
 
             double scaleFactor = (double) targetMedalWidth / originalMedalWidth;
             int targetMedalHeight = (int) (originalMedalHeight * scaleFactor);
-            if (targetMedalHeight < 1) targetMedalHeight = 1;
+            if (targetMedalHeight < 1) {targetMedalHeight = 1;}
 
             // Position: center, under logo
-            int medalX = (panelWidth - targetMedalWidth)/2;
+            int medalX = (panelWidth - targetMedalWidth) / 2;
             // Adjust Y position to be below the logo, 4% overlap
-            int medalY = ((((int) (panelHeight * 0.8f)) + logoHeight)/2) - (int) (logoHeight * 0.04);
+            int medalY = ((((int) (panelHeight * 0.8f)) + logoHeight) / 2) - (int) (logoHeight * 0.04);
 
-            if (medalX < 0) medalX = 0;
-            if (medalY < 0) medalY = 0;
+            if (medalX < 0) {medalX = 0;}
+            if (medalY < 0) {medalY = 0;}
 
             g2d.drawImage(image, medalX, medalY, targetMedalWidth, targetMedalHeight, null);
         }
@@ -481,17 +510,19 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
             int originalLogoHeight = image.getHeight(null);
 
             int targetLogoWidth = (int) (panelWidth * logoWidthScalePercent);
-            if (targetLogoWidth < 1) targetLogoWidth = 1; // Ensure minimum size
+            if (targetLogoWidth < 1) {
+                targetLogoWidth = 1; // Ensure minimum size
+            }
 
             double scaleFactor = (double) targetLogoWidth / originalLogoWidth;
             targetLogoHeight = (int) (originalLogoHeight * scaleFactor);
-            if (targetLogoHeight < 1) targetLogoHeight = 1;
+            if (targetLogoHeight < 1) {targetLogoHeight = 1;}
             // Position: center of the panel
-            int logoX = (panelWidth - targetLogoWidth)/2;
-            int logoY = (((int) (panelHeight * 0.8f)) - targetLogoHeight)/2;
+            int logoX = (panelWidth - targetLogoWidth) / 2;
+            int logoY = (((int) (panelHeight * 0.8f)) - targetLogoHeight) / 2;
 
-            if (logoX < 0) logoX = 0;
-            if (logoY < 0) logoY = 0;
+            if (logoX < 0) {logoX = 0;}
+            if (logoY < 0) {logoY = 0;}
 
             g2d.drawImage(image, logoX, logoY, targetLogoWidth, targetLogoHeight, null);
         }
@@ -519,17 +550,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     /**
-     * Shows the Unit Selector Window and loads the unit if the user selects one.
-     * When the chosen
-     * unit fits the MageMekLabMainUI given as previousFrame this frame will be kept
-     * and updated
-     * to the chosen unit, otherwise, a new UI will be created for the unit and
-     * previousFrame will
-     * be closed and disposed.
+     * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen unit fits the
+     * MageMekLabMainUI given as previousFrame this frame will be kept and updated to the chosen unit, otherwise, a new
+     * UI will be created for the unit and previousFrame will be closed and disposed.
      *
-     * @param previousFrame The active frame before loading a new unit; can be the
-     *                      StartupGUI or any
-     *                      MegaMekLabMainUI.
+     * @param previousFrame The active frame before loading a new unit; can be the StartupGUI or any MegaMekLabMainUI.
      */
     public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame.getFrame());
@@ -537,7 +562,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         MegaMekLabUnitSelectorDialog viewer;
         if (previousFrame instanceof MegaMekLabTabbedUI tabbedUI) {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog,
-                    dialog -> addUnits(dialog, tabbedUI));
+                  dialog -> addUnits(dialog, tabbedUI));
         } else {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog, true);
         }

@@ -32,6 +32,19 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+
 import megamek.common.AmmoType;
 import megamek.common.Entity;
 import megamek.common.Mounted;
@@ -39,16 +52,9 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Vector;
-
 /**
- * This is a crit list used on the structure tab of single location Entities (Handheld Weapon and Gun Emplacement).
- * It is wider than the  usual crit lists and not drag-enabled.
+ * This is a crit list used on the structure tab of single location Entities (Handheld Weapon and Gun Emplacement). It
+ * is wider than the  usual crit lists and not drag-enabled.
  */
 public class SingleLocationEquipmentList extends JList<String> implements MouseListener {
 
@@ -84,7 +90,7 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) { }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -103,13 +109,13 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) { }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) { }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) { }
+    public void mouseExited(MouseEvent e) {}
 
     private void deleteItem() {
         UnitUtil.removeMounted(entity, entity.getEquipment().get(getSelectedIndex()));
@@ -123,7 +129,8 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
 
     private class CritListCellRenderer extends DefaultListCellRenderer {
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+              boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
             if (value.equals(WIDER_CRITCELL_WIDTH_STRING)) {

@@ -91,11 +91,11 @@ import javax.swing.table.TableColumnModel;
 
 import megamek.client.Client;
 import megamek.client.ui.Messages;
-import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
-import megamek.client.ui.dialogs.customMek.CustomMekDialog;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitEditorDialog;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
+import megamek.client.ui.dialogs.customMek.CustomMekDialog;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyErrors;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyUtility;
 import megamek.client.ui.util.UIUtil;
@@ -171,8 +171,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             @Override
             public void windowClosing(WindowEvent e) {
                 final boolean willTerminate = !MegaMekLabTabbedUI.isOpen() &&
-                                                    (!StartupGUI.hasInstance() ||
-                                                           !StartupGUI.getInstance().isShowing());
+                      (!StartupGUI.hasInstance() ||
+                            !StartupGUI.getInstance().isShowing());
                 if (willTerminate) {
                     if (CConfig.getBooleanParam(CConfig.MISC_APPLICATION_EXIT_PROMPT) && noTabsOpenExitPrompt()) {
                         System.exit(0);
@@ -557,12 +557,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JMenuItem removeAllItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.removeAll.text"));
         removeAllItem.addActionListener(e -> {
             if (CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS) ||
-                      (JOptionPane.YES_OPTION ==
-                             JOptionPane.showConfirmDialog(null,
-                                   dialogResources.getString("ForceBuildDialog.removeAllDialog.body.text"),
-                                   dialogResources.getString("ForceBuildDialog.removeAllDialog.title.text"),
-                                   JOptionPane.YES_NO_OPTION,
-                                   JOptionPane.WARNING_MESSAGE))) {
+                  (JOptionPane.YES_OPTION ==
+                        JOptionPane.showConfirmDialog(null,
+                              dialogResources.getString("ForceBuildDialog.removeAllDialog.body.text"),
+                              dialogResources.getString("ForceBuildDialog.removeAllDialog.title.text"),
+                              JOptionPane.YES_NO_OPTION,
+                              JOptionPane.WARNING_MESSAGE))) {
                 removeAllEntities();
             }
         });
@@ -737,14 +737,14 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         // Base border: Original L&F border (if any) + padding for highlight space
         final Border baseBorder = (originalOuterBorder != null) ?
-                                        BorderFactory.createCompoundBorder(originalOuterBorder, paddingInnerBorder) :
-                                        paddingInnerBorder; // Use only padding if no original border
+              BorderFactory.createCompoundBorder(originalOuterBorder, paddingInnerBorder) :
+              paddingInnerBorder; // Use only padding if no original border
 
         // Highlighted border: Original L&F border (if any) + actual highlight
         final Border activeHighlightBorder = (originalOuterBorder != null) ?
-                                                   BorderFactory.createCompoundBorder(originalOuterBorder,
-                                                         highlightInnerBorder) :
-                                                   highlightInnerBorder; // Use only highlight if no original border
+              BorderFactory.createCompoundBorder(originalOuterBorder,
+                    highlightInnerBorder) :
+              highlightInnerBorder; // Use only highlight if no original border
 
         scrollPane.setBorder(baseBorder); // Set initial border which includes padding
 
@@ -1048,12 +1048,12 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             for (Entity other : client.getEntitiesVector()) {
                 // ignore enemies and self; only link the same type of C3
                 if (entity.isEnemyOf(other) ||
-                          entity.equals(other) ||
-                          (entity.hasC3i() != other.hasC3i()) ||
-                          (entity.hasNavalC3() != other.hasNavalC3()) ||
-                          (entity.hasNovaCEWS() != other.hasNovaCEWS()) ||
-                          !other.hasAnyC3System() ||
-                          other.hasC3S()) {
+                      entity.equals(other) ||
+                      (entity.hasC3i() != other.hasC3i()) ||
+                      (entity.hasNavalC3() != other.hasNavalC3()) ||
+                      (entity.hasNovaCEWS() != other.hasNovaCEWS()) ||
+                      !other.hasAnyC3System() ||
+                      other.hasC3S()) {
                     continue;
                 }
                 // maximum depth of a c3 network is 2 levels.
@@ -1125,11 +1125,11 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                   CG_FILEPATHMUL);
             fileChooser.setFileFilter(filter);
             fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
-                                                       mulFileName :
-                                                       forceList.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+                  mulFileName :
+                  forceList.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
 
             if (!(fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) ||
-                      fileChooser.getSelectedFile() == null) {
+                  fileChooser.getSelectedFile() == null) {
                 return;
             }
             File file = fileChooser.getSelectedFile();
@@ -1330,7 +1330,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             if (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 try {
                     @SuppressWarnings("unchecked") List<File> files = (List<File>) support.getTransferable()
-                                                                                         .getTransferData(DataFlavor.javaFileListFlavor);
+                          .getTransferData(DataFlavor.javaFileListFlavor);
                     boolean processed = false;
                     for (File file : files) {
                         if (file.isFile() && file.getName().toLowerCase().endsWith(".mul")) {

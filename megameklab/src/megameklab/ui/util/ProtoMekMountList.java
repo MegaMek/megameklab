@@ -1,23 +1,36 @@
 /*
- * MegaMekLab - Copyright (C) 2018 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.util;
-
-import megamek.common.annotations.Nullable;
-import megamek.common.equipment.WeaponMounted;
-import megameklab.ui.EntitySource;
-import megameklab.util.ProtoMekUtil;
-import megameklab.util.UnitUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -27,7 +40,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -43,7 +55,12 @@ import megamek.common.LocationFullException;
 import megamek.common.Mounted;
 import megamek.common.ProtoMek;
 import megamek.common.WeaponType;
+import megamek.common.annotations.Nullable;
+import megamek.common.equipment.WeaponMounted;
 import megamek.logging.MMLogger;
+import megameklab.ui.EntitySource;
+import megameklab.util.ProtoMekUtil;
+import megameklab.util.UnitUtil;
 
 /**
  * The location crit block for ProtoMeks
@@ -174,8 +191,8 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
 
         private boolean isChangeable(@Nullable Mounted<?> mounted) {
             return (mounted != null)
-                    && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
-                    && !UnitUtil.isArmor(mounted.getType());
+                  && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
+                  && !UnitUtil.isArmor(mounted.getType());
         }
 
         private void showPopup(MouseEvent e, Mounted<?> mounted) {
@@ -224,7 +241,8 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
     private static class MountCellRenderer extends DefaultListCellRenderer {
 
         @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean hasFocus) {
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+              boolean hasFocus) {
             final ProtoMekMountList lstMount = (ProtoMekMountList) list;
             final Entity entity = lstMount.eSource.getEntity();
             if ((value instanceof Mounted<?> mounted) && (mounted.getType() == widthWeaponType)) {

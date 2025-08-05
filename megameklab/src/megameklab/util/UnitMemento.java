@@ -17,12 +17,12 @@
  * if not, see <https://www.gnu.org/licenses/>.
  *
  * NOTICE: The MegaMek organization is a non-profit group of volunteers
- * creating free software for the BattleTech community. 
+ * creating free software for the BattleTech community.
  *
- * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks 
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
  * of The Topps Company, Inc. All Rights Reserved.
- * 
- * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
  * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
@@ -48,7 +48,7 @@ import megameklab.ui.MegaMekLabMainUI;
 
 public class UnitMemento {
     private static final MMLogger logger = MMLogger.create(UnitMemento.class);
-    
+
     private final String entityState;
     private final String unallocatedEquipment;
     private final double armorTonnage;
@@ -70,9 +70,9 @@ public class UnitMemento {
                         EquipmentType type = mounted.getType();
                         if (type.isVariableSize()) {
                             pw.printf("%s%s%f\n",
-                                    type.getInternalName(),
-                                    MtfFile.SIZE,
-                                    mounted.getSize());
+                                  type.getInternalName(),
+                                  MtfFile.SIZE,
+                                  mounted.getSize());
                         } else {
                             pw.println(type.getInternalName());
                         }
@@ -85,7 +85,7 @@ public class UnitMemento {
         this.unallocatedEquipment = unallocatedEquipment;
     }
 
-    
+
     public Entity createUnit() {
         try {
             final Entity entity = new MekFileParser(getEntityState()).getEntity();

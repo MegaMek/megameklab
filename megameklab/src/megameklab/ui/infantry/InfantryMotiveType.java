@@ -36,6 +36,7 @@ import megamek.common.EntityMovementMode;
 
 /**
  * This enum is specifically for use in MML CI construction.
+ *
  * @see CIPlatoonTypeView
  */
 enum InfantryMotiveType {

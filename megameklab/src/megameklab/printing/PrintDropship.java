@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -38,17 +57,15 @@ import org.w3c.dom.svg.SVGRectElement;
 public class PrintDropship extends PrintAero {
 
     /**
-     * The maximum number of inventory lines to print as a single page. Ideally this
-     * would be determined by the space allocated by the svg template, but we need
-     * to determine how many pages we are printing before the template is loaded so
-     * we predetermine the value.
+     * The maximum number of inventory lines to print as a single page. Ideally this would be determined by the space
+     * allocated by the svg template, but we need to determine how many pages we are printing before the template is
+     * loaded so we predetermine the value.
      */
     public static final int MAX_SINGLE_PAGE_LINES = 42;
 
     /**
-     * The maximum number of lines to put on the first page if there has to be a second. This
-     * is lower than the maximum to avoid having to scale down the text too much on the first page
-     * while having empty space on the second.
+     * The maximum number of lines to put on the first page if there has to be a second. This is lower than the maximum
+     * to avoid having to scale down the text too much on the first page while having empty space on the second.
      */
     public static final int PREFERRED_SINGLE_PAGE_LINES = 36;
 
@@ -62,7 +79,8 @@ public class PrintDropship extends PrintAero {
     private static final int BLOCK_FOOTER = 5;
     private static final int NUM_BLOCKS = 6;
     // The order in which to move blocks to the second page
-    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAVITY_DECK, BLOCK_BAYS, BLOCK_FOOTER, BLOCK_AR10_AMMO };
+    private static final int[] SWITCH_PAGE_ORDER = { BLOCK_STANDARD, BLOCK_GRAVITY_DECK, BLOCK_BAYS, BLOCK_FOOTER,
+                                                     BLOCK_AR10_AMMO };
 
     /**
      * The ship being printed
@@ -157,7 +175,7 @@ public class PrintDropship extends PrintAero {
         Element element = getSVGDocument().getElementById(LIFE_BOATS);
         if (null != element) {
             element.setTextContent(String.format(element.getTextContent(),
-                    ship.getLifeBoats(), ship.getEscapePods()));
+                  ship.getLifeBoats(), ship.getEscapePods()));
         }
         setTextField(HS_COUNT, ship.getHeatSinks());
         if (ship.getHeatType() == Aero.HEAT_DOUBLE) {
@@ -219,7 +237,7 @@ public class PrintDropship extends PrintAero {
             linesPerBlock[BLOCK_STANDARD] += 3;
         }
         if (ship.getTotalWeaponList().stream()
-                .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.AR10)) {
+              .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
         // Add lines equal to half the gravity decks (rounded up) and one each for section
@@ -254,7 +272,7 @@ public class PrintDropship extends PrintAero {
             // are moved to page two, move bays as well to prevent a second page with only
             // one or two lines
             if (!blockOnReverse[BLOCK_STANDARD] && !blockOnReverse[BLOCK_BAYS]
-                    && blockOnReverse[BLOCK_GRAVITY_DECK]) {
+                  && blockOnReverse[BLOCK_GRAVITY_DECK]) {
                 blockOnReverse[BLOCK_BAYS] = true;
             }
         }
@@ -272,7 +290,7 @@ public class PrintDropship extends PrintAero {
                 lines += linesPerBlock[block];
             }
         }
-        if (linesPerBlock[BLOCK_STANDARD] > 0) { 
+        if (linesPerBlock[BLOCK_STANDARD] > 0) {
             if (reverse == blockOnReverse[BLOCK_STANDARD]) {
                 lines += inventory.extraStandardBayLines(fontSize);
             } else if (!reverse) {
@@ -289,12 +307,11 @@ public class PrintDropship extends PrintAero {
     }
 
     /**
-     * Prints up to four equipment sections: capital weapons, standard scale, gravity
-     * decks, and bays. If there is too much to fit on a single page, the standard
-     * scale weapons are moved to the second page (which is considered the reverse).
+     * Prints up to four equipment sections: capital weapons, standard scale, gravity decks, and bays. If there is too
+     * much to fit on a single page, the standard scale weapons are moved to the second page (which is considered the
+     * reverse).
      *
-     * @param svgRect The rectangle element that provides the dimensions of the space to
-     *                print
+     * @param svgRect The rectangle element that provides the dimensions of the space to print
      * @param reverse Whether this is printing on the reverse side.
      */
     private void writeEquipment(SVGRectElement svgRect, boolean reverse) {
@@ -307,7 +324,7 @@ public class PrintDropship extends PrintAero {
             currY = inventory.writeCapitalBays(fontSize, lineHeight, currY) + lineHeight;
         }
         if ((linesPerBlock[BLOCK_AR10_AMMO] > 0)
-                && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
+              && (blockOnReverse[BLOCK_AR10_AMMO] == reverse)) {
             currY = inventory.printAR10Block(fontSize, lineHeight, currY) + lineHeight;
         }
         if (linesPerBlock[BLOCK_STANDARD] > 0) {
@@ -357,11 +374,11 @@ public class PrintDropship extends PrintAero {
 
     @Override
     protected void applyCoreComponentsCriticalDamage() {
-        if (!options.showDamage()) return;
+        if (!options.showDamage()) {return;}
         super.applyCoreComponentsCriticalDamage();
         if (ship instanceof Dropship dropship) {
-            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isDockCollarDamaged()?1:0);
-            fillCoreComponentCriticalDamage(KF_BOOM_HIT, dropship.isKFBoomDamaged()?1:0);
+            fillCoreComponentCriticalDamage(DOCKING_COLLAR_HIT, dropship.isDockCollarDamaged() ? 1 : 0);
+            fillCoreComponentCriticalDamage(KF_BOOM_HIT, dropship.isKFBoomDamaged() ? 1 : 0);
         }
     }
 

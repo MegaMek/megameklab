@@ -1,34 +1,41 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
-import megamek.client.ui.dialogs.UnitLoadingDialog;
-import megamek.common.*;
-import megamek.common.options.GameOptions;
-import megamek.logging.MMLogger;
-import megameklab.printing.*;
-import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
-import megameklab.ui.dialog.PrintQueueDialog;
-import org.apache.commons.io.FilenameUtils;
+import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
+import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.DialogTypeSelection;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -38,9 +45,21 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.stream.Collectors;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.standard.DialogTypeSelection;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
-import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.common.*;
+import megamek.common.options.GameOptions;
+import megamek.logging.MMLogger;
+import megameklab.printing.*;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.dialog.PrintQueueDialog;
+import org.apache.commons.io.FilenameUtils;
 
 public class UnitPrintManager {
     private static final MMLogger logger = MMLogger.create(UnitPrintManager.class);
@@ -130,12 +149,12 @@ public class UnitPrintManager {
     }
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
-    RecordSheetOptions options) {
+          RecordSheetOptions options) {
         return createSheets(entities, singlePrint, options, false);
     }
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
-            RecordSheetOptions options, boolean noWarningsOnUnprintable) {
+          RecordSheetOptions options, boolean noWarningsOnUnprintable) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
@@ -208,7 +227,9 @@ public class UnitPrintManager {
                     }
                 } else if (unit instanceof HandheldWeapon) {
                     if (!singlePrint) {
-                        final PrintHandheldWeapon phw = new PrintHandheldWeapon((HandheldWeapon) unit, pageCount, options);
+                        final PrintHandheldWeapon phw = new PrintHandheldWeapon((HandheldWeapon) unit,
+                              pageCount,
+                              options);
                         final int reservedSpace = phw.isLargeLayout() ? 1 : 0;
                         if (reservedSpace > 0 && PrintSmallUnitSheet.fillsSheet(hhwList, options, reservedSpace)) {
                             PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
@@ -216,7 +237,7 @@ public class UnitPrintManager {
                             sheets.add(prs);
                             hhwList = new ArrayList<>();
                         }
-                    } 
+                    }
                     hhwList.add((HandheldWeapon) unit);
                     if (singlePrint || PrintSmallUnitSheet.fillsSheet(hhwList, options)) {
                         PrintRecordSheet prs = new PrintSmallUnitSheet(hhwList, pageCount, options);
@@ -266,8 +287,8 @@ public class UnitPrintManager {
         if (!noWarningsOnUnprintable) {
             if (!unprintable.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Exporting is not currently supported for the following units:\n"
-                        + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
-                                .collect(Collectors.joining("\n")));
+                      + unprintable.stream().map(en -> en.generalName() + ' ' + en.specificName())
+                      .collect(Collectors.joining("\n")));
             }
         }
 
@@ -296,7 +317,8 @@ public class UnitPrintManager {
         exportUnits(units, exportFile, singlePrint, new RecordSheetOptions());
     }
 
-    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint, RecordSheetOptions options) {
+    public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint,
+          RecordSheetOptions options) {
         List<PrintRecordSheet> sheets = createSheets(units, singlePrint, options);
         PageFormat pageFormat = new PageFormat();
         pageFormat.setPaper(options.getPaperSize().createPaper());
@@ -322,7 +344,7 @@ public class UnitPrintManager {
      * @param options     The options to use for this print job
      */
     public static boolean printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
-            RecordSheetOptions options) {
+          RecordSheetOptions options) {
         HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(options.getPaperSize().sizeName);
         aset.add(options.getPaperSize().printableArea);

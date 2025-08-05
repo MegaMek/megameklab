@@ -32,13 +32,15 @@
  */
 package megameklab.ui.util;
 
-import java.util.*;
-
-import megamek.common.universe.Factions2;
-
-import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.DefaultComboBoxModel;
 
 import megamek.common.ITechnology.Faction;
+import megamek.common.universe.Factions2;
 
 /**
  * A ComboBox that provides a list of factions appropriate to a unit's intro year and with the era-appropriate name. The

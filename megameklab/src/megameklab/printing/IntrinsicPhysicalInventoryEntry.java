@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2025 The MegaMek Team
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 
 package megameklab.printing;
@@ -25,7 +44,7 @@ import megamek.common.MiscType;
 import megamek.common.MiscTypeFlag;
 import megamek.common.ProtoMek;
 
-public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
+public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
     private final static DecimalFormat doubleFormat = new DecimalFormat("#.##");
 
     private final String name;
@@ -43,12 +62,12 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     }
 
     private static IntrinsicPhysicalInventoryEntry e(String name, String location, String damage, String mod) {
-        return new IntrinsicPhysicalInventoryEntry(name , location, damage, mod, false);
+        return new IntrinsicPhysicalInventoryEntry(name, location, damage, mod, false);
     }
 
     private static IntrinsicPhysicalInventoryEntry e(String name, String location, String damage, String mod,
           boolean optional) {
-        return new IntrinsicPhysicalInventoryEntry(name , location, damage, mod, optional);
+        return new IntrinsicPhysicalInventoryEntry(name, location, damage, mod, optional);
     }
 
     private static String formatDamage(double d) {
@@ -58,16 +77,17 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     private static String formatDamage(double d, boolean tsm) {
         if (tsm) {
             var dmg = (int) Math.ceil(d);
-            return "%d [%d]".formatted(dmg, dmg*2);
+            return "%d [%d]".formatted(dmg, dmg * 2);
         } else {
             return formatDamage(d);
         }
     }
 
-    public static ArrayList<InventoryEntry> getEntriesFor(Entity entity){
+    public static ArrayList<InventoryEntry> getEntriesFor(Entity entity) {
         if (entity instanceof Mek mek) {
             return getEntriesForMek(mek);
-        } if (entity instanceof ProtoMek protoMek) {
+        }
+        if (entity instanceof ProtoMek protoMek) {
             int dmg;
             var weight = protoMek.getWeight();
             if (weight <= 5) {
@@ -89,7 +109,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
                 dmg += (int) Math.ceil(weight / 5);
             }
 
-            return new ArrayList<>( List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
+            return new ArrayList<>(List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
         } else if (entity.canCharge()) {
             return new ArrayList<>(List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex",
                   "*", true)));
@@ -154,7 +174,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
 
         // Kicks
         {
-            var baseDmg =  Math.ceil(mek.getWeight() / 5);
+            var baseDmg = Math.ceil(mek.getWeight() / 5);
             if (mek.hasMisc(MiscTypeFlag.F_TALON)) {
                 baseDmg = Math.ceil(baseDmg * 1.5);
                 var dmg = formatDamage(baseDmg, hasTsm);
@@ -218,7 +238,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
         if (mek instanceof LandAirMek) {
             var dmg = "%s/hex".formatted(doubleFormat.format(mek.getWeight() / 5));
             // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
-            entries.add(e("AirMech Ram",  DASH, dmg, "Vs", true));
+            entries.add(e("AirMech Ram", DASH, dmg, "Vs", true));
         }
 
         // Push
@@ -234,7 +254,6 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry{
     }
 
     /**
-     *
      * @return true if this physical should only be shown when the "Extra physicals" option is enabled.
      */
     public boolean isOptional() {

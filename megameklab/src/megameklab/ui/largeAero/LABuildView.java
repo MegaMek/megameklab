@@ -1,15 +1,34 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.largeAero;
 
@@ -23,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -61,6 +79,7 @@ import megameklab.util.StringUtils;
  */
 public class LABuildView extends IView implements MouseListener {
     private final List<BayWeaponCriticalTree> arcViews = new CopyOnWriteArrayList<>();
+
     public void addArcView(BayWeaponCriticalTree l) {
         arcViews.add(l);
     }
@@ -86,7 +105,10 @@ public class LABuildView extends IView implements MouseListener {
             @Override
             protected int ammoTransferAmount(AmmoMounted ammo) {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LABuildView.this);
-                int amount = AmountDialog.showDialog(frame, ammo.getType().getName(), ammo.getUsableShotsLeft(), "AmountDialog.remove.text");
+                int amount = AmountDialog.showDialog(frame,
+                      ammo.getType().getName(),
+                      ammo.getUsableShotsLeft(),
+                      "AmountDialog.remove.text");
                 return amount;
             }
         };
@@ -112,8 +134,8 @@ public class LABuildView extends IView implements MouseListener {
         setLayout(new GridLayout(1, 1));
         this.add(equipmentScroll, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Unallocated Equipment",
-                TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
+              BorderFactory.createEmptyBorder(), "Unallocated Equipment",
+              TitledBorder.TOP, TitledBorder.DEFAULT_POSITION));
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -145,7 +167,7 @@ public class LABuildView extends IView implements MouseListener {
         Vector<Mounted<?>> weaponsNAmmoList = new Vector<>(10, 1);
         for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
             if ((masterEquipmentList.get(pos).getType() instanceof Weapon) ||
-                    (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
+                  (masterEquipmentList.get(pos).getType() instanceof AmmoType)) {
                 weaponsNAmmoList.add(masterEquipmentList.get(pos));
                 masterEquipmentList.remove(pos);
                 pos--;
@@ -239,7 +261,7 @@ public class LABuildView extends IView implements MouseListener {
             } else {
                 final int selectedRow = equipmentTable.rowAtPoint(evt.getPoint());
                 Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(
-                        selectedRow, CriticalTableModel.EQUIPMENT);
+                      selectedRow, CriticalTableModel.EQUIPMENT);
                 for (BayWeaponCriticalTree l : arcViews) {
                     // Aerodyne small craft and DropShips skip the aft side arcs
                     if (!l.validForUnit(getAero()) || !l.canAdd(eq)) {
@@ -253,7 +275,7 @@ public class LABuildView extends IView implements MouseListener {
                                 final int shotCount = ((AmmoType) eq.getType()).getShots();
                                 JMenu locMenu = new JMenu(bay.getName());
                                 for (int shots = shotCount; shots <= eq.getUsableShotsLeft(); shots += shotCount) {
-                                    item = new JMenuItem("Add " + shots + ((shots > 1)?" shots" : " shot"));
+                                    item = new JMenuItem("Add " + shots + ((shots > 1) ? " shots" : " shot"));
                                     final int addShots = shots;
                                     item.addActionListener(ev -> l.addAmmoToBay(bay, (AmmoMounted) eq, addShots));
                                     locMenu.add(item);

@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.generalUnit;
 
@@ -25,7 +39,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -40,10 +53,10 @@ import megamek.common.EntityWeightClass;
 import megamek.common.EquipmentType;
 import megamek.common.ITechManager;
 import megamek.common.ITechnology;
+import megamek.common.ITechnology.TechRating;
 import megamek.common.Mek;
 import megamek.common.MiscType;
 import megamek.common.TechConstants;
-import megamek.common.ITechnology.TechRating;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -58,14 +71,16 @@ import megameklab.util.UnitUtil;
  */
 public class MVFArmorView extends BuildView implements ActionListener, ChangeListener {
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
 
-    private final static String CMD_MAXIMIZE  = "MAXIMIZE";
+    private final static String CMD_MAXIMIZE = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
 
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
@@ -116,7 +131,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         gbc.gridy++;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
-                "ArmorView.cbArmorType.tooltip"), gbc);
+              "ArmorView.cbArmorType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
         cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
@@ -131,7 +146,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             gbc.gridy++;
             gbc.gridwidth = 1;
             JLabel label = createLabel(resourceMap, "lblSVTechRating", "ArmorView.cbSVTechRating.text",
-                    "ArmorView.cbSVTechRating.tooltip");
+                  "ArmorView.cbSVTechRating.tooltip");
             add(label, gbc);
             gbc.gridx = 1;
             gbc.gridwidth = 2;
@@ -179,6 +194,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     /**
      * Sets the values of all fields from the current Entity.
+     *
      * @param en The Entity currently being edited
      */
     public void setFromEntity(Entity en) {
@@ -186,17 +202,16 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     /**
-     * Sets the values of all fields from the current Entity, with the option of ignoring
-     * whether the {@code Entity} has patchwork armor. This is because the Entity does not
-     * report patchwork armor unless it actually has multiple armor types, and we don't want
-     * to clear the patchwork checkbox unless we're loading a new unit.
+     * Sets the values of all fields from the current Entity, with the option of ignoring whether the {@code Entity} has
+     * patchwork armor. This is because the Entity does not report patchwork armor unless it actually has multiple armor
+     * types, and we don't want to clear the patchwork checkbox unless we're loading a new unit.
      *
-     * @param en The Entity being edited
+     * @param en                    The Entity being edited
      * @param ignoreEntityPatchwork Whether to ignore whether the Entity has patchwork armor.
      */
     public void setFromEntity(Entity en, boolean ignoreEntityPatchwork) {
         etype = en.getEntityType();
-        industrial = (en instanceof Mek) && ((Mek)en).isIndustrial();
+        industrial = (en instanceof Mek) && ((Mek) en).isIndustrial();
         primitive = en.isPrimitive();
         movementMode = en.getMovementMode();
         svLimitedArmor = en.isSupportVehicle() && !en.hasArmoredChassis();
@@ -207,10 +222,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         chkPatchwork.removeActionListener(this);
         cbArmorType.setSelectedItem(ArmorType.forEntity(en));
         if ((!ignoreEntityPatchwork && en.hasPatchworkArmor())
-                || (ignoreEntityPatchwork && isPatchwork())) {
+              || (ignoreEntityPatchwork && isPatchwork())) {
             cbArmorType.setEnabled(false);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                    en.getLabArmorTonnage()));
+                  en.getLabArmorTonnage()));
             factorModel.setValue(en.getTotalOArmor());
             spnTonnage.setEnabled(false);
             chkPatchwork.setVisible(true);
@@ -220,7 +235,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         } else {
             cbArmorType.setEnabled(true);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                    en.getLabArmorTonnage()));
+                  en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
             factorModel.setMaximum(UnitUtil.getMaximumArmorPoints(en));
             factorModel.setValue(Math.min(en.getLabTotalArmorPoints(), (Integer) factorModel.getMaximum()));
@@ -259,19 +274,19 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
         List<ArmorType> allArmors = TestEntity.legalArmorsFor(etype, industrial, primitive,
-                movementMode, techManager);
+              movementMode, techManager);
         for (ArmorType armor : allArmors) {
             // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
             if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
-                    && ((armor.getSVWeightPerPoint(getTechRating()) == 0.0)
-                    || (svLimitedArmor && armor.getSVWeightPerPoint(getTechRating()) >= 0.050))) {
+                  && ((armor.getSVWeightPerPoint(getTechRating()) == 0.0)
+                  || (svLimitedArmor && armor.getSVWeightPerPoint(getTechRating()) >= 0.050))) {
                 continue;
             }
             cbArmorType.addItem(armor);
         }
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
-                && techManager.isLegal(Entity.getPatchworkArmorAdvancement())
-                && !svLimitedArmor) {
+              && techManager.isLegal(Entity.getPatchworkArmorAdvancement())
+              && !svLimitedArmor) {
             chkPatchwork.setVisible(true);
         } else {
             chkPatchwork.setVisible(false);
@@ -296,7 +311,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
      * @return The selected armor equipment
      */
     public EquipmentType getArmor() {
-        return (EquipmentType)cbArmorType.getSelectedItem();
+        return (EquipmentType) cbArmorType.getSelectedItem();
     }
 
     /**
@@ -359,12 +374,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     @Override
     public void actionPerformed(ActionEvent e) {
         if ((e.getSource() == cbArmorType)
-                || ((e.getSource() == chkPatchwork) && !isPatchwork())) {
+              || ((e.getSource() == chkPatchwork) && !isPatchwork())) {
             listeners.forEach(l -> l.armorTypeChanged(getArmorType(), getArmorTechConstant()));
         } else if (e.getSource() == chkPatchwork) {
             listeners.forEach(l -> l.armorTypeChanged(EquipmentType.T_ARMOR_PATCHWORK,
-                    Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
-                            techManager.useClanTechBase())));
+                  Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
+                        techManager.useClanTechBase())));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
             listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {

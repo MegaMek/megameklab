@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -37,8 +56,7 @@ import org.w3c.dom.svg.SVGRectElement;
 import org.w3c.dom.svg.SVGTextElement;
 
 /**
- * @author drake
- * Lays out a record sheet block for a single handheld weapon unit
+ * @author drake Lays out a record sheet block for a single handheld weapon unit
  */
 public class PrintHandheldWeapon extends PrintEntity {
 
@@ -85,8 +103,7 @@ public class PrintHandheldWeapon extends PrintEntity {
      *
      * @param handheldWeapon The handheld weapon to print
      * @param startPage      The print job page number for this sheet
-     * @param options        Overrides the global options for which elements are
-     *                       printed
+     * @param options        Overrides the global options for which elements are printed
      */
     public PrintHandheldWeapon(HandheldWeapon handheldWeapon, int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -95,13 +112,13 @@ public class PrintHandheldWeapon extends PrintEntity {
 
     /**
      * Simplified drawing routine for the armor pips
-     * 
-     * @param svgRect The SVG rectangle element to draw the pips in
-     * @param pipsCount The number of pips to draw
+     *
+     * @param svgRect             The SVG rectangle element to draw the pips in
+     * @param pipsCount           The number of pips to draw
      * @param useAlternateColumns true if the pips will be drawn in alternate columns
      */
     private void drawArmorPips(SVGRectElement svgRect, int pipsCount,
-            boolean useAlternateColumns) {
+          boolean useAlternateColumns) {
         if (pipsCount < 1) {
             return;
         }
@@ -163,7 +180,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
     /**
      * Gets the number of armor pips for the handheld weapon
-     * 
+     *
      * @return The number of armor pips
      */
     private int getArmorPips() {
@@ -172,43 +189,43 @@ public class PrintHandheldWeapon extends PrintEntity {
 
     /**
      * Gets the number of weapon types in the handheld weapon
-     * 
+     *
      * @return The number of weapon types
      */
     private int getWeaponsCount() {
         return (int) getEntity().getEquipment().stream()
-                .filter(m -> m.getType() instanceof WeaponType)
-                .map(m -> m.getType().getShortName())
-                .distinct()
-                .count();
+              .filter(m -> m.getType() instanceof WeaponType)
+              .map(m -> m.getType().getShortName())
+              .distinct()
+              .count();
     }
 
     /**
      * Gets the list of ammo types and their counts for the handheld weapon
-     * 
+     *
      * @return A list of ammo types and their counts
      */
     private List<Map.Entry<String, Integer>> getAmmoList() {
         List<Map.Entry<String, Integer>> pipsList = new ArrayList<>();
         getEntity().getEquipment().stream()
-                .filter(m -> m.getType() instanceof AmmoType)
-                .forEach(m -> {
-                    String ammoName = m.getType().getShortName().replace("Ammo", "").replace("(Clan)", "");
-                    int shotsLeft = m.getBaseShotsLeft();
-                    boolean found = false;
-                    for (Map.Entry<String, Integer> entry : pipsList) {
-                        if (entry.getKey().equals(ammoName)) {
-                            entry.setValue(entry.getValue() + shotsLeft);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        pipsList.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
-                    }
-                });
+              .filter(m -> m.getType() instanceof AmmoType)
+              .forEach(m -> {
+                  String ammoName = m.getType().getShortName().replace("Ammo", "").replace("(Clan)", "");
+                  int shotsLeft = m.getBaseShotsLeft();
+                  boolean found = false;
+                  for (Map.Entry<String, Integer> entry : pipsList) {
+                      if (entry.getKey().equals(ammoName)) {
+                          entry.setValue(entry.getValue() + shotsLeft);
+                          found = true;
+                          break;
+                      }
+                  }
+                  if (!found) {
+                      pipsList.add(new AbstractMap.SimpleEntry<>(ammoName, shotsLeft));
+                  }
+              });
 
-        var oneShotWeapons = new HashMap<String,Integer>();
+        var oneShotWeapons = new HashMap<String, Integer>();
         for (Iterator<WeaponMounted> it = getEntity().getWeapons(); it.hasNext(); ) {
             WeaponType weapon = it.next().getType();
             var name = weapon.getName();
@@ -229,7 +246,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
     /**
      * Checks if the layout is large based on the number of pips and ammo types
-     * 
+     *
      * @return true if the layout is large, false otherwise
      */
     public boolean isLargeLayout() {
@@ -244,8 +261,8 @@ public class PrintHandheldWeapon extends PrintEntity {
             return true;
         }
         int ammoCount = ammoList.stream()
-                .mapToInt(Map.Entry::getValue)
-                .sum();
+              .mapToInt(Map.Entry::getValue)
+              .sum();
         if (ammoList.size() > 1 && ammoCount > LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT2) {
             return true;
         }
@@ -278,7 +295,7 @@ public class PrintHandheldWeapon extends PrintEntity {
     protected void writeTextFields() {
         super.writeTextFields();
         final String entityName = CConfig.getMekNameArrangement().printChassis(getEntity())
-                + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+              + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
         setTextField(TYPE, entityName + " (" + formatWeight(getEntity().getWeight()) + ")");
 
     }
@@ -291,15 +308,14 @@ public class PrintHandheldWeapon extends PrintEntity {
             setTextField(ARMOR_TYPE, armor.getShortName(), true);
         }
         setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(HandheldWeapon.LOC_GUN),
-                getEntity().getOArmor(HandheldWeapon.LOC_GUN));
+              getEntity().getOArmor(HandheldWeapon.LOC_GUN));
         drawArmorStructurePips();
         drawAmmo();
     }
 
     /**
-     * Draws the ammo pips for the handheld weapon.
-     * This method retrieves the ammo types and their counts, calculates the
-     * optimal pip radius and decides if they should be displayed or not
+     * Draws the ammo pips for the handheld weapon. This method retrieves the ammo types and their counts, calculates
+     * the optimal pip radius and decides if they should be displayed or not
      */
     private void drawAmmo() {
         final String idAmmo = AMMO_PIPS + getEntity().getLocationAbbr(HandheldWeapon.LOC_GUN);
@@ -314,8 +330,11 @@ public class PrintHandheldWeapon extends PrintEntity {
                     return;
                 }
                 // Check if we can fit the pips else we don't draw anything
-                final boolean canFit = checkRadiusFit(PIP_MIN_RADIUS, getRectBBox(svgElement), pipsList, pipsList.size() > 1,
-                        LABEL_DEFAULT_FONT_SIZE);
+                final boolean canFit = checkRadiusFit(PIP_MIN_RADIUS,
+                      getRectBBox(svgElement),
+                      pipsList,
+                      pipsList.size() > 1,
+                      LABEL_DEFAULT_FONT_SIZE);
                 if (canFit) {
                     drawPipsFromList(svgElement, pipsList, false);
                 }
@@ -324,20 +343,20 @@ public class PrintHandheldWeapon extends PrintEntity {
     }
 
     private void drawPipsFromList(SVGRectElement svgElement, List<Map.Entry<String, Integer>> pipsList,
-            boolean alternate) {
+          boolean alternate) {
         drawPipsFromList(svgElement, pipsList, alternate, 0);
     }
 
     /**
-     * Draws pips within the specified SVG rectangle element.
-     * Handles standard and alternating row layouts and optimizes pip size.
+     * Draws pips within the specified SVG rectangle element. Handles standard and alternating row layouts and optimizes
+     * pip size.
      *
      * @param svgElement The SVGRectElement defining the bounding box.
      * @param pipsList   List of pips with ammo type and count.
      * @param alternate  True to use alternating row layout, false for standard grid.
      */
     private void drawPipsFromList(SVGRectElement svgElement, List<Map.Entry<String, Integer>> pipsList,
-            boolean alternate, int minColumns) {
+          boolean alternate, int minColumns) {
         if (pipsList == null || pipsList.isEmpty()) {
             return;
         }
@@ -355,10 +374,10 @@ public class PrintHandheldWeapon extends PrintEntity {
             headerLabel.setTextContent("Ammo:");
 
             bbox = new Rectangle2D.Double(
-                bbox.getX(),
-                bbox.getY()+OFFSET_FIRST_LABEL,
-                bbox.getWidth(),
-                bbox.getHeight()-OFFSET_FIRST_LABEL
+                  bbox.getX(),
+                  bbox.getY() + OFFSET_FIRST_LABEL,
+                  bbox.getWidth(),
+                  bbox.getHeight() - OFFSET_FIRST_LABEL
             );
             Element existingLabel = getSVGDocument().getElementById("ammoEntryLabel");
             if (existingLabel instanceof SVGTextElement) {
@@ -366,8 +385,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                 double fontSize = LABEL_DEFAULT_FONT_SIZE;
                 try {
                     String fontSizeStr = labelTemplate.getAttributeNS(null, SVGConstants.SVG_FONT_SIZE_ATTRIBUTE);
-                    if (!StringUtility.isNullOrBlank(fontSizeStr))
-                        fontSize = Double.parseDouble(fontSizeStr);
+                    if (!StringUtility.isNullOrBlank(fontSizeStr)) {fontSize = Double.parseDouble(fontSizeStr);}
                 } catch (Exception e) {
                     // Could not read font size from 'ammoEntryLabel'!!
                 }
@@ -401,7 +419,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
         // Determine FINAL Column Count (colsToUse)
         int maxColsPossible = (int) Math
-                .floor((bbox.getWidth() + MIN_PIP_SPACING - TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
+              .floor((bbox.getWidth() + MIN_PIP_SPACING - TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
         maxColsPossible = Math.max(1, maxColsPossible);
         int minColsRequired;
         double denominatorX = layoutDiameter + maxGapX;
@@ -532,12 +550,13 @@ public class PrintHandheldWeapon extends PrintEntity {
             firstBlockDrawnVertCalc = true;
         }
         // Fill remaining rowsPerAmmo
-        while (rowsPerAmmo.size() < pipsList.size())
-            rowsPerAmmo.add(0);
+        while (rowsPerAmmo.size() < pipsList.size()) {rowsPerAmmo.add(0);}
 
         // Calculate extra spacing to distribute vertically
         double remainingHeight = bbox.getHeight() - totalMinVerticalHeight;
-        double additionalSpacingY = (expandableGaps > 0 && remainingHeight > TOLERANCE) ? (remainingHeight / expandableGaps) : 0;
+        double additionalSpacingY = (expandableGaps > 0 && remainingHeight > TOLERANCE) ?
+              (remainingHeight / expandableGaps) :
+              0;
         // Final vertical spacing between pip centers (includes layoutDiameter + calculated gap)
         double spacingY = MIN_PIP_SPACING + additionalSpacingY;
         spacingY = Math.max(MIN_PIP_SPACING, spacingY);
@@ -593,7 +612,7 @@ public class PrintHandheldWeapon extends PrintEntity {
             for (int r = 0; r < rowsForThisAmmo; r++) { // r is 0-based row index within this ammo block
                 // Calculate the center Y coordinate for pips in this row
                 double pipCenterY = pipBlockStartY + optimalRadius + (pipStroke / 2) // Center of first row
-                        + r * (layoutDiameter + spacingY); // Offset for subsequent rows
+                      + r * (layoutDiameter + spacingY); // Offset for subsequent rows
 
                 double rowStartX;
                 double horizontalShift = 0; // for alternate mode
@@ -617,7 +636,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                 for (int c = 0; c < numPipsThisRow; c++) {
                     double pipCenterX = rowStartX + c * (layoutDiameter + spacingX);
                     Element pip = createPip(pipCenterX - optimalRadius, pipCenterY - optimalRadius, optimalRadius,
-                            pipStroke, PipType.CIRCLE, FILL_WHITE, "ammo", ammoName, false);
+                          pipStroke, PipType.CIRCLE, FILL_WHITE, "ammo", ammoName, false);
                     target.appendChild(pip);
                 }
                 pipsDrawnInBlock += numPipsThisRow;
@@ -630,18 +649,18 @@ public class PrintHandheldWeapon extends PrintEntity {
     }
 
     /**
-     * Finds the largest possible radius for pips that allows all ammo types (and
-     * labels) to fit within the bounding box, respecting size and spacing constraints.
-     * Uses a binary search approach.
+     * Finds the largest possible radius for pips that allows all ammo types (and labels) to fit within the bounding
+     * box, respecting size and spacing constraints. Uses a binary search approach.
      *
      * @param bbox        Bounding box for drawing.
      * @param pipsList    List of ammo types and counts.
      * @param needsLabels Whether labels are required.
      * @param labelHeight Estimated height of one label row including margins.
+     *
      * @return The optimal pip radius, or 0 if no fit is found.
      */
     private double findOptimalPipRadius(Rectangle2D bbox, List<Map.Entry<String, Integer>> pipsList,
-            boolean needsLabels, double labelHeight) {
+          boolean needsLabels, double labelHeight) {
 
         double low = PIP_MIN_RADIUS;
         // Start high search bound slightly larger than default radius, limited by box dimensions
@@ -658,8 +677,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         // Binary search for the best radius
         for (int i = 0; i < iterations; i++) {
             double mid = low + (high - low) / 2;
-            if (mid < PIP_MIN_RADIUS)
-                mid = PIP_MIN_RADIUS;
+            if (mid < PIP_MIN_RADIUS) {mid = PIP_MIN_RADIUS;}
 
             if (checkRadiusFit(mid, bbox, pipsList, needsLabels, labelHeight)) {
                 // This radius fits, it's a potential candidate. Try larger.
@@ -670,8 +688,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                 high = mid;
             }
             // Break early if the search range is very small
-            if (high - low < SEARCH_TOLERANCE)
-                break;
+            if (high - low < SEARCH_TOLERANCE) {break;}
         }
 
         // bestRadius now holds the largest value tested that fit.
@@ -683,18 +700,18 @@ public class PrintHandheldWeapon extends PrintEntity {
     }
 
     /**
-     * Checks if pips of a given radius can fit all ammo types (and labels)
-     * within the bounding box. Iterates through valid column counts to see if
-     * *any* configuration allows vertical fit using minimum spacing.
+     * Checks if pips of a given radius can fit all ammo types (and labels) within the bounding box. Iterates through
+     * valid column counts to see if *any* configuration allows vertical fit using minimum spacing.
      */
     private boolean checkRadiusFit(double radiusToTest, Rectangle2D bbox, List<Map.Entry<String, Integer>> pipsList,
-            boolean needsLabels, double labelHeight) {
+          boolean needsLabels, double labelHeight) {
 
         final double TOLERANCE = 1e-6; // Tolerance for floating point comparisons
-        if (radiusToTest < PIP_MIN_RADIUS - TOLERANCE)
+        if (radiusToTest < PIP_MIN_RADIUS - TOLERANCE) {
             return false; // Definitely too small
+        }
 
-            double pipDiameter = 2 * radiusToTest;
+        double pipDiameter = 2 * radiusToTest;
         double pipStroke = PIP_STROKE_WIDTH;
         double layoutDiameter = pipDiameter + pipStroke;
         double boxWidth = bbox.getWidth();
@@ -707,7 +724,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
         // Determine the range of possible column counts for this radius
         int maxColsPossible = (int) Math
-                .floor((boxWidth + MIN_PIP_SPACING + TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
+              .floor((boxWidth + MIN_PIP_SPACING + TOLERANCE) / (layoutDiameter + MIN_PIP_SPACING));
         maxColsPossible = Math.max(1, maxColsPossible); // Must be at least 1 column
 
         for (int colsToCheck = 1; colsToCheck <= maxColsPossible; colsToCheck++) {
@@ -766,13 +783,13 @@ public class PrintHandheldWeapon extends PrintEntity {
     }
 
     /**
-     * Creates an SVG text element for an ammo label.
-     * Attempts to clone style from a template if provided.
+     * Creates an SVG text element for an ammo label. Attempts to clone style from a template if provided.
      *
      * @param template Optional SVGTextElement to clone style from.
      * @param text     The text content for the label.
      * @param x        X coordinate for the label (usually text-anchor start).
      * @param y        Y coordinate for the label (baseline).
+     *
      * @return SVG element representing the text label.
      */
     private Element createLabel(SVGTextElement template, String text, double x, double y) {
@@ -797,12 +814,12 @@ public class PrintHandheldWeapon extends PrintEntity {
             } catch (Exception e) {
                 // Cloning failed, create a new label instead
                 label = (SVGTextElement) getSVGDocument().createElementNS(SVGConstants.SVG_NAMESPACE_URI,
-                        SVGConstants.SVG_TEXT_TAG);
+                      SVGConstants.SVG_TEXT_TAG);
             }
         } else {
             // Create a new text element with default attributes if no template
             label = (SVGTextElement) getSVGDocument().createElementNS(SVGConstants.SVG_NAMESPACE_URI,
-                    SVGConstants.SVG_TEXT_TAG);
+                  SVGConstants.SVG_TEXT_TAG);
         }
 
         // Apply default styles if missing

@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.largeAero;
 
@@ -17,7 +36,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -89,19 +107,19 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         panArmorAllocation = new ArmorAllocationView(panInfo, Entity.ETYPE_AERO);
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
-                new UnitTypeSummaryItem(),
-                new StructureSummaryItem(),
-                new EngineSummaryItem(),
-                new FuelSummaryItem(),
-                new HeatSinkSummaryItem(),
-                new ControlsSummaryItem(),
-                new ArmorSummaryItem(),
-                new WeaponsSummaryItem(),
-                new AmmoSummaryItem(),
-                new MiscEquipmentSummaryItem(),
-                new CrewSummaryItem(),
-                new TransportSummaryItem(),
-                new SpecialsSummaryItem());
+              new UnitTypeSummaryItem(),
+              new StructureSummaryItem(),
+              new EngineSummaryItem(),
+              new FuelSummaryItem(),
+              new HeatSinkSummaryItem(),
+              new ControlsSummaryItem(),
+              new ArmorSummaryItem(),
+              new WeaponsSummaryItem(),
+              new AmmoSummaryItem(),
+              new MiscEquipmentSummaryItem(),
+              new CrewSummaryItem(),
+              new TransportSummaryItem(),
+              new SpecialsSummaryItem());
 
         GridBagConstraints gbc;
 
@@ -352,14 +370,14 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     @Override
     public void useRemainingTonnageArmor() {
         double currentTonnage = UnitUtil.getEntityVerifier(getSmallCraft())
-                .calculateWeight();
+              .calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
         double totalTonnage = getSmallCraft().getWeight();
         double remainingTonnage = TestEntity.floor(
-                totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
 
         double maxArmor = MathUtility.clamp(getSmallCraft().getArmorWeight() + remainingTonnage, 0,
-                UnitUtil.getMaximumArmorTonnage(getSmallCraft()));
+              UnitUtil.getMaximumArmorTonnage(getSmallCraft()));
         getSmallCraft().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getSmallCraft());
@@ -437,10 +455,10 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     @Override
     public void baseTypeChanged(int type) {
         if ((DSChassisView.TYPE_SMALL_CRAFT == type)
-                && getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+              && getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
             eSource.createNewUnit(Entity.ETYPE_SMALL_CRAFT, getSmallCraft());
         } else if ((DSChassisView.TYPE_DROPSHIP == type)
-                && !getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
+              && !getSmallCraft().hasETypeFlag(Entity.ETYPE_DROPSHIP)) {
             eSource.createNewUnit(Entity.ETYPE_DROPSHIP, getSmallCraft());
         }
         refresh();
@@ -516,14 +534,14 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
         int bonusPerFacing = (int) TestEntity.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
         int points = TestEntity.getArmorPoints(getSmallCraft())
-                - bonusPerFacing * 4;
-        int nose = (int)Math.floor(points * 0.3);
-        int wing = (int)Math.floor(points * 0.25);
-        int aft = (int)Math.floor(points * 0.2);
+              - bonusPerFacing * 4;
+        int nose = (int) Math.floor(points * 0.3);
+        int wing = (int) Math.floor(points * 0.25);
+        int aft = (int) Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
 
         // spread remainder among nose and wings
-        switch(remainder % 4) {
+        switch (remainder % 4) {
             case 1:
                 nose++;
                 break;

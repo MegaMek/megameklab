@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.util;
 
@@ -20,7 +37,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -70,7 +86,7 @@ public class CriticalTransferHandler extends TransferHandler {
             Transferable t = info.getTransferable();
             try {
                 Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
+                      .getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
                     PopupMessages.showInvalidLocationInfo(null, mount.getName(), getUnit().getLocationName(location));
@@ -93,7 +109,7 @@ public class CriticalTransferHandler extends TransferHandler {
             Transferable t = info.getTransferable();
             try {
                 Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
+                      .getTransferData(DataFlavor.stringFlavor)));
 
                 if (!UnitUtil.isValidLocation(getUnit(), mount.getType(), location)) {
                     PopupMessages.showInvalidLocationInfo(null, mount.getName(), getUnit().getLocationName(location));
@@ -111,11 +127,11 @@ public class CriticalTransferHandler extends TransferHandler {
 
             return true;
         } else if ((info.getComponent() instanceof JTable)
-                || (info.getComponent() instanceof JScrollPane)) {
+              || (info.getComponent() instanceof JScrollPane)) {
             try {
                 Transferable t = info.getTransferable();
                 Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
-                        .getTransferData(DataFlavor.stringFlavor)));
+                      .getTransferData(DataFlavor.stringFlavor)));
 
                 if (getUnit() instanceof BattleArmor) {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
@@ -144,8 +160,8 @@ public class CriticalTransferHandler extends TransferHandler {
         Mounted<?> mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer
-                    .parseInt((String) info.getTransferable().getTransferData(
-                            DataFlavor.stringFlavor)));
+                  .parseInt((String) info.getTransferable().getTransferData(
+                        DataFlavor.stringFlavor)));
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
             logger.error("", e);
         }
@@ -165,7 +181,7 @@ public class CriticalTransferHandler extends TransferHandler {
         if (c instanceof JTable) {
             JTable table = (JTable) c;
             Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
-                    CriticalTableModel.EQUIPMENT);
+                  CriticalTableModel.EQUIPMENT);
             if (critView != null) {
                 critView.markUnavailableLocations(mount);
             }
@@ -173,7 +189,7 @@ public class CriticalTransferHandler extends TransferHandler {
         } else if (c instanceof ProtoMekMountList) {
             Mounted mount = ((ProtoMekMountList) c).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                    && !(mount.getType() instanceof AmmoType)) {
+                  && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
             }
         }
