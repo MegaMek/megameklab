@@ -2,12 +2,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
-      - "**/*.mtf"
-      - "**/*.blk"
       - "**/*.pdf"
 
 jobs:
@@ -27,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: MegaMek/megamek
-          ref: master
+          ref: main
           path: megamek
 
       - name: Initialize CodeQL

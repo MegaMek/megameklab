@@ -2,7 +2,7 @@ name: MegaMekLab CI with Code Coverage
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   GRADLE_OPTS: "-Dscan.link.VCS=https://github.com/MegaMek/megameklab/commit/${{ github.sha }}"
