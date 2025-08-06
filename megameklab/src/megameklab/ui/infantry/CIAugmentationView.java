@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017, 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,7 +25,7 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
@@ -40,7 +40,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.HashMap;
-
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -61,20 +60,20 @@ import megameklab.ui.util.TabScrollPane;
  */
 public class CIAugmentationView extends IView implements ActionListener {
     private RefreshListener refresh;
-    
+
     private final HashMap<IOption, JCheckBox> options = new HashMap<>();
-    
+
     private boolean handleEvents;
-    
+
     public CIAugmentationView(EntitySource eSource) {
         super(eSource);
-        
+
         JPanel augPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(10, 10, 10, 10);
-        
+
         augPanel.add(new JLabel("Implant"), gbc);
         augPanel.add(new JLabel("Description"), gbc);
         gbc.weightx = 1;
@@ -83,7 +82,7 @@ public class CIAugmentationView extends IView implements ActionListener {
 
         gbc.insets = new Insets(0, 10, 0, 10);
         for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
-                e.hasMoreElements();) {
+              e.hasMoreElements(); ) {
             final IOption opt = e.nextElement();
             JCheckBox checkBox = new JCheckBox(opt.getDisplayableName());
             checkBox.setActionCommand(opt.getName());
@@ -104,7 +103,7 @@ public class CIAugmentationView extends IView implements ActionListener {
         add(new TabScrollPane(augPanel));
         handleEvents = true;
     }
-    
+
     public void refresh() {
         handleEvents = false;
         for (IOption opt : options.keySet()) {

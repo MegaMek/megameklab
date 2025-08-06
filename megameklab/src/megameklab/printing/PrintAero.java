@@ -1,35 +1,60 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
-import megamek.common.*;
-import megameklab.printing.reference.*;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
-
-import java.awt.*;
+import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
+
+import megamek.common.*;
+import megameklab.printing.reference.AeroHitLocation;
+import megameklab.printing.reference.AeroToHitMods;
+import megameklab.printing.reference.AirToGroundAttackTable;
+import megameklab.printing.reference.ChangingFacingCostTable;
+import megameklab.printing.reference.ControlRollTable;
+import megameklab.printing.reference.RandomMovementTable;
+import megameklab.printing.reference.ReferenceTable;
+import megameklab.printing.reference.StraightMovementTable;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Lays out record sheet for non-capital aerospace units
@@ -127,7 +152,7 @@ public class PrintAero extends PrintEntity {
         setTextField(HS_COUNT, formatHeatSinkCount());
         if (aero.getEngine() != null) {
             setTextField(ENGINE_TYPE, aero.getEngine().getShortEngineName()
-                .replaceAll("\\[.*]", "").trim());
+                  .replaceAll("\\[.*]", "").trim());
         } else {
             setTextField(ENGINE_TYPE, "Unknown");
         }
@@ -137,10 +162,10 @@ public class PrintAero extends PrintEntity {
     protected void drawArmorStructurePips() {
         super.drawArmorStructurePips();
         Element element = getElementById(SI_PIPS);
-        final int damage = (aero.getOSI()-aero.getSI());
+        final int damage = (aero.getOSI() - aero.getSI());
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.getOSI(),
-                    PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, damage, useAlternateArmorGrouping());
+                  PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, damage, useAlternateArmorGrouping());
         }
     }
 
@@ -149,7 +174,7 @@ public class PrintAero extends PrintEntity {
         final String FORMAT = "%d ( %d )";
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(loc),
-                    String.format(FORMAT, aero.getThresh(loc), getEntity().getOArmor(loc)));
+                  String.format(FORMAT, aero.getThresh(loc), getEntity().getOArmor(loc)));
         }
         setTextField(TEXT_SI, aero.getOSI());
     }
@@ -163,16 +188,18 @@ public class PrintAero extends PrintEntity {
     public String formatFeatures() {
         StringJoiner sj = new StringJoiner(", ");
         if ((aero.getCockpitType() != Aero.COCKPIT_STANDARD)
-                && (aero.getCockpitType() != Aero.COCKPIT_PRIMITIVE)) {
+              && (aero.getCockpitType() != Aero.COCKPIT_PRIMITIVE)) {
             sj.add(aero.getCockpitTypeString());
         }
         if (aero.isSupportVehicle()) {
-            List<String> chassisMods = aero.getMisc().stream().filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
-                    .map(m -> m.getType().getShortName())
-                    .collect(Collectors.toList());
+            List<String> chassisMods = aero.getMisc()
+                  .stream()
+                  .filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+                  .map(m -> m.getType().getShortName())
+                  .collect(Collectors.toList());
             if (!chassisMods.isEmpty()) {
                 sj.add(String.join(", ", chassisMods)
-                        + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
+                      + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
             }
         } else if ((aero instanceof ConvFighter) && aero.isVSTOL()) {
             sj.add("VSTOL Equipment");
@@ -196,7 +223,7 @@ public class PrintAero extends PrintEntity {
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {
             sj.add(e.getValue() + " " + ((e.getValue() == 1) ?
-                    e.getKey().replace("Seats", "Seat") : e.getKey()));
+                  e.getKey().replace("Seats", "Seat") : e.getKey()));
         }
         for (Map.Entry<String, Double> e : transport.entrySet()) {
             sj.add(e.getKey() + " (" + formatWeight(e.getValue()) + ")");
@@ -255,7 +282,7 @@ public class PrintAero extends PrintEntity {
             double xpos = bbox.getCenterX() - cols * boxWidth * 0.5 + 1.0;
             for (int c = 0; c < cols; c++) {
                 Element path = createRoundedRectangle(xpos, ypos, boxWidth - 2.0, boxHeight - 2.0,
-                        4.3, 2.375, 0.966, FILL_BLACK);
+                      4.3, 2.375, 0.966, FILL_BLACK);
                 canvas.appendChild(path);
                 xpos += boxWidth;
             }
@@ -264,7 +291,7 @@ public class PrintAero extends PrintEntity {
         Element key = getSVGDocument().getElementById(EXTERNAL_STORES_KEY);
         if (null != key) {
             key.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                    SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
+                  SVGConstants.SVG_TRANSLATE_VALUE + "(0," + ypos + ")");
         }
     }
 
@@ -311,27 +338,27 @@ public class PrintAero extends PrintEntity {
         super.addReferenceCharts(pageFormat);
         ReferenceTable table = new AeroHitLocation(this);
         if ((getEntity() instanceof Jumpship)
-                || (getEntity().getMovementMode().equals(EntityMovementMode.STATION_KEEPING))) {
+              || (getEntity().getMovementMode().equals(EntityMovementMode.STATION_KEEPING))) {
             getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                    pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+                  pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                  pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
         } else {
             double x = pageFormat.getImageableX();
             double height = pageFormat.getImageableHeight() * (1 - TABLE_RATIO);
             getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
-                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                    pageFormat.getImageableWidth() * 0.5 - 3.0, height - 3.0));
+                  pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                  pageFormat.getImageableWidth() * 0.5 - 3.0, height - 3.0));
             x += pageFormat.getImageableWidth() * 0.5;
             table = new AirToGroundAttackTable(this);
             getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
-                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
-                    height * 0.5 - 3.0));
+                  pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+                  pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                  height * 0.5 - 3.0));
             table = new RandomMovementTable(this, false);
             getSVGDocument().getDocumentElement().appendChild(table.createTable(x,
-                    pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0 + height * 0.5,
-                    pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
-                    height * 0.5 - 3.0));
+                  pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0 + height * 0.5,
+                  pageFormat.getImageableWidth() * (TABLE_RATIO - 0.5),
+                  height * 0.5 - 3.0));
         }
     }
 
@@ -341,19 +368,19 @@ public class PrintAero extends PrintEntity {
         }
         return aero.getHeatSinkHits();
     }
-    
+
     @Override
     protected void applyCoreComponentsCriticalDamage() {
-        if (!options.showDamage()) return;
+        if (!options.showDamage()) {return;}
         super.applyCoreComponentsCriticalDamage();
         fillCoreComponentCriticalDamage(AVIONICS_HIT, aero.getAvionicsHits());
         fillCoreComponentCriticalDamage(FCS_HIT, aero.getFCSHits());
         fillCoreComponentCriticalDamage(SENSOR_HIT, aero.getSensorHits());
         fillCoreComponentCriticalDamage(ENGINE_HIT, aero.getEngineHits());
-        fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, aero.isGearHit()?1:0);
-        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, aero.hasLifeSupport()?0:1);
+        fillCoreComponentCriticalDamage(LANDING_GEAR_HIT, aero.isGearHit() ? 1 : 0);
+        fillCoreComponentCriticalDamage(LIFE_SUPPORT_HIT, aero.hasLifeSupport() ? 0 : 1);
         fillCoreComponentCriticalDamage(CIC_HIT, aero.getCICHits());
-        fillCoreComponentCriticalDamage(FUEL_TANK_HIT, aero.fuelTankHit()?1:0);
+        fillCoreComponentCriticalDamage(FUEL_TANK_HIT, aero.fuelTankHit() ? 1 : 0);
         fillCoreComponentCriticalDamage(THRUSTER_LEFT_HIT, aero.getLeftThrustHits());
         fillCoreComponentCriticalDamage(THRUSTER_RIGHT_HIT, aero.getRightThrustHits());
     }

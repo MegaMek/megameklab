@@ -32,15 +32,16 @@
  */
 package megameklab.ui.infantry;
 
-import megamek.common.InfantryMount;
-
-import javax.swing.*;
+import java.awt.Component;
+import java.text.NumberFormat;
+import java.util.ResourceBundle;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
-import java.awt.*;
-import java.text.NumberFormat;
-import java.util.ResourceBundle;
+
+import megamek.common.InfantryMount;
 
 final class BeastMountTableModel implements TableModel {
     private enum Columns {
@@ -123,13 +124,13 @@ final class BeastMountTableModel implements TableModel {
     }
 
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) { }
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {}
 
     @Override
-    public void addTableModelListener(TableModelListener l) { }
+    public void addTableModelListener(TableModelListener l) {}
 
     @Override
-    public void removeTableModelListener(TableModelListener l) { }
+    public void removeTableModelListener(TableModelListener l) {}
 
     int getAlignment(int columnIndex) {
         return Columns.values()[columnIndex].alignment;

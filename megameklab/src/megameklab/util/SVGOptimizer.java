@@ -1,31 +1,37 @@
 /*
- * Copyright (c) 2024-2025 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
- * This file is part of MegaMekLab
+ * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 
 package megameklab.util;
-
-import megameklab.printing.IdConstants;
-import megameklab.printing.PrintRecordSheet;
-import org.apache.batik.parser.TransformListParser;
-import org.apache.batik.parser.TransformListHandler;
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.*;
-import org.w3c.dom.svg.SVGDocument;
 
 import java.awt.geom.AffineTransform;
 import java.text.DecimalFormat;
@@ -34,18 +40,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
+
+import megameklab.printing.IdConstants;
+import megameklab.printing.PrintRecordSheet;
+import org.apache.batik.parser.TransformListHandler;
+import org.apache.batik.parser.TransformListParser;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
 
 /**
- * @author drake
- * Utility class for optimizing SVG documents.
- * This class provides methods to clean up and optimize SVG files by removing unnecessary metadata,
- * simplifying transforms, rounding float values, and more.
+ * @author drake Utility class for optimizing SVG documents. This class provides methods to clean up and optimize SVG
+ *       files by removing unnecessary metadata, simplifying transforms, rounding float values, and more.
  */
 public class SVGOptimizer {
     private static final String REPLACEMENT_FONT = "Roboto";
@@ -116,9 +133,9 @@ public class SVGOptimizer {
         removeComments(document);
         roundFloatValues(root);
         simplifyTransformsParams(root);
-//        roundTransformValues(root); //Already done by SimplifyTransformsParams
-//        simplifyTransforms(root); // This collapses all to matrix() transforms, which is not always desired.
-//        convertShapesToPaths(root); // The size of the file tends to increase, not good!
+        //        roundTransformValues(root); //Already done by SimplifyTransformsParams
+        //        simplifyTransforms(root); // This collapses all to matrix() transforms, which is not always desired.
+        //        convertShapesToPaths(root); // The size of the file tends to increase, not good!
         simplifyPathData(root);
         removeInvisiblePreservedIdGroups(root);
         removeInvisibleElements(root);
@@ -132,12 +149,12 @@ public class SVGOptimizer {
         final Set<String> referencedIds = getReferencedIds(document);
         removeUnusedDefs(document, referencedIds);
         removeUnusedPatterns(document, referencedIds);
-//        removeUnusedIds(document, referencedIds); // This is too aggressive, it removes IDs that are later used.
+        //        removeUnusedIds(document, referencedIds); // This is too aggressive, it removes IDs that are later used.
         removedDefaultIds(document);
         optimizeAttributes(root);
         removeWhitespaceNodes(document);
         collapseEmptyGroups(root);
-//        sortAttributes(document); //Too slow!
+        //        sortAttributes(document); //Too slow!
     }
 
     private static void replaceFonts(SVGDocument doc, String oldFont, String newFont) {
@@ -263,9 +280,9 @@ public class SVGOptimizer {
 
     private static boolean isColorAttribute(String attrName) {
         return "fill".equals(attrName)
-                     || "stroke".equals(attrName)
-                     || "stop-color".equals(attrName)
-                     || "color".equals(attrName);
+              || "stroke".equals(attrName)
+              || "stop-color".equals(attrName)
+              || "color".equals(attrName);
     }
 
     private static String optimizeStyleColors(String style) {
@@ -295,7 +312,7 @@ public class SVGOptimizer {
 
     private static String optimizeColorValue(String color) {
         if (color == null || "none".equalsIgnoreCase(color) || "inherit".equalsIgnoreCase(color)
-                  || "currentColor".equalsIgnoreCase(color)) {
+              || "currentColor".equalsIgnoreCase(color)) {
             return color;
         }
 
@@ -346,7 +363,8 @@ public class SVGOptimizer {
             Element el = (Element) node;
 
             String tag = el.getTagName();
-            if (tag.contains("sodipodi") || SVGConstants.SVG_TITLE_TAG.equals(tag) || SVGConstants.SVG_DESC_TAG.equals(tag)) {
+            if (tag.contains("sodipodi") || SVGConstants.SVG_TITLE_TAG.equals(tag) || SVGConstants.SVG_DESC_TAG.equals(
+                  tag)) {
                 if (node.getParentNode() != null) {
                     node.getParentNode().removeChild(node);
                 }
@@ -360,12 +378,12 @@ public class SVGOptimizer {
                 String value = attr.getNodeValue();
                 String namespaceUri = attr.getNamespaceURI();
 
-                final String[] editorJunk = {"inkscape", "sodipodi", "adobe", "illustrator"};
+                final String[] editorJunk = { "inkscape", "sodipodi", "adobe", "illustrator" };
                 boolean remove = false;
                 for (String junk : editorJunk) {
                     if (name.contains(junk)
-                              || (namespaceUri != null && namespaceUri.contains(junk))
-                              || (name.startsWith("xmlns:") && value.contains(junk))) {
+                          || (namespaceUri != null && namespaceUri.contains(junk))
+                          || (name.startsWith("xmlns:") && value.contains(junk))) {
                         remove = true;
                         break;
                     }
@@ -420,9 +438,9 @@ public class SVGOptimizer {
             }
             // Skip attributes that are not numeric or contain non-numeric values
             if (attrValue != null &&
-                      (attrValue.startsWith("data:") ||
-                             attrValue.contains("base64") ||
-                             attrValue.contains("#"))) {
+                  (attrValue.startsWith("data:") ||
+                        attrValue.contains("base64") ||
+                        attrValue.contains("#"))) {
                 continue;
             }
 
@@ -440,12 +458,12 @@ public class SVGOptimizer {
 
     private static boolean shouldSkipAttribute(String attrName) {
         return attrName.equals("href") ||
-                     attrName.equals("xlink:href") ||
-                     attrName.equals("src") ||
-                     attrName.startsWith("data-") ||
-                     attrName.equals("d") ||  // path data - handled separately
-                     attrName.equals("style") ||
-                     isColorAttribute(attrName);
+              attrName.equals("xlink:href") ||
+              attrName.equals("src") ||
+              attrName.startsWith("data-") ||
+              attrName.equals("d") ||  // path data - handled separately
+              attrName.equals("style") ||
+              isColorAttribute(attrName);
     }
 
 
@@ -516,16 +534,49 @@ public class SVGOptimizer {
 
         parser.setTransformListHandler(new TransformListHandler() {
             public void startTransformList() {}
+
             public void endTransformList() {}
-            public void matrix(float a, float b, float c, float d, float e, float f) { combined.concatenate(new AffineTransform(a, b, c, d, e, f)); }
-            public void rotate(float theta) { combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta))); }
-            public void rotate(float theta, float cx, float cy) { combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta), cx, cy)); }
-            public void translate(float tx) { combined.concatenate(AffineTransform.getTranslateInstance(tx, 0)); }
-            public void translate(float tx, float ty) { combined.concatenate(AffineTransform.getTranslateInstance(tx, ty)); }
-            public void scale(float sx) { combined.concatenate(AffineTransform.getScaleInstance(sx, sx)); }
-            public void scale(float sx, float sy) { combined.concatenate(AffineTransform.getScaleInstance(sx, sy)); }
-            public void skewX(float skx) { combined.concatenate(new AffineTransform(1, 0, Math.tan(Math.toRadians(skx)), 1, 0, 0)); }
-            public void skewY(float sky) { combined.concatenate(new AffineTransform(1, Math.tan(Math.toRadians(sky)), 0, 1, 0, 0)); }
+
+            public void matrix(float a, float b, float c, float d, float e,
+                  float f) {combined.concatenate(new AffineTransform(a, b, c, d, e, f));}
+
+            public void rotate(
+                  float theta) {combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta)));}
+
+            public void rotate(float theta, float cx, float cy) {
+                combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta),
+                      cx,
+                      cy));
+            }
+
+            public void translate(float tx) {combined.concatenate(AffineTransform.getTranslateInstance(tx, 0));}
+
+            public void translate(float tx, float ty) {
+                combined.concatenate(AffineTransform.getTranslateInstance(tx,
+                      ty));
+            }
+
+            public void scale(float sx) {combined.concatenate(AffineTransform.getScaleInstance(sx, sx));}
+
+            public void scale(float sx, float sy) {combined.concatenate(AffineTransform.getScaleInstance(sx, sy));}
+
+            public void skewX(float skx) {
+                combined.concatenate(new AffineTransform(1,
+                      0,
+                      Math.tan(Math.toRadians(skx)),
+                      1,
+                      0,
+                      0));
+            }
+
+            public void skewY(float sky) {
+                combined.concatenate(new AffineTransform(1,
+                      Math.tan(Math.toRadians(sky)),
+                      0,
+                      1,
+                      0,
+                      0));
+            }
         });
 
         parser.parse(transformStr);
@@ -542,7 +593,8 @@ public class SVGOptimizer {
 
 
     private static void simplifyPathData(Element element) {
-        if (SVGConstants.SVG_PATH_TAG.equals(element.getTagName()) && element.hasAttribute(SVGConstants.SVG_D_ATTRIBUTE)) {
+        if (SVGConstants.SVG_PATH_TAG.equals(element.getTagName())
+              && element.hasAttribute(SVGConstants.SVG_D_ATTRIBUTE)) {
             String d = element.getAttribute(SVGConstants.SVG_D_ATTRIBUTE);
             String simplified = simplifyPathD(d);
             element.setAttribute(SVGConstants.SVG_D_ATTRIBUTE, simplified);
@@ -679,7 +731,9 @@ public class SVGOptimizer {
                     String visibility = childElement.getAttribute("visibility");
                     String opacity = childElement.getAttribute(SVGConstants.SVG_OPACITY_ATTRIBUTE);
 
-                    if (SVGConstants.SVG_NONE_VALUE.equals(display) || "hidden".equals(visibility) || "0".equals(opacity)) {
+                    if (SVGConstants.SVG_NONE_VALUE.equals(display)
+                          || "hidden".equals(visibility)
+                          || "0".equals(opacity)) {
                         nodesToRemove.add(child);
                     } else {
                         removeInvisibleElements(childElement);
@@ -949,7 +1003,9 @@ public class SVGOptimizer {
 
                         boolean isDefault = false;
                         if (defaultValue != null) {
-                            String optimizedDefault = isColorAttribute(prop) ? optimizeColorValue(defaultValue) : defaultValue;
+                            String optimizedDefault = isColorAttribute(prop) ?
+                                  optimizeColorValue(defaultValue) :
+                                  defaultValue;
                             optimizedDefault = optimizeAttributeValue(prop, optimizedDefault);
                             if (optimizedPropValue.equals(optimizedDefault)) {
                                 isDefault = true;
@@ -1212,10 +1268,16 @@ public class SVGOptimizer {
 
     private static boolean isGeometricAttribute(String tagName, String attrName) {
         return switch (tagName) {
-            case SVGConstants.SVG_RECT_TAG -> "x".equals(attrName) || "y".equals(attrName) || "width".equals(attrName) || "height".equals(attrName) || "rx".equals(attrName) || "ry".equals(attrName);
+            case SVGConstants.SVG_RECT_TAG -> "x".equals(attrName)
+                  || "y".equals(attrName)
+                  || "width".equals(attrName)
+                  || "height".equals(attrName)
+                  || "rx".equals(attrName)
+                  || "ry".equals(attrName);
             case SVGConstants.SVG_CIRCLE_TAG -> "cx".equals(attrName) || "cy".equals(attrName) || "r".equals(attrName);
             case SVGConstants.SVG_POLYGON_TAG, SVGConstants.SVG_POLYLINE_TAG -> "points".equals(attrName);
-            case SVGConstants.SVG_LINE_TAG -> "x1".equals(attrName) || "y1".equals(attrName) || "x2".equals(attrName) || "y2".equals(attrName);
+            case SVGConstants.SVG_LINE_TAG ->
+                  "x1".equals(attrName) || "y1".equals(attrName) || "x2".equals(attrName) || "y2".equals(attrName);
             default -> false;
         };
     }
@@ -1234,15 +1296,21 @@ public class SVGOptimizer {
         float width = getFloatAttr(rect, "width");
         float height = getFloatAttr(rect, "height");
         // This implementation does not handle rounded corners (rx, ry) for simplicity.
-        if (width <= 0 || height <= 0) return "";
-        return String.format(Locale.US, "M%s %sH%sV%sH%sZ", format3(x), format3(y), format3(x + width), format3(y + height), format3(x));
+        if (width <= 0 || height <= 0) {return "";}
+        return String.format(Locale.US,
+              "M%s %sH%sV%sH%sZ",
+              format3(x),
+              format3(y),
+              format3(x + width),
+              format3(y + height),
+              format3(x));
     }
 
     private static String convertCircleToPath(Element circle) {
         float cx = getFloatAttr(circle, "cx");
         float cy = getFloatAttr(circle, "cy");
         float r = getFloatAttr(circle, "r");
-        if (r <= 0) return "";
+        if (r <= 0) {return "";}
         return String.format(Locale.US, "M%s %sa%s,%s 0 1,0 %s,0a%s,%s 0 1,0 -%s,0",
               format3(cx - r), format3(cy),
               format3(r), format3(r), format3(2 * r),
@@ -1251,7 +1319,7 @@ public class SVGOptimizer {
 
     private static String convertPolygonToPath(Element polygon) {
         String points = polygon.getAttribute("points").trim();
-        if (points.isEmpty()) return "";
+        if (points.isEmpty()) {return "";}
         return "M" + points + "Z";
     }
 
@@ -1336,13 +1404,13 @@ public class SVGOptimizer {
 
         @Override
         public void rotate(float theta) {
-            if (isClose(theta, 0)) return;
+            if (isClose(theta, 0)) {return;}
             transforms.add("rotate(" + format4(theta) + ")");
         }
 
         @Override
         public void rotate(float theta, float cx, float cy) {
-            if (isClose(theta, 0)) return;
+            if (isClose(theta, 0)) {return;}
             if (isClose(cx, 0) && isClose(cy, 0)) {
                 rotate(theta);
             } else {
@@ -1352,13 +1420,13 @@ public class SVGOptimizer {
 
         @Override
         public void translate(float tx) {
-            if (isClose(tx, 0)) return;
+            if (isClose(tx, 0)) {return;}
             transforms.add("translate(" + format4(tx) + ")");
         }
 
         @Override
         public void translate(float tx, float ty) {
-            if (isClose(tx, 0) && isClose(ty, 0)) return;
+            if (isClose(tx, 0) && isClose(ty, 0)) {return;}
             if (isClose(ty, 0)) {
                 translate(tx);
             } else {
@@ -1368,13 +1436,13 @@ public class SVGOptimizer {
 
         @Override
         public void scale(float sx) {
-            if (isClose(sx, 1)) return;
+            if (isClose(sx, 1)) {return;}
             transforms.add("scale(" + format4(sx) + ")");
         }
 
         @Override
         public void scale(float sx, float sy) {
-            if (isClose(sx, 1) && isClose(sy, 1)) return;
+            if (isClose(sx, 1) && isClose(sy, 1)) {return;}
             if (isClose(sx, sy)) {
                 scale(sx);
             } else {
@@ -1384,13 +1452,13 @@ public class SVGOptimizer {
 
         @Override
         public void skewX(float skx) {
-            if (isClose(skx, 0)) return;
+            if (isClose(skx, 0)) {return;}
             transforms.add("skewX(" + format4(skx) + ")");
         }
 
         @Override
         public void skewY(float sky) {
-            if (isClose(sky, 0)) return;
+            if (isClose(sky, 0)) {return;}
             transforms.add("skewY(" + format4(sky) + ")");
         }
     }

@@ -34,6 +34,7 @@ package megameklab.ui.util;
 
 /**
  * Utility class to determine the operating system.
+ *
  * @author Luana Coppio
  */
 public class OSUtil {
@@ -48,6 +49,7 @@ public class OSUtil {
 
     /**
      * Returns the current operating system.
+     *
      * @return {@link OS}
      */
     public static OS getOS() {

@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
@@ -34,7 +48,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.swing.JOptionPane;
 
 import megamek.common.*;
@@ -62,6 +75,7 @@ public final class MekUtil {
      * Checks for Clan DHS
      *
      * @param unit
+     *
      * @return
      */
     public static boolean hasClanDoubleHeatSinks(Mek unit) {
@@ -83,10 +97,8 @@ public final class MekUtil {
     }
 
     /**
-     * Removes the specified number of heat sinks from the mek Heat sinks are
-     * removed first fwith LOC_NONE above the free crit limit then they are
-     * removed with a location, and lastly they are removed below the free crit
-     * limit
+     * Removes the specified number of heat sinks from the mek Heat sinks are removed first fwith LOC_NONE above the
+     * free crit limit then they are removed with a location, and lastly they are removed below the free crit limit
      *
      * @param unit
      */
@@ -153,7 +165,7 @@ public final class MekUtil {
             if (!eq.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 try {
                     UnitUtil.addMounted(unit,
-                            Mounted.createMounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
+                          Mounted.createMounted(unit, EquipmentType.get("IS1 Compact Heat Sink")), loc, false);
                 } catch (Exception ex) {
                     logger.error("", ex);
                 }
@@ -206,7 +218,7 @@ public final class MekUtil {
             if (null == singleCompact) {
                 try {
                     unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_1)),
-                            Entity.LOC_NONE, false);
+                          Entity.LOC_NONE, false);
                 } catch (Exception ex) {
                     logger.error("", ex);
                 }
@@ -216,8 +228,8 @@ public final class MekUtil {
                 UnitUtil.removeMounted(unit, singleCompact);
                 try {
                     UnitUtil.addMounted(unit,
-                            Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
-                            loc, false);
+                          Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
+                          loc, false);
                 } catch (Exception ex) {
                     logger.error("", ex);
                 }
@@ -227,7 +239,7 @@ public final class MekUtil {
         for (; restHS > 0; restHS -= 2) {
             try {
                 unit.addEquipment(Mounted.createMounted(unit, EquipmentType.get(EquipmentTypeLookup.COMPACT_HS_2)),
-                        Entity.LOC_NONE, false);
+                      Entity.LOC_NONE, false);
             } catch (Exception ex) {
                 logger.error("", ex);
             }
@@ -235,8 +247,7 @@ public final class MekUtil {
     }
 
     /**
-     * get the single non-compact heat sink that is a non-engine sink, if it
-     * exits
+     * get the single non-compact heat sink that is a non-engine sink, if it exits
      *
      * @param unit
      */
@@ -244,7 +255,7 @@ public final class MekUtil {
         int base = UnitUtil.getCriticalFreeHeatSinks(unit, true);
         for (Mounted<?> m : unit.getMisc()) {
             if (m.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)
-                    && m.getType().hasFlag(MiscType.F_HEAT_SINK)) {
+                  && m.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                 if (base <= 0) {
                     return m;
                 } else {
@@ -261,12 +272,12 @@ public final class MekUtil {
         String heatSinkType = UnitUtil.getHeatSinkType(type, unit.isClan());
         for (Mounted<?> mounted : unit.getMisc()) {
             if (type.equals("Compact")
-                    && mounted.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
+                  && mounted.getType().hasFlag(MiscType.F_COMPACT_HEAT_SINK)) {
                 return true;
             }
             if (mounted.getType().hasFlag(MiscType.F_HEAT_SINK)
-                    || mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
-                    || mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
+                  || mounted.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK)
+                  || mounted.getType().hasFlag(MiscType.F_LASER_HEAT_SINK)) {
                 return mounted.getType().getInternalName().equals(heatSinkType);
             }
         }
@@ -298,8 +309,8 @@ public final class MekUtil {
     }
 
     /**
-     * This will cycle through the heat sinks and make sure that enough of them
-     * are set LOC_NONE based on the basechassisheat sinks
+     * This will cycle through the heat sinks and make sure that enough of them are set LOC_NONE based on the
+     * basechassisheat sinks
      *
      * @param unit
      */
@@ -338,11 +349,9 @@ public final class MekUtil {
     }
 
     /**
-     * Adjusts compact heat sinks to fulfill engine capacity. This is more complex
-     * than other heat sink
-     * types because the engine heat sinks always have one per mount, and those
-     * outside the engine
-     * are paired in a slot with one single if there are an odd number.
+     * Adjusts compact heat sinks to fulfill engine capacity. This is more complex than other heat sink types because
+     * the engine heat sinks always have one per mount, and those outside the engine are paired in a slot with one
+     * single if there are an odd number.
      *
      * @param mek The Mek to adjust heat sinks for
      */
@@ -461,9 +470,9 @@ public final class MekUtil {
         int ctype = unit.getJumpType();
         if (jjType == ctype) {
             int currentJJ = (int) unit.getMisc().stream()
-                    .filter(m -> m.getType()
-                            .hasFlag(MiscType.F_JUMP_JET))
-                    .count();
+                  .filter(m -> m.getType()
+                        .hasFlag(MiscType.F_JUMP_JET))
+                  .count();
             if (jjAmount < currentJJ) {
                 removeJumpJets(unit, currentJJ - jjAmount);
                 return;
@@ -498,13 +507,13 @@ public final class MekUtil {
         ConcurrentLinkedQueue<Mounted<?>> equipmentList = new ConcurrentLinkedQueue<>(unit.getMisc());
         for (Mounted<?> eq : equipmentList) {
             if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())
-                    || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
+                  || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
                 UnitUtil.removeCriticals(unit, eq);
             }
         }
         for (Mounted<?> eq : equipmentList) {
             if (UnitUtil.isTSM(eq.getType()) || UnitUtil.isMASC(eq.getType())
-                    || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
+                  || ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_SCM))) {
                 unit.getMisc().remove(eq);
                 unit.getEquipment().remove(eq);
             }
@@ -512,8 +521,7 @@ public final class MekUtil {
     }
 
     /**
-     * Compacts the crit slots in all locations of the given Mek, moving Empty slots
-     * to the bottom.
+     * Compacts the crit slots in all locations of the given Mek, moving Empty slots to the bottom.
      */
     public static void compactCriticals(Mek mek) {
         for (int loc = 0; loc < mek.locations(); loc++) {
@@ -522,8 +530,7 @@ public final class MekUtil {
     }
 
     /**
-     * Compacts the crit slots in the given location of the given Mek, moving Empty
-     * slots to the bottom.
+     * Compacts the crit slots in the given location of the given Mek, moving Empty slots to the bottom.
      */
     public static void compactCriticals(Mek mek, int location) {
         List<CriticalSlot> presentGear = MekUtil.extricateCritSlots(mek, location);
@@ -531,8 +538,7 @@ public final class MekUtil {
     }
 
     /**
-     * Expands crits that are a single mount by have multiple spreadable crits
-     * Such as TSM, Endo Steel, Reactive armor.
+     * Expands crits that are a single mount by have multiple spreadable crits Such as TSM, Endo Steel, Reactive armor.
      *
      * @param unit
      */
@@ -546,8 +552,8 @@ public final class MekUtil {
                 Mounted<?> mount = cs.getMount();
 
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                        && (UnitUtil.isTSM(mount.getType())
-                                || UnitUtil.isArmorOrStructure(mount.getType()))) {
+                      && (UnitUtil.isTSM(mount.getType())
+                      || UnitUtil.isArmorOrStructure(mount.getType()))) {
                     Mounted<?> newMount = Mounted.createMounted(unit, mount.getType());
                     newMount.setLocation(location, mount.isRearMounted());
                     newMount.setArmored(mount.isArmored());
@@ -572,6 +578,7 @@ public final class MekUtil {
      *
      * @param unit
      * @param equip
+     *
      * @return
      */
     public static Mounted<?> createSpreadMounts(Mek unit, EquipmentType equip) {
@@ -620,7 +627,7 @@ public final class MekUtil {
                 locations.add(Mek.LOC_RT);
                 blocks = 6;
             } else if ((equip.hasFlag(MiscType.F_TRACKS) || equip.hasFlag(MiscType.F_TALON)
-                    || equip.hasFlag(MiscType.F_JUMP_BOOSTER))) {
+                  || equip.hasFlag(MiscType.F_JUMP_BOOSTER))) {
                 // 1 block in each leg
                 locations.add(Mek.LOC_LLEG);
                 locations.add(Mek.LOC_RLEG);
@@ -646,8 +653,8 @@ public final class MekUtil {
                 locations.add(Mek.LOC_CT);
                 blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
-                    || equip.hasFlag(MiscType.F_NULLSIG)
-                    || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
+                  || equip.hasFlag(MiscType.F_NULLSIG)
+                  || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
                 if (unit instanceof TripodMek) {
                     blocks++;
@@ -693,12 +700,12 @@ public final class MekUtil {
                         if (!unit.addCritical(locations.get(0), cs)) {
                             UnitUtil.removeCriticals(unit, mount);
                             JOptionPane.showMessageDialog(
-                                    null,
-                                    "No room for equipment",
-                                    mount.getName()
-                                            + " does not fit into "
-                                            + unit.getLocationName(locations.get(0)),
-                                    JOptionPane.INFORMATION_MESSAGE);
+                                  null,
+                                  "No room for equipment",
+                                  mount.getName()
+                                        + " does not fit into "
+                                        + unit.getLocationName(locations.get(0)),
+                                  JOptionPane.INFORMATION_MESSAGE);
                             unit.getMisc().remove(mount);
                             unit.getEquipment().remove(mount);
                             return null;
@@ -736,8 +743,8 @@ public final class MekUtil {
                 CriticalSlot crit = unit.getCritical(location, position);
 
                 if ((crit != null)
-                        && (crit.getType() == CriticalSlot.TYPE_SYSTEM)
-                        && (crit.getIndex() == cs.getIndex())) {
+                      && (crit.getType() == CriticalSlot.TYPE_SYSTEM)
+                      && (crit.getIndex() == cs.getIndex())) {
                     lastIndex = position;
                 } else if (position > slot) {
                     break;
@@ -772,10 +779,10 @@ public final class MekUtil {
     public static int countUnallocatedCriticals(Mek unit) {
         int nCrits = 0;
         int engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(unit,
-                unit.hasCompactHeatSinks());
+              unit.hasCompactHeatSinks());
         for (Mounted<?> mount : unit.getMisc()) {
             if (UnitUtil.isHeatSink(mount)
-                    && (mount.getLocation() == Entity.LOC_NONE)) {
+                  && (mount.getLocation() == Entity.LOC_NONE)) {
                 if (engineHeatSinkCount > 0) {
                     engineHeatSinkCount--;
                     continue;
@@ -809,7 +816,7 @@ public final class MekUtil {
                 if (mounted.getType().hasFlag(MiscType.F_HEAT_SINK)) {
                     sinks++;
                 } else if (mounted.getType().hasFlag(
-                        MiscType.F_DOUBLE_HEAT_SINK)) {
+                      MiscType.F_DOUBLE_HEAT_SINK)) {
                     sinks++;
                     sinks++;
                 }
@@ -837,20 +844,19 @@ public final class MekUtil {
     }
 
     /**
-     * Called by {@link MekUtil#updateCompactHeatSinks(Mek)} to remove heat sinks up
-     * to a certain number.
-     * The actual number removed could be higher if count is odd and we're removing
-     * pairs, or
-     * lower if there aren't enough in the list.
+     * Called by {@link MekUtil#updateCompactHeatSinks(Mek)} to remove heat sinks up to a certain number. The actual
+     * number removed could be higher if count is odd and we're removing pairs, or lower if there aren't enough in the
+     * list.
      *
      * @param count  The number of heat sinks to remove
      * @param mek    The Mek to remove heat sinks from
      * @param hsList The list of heat sinks available for removal
+     *
      * @return The actual number removed
      */
     private static int removeCompactHeatSinks(int count, Mek mek, List<Mounted<?>> hsList) {
         int removed = 0;
-        for (Iterator<Mounted<?>> iter = hsList.iterator(); iter.hasNext();) {
+        for (Iterator<Mounted<?>> iter = hsList.iterator(); iter.hasNext(); ) {
             Mounted<?> m = iter.next();
             UnitUtil.removeMounted(mek, m);
             removed += m.getType().hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ? 2 : 1;
@@ -866,10 +872,8 @@ public final class MekUtil {
     }
 
     /**
-     * Clears all links of the given equipment to other equipment and unallocates
-     * it (assigns to LOC_NONE). Note: Does not clear the equipment's crit slots
-     * from its
-     * former location. For this, use
+     * Clears all links of the given equipment to other equipment and unallocates it (assigns to LOC_NONE). Note: Does
+     * not clear the equipment's crit slots from its former location. For this, use
      * {@link UnitUtil#removeCriticals(Entity, Mounted)}
      */
     public static void clearMountedLocationAndLinked(Mounted<?> equipment) {
@@ -889,11 +893,8 @@ public final class MekUtil {
     }
 
     /**
-     * Moves all equipment that is freely movable and unhittable (e.g. Endo Steel
-     * and
-     * Ferro-Fibrous but not CASE) ("FMU") that is currently unallocated (LOC_NONE)
-     * to free
-     * locations on the Mek as long as there are any.
+     * Moves all equipment that is freely movable and unhittable (e.g. Endo Steel and Ferro-Fibrous but not CASE)
+     * ("FMU") that is currently unallocated (LOC_NONE) to free locations on the Mek as long as there are any.
      */
     public static void fillInFMU(Mek mek) {
         // Work with a copy because the equipment list may be modified.
@@ -903,7 +904,7 @@ public final class MekUtil {
             }
             for (int location = 0; location < mek.locations(); location++) {
                 if (!isValidLocation(mek, mount.getType(), location)
-                        || (getMaxContiguousNumOfCrits(mek, location, false) < getCritsUsed(mount))) {
+                      || (getMaxContiguousNumOfCrits(mek, location, false) < getCritsUsed(mount))) {
                     continue;
                 }
                 try {
@@ -918,11 +919,8 @@ public final class MekUtil {
     }
 
     /**
-     * Removes all equipment that is freely movable and unhittable (e.g. Endo Steel
-     * and
-     * Ferro-Fibrous but not CASE) ("FMU") from the given location, affecting
-     * numOfSlots
-     * slots beginning at startingSlot.
+     * Removes all equipment that is freely movable and unhittable (e.g. Endo Steel and Ferro-Fibrous but not CASE)
+     * ("FMU") from the given location, affecting numOfSlots slots beginning at startingSlot.
      */
     public static void removeFMU(Entity mek, int location, int startingSlot, int numOfSlots) {
         for (int slot = startingSlot; slot < startingSlot + numOfSlots; slot++) {
@@ -936,8 +934,8 @@ public final class MekUtil {
     }
 
     /**
-     * Moves all equipment that is currently unallocated (LOC_NONE) to free
-     * locations on the Mek as long as there are any.
+     * Moves all equipment that is currently unallocated (LOC_NONE) to free locations on the Mek as long as there are
+     * any.
      */
     public static void fillInAllEquipment(Mek mek) {
         int externalEngineHS = UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks());
@@ -945,7 +943,7 @@ public final class MekUtil {
         List<Mounted<?>> equipmentList = new ArrayList<>(mek.getEquipment());
         for (Mounted<?> mount : equipmentList) {
             if ((mount.getLocation() != Entity.LOC_NONE)
-                    || (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0))) {
+                  || (UnitUtil.isHeatSink(mount) && (externalEngineHS-- > 0))) {
                 continue;
             }
             for (int location = Mek.LOC_HEAD; location < mek.locations(); location++) {
@@ -974,25 +972,21 @@ public final class MekUtil {
     }
 
     /**
-     * Returns true when a slot's equipment is unhittable and freely movable
-     * ("FMU"), such
-     * as Endo Steel and Ferro-Fibrous Armor but not CASE (which is unhittable but
-     * not
-     * freely movable as its location is important).
+     * Returns true when a slot's equipment is unhittable and freely movable ("FMU"), such as Endo Steel and
+     * Ferro-Fibrous Armor but not CASE (which is unhittable but not freely movable as its location is important).
      */
     public static boolean isFMU(Mounted<?> equipment) {
         return (equipment != null)
-                && equipment.getType().getCriticals(equipment.getEntity()) > 0
-                && !equipment.getType().isHittable()
-                && (equipment.getType() instanceof MiscType)
-                && !equipment.getType().hasFlag(MiscType.F_CASE)
-                && !equipment.getType().hasFlag(MiscType.F_CASEP)
-                && !equipment.getType().hasFlag(MiscType.F_CASEII);
+              && equipment.getType().getCriticals(equipment.getEntity()) > 0
+              && !equipment.getType().isHittable()
+              && (equipment.getType() instanceof MiscType)
+              && !equipment.getType().hasFlag(MiscType.F_CASE)
+              && !equipment.getType().hasFlag(MiscType.F_CASEP)
+              && !equipment.getType().hasFlag(MiscType.F_CASEII);
     }
 
     /**
-     * Sorts the allocated equipment on all locations (except HD) of the Mek using
-     * the officially used sort order.
+     * Sorts the allocated equipment on all locations (except HD) of the Mek using the officially used sort order.
      */
     public static void sortCrits(Mek mek) {
         for (int location = 0; location < mek.locations(); location++) {
@@ -1003,8 +997,8 @@ public final class MekUtil {
     }
 
     /**
-     * Sorts the crits within the given location. This extricates all non-system
-     * crits from the location, sorts them and then refills the location.
+     * Sorts the crits within the given location. This extricates all non-system crits from the location, sorts them and
+     * then refills the location.
      */
     public static void sortCritSlots(Mek mek, int location) {
         List<CriticalSlot> presentGear = extricateCritSlots(mek, location);
@@ -1015,9 +1009,8 @@ public final class MekUtil {
     }
 
     /**
-     * If the last weapon in the location uses ammo, floats compatible ammo above
-     * other ammo
-     * Requires the slots to have already been sorted beforehand
+     * If the last weapon in the location uses ammo, floats compatible ammo above other ammo Requires the slots to have
+     * already been sorted beforehand
      */
     private static void floatAmmo(List<CriticalSlot> slots) {
         WeaponType lastWeapon = null;
@@ -1040,7 +1033,7 @@ public final class MekUtil {
 
                 AmmoType ammoType = (AmmoType) slots.get(i).getMount().getType();
                 if (lastWeapon.rackSize == ammoType.getRackSize()
-                        && lastWeapon.getAmmoType() == lastWeapon.getAmmoType()) {
+                      && lastWeapon.getAmmoType() == lastWeapon.getAmmoType()) {
                     compatibleAmmo.add(slots.get(i));
                 }
             }
@@ -1055,8 +1048,8 @@ public final class MekUtil {
     }
 
     /**
-     * Removes all crit slots from the given location except for system crit slots
-     * (e.g. engine) and returns them as a list.
+     * Removes all crit slots from the given location except for system crit slots (e.g. engine) and returns them as a
+     * list.
      */
     public static List<CriticalSlot> extricateCritSlots(Mek mek, int location) {
         List<CriticalSlot> presentGear = new ArrayList<>();
@@ -1071,12 +1064,9 @@ public final class MekUtil {
     }
 
     /**
-     * Fills the given list of crit slots into the given location. This does not
-     * check
-     * or change the respective mounteds' locations, so care must be taken that all
-     * mounteds are indeed allocated to this location or that the crit slots have
-     * been
-     * taken from this location, e.g. with {@link #extricateCritSlots(Mek, int)}.
+     * Fills the given list of crit slots into the given location. This does not check or change the respective
+     * mounteds' locations, so care must be taken that all mounteds are indeed allocated to this location or that the
+     * crit slots have been taken from this location, e.g. with {@link #extricateCritSlots(Mek, int)}.
      */
     public static void refillCritSlots(Mek mek, int location, List<CriticalSlot> critList) {
         // TODO: If they somehow dont fit, unallocate the mounted and remove all its
@@ -1085,22 +1075,19 @@ public final class MekUtil {
     }
 
     /**
-     * Returns a reordered version of the given presentGear list of critslots
-     * wherein
-     * LinkedBy mounteds such as Artemis and PPC Capacitors are placed directly
-     * behind
-     * their weapon.
+     * Returns a reordered version of the given presentGear list of critslots wherein LinkedBy mounteds such as Artemis
+     * and PPC Capacitors are placed directly behind their weapon.
      */
     public static List<CriticalSlot> reOrderLinkedEquipment(List<CriticalSlot> presentGear) {
         List<CriticalSlot> resortedList = new ArrayList<>();
         Set<Mounted<?>> presentMounteds = presentGear.stream().map(CriticalSlot::getMount).collect(toSet());
         // Assemble all the linked gear that is not ammo (ammo is sorted differently)
         Set<Mounted<?>> linkedMounteds = presentMounteds.stream()
-                .map(Mounted::getLinkedBy)
-                .filter(Objects::nonNull)
-                .filter(linked -> linked.getType() instanceof MiscType)
-                .filter(presentMounteds::contains)
-                .collect(toSet());
+              .map(Mounted::getLinkedBy)
+              .filter(Objects::nonNull)
+              .filter(linked -> linked.getType() instanceof MiscType)
+              .filter(presentMounteds::contains)
+              .collect(toSet());
 
         // Now rebuild the list by adding the linkedMounteds behind their weapon
         Mounted<?> lastMounted = null;
@@ -1109,9 +1096,9 @@ public final class MekUtil {
             // after one mounted is fully added, see if there's a linkedMounted to add below
             // it
             if ((lastMounted != null)
-                    && (currentMounted != lastMounted)
-                    && (lastMounted.getLinkedBy() != null)
-                    && (linkedMounteds.contains(lastMounted.getLinkedBy()))) {
+                  && (currentMounted != lastMounted)
+                  && (lastMounted.getLinkedBy() != null)
+                  && (linkedMounteds.contains(lastMounted.getLinkedBy()))) {
                 for (CriticalSlot linkedSlot : presentGear) {
                     if (linkedSlot.getMount() == lastMounted.getLinkedBy()) {
                         resortedList.add(linkedSlot);
@@ -1129,11 +1116,9 @@ public final class MekUtil {
     }
 
     /**
-     * Returns a number indicating the order in which equipment should be sorted
-     * within a location according to the official crit slot sorting. Weapons and
-     * ammo require further internal sorting and linked equipment such as Artemis
-     * and PPC
-     * Capacitors also require extra treatment to be placed behind their weapon.
+     * Returns a number indicating the order in which equipment should be sorted within a location according to the
+     * official crit slot sorting. Weapons and ammo require further internal sorting and linked equipment such as
+     * Artemis and PPC Capacitors also require extra treatment to be placed behind their weapon.
      */
     public static int getCoarseOrdering(Mek mek, Mounted<?> mounted) {
         if (isPartialWing(mounted)) {
@@ -1148,7 +1133,7 @@ public final class MekUtil {
             return 5;
         } else if (mounted.getType().isHittable() && !mounted.getType().hasFlag(MiscType.F_SCM)) {
             return 6;
-        } else if(mounted.getType().hasFlag(MiscType.F_SCM)) {
+        } else if (mounted.getType().hasFlag(MiscType.F_SCM)) {
             return 7;
         } else if (isCASE(mounted)) {
             return 8;
@@ -1163,22 +1148,19 @@ public final class MekUtil {
 
     public static boolean isPartialWing(Mounted<?> mounted) {
         return (mounted.getType() instanceof MiscType)
-                && mounted.getType().hasFlag(MiscType.F_PARTIAL_WING);
+              && mounted.getType().hasFlag(MiscType.F_PARTIAL_WING);
     }
 
     public static boolean isCASE(Mounted<?> mounted) {
         return (mounted.getType() instanceof MiscType)
-                && (mounted.getType().hasFlag(MiscType.F_CASE)
-                        || mounted.getType().hasFlag(MiscType.F_CASEP)
-                        || mounted.getType().hasFlag(MiscType.F_CASEII));
+              && (mounted.getType().hasFlag(MiscType.F_CASE)
+              || mounted.getType().hasFlag(MiscType.F_CASEP)
+              || mounted.getType().hasFlag(MiscType.F_CASEII));
     }
 
     /**
-     * Returns the highest number of contiguous free crit slots available in the
-     * given location.
-     * When ignoreFMU is true, slots that contain unhittable and freely moveable
-     * (FMU) equipment
-     * such as Endo Steel are counted as being free.
+     * Returns the highest number of contiguous free crit slots available in the given location. When ignoreFMU is true,
+     * slots that contain unhittable and freely moveable (FMU) equipment such as Endo Steel are counted as being free.
      */
     public static int getMaxContiguousNumOfCrits(Mek mek, int location, boolean ignoreFMU) {
         if ((location == Entity.LOC_DESTROYED) || (location == Entity.LOC_NONE)) {
@@ -1192,10 +1174,9 @@ public final class MekUtil {
     }
 
     /**
-     * Returns the first slot in the location that together with following slots
-     * forms a contiguous block of the given length as size where all slots
-     * are either empty of contain freely movable crits such as Endo Steel.
-     * Returns -1 if there is no such slot.
+     * Returns the first slot in the location that together with following slots forms a contiguous block of the given
+     * length as size where all slots are either empty of contain freely movable crits such as Endo Steel. Returns -1 if
+     * there is no such slot.
      */
     public static int findSlotWithContiguousNumOfCrits(Entity mek, int location, int length) {
         for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
@@ -1207,22 +1188,17 @@ public final class MekUtil {
     }
 
     /**
-     * Returns true when numOfSlots contiguous slots starting from startingSlot are
-     * either free or
-     * can be freed by removing unhittable and movable equipment such as Endo Steel.
+     * Returns true when numOfSlots contiguous slots starting from startingSlot are either free or can be freed by
+     * removing unhittable and movable equipment such as Endo Steel.
      */
     public static boolean canFreeContiguousCrits(Entity mek, int location, int startingSlot, int numOfSlots) {
         return availableContiguousCrits(mek, location, startingSlot, true) >= numOfSlots;
     }
 
     /**
-     * Returns the number of contiguous slots starting from startingSlot that are
-     * either free or
-     * can be freed by removing unhittable and movable (FMU) equipment such as Endo
-     * Steel.
-     * When ignoreFMU is true, slots that contain unhittable and freely moveable
-     * (FMU) equipment
-     * such as Endo Steel are counted as being free.
+     * Returns the number of contiguous slots starting from startingSlot that are either free or can be freed by
+     * removing unhittable and movable (FMU) equipment such as Endo Steel. When ignoreFMU is true, slots that contain
+     * unhittable and freely moveable (FMU) equipment such as Endo Steel are counted as being free.
      */
     public static int availableContiguousCrits(Entity mek, int location, int startingSlot, boolean ignoreFMU) {
         for (int slot = startingSlot; slot < mek.getNumberOfCriticals(location); slot++) {
@@ -1236,7 +1212,7 @@ public final class MekUtil {
 
     /** Add a vehicular grenade launcher, asking the user for the facing. */
     public static boolean addVGL(Mek mek, Mounted<?> vgl, int location, int slotNumber)
-            throws LocationFullException {
+          throws LocationFullException {
         String[] facings;
         if (location == Mek.LOC_LT) {
             facings = new String[4];
@@ -1256,15 +1232,15 @@ public final class MekUtil {
             facings[1] = "Rear";
         } else {
             JOptionPane.showMessageDialog(null,
-                    "VGL must be placed in torso location!",
-                    "Invalid location",
-                    JOptionPane.WARNING_MESSAGE);
+                  "VGL must be placed in torso location!",
+                  "Invalid location",
+                  JOptionPane.WARNING_MESSAGE);
             return false;
         }
         String facing = (String) JOptionPane.showInputDialog(null,
-                "Please choose the facing of the VGL",
-                "Choose Facing", JOptionPane.QUESTION_MESSAGE,
-                null, facings, facings[0]);
+              "Please choose the facing of the VGL",
+              "Choose Facing", JOptionPane.QUESTION_MESSAGE,
+              null, facings, facings[0]);
         if (facing == null) {
             return false;
         }
@@ -1286,11 +1262,9 @@ public final class MekUtil {
     }
 
     /**
-     * For the given Mek, adds Clan CASE in every location that has potentially
-     * explosive equipment (this includes PPC Capacitors) and removes it from all
-     * other locations.
-     * Calls {@link Mek#addClanCase()}. This method does not check if other
-     * CASE types are already present on a location.
+     * For the given Mek, adds Clan CASE in every location that has potentially explosive equipment (this includes PPC
+     * Capacitors) and removes it from all other locations. Calls {@link Mek#addClanCase()}. This method does not check
+     * if other CASE types are already present on a location.
      *
      * @param mek the mek to update
      */
@@ -1302,13 +1276,12 @@ public final class MekUtil {
     }
 
     /**
-     * Returns true if the given Equipment is available as equipment to the given
-     * Mek.
-     * Only valid to use for MiscTypes, not WeaponTypes nor AmmoTypes, also physical
-     * weapons return false despite being MiscType.
+     * Returns true if the given Equipment is available as equipment to the given Mek. Only valid to use for MiscTypes,
+     * not WeaponTypes nor AmmoTypes, also physical weapons return false despite being MiscType.
      *
      * @param eq   The tested equipment
      * @param unit The Mek unit
+     *
      * @return true if the equipment is usable by the Mek
      */
     // TODO: Make this behave like the other isXYZEquipment
@@ -1318,76 +1291,76 @@ public final class MekUtil {
         }
 
         if ((eq instanceof CLTAG) || (eq instanceof ISC3MBS)
-                || (eq instanceof ISC3M) || (eq instanceof ISTAG) || (eq instanceof ISPrototypeTAG)
-                || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)
-                || (eq instanceof CLLightTAG) || (eq instanceof ISAMS)
-                || (eq instanceof CLAMS) || (eq instanceof ISLaserAMS)
-                || (eq instanceof CLLaserAMS) || (eq instanceof ISAPDS)) {
+              || (eq instanceof ISC3M) || (eq instanceof ISTAG) || (eq instanceof ISPrototypeTAG)
+              || (eq instanceof AmmoType && ((AmmoType) eq).getAmmoType() == AmmoType.AmmoTypeEnum.COOLANT_POD)
+              || (eq instanceof CLLightTAG) || (eq instanceof ISAMS)
+              || (eq instanceof CLAMS) || (eq instanceof ISLaserAMS)
+              || (eq instanceof CLLaserAMS) || (eq instanceof ISAPDS)) {
             return true;
         }
 
         if ((eq instanceof MiscType)) {
             if (eq.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK, EquipmentTypeLookup.LAM_BOMB_BAY)
-                    && !(unit instanceof LandAirMek)) {
+                  && !(unit instanceof LandAirMek)) {
                 return false;
             }
             if ((eq.hasFlag(MiscType.F_QUAD_TURRET) || eq.hasFlag(MiscType.F_RAM_PLATE))
-                    && !(unit instanceof QuadMek)) {
+                  && !(unit instanceof QuadMek)) {
                 return false;
             }
             if ((eq.hasFlag(MiscType.F_CHAIN_DRAPE_PONCHO) || eq.hasFlag(MiscType.F_CHAIN_DRAPE_APRON))
-                && unit instanceof QuadMek) {
+                  && unit instanceof QuadMek) {
                 return false;
             }
 
             if (!((unit instanceof BipedMek) || (unit instanceof TripodMek))
-                    && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
+                  && (eq.hasFlag(MiscType.F_SHOULDER_TURRET))) {
                 return false;
             }
 
             if (unit.isSuperHeavy()
-                    && (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)
-                            || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
-                            || eq.hasFlag(MiscType.F_SCM)
-                            || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
-                            || eq.hasFlag(MiscType.F_PARTIAL_WING)
-                            || eq.hasFlag(MiscType.F_UMU))) {
+                  && (eq.hasFlag(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM)
+                  || eq.hasFlag(MiscType.F_MASC) // to catch Supercharger
+                  || eq.hasFlag(MiscType.F_SCM)
+                  || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                  || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                  || eq.hasFlag(MiscType.F_UMU))) {
                 return false;
             }
 
             if ((unit instanceof LandAirMek)
-                    && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
-                            || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
-                            || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
-                            || eq.hasFlag(MiscType.F_PARTIAL_WING)
-                            || eq.hasFlag(MiscType.F_VOIDSIG)
-                            || eq.hasFlag(MiscType.F_NULLSIG)
-                            || eq.hasFlag(MiscType.F_BLUE_SHIELD)
-                            || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
-                            || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
-                            || eq.hasFlag(MiscType.F_DUMPER)
-                            || eq.hasFlag(MiscType.F_HEAVY_BRIDGE_LAYER)
-                            || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
-                            || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
-                            || (eq.hasFlag(MiscType.F_CLUB)
-                                    && (eq.getSubType() == MiscType.S_BACKHOE)
-                                    || (eq.getSubType() == MiscType.S_COMBINE)))) {
+                  && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
+                  || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
+                  || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
+                  || eq.hasFlag(MiscType.F_PARTIAL_WING)
+                  || eq.hasFlag(MiscType.F_VOIDSIG)
+                  || eq.hasFlag(MiscType.F_NULLSIG)
+                  || eq.hasFlag(MiscType.F_BLUE_SHIELD)
+                  || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
+                  || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
+                  || eq.hasFlag(MiscType.F_DUMPER)
+                  || eq.hasFlag(MiscType.F_HEAVY_BRIDGE_LAYER)
+                  || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
+                  || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
+                  || (eq.hasFlag(MiscType.F_CLUB)
+                  && (eq.getSubType() == MiscType.S_BACKHOE)
+                  || (eq.getSubType() == MiscType.S_COMBINE)))) {
                 return false;
             }
 
             if (eq.hasFlag(MiscType.F_FUEL)) {
                 return unit.isIndustrial()
-                        && ((unit.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE)
-                                || (unit.getEngine().getEngineType() == Engine.FUEL_CELL));
+                      && ((unit.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE)
+                      || (unit.getEngine().getEngineType() == Engine.FUEL_CELL));
             }
             if (eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) || eq.is("Cargo Container (10 tons)")) {
                 return unit.isIndustrial();
             }
 
             if (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
-                    && !eq.hasFlag(MiscType.F_CLUB)
-                    && !eq.hasFlag(MiscType.F_HAND_WEAPON)
-                    && !eq.hasFlag(MiscType.F_TALON)) {
+                  && !eq.hasFlag(MiscType.F_CLUB)
+                  && !eq.hasFlag(MiscType.F_HAND_WEAPON)
+                  && !eq.hasFlag(MiscType.F_TALON)) {
                 return true;
             }
 
@@ -1405,8 +1378,8 @@ public final class MekUtil {
         }
 
         if (UnitUtil.isHeatSink(eq) || UnitUtil.isArmorOrStructure(eq)
-                || UnitUtil.isJumpJet(eq)
-                || isMekEquipment(eq, (Mek) unit)) {
+              || UnitUtil.isJumpJet(eq)
+              || isMekEquipment(eq, (Mek) unit)) {
             return false;
         }
 
@@ -1420,8 +1393,8 @@ public final class MekUtil {
                 return false;
             }
             if ((unit instanceof LandAirMek)
-                    && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.GAUSS_HEAVY
-                            || weapon.getAmmoType() == AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)) {
+                  && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.GAUSS_HEAVY
+                  || weapon.getAmmoType() == AmmoType.AmmoTypeEnum.IGAUSS_HEAVY)) {
                 return false;
             }
 
@@ -1506,8 +1479,7 @@ public final class MekUtil {
     }
 
     /**
-     * Removes the system crits of the given type from the location on the given
-     * mek.
+     * Removes the system crits of the given type from the location on the given mek.
      *
      * @param mek        The Mek
      * @param systemType The system type, e.g. {@link Mek#SYSTEM_LIFE_SUPPORT}

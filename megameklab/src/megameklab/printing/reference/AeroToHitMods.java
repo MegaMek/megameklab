@@ -1,19 +1,42 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing.reference;
 
-import megamek.common.*;
+import megamek.common.ConvFighter;
+import megamek.common.Entity;
+import megamek.common.EntityMovementMode;
+import megamek.common.Jumpship;
+import megamek.common.WeaponType;
 import megameklab.printing.PrintAero;
 import org.apache.batik.util.SVGConstants;
 
@@ -28,7 +51,7 @@ public class AeroToHitMods extends ReferenceTable {
         super(sheet, 0.02, 0.08, 0.8);
         this.entity = sheet.getEntity();
         spaceOnly = (entity instanceof Jumpship)
-                || entity.getMovementMode().equals(EntityMovementMode.STATION_KEEPING);
+              || entity.getMovementMode().equals(EntityMovementMode.STATION_KEEPING);
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
 
@@ -48,7 +71,7 @@ public class AeroToHitMods extends ReferenceTable {
         addRow("", bundle.getString("attackAgainstNose"), "+1");
         if (!spaceOnly) {
             addRow("", bundle.getString("flyingAtNOE"),
-                    (entity.isOmni() && !entity.isSupportVehicle()) ? "+1" : "+2");
+                  (entity.isOmni() && !entity.isSupportVehicle()) ? "+1" : "+2");
         }
         if (!entity.isLargeCraft()) {
             addRow("", bundle.getString("secondaryTargetForward"), "+1");
@@ -59,13 +82,13 @@ public class AeroToHitMods extends ReferenceTable {
         }
         addRow("", bundle.getString("target0velocity"), "-2");
         if (entity.getWeaponList().stream().map(m -> (WeaponType) m.getType())
-                .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
-                .anyMatch(WeaponType::isCapital)) {
+              .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
+              .anyMatch(WeaponType::isCapital)) {
             addRow("", bundle.getString("capitalAgainstSmallTarget"), "+5");
         }
         if (entity.getWeaponList().stream().map(m -> (WeaponType) m.getType())
-                .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
-                .anyMatch(WeaponType::isSubCapital)) {
+              .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
+              .anyMatch(WeaponType::isSubCapital)) {
             addRow("", bundle.getString("subcapitalAgainstSmallTarget"), "+3");
         }
         if (!(entity instanceof ConvFighter)) {

@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -18,10 +37,6 @@ import static megameklab.printing.InventoryEntry.DASH;
 
 import java.util.Enumeration;
 import java.util.StringJoiner;
-
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGRectElement;
 
 import megamek.common.AmmoType;
 import megamek.common.Entity;
@@ -36,6 +51,9 @@ import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.util.CConfig;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Lays out a record sheet block for a single infantry unit
@@ -92,14 +110,14 @@ public class PrintInfantry extends PrintEntity {
         }
         InfantryWeapon rangeWeapon = infantry.getPrimaryWeapon();
         if (infantry.getSecondaryWeapon() != null && infantry.getSecondaryWeaponsPerSquad() > 1
-                && !infantry.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+              && !infantry.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             rangeWeapon = infantry.getSecondaryWeapon();
         }
         boolean scuba = infantry.getMovementMode() == EntityMovementMode.INF_UMU
-                || infantry.getMovementMode() == EntityMovementMode.SUBMARINE;
+              || infantry.getMovementMode() == EntityMovementMode.SUBMARINE;
         hideElement(UW_LABEL, !scuba);
         InfantryWeapon singleSecondary = (infantry.getSecondaryWeaponsPerSquad() == 1) ? infantry.getSecondaryWeapon()
-                : null;
+              : null;
         for (int j = 0; j <= 21; j++) {
             setTextField(RANGE_MOD + j, rangeMod(j, rangeWeapon, singleSecondary, false));
             if (scuba) {
@@ -110,9 +128,9 @@ public class PrintInfantry extends PrintEntity {
         setTextField(TRANSPORT_WT, String.format("%.1f tons", infantry.getWeight()));
 
         String mode1 = null,
-                mode2 = null,
-                mp1 = null,
-                mp2 = null;
+              mode2 = null,
+              mp1 = null,
+              mp2 = null;
         switch (infantry.getMovementMode()) {
             case INF_JUMP:
                 mp1 = formatMovement(infantry.getJumpMP());
@@ -194,18 +212,18 @@ public class PrintInfantry extends PrintEntity {
             float fontSize = FONT_SIZE_MEDIUM;
             // Reduce the font size if necessary to fit the text into the space
             while ((fontSize > 5.0)
-                    && (height < (getFontHeight(fontSize) + 1) * getTextLength(notes, fontSize) / width)) {
+                  && (height < (getFontHeight(fontSize) + 1) * getTextLength(notes, fontSize) / width)) {
                 fontSize = Math.max(5f, fontSize - 1f);
             }
 
             addMultilineTextElement((Element) rect.getParentNode(), x, y, width, getFontHeight(fontSize),
-                    String.join("; ", notes), fontSize, SVGConstants.SVG_START_VALUE,
-                    SVGConstants.SVG_NORMAL_VALUE);
+                  String.join("; ", notes), fontSize, SVGConstants.SVG_START_VALUE,
+                  SVGConstants.SVG_NORMAL_VALUE);
         }
         Element element = getSVGDocument().getElementById(RANGE_IN_HEXES);
         if (element != null) {
             element.setTextContent(element.getTextContent().replace("HEXES",
-                    CConfig.getParam(CConfig.RS_SCALE_UNITS)));
+                  CConfig.getParam(CConfig.RS_SCALE_UNITS)));
         }
         if (CConfig.getIntParam(CConfig.RS_SCALE_FACTOR) != 1) {
             for (int r = 0; r <= 21; r++) {
@@ -226,7 +244,7 @@ public class PrintInfantry extends PrintEntity {
         }
         int burst = 0;
         if (rangeWeapon.hasFlag(WeaponType.F_INF_BURST) ||
-                infantry.primaryWeaponDamageCapped()) {
+              infantry.primaryWeaponDamageCapped()) {
             burst = 1;
         }
         if (infantry.getMount() != null) {
@@ -247,13 +265,13 @@ public class PrintInfantry extends PrintEntity {
             sj.add("Can only damage conventional infantry units.");
         }
         if (isFlameBased(infantry.getPrimaryWeapon())
-                || ((infantry.getSecondaryWeapon() != null)
-                        && isFlameBased(infantry.getSecondaryWeapon()))) {
+              || ((infantry.getSecondaryWeapon() != null)
+              && isFlameBased(infantry.getSecondaryWeapon()))) {
             sj.add("Flame-based weapon.");
         }
         if (infantry.getPrimaryWeapon().hasFlag(WeaponType.F_INF_AA)
-                || (infantry.getSecondaryWeapon() != null
-                        && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
+              || (infantry.getSecondaryWeapon() != null
+              && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
             sj.add("May attack airborne targets that attack their hex.");
         }
         if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
@@ -275,7 +293,8 @@ public class PrintInfantry extends PrintEntity {
             sj.add("No penalties for vacuum or zero-G");
         }
         if (infantry.hasSpecialization(Infantry.MOUNTAIN_TROOPS)) {
-            sj.add("Mountain climbing equipment. Unit can traverse 3 levels per hex. Unit is immune to the effects of Thin Atmosphere.");
+            sj.add(
+                  "Mountain climbing equipment. Unit can traverse 3 levels per hex. Unit is immune to the effects of Thin Atmosphere.");
         }
         if (infantry.hasSpecialization(Infantry.PARAMEDICS)) {
             sj.add("Paramedic equipment.");
@@ -298,18 +317,18 @@ public class PrintInfantry extends PrintEntity {
 
         StringJoiner enhancements = new StringJoiner(", ");
         var spas = infantry.getCrew().getOptions();
-        for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements();) {
+        for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements(); ) {
             final IOptionGroup optionGroup = e.nextElement();
             if (optionGroup.getKey().equals(EDGE_ADVANTAGES)) {
                 // Don't print Edge abilities, only SPAs and Cybernetics
                 continue;
             }
             if (spas.count(optionGroup.getKey()) > 0) {
-                for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements();) {
+                for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements(); ) {
                     IOption option = options.nextElement();
                     if (option != null && option.booleanValue()) {
                         enhancements
-                                .add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
+                              .add(option.getDisplayableNameWithValue().replaceAll("\\s+\\(Not Implemented\\)", ""));
                     }
                 }
             }
@@ -327,9 +346,9 @@ public class PrintInfantry extends PrintEntity {
 
     private boolean isFlameBased(WeaponType type) {
         return (type.hasFlag(WeaponType.F_PLASMA)
-                || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
-                || type.hasFlag(WeaponType.F_INFERNO)
-                || type.hasFlag(WeaponType.F_FLAMER));
+              || type.hasFlag(WeaponType.F_INCENDIARY_NEEDLES)
+              || type.hasFlag(WeaponType.F_INFERNO)
+              || type.hasFlag(WeaponType.F_FLAMER));
     }
 
     private void writeFieldGuns() {
@@ -427,7 +446,7 @@ public class PrintInfantry extends PrintEntity {
             }
         }
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()
-                + (infantry.isArmorEncumbering() ? "E" : ""));
+              + (infantry.isArmorEncumbering() ? "E" : ""));
         if (infantry.hasDEST()) {
             hideElement(DEST_MODS, false);
             hideElement(SNEAK_IR_MODS, false);
@@ -446,33 +465,30 @@ public class PrintInfantry extends PrintEntity {
     }
 
     private static final int[][] RANGE_MODS = {
-            { 0 },
-            { -2, 0, 2, 4 },
-            { -2, 0, 0, 2, 2, 4, 4 },
-            { -2, 0, 0, 0, 2, 2, 2, 4, 4, 4 },
-            { -2, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 },
-            { -1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4 },
-            { -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5 },
-            { -1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6 }
+          { 0 },
+          { -2, 0, 2, 4 },
+          { -2, 0, 0, 2, 2, 4, 4 },
+          { -2, 0, 0, 0, 2, 2, 2, 4, 4, 4 },
+          { -2, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 },
+          { -1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4 },
+          { -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 4, 4, 4, 5, 5, 5 },
+          { -1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 6, 6, 6, 6 }
     };
 
     /**
      * Calculate range mod as a string value.
-     * 
+     *
      * @param range       - the range to the target.
-     * @param weapon      - the primary weapon if there are no more than one
-     *                    secondary, otherwise secondary
-     * @param otherWeapon - secondary weapon if there is exactly one, otherwise
-     *                    null. This is used
-     *                    to account for point-blank or encumbering penalties when
-     *                    the secondary
-     *                    weapon is not the basis for range mods.
-     * @param underwater  - whether the base range should be halved for underwater
-     *                    use by SCUBA platoons.
+     * @param weapon      - the primary weapon if there are no more than one secondary, otherwise secondary
+     * @param otherWeapon - secondary weapon if there is exactly one, otherwise null. This is used to account for
+     *                    point-blank or encumbering penalties when the secondary weapon is not the basis for range
+     *                    mods.
+     * @param underwater  - whether the base range should be halved for underwater use by SCUBA platoons.
+     *
      * @return - the range mod as a formatted String.
      */
     private String rangeMod(int range, InfantryWeapon weapon, InfantryWeapon otherWeapon,
-            boolean underwater) {
+          boolean underwater) {
         int[] mods = RANGE_MODS[weapon.getInfantryRange()];
         if (underwater) {
             mods = RANGE_MODS[weapon.getInfantryRange() / 2];
@@ -487,11 +503,11 @@ public class PrintInfantry extends PrintEntity {
                 mod--;
             }
             if (weapon.hasFlag(WeaponType.F_INF_POINT_BLANK)
-                    || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK))) {
+                  || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK))) {
                 mod++;
             }
             if (weapon.hasFlag(WeaponType.F_INF_ENCUMBER)
-                    || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_ENCUMBER))) {
+                  || (otherWeapon != null && otherWeapon.hasFlag(WeaponType.F_INF_ENCUMBER))) {
                 mod++;
             }
         }

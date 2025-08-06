@@ -1,31 +1,49 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.batik.util.SVGConstants;
-import org.w3c.dom.Element;
-import org.w3c.dom.svg.SVGElement;
-import org.w3c.dom.svg.SVGRectElement;
-
 import megamek.common.Jumpship;
 import megamek.common.SpaceStation;
 import megamek.common.UnitType;
 import megamek.common.Warship;
 import megamek.logging.MMLogger;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
 
 /**
  * Generates a record sheet image for JumpShips, WarShips, and space stations.
@@ -41,8 +59,7 @@ public class PrintCapitalShip extends PrintDropship {
     /** Default height for armor pip */
     public static final double ARMOR_PIP_HEIGHT = 4.5;
     /**
-     * Amount to offset the armor block drop shadow as a fraction of pip
-     * height/width
+     * Amount to offset the armor block drop shadow as a fraction of pip height/width
      */
     public static final double SHADOW_OFFSET = 0.3;
 
@@ -64,12 +81,9 @@ public class PrintCapitalShip extends PrintDropship {
     /**
      * Creates an SVG object for the record sheet
      *
-     * @param ship
-     *                  The ship to print
-     * @param startPage
-     *                  The print job page number for this sheet
-     * @param options
-     *                  Overrides the global options for which elements are printed
+     * @param ship      The ship to print
+     * @param startPage The print job page number for this sheet
+     * @param options   Overrides the global options for which elements are printed
      */
     public PrintCapitalShip(Jumpship ship, int startPage, RecordSheetOptions options) {
         super(ship, startPage, options);
@@ -93,7 +107,7 @@ public class PrintCapitalShip extends PrintDropship {
     @Override
     protected String getRecordSheetTitle() {
         return UnitType.getTypeDisplayableName(ship.getUnitType())
-                + " Record Sheet";
+              + " Record Sheet";
     }
 
     @Override
@@ -214,10 +228,10 @@ public class PrintCapitalShip extends PrintDropship {
         }
         AtomicInteger remainingDamage = new AtomicInteger(damage);
         printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
-                IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, "structure", location);
+              IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, "structure", location);
         if (structure > pips) {
             printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
-                    structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage,
+                  structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage,
                   "structure", location);
         }
     }
@@ -225,12 +239,8 @@ public class PrintCapitalShip extends PrintDropship {
     /**
      * Method to determine rectangle grid for armor or internal pips and draw it.
      *
-     * @param svgRect
-     *                A rectangle that outlines the border of the space for the
-     *                armor
-     *                block.
-     * @param armor
-     *                The amount of armor in the location
+     * @param svgRect A rectangle that outlines the border of the space for the armor block.
+     * @param armor   The amount of armor in the location
      */
     private void printArmorRegion(SVGRectElement svgRect, int armor, int damage, String location) {
         Rectangle2D bbox = getRectBBox(svgRect);
@@ -290,7 +300,7 @@ public class PrintCapitalShip extends PrintDropship {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
-                        armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location);
+                      armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location);
                 remainingBlocks--;
                 xpos += blockWidth;
             }
@@ -304,23 +314,19 @@ public class PrintCapitalShip extends PrintDropship {
     }
 
     /**
-     * Helper function to print a armor pip block. Can print up to 100 points of
-     * armor. Any unprinted armor pips are returned.
+     * Helper function to print a armor pip block. Can print up to 100 points of armor. Any unprinted armor pips are
+     * returned.
      *
-     * @param startX
-     *                The x coordinate of the top left of the block
-     * @param startY
-     *                The y coordinate of the top left of the block
-     * @param parent
-     *                The parent node of the bounding rectangle
-     * @param numPips
-     *                The number of pips to print
-     * @param shadow
-     *                Whether to add a drop shadow
+     * @param startX  The x coordinate of the top left of the block
+     * @param startY  The y coordinate of the top left of the block
+     * @param parent  The parent node of the bounding rectangle
+     * @param numPips The number of pips to print
+     * @param shadow  Whether to add a drop shadow
+     *
      * @return The Y location of the end of the block
      */
     private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
-            double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage,
+          double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage,
           String className, String location) {
 
         final double shadowOffsetX = pipWidth * SHADOW_OFFSET;
@@ -335,7 +341,7 @@ public class PrintCapitalShip extends PrintDropship {
                 boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
                 if (shadow) {
                     parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
-                            currY + shadowOffsetY, false, null, null));
+                          currY + shadowOffsetY, false, null, null));
                 }
                 final Element pip = createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX,
                       currY, true, className, location);
@@ -354,7 +360,7 @@ public class PrintCapitalShip extends PrintDropship {
     }
 
     private Element createPip(double pipWidth, double pipHeight, String fillColor,
-            double currX, double currY, boolean stroke, String className, String location) {
+          double currX, double currY, boolean stroke, String className, String location) {
         Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
         box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
         box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));

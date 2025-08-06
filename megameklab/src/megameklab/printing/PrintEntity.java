@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -70,7 +89,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      * Creates an SVG object for the record sheet
      *
      * @param startPage The print job page number for this sheet
-     * @param options Overrides the global options for which elements are printed
+     * @param options   Overrides the global options for which elements are printed
      */
     protected PrintEntity(int startPage, RecordSheetOptions options) {
         super(startPage, options);
@@ -84,16 +103,15 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * When printing from a MUL the pilot data is filled in unless the option has been disabled. This
-     * allows a series of blank record sheets to be generated without including the generated pilot data.
-     * If the crew name is "unnamed" then we are printing directly from MML or file/cache and the
-     * pilot data should not be filled in.
+     * When printing from a MUL the pilot data is filled in unless the option has been disabled. This allows a series of
+     * blank record sheets to be generated without including the generated pilot data. If the crew name is "unnamed"
+     * then we are printing directly from MML or file/cache and the pilot data should not be filled in.
      *
      * @return Whether the pilot data should be filled in.
      */
     protected boolean showPilotInfo() {
         return options.showPilotData()
-                && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
+              && !getEntity().getCrew().getName().startsWith(RandomNameGenerator.UNNAMED);
     }
 
     /**
@@ -161,8 +179,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Builds the string to display for the quirks block. Returns an empty string if quirks are
-     * disabled (or if the unit has no quirks).
+     * Builds the string to display for the quirks block. Returns an empty string if quirks are disabled (or if the unit
+     * has no quirks).
      *
      * @return The text to display for the unit's quirks.
      */
@@ -170,10 +188,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
         if (options.showQuirks()) {
             StringJoiner sj = new StringJoiner(", ");
             Quirks quirks = getEntity().getQuirks();
-            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements();) {
+            for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
                 IOptionGroup optiongroup = optionGroups.nextElement();
                 if (quirks.count(optiongroup.getKey()) > 0) {
-                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements(); ) {
                         IOption option = options.nextElement();
                         if (option != null && option.booleanValue()) {
                             sj.add(option.getDisplayableNameWithValue());
@@ -188,30 +206,32 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Fuel block used by aerospace unit. Fuel for other units, such as non-aerospace support vehicles,
-     * is for strategic fuel use and not relevant for the record sheet.
+     * Fuel block used by aerospace unit. Fuel for other units, such as non-aerospace support vehicles, is for strategic
+     * fuel use and not relevant for the record sheet.
      *
-     * @return A string containing the amount of fuel and cost per thrust point for aerospace units,
-     *         otherwise an empty string.
+     * @return A string containing the amount of fuel and cost per thrust point for aerospace units, otherwise an empty
+     *       string.
      */
     public String formatTacticalFuel() {
         return "";
     }
 
     /**
-     * Converts a weight to a String, either in kg or tons as appropriate to the Entity,
-     * labeled with the measurement unit.
+     * Converts a weight to a String, either in kg or tons as appropriate to the Entity, labeled with the measurement
+     * unit.
+     *
      * @param weight The weight in tons
-     * @return       The formatted weight with units
+     *
+     * @return The formatted weight with units
      */
     String formatWeight(double weight) {
         if ((getEntity() instanceof BattleArmor)
-                || (getEntity() instanceof ProtoMek)
-                || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+              || (getEntity() instanceof ProtoMek)
+              || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             return DecimalFormat.getInstance().format(weight * 1000) + " kg";
         } else {
             return DecimalFormat.getInstance().format(weight)
-                    + ((weight == 1) ? " ton)" : " tons");
+                  + ((weight == 1) ? " ton)" : " tons");
         }
     }
 
@@ -238,6 +258,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     /**
      * Sets the style for the heat scale markers (asterisk or arrow)
+     *
      * @param doc The SVG document to process
      */
     protected void setHeatScaleMarkerStyle(Document doc) {
@@ -249,9 +270,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         NodeList groups = doc.getElementsByTagName("g");
         for (int i = 0; i < groups.getLength(); i++) {
             Element group = (Element) groups.item(i);
-            if (!group.hasAttribute("id")) continue;
+            if (!group.hasAttribute("id")) {continue;}
             String id = group.getAttribute("id");
-            if (!id.toLowerCase().startsWith("heatscale")) continue;
+            if (!id.toLowerCase().startsWith("heatscale")) {continue;}
 
             // Find the first rect in the group to get dimensions
             Element rect = null;
@@ -263,7 +284,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     break;
                 }
             }
-            if (rect == null) continue;
+            if (rect == null) {continue;}
 
             double rectX = Double.parseDouble(rect.getAttribute("x"));
             double rectWidth = Double.parseDouble(rect.getAttribute("width"));
@@ -296,7 +317,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                     sibling = sibling.getPreviousSibling();
                 }
-                
+
                 double arrowCenterY;
                 if (siblingText != null) {
                     // Use the sibling text's y position and font size to calculate center
@@ -326,21 +347,21 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                     arrowCenterY = y - fontSize * 0.35;
                 }
-                
+
                 double arrowY = arrowCenterY - arrowHeight / 2.0;
-                
+
                 // Create a filled left-pointing triangle path
                 String d = String.format(Locale.US,
-                    "M%.3f %.3f L%.3f %.3f L%.3f %.3f Z",
-                    rightX, arrowY,
-                    rightX - arrowWidth, arrowY + arrowHeight / 2.0,
-                    rightX, arrowY + arrowHeight);
+                      "M%.3f %.3f L%.3f %.3f L%.3f %.3f Z",
+                      rightX, arrowY,
+                      rightX - arrowWidth, arrowY + arrowHeight / 2.0,
+                      rightX, arrowY + arrowHeight);
 
                 Element arrow = doc.createElementNS(asterisk.getNamespaceURI(), "path");
                 arrow.setAttribute("d", d);
                 arrow.setAttribute("fill", "#000");
                 arrow.setAttribute("stroke", "none");
-                
+
                 // Replace the asterisk with the arrow
                 asterisk.getParentNode().replaceChild(arrow, asterisk);
             }
@@ -356,7 +377,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         setTextField(MP_JUMP, formatJump());
         if (getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             setTextField(TONNAGE, NumberFormat.getInstance()
-                    .format((int) (getEntity().getWeight() * 1000)) + " kg");
+                  .format((int) (getEntity().getWeight() * 1000)) + " kg");
         } else {
             setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
         }
@@ -373,7 +394,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 bvValue = NumberFormat.getInstance().format(baseBvValue);
             } else {
                 bvValue = NumberFormat.getInstance().format(baseBvValue) + UIUtil.CONNECTED_SIGN
-                        + NumberFormat.getInstance().format(adjustedBvValue);
+                      + NumberFormat.getInstance().format(adjustedBvValue);
             }
         } else {
             bvValue = NumberFormat.getInstance().format(baseBvValue);
@@ -393,7 +414,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             build();
         }
         hideUnusedCrewElements();
-        
+
         for (int i = 0; i < getEntity().getCrew().getSlotCount(); i++) {
             // If we have multiple named crew for the unit, change the "Name:" label to
             // the label of the slot. This will usually require adjusting the position of the
@@ -428,7 +449,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 String pilotName = getEntity().getCrew().getName(i);
                 final String pilotNickname = getEntity().getCrew().getNickname(i);
                 if (pilotNickname != null && !pilotNickname.isBlank()) {
-                    pilotName += " ("+pilotNickname+")";
+                    pilotName += " (" + pilotNickname + ")";
                 }
                 setTextField(PILOT_NAME + i, pilotName, true);
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
@@ -436,14 +457,14 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
                 StringJoiner spaList = new StringJoiner(", ");
                 PilotOptions spas = getEntity().getCrew().getOptions();
-                for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements();) {
+                for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements(); ) {
                     IOptionGroup optiongroup = optionGroups.nextElement();
                     if (optiongroup.getKey().equals(EDGE_ADVANTAGES)) {
                         // Don't print Edge abilities, only SPAs and Cybernetics
                         continue;
                     }
                     if (spas.count(optiongroup.getKey()) > 0) {
-                        for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements();) {
+                        for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements(); ) {
                             IOption option = options.nextElement();
                             if (option != null && option.booleanValue()) {
                                 spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
@@ -463,9 +484,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         }
                         double lineHeight = fontSize * 1.2;
                         addMultilineTextElement(canvas, bbox.getX(), bbox.getY() + lineHeight,
-                                bbox.getWidth(), lineHeight, spaText, fontSize,
-                                SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
-                                SVGConstants.SVG_ITALIC_VALUE, "abilities");
+                              bbox.getWidth(), lineHeight, spaText, fontSize,
+                              SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                              SVGConstants.SVG_ITALIC_VALUE, "abilities");
                     }
                 }
 
@@ -478,8 +499,8 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     if (null != element) {
                         SVGRect rect = ((SVGGraphicsElement) element).getBBox();
                         element.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE,
-                                String.format("M %f,%f %f,%f", rect.getX() + nameOffset, rect.getY(),
-                                        rect.getX() + rect.getWidth(), rect.getY()));
+                              String.format("M %f,%f %f,%f", rect.getX() + nameOffset, rect.getY(),
+                                    rect.getX() + rect.getWidth(), rect.getY()));
                     }
                 }
             }
@@ -492,7 +513,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             final boolean hide = i >= crew.getSlotCount();
             boolean blankName = true;
             if (!hide) {
-                blankName = crew.getName(i).isBlank() && crew.getNickname(i).isBlank() && crew.getName(i) != RandomNameGenerator.UNNAMED;
+                blankName = crew.getName(i).isBlank()
+                      && crew.getNickname(i).isBlank()
+                      && crew.getName(i) != RandomNameGenerator.UNNAMED;
             }
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
@@ -509,7 +532,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     protected void drawArmor() {
         if (getEntity().isSupportVehicle()
-                && (getEntity().hasBARArmor(firstArmorLocation()))) {
+              && (getEntity().hasBARArmor(firstArmorLocation()))) {
             setTextField(ARMOR_TYPE, "BAR: " + getEntity().getBARRating(firstArmorLocation()));
         } else if (!getEntity().hasPatchworkArmor()) {
             final int at = getEntity().getArmorType(firstArmorLocation());
@@ -522,12 +545,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
             boolean hasSpecial = false;
             for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
                 if ((getEntity().getArmorType(loc) != T_ARMOR_STANDARD)
-                        && (getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
-                        && (getEntity().getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
-                        // Stealth armor loses special properties when used with patchwork, so we don't
-                        // need to show it.
-                        && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
-                        && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
+                      && (getEntity().getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                      && (getEntity().getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
+                      // Stealth armor loses special properties when used with patchwork, so we don't
+                      // need to show it.
+                      && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
+                      && (getEntity().getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
                     String atName = EquipmentType.getArmorTypeName(getEntity().getArmorType(loc));
                     String eleName = PATCHWORK + getEntity().getLocationAbbr(loc);
                     int index = atName.indexOf('-');
@@ -535,9 +558,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
                         setTextField(PATCHWORK + getEntity().getLocationAbbr(loc), atName);
                     } else {
                         setTextField(PATCHWORK + getEntity().getLocationAbbr(loc),
-                                atName.substring(0, index));
+                              atName.substring(0, index));
                         setTextField(PATCHWORK + getEntity().getLocationAbbr(loc) + "2",
-                                atName.substring(index + 1));
+                              atName.substring(index + 1));
                     }
                     hasSpecial = true;
                 }
@@ -559,9 +582,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
         final String FORMAT = "( %d )";
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             setTextField(TEXT_ARMOR + getEntity().getLocationAbbr(loc),
-                    String.format(FORMAT, getEntity().getOArmor(loc)));
+                  String.format(FORMAT, getEntity().getOArmor(loc)));
             setTextField(TEXT_IS + getEntity().getLocationAbbr(loc),
-                    String.format(FORMAT, getEntity().getOInternal(loc)));
+                  String.format(FORMAT, getEntity().getOInternal(loc)));
         }
     }
 
@@ -577,25 +600,37 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 element = getElementById(ARMOR_PIPS + getEntity().getLocationAbbr(loc));
             }
             if (null != element) {
-                ArmorPipLayout.addPips(this, element, getEntity().getOArmor(loc),
-                        PipType.forAT(getEntity().getArmorType(loc)), DEFAULT_PIP_STROKE, FILL_WHITE, getArmorDamage(loc, false), useAlternateArmorGrouping());
+                ArmorPipLayout.addPips(this,
+                      element,
+                      getEntity().getOArmor(loc),
+                      PipType.forAT(getEntity().getArmorType(loc)),
+                      DEFAULT_PIP_STROKE,
+                      FILL_WHITE,
+                      getArmorDamage(loc, false),
+                      useAlternateArmorGrouping());
             }
 
             element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
             if (null != element) {
-                ArmorPipLayout.addPips(this, element, getEntity().getOInternal(loc),
-                        PipType.CIRCLE, DEFAULT_PIP_STROKE, structurePipFill(), getStructureDamage(loc), useAlternateArmorGrouping());
+                ArmorPipLayout.addPips(this,
+                      element,
+                      getEntity().getOInternal(loc),
+                      PipType.CIRCLE,
+                      DEFAULT_PIP_STROKE,
+                      structurePipFill(),
+                      getStructureDamage(loc),
+                      useAlternateArmorGrouping());
             }
         }
     }
 
     /**
-     * Applies the critical damage to the core components of the unit and crew.
-     * This should be overridden by subclasses that have core components.
+     * Applies the critical damage to the core components of the unit and crew. This should be overridden by subclasses
+     * that have core components.
      */
     @Override
     protected void applyCoreComponentsCriticalDamage() {
-        if (!options.showDamage()) return;
+        if (!options.showDamage()) {return;}
         if (options.showPilotData()) {
             final int totalCrewMembers = getEntity().getCrew().getSlotCount();
             for (int crewMemberId = 0; crewMemberId < totalCrewMembers; crewMemberId++) {
@@ -615,7 +650,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     /**
      * Returns the number of hits on the core component of the unit.
+     *
      * @param index
+     *
      * @return
      */
     protected int getHitsCoreComponent(int index) {
@@ -634,8 +671,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Identifies the index of the first location that can be armored. For vehicles this should be 1
-     * to skip the body.
+     * Identifies the index of the first location that can be armored. For vehicles this should be 1 to skip the body.
      *
      * @return The lowest location index that can be armored.
      */
@@ -659,7 +695,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
-    protected void drawFluffImage() { }
+    protected void drawFluffImage() {}
 
     protected @Nullable Image getFluffImage() {
         return FluffImageHelper.getRecordSheetFluffImage(getEntity());
@@ -734,7 +770,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     void drawHeatSinkPipsLandscape(Element canvas, int hsCount, double viewX, double viewY,
-                                   double viewWidth, double viewHeight, int damage) {
+          double viewWidth, double viewHeight, int damage) {
         double size = Math.min(9.66, viewWidth / 10);
         int cols = (int) (viewWidth / size);
         int rows = (int) (viewHeight / size);
@@ -773,31 +809,32 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Applies the current scale to a movement point value and adds the units indicator.
-     * If the units are hexes, the value is rounded up.
+     * Applies the current scale to a movement point value and adds the units indicator. If the units are hexes, the
+     * value is rounded up.
      *
      * @param mp The movement points
-     * @return   The formatted movement string
+     *
+     * @return The formatted movement string
      */
     protected String formatMovement(double mp) {
         return CConfig.formatScale(mp, true);
     }
 
     /**
-     * Applies the current scale to a pair of movement point values, puts the second in brackets,
-     * and adds the units indicator. This is used for cases when equipment may give a temporary
-     * boost to MP, such as MASC.
-     * If the units are hexes, the value is rounded up.
+     * Applies the current scale to a pair of movement point values, puts the second in brackets, and adds the units
+     * indicator. This is used for cases when equipment may give a temporary boost to MP, such as MASC. If the units are
+     * hexes, the value is rounded up.
      *
      * @param baseMP The base movement points
      * @param fullMP The full movement points
-     * @return   The formatted movement string
+     *
+     * @return The formatted movement string
      */
     protected String formatMovement(double baseMP, double fullMP) {
         if (fullMP > baseMP) {
             return CConfig.formatScale(baseMP, false) + " ["
-                    + CConfig.formatScale(fullMP, false) + "] "
-                    + CConfig.scaleUnits().abbreviation;
+                  + CConfig.formatScale(fullMP, false) + "] "
+                  + CConfig.scaleUnits().abbreviation;
         } else {
             return CConfig.formatScale(baseMP, true);
         }
@@ -838,7 +875,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             level = getEntity().getStaticTechLevel();
         }
         return level.toString().substring(0, 1)
-                + level.toString().substring(1).toLowerCase();
+              + level.toString().substring(1).toLowerCase();
     }
 
     protected String formatCost() {
@@ -848,7 +885,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     private String entityName() {
         return CConfig.getMekNameArrangement().printChassis(getEntity())
-                + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+              + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
     }
 
     protected boolean useAlternateArmorGrouping() {

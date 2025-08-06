@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008-2020
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -22,14 +39,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import megamek.common.*;
+import megamek.common.EquipmentFlag;
+import megamek.common.EquipmentType;
+import megamek.common.Jumpship;
+import megamek.common.Mounted;
+import megamek.common.Warship;
+import megamek.common.WeaponType;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.weapons.AmmoWeapon;
 
 /**
- * Convenience class for storing information about weapon bays for printing.
- * This consists of a list of the weapons in the bay with heat and damage, along
- * with the location of the bay.
+ * Convenience class for storing information about weapon bays for printing. This consists of a list of the weapons in
+ * the bay with heat and damage, along with the location of the bay.
  *
  * @author arlith
  */
@@ -46,25 +67,22 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     final Map<WeaponType, List<Mounted<?>>> weaponAmmo = new HashMap<>();
 
     /**
-     * Track any linked equipment that affects the AV or heat. By the rules, most of them are either
-     * all or none for the entire bay (or ship), but for PPC capacitors there is no published rule
-     * I can find that the entire bay has to have them, or even all of the same type within the bay.
-     * It's easier to treat them all the same, and this will also support illegal builds that only put
-     * Artemis on some weapons, or mix Artemis types.
+     * Track any linked equipment that affects the AV or heat. By the rules, most of them are either all or none for the
+     * entire bay (or ship), but for PPC capacitors there is no published rule I can find that the entire bay has to
+     * have them, or even all of the same type within the bay. It's easier to treat them all the same, and this will
+     * also support illegal builds that only put Artemis on some weapons, or mix Artemis types.
      */
     final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
 
     final boolean rear;
     /**
-     * The location of the bay, or locations if multiple identical bays are
-     * combined.
+     * The location of the bay, or locations if multiple identical bays are combined.
      */
     public List<Integer> loc = new ArrayList<>();
 
     /**
-     *
-     * @param l     The location index
-     * @param rear  Whether the bay is rear mounted (dropship wing/aft sides)
+     * @param l    The location index
+     * @param rear Whether the bay is rear mounted (dropship wing/aft sides)
      */
     public WeaponBayText(int l, boolean rear) {
         loc.add(l);
@@ -75,8 +93,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * Add a new weapon into this bay.
      *
      * @param weapon The weapon to add to the bay
-     * @return      Whether true if the weapon was added as new, false if it was
-     *              already in the bay and just incremented
+     *
+     * @return Whether true if the weapon was added as new, false if it was already in the bay and just incremented
      */
     public boolean addBayWeapon(Mounted<?> weapon) {
         boolean asNew;
@@ -124,28 +142,29 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     /**
-     * Determines if two WeaponBayTexts are laterally similar and hence can be
-     * combined. That is, if there is a weapon bay on the left side that is
-     * identical to one on the right side, then those two can be combined in a
-     * location like FRS/FLS. This allows weapon lists to be compacted.
+     * Determines if two WeaponBayTexts are laterally similar and hence can be combined. That is, if there is a weapon
+     * bay on the left side that is identical to one on the right side, then those two can be combined in a location
+     * like FRS/FLS. This allows weapon lists to be compacted.
      *
      * @param other The other instance
-     * @return      Whether the two bays are identical
+     *
+     * @return Whether the two bays are identical
      */
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
         return loc.size() == 1
-                && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
-                && weapons.equals(other.weapons)
-                && ammosMatch(other) && augmentations.equals(other.augmentations);
+              && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
+              && weapons.equals(other.weapons)
+              && ammosMatch(other) && augmentations.equals(other.augmentations);
     }
 
     /**
-     * Used to compare ammos across WeaponBayTexts. Since Mounted.equals isn't
-     * implemented, we can't directly use Map.equals.
+     * Used to compare ammos across WeaponBayTexts. Since Mounted.equals isn't implemented, we can't directly use
+     * Map.equals.
      *
      * @param other The other bay
-     * @return      Whether the ammo types and number of shots per type match
+     *
+     * @return Whether the ammo types and number of shots per type match
      */
     private boolean ammosMatch(WeaponBayText other) {
         // If the number is different, the ammo doesn't match
@@ -184,7 +203,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
 
                     Mounted<?> mountedOther = ammoListOther.get(i);
                     if (!(mountedOther instanceof AmmoMounted ammoOther)) {
-                         // This shouldn't happen
+                        // This shouldn't happen
                         return false;
                     }
 
@@ -231,9 +250,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     /**
-     * Combine two WeaponBayTexts. Since they should both contain the same weapons,
-     * the only thing that needs to be updated is the locations. This should only be
-     * called if canCombine returns true for both WeaponBayTexts.
+     * Combine two WeaponBayTexts. Since they should both contain the same weapons, the only thing that needs to be
+     * updated is the locations. This should only be called if canCombine returns true for both WeaponBayTexts.
      *
      * @param other The other bay to combine with this one
      */
@@ -244,7 +262,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
 
     /**
      * @param flag A MiscType flag
-     * @return     The number of weapons in the entire bay linked by equipment with the given flag
+     *
+     * @return The number of weapons in the entire bay linked by equipment with the given flag
      */
     public int countAugmentations(EquipmentFlag flag) {
         int count = 0;
@@ -257,8 +276,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     /**
      * @param weaponType A type of weapon in the bay
      * @param flag       A MiscType flag
-     * @return The number of weapons of the given type in the bay linked by
-     *         equipment with the given flag
+     *
+     * @return The number of weapons of the given type in the bay linked by equipment with the given flag
      */
     public int countAugmentations(WeaponType weaponType, EquipmentFlag flag) {
         int count = 0;
@@ -274,7 +293,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
 
     /**
      * @param flag A MiscType flag
-     * @return     Whether all weapons in the bay are linked by equipment with the given flag
+     *
+     * @return Whether all weapons in the bay are linked by equipment with the given flag
      */
     public boolean allHaveAugmentation(EquipmentFlag flag) {
         return countAugmentations(flag) == weapons.values().stream().mapToInt(Integer::intValue).sum();
@@ -291,11 +311,12 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     /**
-     * The display order for Warship locations is different from the numerical order
-     * of the defines, so we want to get the loc weights for sorting purposes.
+     * The display order for Warship locations is different from the numerical order of the defines, so we want to get
+     * the loc weights for sorting purposes.
      *
      * @param loc The location index
-     * @return    The sort order for the location
+     *
+     * @return The sort order for the location
      */
     private int getLocWeight(int loc) {
         switch (loc) {

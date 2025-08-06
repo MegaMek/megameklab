@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * 
- * Original author - jtighe (torren@users.sourceforge.net)
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ *
+ * This file is part of MegaMekLab.
+ *
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
 
@@ -51,10 +68,10 @@ import megameklab.util.CConfig;
 
 public class CIArmorView extends IView implements ActionListener, ChangeListener {
     private RefreshListener refresh = null;
-    
+
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
-    
+
     private final JButton btnSetArmor = new JButton("Set Armor");
     private final JButton btnRemoveArmor = new JButton("Remove Armor");
     private final JTextField txtFilter = new JTextField(12);
@@ -77,10 +94,12 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     JCheckBox chSneakECM = new JCheckBox("Sneak (ECM)");
     private final JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
 
-    private final JLabel lblSneakWarning = new JLabel("Warning: Setting both DEST and Sneak properties on custom armor " +
-                                                         "may cause issues in the display of the armor kit " +
-                                                         "information.");
-    
+    private final JLabel lblSneakWarning = new JLabel("Warning: Setting both DEST and Sneak properties on custom armor "
+          +
+          "may cause issues in the display of the armor kit "
+          +
+          "information.");
+
     public CIArmorView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
         masterEquipmentList = new EquipmentTableModel(eSource.getEntity(), techManager);
@@ -118,8 +137,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             EquipmentType equip = masterEquipmentList.getType(selected);
             btnSetArmor.setEnabled((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT)));
         });
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -160,7 +179,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         rbtnFluff.addActionListener(ev -> setEquipmentView());
         rbtnCustom.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
-        
+
         setUpPanels();
         rbtnStats.setSelected(true);
         setEquipmentView();
@@ -190,10 +209,10 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         databasePanel.add(btnPanel, gbc);
-        
+
         equipmentView.setLayout(equipmentLayout);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -204,17 +223,17 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
 
         setLayout(new BorderLayout());
         add(databasePanel, BorderLayout.CENTER);
-        
+
         JPanel tableView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
         tableView.add(new JLabel("Filter:"), gbc);
-        
+
         gbc.gridx = 1;
         tableView.add(txtFilter, gbc);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -222,14 +241,14 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         tableView.add(masterEquipmentScroll, gbc);
-        
+
         equipmentView.add(tableView, CARD_TABLE);
 
         JPanel customView = new JPanel(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
-        
+
         gbc.gridy = 0;
         customView.add(new StandardBuildLabel("Damage Divisor:"), gbc);
         customView.add(armorValue, gbc);
@@ -277,7 +296,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             chSneakCamo.setEnabled(false);
             chSneakIR.setEnabled(false);
             chSneakECM.setEnabled(false);
-        } else {            
+        } else {
             armorValue.setEnabled(true);
             chEncumber.setEnabled(true);
             chSpaceSuit.setEnabled(true);
@@ -343,7 +362,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             getInfantry().setSneakIR(chSneakIR.isSelected());
         } else if (evt.getSource().equals(chSneakECM)) {
             getInfantry().setSneakECM(chSneakECM.isSelected());
-        } 
+        }
         addAllListeners();
         if (refresh != null) {
             refresh.refreshStructure();
@@ -384,7 +403,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         }
         refresh();
     }
-    
+
     private void filterEquipment() {
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
@@ -394,10 +413,10 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 if (!(etype instanceof MiscType) || !(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 } else if ((null != eSource.getTechManager())
-                        && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
+                      && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
                     return false;
                 } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear(),
-                        CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
+                      CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                     return false;
                 } else if (!txtFilter.getText().isBlank()) {
                     return etype.getName().toLowerCase().contains(txtFilter.getText().toLowerCase());
@@ -469,7 +488,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
 
     private boolean hasArmor() {
         return getInfantry().getArmorKit() != null
-                || !getInfantry().getArmorDesc().equals("1.0");
+              || !getInfantry().getArmorDesc().equals("1.0");
     }
 
     private final ListSelectionListener selectionListener = new ListSelectionListener() {

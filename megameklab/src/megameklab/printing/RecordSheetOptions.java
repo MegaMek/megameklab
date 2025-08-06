@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2019 - The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -20,7 +39,6 @@ import megameklab.util.CConfig;
  * A set of options for controlling what is displayed on the record sheet
  *
  * @author neoancient
- *
  */
 public class RecordSheetOptions {
 
@@ -30,9 +48,11 @@ public class RecordSheetOptions {
         NONE("B&W");
 
         private final String displayName;
+
         ColorMode(String displayName) {
             this.displayName = displayName;
         }
+
         @Override
         public String toString() {
             return displayName;
@@ -43,9 +63,11 @@ public class RecordSheetOptions {
         ASTERISK("Asterisk"),
         ARROW("Arrow");
         private final String displayName;
+
         HeatScaleMarker(String displayName) {
             this.displayName = displayName;
         }
+
         @Override
         public String toString() {
             return displayName;
@@ -57,9 +79,11 @@ public class RecordSheetOptions {
         COLUMN("Column"),
         EDGE("Edge");
         private final String displayName;
+
         HitModStyle(String displayName) {
             this.displayName = displayName;
         }
+
         @Override
         public String toString() {
             return displayName;
@@ -71,9 +95,11 @@ public class RecordSheetOptions {
         EQUIPMENT("Equipment"),
         FOOTER("Footer");
         private final String displayName;
+
         IntrinsicPhysicalAttacksStyle(String displayName) {
             this.displayName = displayName;
         }
+
         @Override
         public String toString() {
             return displayName;
@@ -86,10 +112,12 @@ public class RecordSheetOptions {
         PLUS_ZERO("+0", "+0");
         private final String displayName;
         private final String modString;
+
         ExplicitZeroModifierStyle(String displayName, String modString) {
             this.displayName = displayName;
             this.modString = modString;
         }
+
         @Override
         public String toString() {
             return displayName;
@@ -152,10 +180,14 @@ public class RecordSheetOptions {
         this.boldType = CConfig.getBooleanParam(CConfig.RS_BOLD_TYPE);
         this.damage = CConfig.getBooleanParam(CConfig.RS_DAMAGE);
         this.damageColor = CConfig.getParam(CConfig.RS_DAMAGE_COLOR, PrintEntity.FILL_RED);
-        this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER, WeaponSortOrder.class, WeaponSortOrder.DEFAULT);
+        this.weaponsOrder = CConfig.getEnumParam(CConfig.RS_WEAPONS_ORDER,
+              WeaponSortOrder.class,
+              WeaponSortOrder.DEFAULT);
         this.mergeIdenticalEquipment = CConfig.getBooleanParam(CConfig.RS_MERGE_IDENTICAL_EQUIPMENT);
         this.includeHitMod = CConfig.getEnumParam(CConfig.RS_HIT_MOD, HitModStyle.class, HitModStyle.NONE);
-        this.intrinsicPhysicalAttacks = CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS, IntrinsicPhysicalAttacksStyle.class, IntrinsicPhysicalAttacksStyle.NONE);
+        this.intrinsicPhysicalAttacks = CConfig.getEnumParam(CConfig.RS_INTRINSIC_PHYSICALS,
+              IntrinsicPhysicalAttacksStyle.class,
+              IntrinsicPhysicalAttacksStyle.NONE);
         this.explicitZeroModifier = CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD,
               ExplicitZeroModifierStyle.class, ExplicitZeroModifierStyle.DASH);
         this.extraPhysicals = CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS);
@@ -220,7 +252,7 @@ public class RecordSheetOptions {
     public boolean showRole() {
         return role;
     }
-    
+
     public boolean showHeatProfile() {
         return heatProfile;
     }
@@ -328,11 +360,11 @@ public class RecordSheetOptions {
     public String getDamageColor() {
         return damageColor;
     }
-    
+
     public WeaponSortOrder getWeaponsOrder() {
         return weaponsOrder;
     }
-    
+
     public void setWeaponsOrder(WeaponSortOrder order) {
         this.weaponsOrder = order;
     }
@@ -361,7 +393,7 @@ public class RecordSheetOptions {
         this.intrinsicPhysicalAttacks = intrinsicPhysicalAttacks;
     }
 
-    public ExplicitZeroModifierStyle  explicitZeroModifier() {
+    public ExplicitZeroModifierStyle explicitZeroModifier() {
         return explicitZeroModifier;
     }
 

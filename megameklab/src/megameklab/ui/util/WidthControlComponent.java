@@ -32,9 +32,9 @@
  */
 package megameklab.ui.util;
 
+import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 
 /**
  * This is an empty JPanel with a preferred width that corresponds to a JTextField with a fixed column number. It should

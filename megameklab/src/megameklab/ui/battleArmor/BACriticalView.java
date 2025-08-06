@@ -1,23 +1,40 @@
 /*
- * MegaMekLab - Copyright (C) 2008
- * Copyright (c) 2021 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 
 package megameklab.ui.battleArmor;
 
 import java.io.File;
 import java.util.Vector;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -41,7 +58,7 @@ import megameklab.ui.util.RefreshListener;
 
 /**
  * The Crit Slots view for a single suit of BattleArmor
- *
+ * <p>
  * Original author - jtighe (torren@users.sourceforge.net)
  *
  * @author arlith
@@ -75,10 +92,10 @@ public class BACriticalView extends IView {
         Box rightPanel = Box.createVerticalBox();
 
         mainPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR),
-                " Trooper " + trooper + " ",
-                TitledBorder.TOP,
-                TitledBorder.DEFAULT_POSITION));
+              BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR),
+              " Trooper " + trooper + " ",
+              TitledBorder.TOP,
+              TitledBorder.DEFAULT_POSITION));
 
         leftArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM]));
         bodyPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY]));
@@ -153,7 +170,7 @@ public class BACriticalView extends IView {
                 }
 
                 BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                        critNames, eSource, refresh, showEmpty, this);
+                      critNames, eSource, refresh, showEmpty, this);
                 criticalSlotList.setVisibleRowCount(critNames.size());
                 criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
                 criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -180,9 +197,9 @@ public class BACriticalView extends IView {
             String[] apTxt = new String[BattleArmor.MOUNT_NUM_LOCS];
             for (int loc = 0; loc < BattleArmor.MOUNT_NUM_LOCS; loc++) {
                 amTxt[loc] = "Anti-Mek Weapons: " + numAMWeapons[loc] + "/"
-                        + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
+                      + getBattleArmor().getNumAllowedAntiMekWeapons(loc);
                 apTxt[loc] = "Anti-Personnel Weapons: " + numAPWeapons[loc] + "/"
-                        + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
+                      + getBattleArmor().getNumAllowedAntiPersonnelWeapons(loc, trooper);
                 if (numAMWeapons[loc] > getBattleArmor().getNumAllowedAntiMekWeapons(loc)) {
                     amTxt[loc] = "<html><font color='C00000'>" + amTxt[loc] + "</font></html>";
                 }
@@ -207,12 +224,12 @@ public class BACriticalView extends IView {
             turretPanel.setVisible(isQuad && (getBattleArmor().getTurretCapacity() > 0));
 
             EntityVerifier entityVerifier = EntityVerifier.getInstance(new File(
-                    "data/mekfiles/UnitVerifierOptions.xml"));
+                  "data/mekfiles/UnitVerifierOptions.xml"));
             TestBattleArmor testBA = new TestBattleArmor(getBattleArmor(), entityVerifier.baOption, null);
 
             String weightTxt = "Weight: "
-                    + String.format("%1$.3f", testBA.calculateWeight(trooper))
-                    + "/" + getBattleArmor().getTrooperWeight();
+                  + String.format("%1$.3f", testBA.calculateWeight(trooper))
+                  + "/" + getBattleArmor().getTrooperWeight();
             if (testBA.calculateWeight(trooper) > getBattleArmor().getTrooperWeight()) {
                 weightTxt = "<html><font color='C00000'>" + weightTxt + "</font></html>";
             }

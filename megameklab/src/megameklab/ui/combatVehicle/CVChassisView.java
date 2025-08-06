@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.combatVehicle;
 
@@ -29,7 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -73,15 +86,15 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final static String CMD_RESET_CHASSIS = "resetChassis";
 
     private final static EntityMovementMode[] MOTIVE_TYPES = {
-            EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.HOVER,
-            EntityMovementMode.VTOL, EntityMovementMode.WIGE,
-            EntityMovementMode.NAVAL, EntityMovementMode.HYDROFOIL, EntityMovementMode.SUBMARINE
+          EntityMovementMode.TRACKED, EntityMovementMode.WHEELED, EntityMovementMode.HOVER,
+          EntityMovementMode.VTOL, EntityMovementMode.WIGE,
+          EntityMovementMode.NAVAL, EntityMovementMode.HYDROFOIL, EntityMovementMode.SUBMARINE
     };
 
     // Engines that can be used by meks and the order they appear in the combobox
     private final static int[] ENGINE_TYPES = {
-            Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
-            Engine.FUEL_CELL, Engine.LIGHT_ENGINE, Engine.COMPACT_ENGINE, Engine.FISSION
+          Engine.COMBUSTION_ENGINE, Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE,
+          Engine.FUEL_CELL, Engine.LIGHT_ENGINE, Engine.COMPACT_ENGINE, Engine.FISSION
     };
     private final Engine NO_ENGINE = new Engine(0, Engine.NONE, Engine.TANK_ENGINE);
 
@@ -106,7 +119,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JCheckBox chkControlSystems = new JCheckBox();
     private final CustomComboBox<EntityMovementMode> cbMotiveType = new CustomComboBox<>(motiveNames::get);
     private final TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName()
-            .replaceAll("^\\d+ ", "").replace(" [Vehicle]", ""));
+          .replaceAll("^\\d+ ", "").replace(" [Vehicle]", ""));
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
@@ -139,7 +152,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
         add(createLabel(resourceMap, "lblTonnage", "CVChassisView.spnTonnage.text",
-                "CVChassisView.spnTonnage.tooltip"), gbc);
+              "CVChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         spnTonnage.setToolTipText(resourceMap.getString("CVChassisView.spnTonnage.tooltip"));
@@ -177,7 +190,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         cbMotiveType.setModel(new DefaultComboBoxModel<>(MOTIVE_TYPES));
         gbc.gridx = 0;
         add(createLabel(resourceMap, "lblMotiveType", "CVChassisView.cbMotiveType.text",
-                "CVChassisView.cbMotiveType.tooltip"), gbc);
+              "CVChassisView.cbMotiveType.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         cbMotiveType.setToolTipText(resourceMap.getString("CVChassisView.cbMotiveType.tooltip"));
@@ -188,7 +201,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblEngine", "CVChassisView.cbEngine.text",
-                "CVChassisView.cbEngine.tooltip"), gbc);
+              "CVChassisView.cbEngine.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         cbEngine.setToolTipText(resourceMap.getString("CVChassisView.cbEngine.tooltip"));
@@ -199,7 +212,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblExtraSeats", "CVChassisView.spnExtraSeats.text",
-                "CVChassisView.spnExtraSeats.tooltip"), gbc);
+              "CVChassisView.spnExtraSeats.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridwidth = 2;
         spnExtraSeats.setToolTipText(resourceMap.getString("CVChassisView.spnExtraSeats.tooltip"));
@@ -210,7 +223,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         add(createLabel(resourceMap, "lblTurrets", "CVChassisView.cbTurrets.text",
-                "CVChassisView.cbTurrets.tooltip"), gbc);
+              "CVChassisView.cbTurrets.tooltip"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 3;
         cbTurrets.setToolTipText(resourceMap.getString("CVChassisView.cbTurrets.tooltip"));
@@ -221,7 +234,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         JLabel lbl = createLabel(resourceMap, "lblTurretWt", "CVChassisView.spnTurretWt.text",
-                "CVChassisView.spnTurretWt.tooltip");
+              "CVChassisView.spnTurretWt.tooltip");
         add(lbl, gbc);
         gbc.gridx = 3;
         spnChassisTurretWt.setToolTipText(resourceMap.getString("CVChassisView.spnTurretWt.tooltip"));
@@ -234,7 +247,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridx = 0;
         gbc.gridwidth = 3;
         lbl = createLabel(resourceMap, "lblTurret2Wt", "CVChassisView.spnTurret2Wt.text",
-                "CVChassisView.spnTurret2Wt.tooltip");
+              "CVChassisView.spnTurret2Wt.tooltip");
         add(lbl, gbc);
         gbc.gridx = 3;
         gbc.gridwidth = 1;
@@ -268,7 +281,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         setEngine(tank.getEngine());
 
         chkTrailer.setEnabled(tank.getMovementMode().equals(EntityMovementMode.WHEELED)
-                || tank.getMovementMode().equals(EntityMovementMode.TRACKED));
+              || tank.getMovementMode().equals(EntityMovementMode.TRACKED));
         chkControlSystems.setEnabled(isTrailer);
         spnExtraSeats.setValue(tank.getExtraCrewSeats());
         if (!tank.hasNoDualTurret()) {
@@ -438,11 +451,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     /**
-     * Select the first engine in the list that matches engine type and flags,
-     * disregarding the large
-     * engine flag. If the engine type and Clan flag cannot be matched, tries to
-     * match the type without
-     * regard to the Clan flag.
+     * Select the first engine in the list that matches engine type and flags, disregarding the large engine flag. If
+     * the engine type and Clan flag cannot be matched, tries to match the type without regard to the Clan flag.
      *
      * @param engine The engine to match
      */
@@ -469,12 +479,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     /**
-     * The turret configuration should be one of {@link CVChassisView#TURRET_NONE
-     * TURRET_NONE},
-     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE},
-     * {@link CVChassisView#TURRET_DUAL TURRET_DUAL},
-     * or {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
-     * 
+     * The turret configuration should be one of {@link CVChassisView#TURRET_NONE TURRET_NONE},
+     * {@link CVChassisView#TURRET_SINGLE TURRET_SINGLE}, {@link CVChassisView#TURRET_DUAL TURRET_DUAL}, or
+     * {@link CVChassisView#TURRET_CHIN TURRET_CHIN}.
+     *
      * @return The currently selected turret configuration.
      */
     public int getTurretConfiguration() {
@@ -486,9 +494,9 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         if (e.getSource() == spnTonnage) {
             listeners.forEach(l -> l.tonnageChanged(getTonnage()));
         } else if ((e.getSource() == spnChassisTurretWt)
-                || (e.getSource() == spnChassisTurret2Wt)) {
+              || (e.getSource() == spnChassisTurret2Wt)) {
             listeners.forEach(l -> l.turretBaseWtChanged(spnTurretWtModel.getNumber().doubleValue(),
-                    spnTurret2WtModel.getNumber().doubleValue()));
+                  spnTurret2WtModel.getNumber().doubleValue()));
         } else if (e.getSource() == spnExtraSeats) {
             listeners.forEach(l -> l.extraSeatsChanged((int) spnExtraSeats.getValue()));
         }

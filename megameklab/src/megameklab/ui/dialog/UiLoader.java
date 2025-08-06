@@ -1,22 +1,45 @@
 /*
- * Copyright (c) 2019, 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.dialog;
+
+import java.awt.BorderLayout;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
@@ -38,17 +61,9 @@ import megameklab.ui.supportVehicle.SVMainUI;
 import megameklab.ui.util.TabUtil;
 import megameklab.util.UnitUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.function.Consumer;
-
 /**
- * This class prepares a new editing UI for either a given Entity or an Entity
- * type (new unit). While
- * preparation runs, a splash screen is shown.
+ * This class prepares a new editing UI for either a given Entity or an Entity type (new unit). While preparation runs,
+ * a splash screen is shown.
  *
  * @author Taharqa
  * @author Simon (Juliez)
@@ -68,7 +83,11 @@ public class UiLoader {
     private boolean restore = false;
 
     public static void loadUi(Entity newUnit, String fileName) {
-        new UiLoader(UnitUtil.getEditorTypeForEntity(newUnit), newUnit.isPrimitive(), newUnit.isIndustrialMek(), newUnit, fileName).show();
+        new UiLoader(UnitUtil.getEditorTypeForEntity(newUnit),
+              newUnit.isPrimitive(),
+              newUnit.isIndustrialMek(),
+              newUnit,
+              fileName).show();
     }
 
     public static void loadUi(long type, boolean primitive, boolean industrial) {
@@ -80,14 +99,11 @@ public class UiLoader {
     }
 
     /**
-     * @param type       - the unit type to load the mainUI from, based on the types
-     *                   in StartupGUI.java
+     * @param type       - the unit type to load the mainUI from, based on the types in StartupGUI.java
      * @param primitive  - is unit primitive
      * @param industrial - is unit industrial
-     * @param newUnit    - a specific <code>Entity</code> to load in rather than
-     *                   default
-     * @param fileName   - the file name of the new unit; empty String if the unit
-     *                   has no file
+     * @param newUnit    - a specific <code>Entity</code> to load in rather than default
+     * @param fileName   - the file name of the new unit; empty String if the unit has no file
      */
     private UiLoader(long type, boolean primitive, boolean industrial, Entity newUnit, String fileName) {
         this.type = type;
@@ -119,8 +135,7 @@ public class UiLoader {
     }
 
     /**
-     * Shows the splash image, hides the calling frame and starts loading the new
-     * unit's UI.
+     * Shows the splash image, hides the calling frame and starts loading the new unit's UI.
      */
     public void show() {
         splashImage.setVisible(true);
@@ -188,8 +203,7 @@ public class UiLoader {
     }
 
     /**
-     * @return The correct MainUI for an Entity of the given type (ETYPE_xxx),
-     *         primitive and industrial flag.
+     * @return The correct MainUI for an Entity of the given type (ETYPE_xxx), primitive and industrial flag.
      */
     public static MegaMekLabMainUI getUI(long type, boolean primitive, boolean industrial) {
         if (type == Entity.ETYPE_TANK) {

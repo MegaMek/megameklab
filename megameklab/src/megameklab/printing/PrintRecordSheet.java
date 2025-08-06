@@ -1,16 +1,34 @@
 /*
- * MegaMekLab
- * Copyright (c) 2017-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -29,14 +47,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
-
 import javax.imageio.ImageIO;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -44,6 +66,12 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import megamek.common.EquipmentType;
+import megamek.common.annotations.Nullable;
+import megamek.common.util.ImageUtil;
+import megamek.logging.MMLogger;
+import megameklab.printing.reference.ReferenceTable;
+import megameklab.util.CConfig;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.anim.dom.SVGOMElement;
@@ -61,20 +89,16 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.fop.configuration.Configuration;
 import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.svg.PDFTranscoder;
-import org.w3c.dom.*;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGRectElement;
 
-import megamek.common.EquipmentType;
-import megamek.common.annotations.Nullable;
-import megamek.common.util.ImageUtil;
-import megamek.logging.MMLogger;
-import megameklab.printing.reference.ReferenceTable;
-import megameklab.util.CConfig;
-
 /**
- * Base class for rendering record sheets. This is mostly a collection of
- * utility methods.
+ * Base class for rendering record sheets. This is mostly a collection of utility methods.
  *
  * @author Neoancient
  */
@@ -91,7 +115,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
-    public static final String FILL_WHITE = "#ffffff";;
+    public static final String FILL_WHITE = "#ffffff";
+    ;
     public static final String FILL_RED = "#ee0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
@@ -134,8 +159,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * @return The page number of the first page of this record sheet within the
-     *         book.
+     * @return The page number of the first page of this record sheet within the book.
      */
     protected final int getFirstPage() {
         return firstPage;
@@ -150,9 +174,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Provides a callback function that can be used to provide updates on printing
-     * progress.
-     * As each page is rendered, the callback is invoked with the page number.
+     * Provides a callback function that can be used to provide updates on printing progress. As each page is rendered,
+     * the callback is invoked with the page number.
      *
      * @param callback The function to call with the current page number.
      */
@@ -174,6 +197,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Used for measuring font metrics of a normal weight font
      *
      * @param size The font size
+     *
      * @return A font derived from the default
      */
     protected final Font getNormalFont(float size) {
@@ -187,6 +211,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Used for measuring font metrics of a bold weight font
      *
      * @param size The font size
+     *
      * @return A font derived from the default bold
      */
     protected final Font getBoldFont(float size) {
@@ -195,13 +220,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         return boldFont.deriveFont(size);
     }
-    
+
     /**
-    * Used for measuring font metrics of an italic font
-    *
-    * @param size The font size
-    * @return A font derived from the default italic
-    */
+     * Used for measuring font metrics of an italic font
+     *
+     * @param size The font size
+     *
+     * @return A font derived from the default italic
+     */
     protected final Font getItalicFont(float size) {
         if (null == italicFont) {
             assignFonts();
@@ -210,11 +236,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-    * Used for measuring font metrics of a bold italic font
-    *
-    * @param size The font size
-    * @return A font derived from the default italic
-    */
+     * Used for measuring font metrics of a bold italic font
+     *
+     * @param size The font size
+     *
+     * @return A font derived from the default italic
+     */
     protected final Font getBoldItalicFont(float size) {
         if (null == boldItalicFont) {
             assignFonts();
@@ -232,8 +259,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Finds all text elements in the SVG document and replaces the font-family
-     * attribute.
+     * Finds all text elements in the SVG document and replaces the font-family attribute.
      *
      * @param doc The document to perform replacement in.
      */
@@ -303,6 +329,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Finds elements by class name (using XPath).
      *
      * @param className The class name to search for.
+     *
      * @return A list of matching elements.
      */
     private ArrayList<Element> getElementsByClass(String className) {
@@ -328,7 +355,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             logger.error("XPath error finding elements by class '" + className + "': " + e.getMessage(), e);
         } catch (Exception e) {
             logger.error(
-                    "Unexpected error finding elements by class '" + className + "' using XPath: " + e.getMessage(), e);
+                  "Unexpected error finding elements by class '" + className + "' using XPath: " + e.getMessage(), e);
         }
 
         return ret;
@@ -418,20 +445,21 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Creates a {@link Document} from an svg image file
      *
      * @param filename The name of the SVG file
+     *
      * @return The document object
      */
     private @Nullable Document loadSVG(String directoryPath, String filename) {
         final Path filePath = Paths.get(directoryPath, filename);
         if (!Files.exists(filePath)) {
             logger
-                    .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
+                  .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
             return null;
         }
 
         Document document = null;
         try (InputStream is = Files.newInputStream(filePath)) {
             SAXDocumentFactory df = new SAXDocumentFactory(SVGDOMImplementation.getDOMImplementation(),
-                    XMLResourceDescriptor.getXMLParserClassName());
+                  XMLResourceDescriptor.getXMLParserClassName());
             document = df.createDocument(filePath.toUri().toASCIIString(), is);
             Element rootElement = document.getDocumentElement();
             if (rootElement != null) {
@@ -443,7 +471,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
         if (document == null) {
             logger
-                    .error(String.format("Failed to open SVG file! Path: %s/%s", directoryPath, filename));
+                  .error(String.format("Failed to open SVG file! Path: %s/%s", directoryPath, filename));
             return null;
         }
 
@@ -451,30 +479,29 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Checks the <code>style</code> attribute of an {@link Element} for a given
-     * property and returns its
-     * value, or null if the property does not exist.
+     * Checks the <code>style</code> attribute of an {@link Element} for a given property and returns its value, or null
+     * if the property does not exist.
      *
      * @param element  The element to check the property of
      * @param property The name of the property
-     * @return The value of the property, or <code>null</code> if the property does
-     *         not exist.
+     *
+     * @return The value of the property, or <code>null</code> if the property does not exist.
      */
     static @Nullable String parseStyle(Element element, String property) {
         final String style = element.getAttributeNS(null, SVGConstants.SVG_STYLE_ATTRIBUTE);
         return Arrays.stream(style.split(";"))
-                .filter(field -> field.startsWith(property + ':'))
-                .findFirst()
-                .map(field -> field.substring(field.indexOf(':') + 1)).orElse(null);
+              .filter(field -> field.startsWith(property + ':'))
+              .findFirst()
+              .map(field -> field.substring(field.indexOf(':') + 1)).orElse(null);
     }
 
     /**
-     * Creates the base template document. This is usually loaded from a file, but
-     * some composite record sheets override this to create a document in memory
-     * which is then filled in using the individual record sheet templates.
+     * Creates the base template document. This is usually loaded from a file, but some composite record sheets override
+     * this to create a document in memory which is then filled in using the individual record sheet templates.
      *
      * @param pageIndex  The index of this page in the print job
      * @param pageFormat The page format selected by the user
+     *
      * @return An SVG document for one page of the print job
      */
     protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
@@ -494,7 +521,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
         double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
-                pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+              pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
         if ((pageIndex == firstPage) && includeReferenceCharts()) {
             ratio *= TABLE_RATIO;
         }
@@ -505,12 +532,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (g != null) {
             if (addMargin) {
                 g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                        String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
-                                ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
+                      String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                            ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
             } else {
                 g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                        String.format("%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
-                                ratio, ratio));
+                      String.format("%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
+                            ratio, ratio));
             }
         }
         processImage(pageIndex - firstPage, pageFormat);
@@ -520,10 +547,10 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         makeBoldType();
         return true;
     }
-    
+
     /**
-     * Applies the critical damage to the core components of the unit and crew.
-     * This should be overridden by subclasses that have core components.
+     * Applies the critical damage to the core components of the unit and crew. This should be overridden by subclasses
+     * that have core components.
      */
     protected void applyCoreComponentsCriticalDamage() {
     }
@@ -614,14 +641,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         int insertPoint = configXml.indexOf("</fonts>");
         if (insertPoint > 0) {
             configXml = configXml.substring(0, insertPoint) +
-                    systemFontDirectories.toString() +
-                    configXml.substring(insertPoint);
+                  systemFontDirectories.toString() +
+                  configXml.substring(insertPoint);
         } else {
             logger.warn("Failed to inject system font directories into fop-config.xml");
         }
         DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
         Configuration config = cfgBuilder.build(
-                new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
+              new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
         transcoder.configure(config);
 
         TranscoderInput input = new TranscoderInput(getSVGDocument());
@@ -671,8 +698,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Renders the sheet to the Graphics object.
      *
-     * @param pageNum Indicates which page of multi-page sheets to print. The first
-     *                page is 0.
+     * @param pageNum Indicates which page of multi-page sheets to print. The first page is 0.
      */
     protected void processImage(int pageNum, PageFormat pageFormat) {
         Element element = getSVGDocument().getElementById(COPYRIGHT);
@@ -686,10 +712,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * @param pageNumber The page number in the current record sheet, where the
-     *                   first page is numbered zero.
-     * @return The file name for the current page in the record sheet image
-     *         directory
+     * @param pageNumber The page number in the current record sheet, where the first page is numbered zero.
+     *
+     * @return The file name for the current page in the record sheet image directory
      */
     protected abstract String getSVGFileName(int pageNumber);
 
@@ -714,11 +739,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Sets the text content of the text element in the SVG diagram corresponding
-     * with the given id.
-     * If the element does not exist, does nothing. If the text is null, hides the
-     * element instead.
-     * Any text previously in the element is cleared.
+     * Sets the text content of the text element in the SVG diagram corresponding with the given id. If the element does
+     * not exist, does nothing. If the text is null, hides the element instead. Any text previously in the element is
+     * cleared.
      *
      * @param id     The String id of a text element
      * @param text   The text to set as content
@@ -750,9 +773,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                         double textWidth = SVGLocatableSupport.getBBox(element).getWidth();
                         if (textWidth > width) {
                             element.setAttributeNS(null, SVGConstants.SVG_TEXT_LENGTH_ATTRIBUTE,
-                                    String.valueOf(width));
+                                  String.valueOf(width));
                             element.setAttributeNS(null, SVGConstants.SVG_LENGTH_ADJUST_ATTRIBUTE,
-                                    SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
+                                  SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
                     } catch (NumberFormatException ex) {
                         logger.warn("Could not parse fieldWidth: " + fieldWidth);
@@ -763,27 +786,25 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Add a line through the text at the given coordinates. The line is drawn at the
-     * center of the text.
-     * 
-     * @param parent   The SVG element to add the line to.
-     * @param x        The X position of the line.
-     * @param y        The Y position of the line.
-     * @param width    The width of the line.
+     * Add a line through the text at the given coordinates. The line is drawn at the center of the text.
+     *
+     * @param parent The SVG element to add the line to.
+     * @param x      The X position of the line.
+     * @param y      The Y position of the line.
+     * @param width  The width of the line.
      */
     protected void addLineThrough(Element parent, double x, double y, double width) {
         addLineThrough(parent, x, y, width, getDamageFillColor());
     }
 
     /**
-     * Add a line through the text at the given coordinates. The line is drawn at the
-     * center of the text.
-     * 
-     * @param parent   The SVG element to add the line to.
-     * @param x        The X position of the line.
-     * @param y        The Y position of the line.
-     * @param width    The width of the line.
-     * @param color    The color of the line.
+     * Add a line through the text at the given coordinates. The line is drawn at the center of the text.
+     *
+     * @param parent The SVG element to add the line to.
+     * @param x      The X position of the line.
+     * @param y      The Y position of the line.
+     * @param width  The width of the line.
+     * @param color  The color of the line.
      */
     protected void addLineThrough(Element parent, double x, double y, double width, String color) {
         final int STROKE_THICKNESS = 1;
@@ -793,70 +814,64 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         line.setAttributeNS(null, SVGConstants.SVG_X2_ATTRIBUTE, String.valueOf(x + width));
         line.setAttributeNS(null, SVGConstants.SVG_Y2_ATTRIBUTE, String.valueOf(y));
         line.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, color);
-        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, STROKE_THICKNESS+"px");
+        line.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, STROKE_THICKNESS + "px");
         parent.appendChild(line);
     }
 
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the
-     * parent. The width
-     * of the text is returned, to aid in layout.
+     * Convenience method for creating a new SVG Text element and adding it to the parent. The width of the text is
+     * returned, to aid in layout.
      *
      * @param parent   The SVG element to add the text element to.
      * @param x        The X position of the new element.
      * @param y        The Y position of the new element.
      * @param text     The text to display.
      * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
+     * @param anchor   Set the Text elements text-anchor. Should be either start, middle, or end.
      * @param weight   The font weight, either normal or bold.
      *
      * @return The width of the text in the current font size
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight) {
+          float fontSize, String anchor, String weight) {
         return addTextElement(parent, x, y, text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK);
     }
 
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the
-     * parent. The
-     * height of the text is returned, to aid in layout.
+     * Convenience method for creating a new SVG Text element and adding it to the parent. The height of the text is
+     * returned, to aid in layout.
      *
-     * @param parent   The SVG element to add the text element to.
-     * @param x        The X position of the new element.
-     * @param y        The Y position of the new element.
-     * @param text     The text to display.
-     * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
-     * @param weight   The font weight, either normal or bold.
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor. Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
      * @param fontStyle The font style, either normal or italic.
-     * @param fill     The fill color for the text (e.g. foreground color)
+     * @param fill      The fill color for the text (e.g. foreground color)
      *
      * @return The width of the added text element
      */
     protected double addTextElement(Element parent, double x, double y, String text,
-            float fontSize, String anchor, String weight, String fontStyle, String fill) {
+          float fontSize, String anchor, String weight, String fontStyle, String fill) {
         return addTextElement(parent, x, y, text, fontSize, anchor, weight, fontStyle, fill, null, null);
     }
 
     /**
-     * Convenience method for creating a new SVG Text element and adding it to the
-     * parent. The
-     * height of the text is returned, to aid in layout.
+     * Convenience method for creating a new SVG Text element and adding it to the parent. The height of the text is
+     * returned, to aid in layout.
      *
-     * @param parent   The SVG element to add the text element to.
-     * @param x        The X position of the new element.
-     * @param y        The Y position of the new element.
-     * @param text     The text to display.
-     * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
-     * @param weight   The font weight, either normal or bold.
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor. Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
      * @param fontStyle The font style, either normal or italic.
-     * @param fill     The fill color for the text (e.g. foreground color)
-     * @param id       The id of the text element, or null if not needed.
+     * @param fill      The fill color for the text (e.g. foreground color)
+     * @param id        The id of the text element, or null if not needed.
      * @param className The class name of the text element, or null if not needed.
      *
      * @return The width of the added text element
@@ -884,8 +899,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Creates a new text element with black fill and adds it to the parent.
-     * If the text is wider than the available
+     * Creates a new text element with black fill and adds it to the parent. If the text is wider than the available
      * space, the text is compressed to fit.
      *
      * @param parent   The SVG element to add the text element to.
@@ -894,19 +908,17 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param width    The width of the space the text has to fit.
      * @param text     The text to display.
      * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
+     * @param anchor   Set the Text elements text-anchor. Should be either start, middle, or end.
      * @param weight   The font weight, either normal or bold.
      */
     protected void addTextElementToFit(Element parent, double x, double y, double width,
-            String text, float fontSize, String anchor, String weight) {
+          String text, float fontSize, String anchor, String weight) {
         addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, FILL_BLACK);
     }
 
     /**
-     * Creates a new text element and adds it to the parent. If the text is wider
-     * than the available
-     * space, the text is compressed to fit.
+     * Creates a new text element and adds it to the parent. If the text is wider than the available space, the text is
+     * compressed to fit.
      *
      * @param parent   The SVG element to add the text element to.
      * @param x        The X position of the new element.
@@ -914,32 +926,29 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param width    The width of the space the text has to fit.
      * @param text     The text to display.
      * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
+     * @param anchor   Set the Text elements text-anchor. Should be either start, middle, or end.
      * @param weight   The font weight, either normal or bold.
      * @param fill     The fill color for the text (e.g. foreground color)
      */
     protected void addTextElementToFit(Element parent, double x, double y, double width,
-            String text, float fontSize, String anchor, String weight, String fill) {
+          String text, float fontSize, String anchor, String weight, String fill) {
         addTextElementToFit(parent, x, y, width, text, fontSize, anchor, weight, fill, null, null);
     }
 
     /**
-     * Creates a new text element and adds it to the parent. If the text is wider
-     * than the available
-     * space, the text is compressed to fit.
+     * Creates a new text element and adds it to the parent. If the text is wider than the available space, the text is
+     * compressed to fit.
      *
-     * @param parent   The SVG element to add the text element to.
-     * @param x        The X position of the new element.
-     * @param y        The Y position of the new element.
-     * @param width    The width of the space the text has to fit.
-     * @param text     The text to display.
-     * @param fontSize Font size of the text.
-     * @param anchor   Set the Text elements text-anchor. Should be either start,
-     *                 middle, or end.
-     * @param weight   The font weight, either normal or bold.
-     * @param fill     The fill color for the text (e.g. foreground color)
-     * @param id      The id of the text element, or null if not needed.
+     * @param parent    The SVG element to add the text element to.
+     * @param x         The X position of the new element.
+     * @param y         The Y position of the new element.
+     * @param width     The width of the space the text has to fit.
+     * @param text      The text to display.
+     * @param fontSize  Font size of the text.
+     * @param anchor    Set the Text elements text-anchor. Should be either start, middle, or end.
+     * @param weight    The font weight, either normal or bold.
+     * @param fill      The fill color for the text (e.g. foreground color)
+     * @param id        The id of the text element, or null if not needed.
      * @param className The class name of the text element, or null if not needed.
      */
     protected void addTextElementToFit(Element parent, double x, double y, double width,
@@ -968,18 +977,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Adds a text element to a region with limited width. If there are multiple
-     * lines, the text
-     * will be split over multiple lines, broken on a space character. The space
-     * will still be
-     * included on the next line as a small indent.
+     * Adds a text element to a region with limited width. If there are multiple lines, the text will be split over
+     * multiple lines, broken on a space character. The space will still be included on the next line as a small
+     * indent.
      *
      * @param canvas     The parent <code>SVGElement</code> to the new
      *                   <code>Text</code>.
-     * @param x          The x coordinate of the upper left corner of the text
-     *                   region
-     * @param y          The y coordinate of the upper left corner of the text
-     *                   region
+     * @param x          The x coordinate of the upper left corner of the text region
+     * @param y          The y coordinate of the upper left corner of the text region
      * @param width      The allowable width of the text element.
      * @param lineHeight The amount to increase the y coordinate for a new line
      * @param text       The text to add
@@ -990,67 +995,58 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight) {
+          String text, float fontSize, String anchor, String weight) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, ' ', null);
+              text, fontSize, anchor, weight, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK, ' ', null);
     }
 
     /**
-     * Adds a text element to a region with limited width. If there are multiple
-     * lines, the text
-     * will be split over multiple lines, broken on a space character. The space
-     * will still be
-     * included on the next line as a small indent.
+     * Adds a text element to a region with limited width. If there are multiple lines, the text will be split over
+     * multiple lines, broken on a space character. The space will still be included on the next line as a small
+     * indent.
      *
      * @param canvas     The parent <code>SVGElement</code> to the new
      *                   <code>Text</code>.
-     * @param x          The x coordinate of the upper left corner of the text
-     *                   region
-     * @param y          The y coordinate of the upper left corner of the text
-     *                   region
+     * @param x          The x coordinate of the upper left corner of the text region
+     * @param y          The y coordinate of the upper left corner of the text region
      * @param width      The allowable width of the text element.
      * @param lineHeight The amount to increase the y coordinate for a new line
      * @param text       The text to add
      * @param fontSize   The font-size attribute
      * @param anchor     The text-anchor attribute
      * @param weight     The font-weight attribute
-     * @param fontStyle The font style, e.g., normal or italic.
+     * @param fontStyle  The font style, e.g., normal or italic.
      *
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle, String className) {
+          String text, float fontSize, String anchor, String weight, String fontStyle, String className) {
         return addMultilineTextElement(canvas, x, y, width, lineHeight,
-                text, fontSize, anchor, weight, fontStyle, FILL_BLACK, ' ', className);
+              text, fontSize, anchor, weight, fontStyle, FILL_BLACK, ' ', className);
     }
 
     /**
-     * Adds a text element to a region with limited width. If there are multiple
-     * lines, the text
-     * will be split over multiple lines, broken on the provided character. The line
-     * break character
-     * will be included on the next line.
+     * Adds a text element to a region with limited width. If there are multiple lines, the text will be split over
+     * multiple lines, broken on the provided character. The line break character will be included on the next line.
      *
      * @param canvas     The parent <code>SVGElement</code> to the new
      *                   <code>Text</code>.
-     * @param x          The x coordinate of the upper left corner of the text
-     *                   region
-     * @param y          The y coordinate of the upper left corner of the text
-     *                   region
+     * @param x          The x coordinate of the upper left corner of the text region
+     * @param y          The y coordinate of the upper left corner of the text region
      * @param width      The allowable width of the text element.
      * @param lineHeight The amount to increase the y coordinate for a new line
      * @param text       The text to add
      * @param fontSize   The font-size attribute
      * @param anchor     The text-anchor attribute
      * @param weight     The font-weight attribute
-     * @param fontStyle The font style, e.g., normal or italic.
+     * @param fontStyle  The font style, e.g., normal or italic.
      * @param fill       The fill color for the text (e.g. foreground color)
      * @param delimiter  The character to use as an acceptable line ending
      *
      * @return The number of lines of text added
      */
     protected int addMultilineTextElement(Element canvas, double x, double y, double width, double lineHeight,
-            String text, float fontSize, String anchor, String weight, String fontStyle, String fill,char delimiter,
+          String text, float fontSize, String anchor, String weight, String fontStyle, String fill, char delimiter,
           String className) {
         int lines = 0;
         // The index of the character after the most recent delimiter found. Everything
@@ -1086,9 +1082,19 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             final String subText = text.substring(0, pos + index);
             textLength = getTextLength(subText, fontSize, weight, fontStyle);
             if ((index < 0)
-                    || ((textLength > width)
-                            && (pos > 0))) {
-                addTextElement(textGroup, x, y, text.substring(0, pos), fontSize, anchor, weight, fontStyle, fill, null, null);
+                  || ((textLength > width)
+                  && (pos > 0))) {
+                addTextElement(textGroup,
+                      x,
+                      y,
+                      text.substring(0, pos),
+                      fontSize,
+                      anchor,
+                      weight,
+                      fontStyle,
+                      fill,
+                      null,
+                      null);
                 lines++;
                 y += lineHeight;
                 text = text.substring(pos);
@@ -1113,12 +1119,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Approximates a circle using four Bezier curves.
      *
-     * @param x      Position of left of bounding rectangle.
-     * @param y      Position of top of bounding rectangle.
-     * @param radius Radius of the circle
+     * @param x           Position of left of bounding rectangle.
+     * @param y           Position of top of bounding rectangle.
+     * @param radius      Radius of the circle
      * @param strokeWidth Width of the stroke
-     * @param type   PipType
-     * @param fill   Fill color for the pip
+     * @param type        PipType
+     * @param fill        Fill color for the pip
+     *
      * @return A Path describing the circle
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
@@ -1129,19 +1136,20 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Approximates a circle using four Bezier curves.
      *
-     * @param x      Position of left of bounding rectangle.
-     * @param y      Position of top of bounding rectangle.
-     * @param radius Radius of the circle
+     * @param x           Position of left of bounding rectangle.
+     * @param y           Position of top of bounding rectangle.
+     * @param radius      Radius of the circle
      * @param strokeWidth Width of the stroke
-     * @param type   PipType
-     * @param fill   Fill color for the pip
-     * @param className Class name for the pip, or null if not needed
-     * @param loc    Location of the pip, or null if not needed
-     * @param rear   If true, the pip is a rear pip
+     * @param type        PipType
+     * @param fill        Fill color for the pip
+     * @param className   Class name for the pip, or null if not needed
+     * @param loc         Location of the pip, or null if not needed
+     * @param rear        If true, the pip is a rear pip
+     *
      * @return A Path describing the circle
      */
     protected Element createPip(double x, double y, double radius, double strokeWidth,
-            PipType type, String fill, String className, String loc, boolean rear) {
+          PipType type, String fill, String className, String loc, boolean rear) {
 
         // Move to start of pip, at (1, 0)
         String classAttr = "pip";
@@ -1199,15 +1207,15 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param width       The width of the rectangle
      * @param height      The height of the rectangle
      * @param radius      The radius of the curve in the corners
-     * @param control     The length from the endpoint of each curve to its control
-     *                    point
+     * @param control     The length from the endpoint of each curve to its control point
      * @param strokeWidth The width of the stroke
      * @param stroke      The fill color of the stroke
+     *
      * @return A path element
      */
     protected Element createRoundedRectangle(double x, double y, double width, double height,
-            double radius, double control, double strokeWidth,
-            String stroke) {
+          double radius, double control, double strokeWidth,
+          String stroke) {
         Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_ATTRIBUTE);
         path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "bombBox");
         path.setAttributeNS(null, SVGConstants.CSS_FILL_PROPERTY, SVGConstants.SVG_NONE_VALUE);
@@ -1276,6 +1284,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Determines the vertical space taken up by a line of text.
      *
      * @param fontSize Value of CSS font-size attribute
+     *
      * @return The height of the bounding box of a text element
      */
     public float getFontHeight(float fontSize) {
@@ -1288,6 +1297,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @param fontSize Value of CSS font-size attribute
      * @param font     The font to use for the text
+     *
      * @return The height of the bounding box of a text element
      */
     protected float getFontHeight(float fontSize, Font font) {
@@ -1314,7 +1324,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         Font font = getBoldItalicFont(fontSize);
         return font.getStringBounds(text, svgGenerator.getFontRenderContext()).getWidth();
     }
-    
+
     public double getTextLength(String text, float fontSize) {
         return getTextLength(text, fontSize, SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE);
     }
@@ -1327,11 +1337,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         double textLength;
         if ((fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) && (weight.equals(SVGConstants.SVG_BOLD_VALUE))) {
             textLength = getBoldItalicTextLength(text, fontSize);
-        } else
-        if (weight.equals(SVGConstants.SVG_BOLD_VALUE)) {
+        } else if (weight.equals(SVGConstants.SVG_BOLD_VALUE)) {
             textLength = getBoldTextLength(text, fontSize);
-        } else
-        if (fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) {
+        } else if (fontStyle.equals(SVGConstants.SVG_ITALIC_VALUE)) {
             textLength = getItalicTextLength(text, fontSize);
         } else {
             textLength = getNormalTextLength(text, fontSize);
@@ -1341,9 +1349,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     public static Rectangle2D getRectBBox(SVGRectElement rect) {
         return new Rectangle2D.Float(rect.getX().getBaseVal().getValue(),
-                rect.getY().getBaseVal().getValue(),
-                rect.getWidth().getBaseVal().getValue(),
-                rect.getHeight().getBaseVal().getValue());
+              rect.getY().getBaseVal().getValue(),
+              rect.getWidth().getBaseVal().getValue(),
+              rect.getHeight().getBaseVal().getValue());
     }
 
     /**
@@ -1351,8 +1359,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @param imageFile The file containing the image to embed.
      * @param canvas    The parent element for the image element.
-     * @param bbox      The bounding box for the image. The image will be scaled to
-     *                  fit.
+     * @param bbox      The bounding box for the image. The image will be scaled to fit.
      * @param center    Whether to center the image vertically and horizontally.
      */
     public void embedImage(@Nullable File imageFile, Element canvas, Rectangle2D bbox, boolean center) {
@@ -1374,8 +1381,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @param image  The file containing the image to embed.
      * @param canvas The parent element for the image element.
-     * @param bbox   The bounding box for the image. The image will be scaled to
-     *               fit.
+     * @param bbox   The bounding box for the image. The image will be scaled to fit.
      * @param center Whether to center the image vertically and horizontally.
      */
     public void embedImage(@Nullable Image image, Element canvas, Rectangle2D bbox, boolean center) {
@@ -1406,7 +1412,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             img.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(width));
             img.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, Double.toString(height));
             img.setAttributeNS(SVGConstants.XLINK_NAMESPACE_URI, SVGConstants.XLINK_HREF_QNAME,
-                    "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
+                  "data:" + mimeType + ";base64," + Base64.getEncoder().encodeToString(bytes.toByteArray()));
             canvas.appendChild(img);
         } catch (IOException ex) {
             logger.error("Error embedding fluff image", ex);
@@ -1414,11 +1420,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Used to determine whether to scale the record sheet to make room for charts.
-     * This
-     * depends both on whether the option is selected and on whether the sheet
-     * supports
-     * reference charts.
+     * Used to determine whether to scale the record sheet to make room for charts. This depends both on whether the
+     * option is selected and on whether the sheet supports reference charts.
      *
      * @return Whether to include reference tables
      */
@@ -1437,38 +1440,34 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     protected void addReferenceCharts(PageFormat pageFormat) {
         placeReferenceCharts(
-                getRightSideReferenceTables(),
-                getSVGDocument().getDocumentElement(),
-                pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
-                pageFormat.getImageableY(),
-                pageFormat.getImageableWidth() * 0.2, pageFormat.getImageableHeight());
+              getRightSideReferenceTables(),
+              getSVGDocument().getDocumentElement(),
+              pageFormat.getImageableX() + pageFormat.getImageableWidth() * 0.8 + 3.0,
+              pageFormat.getImageableY(),
+              pageFormat.getImageableWidth() * 0.2, pageFormat.getImageableHeight());
     }
 
     /**
-     * Adds a list of reference tables to the document, sizing to fit withing the
-     * available space.
-     * Layout is vertical.
+     * Adds a list of reference tables to the document, sizing to fit withing the available space. Layout is vertical.
      *
      * @param tables The list of tables to add.
      * @param parent The parent node of the table {@link Element}.
-     * @param x      The x coordinate of the top left corner of the tables, relative
-     *               to the parent node.
-     * @param y      The y coordinate of the top left corder of the tables, relative
-     *               to the parent node.
+     * @param x      The x coordinate of the top left corner of the tables, relative to the parent node.
+     * @param y      The y coordinate of the top left corder of the tables, relative to the parent node.
      * @param width  The with of the table column.
      * @param height The height of the table column.
      */
     protected void placeReferenceCharts(List<ReferenceTable> tables, Node parent, double x, double y, double width,
-            double height) {
+          double height) {
         double BORDER = 3.0;
         double lines = tables.stream().mapToDouble(ReferenceTable::lineCount).sum();
         double ypos = y + BORDER;
         double margin = ReferenceTable.getMargins(this);
         for (ReferenceTable table : tables) {
             double tableHeight = (height - margin * tables.size())
-                    * table.lineCount() / lines + margin;
+                  * table.lineCount() / lines + margin;
             parent.appendChild(
-                    table.createTable(x, ypos, width, tableHeight - BORDER));
+                  table.createTable(x, ypos, width, tableHeight - BORDER));
             ypos += tableHeight;
         }
     }

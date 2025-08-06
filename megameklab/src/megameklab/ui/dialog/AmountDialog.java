@@ -17,12 +17,12 @@
  * if not, see <https://www.gnu.org/licenses/>.
  *
  * NOTICE: The MegaMek organization is a non-profit group of volunteers
- * creating free software for the BattleTech community. 
+ * creating free software for the BattleTech community.
  *
- * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks 
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
  * of The Topps Company, Inc. All Rights Reserved.
- * 
- * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of 
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
  * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
@@ -41,26 +41,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
-
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import megamek.client.ui.enums.DialogResult;
 
 /**
- * This is a dialog for entering an amount. It is used in various places in MML, such as when
- * transferring items between units.
+ * This is a dialog for entering an amount. It is used in various places in MML, such as when transferring items between
+ * units.
  *
  * @author drake
  */
@@ -128,13 +115,13 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         panel.add(bodyLabel, BorderLayout.NORTH);
 
         int spinnerMaxValue = (this.maxAmount < 0) ? 0 : this.maxAmount;
-        if (this.amount < 0) this.amount = 0;
-        if (this.amount > spinnerMaxValue) this.amount = spinnerMaxValue;
+        if (this.amount < 0) {this.amount = 0;}
+        if (this.amount > spinnerMaxValue) {this.amount = spinnerMaxValue;}
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.amount, 0, spinnerMaxValue, 1);
         amountSpinner = new JSpinner(spinnerModel);
         amountSpinner.setName("amountSpinner");
-        
+
         Dimension spinnerSize = amountSpinner.getPreferredSize();
         spinnerSize.width = Math.max(spinnerSize.width, 60);
         amountSpinner.setPreferredSize(spinnerSize);
@@ -149,17 +136,18 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         JComponent editor = amountSpinner.getEditor();
         if (editor instanceof JSpinner.DefaultEditor) {
             JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
-            textField.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "confirmOnEnter");
+            textField.getInputMap(JComponent.WHEN_FOCUSED)
+                  .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "confirmOnEnter");
             textField.getActionMap().put("confirmOnEnter", enterAction);
         }
-        
+
         JPanel spinnerWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         spinnerWrapper.add(amountSpinner);
         JLabel maxAmountLabel = new JLabel("/ " + spinnerMaxValue);
         spinnerWrapper.add(maxAmountLabel);
 
         panel.add(spinnerWrapper, BorderLayout.CENTER);
-        
+
         return panel;
     }
 
@@ -175,5 +163,5 @@ public class AmountDialog extends AbstractMMLButtonDialog {
     protected void cancelAction() {
         super.cancelAction();
     }
-    
+
 }

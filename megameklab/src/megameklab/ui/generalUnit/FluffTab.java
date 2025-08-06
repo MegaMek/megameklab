@@ -1,17 +1,53 @@
 /*
- * MegaMekLab - Copyright (C) 2018, 2024 - The MegaMek Team
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.generalUnit;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.util.FluffImageHelper;
@@ -25,18 +61,6 @@ import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
-import java.util.ResourceBundle;
 
 /**
  * Panel for editing unit fluff
@@ -92,7 +116,7 @@ public class FluffTab extends ITab implements FocusListener {
         Insets panelInsets = new Insets(5, 5, 5, 5);
 
         final boolean hasRightPanelEntries = !getEntity().hasETypeFlag(Entity.ETYPE_INFANTRY)
-                || getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
+              || getEntity().hasETypeFlag(Entity.ETYPE_BATTLEARMOR);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         GridBagConstraints mainGbc = new GridBagConstraints();
@@ -239,7 +263,7 @@ public class FluffTab extends ITab implements FocusListener {
             txtPrimaryFactory.setText(getFluff().getPrimaryFactory());
 
             if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                    || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                  || eSource.getEntity().hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
 
                 addLabeledTextField.accept(resourceMap.getString("FluffTab.txtUse"), txtUse);
                 txtUse.setText(getFluff().getUse());
@@ -262,7 +286,7 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.fill = GridBagConstraints.NONE;
                 // Add small gap before Width label
                 gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
-                        elementInsets.right);
+                      elementInsets.right);
                 panRight.add(new JLabel(resourceMap.getString("FluffTab.txtWidth")), gbcRight);
                 gbcRight.insets = elementInsets; // Reset insets
 
@@ -278,7 +302,7 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.fill = GridBagConstraints.NONE;
                 // Add small gap before Height label
                 gbcRight.insets = new Insets(elementInsets.top, elementInsets.left + 10, elementInsets.bottom,
-                        elementInsets.right);
+                      elementInsets.right);
                 panRight.add(new JLabel(resourceMap.getString("FluffTab.txtHeight")), gbcRight);
                 gbcRight.insets = elementInsets; // Reset insets
 
@@ -319,7 +343,7 @@ public class FluffTab extends ITab implements FocusListener {
             // Loop through Systems
             for (EntityFluff.System system : EntityFluff.System.values()) {
                 if ((system == EntityFluff.System.JUMPJET)
-                        && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
+                      && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
                     continue;
                 }
 
@@ -535,7 +559,7 @@ public class FluffTab extends ITab implements FocusListener {
                     logger.error("Fluff could not be copied!", ex);
                 }
             }
-        } finally {          
+        } finally {
             unitLoadingDialog.dispose();
             viewer.dispose();
         }
@@ -599,8 +623,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     /**
-     * Refreshes all fields from the entity data.
-     * This should be called when the entity is changed externally.
+     * Refreshes all fields from the entity data. This should be called when the entity is changed externally.
      */
     public void refresh() {
         if (eSource == null || eSource.getEntity() == null) {
@@ -615,7 +638,7 @@ public class FluffTab extends ITab implements FocusListener {
         txtDeployment.setText(fluff.getDeployment());
         txtHistory.setText(fluff.getHistory());
         txtNotes.setText(fluff.getNotes());
-        
+
         txtCapabilities.setCaretPosition(0);
         txtOverview.setCaretPosition(0);
         txtDeployment.setCaretPosition(0);
@@ -642,8 +665,7 @@ public class FluffTab extends ITab implements FocusListener {
     }
 
     /**
-     * Helper method to recursively update text fields in panels based on their
-     * names.
+     * Helper method to recursively update text fields in panels based on their names.
      */
     private void updatePanelTextFields(Container container, EntityFluff fluff) {
         for (Component component : container.getComponents()) {

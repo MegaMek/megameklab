@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing.reference;
 
@@ -18,11 +37,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.StringJoiner;
 
-import org.apache.batik.util.SVGConstants;
-
 import megamek.common.*;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
+import org.apache.batik.util.SVGConstants;
 
 /**
  * General table for movement costs
@@ -40,14 +58,14 @@ public class MovementCost extends ReferenceTable {
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(2, SVGConstants.SVG_START_VALUE);
         if (entity.getMovementMode().equals(EntityMovementMode.NAVAL)
-                || entity.getMovementMode().equals(EntityMovementMode.HYDROFOIL)
-                || entity.getMovementMode().equals(EntityMovementMode.SUBMARINE)) {
+              || entity.getMovementMode().equals(EntityMovementMode.HYDROFOIL)
+              || entity.getMovementMode().equals(EntityMovementMode.SUBMARINE)) {
             addNavalMods();
         } else if (entity.getMovementMode().equals(EntityMovementMode.VTOL)
-                || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
+              || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addAerialMods();
         } else if (entity.getMovementMode().equals(EntityMovementMode.RAIL)
-                || entity.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
+              || entity.getMovementMode().equals(EntityMovementMode.MAGLEV)) {
             addRailMods();
             addNote(bundle.getString("rail.note.1"));
             addNote(bundle.getString("rail.note.2"));
@@ -62,10 +80,10 @@ public class MovementCost extends ReferenceTable {
 
     public MovementCost(PrintRecordSheet sheet, List<Entity> entities) {
         super(sheet, entities.stream().anyMatch(en ->
-                EnumSet.of(EntityMovementMode.HOVER,
-                        EntityMovementMode.WHEELED,
-                        EntityMovementMode.TRACKED).contains(en.getMovementMode())) ?
-                HEADER_OFFSETS_EXTRA : HEADER_OFFSETS);
+              EnumSet.of(EntityMovementMode.HOVER,
+                    EntityMovementMode.WHEELED,
+                    EntityMovementMode.TRACKED).contains(en.getMovementMode())) ?
+              HEADER_OFFSETS_EXTRA : HEADER_OFFSETS);
         setColumnAnchor(0, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(2, SVGConstants.SVG_START_VALUE);
@@ -94,9 +112,9 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("rough"), "", "+1");
         }
         if (entity.getMovementMode().equals(EntityMovementMode.WHEELED)
-                || entity.getMovementMode().equals(EntityMovementMode.HOVER)
-                || entity.getMovementMode().equals(EntityMovementMode.VTOL)
-                || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
+              || entity.getMovementMode().equals(EntityMovementMode.HOVER)
+              || entity.getMovementMode().equals(EntityMovementMode.VTOL)
+              || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("lightWoods"), "", bundle.getString("prohibited"));
         } else {
             addRow("", bundle.getString("lightWoods"), "", "+1");
@@ -107,7 +125,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("heavyWoods"), "", "+2");
         }
         if (entity.getMovementMode().equals(EntityMovementMode.HOVER)
-                || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
+              || entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("water"), "", "+0");
         } else if (entity.hasMisc(MiscType.F_AMPHIBIOUS) || entity.hasMisc(MiscType.F_LIMITED_AMPHIBIOUS)) {
             addRow("", bundle.getString("water"), "", "");
@@ -129,7 +147,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("rubble"), "", "+1");
         }
         if (!entity.getMovementMode().equals(EntityMovementMode.VTOL)
-                && !entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
+              && !entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("lightBuilding"), "", "+1");
             addRow("", bundle.getString("mediumBuilding"), "", "+2");
             addRow("", bundle.getString("heavyBuilding"), "", "+3");
@@ -140,7 +158,7 @@ public class MovementCost extends ReferenceTable {
         } else if ((entity instanceof Tank) || (entity instanceof ProtoMek)) {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
             addRow("", bundle.getString("1level"), "",
-                    (entity instanceof ProtoMek) ? "+1" : "+2");
+                  (entity instanceof ProtoMek) ? "+1" : "+2");
             addRow("", bundle.getString("2plusLevels"), "", bundle.getString("prohibited"));
         } else {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", "");
@@ -199,16 +217,16 @@ public class MovementCost extends ReferenceTable {
     private void addRailMods() {
         addRow(SECTION_HEADER + bundle.getString("costToEnterAnyHex"), "", "", "1");
         addRow(SECTION_HEADER + bundle.getString("maximumChange"), "", "",
-                entity.isSuperHeavy() ? "+/- 1 MP" : "+/- 2 MP");
+              entity.isSuperHeavy() ? "+/- 1 MP" : "+/- 2 MP");
         if (entity.isTractor()) {
             addRow(SECTION_HEADER + bundle.getString("trailerWeight"), "", "", bundle.getString("cruiseMP"));
             addRow("", "<=" + formatWeightThreshold(0.5), "", String.valueOf(entity.getWalkMP()));
             addRow("", "<=" + formatWeightThreshold(2.0), "",
-                    String.valueOf(Math.max(2, entity.getWalkMP() - Math.min(3, entity.getWalkMP() * 2 / 3))));
+                  String.valueOf(Math.max(2, entity.getWalkMP() - Math.min(3, entity.getWalkMP() * 2 / 3))));
             addRow("", "<=" + formatWeightThreshold(4.0), "",
-                    String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 2)));
+                  String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 2)));
             addRow("", "<=" + formatWeightThreshold(5.0), "",
-                    String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 3)));
+                  String.valueOf(Math.max(2, entity.getWalkMP() - entity.getWalkMP() / 3)));
             addRow("", ">" + formatWeightThreshold(5.0), "", bundle.getString("prohibited"));
         }
     }
@@ -216,7 +234,7 @@ public class MovementCost extends ReferenceTable {
     private String formatWeightThreshold(double multiplier) {
         if (entity.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             return NumberFormat.getNumberInstance().format((int) (entity.getWeight() * 1000 * multiplier))
-                    + " kg";
+                  + " kg";
         } else {
             return NumberFormat.getNumberInstance().format(entity.getWeight() * multiplier) + " tons";
         }
@@ -249,7 +267,7 @@ public class MovementCost extends ReferenceTable {
         int mechanizedCount = wheeledCount + hoverCount + trackedCount;
 
         addRow(SECTION_HEADER + bundle.getString("move"), "", "", bundle.getString("cost"),
-                bundle.getString("prohibited"));
+              bundle.getString("prohibited"));
         addRow(SECTION_HEADER + bundle.getString("costToEnterAnyHex"), "", "", "1");
         addRow(SECTION_HEADER + bundle.getString("terrainCost"), "", "", "");
         addRow("", bundle.getString("clear"), "", "+0");
@@ -271,7 +289,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("lightWoods"), "", "+0", sj.toString());
         } else if (mechanizedCount < entities.size()) {
             addRow("", bundle.getString("lightWoods"), "",
-                    (entity instanceof Infantry) ? "+0" : "+1");
+                  (entity instanceof Infantry) ? "+0" : "+1");
         }
         if (trackedCount > 0) {
             addRow("", "", bundle.getString("mechanized"), "+1");
@@ -290,7 +308,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("heavyWoods"), "", "+1", sj.toString());
         } else {
             addRow("", bundle.getString("heavyWoods"), "",
-                    (entity instanceof ProtoMek) ? "+2" : "+1");
+                  (entity instanceof ProtoMek) ? "+2" : "+1");
         }
         addRow("", bundle.getString("water"), "", "");
         if (hoverCount > 0) {

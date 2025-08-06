@@ -43,8 +43,8 @@ import java.util.List;
 import megameklab.ui.EntitySource;
 
 /**
- * An Equipment Database for Combat Vehicles.
- * This table shows only few columns and is suitable for use in a detached dialog.
+ * An Equipment Database for Combat Vehicles. This table shows only few columns and is suitable for use in a detached
+ * dialog.
  */
 class GEFloatingEquipmentDatabaseView extends GEEquipmentDatabaseView {
 

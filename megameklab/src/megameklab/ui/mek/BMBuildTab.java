@@ -1,24 +1,40 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free  software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.mek;
 
 import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -49,7 +65,8 @@ public class BMBuildTab extends ITab {
     private final BMBuildView buildView;
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
-    private final JToggleButton autoFillUnHitTables = new JToggleButton(resources.getString("BuildTab.autoFillUnhittables.text"));
+    private final JToggleButton autoFillUnHitTables = new JToggleButton(resources.getString(
+          "BuildTab.autoFillUnhittables.text"));
     private final JToggleButton autoCompact = new JToggleButton(resources.getString("BuildTab.autoCompact.text"));
     private final JToggleButton autoSort = new JToggleButton(resources.getString("BuildTab.autoSort.text"));
 
@@ -117,8 +134,8 @@ public class BMBuildTab extends ITab {
         buttonPanel.setBackground(UIUtil.alternateTableBGColor());
         buttonPanel.setOpaque(true);
         buttonPanel.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(getBackground(), 10),
-                new EmptyBorder(5, 10, 5, 10)));
+              new LineBorder(getBackground(), 10),
+              new EmptyBorder(5, 10, 5, 10)));
         buttonPanel.add(critBlocks);
         buttonPanel.add(unallocatedList);
         return buttonPanel;
@@ -152,9 +169,9 @@ public class BMBuildTab extends ITab {
     }
 
     /**
-     * Called during refresh when Auto-Compact is activated. Auto-Sorting already results
-     * in compacting, therefore this can be skipped when Auto-sorting is activated.
-     * It is important that this method does not call a refresh to avoid a loop!
+     * Called during refresh when Auto-Compact is activated. Auto-Sorting already results in compacting, therefore this
+     * can be skipped when Auto-sorting is activated. It is important that this method does not call a refresh to avoid
+     * a loop!
      */
     private void autoCompactCrits() {
         if (autoCompact.isSelected() && !autoSort.isSelected()) {
@@ -163,8 +180,8 @@ public class BMBuildTab extends ITab {
     }
 
     /**
-     * Called from the Compact button. Must not be called from within a refresh as this
-     * calls a refresh and will result in a loop!
+     * Called from the Compact button. Must not be called from within a refresh as this calls a refresh and will result
+     * in a loop!
      */
     private void compactCrits() {
         MekUtil.compactCriticals(getMek());
@@ -172,8 +189,8 @@ public class BMBuildTab extends ITab {
     }
 
     /**
-     * Called from the Sort button. Must not be called from within a refresh as this
-     * calls a refresh and will result in a loop!
+     * Called from the Sort button. Must not be called from within a refresh as this calls a refresh and will result in
+     * a loop!
      */
     private void sortCrits() {
         MekUtil.sortCrits(getMek());
@@ -181,8 +198,8 @@ public class BMBuildTab extends ITab {
     }
 
     /**
-     * Called during refresh when Auto-Sorting is activated.
-     * It is important that this method does not call a refresh to avoid a loop!
+     * Called during refresh when Auto-Sorting is activated. It is important that this method does not call a refresh to
+     * avoid a loop!
      */
     private void autoSortCrits() {
         if (autoSort.isSelected()) {

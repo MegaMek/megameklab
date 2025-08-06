@@ -32,6 +32,16 @@
  */
 package megameklab.ui.infantry;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
+import java.util.StringJoiner;
+import javax.swing.JComponent;
+import javax.swing.JTextPane;
+
 import com.formdev.flatlaf.ui.FlatTextBorder;
 import megamek.client.ui.util.DisplayTextfield;
 import megamek.common.EquipmentType;
@@ -44,16 +54,6 @@ import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.generalUnit.StandardBuildLabel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.WidthControlComponent;
-
-import javax.swing.JComponent;
-import javax.swing.JTextPane;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Enumeration;
-import java.util.StringJoiner;
 
 public class CIAdvancedView extends IView {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023,2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,28 +25,41 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
  */
 package megameklab.ui.infantry;
 
-import com.formdev.flatlaf.ui.FlatTextBorder;
-import megamek.common.*;
-import megameklab.ui.EntitySource;
-import megameklab.ui.util.IView;
-import megameklab.ui.util.RefreshListener;
-import megameklab.ui.util.TabScrollPane;
-
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import com.formdev.flatlaf.ui.FlatTextBorder;
+import megamek.common.Infantry;
+import megamek.common.InfantryMount;
+import megameklab.ui.EntitySource;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.TabScrollPane;
 
 public class CIMountView extends IView implements ActionListener {
 
@@ -97,7 +110,7 @@ public class CIMountView extends IView implements ActionListener {
         ButtonGroup bgroupView = new ButtonGroup();
         bgroupView.add(rbtnStats);
         bgroupView.add(rbtnCustom);
-        rbtnStats.addActionListener(ev ->  showCard(CARD_TABLE));
+        rbtnStats.addActionListener(ev -> showCard(CARD_TABLE));
         rbtnCustom.addActionListener(ev -> showCard(CARD_CUSTOM));
         JPanel btnPanel = new JPanel();
         btnPanel.add(rbtnStats);
@@ -108,7 +121,7 @@ public class CIMountView extends IView implements ActionListener {
 
         creatureView.setLayout(equipmentLayout);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridy++;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
@@ -152,7 +165,7 @@ public class CIMountView extends IView implements ActionListener {
             valid = !customMountView.txtMountName.getText().isEmpty();
             try {
                 valid &= Double.parseDouble(customMountView.txtWeight.getText()) > 0;
-            } catch(NumberFormatException ignored) {
+            } catch (NumberFormatException ignored) {
                 valid = false;
             }
         }
@@ -179,7 +192,7 @@ public class CIMountView extends IView implements ActionListener {
                 int selected = creatureTable.convertRowIndexToModel(view);
                 InfantryMount newMount = selectedMount(selected);
                 if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
-                        && ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
+                      && ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
                 }
                 getInfantry().setMount(selectedMount(selected));

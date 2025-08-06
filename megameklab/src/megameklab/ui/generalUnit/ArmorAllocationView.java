@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2017 - The MegaMek Team
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.generalUnit;
 
@@ -20,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -39,65 +57,67 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.util.UnitUtil;
 
 /**
- * Panel for allocating armor to various locations on an Entity. The assignment of armor values for specific
- * locations is delegated to ArmorLocationView. This class handles positioning of the subviews to approximate
- * the position on the unit and tracking the total amount of armor allocated.
+ * Panel for allocating armor to various locations on an Entity. The assignment of armor values for specific locations
+ * is delegated to ArmorLocationView. This class handles positioning of the subviews to approximate the position on the
+ * unit and tracking the total amount of armor allocated.
  *
  * @author Neoancient
  */
 public class ArmorAllocationView extends BuildView implements ArmorLocationListener {
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(ArmorAllocationListener l) {
         listeners.add(l);
     }
+
     public void removeListener(ArmorAllocationListener l) {
         listeners.remove(l);
     }
 
     private static final int[][] MEK_LAYOUT = {
-            {-1, -1, Mek.LOC_HEAD, -1, -1},
-            {Mek.LOC_LARM, Mek.LOC_LT, Mek.LOC_CT, Mek.LOC_RT, Mek.LOC_RARM},
-            {-1, Mek.LOC_LLEG, Mek.LOC_CLEG, Mek.LOC_RLEG, -1}
+          { -1, -1, Mek.LOC_HEAD, -1, -1 },
+          { Mek.LOC_LARM, Mek.LOC_LT, Mek.LOC_CT, Mek.LOC_RT, Mek.LOC_RARM },
+          { -1, Mek.LOC_LLEG, Mek.LOC_CLEG, Mek.LOC_RLEG, -1 }
     };
 
     private static final int[][] PROTOMEK_LAYOUT = {
-            {ProtoMek.LOC_MAINGUN, ProtoMek.LOC_HEAD, -1 },
-            {ProtoMek.LOC_LARM, ProtoMek.LOC_TORSO, ProtoMek.LOC_RARM },
-            {-1, ProtoMek.LOC_LEG, -1}
+          { ProtoMek.LOC_MAINGUN, ProtoMek.LOC_HEAD, -1 },
+          { ProtoMek.LOC_LARM, ProtoMek.LOC_TORSO, ProtoMek.LOC_RARM },
+          { -1, ProtoMek.LOC_LEG, -1 }
     };
 
     private static final int[][] TANK_LAYOUT = {
-            {-1, Tank.LOC_FRONT, -1},
-            {Tank.LOC_LEFT, Tank.LOC_TURRET, Tank.LOC_RIGHT},
-            {-1, Tank.LOC_TURRET_2, -1},
-            {-1, Tank.LOC_REAR, -1}
+          { -1, Tank.LOC_FRONT, -1 },
+          { Tank.LOC_LEFT, Tank.LOC_TURRET, Tank.LOC_RIGHT },
+          { -1, Tank.LOC_TURRET_2, -1 },
+          { -1, Tank.LOC_REAR, -1 }
     };
 
     private static final int[][] SH_TANK_LAYOUT = {
-            {-1, SuperHeavyTank.LOC_FRONT, -1},
-            {SuperHeavyTank.LOC_FRONTLEFT, SuperHeavyTank.LOC_TURRET, SuperHeavyTank.LOC_FRONTRIGHT},
-            {SuperHeavyTank.LOC_REARLEFT, SuperHeavyTank.LOC_TURRET_2, SuperHeavyTank.LOC_REARRIGHT},
-            {-1, SuperHeavyTank.LOC_REAR, -1}
+          { -1, SuperHeavyTank.LOC_FRONT, -1 },
+          { SuperHeavyTank.LOC_FRONTLEFT, SuperHeavyTank.LOC_TURRET, SuperHeavyTank.LOC_FRONTRIGHT },
+          { SuperHeavyTank.LOC_REARLEFT, SuperHeavyTank.LOC_TURRET_2, SuperHeavyTank.LOC_REARRIGHT },
+          { -1, SuperHeavyTank.LOC_REAR, -1 }
     };
 
     private static final int[][] VTOL_LAYOUT = {
-            {-1, VTOL.LOC_FRONT, -1},
-            {VTOL.LOC_LEFT, VTOL.LOC_ROTOR, VTOL.LOC_RIGHT},
-            {-1, VTOL.LOC_TURRET, -1},
-            {-1, VTOL.LOC_REAR, -1}
+          { -1, VTOL.LOC_FRONT, -1 },
+          { VTOL.LOC_LEFT, VTOL.LOC_ROTOR, VTOL.LOC_RIGHT },
+          { -1, VTOL.LOC_TURRET, -1 },
+          { -1, VTOL.LOC_REAR, -1 }
     };
 
     private static final int[][] AERODYNE_LAYOUT = {
-            {-1, Aero.LOC_NOSE, -1},
-            {Aero.LOC_LWING, -1, Aero.LOC_RWING},
-            {-1, Aero.LOC_AFT, -1}
+          { -1, Aero.LOC_NOSE, -1 },
+          { Aero.LOC_LWING, -1, Aero.LOC_RWING },
+          { -1, Aero.LOC_AFT, -1 }
     };
 
     private static final int[][] CAPITAL_LAYOUT = {
-            {-1, Jumpship.LOC_NOSE, -1},
-            {Jumpship.LOC_FLS, -1, Jumpship.LOC_FRS},
-            {Jumpship.LOC_ALS, -1, Jumpship.LOC_ARS},
-            {-1, Jumpship.LOC_AFT, -1}
+          { -1, Jumpship.LOC_NOSE, -1 },
+          { Jumpship.LOC_FLS, -1, Jumpship.LOC_FRS },
+          { Jumpship.LOC_ALS, -1, Jumpship.LOC_ARS },
+          { -1, Jumpship.LOC_AFT, -1 }
     };
 
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
@@ -193,11 +213,11 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         setEntityType(en.getEntityType());
         for (ArmorLocationView locView : locationViews) {
             final int location = locView.getLocationIndex();
-            final Integer maxArmor = UnitUtil.getMaxArmor(en,  location);
+            final Integer maxArmor = UnitUtil.getMaxArmor(en, location);
             if (location < en.locations() && ((maxArmor == null) || (maxArmor > 0))) {
                 locView.setVisible(true);
                 locView.updateLocation(en.getLocationAbbr(location),
-                        en.hasRearArmor(location));
+                      en.hasRearArmor(location));
                 locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
                 locView.setPoints(en.getArmor(location));
                 if (en.hasRearArmor(location)) {
@@ -206,7 +226,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                     locView.setPointsRear(0);
                 }
                 if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                        || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
+                      || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
                     locView.setMinimum((int) (TestEntity.getSIBonusArmorPoints(en) / locationViews.size()));
                 }
                 if (showPatchwork) {
@@ -216,7 +236,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                         points += en.getArmor(location, true);
                     }
                     locView.setToolTipText(String.format(tooltipFormat, pointsPerTon,
-                            points / pointsPerTon));
+                          points / pointsPerTon));
                 }
             } else {
                 locView.setVisible(false);
@@ -226,7 +246,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         }
         int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
         int raw = (int) (TestEntity.getRawArmorPoints(en, en.getLabArmorTonnage())
-                + TestEntity.getSIBonusArmorPoints(en));
+              + TestEntity.getSIBonusArmorPoints(en));
         int currentPoints = en.getTotalOArmor();
         int armorPoints;
         if (showPatchwork) {
@@ -252,17 +272,17 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             txtPointsPerTon.setText("-");
         } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             txtPointsPerTon.setText(String.format("%d",
-                    (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
+                  (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof ProtoMek) {
             txtPointsPerTon.setText(String.format("%d",
-                    (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
+                  (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
             txtPointsPerTon.setText(String.format("%3.2f",
-                    UnitUtil.getArmorPointsPerTon(en)));
+                  UnitUtil.getArmorPointsPerTon(en)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }
@@ -322,10 +342,11 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     }
 
     /**
-     * Helper function for patchwork. If used for non-patchwork, it will likely give incorrect values
-     * due to rounding up by location.
+     * Helper function for patchwork. If used for non-patchwork, it will likely give incorrect values due to rounding up
+     * by location.
      *
      * @param en the current entity
+     *
      * @return The total weight of all allocated armor.
      */
     public double getTotalArmorWeight(Entity en) {

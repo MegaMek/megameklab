@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2009
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.combatVehicle;
 
@@ -29,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.*;
 
 import megamek.common.AmmoType;
@@ -282,7 +298,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             if (eq instanceof WeaponType) {
                 WeaponType weapon = (WeaponType) eq;
                 if (weapon.hasFlag(WeaponType.F_ENERGY)
-                        || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA))) {
+                      || (weapon.hasFlag(WeaponType.F_PLASMA) && (weapon.getAmmoType()
+                      == AmmoType.AmmoTypeEnum.PLASMA))) {
                     masterLaserWeaponList.add(eq);
                 } else if ((eq.hasFlag(WeaponType.F_BALLISTIC) && (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA))) {
                     masterBallisticWeaponList.add(eq);
@@ -292,9 +309,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     masterArtilleryWeaponList.add(eq);
                 }
             } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))
-                    && eq.hasFlag(MiscType.F_TALON)) {
+                  && eq.hasFlag(MiscType.F_TALON)) {
                 if (eq.hasFlag(MiscType.F_CLUB)
-                        && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
+                      && (eq.hasSubType(MiscType.S_CLUB) || eq.hasSubType(MiscType.S_TREE_CLUB))) {
                     continue;
                 }
                 masterPhysicalWeaponList.add(eq);
@@ -464,7 +481,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subLaserWeaponList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -476,7 +493,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (laserWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : laserAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subLaserAmmoList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -488,7 +505,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (missileWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : missileWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subMissileWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
 
                         // MegaMek automatically adds a ton of ammo for one shots
@@ -507,7 +524,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (missileAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : missileAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subMissileAmmoList.elementAt(index), Entity.LOC_NONE,
-                                false);
+                              false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -519,7 +536,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (ballisticWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subBallisticWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                         // MegaMek automatically adds a ton of ammo for one shots
                         // for tracking. We do not need this in MLab
@@ -537,7 +554,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (ballisticAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : ballisticAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subBallisticAmmoList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -549,7 +566,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (artilleryWeaponCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryWeaponCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subArtilleryWeaponList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -561,7 +578,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (artilleryAmmoCombo.getSelectedIndex() > -1) {
                     for (int index : artilleryAmmoCombo.getSelectedIndices()) {
                         Mounted<?> mount = getTank().addEquipment(subArtilleryAmmoList.elementAt(index),
-                                Entity.LOC_NONE, false);
+                              Entity.LOC_NONE, false);
                         weaponList.addCrit(mount);
                     }
                 }
@@ -656,7 +673,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 if (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA) {
                     for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                         if ((ammo.getRackSize() == weapon.getRackSize()) && UnitUtil.isLegal(getTank(), ammo)
-                                && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                              && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                             subLaserAmmoList.add(ammo);
                             equipmentList.add(ammo.getInternalName());
                         }
@@ -673,9 +690,9 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)
-                            && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                          && UnitUtil.isLegal(getTank(), ammo)
+                          && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)
+                          && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
                         subMissileAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -690,8 +707,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                          && UnitUtil.isLegal(getTank(), ammo)
+                          && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subBallisticAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -706,8 +723,8 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 Vector<String> equipmentList = new Vector<>();
                 for (AmmoType ammo : AmmoType.getMunitionsFor(weapon.getAmmoType())) {
                     if ((ammo.getRackSize() == weapon.getRackSize())
-                            && UnitUtil.isLegal(getTank(), ammo)
-                            && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
+                          && UnitUtil.isLegal(getTank(), ammo)
+                          && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)) {
                         subArtilleryAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }

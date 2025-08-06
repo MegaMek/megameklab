@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2023 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.generalUnit;
 
@@ -37,13 +51,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 
-import megamek.client.ui.panels.DialogOptionComponentYPanel;
 import megamek.client.ui.clientGUI.DialogOptionListener;
+import megamek.client.ui.panels.DialogOptionComponentYPanel;
 import megamek.client.ui.util.VerticalGridLayout;
 import megamek.common.MiscType;
 import megamek.common.Mounted;
@@ -135,8 +148,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects general quirks
      */
     private void collectGeneralQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponentYPanel> quirksList) {
-        for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements();) {
+          List<DialogOptionComponentYPanel> quirksList) {
+        for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
             List<DialogOptionComponentYPanel> quirks = collecQuirksForOptionGroup(group, quirksList);
             if (!quirks.isEmpty()) {
@@ -149,7 +162,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collect weapon quirks
      */
     private void collectWeaponQuirksInfo(List<GroupInfo> groupsToDisplay,
-            List<DialogOptionComponentYPanel> quirksList) {
+          List<DialogOptionComponentYPanel> quirksList) {
         List<Mounted<?>> equipmentList = new ArrayList<>(getEntity().getWeaponList());
         for (Mounted<?> miscItem : getEntity().getMisc()) {
             if (miscItem.getType().hasFlag(MiscType.F_CLUB)) {
@@ -169,12 +182,11 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects and optionally sorts quirks for a general group
      */
     private List<DialogOptionComponentYPanel> collecQuirksForOptionGroup(IOptionGroup group,
-            List<DialogOptionComponentYPanel> quirksList) {
+          List<DialogOptionComponentYPanel> quirksList) {
         List<DialogOptionComponentYPanel> quirksInGroup = new ArrayList<>();
-        for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
+        for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
             IOption option = j.nextElement();
-            if (null == option || Quirks.isQuirkDisallowed(option, getEntity()))
-                continue;
+            if (null == option || Quirks.isQuirkDisallowed(option, getEntity())) {continue;}
             addQuirkInfo(option, quirksInGroup, quirksList);
         }
         if (SORT_QUIRKS_ALPHABETICALLY && !quirksInGroup.isEmpty()) {
@@ -187,18 +199,16 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Collects and optionally sorts quirks for a specific weapon
      */
     private List<DialogOptionComponentYPanel> collectQuirksForWeapon(Mounted<?> m,
-            List<DialogOptionComponentYPanel> allQuirksList) {
+          List<DialogOptionComponentYPanel> allQuirksList) {
         WeaponQuirks wq = m.getQuirks();
-        if (wq == null)
-            return Collections.emptyList();
+        if (wq == null) {return Collections.emptyList();}
 
         List<DialogOptionComponentYPanel> weaponComps = new ArrayList<>();
-        for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements();) {
+        for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
-            for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements();) {
+            for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                 IOption option = j.nextElement();
-                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType()))
-                    continue;
+                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType())) {continue;}
                 addQuirkInfo(option, weaponComps, allQuirksList);
             }
         }
@@ -230,7 +240,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Creates a quirk entry, stores its info, and adds it to lists.
      */
     private void addQuirkInfo(IOption option, List<DialogOptionComponentYPanel> groupList,
-            List<DialogOptionComponentYPanel> allList) {
+          List<DialogOptionComponentYPanel> allList) {
         DialogOptionComponentYPanel comp = new DialogOptionComponentYPanel(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
         updateQuirkFontStyle(comp, option.booleanValue());
@@ -246,10 +256,11 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         for (DialogOptionComponentYPanel comp : allQuirks) {
             Dimension originalSize = originalPreferredSizes.get(comp);
             globalMaxItemWidth = Math.max(globalMaxItemWidth,
-                    (originalSize != null) ? originalSize.width : comp.getPreferredSize().width);
+                  (originalSize != null) ? originalSize.width : comp.getPreferredSize().width);
         }
-        if (globalMaxItemWidth <= 0)
+        if (globalMaxItemWidth <= 0) {
             globalMaxItemWidth = 150; // Fallback width
+        }
     }
 
     /**
@@ -284,14 +295,12 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      * Calculates the number of columns based on available width and max item width.
      */
     private int calculateNumberOfColumns(int containerWidth, int maxItemWidth) {
-        if (containerWidth <= 0 || maxItemWidth <= 0)
-            return 1;
+        if (containerWidth <= 0 || maxItemWidth <= 0) {return 1;}
         return Math.max(1, containerWidth / (maxItemWidth + 8));
     }
 
     /**
-     * Checks if relayout is needed based on width changes (number of columns
-     * drawable) and triggers it.
+     * Checks if relayout is needed based on width changes (number of columns drawable) and triggers it.
      */
     private void triggerRelayoutCheck() {
         if (!isShowing() || groupLayoutMap.isEmpty() || globalMaxItemWidth <= 0) {
@@ -352,8 +361,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Arranges quirks within a single group panel and makes them fixed-width
-     * from globalMaxItemWidth
+     * Arranges quirks within a single group panel and makes them fixed-width from globalMaxItemWidth
      */
     private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
         groupPanel.removeAll();

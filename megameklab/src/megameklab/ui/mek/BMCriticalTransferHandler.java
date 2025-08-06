@@ -1,29 +1,46 @@
 /*
- * Copyright (C) 2008
- * Copyright (c) 2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.mek;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -67,7 +84,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
             } else {
                 throw new LocationFullException("There is no room for this " + eq.getName() + " in the "
-                        + getUnit().getLocationAbbr(location) + " and the adjacent locations.");
+                      + getUnit().getLocationAbbr(location) + " and the adjacent locations.");
             }
 
         } else {
@@ -97,14 +114,14 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
             } else {
                 throw new LocationFullException("There is no room for this " + eq.getName() + " in the "
-                        + getUnit().getLocationAbbr(location) + ".");
+                      + getUnit().getLocationAbbr(location) + ".");
             }
         }
     }
 
     /** Adds standard (non-splittable/spreadable) equipment to the mek. */
     private boolean addSingleLocationEquipment(Mek mek, Mounted<?> eq, int slotNumber)
-            throws LocationFullException {
+          throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
         MekUtil.removeFMU(mek, location, slotNumber, neededCrits);
         if ((eq.getType() instanceof WeaponType) && eq.getType().hasFlag(WeaponType.F_VGL)) {
@@ -142,9 +159,9 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
         // Determine if we should spread equipment over multiple locations
         if ((neededTotalSlots > freePrimarySlots)
-                // TargComps are marked as spreadable as a workaround, see the MiscType comment
-                && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
-                && !(getUnit() instanceof LandAirMek)) {
+              // TargComps are marked as spreadable as a workaround, see the MiscType comment
+              && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+              && !(getUnit() instanceof LandAirMek)) {
 
             Set<Integer> secondLocationSet = new HashSet<>();
             secondLocationSet.add(mek.getTransferLocation(location));
@@ -164,7 +181,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
             secondLocationSet
-                    .removeIf(loc -> MekUtil.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
+                  .removeIf(loc -> MekUtil.getMaxContiguousNumOfCrits(mek, loc, true) < neededSecondarySlots);
 
             List<Integer> secondLocationsList = new ArrayList<>(secondLocationSet);
             if (secondLocationsList.isEmpty()) {
@@ -263,7 +280,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                         boolean canDouble = false;
                         if ((etype instanceof AmmoType) && (etype2 instanceof AmmoType)) {
                             canDouble = (((AmmoType) etype).getAmmoType() == ((AmmoType) etype2).getAmmoType())
-                                    && (((AmmoType) etype).getRackSize() == ((AmmoType) etype2).getRackSize());
+                                  && (((AmmoType) etype).getRackSize() == ((AmmoType) etype2).getRackSize());
                         } else if (etype.equals(etype2) && UnitUtil.isHeatSink(etype)) {
                             canDouble = etype.getCriticals(getUnit()) == 1;
                         }
@@ -300,7 +317,8 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         // check if the dragged mounted should be transferrable
         Mounted<?> mounted = null;
         try {
-            int index = Integer.parseInt(((String) info.getTransferable().getTransferData(DataFlavor.stringFlavor)).split(":")[0]);
+            int index = Integer.parseInt(((String) info.getTransferable()
+                  .getTransferData(DataFlavor.stringFlavor)).split(":")[0]);
             mounted = getUnit().getEquipment(index);
         } catch (Exception e) {
             logger.error("", e);

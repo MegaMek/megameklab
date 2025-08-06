@@ -32,11 +32,13 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.util.Vector;
+
 import megamek.common.AmmoType;
 import megameklab.ui.EntitySource;
-import megameklab.ui.util.*;
-
-import java.util.Vector;
+import megameklab.ui.util.CritCellUtil;
+import megameklab.ui.util.IView;
+import megameklab.ui.util.RefreshListener;
 
 public class SingleLocationEquipmentView extends IView {
     private SingleLocationEquipmentList mountList;

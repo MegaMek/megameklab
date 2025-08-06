@@ -1,15 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2020 - The MegaMek Team
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
+ *
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -106,7 +125,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (includeReferenceCharts()) {
             addReferenceCharts(pageFormat);
         } else if (options.showCondensedReferenceCharts()
-                && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
+              && !fillsSheet(entities, options, clusterTableBlocksSize - 1)) {
             addClusterChart(startsWithLargeBlock ? clusterTableBlocksSize / 2 : clusterTableBlocksSize, index);
         }
     }
@@ -122,7 +141,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             return new PrintHandheldWeapon((HandheldWeapon) entity, getFirstPage(), options);
         }
         throw new IllegalArgumentException("Cannot create block for "
-                + UnitType.getTypeDisplayableName(entity.getUnitType()));
+              + UnitType.getTypeDisplayableName(entity.getUnitType()));
     }
 
     @Override
@@ -203,14 +222,14 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             printBottomTable(clusterTable, pageFormat);
         } else {
             printBottomTable(new GroundMovementRecord(this, false,
-                    entities.get(0) instanceof ProtoMek), pageFormat);
+                  entities.get(0) instanceof ProtoMek), pageFormat);
         }
     }
 
     private void printBottomTable(ReferenceTableBase table, PageFormat pageFormat) {
         getSVGDocument().getDocumentElement().appendChild(table.createTable(pageFormat.getImageableX(),
-                pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
-                pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
+              pageFormat.getImageableY() + pageFormat.getImageableHeight() * TABLE_RATIO + 3.0,
+              pageFormat.getImageableWidth() * TABLE_RATIO, pageFormat.getImageableHeight() * 0.2 - 3.0));
     }
 
     private void addClusterChart(int blocksSize, int index) {
@@ -242,16 +261,15 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     /**
-     * Determines if the supplied list of units fills the sheet or if there's room
-     * for more
-     * 
+     * Determines if the supplied list of units fills the sheet or if there's room for more
+     *
      * @param entities The list of entities to place on the sheet
-     * @param options  The record sheet options, as reference tables can reduce
-     *                 available space
+     * @param options  The record sheet options, as reference tables can reduce available space
+     *
      * @return {@code true} if no more entities can be printed on a single sheet
      */
     public static boolean fillsSheet(List<? extends Entity> entities, RecordSheetOptions options,
-            int desiredExtraEmptySlots) {
+          int desiredExtraEmptySlots) {
         var numTypes = entities.stream().map(Entity::getClass).distinct().count();
         if (numTypes == 0) {
             return false;
@@ -269,7 +287,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             int fillSize = 0;
             for (Entity entity : entities) {
                 final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) entity, 0,
-                        null);
+                      null);
                 fillSize += printHandheldWeapon.isLargeLayout() ? 2 : 1;
             }
             return fillSize > (8 - desiredExtraEmptySlots);

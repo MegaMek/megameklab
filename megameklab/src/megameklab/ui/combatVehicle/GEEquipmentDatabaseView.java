@@ -54,10 +54,10 @@ import megameklab.util.UnitUtil;
 class GEEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-            COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
+          COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
 
     private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
-            COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_CRIT, COL_REF);
+          COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_CRIT, COL_REF);
 
     GEEquipmentDatabaseView(EntitySource eSource) {
         super(eSource);
@@ -92,16 +92,16 @@ class GEEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     @Override
     protected boolean shouldShow(EquipmentType equipment) {
         if ((equipment instanceof MiscType)
-                  && (equipment.hasFlag(MiscTypeFlag.F_HARJEL)
-                            || equipment.hasFlag(MiscType.F_HARJEL_II)
-                            || equipment.hasFlag(MiscType.F_HARJEL_III)
-                            || equipment.hasFlag(MiscType.F_MODULAR_ARMOR)
-                            || equipment.hasFlag(MiscType.F_SPONSON_TURRET)
-                            || equipment.hasFlag(MiscType.F_PINTLE_TURRET)
-                            || equipment.hasFlag(MiscType.F_JUMP_BOOSTER)
-                            || equipment.hasFlag(MiscType.F_ARMORED_MOTIVE_SYSTEM)
-                            || equipment.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
-                            || UnitUtil.isJumpJet(equipment))) {
+              && (equipment.hasFlag(MiscTypeFlag.F_HARJEL)
+              || equipment.hasFlag(MiscType.F_HARJEL_II)
+              || equipment.hasFlag(MiscType.F_HARJEL_III)
+              || equipment.hasFlag(MiscType.F_MODULAR_ARMOR)
+              || equipment.hasFlag(MiscType.F_SPONSON_TURRET)
+              || equipment.hasFlag(MiscType.F_PINTLE_TURRET)
+              || equipment.hasFlag(MiscType.F_JUMP_BOOSTER)
+              || equipment.hasFlag(MiscType.F_ARMORED_MOTIVE_SYSTEM)
+              || equipment.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+              || UnitUtil.isJumpJet(equipment))) {
             return false;
         }
         return super.shouldShow(equipment);

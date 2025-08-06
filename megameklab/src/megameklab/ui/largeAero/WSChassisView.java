@@ -1,61 +1,88 @@
 /*
- * Copyright (c) 2018-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
  * MegaMekLab is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
  * MegaMekLab is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMekLab. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.largeAero;
 
-import megamek.common.*;
-import megamek.common.verifier.TestAdvancedAerospace;
-import megamek.common.verifier.TestAero;
-import megameklab.ui.generalUnit.BuildView;
-import megameklab.ui.listeners.AdvancedAeroBuildListener;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import megamek.common.Aero;
+import megamek.common.Entity;
+import megamek.common.ITechManager;
+import megamek.common.Jumpship;
+import megamek.common.SpaceStation;
+import megamek.common.verifier.TestAdvancedAerospace;
+import megamek.common.verifier.TestAero;
+import megameklab.ui.generalUnit.BuildView;
+import megameklab.ui.listeners.AdvancedAeroBuildListener;
 
 /**
  * Structure tab chassis panel for jumpships, warships, and space stations.
- * 
+ *
  * @author Neoancient
  */
 public class WSChassisView extends BuildView implements ActionListener, ChangeListener {
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
+
     public void addListener(AdvancedAeroBuildListener l) {
         listeners.add(l);
     }
+
     public void removeListener(AdvancedAeroBuildListener l) {
         listeners.remove(l);
     }
 
-    public final static int TYPE_JUMPSHIP      = 0;
-    public final static int TYPE_WARSHIP       = 1;
-    public final static int TYPE_STATION       = 2;
-    public final static int TYPE_SUBCOMPACT    = 3;
+    public final static int TYPE_JUMPSHIP = 0;
+    public final static int TYPE_WARSHIP = 1;
+    public final static int TYPE_STATION = 2;
+    public final static int TYPE_SUBCOMPACT = 3;
 
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(2000, 2000, null, 500);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);
-    
+
     final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JLabel lblRange;
@@ -73,17 +100,18 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     private int minTonnage;
     private int stepTonnage;
     private int maxThrust;
-    
+
     public WSChassisView(ITechManager techManager) {
         this.techManager = techManager;
         lblRange = createLabel("lblRange", "");
         initUI();
     }
-    
+
     public void initUI() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values").split(",")));
+        cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values")
+              .split(",")));
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -92,7 +120,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblTonnage", "AdvAeroChassisView.spnTonnage.text",
-                "AdvAeroChassisView.spnTonnage.tooltip"), gbc);
+              "AdvAeroChassisView.spnTonnage.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -100,7 +128,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         spnTonnage.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
         spnTonnage.addChangeListener(this);
-        
+
         chkSail.setText(resourceMap.getString("AdvAeroChassisView.chkSail.text"));
         gbc.gridx = 4;
         gbc.gridy = 0;
@@ -114,7 +142,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblBaseType", "AdvAeroChassisView.cbBaseType.text",
-                "AdvAeroChassisView.cbBaseType.tooltip"), gbc);
+              "AdvAeroChassisView.cbBaseType.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
@@ -153,12 +181,12 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         spnRange.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnRange.tooltip"));
         add(spnRange, gbc);
         spnRange.addChangeListener(this);
-        
+
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
         add(createLabel(resourceMap, "lblSI", "AdvAeroChassisView.spnSI.text",
-                "AdvAeroChassisView.spnSI.tooltip"), gbc);
+              "AdvAeroChassisView.spnSI.tooltip"), gbc);
         gbc.gridx = 2;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
@@ -175,7 +203,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         add(chkModular, gbc);
         chkModular.addActionListener(this);
     }
-    
+
     public void setFromEntity(Jumpship craft) {
         switch (craft.getDriveCoreType()) {
             case Jumpship.DRIVE_CORE_STANDARD:
@@ -211,10 +239,10 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         chkMilitary.addActionListener(this);
         chkModular.removeActionListener(this);
         chkModular.setSelected(craft.hasETypeFlag(Entity.ETYPE_SPACE_STATION)
-                && ((SpaceStation) craft).isModularOrKFAdapter());
+              && ((SpaceStation) craft).isModularOrKFAdapter());
         chkModular.addActionListener(this);
-        
-        
+
+
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(baseType);
         cbBaseType.addActionListener(this);
@@ -226,7 +254,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
             spnRange.setValue(craft.getJumpRange());
             spnRange.addChangeListener(this);
         }
-        
+
         if (!techManager.isLegal(Jumpship.getJumpSailTA())) {
             chkSail.setVisible(false);
             if (craft.hasSail()) {
@@ -234,37 +262,37 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
             }
         } else {
             chkSail.setVisible((baseType == TYPE_STATION)
-                    || craft.isPrimitive());
+                  || craft.isPrimitive());
         }
         lblRange.setVisible(craft.isPrimitive());
         spnRange.setVisible(craft.isPrimitive());
     }
-    
+
     public void setAsCustomization() {
         spnTonnage.setEnabled(false);
         cbBaseType.setEnabled(false);
     }
-    
+
     public void refresh() {
         refreshTonnage();
         refreshSI();
         chkLFBattery.setVisible((baseType != TYPE_STATION)
-                && techManager.isLegal(Jumpship.getLFBatteryTA()));
+              && techManager.isLegal(Jumpship.getLFBatteryTA()));
         chkMilitary.setVisible((baseType == TYPE_STATION));
         if (baseType == TYPE_STATION) {
             if ((getTonnage() <= SpaceStation.MODULAR_MININUM_WEIGHT)
-                    && techManager.isLegal(SpaceStation.getKFAdapterTA())) {
+                  && techManager.isLegal(SpaceStation.getKFAdapterTA())) {
                 chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.text"));
                 chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.tooltip"));
             } else if ((getTonnage() > SpaceStation.MODULAR_MININUM_WEIGHT)
-                    && techManager.isLegal(SpaceStation.getModularTA())) {
+                  && techManager.isLegal(SpaceStation.getModularTA())) {
                 chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
                 chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
             }
         }
         chkModular.setVisible((baseType == TYPE_STATION)
-                && techManager.isLegal(getTonnage() <= 100000.0 ?
-                SpaceStation.getKFAdapterTA() : SpaceStation.getModularTA()));
+              && techManager.isLegal(getTonnage() <= 100000.0 ?
+              SpaceStation.getKFAdapterTA() : SpaceStation.getModularTA()));
     }
 
     private void refreshTonnage() {
@@ -279,7 +307,7 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
             spnTonnage.setValue(maxTonnage);
         }
     }
-    
+
     private void refreshSI() {
         int prev = spnSIModel.getNumber().intValue();
         if ((baseType == TYPE_JUMPSHIP) || (baseType == TYPE_STATION)) {
@@ -297,15 +325,15 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
             spnSI.setEnabled(true);
         }
     }
-    
+
     public double getTonnage() {
         return spnTonnageModel.getNumber().doubleValue();
     }
-    
+
     public void setTonnage(double tonnage) {
         spnTonnage.setValue((int) Math.ceil(tonnage));
     }
-    
+
     public boolean hasLFBattery() {
         return chkLFBattery.isSelected() && chkLFBattery.isEnabled();
     }

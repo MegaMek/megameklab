@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
@@ -32,7 +49,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -42,7 +58,10 @@ import megamek.logging.MMLogger;
 import megameklab.printing.MekChassisArrangement;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.printing.RecordSheetOptions;
-import megameklab.ui.*;
+import megameklab.ui.MMLStartUp;
+import megameklab.ui.MegaMekLabTabbedUI;
+import megameklab.ui.MenuBarOwner;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.battleArmor.BAMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -151,9 +170,8 @@ public final class CConfig {
     private static final Properties config = getDefaults();
 
     /**
-     * Private method that loads hardcoded defaults. These are loaded before the
-     * players config values, adding any new configs in their default position
-     * and ensuring that no config value is even missing.
+     * Private method that loads hardcoded defaults. These are loaded before the players config values, adding any new
+     * configs in their default position and ensuring that no config value is even missing.
      */
     private static Properties getDefaults() {
         Properties defaults = new Properties();
@@ -203,13 +221,11 @@ public final class CConfig {
     }
 
     /**
-     * Tries to import settings from the given properties file. When successful,
-     * also applies
-     * some of the settings and shows a popup message.
+     * Tries to import settings from the given properties file. When successful, also applies some of the settings and
+     * shows a popup message.
      *
      * @param menuBarOwner The MenuBar owner frame calling this
-     * @param settingsFile The file (should always be megameklab.properties in
-     *                     another MML install)
+     * @param settingsFile The file (should always be megameklab.properties in another MML install)
      */
     public static void importSettings(MenuBarOwner menuBarOwner, File settingsFile) {
         try (FileInputStream fis = new FileInputStream(settingsFile)) {
@@ -275,11 +291,11 @@ public final class CConfig {
     }
 
     /**
-     * Get a config value, with a default value to be used if the value is not
-     * found.
+     * Get a config value, with a default value to be used if the value is not found.
      *
      * @param param      The key
      * @param defaultVal The value to return if the entry is not found
+     *
      * @return The value associated with the key
      */
     public static String getParam(String param, String defaultVal) {
@@ -297,8 +313,8 @@ public final class CConfig {
      * Get a config value.
      *
      * @param param The key
-     * @return The value associated with the key. If not found, an empty String is
-     *         returned
+     *
+     * @return The value associated with the key. If not found, an empty String is returned
      */
     public static String getParam(String param) {
         return getParam(param, "");
@@ -315,14 +331,13 @@ public final class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return the provided default
-     * value if the
-     * property is a non-number.
+     * Return the int value of a given config property. Return the provided default value if the property is a
+     * non-number.
      *
      * @param param      The parameter name
-     * @param defaultVal The value to return if the property does not exist or is
-     *                   not a valid string
-     *                   representation of the integer
+     * @param defaultVal The value to return if the property does not exist or is not a valid string representation of
+     *                   the integer
+     *
      * @return The integer value of the property
      */
     public static int getIntParam(String param, int defaultVal) {
@@ -334,10 +349,10 @@ public final class CConfig {
     }
 
     /**
-     * Return the int value of a given config property. Return a 0 if the
-     * property is a non-number.
+     * Return the int value of a given config property. Return a 0 if the property is a non-number.
      *
      * @param param The parameter name
+     *
      * @return The integer value of the property
      */
     public static int getIntParam(String param) {
@@ -346,9 +361,11 @@ public final class CConfig {
 
     /**
      * Return the enum value of a given config property.
+     *
      * @param key
      * @param enumClass
      * @param defaultVal
+     *
      * @return
      */
     public static <E extends Enum<E>> E getEnumParam(String key, Class<E> enumClass, E defaultVal) {
@@ -359,7 +376,7 @@ public final class CConfig {
             return defaultVal;
         }
     }
-    
+
     /**
      * Set a config value to the name of the enum.
      *
@@ -372,8 +389,8 @@ public final class CConfig {
 
     /**
      * @param param the parameter's name
-     * @return the boolean value of a given config property. Return a false if the
-     *         property does not exist.
+     *
+     * @return the boolean value of a given config property. Return a false if the property does not exist.
      */
     public static boolean getBooleanParam(String param) {
         boolean toReturn;
@@ -390,7 +407,7 @@ public final class CConfig {
      */
     public synchronized static void saveConfig() {
         try (FileOutputStream fos = new FileOutputStream(CONFIG_BACKUP_FILE);
-                PrintStream ps = new PrintStream(fos)) {
+              PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config Backup");
         } catch (FileNotFoundException ignored) {
 
@@ -399,7 +416,7 @@ public final class CConfig {
             return;
         }
         try (FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
-                PrintStream ps = new PrintStream(fos)) {
+              PrintStream ps = new PrintStream(fos)) {
             config.store(ps, "Client Config");
         } catch (FileNotFoundException ignored) {
 
@@ -469,6 +486,7 @@ public final class CConfig {
      *
      * @param val       The base distance (standard hexes)
      * @param showUnits Whether to append the unit abbreviation
+     *
      * @return A String representation of the scaled value
      */
     public static String formatScale(double val, boolean showUnits) {
@@ -495,7 +513,7 @@ public final class CConfig {
     public static Optional<Point> getForceBuildPosition() {
         return getWindowPosition(FORCE_BUILD_WINDOW);
     }
-    
+
     public static void writeForceBuildPosition(JFrame frame) {
         writeWindowSettings(FORCE_BUILD_WINDOW, frame);
     }
@@ -561,7 +579,7 @@ public final class CConfig {
             int sizeX = Integer.parseInt(values[2]);
             int sizeY = Integer.parseInt(values[3]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int clampedWidth  = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
+            int clampedWidth = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
             int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
             return Optional.of(new Dimension(clampedWidth, clampedHeight));
         } catch (Exception e) {
@@ -579,8 +597,8 @@ public final class CConfig {
             int posX = Integer.parseInt(values[0]);
             int posY = Integer.parseInt(values[1]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int clampedX = Math.max(0, Math.min(posX, screen.width-100)); // -100 to avoid the right edge
-            int clampedY = Math.max(0, Math.min(posY, screen.height-100)); // -100 to avoid the taskbar
+            int clampedX = Math.max(0, Math.min(posX, screen.width - 100)); // -100 to avoid the right edge
+            int clampedY = Math.max(0, Math.min(posY, screen.height - 100)); // -100 to avoid the taskbar
             return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();

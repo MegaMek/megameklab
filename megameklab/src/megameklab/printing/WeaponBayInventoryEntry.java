@@ -1,19 +1,34 @@
 /*
- * Copyright (c) 2020-2022 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.printing;
 
@@ -96,8 +111,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 int bonus = 0;
                 if (bay.augmentations.containsKey(weaponType)) {
                     bonus = bay.augmentations.get(
-                            weaponType).entrySet().stream()
-                        .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true) * e.getValue()).sum();
+                                weaponType).entrySet().stream()
+                          .mapToInt(e -> AeroAVModCalculator.calculateBonus(weaponType, e.getKey(), true)
+                                * e.getValue()).sum();
                 }
                 if (weaponType.getShortAV() > 0) {
                     double av = weaponType.getShortAV() * numWeapons + bonus;
@@ -125,8 +141,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
         if (!isCapital) {
             for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
                 heat += entry.entrySet().stream()
-                        .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
-                        .mapToInt(e -> e.getValue() * 5).sum();
+                      .filter(e -> e.getKey().hasFlag(MiscType.F_PPC_CAPACITOR))
+                      .mapToInt(e -> e.getValue() * 5).sum();
             }
         }
         artemisIV = bay.countAugmentations(MiscType.F_ARTEMIS) > 0;
@@ -143,8 +159,8 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 // Show official names of DropShip side arcs. Rear-mounted wing bays
                 // are indicated by (R) appended to the name field.
                 if (ship instanceof Dropship
-                        && (bay.loc.get(i) == Dropship.LOC_LWING
-                            || bay.loc.get(i) == Dropship.LOC_RWING)) {
+                      && (bay.loc.get(i) == Dropship.LOC_LWING
+                      || bay.loc.get(i) == Dropship.LOC_RWING)) {
                     if (ship.isSpheroid()) {
                         if (bay.loc.get(i) == Dropship.LOC_LWING) {
                             locString.add(bay.rear ? "ALS" : "FLS");
@@ -169,13 +185,13 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 Mounted<?> ammo = ammoList.get(0);
                 if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
                     nameString.append(" (");
-                    
+
                     StringJoiner ammoDetails = new StringJoiner(", ");
                     ammoList.forEach(e -> {
-                            if (e instanceof AmmoMounted am) {
-                                ammoDetails.add(am.getBaseShotsLeft() + " " + am.getShortName());
-                            }
-                        });
+                        if (e instanceof AmmoMounted am) {
+                            ammoDetails.add(am.getBaseShotsLeft() + " " + am.getShortName());
+                        }
+                    });
                     nameString.append(ammoDetails.toString());
                     nameString.append(")");
                 } else if (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) {
@@ -216,7 +232,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     public int nRows() {
         return bay.weapons.size();
     }
-    
+
     @Override
     public boolean isDamaged() {
         return false;

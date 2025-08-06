@@ -1,20 +1,34 @@
 /*
- * Copyright (c) 2024 - The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
- * MegaMek is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * MegaMek is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with MegaMek. If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.util;
 
@@ -40,7 +54,7 @@ public final class InfantryUtil {
         Mounted<?> existingInfantryMount = null;
         for (Mounted<?> m : unit.getWeaponList()) {
             if ((m.getType() instanceof InfantryWeapon)
-                    && (m.getLocation() == Infantry.LOC_INFANTRY)) {
+                  && (m.getLocation() == Infantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
                 break;
             }
@@ -80,23 +94,23 @@ public final class InfantryUtil {
 
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
         List<Mounted<?>> toRemove = unit.getEquipment().stream()
-                .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-                .collect(Collectors.toList());
+              .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+              .collect(Collectors.toList());
         unit.getEquipment().removeAll(toRemove);
         unit.getWeaponList().removeAll(toRemove);
         unit.getAmmo().removeAll(toRemove);
         final EnumSet<AmmoType.Munitions> munition;
         if (fieldGun != null && num > 0) {
             if (fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX
-                    || fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX_THB) {
+                  || fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX_THB) {
                 munition = EnumSet.of(AmmoType.Munitions.M_CLUSTER);
             } else {
                 munition = EnumSet.of(AmmoType.Munitions.M_STANDARD);
             }
             Optional<AmmoType> ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream()
-                    .filter(eq -> (eq.getMunitionType().equals(munition))
-                            && (eq.getRackSize() == fieldGun.getRackSize()))
-                    .findFirst();
+                  .filter(eq -> (eq.getMunitionType().equals(munition))
+                        && (eq.getRackSize() == fieldGun.getRackSize()))
+                  .findFirst();
             if (ammo.isEmpty()) {
                 ammo = AmmoType.getMunitionsFor(fieldGun.getAmmoType()).stream().findFirst();
             }

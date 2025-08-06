@@ -1,17 +1,34 @@
 /*
- * MegaMekLab - Copyright (C) 2008
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
- * Original author - jtighe (torren@users.sourceforge.net)
+ * This file is part of MegaMekLab.
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.fighterAero;
 
@@ -22,7 +39,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,7 +55,14 @@ import megamek.common.verifier.BayData;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
-import megameklab.ui.generalUnit.*;
+import megameklab.ui.generalUnit.ArmorAllocationView;
+import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.FuelView;
+import megameklab.ui.generalUnit.HeatSinkView;
+import megameklab.ui.generalUnit.IconView;
+import megameklab.ui.generalUnit.MVFArmorView;
+import megameklab.ui.generalUnit.MovementView;
+import megameklab.ui.generalUnit.PatchworkArmorView;
 import megameklab.ui.generalUnit.summary.*;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.listeners.ArmorAllocationListener;
@@ -89,18 +112,18 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             panPatchwork.setVisible(false);
         }
         panSummary = new SummaryView(eSource,
-                new UnitTypeSummaryItem(),
-                new StructureSummaryItem(),
-                new EngineSummaryItem(),
-                new CockpitSummaryItem(),
-                new FuelSummaryItem(),
-                new HeatSinkSummaryItem(),
-                new ControlsSummaryItem(),
-                new ArmorSummaryItem(),
-                new WeaponsSummaryItem(),
-                new AmmoSummaryItem(),
-                new MiscEquipmentSummaryItem(),
-                new OtherSummaryItem());
+              new UnitTypeSummaryItem(),
+              new StructureSummaryItem(),
+              new EngineSummaryItem(),
+              new CockpitSummaryItem(),
+              new FuelSummaryItem(),
+              new HeatSinkSummaryItem(),
+              new ControlsSummaryItem(),
+              new ArmorSummaryItem(),
+              new WeaponsSummaryItem(),
+              new AmmoSummaryItem(),
+              new MiscEquipmentSummaryItem(),
+              new OtherSummaryItem());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -202,18 +225,19 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     /**
      * Calculates required engine rating for speed and tonnage and updates engine if possible.
+     *
      * @return true if the new engine is legal for rating, space, and tech level
      */
     private boolean recalculateEngineRating(int walkMP, double tonnage) {
-        int rating = TestAero.calculateEngineRating(getAero(), (int)tonnage, walkMP);
+        int rating = TestAero.calculateEngineRating(getAero(), (int) tonnage, walkMP);
         int oldRating = getAero().getEngine().getRating();
         if (oldRating != rating) {
             panChassis.setEngineRating(rating);
             Engine engine = panChassis.getEngine();
             if (!engine.engineValid || !panInfo.isLegal(engine)) {
                 JOptionPane.showMessageDialog(
-                        this, String.format("The required engine rating of %d exceeds the maximum.", rating),
-                        "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                      this, String.format("The required engine rating of %d exceeds the maximum.", rating),
+                      "Bad Engine", JOptionPane.ERROR_MESSAGE);
                 panChassis.setEngineRating(oldRating);
                 return false;
             }
@@ -271,10 +295,9 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     }
 
     /**
-     * Sets the structural integrity for Aerospace and Conventional fighters.
-     * For these units, the SI is equal to the safe thrust rating or 10% of the
-     * units tonnage, whichever is greater.  The SI for fighters does not take
-     * up any tonnage.
+     * Sets the structural integrity for Aerospace and Conventional fighters. For these units, the SI is equal to the
+     * safe thrust rating or 10% of the units tonnage, whichever is greater.  The SI for fighters does not take up any
+     * tonnage.
      */
     public void setAeroStructuralIntegrity() {
         int si = (int) Math.max(panChassis.getTonnage() * 0.1, panMovement.getWalk());
@@ -291,7 +314,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         getAero().setChassis(chassis);
         refresh.refreshHeader();
         refresh.refreshPreview();
-        iconView.refresh();   
+        iconView.refresh();
     }
 
     @Override
@@ -351,9 +374,9 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         if (getAero().getEngine().hasFlag(Engine.LARGE_ENGINE) && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
             if (getAero().isPrimitive()) {
-                walk = 400 / (int)(getAero().getWeight() * 1.2);
+                walk = 400 / (int) (getAero().getWeight() * 1.2);
             } else {
-                walk = 400 / (int)getAero().getWeight();
+                walk = 400 / (int) getAero().getWeight();
             }
             if (!panChassis.isConventional()) {
                 walk += 2;
@@ -362,8 +385,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             getAero().setOriginalWalkMP(walk);
             panMovement.setFromEntity(getAero());
             JOptionPane.showMessageDialog(
-                    this, String.format("Large engine not available at this tech level. Reducing MP to %d.", walk),
-                    "Bad Engine", JOptionPane.ERROR_MESSAGE);
+                  this, String.format("Large engine not available at this tech level. Reducing MP to %d.", walk),
+                  "Bad Engine", JOptionPane.ERROR_MESSAGE);
         }
         if (UnitUtil.checkEquipmentByTechLevel(getAero(), panInfo)) {
             refresh.refreshEquipment();
@@ -406,7 +429,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     @Override
     public void heatSinkBaseCountChanged(int count) {
-        getAero().getEngine().setBaseChassisHeatSinks(Math.max(0,  count));
+        getAero().getEngine().setBaseChassisHeatSinks(Math.max(0, count));
         getAero().setPodHeatSinks(getAero().getHeatSinks() - count);
     }
 
@@ -463,7 +486,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
 
         double maxArmor = MathUtility.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
-                UnitUtil.getMaximumArmorTonnage(getAero()));
+              UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
         panArmor.setFromEntity(getAero());
@@ -525,7 +548,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void omniChanged(boolean omni) {
         getAero().setOmni(omni);
         getAero().getEngine().setBaseChassisHeatSinks(
-                omni? Math.max(0, panHeat.getBaseCount()) : -1);
+              omni ? Math.max(0, panHeat.getBaseCount()) : -1);
         panHeat.setFromAero(getAero());
         panTransport.setOmni(omni);
         refresh.refreshPreview();
@@ -542,10 +565,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void fighterTypeChanged(int type) {
         if ((ASChassisView.TYPE_AEROSPACE == type)
-                && (getAero().getEntityType() != Entity.ETYPE_AERO)) {
+              && (getAero().getEntityType() != Entity.ETYPE_AERO)) {
             eSource.createNewUnit(Entity.ETYPE_AERO, getAero());
         } else if ((ASChassisView.TYPE_CONVENTIONAL == type)
-                && (getAero().getEntityType() != Entity.ETYPE_CONV_FIGHTER)) {
+              && (getAero().getEntityType() != Entity.ETYPE_CONV_FIGHTER)) {
             eSource.createNewUnit(Entity.ETYPE_CONV_FIGHTER, getAero());
         }
         refresh();
@@ -556,7 +579,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void engineChanged(Engine engine) {
         // Make sure we keep same number of base heat sinks for omnis
         engine.setBaseChassisHeatSinks(getAero().getEngine()
-                .getBaseChassisHeatSinks(false));
+              .getBaseChassisHeatSinks(false));
         getAero().setEngine(engine);
         panMovement.setFromEntity(getAero());
         panFuel.setFromEntity(getAero());
@@ -589,10 +612,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void troopSpaceChanged(double fixed, double pod) {
         List<Transporter> toRemove = getAero().getTransports().stream()
-            .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
+              .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
         toRemove.forEach(t -> getAero().removeTransporter(t));
         double troopTons = Math
-            .round((fixed) * 2) / 2.0;
+              .round((fixed) * 2) / 2.0;
         if (troopTons > 0) {
             getAero().addTransporter(new InfantryCompartment(troopTons), false);
         }
@@ -615,12 +638,12 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void cargoSpaceChanged(BayData bayType, double fixed, double pod) {
         List<Transporter> toRemove = getAero().getTransports().stream()
-            .filter(t -> (t instanceof Bay)
-                && (bayType == BayData.getBayType((Bay) t)))
-            .collect(Collectors.toList());
+              .filter(t -> (t instanceof Bay)
+                    && (bayType == BayData.getBayType((Bay) t)))
+              .collect(Collectors.toList());
         toRemove.forEach(t -> getAero().removeTransporter(t));
         double bayTons = Math
-            .round((fixed) * 2) / 2.0;
+              .round((fixed) * 2) / 2.0;
         int lastBay = getAero().getTransportBays().stream().mapToInt(Bay::getBayNumber).max().orElse(0);
         if (bayTons > 0) {
             getAero().addTransporter(bayType.newBay(bayTons, lastBay + 1), false);
@@ -676,13 +699,13 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
         // divide armor among positions, with more toward the front
         int points = TestEntity.getArmorPoints(getAero());
-        int nose = (int)Math.floor(points * 0.3);
-        int wing = (int)Math.floor(points * 0.25);
-        int aft = (int)Math.floor(points * 0.2);
+        int nose = (int) Math.floor(points * 0.3);
+        int wing = (int) Math.floor(points * 0.25);
+        int aft = (int) Math.floor(points * 0.2);
         int remainder = points - nose - wing - wing - aft;
 
         // spread remainder among nose and wings
-        switch(remainder % 4) {
+        switch (remainder % 4) {
             case 1:
                 nose++;
                 break;
@@ -713,10 +736,10 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
         int crits = armor.getPatchworkSlotsCVFtr();
         if (getAero().getEmptyCriticals(location) < crits) {
-            JOptionPane .showMessageDialog(null,
-                    String.format("%s does not fit in location %s. Resetting to Standard Armor in this location.",
-                            armor.getName(), getAero().getLocationName(location)),
-                    "Error", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                  String.format("%s does not fit in location %s. Resetting to Standard Armor in this location.",
+                        armor.getName(), getAero().getLocationName(location)),
+                  "Error", JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
         } else {

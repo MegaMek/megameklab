@@ -1,20 +1,34 @@
 /*
- * MegaMekLab
- * Copyright (C) 2019 The MegaMek Team
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This file is part of MegaMekLab.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MegaMekLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL),
+ * version 3 or (at your option) any later version,
+ * as published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * MegaMekLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * A copy of the GPL should have been included with this project;
+ * if not, see <https://www.gnu.org/licenses/>.
+ *
+ * NOTICE: The MegaMek organization is a non-profit group of volunteers
+ * creating free software for the BattleTech community.
+ *
+ * MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+ * of The Topps Company, Inc. All Rights Reserved.
+ *
+ * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+ * InMediaRes Productions, LLC.
+ *
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * Microsoft's "Game Content Usage Rules"
+ * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+ * affiliated with Microsoft.
  */
 package megameklab.ui.supportVehicle;
 
@@ -25,15 +39,14 @@ import java.awt.Insets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import megamek.common.*;
+import megamek.common.ITechnology.TechRating;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
-import megamek.common.ITechnology.TechRating;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -85,16 +98,16 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         panCrew = new SVCrewView();
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
-                new UnitTypeSummaryItem(),
-                new StructureSummaryItem(),
-                new EngineSummaryItem(),
-                new FuelSummaryItem(),
-                new HeatSinkSummaryItem(),
-                new ControlsSummaryItem(),
-                new ArmorSummaryItem(),
-                new TurretSummaryItem(),
-                new PowerAmplifierSummaryItem(),
-                new EquipmentSummaryItem());
+              new UnitTypeSummaryItem(),
+              new StructureSummaryItem(),
+              new EngineSummaryItem(),
+              new FuelSummaryItem(),
+              new HeatSinkSummaryItem(),
+              new ControlsSummaryItem(),
+              new ArmorSummaryItem(),
+              new TurretSummaryItem(),
+              new PowerAmplifierSummaryItem(),
+              new EquipmentSummaryItem());
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -240,7 +253,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void updateTechLevel() {
         getEntity().setTechLevel(panBasicInfo.getTechLevel()
-                .getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+              .getCompoundTechLevel(panBasicInfo.useClanTechBase()));
         if (UnitUtil.checkEquipmentByTechLevel(getSV(), panBasicInfo)) {
             refresh.refreshEquipment();
         } else {
@@ -345,9 +358,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     /**
-     * Called when changing to or from large support vee, which may require
-     * instantiating
-     * a different Entity.
+     * Called when changing to or from large support vee, which may require instantiating a different Entity.
      */
     private void toggleLargeSupport() {
         // fixed wing/airship/satellite/VTOL do not change the number of locations
@@ -380,7 +391,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             } else if (type.equals(TestSupportVehicle.SVType.VTOL)) {
                 eSource.createNewUnit(Entity.ETYPE_SUPPORT_VTOL, getSV());
             } else if (TestSupportVehicle.SVType.FIXED_WING.equals(oldType)
-                    || TestSupportVehicle.SVType.VTOL.equals(oldType)) {
+                  || TestSupportVehicle.SVType.VTOL.equals(oldType)) {
                 eSource.createNewUnit(Entity.ETYPE_SUPPORT_TANK, getSV());
             }
             getSV().setMovementMode(type.defaultMovementMode);
@@ -414,7 +425,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         // Switching between maglev and non-maglev engines changes movement mode
         if (TestSupportVehicle.SVType.RAIL.equals(TestSupportVehicle.SVType.getVehicleType(getSV()))) {
             getSV().setMovementMode(
-                    (engine.getEngineType() == Engine.MAGLEV) ? EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
+                  (engine.getEngineType() == Engine.MAGLEV) ? EntityMovementMode.MAGLEV : EntityMovementMode.RAIL);
         }
         // Make sure the engine tech rating is at least the minimum for the engine type
         if (getSV().getEngineTechRating().getIndex() < engine.getTechRating().getIndex()) {
@@ -423,8 +434,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         }
         // Fixed Wing support vehicles require the prop mod for an electric engine
         if ((TestSupportVehicle.SVType.getVehicleType(getSV()) == TestSupportVehicle.SVType.FIXED_WING)
-                && TestSupportVehicle.SVEngine.getEngineType(engine).electric
-                && !getSV().hasMisc(MiscType.F_PROP)) {
+              && TestSupportVehicle.SVEngine.getEngineType(engine).electric
+              && !getSV().hasMisc(MiscType.F_PROP)) {
             setChassisMod(TestSupportVehicle.ChassisModification.PROP.equipment, true);
         }
         if (engine.getEngineType() != Engine.EXTERNAL) {
@@ -455,7 +466,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void setChassisMod(EquipmentType mod, boolean installed) {
         final Mounted<?> current = getSV().getMisc().stream().filter(m -> m.getType().equals(mod)).findFirst()
-                .orElse(null);
+              .orElse(null);
         if (installed && (null == current)) {
             try {
                 getSV().addEquipment(mod, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
@@ -474,8 +485,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             if (!getEntity().isOmni()) {
                 getEntity().getEquipment().forEach(m -> m.setOmniPodMounted(false));
                 List<Transporter> podTransports = getEntity().getTransports().stream()
-                        .filter(t -> getEntity().isPodMountedTransport(t))
-                        .toList();
+                      .filter(t -> getEntity().isPodMountedTransport(t))
+                      .toList();
                 podTransports.forEach(t -> {
                     getEntity().removeTransporter(t);
                     getEntity().addTransporter(t, false);
@@ -509,13 +520,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             return;
         }
         if ((turretConfig != SVBuildListener.TURRET_DUAL)
-                && !getTank().hasNoDualTurret()) {
+              && !getTank().hasNoDualTurret()) {
             removeTurret(getTank().getLocTurret2());
             getTank().setHasNoDualTurret(true);
             getTank().setBaseChassisTurret2Weight(Tank.BASE_CHASSIS_TURRET_WT_UNASSIGNED);
         }
         if ((turretConfig == SVBuildListener.TURRET_NONE)
-                && !getTank().hasNoTurret()) {
+              && !getTank().hasNoTurret()) {
             removeTurret(getTank().getLocTurret());
             getTank().setHasNoTurret(true);
             getTank().setBaseChassisTurretWeight(Tank.BASE_CHASSIS_TURRET_WT_UNASSIGNED);
@@ -542,8 +553,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void sponsonTurretChanged(boolean installed) {
         final List<Mounted<?>> current = getSV().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_SPONSON_TURRET))
-                .collect(Collectors.toList());
+              .filter(m -> m.getType().hasFlag(MiscType.F_SPONSON_TURRET))
+              .collect(Collectors.toList());
         if (installed && current.isEmpty()) {
             try {
                 // superheavy FL/FR match L/R
@@ -576,9 +587,9 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void pintleTurretChanged(boolean addPintle, final int loc) {
         final Optional<MiscMounted> installedPintle = getSV().getMisc().stream()
-            .filter(m -> m.is(EquipmentTypeLookup.PINTLE_TURRET))
-            .filter(m -> m.getLocation() == loc)
-            .findFirst();
+              .filter(m -> m.is(EquipmentTypeLookup.PINTLE_TURRET))
+              .filter(m -> m.getLocation() == loc)
+              .findFirst();
         if (addPintle && installedPintle.isEmpty()) {
             try {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
@@ -608,14 +619,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     /**
-     * Checks for the presence of sponson or pintle mounts, and if none are found
-     * resets the base chassis weight.
+     * Checks for the presence of sponson or pintle mounts, and if none are found resets the base chassis weight.
      */
     private void resetSponsonPintleWeight() {
         if (getEntity() instanceof Tank) {
             for (Mounted<?> m : getEntity().getMisc()) {
                 if (m.getType().hasFlag(MiscType.F_SPONSON_TURRET)
-                        || m.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
+                      || m.getType().hasFlag(MiscType.F_PINTLE_TURRET)) {
                     return;
                 }
             }
@@ -645,9 +655,9 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void fireConChanged(int index) {
         final Mounted<?> current = getSV().getMisc().stream()
-                .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRECONTROL)
-                        || m.getType().hasFlag(MiscType.F_ADVANCED_FIRECONTROL))
-                .findFirst().orElse(null);
+              .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                    || m.getType().hasFlag(MiscType.F_ADVANCED_FIRECONTROL))
+              .findFirst().orElse(null);
         if (null != current) {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
@@ -689,12 +699,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void setSeating(int standard, int standardPod,
-            int pillion, int pillionPod,
-            int ejection, int ejectionPod) {
+          int pillion, int pillionPod,
+          int ejection, int ejectionPod) {
         // Clear out any existing seating.
         final List<Transporter> current = getSV().getTransports().stream()
-                .filter(t -> t instanceof StandardSeatCargoBay)
-                .collect(Collectors.toList());
+              .filter(t -> t instanceof StandardSeatCargoBay)
+              .collect(Collectors.toList());
         for (Transporter t : current) {
             getSV().removeTransporter(t);
         }
@@ -725,16 +735,16 @@ public class SVStructureTab extends ITab implements SVBuildListener {
 
     @Override
     public void setQuarters(int firstClass, int firstClassPod,
-            int secondClass, int secondClassPod,
-            int crew, int crewPod,
-            int steerage, int steeragePod) {
+          int secondClass, int secondClassPod,
+          int crew, int crewPod,
+          int steerage, int steeragePod) {
         // Clear out any existing standard or pillion seating.
         final List<Transporter> current = getSV().getTransports().stream()
-                .filter(t -> (t instanceof FirstClassQuartersCargoBay)
-                        || (t instanceof SecondClassQuartersCargoBay)
-                        || (t instanceof CrewQuartersCargoBay)
-                        || (t instanceof SteerageQuartersCargoBay))
-                .collect(Collectors.toList());
+              .filter(t -> (t instanceof FirstClassQuartersCargoBay)
+                    || (t instanceof SecondClassQuartersCargoBay)
+                    || (t instanceof CrewQuartersCargoBay)
+                    || (t instanceof SteerageQuartersCargoBay))
+              .collect(Collectors.toList());
         for (Transporter t : current) {
             getSV().removeTransporter(t);
         }
@@ -776,7 +786,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         for (Mounted<?> mount : getTank().getEquipment()) {
             if (mount.getLocation() == loc) {
                 UnitUtil.changeMountStatus(getTank(), mount,
-                        Entity.LOC_NONE, Entity.LOC_NONE, false);
+                      Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
     }
@@ -784,16 +794,16 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     private void initTurretArmor(int loc) {
         getTank().initializeArmor(0, loc);
         getTank().setArmorTechLevel(
-                getTank().getArmorTechLevel(Tank.LOC_FRONT),
-                loc);
+              getTank().getArmorTechLevel(Tank.LOC_FRONT),
+              loc);
         getTank().setArmorType(getTank().getArmorType(Tank.LOC_FRONT),
-                loc);
+              loc);
     }
 
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = TestEntity.round(tonnage,
-                TestEntity.usesKgStandard(getSV()) ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON);
+              TestEntity.usesKgStandard(getSV()) ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON);
         if (getSV().isAero()) {
             getAero().setFuelTonnage(fuelTons);
         } else {
@@ -836,15 +846,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     /**
-     * Convenience method that removes the fuel if the vehicle does not require fuel
-     * mass
-     * then refreshes the fuel panel. Changes that can affect this are vehicle type,
-     * engine
-     * type, and the prop chassis mod.
+     * Convenience method that removes the fuel if the vehicle does not require fuel mass then refreshes the fuel panel.
+     * Changes that can affect this are vehicle type, engine type, and the prop chassis mod.
      */
     private void refreshFuel() {
         if ((getSV() instanceof FixedWingSupport)
-                && (((FixedWingSupport) getSV()).kgPerFuelPoint() == 0)) {
+              && (((FixedWingSupport) getSV()).kgPerFuelPoint() == 0)) {
             getAero().setFuelTonnage(0);
         } else if ((getSV() instanceof Tank) && (getTank().fuelTonnagePer100km() == 0)) {
             getTank().setFuelTonnage(0);

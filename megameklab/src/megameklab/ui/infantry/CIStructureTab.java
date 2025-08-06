@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008, 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,7 +25,7 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
@@ -37,8 +37,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Optional;
-
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
 import megamek.common.*;
@@ -75,7 +77,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     private final CIAdvancedView advancedView;
 
     private final String[] tabNames = { "Weapons", "Field Guns", "Armor Kit", "Specializations", "Mount",
-                                         "Augmentation" };
+                                        "Augmentation" };
 
     private JTabbedPane equipmentPane;
 
@@ -138,7 +140,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             public Dimension getMinimumSize() {
                 // The structure panel should never use horizontal scrolling, so force it to be as wide as needed
                 int preferredWidth = leftPanel.getPreferredSize().width +
-                                           getVerticalScrollBar().getPreferredSize().width;
+                      getVerticalScrollBar().getPreferredSize().width;
                 return new Dimension(preferredWidth, super.getMinimumSize().height);
             }
         };
@@ -218,11 +220,11 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     private void updateSpecializations() {
         advancedView.updateSpecializations();
         if (getInfantry().hasSpecialization(Infantry.TAG_TROOPS)
-                && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
-                        || (getInfantry().getSecondaryWeapon() == null)
-                        || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
+              && ((getInfantry().getSecondaryWeaponsPerSquad() < 2)
+              || (getInfantry().getSecondaryWeapon() == null)
+              || !getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG))) {
             InfantryUtil.replaceMainWeapon(getInfantry(),
-                    (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
+                  (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
             getInfantry().setSecondaryWeaponsPerSquad(2);
         }
     }
@@ -232,9 +234,9 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         advancedView.enableTabs(level);
         if (level.ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {
             equipmentPane.setEnabledAt(T_FIELD_GUNS,
-                    getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
-                            || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
-                            || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
+                  getInfantry().getMovementMode() == EntityMovementMode.INF_MOTORIZED
+                        || getInfantry().getMovementMode() == EntityMovementMode.TRACKED
+                        || getInfantry().getMovementMode() == EntityMovementMode.WHEELED);
             equipmentPane.setEnabledAt(T_ARMOR_KIT, true);
             equipmentPane.setEnabledAt(T_SPECIALIZATION, true);
             equipmentPane.setEnabledAt(T_MOUNT, getInfantry().getMount() != null);
@@ -287,7 +289,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     @Override
-    public void refreshSummary() { }
+    public void refreshSummary() {}
 
     @Override
     public void chassisChanged(String chassis) {
@@ -371,8 +373,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         getInfantry().setMicrolite(alt && (movementMode == EntityMovementMode.VTOL));
 
         if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
-                && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
-                && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
+              && getInfantry().getMovementMode() != EntityMovementMode.TRACKED
+              && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         }
         enableTabs();

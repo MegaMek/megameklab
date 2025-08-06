@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2022, 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,6 +32,12 @@
  */
 package megameklab.ui.infantry;
 
+import static megamek.common.AmmoType.AmmoTypeEnum.CRUISE_MISSILE;
+import static megamek.common.AmmoType.AmmoTypeEnum.GAUSS_HEAVY;
+import static megamek.common.AmmoType.AmmoTypeEnum.HAG;
+import static megamek.common.AmmoType.AmmoTypeEnum.IGAUSS_HEAVY;
+import static megamek.common.AmmoType.AmmoTypeEnum.MAGSHOT;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -42,7 +48,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.event.DocumentEvent;
@@ -68,19 +73,17 @@ import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.InfantryUtil;
 
-import static megamek.common.AmmoType.AmmoTypeEnum.*;
-
 /**
  * Shows options for infantry field guns/field artillery
  *
  * @author Neoancient
  */
 public class CIFieldGunTableView extends IView implements ActionListener {
-    private final static int T_ALL       = 0;
-    private final static int T_GUN       = 1;
+    private final static int T_ALL = 0;
+    private final static int T_GUN = 1;
     private final static int T_ARTILLERY = 2;
     private final static int T_ARTILLERY_CANNON = 3;
-    private final static int T_NUM       = 4;
+    private final static int T_NUM = 4;
 
     private RefreshListener refresh;
 
@@ -150,8 +153,8 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             int view = masterEquipmentTable.getSelectedRow();
             btnSetGun.setEnabled(view >= 0);
         });
-        masterEquipmentScroll.setMinimumSize(new Dimension(200,200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200,200));
+        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
+        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -218,13 +221,13 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         rbtnStats.addActionListener(evt -> setEquipmentView());
         rbtnFluff.addActionListener(evt -> setEquipmentView());
         chkShowAll.addActionListener(evt -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0,3));
+        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
         viewPanel.add(rbtnStats);
         viewPanel.add(rbtnFluff);
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0,2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
         btnPanel.add(btnSetGun);
         btnPanel.add(btnRemoveGun);
 
@@ -245,7 +248,7 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         gbc.weightx = 1;
         databasePanel.add(viewPanel, gbc);
 
-        gbc.insets = new Insets(2,0,0,0);
+        gbc.insets = new Insets(2, 0, 0, 0);
         gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
@@ -313,15 +316,15 @@ public class CIFieldGunTableView extends IView implements ActionListener {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
                 if ((nType == T_ALL)
-                        || ((nType == T_GUN)
-                                && !(etype instanceof ArtilleryWeapon)
-                                && !(etype instanceof ArtilleryCannonWeapon))
-                        || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
-                        || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
-                        ) {
+                      || ((nType == T_GUN)
+                      && !(etype instanceof ArtilleryWeapon)
+                      && !(etype instanceof ArtilleryCannonWeapon))
+                      || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
+                      || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
+                ) {
                     if (null != eSource.getTechManager()
-                            && !eSource.getTechManager().isLegal(etype)
-                            && !chkShowAll.isSelected()) {
+                          && !eSource.getTechManager().isLegal(etype)
+                          && !chkShowAll.isSelected()) {
                         return false;
                     }
 
@@ -339,7 +342,7 @@ public class CIFieldGunTableView extends IView implements ActionListener {
     }
 
     public void setEquipmentView() {
-        XTableColumnModel columnModel = (XTableColumnModel)masterEquipmentTable.getColumnModel();
+        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
