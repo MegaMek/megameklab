@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: "Check out MegaMekLab"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: megameklab
 
       - name: Checkout MegaMek
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: MegaMek/megamek
           ref: main
