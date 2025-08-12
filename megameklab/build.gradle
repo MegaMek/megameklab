@@ -37,11 +37,6 @@ sourceSets {
 
 ext {
     mmlJvmOptions = ['-Xmx1024m']
-    data = 'data'
-    docs = 'docs'
-    lib = 'lib'
-    log = 'logs'
-    mmconf = 'mmconf'
     fileStagingDir = "${layout.buildDirectory.get()}/files"
 
     mmDir = "${rootDir}/../megamek"
@@ -124,13 +119,22 @@ jar {
     archiveFileName = "MegaMekLab.jar"
     manifest {
         attributes "Main-Class": application.mainClass
-        attributes "Class-Path": "${lib}/MegaMek.jar " + (project.sourceSets.main.runtimeClasspath.files
+        attributes "Class-Path": "lib/MegaMek.jar " + (project.sourceSets.main.runtimeClasspath.files
                 .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }
-                .collect { "${lib}/${it.name}" }.join(' '))
+                .collect { "lib/${it.name}" }.join(' '))
         attributes "Add-Opens": 'java.base/java.util java.base/java.util.concurrent'
         attributes "Build-Date": LocalDateTime.now()
         attributes "Sealed": true
     }
+}
+
+tasks.register('stageDataFiles', Sync) {
+    dependsOn gradle.includedBuild('mm-data').task(':stageMMLFiles')
+    description = "Syncs Data Files from MML Data"
+    group = 'build'
+    from "../../mm-data/build/staging/mml"
+    into "${projectDir}/data"
+
 }
 
 tasks.register('generateDynamicFiles') {
@@ -173,32 +177,33 @@ tasks.register("copyLicenseFiles", Copy) {
 tasks.register('stageFiles', Copy) {
     description = 'Stages files that are to be copied into the distribution.'
 
+    mustRunAfter(stageDataFiles)
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
     dependsOn generateDynamicFiles
     dependsOn copyLicenseFiles
 
     from projectDir
-    include "${mmconf}/**"
-    include "${data}/**"
-    include "${docs}/**"
+    include "mmconf/**"
+    include "data/**"
+    include "docs/**"
     include 'SubmitBug.html'
     include "sentry.properties"
     include "*.ini"
     exclude "**/*.psd"
 
     // User Config Files
-    exclude "${mmconf}/clientsettings.xml"
-    exclude "${mmconf}/gameoptions.xml"
-    exclude "${mmconf}/megameklab.properties"
-    exclude "${mmconf}/megameklab.properties.bak"
-    exclude "${mmconf}/mhq.preferences"
-    exclude "${mmconf}/mm.preferences"
-    exclude "${mmconf}/mml.preferences"
+    exclude "mmconf/clientsettings.xml"
+    exclude "mmconf/gameoptions.xml"
+    exclude "mmconf/megameklab.properties"
+    exclude "mmconf/megameklab.properties.bak"
+    exclude "mmconf/mhq.preferences"
+    exclude "mmconf/mm.preferences"
+    exclude "mmconf/mml.preferences"
 
     into fileStagingDir
 
     doLast {
-        mkdir "${fileStagingDir}/${log}"
+        mkdir "${fileStagingDir}/log"
     }
 }
 
@@ -224,7 +229,7 @@ distributions {
             }
 
             from("${mmDir}/megamek/build/libs/MegaMek.jar") {
-                into "${lib}"
+                into "lib"
             }
 
             from("${projectDir}/scripts") {
@@ -235,7 +240,7 @@ distributions {
 
             from(project.sourceSets.main.runtimeClasspath.files
                     .findAll { it.name.endsWith(".jar") && !it.name.toLowerCase().startsWith("megamek") }) {
-                into "${lib}"
+                into "lib"
             }
 
             from("${buildDir}/launch4j") {
@@ -243,7 +248,7 @@ distributions {
             }
 
             from(jar) {
-                into "${lib}"
+                into "lib"
             }
 
             duplicatesStrategy = 'exclude'
@@ -269,6 +274,9 @@ launch4j {
     messagesJreVersionError = 'We require a Java Runtime of version 17 or higher installed. https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium-(Eclipse-Temurin-Open-Source-Java)'
     messagesJreNotFoundError = 'Go here for instructions on installing the correct version of Java: https://github.com/MegaMek/megamek/wiki/Updating-to-Adoptium-(Eclipse-Temurin-Open-Source-Java)'
 }
+
+project.tasks.createExe.dependsOn(stageDataFiles)
+project.tasks.createExe.mustRunAfter(stageDataFiles)
 
 tasks.register("packagePrepWork") {
     description = 'General Catch All for all distributions'
@@ -317,6 +325,11 @@ jacocoTestReport {
         xml.required = true
         html.required = true
     }
+}
+
+run {
+    dependsOn(stageDataFiles)
+    jvmArgs = mmlJvmOptions
 }
 
 tasks.register('processSystemTest', JavaExec) {
