@@ -16,6 +16,12 @@ jobs:
       mmBranch: ${{ steps.find_mm.outputs.mmBranch }}
 
     steps:
+      - name: Checkout Data Repo
+        uses: actions/checkout@v5
+        with:
+          repository: megamek/mm-data
+          path: mm-data
+
       - name: Checking out MegaMekLab
         uses: actions/checkout@v5
         with:
