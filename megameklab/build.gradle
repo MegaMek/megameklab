@@ -351,6 +351,7 @@ tasks.register('svgexport', JavaExec) {
 tasks.register('cleanAll') {
     description = 'Cleans all related projects to ensure a proper build.'
     group = 'build'
+    dependsOn gradle.includedBuild('mm-data').task(':clean')
     dependsOn gradle.includedBuild('megamek').task(':megamek:clean')
     dependsOn clean
 }
