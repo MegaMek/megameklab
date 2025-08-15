@@ -32,7 +32,7 @@
  */
 package megameklab.ui;
 
-import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATHMUL;
+import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATH_MUL;
 import static megamek.client.ui.util.UIUtil.CONNECTED_SIGN;
 import static megamek.client.ui.util.UIUtil.DOT_SPACER;
 import static megamek.client.ui.util.UIUtil.UNCONNECTED_SIGN;
@@ -1122,19 +1122,19 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             var fileChooser = new JFileChooser(".");
             fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
             var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"),
-                  CG_FILEPATHMUL);
+                  CG_FILEPATH_MUL);
             fileChooser.setFileFilter(filter);
             fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
                   mulFileName :
-                  forceList.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+                  forceList.get(0).getShortName() + " etc." + CG_FILEPATH_MUL));
 
             if (!(fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) ||
                   fileChooser.getSelectedFile() == null) {
                 return;
             }
             File file = fileChooser.getSelectedFile();
-            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
-                file = new File(file + "." + CG_FILEPATHMUL);
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATH_MUL)) {
+                file = new File(file + "." + CG_FILEPATH_MUL);
             }
 
             try {

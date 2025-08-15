@@ -33,7 +33,7 @@
 package megameklab.ui.dialog;
 
 import static java.util.stream.Collectors.toList;
-import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATHMUL;
+import static megamek.client.ui.clientGUI.ClientGUI.CG_FILEPATH_MUL;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -384,11 +384,11 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             var fileChooser = new JFileChooser(".");
             fileChooser.setDialogTitle(Messages.getString("ClientGUI.saveUnitListFileDialog.title"));
             var filter = new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"),
-                  CG_FILEPATHMUL);
+                  CG_FILEPATH_MUL);
             fileChooser.setFileFilter(filter);
             fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
                   mulFileName :
-                  entities.get(0).getShortName() + " etc." + CG_FILEPATHMUL));
+                  entities.get(0).getShortName() + " etc." + CG_FILEPATH_MUL));
 
             if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
                   fileChooser.getSelectedFile() == null) {
@@ -396,8 +396,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             }
 
             File file = fileChooser.getSelectedFile();
-            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATHMUL)) {
-                file = new File(file + "." + CG_FILEPATHMUL);
+            if (!FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(CG_FILEPATH_MUL)) {
+                file = new File(file + "." + CG_FILEPATH_MUL);
             }
 
             try {
