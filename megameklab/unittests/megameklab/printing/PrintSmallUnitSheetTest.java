@@ -139,7 +139,7 @@ class PrintSmallUnitSheetTest {
         // A) Document is created,
         // B) Engine is null,
         // C) processImage() doesn't throw.
-        assertTrue(pa.createDocument(1, pf, false));
+        assertTrue(pa.createDocument(1, pf, false, true));
         assertNull(testDS.getEngine());
         pa.processImage(1, pf);
         pa.applyCoreComponentsCriticalDamage();

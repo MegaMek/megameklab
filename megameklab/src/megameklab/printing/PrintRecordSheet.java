@@ -116,10 +116,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
     public static final String FILL_WHITE = "#ffffff";
-    ;
+
     public static final String FILL_RED = "#ee0000";
     /** Scale factor for record sheets with reference tables */
     public static final double TABLE_RATIO = 0.8;
+
+    private static final String TEMPLATE_DIRECTORY = "data/images/recordsheets/";
+    private static final String UNIT_TEST_TEMPLATE_DIRECTORY = "testresources/" + TEMPLATE_DIRECTORY;
 
     enum PipType {
         CIRCLE, DIAMOND;
@@ -453,6 +456,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (!Files.exists(filePath)) {
             logger
                   .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
+            System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
             return null;
         }
 
@@ -499,20 +503,40 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * Creates the base template document. This is usually loaded from a file, but some composite record sheets override
      * this to create a document in memory which is then filled in using the individual record sheet templates.
      *
+     * @param pageIndex                    The index of this page in the print job
+     * @param pageFormat                   The page format selected by the user
+     * @param useUnitTestTemplateDirectory {@code true} if the unit test template directory should be used
+     *
+     * @return An SVG document for one page of the print job
+     */
+    private @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat,
+          boolean useUnitTestTemplateDirectory) {
+        return loadSVG(getSVGDirectoryName(useUnitTestTemplateDirectory), getSVGFileName(pageIndex - firstPage));
+    }
+
+    /**
+     * Creates the base template document. This is usually loaded from a file, but some composite record sheets override
+     * this to create a document in memory which is then filled in using the individual record sheet templates.
+     *
      * @param pageIndex  The index of this page in the print job
      * @param pageFormat The page format selected by the user
      *
      * @return An SVG document for one page of the print job
      */
     protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
-        return loadSVG(getSVGDirectoryName(), getSVGFileName(pageIndex - firstPage));
+        return loadTemplate(pageIndex, pageFormat, false);
+    }
+
+    public boolean createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
+        return createDocument(pageIndex, pageFormat, addMargin, false);
     }
 
     /**
      * @return true if the document was created successfully, otherwise false
      */
-    public boolean createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin) {
-        setSVGDocument(loadTemplate(pageIndex, pageFormat));
+    public boolean createDocument(int pageIndex, PageFormat pageFormat, boolean addMargin,
+          boolean useUnitTestTemplateDirectory) {
+        setSVGDocument(loadTemplate(pageIndex, pageFormat, useUnitTestTemplateDirectory));
         if (getSVGDocument() == null) {
             return false;
         }
@@ -707,8 +731,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
     }
 
-    String getSVGDirectoryName() {
-        return "data/images/recordsheets/" + options.getPaperSize().dirName; // TODO : Remove inline file path
+    String getSVGDirectoryName(boolean useUnitTestTemplateDirectory) {
+        return (useUnitTestTemplateDirectory ? UNIT_TEST_TEMPLATE_DIRECTORY : TEMPLATE_DIRECTORY)
+              + options.getPaperSize().dirName;
     }
 
     /**
