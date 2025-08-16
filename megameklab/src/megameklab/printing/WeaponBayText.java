@@ -159,7 +159,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     /**
-     * Used to compare ammos across WeaponBayTexts. Since Mounted.equals isn't implemented, we can't directly use
+     * Used to compare ammunition across WeaponBayTexts. Since Mounted.equals isn't implemented, we can't directly use
      * Map.equals.
      *
      * @param other The other bay
