@@ -67,7 +67,8 @@ import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.tileset.MekTileset;
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.*;
+import megamek.common.RangeType;
+import megamek.common.SimpleTechLevel;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.alphaStrike.ASUnitType;
@@ -169,7 +170,7 @@ public class SVGMassPrinter {
         if (wtype instanceof InfantryWeapon iw) {
             int infantryCount = 1; // Conventional infantry is already handled as a single trooper
             if (entity instanceof BattleArmor ba) {
-                infantryCount = ba.getNumberActiverTroopers();
+                infantryCount = ba.getNumberActiveTroopers();
             }
 
             return iw.getInfantryDamage() * infantryCount;

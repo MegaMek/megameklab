@@ -32,8 +32,8 @@
  */
 package megameklab.ui.battleArmor;
 
-import megamek.common.battleArmor.BattleArmor;
 import megamek.common.CriticalSlot;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 
@@ -60,14 +60,14 @@ public class BACriticalSuit {
                 case BattleArmor.MOUNT_LOC_BODY:
                     crits[i] = new CriticalSlot[ba.getBodyCrits()];
                     break;
-                case BattleArmor.MOUNT_LOC_RARM:
+                case BattleArmor.MOUNT_LOC_RIGHT_ARM:
                     numSlots = ba.getArmCrits();
                     if (ba.getRightManipulator() != null) {
                         numSlots++;
                     }
                     crits[i] = new CriticalSlot[numSlots];
                     break;
-                case BattleArmor.MOUNT_LOC_LARM:
+                case BattleArmor.MOUNT_LOC_LEFT_ARM:
                     numSlots = ba.getArmCrits();
                     if (ba.getLeftManipulator() != null) {
                         numSlots++;
