@@ -49,10 +49,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.client.ui.util.DisplayTextfield;
-import megamek.common.EntityMovementMode;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.InfantryMount;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Infantry;
+import megamek.common.units.InfantryMount;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.generalUnit.StandardBuildLabel;

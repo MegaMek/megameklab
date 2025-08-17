@@ -32,11 +32,11 @@
  */
 package megameklab.ui.infantry;
 
-import static megamek.common.AmmoType.AmmoTypeEnum.CRUISE_MISSILE;
-import static megamek.common.AmmoType.AmmoTypeEnum.GAUSS_HEAVY;
-import static megamek.common.AmmoType.AmmoTypeEnum.HAG;
-import static megamek.common.AmmoType.AmmoTypeEnum.IGAUSS_HEAVY;
-import static megamek.common.AmmoType.AmmoTypeEnum.MAGSHOT;
+import static megamek.common.equipment.AmmoType.AmmoTypeEnum.CRUISE_MISSILE;
+import static megamek.common.equipment.AmmoType.AmmoTypeEnum.GAUSS_HEAVY;
+import static megamek.common.equipment.AmmoType.AmmoTypeEnum.HAG;
+import static megamek.common.equipment.AmmoType.AmmoTypeEnum.IGAUSS_HEAVY;
+import static megamek.common.equipment.AmmoType.AmmoTypeEnum.MAGSHOT;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -56,9 +56,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.WeaponType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.WeaponType;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;

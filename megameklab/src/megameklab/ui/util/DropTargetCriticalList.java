@@ -41,12 +41,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.MekFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Tank;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.loaders.EntityLoadingException;

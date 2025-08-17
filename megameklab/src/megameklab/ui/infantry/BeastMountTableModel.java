@@ -41,7 +41,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
-import megamek.common.InfantryMount;
+import megamek.common.units.InfantryMount;
 
 final class BeastMountTableModel implements TableModel {
     private enum Columns {

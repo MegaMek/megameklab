@@ -32,10 +32,10 @@
  */
 package megameklab.ui.battleArmor;
 
-import megamek.common.BattleArmor;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 
 /**
  * Since BattleArmor is setup in a squad, the standard CriticalSlot system isn't used. For construction purposes, we

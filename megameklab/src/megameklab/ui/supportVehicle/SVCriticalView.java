@@ -43,11 +43,11 @@ import javax.swing.ListSelectionModel;
 
 import megamek.client.ui.util.UIUtil.FixedYPanel;
 import megamek.common.CriticalSlot;
-import megamek.common.FixedWingSupport;
-import megamek.common.Mounted;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.VTOL;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.SuperHeavyTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;

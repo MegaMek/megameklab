@@ -44,8 +44,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Entity;
-import megamek.common.HandheldWeapon;
+import megamek.common.units.Entity;
+import megamek.common.equipment.HandheldWeapon;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.HHWBuildListener;
 

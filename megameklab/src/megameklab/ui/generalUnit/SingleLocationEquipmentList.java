@@ -45,9 +45,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;

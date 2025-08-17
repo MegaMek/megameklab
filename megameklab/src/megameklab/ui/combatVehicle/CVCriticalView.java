@@ -44,10 +44,10 @@ import javax.swing.ListSelectionModel;
 
 import megamek.client.ui.util.UIUtil;
 import megamek.common.CriticalSlot;
-import megamek.common.Mounted;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.VTOL;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.SuperHeavyTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;

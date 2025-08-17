@@ -40,10 +40,10 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.Jumpship;
-import megamek.common.LocationFullException;
-import megamek.common.SmallCraft;
-import megamek.common.Warship;
+import megamek.common.units.Jumpship;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.SmallCraft;
+import megamek.common.units.Warship;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;

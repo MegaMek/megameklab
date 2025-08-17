@@ -39,12 +39,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import megamek.common.EquipmentFlag;
-import megamek.common.EquipmentType;
-import megamek.common.Jumpship;
-import megamek.common.Mounted;
-import megamek.common.Warship;
-import megamek.common.WeaponType;
+import megamek.common.equipment.EquipmentFlag;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.Jumpship;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Warship;
+import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.weapons.AmmoWeapon;
 

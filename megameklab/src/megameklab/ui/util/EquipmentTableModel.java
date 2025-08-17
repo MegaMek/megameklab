@@ -49,6 +49,16 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.*;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.Tank;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.autocannons.UACWeapon;
@@ -56,7 +66,7 @@ import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MissileWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.missiles.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.util.CConfig;
 import megameklab.util.InfantryUtil;
@@ -525,7 +535,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return "Special";
             } else if (wtype instanceof MissileWeapon) {
                 int dmg;
-                if (wtype instanceof ThunderBoltWeapon) {
+                if (wtype instanceof ThunderboltWeapon) {
                     switch (wtype.getAmmoType()) {
                         case TBOLT_5:
                             return "5";

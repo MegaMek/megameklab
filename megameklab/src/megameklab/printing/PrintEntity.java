@@ -32,9 +32,9 @@
  */
 package megameklab.printing;
 
-import static megamek.common.EquipmentType.T_ARMOR_BA_STANDARD;
-import static megamek.common.EquipmentType.T_ARMOR_STANDARD;
-import static megamek.common.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
+import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
+import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
+import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
 import static megamek.common.options.PilotOptions.EDGE_ADVANTAGES;
 
 import java.awt.Image;
@@ -58,12 +58,22 @@ import megamek.client.ui.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.PilotOptions;
 import megamek.common.options.Quirks;
+import megamek.common.units.Crew;
+import megamek.common.units.CrewType;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.UnitRole;
+import megamek.common.units.UnitType;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;

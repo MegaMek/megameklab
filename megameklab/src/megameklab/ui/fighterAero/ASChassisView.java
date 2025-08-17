@@ -49,10 +49,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
-import megamek.common.Engine;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.equipment.Engine;
+import megamek.common.units.Entity;
+import megamek.common.interfaces.ITechManager;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.util.CustomComboBox;

@@ -32,11 +32,11 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Aero;
-import megamek.common.AeroSpaceFighter;
-import megamek.common.Entity;
-import megamek.common.Mek;
-import megamek.common.Tank;
+import megamek.common.units.Aero;
+import megamek.common.units.AeroSpaceFighter;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.Tank;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;

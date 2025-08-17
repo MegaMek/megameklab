@@ -71,8 +71,8 @@ import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import megamek.common.BTObject;
-import megamek.common.Entity;
+import megamek.common.units.BTObject;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.printing.PaperSize;
 import megameklab.printing.PrintRecordSheet;

@@ -37,12 +37,12 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.Mounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.Mounted;
 import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;

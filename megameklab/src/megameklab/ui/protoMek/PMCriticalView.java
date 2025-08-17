@@ -39,8 +39,8 @@ import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import megamek.common.Mounted;
-import megamek.common.ProtoMek;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;

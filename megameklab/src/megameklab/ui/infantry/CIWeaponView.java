@@ -50,10 +50,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.client.ui.util.DisplayTextfield;
-import megamek.common.EntityMovementMode;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.Mounted;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Infantry;
+import megamek.common.equipment.Mounted;
 import megamek.common.SimpleTechLevel;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.generalUnit.BuildView;

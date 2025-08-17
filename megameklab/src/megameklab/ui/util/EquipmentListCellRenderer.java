@@ -37,8 +37,8 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.TechConstants;
 
 /*

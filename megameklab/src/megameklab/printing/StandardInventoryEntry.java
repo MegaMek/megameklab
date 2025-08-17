@@ -42,16 +42,22 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import megamek.common.*;
-import megamek.common.equipment.MiscMounted;
-import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.*;
+import megamek.common.interfaces.ITechnology;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.SmallCraft;
+import megamek.common.units.Tank;
+import megamek.common.units.TripodMek;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
-import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megamek.common.weapons.other.innerSphere.ISCenturionWeaponSystem;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
 

@@ -32,14 +32,14 @@
  */
 package megameklab.ui.util;
 
-import static megamek.common.EquipmentTypeLookup.*;
-import static megamek.common.MiscType.*;
-import static megamek.common.WeaponType.F_AMS;
-import static megamek.common.WeaponType.F_ARTILLERY;
-import static megamek.common.WeaponType.F_BALLISTIC;
-import static megamek.common.WeaponType.F_ENERGY;
-import static megamek.common.WeaponType.F_MISSILE;
-import static megamek.common.WeaponType.F_PLASMA;
+import static megamek.common.equipment.EquipmentTypeLookup.*;
+import static megamek.common.equipment.MiscType.*;
+import static megamek.common.equipment.WeaponType.F_AMS;
+import static megamek.common.equipment.WeaponType.F_ARTILLERY;
+import static megamek.common.equipment.WeaponType.F_BALLISTIC;
+import static megamek.common.equipment.WeaponType.F_ENERGY;
+import static megamek.common.equipment.WeaponType.F_MISSILE;
+import static megamek.common.equipment.WeaponType.F_PLASMA;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -47,7 +47,20 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import megamek.common.*;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.BombType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.GunEmplacement;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Infantry;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.Tank;
 import megamek.common.weapons.tag.TAGWeapon;
 import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;

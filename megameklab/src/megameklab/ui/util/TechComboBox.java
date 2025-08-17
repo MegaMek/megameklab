@@ -34,7 +34,7 @@ package megameklab.ui.util;
 
 import java.util.function.Function;
 
-import megamek.common.ITechnology;
+import megamek.common.interfaces.ITechnology;
 
 /**
  * ComboBox for equipment that implement ITechnology. Has a boolean flag that can toggle prefixing "Clan" or "IS" to the

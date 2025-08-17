@@ -32,11 +32,11 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.Entity;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadMek;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.QuadMek;
 import megamek.common.actions.ClubAttackAction;
 import megamek.logging.MMLogger;
 import megameklab.printing.PrintMek;

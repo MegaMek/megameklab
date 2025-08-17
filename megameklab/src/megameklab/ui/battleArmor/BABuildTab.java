@@ -39,8 +39,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.BattleArmor;
-import megamek.common.Mounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;

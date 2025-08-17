@@ -32,9 +32,9 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megameklab.util.UnitUtil;
 
 /**

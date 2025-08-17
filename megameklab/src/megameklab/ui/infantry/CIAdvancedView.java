@@ -44,8 +44,8 @@ import javax.swing.JTextPane;
 
 import com.formdev.flatlaf.ui.FlatTextBorder;
 import megamek.client.ui.util.DisplayTextfield;
-import megamek.common.EquipmentType;
-import megamek.common.Infantry;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.Infantry;
 import megamek.common.SimpleTechLevel;
 import megamek.common.options.IOption;
 import megamek.common.options.PilotOptions;

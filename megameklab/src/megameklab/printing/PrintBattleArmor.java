@@ -37,12 +37,12 @@ import java.text.NumberFormat;
 import java.util.StringJoiner;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.MPCalculationSetting;
-import megamek.common.MiscType;
-import megamek.common.battlevalue.BattleArmorBVCalculator;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battleValue.BattleArmorBVCalculator;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.Entity;
 import megameklab.util.BattleArmorUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;

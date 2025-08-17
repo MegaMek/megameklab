@@ -33,7 +33,7 @@
 
 package megameklab.ui.listeners;
 
-import megamek.common.EquipmentType;
+import megamek.common.equipment.EquipmentType;
 
 /**
  * Listener for views used by BattleArmor.

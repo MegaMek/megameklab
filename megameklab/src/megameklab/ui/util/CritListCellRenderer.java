@@ -47,10 +47,10 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
-import megamek.common.BattleArmor;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 

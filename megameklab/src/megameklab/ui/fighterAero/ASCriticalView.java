@@ -39,11 +39,11 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import megamek.common.Aero;
+import megamek.common.units.Aero;
 import megamek.common.CriticalSlot;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.verifier.TestAero;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;

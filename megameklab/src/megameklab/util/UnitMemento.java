@@ -38,10 +38,10 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MekFileParser;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.equipment.Mounted;
 import megamek.common.loaders.MtfFile;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;

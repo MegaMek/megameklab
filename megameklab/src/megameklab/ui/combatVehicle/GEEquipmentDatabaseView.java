@@ -37,12 +37,12 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 import java.util.Collection;
 import java.util.List;
 
-import megamek.common.EquipmentType;
-import megamek.common.GunEmplacement;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.MiscTypeFlag;
-import megamek.common.Mounted;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.GunEmplacement;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.MiscTypeFlag;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;

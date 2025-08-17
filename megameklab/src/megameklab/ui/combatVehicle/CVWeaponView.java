@@ -48,12 +48,12 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.*;
 
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.logging.MMLogger;
 import megameklab.MMLConstants;

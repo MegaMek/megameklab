@@ -51,8 +51,8 @@ import javax.swing.border.EmptyBorder;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.Entity;
-import megamek.common.EntityFluff;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityFluff;
 import megamek.common.util.ImageUtil;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;

@@ -32,8 +32,8 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.TechConstants;
 import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;

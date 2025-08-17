@@ -32,7 +32,7 @@
  */
 package megameklab.ui.largeAero;
 
-import megamek.common.Mounted;
+import megamek.common.equipment.Mounted;
 import megamek.common.weapons.bayweapons.BayWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;

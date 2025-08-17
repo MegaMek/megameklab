@@ -47,10 +47,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;

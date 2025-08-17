@@ -33,9 +33,9 @@
 
 package megameklab.printing;
 
-import static megamek.common.MiscTypeFlag.*;
-import static megamek.common.WeaponType.F_ENERGY;
-import static megamek.common.WeaponType.F_PLASMA;
+import static megamek.common.equipment.MiscTypeFlag.*;
+import static megamek.common.equipment.WeaponType.F_ENERGY;
+import static megamek.common.equipment.WeaponType.F_PLASMA;
 
 import java.awt.print.PageFormat;
 import java.io.File;
@@ -73,13 +73,16 @@ import megamek.common.actions.KickAttackAction;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.alphaStrike.AlphaStrikeElement;
 import megamek.common.alphaStrike.conversion.ASConverter;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.WeaponSortOrder;
-import megamek.common.equipment.MiscMounted;
-import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.*;
+import megamek.common.loaders.MekSummary;
+import megamek.common.loaders.MekSummaryCache;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.Quirks;
+import megamek.common.units.*;
 import megamek.common.util.C3Util;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -90,9 +93,9 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MissileWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.missiles.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
-import megamek.common.weapons.other.CLFussilade;
+import megamek.common.weapons.other.clan.CLFussilade;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.logging.MMLogger;
@@ -322,7 +325,7 @@ public class SVGMassPrinter {
                     return "Special";
                 } else if (wtype instanceof MissileWeapon) {
                     int dmg;
-                    if (wtype instanceof ThunderBoltWeapon) {
+                    if (wtype instanceof ThunderboltWeapon) {
                         switch (wtype.getAmmoType()) {
                             case TBOLT_5:
                                 return "5";

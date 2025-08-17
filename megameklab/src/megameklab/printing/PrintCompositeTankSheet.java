@@ -37,9 +37,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import megamek.common.EntityMovementMode;
-import megamek.common.Tank;
-import megamek.common.VTOL;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megamek.common.annotations.Nullable;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.DrivingSkillRollMods;

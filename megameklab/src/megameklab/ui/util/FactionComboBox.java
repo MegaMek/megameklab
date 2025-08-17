@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 
-import megamek.common.ITechnology.Faction;
+import megamek.common.interfaces.ITechnology.Faction;
 import megamek.common.universe.Factions2;
 
 /**

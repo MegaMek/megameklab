@@ -51,12 +51,16 @@ import javax.swing.JOptionPane;
 import megamek.client.Client;
 import megamek.common.*;
 import megamek.common.annotations.Nullable;
-import megamek.common.equipment.AmmoMounted;
-import megamek.common.equipment.ArmorType;
-import megamek.common.equipment.MiscMounted;
-import megamek.common.equipment.WeaponMounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.*;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.game.Game;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.interfaces.ITechnology;
 import megamek.common.loaders.BLKFile;
+import megamek.common.loaders.MekFileParser;
 import megamek.common.options.OptionsConstants;
+import megamek.common.units.*;
 import megamek.common.util.BuildingBlock;
 import megamek.common.verifier.*;
 import megamek.common.verifier.TestEntity.Ceil;
@@ -65,21 +69,21 @@ import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.RACWeapon;
 import megamek.common.weapons.autocannons.UACWeapon;
 import megamek.common.weapons.bayweapons.BayWeapon;
-import megamek.common.weapons.defensivepods.BPodWeapon;
-import megamek.common.weapons.defensivepods.MPodWeapon;
+import megamek.common.weapons.defensivePods.BPodWeapon;
+import megamek.common.weapons.defensivePods.MPodWeapon;
 import megamek.common.weapons.flamers.VehicleFlamerWeapon;
 import megamek.common.weapons.gaussrifles.GaussWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.CLChemicalLaserWeapon;
+import megamek.common.weapons.lasers.clan.CLChemicalLaserWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
-import megamek.common.weapons.ppc.CLPlasmaCannon;
-import megamek.common.weapons.ppc.ISPlasmaRifle;
+import megamek.common.weapons.missiles.ThunderboltWeapon;
+import megamek.common.weapons.ppc.clan.CLPlasmaCannon;
+import megamek.common.weapons.ppc.innerSphere.ISPlasmaRifle;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.common.weapons.srms.StreakSRMWeapon;
@@ -624,11 +628,11 @@ public class UnitUtil {
     }
 
     public static boolean isHeatSink(EquipmentType eq, boolean ignorePrototype) {
-        return (eq instanceof megamek.common.MiscType) &&
-              (eq.hasFlag(megamek.common.MiscType.F_HEAT_SINK) ||
-                    eq.hasFlag(megamek.common.MiscType.F_LASER_HEAT_SINK) ||
-                    eq.hasFlag(megamek.common.MiscType.F_DOUBLE_HEAT_SINK) ||
-                    (eq.hasFlag(megamek.common.MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) && !ignorePrototype));
+        return (eq instanceof MiscType) &&
+              (eq.hasFlag(MiscType.F_HEAT_SINK) ||
+                    eq.hasFlag(MiscType.F_LASER_HEAT_SINK) ||
+                    eq.hasFlag(MiscType.F_DOUBLE_HEAT_SINK) ||
+                    (eq.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE) && !ignorePrototype));
     }
 
     /**
@@ -1130,7 +1134,7 @@ public class UnitUtil {
               !(weapon instanceof UACWeapon) &&
               !(weapon instanceof HVACWeapon) &&
               !(weapon instanceof MGWeapon) &&
-              !(weapon instanceof ThunderBoltWeapon) &&
+              !(weapon instanceof ThunderboltWeapon) &&
               !(weapon instanceof CLChemicalLaserWeapon) &&
               !(weapon instanceof MPodWeapon) &&
               !(weapon instanceof BPodWeapon) &&
@@ -1202,10 +1206,10 @@ public class UnitUtil {
      * @param eq The equipment to test
      */
     public static boolean isJumpJet(EquipmentType eq) {
-        return (eq instanceof megamek.common.MiscType) &&
-              (eq.hasFlag(megamek.common.MiscType.F_JUMP_JET) ||
-                    eq.hasFlag(megamek.common.MiscType.F_UMU) ||
-                    eq.hasFlag(megamek.common.MiscType.F_BA_VTOL));
+        return (eq instanceof MiscType) &&
+              (eq.hasFlag(MiscType.F_JUMP_JET) ||
+                    eq.hasFlag(MiscType.F_UMU) ||
+                    eq.hasFlag(MiscType.F_BA_VTOL));
     }
 
     /**
@@ -2027,7 +2031,7 @@ public class UnitUtil {
             UnitUtil.removeMounted(unit, m);
         }
 
-        if (unit instanceof megamek.common.Infantry pbi) {
+        if (unit instanceof Infantry pbi) {
             if ((null != pbi.getPrimaryWeapon()) && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon(pbi, (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"), false);

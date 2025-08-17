@@ -37,12 +37,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import megamek.common.Entity;
-import megamek.common.LandAirMek;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.MiscTypeFlag;
-import megamek.common.ProtoMek;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.MiscTypeFlag;
+import megamek.common.units.ProtoMek;
 
 public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
     private final static DecimalFormat doubleFormat = new DecimalFormat("#.##");

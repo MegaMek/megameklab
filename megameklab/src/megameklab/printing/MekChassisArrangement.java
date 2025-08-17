@@ -35,7 +35,7 @@ package megameklab.printing;
 import java.util.ResourceBundle;
 
 import megamek.codeUtilities.StringUtility;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 
 /**
  * This class represents the different types of arrangement of the chassis names of those Meks that have a Clan and an

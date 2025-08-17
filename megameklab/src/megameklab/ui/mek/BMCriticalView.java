@@ -43,9 +43,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.CriticalSlot;
-import megamek.common.Mek;
-import megamek.common.Mounted;
-import megamek.common.TripodMek;
+import megamek.common.units.Mek;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.TripodMek;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;

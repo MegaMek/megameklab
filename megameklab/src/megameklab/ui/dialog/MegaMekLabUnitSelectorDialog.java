@@ -51,7 +51,7 @@ import megamek.client.ui.dialogs.unitSelectorDialogs.AbstractUnitSelectorDialog;
 import megamek.client.ui.tileset.EntityImage;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;

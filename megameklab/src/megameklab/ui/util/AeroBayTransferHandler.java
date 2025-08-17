@@ -46,11 +46,11 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
 
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.units.Entity;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.weapons.bayweapons.BayWeapon;

@@ -32,17 +32,17 @@
  */
 package megameklab.util;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
-import megamek.common.weapons.LegAttack;
-import megamek.common.weapons.StopSwarmAttack;
-import megamek.common.weapons.SwarmAttack;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.weapons.attacks.LegAttack;
+import megamek.common.weapons.attacks.StopSwarmAttack;
+import megamek.common.weapons.attacks.SwarmAttack;
 import megamek.common.weapons.infantry.InfantryWeapon;
 
 public final class BattleArmorUtil {

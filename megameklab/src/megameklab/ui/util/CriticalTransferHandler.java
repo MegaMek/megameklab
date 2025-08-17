@@ -42,11 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
+import megamek.common.equipment.AmmoType;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;

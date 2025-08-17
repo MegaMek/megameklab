@@ -48,6 +48,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import megamek.common.*;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;

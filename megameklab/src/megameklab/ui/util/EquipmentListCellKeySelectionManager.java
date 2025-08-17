@@ -35,7 +35,7 @@ package megameklab.ui.util;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox.KeySelectionManager;
 
-import megamek.common.EquipmentType;
+import megamek.common.equipment.EquipmentType;
 
 public class EquipmentListCellKeySelectionManager implements KeySelectionManager {
     @Override

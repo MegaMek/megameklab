@@ -46,9 +46,9 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.EntityMovementMode;
-import megamek.common.Infantry;
-import megamek.common.InfantryMount;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Infantry;
+import megamek.common.units.InfantryMount;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.generalUnit.StandardBuildLabel;

@@ -36,9 +36,9 @@ import java.io.File;
 import java.util.Vector;
 import javax.swing.JFrame;
 
-import megamek.common.Entity;
-import megamek.common.MULParser;
 import megamek.common.annotations.Nullable;
+import megamek.common.loaders.MULParser;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MulDndBehaviour;

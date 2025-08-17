@@ -46,10 +46,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
-import megamek.common.ProtoMek;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.ProtoMekBuildListener;

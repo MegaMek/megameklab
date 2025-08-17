@@ -43,7 +43,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import megamek.common.*;
+import megamek.common.bays.Bay;
+import megamek.common.bays.StandardSeatCargoBay;
+import megamek.common.equipment.DockingCollar;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Transporter;
+import megamek.common.units.*;
 import megameklab.printing.reference.AeroHitLocation;
 import megameklab.printing.reference.AeroToHitMods;
 import megameklab.printing.reference.AirToGroundAttackTable;

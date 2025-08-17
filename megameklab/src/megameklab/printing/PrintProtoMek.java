@@ -32,11 +32,11 @@
  */
 package megameklab.printing;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.ProtoMek;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.ProtoMek;
 import megamek.common.TechConstants;
 import megamek.logging.MMLogger;
 import org.apache.batik.anim.dom.SVGLocatableSupport;

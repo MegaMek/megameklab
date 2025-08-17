@@ -32,13 +32,13 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.Infantry;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.QuadMek;
-import megamek.common.Tank;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.Entity;
+import megamek.common.units.Infantry;
+import megamek.common.units.Mek;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.QuadMek;
+import megamek.common.units.Tank;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import megameklab.util.CConfig;

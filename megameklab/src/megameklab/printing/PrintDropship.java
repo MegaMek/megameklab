@@ -39,15 +39,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.Jumpship;
-import megamek.common.Mounted;
-import megamek.common.UnitType;
-import megamek.common.Warship;
-import megamek.common.WeaponType;
+import megamek.common.units.Aero;
+import megamek.common.equipment.AmmoType;
+import megamek.common.units.Dropship;
+import megamek.common.units.Entity;
+import megamek.common.units.Jumpship;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.UnitType;
+import megamek.common.units.Warship;
+import megamek.common.equipment.WeaponType;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 

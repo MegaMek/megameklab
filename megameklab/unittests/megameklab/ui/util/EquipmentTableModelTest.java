@@ -45,11 +45,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MekFileParser;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
 import megameklab.testing.util.InitializeTypes;
 import megameklab.ui.EntitySource;

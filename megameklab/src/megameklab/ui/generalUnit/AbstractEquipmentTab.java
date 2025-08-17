@@ -51,9 +51,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;

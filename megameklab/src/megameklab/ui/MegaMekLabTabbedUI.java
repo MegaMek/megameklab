@@ -59,7 +59,7 @@ import megamek.common.EnhancedTabbedPane;
 import megamek.common.EnhancedTabbedPane.CloseableTab;
 import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
 import megamek.common.EnhancedTabbedPane.TabStateListener;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.preference.PreferenceManager;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;

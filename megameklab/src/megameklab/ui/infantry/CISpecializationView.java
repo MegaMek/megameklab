@@ -50,7 +50,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.Infantry;
+import megamek.common.units.Infantry;
 import megamek.common.TechAdvancement;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;

@@ -54,8 +54,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import com.formdev.flatlaf.ui.FlatTextBorder;
-import megamek.common.Infantry;
-import megamek.common.InfantryMount;
+import megamek.common.units.Infantry;
+import megamek.common.units.InfantryMount;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;

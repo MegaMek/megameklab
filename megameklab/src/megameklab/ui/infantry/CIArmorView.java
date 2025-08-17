@@ -55,9 +55,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.MiscType;
 import megamek.common.TechConstants;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.StandardBuildLabel;

@@ -39,9 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
 
-import megamek.common.Entity;
-import megamek.common.ITechnology.TechBase;
-import megamek.common.MekFileParser;
+import megamek.common.units.Entity;
+import megamek.common.interfaces.ITechnology.TechBase;
+import megamek.common.loaders.MekFileParser;
 import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
 import megamek.common.loaders.BLKFile;

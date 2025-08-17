@@ -32,8 +32,9 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.EquipmentType;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechnology;
+import megamek.common.interfaces.ITechnology.TechRating;
 import megamek.common.equipment.ArmorType;
 
 /**
@@ -66,7 +67,7 @@ public interface ArmorAllocationListener {
      * Notifies of a change in the tech rating of support vehicle armor.
      *
      * @param techRating The new tech rating, using the rating constants from
-     *                   {@link megamek.common.ITechnology ITechnology}.
+     *                   {@link ITechnology ITechnology}.
      */
     default void armorTechRatingChanged(TechRating techRating) {
 
