@@ -66,7 +66,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import megamek.common.equipment.EquipmentType;
 import megamek.common.annotations.Nullable;
 import megamek.common.util.ImageUtil;
 import megamek.logging.MMLogger;
@@ -111,7 +110,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     public static final float FONT_SIZE_LARGE = 7.2f;
     public static final float FONT_SIZE_MEDIUM = 6.76f;
     public static final float FONT_SIZE_SMALL = 6.2f;
-    public static final float FONT_SIZE_VSMALL = 5.8f;
+    public static final float FONT_SIZE_VERY_SMALL = 5.8f;
     public static final String FILL_BLACK = "#000000";
     public static final String FILL_GREY = "#3f3f3f";
     public static final String FILL_SHADOW = "#c7c7c7";
@@ -123,18 +122,6 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
 
     private static final String TEMPLATE_DIRECTORY = "data/images/recordsheets/";
     private static final String UNIT_TEST_TEMPLATE_DIRECTORY = "testresources/" + TEMPLATE_DIRECTORY;
-
-    enum PipType {
-        CIRCLE, DIAMOND;
-
-        public static PipType forAT(int at) {
-            if (at == EquipmentType.T_ARMOR_HARDENED) {
-                return DIAMOND;
-            } else {
-                return CIRCLE;
-            }
-        }
-    }
 
     public static final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private final int firstPage;
@@ -355,10 +342,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             }
 
         } catch (XPathExpressionException e) {
-            logger.error("XPath error finding elements by class '" + className + "': " + e.getMessage(), e);
+            logger.error("XPath error finding elements by class '{}': {}", className, e.getMessage(), e);
         } catch (Exception e) {
-            logger.error(
-                  "Unexpected error finding elements by class '" + className + "' using XPath: " + e.getMessage(), e);
+            logger.error("Unexpected error finding elements by class '{}' using XPath: {}",
+                  className,
+                  e.getMessage(),
+                  e);
         }
 
         return ret;
@@ -445,7 +434,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Creates a {@link Document} from an svg image file
+     * Creates a {@link Document} from a svg image file
      *
      * @param filename The name of the SVG file
      *
@@ -455,7 +444,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         final Path filePath = Paths.get(directoryPath, filename);
         if (!Files.exists(filePath)) {
             logger
-                  .error(String.format("SVG file does not exist at path: %s/%s", directoryPath, filename));
+                  .error("SVG file does not exist at path: {}/{}", directoryPath, filename);
             System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
             return null;
         }
@@ -474,8 +463,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
 
         if (document == null) {
-            logger
-                  .error(String.format("Failed to open SVG file! Path: %s/%s", directoryPath, filename));
+            logger.error("Failed to open SVG file! Path: {}/{}", directoryPath, filename);
             return null;
         }
 
@@ -509,7 +497,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @return An SVG document for one page of the print job
      */
-    private @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat,
+    protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat,
           boolean useUnitTestTemplateDirectory) {
         return loadSVG(getSVGDirectoryName(useUnitTestTemplateDirectory), getSVGFileName(pageIndex - firstPage));
     }
@@ -624,12 +612,13 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         PDFTranscoder transcoder = new PDFTranscoder();
         transcoder.addTranscodingHint(PDFTranscoder.KEY_AUTO_FONTS, true);
 
-        String configXml;
+        String configXml = "<fop version=\"1.0\"><fonts><auto-detect/></fonts></fop>";
         try (InputStream configStream = PrintRecordSheet.class.getResourceAsStream("fop-config.xml")) {
-            configXml = new String(configStream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
+            if (configStream != null) {
+                configXml = new String(configStream.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        } catch (IOException ignored) {
             logger.warn("Failed to load fop-config.xml");
-            configXml = "<fop version=\"1.0\"><fonts><auto-detect/></fonts></fop>";
         }
 
         // Define font directories based on OS
@@ -664,9 +653,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         int insertPoint = configXml.indexOf("</fonts>");
         if (insertPoint > 0) {
-            configXml = configXml.substring(0, insertPoint) +
-                  systemFontDirectories.toString() +
-                  configXml.substring(insertPoint);
+            configXml = configXml.substring(0, insertPoint) + systemFontDirectories + configXml.substring(insertPoint);
         } else {
             logger.warn("Failed to inject system font directories into fop-config.xml");
         }
@@ -699,7 +686,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             // If an image can't be rendered we'll log it and return an empty document in
             // its place rather than throwing an exception.
             public SVGDocument getBrokenLinkDocument(Element e, String url, String message) {
-                logger.warn("Cannot render image: " + message);
+                logger.warn("Cannot render image: {}", message);
                 DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
                 SVGDocument doc = (SVGDocument) impl.createDocument(svgNS, SVGConstants.SVG_SVG_TAG, null);
                 Element text = doc.createElementNS(svgNS, SVGConstants.SVG_TEXT_TAG);
@@ -722,7 +709,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Renders the sheet to the Graphics object.
      *
-     * @param pageNum Indicates which page of multi-page sheets to print. The first page is 0.
+     * @param pageNum Indicates which page of multipage sheets to print. The first page is 0.
      */
     protected void processImage(int pageNum, PageFormat pageFormat) {
         Element element = getSVGDocument().getElementById(COPYRIGHT);
@@ -803,7 +790,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                                   SVGConstants.SVG_SPACING_AND_GLYPHS_VALUE);
                         }
                     } catch (NumberFormatException ex) {
-                        logger.warn("Could not parse fieldWidth: " + fieldWidth);
+                        logger.warn("Could not parse fieldWidth: {}", fieldWidth);
                     }
                 }
             }
@@ -1142,7 +1129,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Approximates a circle using four Bezier curves.
+     * Approximates a circle using four Bézier curves.
      *
      * @param x           Position of left of bounding rectangle.
      * @param y           Position of top of bounding rectangle.
@@ -1153,13 +1140,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @return A Path describing the circle
      */
-    protected Element createPip(double x, double y, double radius, double strokeWidth,
-          PipType type, String fill) {
+    protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type, String fill) {
         return createPip(x, y, radius, strokeWidth, type, fill, null, null, false);
     }
 
     /**
-     * Approximates a circle using four Bezier curves.
+     * Approximates a circle using four Bézier curves.
      *
      * @param x           Position of left of bounding rectangle.
      * @param y           Position of top of bounding rectangle.
@@ -1173,8 +1159,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @return A Path describing the circle
      */
-    protected Element createPip(double x, double y, double radius, double strokeWidth,
-          PipType type, String fill, String className, String loc, boolean rear) {
+    protected Element createPip(double x, double y, double radius, double strokeWidth, PipType type, String fill,
+          String className, String loc, boolean rear) {
 
         // Move to start of pip, at (1, 0)
         String classAttr = "pip";
@@ -1225,7 +1211,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * Creates a rectangle with bezier curves on the corners
+     * Creates a rectangle with Bézier curves on the corners
      *
      * @param x           The x coordinate of the top left corner
      * @param y           The y coordinate of the top left corner
@@ -1247,17 +1233,17 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_PROPERTY, stroke);
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_WIDTH_PROPERTY, String.valueOf(strokeWidth));
         path.setAttributeNS(null, SVGConstants.CSS_STROKE_LINEJOIN_PROPERTY, SVGConstants.SVG_ROUND_VALUE);
-        StringBuilder sb = new StringBuilder("M ").append(x).append(",").append(y + radius);
         final String CURVE_FORMAT = "c %.3f,%.3f %.3f,%.3f %.3f,%.3f";
-        sb.append(String.format(CURVE_FORMAT, 0.0, -control, radius - control, -radius, radius, -radius));
-        sb.append("h ").append(width - radius * 2);
-        sb.append(String.format(CURVE_FORMAT, control, 0.0, radius, radius - control, radius, radius));
-        sb.append("v ").append(height - radius * 2);
-        sb.append(String.format(CURVE_FORMAT, 0.0, control, control - radius, radius, -radius, radius));
-        sb.append("h ").append(-width + radius * 2);
-        sb.append(String.format(CURVE_FORMAT, -control, 0.0, -radius, control - radius, -radius, -radius));
-        sb.append("Z");
-        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, sb.toString());
+        String sb = "M " + x + "," + (y + radius)
+              + String.format(CURVE_FORMAT, 0.0, -control, radius - control, -radius, radius, -radius)
+              + "h " + (width - radius * 2)
+              + String.format(CURVE_FORMAT, control, 0.0, radius, radius - control, radius, radius)
+              + "v " + (height - radius * 2)
+              + String.format(CURVE_FORMAT, 0.0, control, control - radius, radius, -radius, radius)
+              + "h " + (-width + radius * 2)
+              + String.format(CURVE_FORMAT, -control, 0.0, -radius, control - radius, -radius, -radius)
+              + "Z";
+        path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, sb);
         return path;
     }
 
@@ -1395,9 +1381,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         try (InputStream is = Files.newInputStream(filePath)) {
             embedImage(ImageIO.read(is), canvas, bbox, center);
         } catch (FileNotFoundException e) {
-            logger.error("Fluff image file not found: " + filePath);
+            logger.error("Fluff image file not found: {}", filePath);
         } catch (IOException e) {
-            logger.error("Error reading fluff image file: " + filePath);
+            logger.error("Error reading fluff image file: {}", filePath);
         }
     }
 
@@ -1479,21 +1465,21 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param parent The parent node of the table {@link Element}.
      * @param x      The x coordinate of the top left corner of the tables, relative to the parent node.
      * @param y      The y coordinate of the top left corder of the tables, relative to the parent node.
-     * @param width  The with of the table column.
+     * @param width  The width of the table column.
      * @param height The height of the table column.
      */
     protected void placeReferenceCharts(List<ReferenceTable> tables, Node parent, double x, double y, double width,
           double height) {
         double BORDER = 3.0;
         double lines = tables.stream().mapToDouble(ReferenceTable::lineCount).sum();
-        double ypos = y + BORDER;
+        double yPos = y + BORDER;
         double margin = ReferenceTable.getMargins(this);
         for (ReferenceTable table : tables) {
             double tableHeight = (height - margin * tables.size())
                   * table.lineCount() / lines + margin;
             parent.appendChild(
-                  table.createTable(x, ypos, width, tableHeight - BORDER));
-            ypos += tableHeight;
+                  table.createTable(x, yPos, width, tableHeight - BORDER));
+            yPos += tableHeight;
         }
     }
 

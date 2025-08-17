@@ -35,7 +35,7 @@ package megameklab.printing;
 import static megameklab.printing.PrintRecordSheet.FILL_BLACK;
 import static megameklab.printing.PrintRecordSheet.FILL_WHITE;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
-import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
+import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VERY_SMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
 
 import java.text.NumberFormat;
@@ -1193,22 +1193,22 @@ public class InventoryWriter {
                     break;
                 case SRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(1-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(1-12)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(13-24)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(13-24)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(25-40)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(25-40)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i] - bayColX[i - 1] - 1,
-                          "(41-50)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(41-50)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:
@@ -1235,22 +1235,22 @@ public class InventoryWriter {
                     break;
                 case SRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(1-6)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(1-6)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(7-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(7-12)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(13-20)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(13-20)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i] - colX[i - 1] - 1,
-                          "(21-25)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(21-25)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:
