@@ -49,11 +49,11 @@ import java.util.function.Function;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
-import megamek.common.equipment.BombType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.GunEmplacement;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.BombType;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
@@ -116,11 +116,12 @@ public enum EquipmentDatabaseCategory {
                 && !eq.hasFlag(F_INDUSTRIAL_TSM)
                 && !(eq.hasFlag(F_MASC)
                 && !eq.hasSubType(S_SUPERCHARGER)
-                && !eq.hasSubType(S_JETBOOSTER))
+                && !eq.hasSubType(S_JET_BOOSTER))
                 && !(en.hasETypeFlag(Entity.ETYPE_QUADVEE) && eq.hasFlag(F_TRACKS))
                 && !UnitUtil.isArmorOrStructure(eq)
                 && !(eq.hasFlag(F_CHASSIS_MODIFICATION) && en.isSupportVehicle())
-                && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRECONTROL) || (eq.hasFlag(F_ADVANCED_FIRECONTROL))))
+                && !(en.isSupportVehicle() && (eq.hasFlag(F_BASIC_FIRE_CONTROL)
+                || (eq.hasFlag(F_ADVANCED_FIRE_CONTROL))))
                 && !(eq.hasFlag(F_MAGNETIC_CLAMP) && en.hasETypeFlag(Entity.ETYPE_PROTOMEK))
                 && !(eq.hasFlag(F_PARTIAL_WING) && en.hasETypeFlag(Entity.ETYPE_PROTOMEK))
                 && !(eq.hasFlag(F_SPONSON_TURRET) && en.isSupportVehicle())
@@ -140,7 +141,7 @@ public enum EquipmentDatabaseCategory {
           e -> !(e instanceof BattleArmor)),
 
     ONE_SHOT("One-Shot",
-          (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ONESHOT)),
+          (eq, en) -> (eq instanceof WeaponType) && eq.hasFlag(WeaponType.F_ONE_SHOT)),
 
     TORPEDO("Torpedoes",
           (eq, en) -> (eq instanceof WeaponType)

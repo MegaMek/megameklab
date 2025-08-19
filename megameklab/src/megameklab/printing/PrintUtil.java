@@ -32,7 +32,7 @@
  */
 package megameklab.printing;
 
-import static megamek.common.equipment.MiscTypeFlag.*;
+import static megamek.common.equipment.enums.MiscTypeFlag.*;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
@@ -109,8 +109,8 @@ public final class PrintUtil {
               || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
               || eq.hasFlag(MiscType.F_SPONSON_TURRET)
               || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
-              || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
-              || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
+              || eq.hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+              || eq.hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)
               || eq.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)
               || eq.hasFlag(MiscType.F_LASER_INSULATOR))) {
             return false;

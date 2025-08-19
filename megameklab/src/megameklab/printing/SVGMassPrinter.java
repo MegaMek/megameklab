@@ -33,9 +33,9 @@
 
 package megameklab.printing;
 
-import static megamek.common.equipment.MiscTypeFlag.*;
 import static megamek.common.equipment.WeaponType.F_ENERGY;
 import static megamek.common.equipment.WeaponType.F_PLASMA;
+import static megamek.common.equipment.enums.MiscTypeFlag.*;
 
 import java.awt.print.PageFormat;
 import java.io.File;
@@ -175,7 +175,7 @@ public class SVGMassPrinter {
 
             return iw.getInfantryDamage() * infantryCount;
         }
-        if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+        if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
             if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
                 perMissile = 2;
@@ -268,7 +268,7 @@ public class SVGMassPrinter {
         }
 
         private String getCriticals(Entity entity, EquipmentType type) {
-            if (type.isVariableCriticals()
+            if (type.isVariableCriticalSlots()
                   && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
                 return "V";
@@ -279,7 +279,7 @@ public class SVGMassPrinter {
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                 return String.valueOf(TestProtoMek.requiresSlot(type) ? 1 : 0);
             }
-            return String.valueOf(type.getCriticals(entity));
+            return String.valueOf(type.getNumCriticalSlots(entity));
         }
 
         private String getDamage(Entity entity, WeaponType wtype) {
@@ -319,7 +319,7 @@ public class SVGMassPrinter {
                           + wtype.getDamage(wtype.getMediumRange()) + "/"
                           + wtype.getDamage(wtype.getLongRange());
                 }
-            } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+            } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
                 if (wtype instanceof HAGWeapon) {
                     return wtype.getRackSize() + "";
                 } else if (wtype instanceof MekMortarWeapon) {
@@ -387,9 +387,9 @@ public class SVGMassPrinter {
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
                 entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
-                if (type.hasFlag(WeaponTypeFlag.F_ONESHOT)) {
+                if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
                     entry.os = 1; // If the weapon is oneshot
-                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONESHOT)) {
+                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
                 }
                 entry.c = getCriticals(entity, type);
@@ -487,7 +487,7 @@ public class SVGMassPrinter {
                     continue;
                 }
                 if ((entity instanceof BattleArmor)
-                      && (m.getCriticals() > 0)
+                      && (m.getNumCriticalSlots() > 0)
                       && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
                     continue;
                 }
@@ -987,7 +987,7 @@ public class SVGMassPrinter {
         private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType) {
             double damageModifier = 1d;
             // Oneshot or Fusillade
-            if (weaponType.hasFlag(WeaponType.F_ONESHOT) && !(weaponType instanceof CLFussilade)) {
+            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT) && !(weaponType instanceof CLFussilade)) {
                 damageModifier *= .1;
             }
 

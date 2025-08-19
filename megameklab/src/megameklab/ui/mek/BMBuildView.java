@@ -50,12 +50,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import megamek.common.units.Entity;
-import megamek.common.units.LandAirMek;
-import megamek.common.units.Mek;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
@@ -119,7 +119,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         equipmentList.removeAllCrits();
         engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMek(), getMek().hasCompactHeatSinks());
         for (Mounted<?> mount : getMek().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getCriticals() == 0)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getNumCriticalSlots()
+                  == 0)) {
                 masterEquipmentList.add(mount);
             }
         }
@@ -211,7 +212,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
             if ((eq.getType().isSpreadable() || eq.isSplitable())
                   && (totalCrits > 1)
-                  && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+                  && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGETING_COMPUTER))
                   && !(getMek() instanceof LandAirMek)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMek());
                 // Superheavy Meks may have enough space in the CT for the whole thing.
@@ -388,8 +389,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);
         if (eq.getType().isSpreadable() || eq.isSplitable()) {
             if (getMek() instanceof LandAirMek) {
-                addSplitEquipment(location, Entity.LOC_NONE, eq.getCriticals(), selectedRow);
-            } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGCOMP)) {
+                addSplitEquipment(location, Entity.LOC_NONE, eq.getNumCriticalSlots(), selectedRow);
+            } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGETING_COMPUTER)) {
                 addSplitEquipment(location, Entity.LOC_NONE, 1, selectedRow);
             } else {
                 // Targetting computer is flagged as spreadable so the slots will be added one
@@ -397,7 +398,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 // since we don't have a way of indicating the number of slots until we know all
                 // the weapons. But
                 // it's not really splittable, so we need to put add all the slots at once.
-                addSplitEquipment(location, Entity.LOC_NONE, eq.getCriticals(), selectedRow);
+                addSplitEquipment(location, Entity.LOC_NONE, eq.getNumCriticalSlots(), selectedRow);
             }
             return;
         }

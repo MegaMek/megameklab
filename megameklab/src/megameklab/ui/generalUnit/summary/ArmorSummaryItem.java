@@ -32,12 +32,12 @@
  */
 package megameklab.ui.generalUnit.summary;
 
+import megamek.common.equipment.ArmorType;
 import megamek.common.units.Aero;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.Tank;
-import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.util.UnitUtil;
@@ -66,7 +66,7 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
             critLabel.setText(formatCrits(testSupportVehicle.getArmorSlots()));
             weightLabel.setText(formatWeight(testSupportVehicle.getWeightArmor(), entity));
         } else if (entity instanceof Mek) {
-            critLabel.setText(formatCrits(armor.getCriticals(entity)));
+            critLabel.setText(formatCrits(armor.getNumCriticalSlots(entity)));
         } else if (entity instanceof Tank) {
             critLabel.setText(formatCrits(getTankArmorCrits(entity)));
         } else if (entity instanceof AeroSpaceFighter) {

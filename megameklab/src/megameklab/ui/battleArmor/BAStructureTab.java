@@ -667,7 +667,7 @@ public class BAStructureTab extends ITab
                 // Spreadable equipment needs to have a Mounted entry
                 // for each critical
                 if (eq.isSpreadable()) {
-                    numTimesToAdd = eq.getCriticals(getBattleArmor());
+                    numTimesToAdd = eq.getNumCriticalSlots(getBattleArmor());
                 }
                 for (int i = 0; i < numTimesToAdd; i++) {
                     Mounted<?> newMount = Mounted.createMounted(getBattleArmor(), eq);
@@ -706,7 +706,7 @@ public class BAStructureTab extends ITab
     @Override
     public void armorTypeChanged(ArmorType armor) {
         UnitUtil.removeISorArmorMounts(getBattleArmor(), false);
-        int armorCount = armor.getCriticals(getBattleArmor());
+        int armorCount = armor.getNumCriticalSlots(getBattleArmor());
         getBattleArmor().setArmorTechLevel(armor.getTechLevel(getBattleArmor().getYear()));
         getBattleArmor().setArmorType(armor.getInternalName());
 

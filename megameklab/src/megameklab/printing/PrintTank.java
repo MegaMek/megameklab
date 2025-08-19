@@ -210,9 +210,9 @@ public class PrintTank extends PrintEntity {
             sj.add(String.join(", ", chassisMods)
                   + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
         }
-        if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             sj.add("Advanced Fire Control");
-        } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();

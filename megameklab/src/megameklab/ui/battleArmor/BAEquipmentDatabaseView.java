@@ -39,9 +39,9 @@ import java.util.List;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.BattleArmorUtil;
@@ -64,7 +64,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
-        if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGCOMP)) {
+        if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
             if (!UnitUtil.hasTargComp(getBattleArmor())) {
                 UnitUtil.updateTC(getBattleArmor(), equip);
             }

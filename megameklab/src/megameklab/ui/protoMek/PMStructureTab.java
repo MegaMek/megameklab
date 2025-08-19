@@ -51,7 +51,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -318,8 +319,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         getProtoMek().setArmorType(armor.getArmorType());
         getProtoMek().setArmorTechLevel(armor.getStaticTechLevel().getCompoundTechLevel(armor.isClan()));
 
-        if (armor.getCriticals(getProtoMek()) > 0) {
-            if (freeUpSpace(ProtoMek.LOC_TORSO, armor.getCriticals(getProtoMek()))) {
+        if (armor.getNumCriticalSlots(getProtoMek()) > 0) {
+            if (freeUpSpace(ProtoMek.LOC_TORSO, armor.getNumCriticalSlots(getProtoMek()))) {
                 try {
                     Mounted<?> mount = Mounted.createMounted(getProtoMek(), armor);
                     getProtoMek().addEquipment(mount, ProtoMek.LOC_TORSO, false);

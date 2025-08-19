@@ -48,7 +48,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
@@ -570,7 +570,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 return (mount.getEntity() instanceof Mek)
                       && ((Mek) mount.getEntity()).locationIsTorso(mount.getLocation());
             } else {
-                return mount.getType().hasFlag(MiscType.F_LIFTHOIST)
+                return mount.getType().hasFlag(MiscType.F_LIFT_HOIST)
                       || mount.getType().hasFlag(MiscType.F_SPRAYER)
                       || mount.getType().hasFlag(MiscType.F_LIGHT_FLUID_SUCTION_SYSTEM);
             }

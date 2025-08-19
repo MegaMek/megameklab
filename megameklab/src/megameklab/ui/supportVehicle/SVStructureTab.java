@@ -42,11 +42,7 @@ import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import megamek.common.*;
-import megamek.common.exceptions.LocationFullException;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
-import megamek.common.interfaces.ITechnology.TechRating;
+import megamek.common.SimpleTechLevel;
 import megamek.common.bays.CrewQuartersCargoBay;
 import megamek.common.bays.EjectionSeatCargoBay;
 import megamek.common.bays.FirstClassQuartersCargoBay;
@@ -57,11 +53,15 @@ import megamek.common.bays.SteerageQuartersCargoBay;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.equipment.FuelType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.Transporter;
+import megamek.common.equipment.enums.FuelType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.interfaces.ITechnology;
+import megamek.common.interfaces.ITechnology.TechRating;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
@@ -678,8 +678,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void fireConChanged(int index) {
         final Mounted<?> current = getSV().getMisc().stream()
-              .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRECONTROL)
-                    || m.getType().hasFlag(MiscType.F_ADVANCED_FIRECONTROL))
+              .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+                    || m.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL))
               .findFirst().orElse(null);
         if (null != current) {
             getSV().getMisc().remove(current);

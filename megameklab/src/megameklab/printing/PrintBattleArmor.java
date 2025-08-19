@@ -202,7 +202,7 @@ public class PrintBattleArmor extends PrintEntity {
                 sj.add("Must detach DWP before moving full ground speed.");
             }
         }
-        if (battleArmor.isExoskeleton() && !battleArmor.hasWorkingMisc(MiscType.F_EXTENDED_LIFESUPPORT)) {
+        if (battleArmor.isExoskeleton() && !battleArmor.hasWorkingMisc(MiscType.F_EXTENDED_LIFE_SUPPORT)) {
             sj.add("Unsealed Exoskeleton.");
         }
         return sj.toString();

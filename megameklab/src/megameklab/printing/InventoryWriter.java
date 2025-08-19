@@ -360,7 +360,7 @@ public class InventoryWriter {
              * and is mounted on MOUNT_LOC_NONE
              */
             if ((sheet.getEntity() instanceof BattleArmor)
-                  && (m.getCriticals() > 0)
+                  && (m.getNumCriticalSlots() > 0)
                   && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
                 continue;
             }

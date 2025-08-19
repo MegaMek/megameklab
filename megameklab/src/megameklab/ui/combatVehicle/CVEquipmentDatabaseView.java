@@ -37,11 +37,11 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 import java.util.Collection;
 import java.util.List;
 
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
 import megamek.common.verifier.TestTank;
@@ -69,7 +69,7 @@ class CVEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     protected void addEquipment(EquipmentType equip, int count) {
         Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
-        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+        if (isMisc && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
             if (!UnitUtil.hasTargComp(getTank())) {
                 UnitUtil.updateTC(getTank(), equip);
             }

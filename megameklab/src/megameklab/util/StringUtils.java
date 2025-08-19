@@ -34,16 +34,16 @@ package megameklab.util;
 
 import java.util.Comparator;
 
-import megamek.common.units.Entity;
+import megamek.common.actions.ClubAttackAction;
+import megamek.common.actions.KickAttackAction;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.units.Mek;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
-import megamek.common.actions.ClubAttackAction;
-import megamek.common.actions.KickAttackAction;
-import megamek.common.equipment.MiscMounted;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.autocannons.ACWeapon;
@@ -63,7 +63,7 @@ import megamek.common.weapons.gaussrifles.HAGWeapon;
 import megamek.common.weapons.gaussrifles.innerSphere.ISHGaussRifle;
 import megamek.common.weapons.gaussrifles.innerSphere.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.*;
+import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.lasers.clan.CLERPulseLaserSmall;
 import megamek.common.weapons.lasers.clan.CLPulseLaserMicro;
 import megamek.common.weapons.lasers.clan.CLPulseLaserSmall;
@@ -78,21 +78,21 @@ import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
-import megamek.common.weapons.missiles.innerSphere.ISThunderbolt10;
-import megamek.common.weapons.missiles.innerSphere.ISThunderbolt15;
-import megamek.common.weapons.missiles.innerSphere.ISThunderbolt20;
-import megamek.common.weapons.missiles.innerSphere.ISThunderbolt5;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
 import megamek.common.weapons.missiles.RLWeapon;
 import megamek.common.weapons.missiles.ThunderboltWeapon;
-import megamek.common.weapons.mortars.innerSphere.ISVehicularGrenadeLauncher;
+import megamek.common.weapons.missiles.innerSphere.ISThunderbolt10;
+import megamek.common.weapons.missiles.innerSphere.ISThunderbolt15;
+import megamek.common.weapons.missiles.innerSphere.ISThunderbolt20;
+import megamek.common.weapons.missiles.innerSphere.ISThunderbolt5;
 import megamek.common.weapons.mortars.MekMortarWeapon;
+import megamek.common.weapons.mortars.innerSphere.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.other.NarcWeapon;
+import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.ppc.clan.CLPlasmaCannon;
 import megamek.common.weapons.ppc.innerSphere.ISPlasmaRifle;
 import megamek.common.weapons.ppc.innerSphere.ISSnubNosePPC;
-import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
@@ -276,7 +276,7 @@ public class StringUtils {
                     info += "X,";
                 }
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     info += "OS,";
                 }
 
@@ -417,7 +417,7 @@ public class StringUtils {
                     info += "X,";
                 }
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     info += "OS,";
                 }
 

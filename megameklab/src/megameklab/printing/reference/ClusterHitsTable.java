@@ -39,11 +39,11 @@ import java.util.TreeSet;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.compute.Compute;
-import megamek.common.units.Entity;
-import megamek.common.units.Infantry;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.units.Infantry;
 import megamek.common.weapons.missiles.MissileWeapon;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
@@ -113,7 +113,8 @@ public class ClusterHitsTable extends ReferenceTable {
             if (entity instanceof BattleArmor) {
                 for (Mounted<?> mounted : entity.getIndividualWeaponList()) {
                     // We skip equipment that has critical slots and is not in a valid mount location
-                    if ((mounted.getCriticals() > 0) && (mounted.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                    if ((mounted.getNumCriticalSlots() > 0) && (mounted.getBaMountLoc()
+                          == BattleArmor.MOUNT_LOC_NONE)) {
                         continue;
                     }
                     if (mounted.getType() instanceof MissileWeapon) {

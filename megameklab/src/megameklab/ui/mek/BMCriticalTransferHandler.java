@@ -47,7 +47,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -170,7 +170,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         // Determine if we should spread equipment over multiple locations
         if ((neededTotalSlots > freePrimarySlots)
               // TargComps are marked as spreadable as a workaround, see the MiscType comment
-              && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+              && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGETING_COMPUTER))
               && !(getUnit() instanceof LandAirMek)) {
 
             Set<Integer> secondLocationSet = new HashSet<>();
@@ -261,7 +261,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                     }
                 }
 
-                // If this equipment is already mounted, clear the criticals it's mounted in
+                // If this equipment is already mounted, clear the criticalSlots it's mounted in
                 if (!fixedEquipment) {
                     if (eq.getLocation() != Entity.LOC_NONE || eq.getSecondLocation() != Entity.LOC_NONE) {
                         UnitUtil.removeCriticals(getUnit(), eq);
@@ -292,7 +292,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                             canDouble = (((AmmoType) etype).getAmmoType() == ((AmmoType) etype2).getAmmoType())
                                   && (((AmmoType) etype).getRackSize() == ((AmmoType) etype2).getRackSize());
                         } else if (etype.equals(etype2) && UnitUtil.isHeatSink(etype)) {
-                            canDouble = etype.getCriticals(getUnit()) == 1;
+                            canDouble = etype.getNumCriticalSlots(getUnit()) == 1;
                         }
                         if (canDouble) {
                             cs.setMount2(eq);

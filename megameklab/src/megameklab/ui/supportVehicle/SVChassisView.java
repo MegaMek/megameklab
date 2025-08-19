@@ -54,13 +54,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.*;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
-import megamek.common.interfaces.ITechnology.TechRating;
+import megamek.common.TechAdvancement;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.interfaces.ITechnology;
+import megamek.common.interfaces.ITechnology.TechRating;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
@@ -518,9 +518,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             cbTurrets.setEnabled(false);
         }
 
-        if (entity.hasMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (entity.hasMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_ADVANCED);
-        } else if (entity.hasMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (entity.hasMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_BASIC);
         } else {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_NONE);

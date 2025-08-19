@@ -48,7 +48,7 @@ import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import megamek.common.*;
+import megamek.common.RangeType;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
@@ -420,7 +420,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return defaultDecimalFormatter.format(weight);
             }
         } else if (col == COL_CRIT) {
-            if (type.isVariableCriticals()
+            if (type.isVariableCriticalSlots()
                   && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
                 return "variable";
@@ -431,7 +431,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                 return TestProtoMek.requiresSlot(type) ? 1 : 0;
             }
-            return type.getCriticals(entity);
+            return type.getNumCriticalSlots(entity);
         } else if (col == COL_TRATING) {
             return type.getFullRatingName(entity.isClan());
         } else if (col == COL_COST) {
@@ -528,7 +528,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             return wtype.getDamage(wtype.getShortRange()) + "/"
                   + wtype.getDamage(wtype.getMediumRange()) + "/"
                   + wtype.getDamage(wtype.getLongRange());
-        } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+        } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
             if (wtype instanceof HAGWeapon) {
                 return wtype.getRackSize() + "";
             } else if (wtype instanceof MekMortarWeapon) {

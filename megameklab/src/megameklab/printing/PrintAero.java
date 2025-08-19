@@ -209,9 +209,9 @@ public class PrintAero extends PrintEntity {
         } else if ((aero instanceof ConvFighter) && aero.isVSTOL()) {
             sj.add("VSTOL Equipment");
         }
-        if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             sj.add("Advanced Fire Control");
-        } else if (aero.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (aero.hasWorkingMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();

@@ -32,9 +32,9 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.equipment.EquipmentType;
-import megamek.common.equipment.FuelType;
 import megamek.common.SimpleTechLevel;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.enums.FuelType;
 import megamek.common.units.UnitRole;
 
 /**

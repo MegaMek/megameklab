@@ -50,7 +50,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JOptionPane;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -597,7 +597,7 @@ public final class MekUtil {
      */
     public static Mounted<?> createSpreadMounts(Mek unit, EquipmentType equip) {
         // how many non-spreadable contiguous blocks of crits?
-        int blocks = equip.getCriticals(unit);
+        int blocks = equip.getNumCriticalSlots(unit);
 
         boolean isMisc = equip instanceof MiscType;
 
@@ -606,7 +606,7 @@ public final class MekUtil {
         if (isMisc) {
             if ((equip.hasFlag(MiscType.F_INDUSTRIAL_TSM) || equip.hasFlag(MiscType.F_TSM))) {
                 // all crits user placeable
-                for (int i = 0; i < equip.getCriticals(unit); i++) {
+                for (int i = 0; i < equip.getNumCriticalSlots(unit); i++) {
                     locations.add(Entity.LOC_NONE);
                 }
             } else if (equip.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)) {
@@ -666,8 +666,8 @@ public final class MekUtil {
                 locations.add(Mek.LOC_RT);
                 locations.add(Mek.LOC_CT);
                 blocks = 3;
-            } else if ((equip.hasFlag(MiscType.F_VOIDSIG)
-                  || equip.hasFlag(MiscType.F_NULLSIG)
+            } else if ((equip.hasFlag(MiscType.F_VOID_SIG)
+                  || equip.hasFlag(MiscType.F_NULL_SIG)
                   || equip.hasFlag(MiscType.F_BLUE_SHIELD))) {
                 // Need to account for the center leg
                 if (unit instanceof TripodMek) {
@@ -991,7 +991,7 @@ public final class MekUtil {
      */
     public static boolean isFMU(Mounted<?> equipment) {
         return (equipment != null)
-              && equipment.getType().getCriticals(equipment.getEntity()) > 0
+              && equipment.getType().getNumCriticalSlots(equipment.getEntity()) > 0
               && !equipment.getType().isHittable()
               && (equipment.getType() instanceof MiscType)
               && !equipment.getType().hasFlag(MiscType.F_CASE)
@@ -1347,8 +1347,8 @@ public final class MekUtil {
                   || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                   || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                   || eq.hasFlag(MiscType.F_PARTIAL_WING)
-                  || eq.hasFlag(MiscType.F_VOIDSIG)
-                  || eq.hasFlag(MiscType.F_NULLSIG)
+                  || eq.hasFlag(MiscType.F_VOID_SIG)
+                  || eq.hasFlag(MiscType.F_NULL_SIG)
                   || eq.hasFlag(MiscType.F_BLUE_SHIELD)
                   || eq.hasFlag(MiscType.F_CHAMELEON_SHIELD)
                   || eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING)
@@ -1469,8 +1469,8 @@ public final class MekUtil {
                     return (dmgA > dmgB) ? -1 : 1;
                 } else {
                     // equal damage, compare crits
-                    int critsA = mountedA.getCriticals();
-                    int critsB = mountedB.getCriticals();
+                    int critsA = mountedA.getNumCriticalSlots();
+                    int critsB = mountedB.getNumCriticalSlots();
                     if (critsA != critsB) {
                         return (critsA > critsB) ? -1 : 1;
                     } else {

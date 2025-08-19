@@ -46,11 +46,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.units.Aero;
 import megamek.common.equipment.Engine;
+import megamek.common.equipment.enums.FuelType;
+import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.FixedWingSupport;
-import megamek.common.equipment.FuelType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Tank;
 import megamek.common.units.Warship;

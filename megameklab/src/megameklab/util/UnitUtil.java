@@ -49,10 +49,14 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import megamek.client.Client;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.Player;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.*;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.game.Game;
 import megamek.common.interfaces.ITechManager;
@@ -134,8 +138,8 @@ public class UnitUtil {
               (eq.hasFlag(MiscType.F_JUMP_BOOSTER) ||
                     eq.hasFlag(MiscType.F_BA_MANIPULATOR) ||
                     eq.hasFlag(MiscType.F_PARTIAL_WING) ||
-                    eq.hasFlag(MiscType.F_NULLSIG) ||
-                    eq.hasFlag(MiscType.F_VOIDSIG) ||
+                    eq.hasFlag(MiscType.F_NULL_SIG) ||
+                    eq.hasFlag(MiscType.F_VOID_SIG) ||
                     eq.hasFlag(MiscType.F_ENVIRONMENTAL_SEALING) ||
                     eq.hasFlag(MiscType.F_TRACKS) ||
                     eq.hasFlag(MiscType.F_TALON) ||
@@ -224,7 +228,7 @@ public class UnitUtil {
      * @return The number of slots per allocation
      */
     public static int getCritsUsed(Mounted<?> mount) {
-        double toReturn = mount.getCriticals();
+        double toReturn = mount.getNumCriticalSlots();
 
         // if it's 0, we can return now (e.g. standard armor or IS, we don't
         // want that to count as 1 later on
@@ -416,7 +420,7 @@ public class UnitUtil {
     }
 
     /**
-     * Removes all criticals of the given unit.
+     * Removes all criticalSlots of the given unit.
      */
     synchronized public static void removeAllCriticals(Entity unit) {
         removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
@@ -434,7 +438,7 @@ public class UnitUtil {
     }
 
     /**
-     * Removes all criticals from the given locations for the given unit.
+     * Removes all criticalSlots from the given locations for the given unit.
      */
     synchronized public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
         // Special handling for BattleArmor
@@ -449,7 +453,7 @@ public class UnitUtil {
                   });
             return;
         }
-        // first we remove all criticals
+        // first we remove all criticalSlots
         for (int loc = 0; loc < unit.locations(); loc++) {
             if (!locations.contains(loc)) {
                 continue;
@@ -788,14 +792,14 @@ public class UnitUtil {
 
             removeCriticals(entity, mount);
             compactCriticals(entity, loc);
-            if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getCriticals())) {
+            if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getNumCriticalSlots())) {
                 changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             } else {
                 // If the number of critical slots increases, we may need to shift existing critical slots to make
                 // room. Since we checked for sufficient space and compacted the existing critical slots we can be
                 // assured of not overrunning the array.
                 List<CriticalSlot> toAdd = new ArrayList<>();
-                for (int i = 0; i < mount.getCriticals(); i++) {
+                for (int i = 0; i < mount.getNumCriticalSlots(); i++) {
                     toAdd.add(new CriticalSlot(mount));
                 }
                 int slot = start;
@@ -825,7 +829,7 @@ public class UnitUtil {
         for (Mounted<?> m : unit.getAmmo()) {
             if ((m.getLocation() == Entity.LOC_NONE) &&
                   at.equals(m.getType()) &&
-                  ((m.getLinkedBy() == null) || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONESHOT))) {
+                  ((m.getLinkedBy() == null) || !m.getLinkedBy().getType().hasFlag(WeaponType.F_ONE_SHOT))) {
                 return m;
             }
         }
@@ -894,7 +898,7 @@ public class UnitUtil {
 
     public static boolean hasTargComp(Entity unit) {
         for (Mounted<?> mount : unit.getEquipment()) {
-            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGETING_COMPUTER)) {
                 return true;
             }
         }
@@ -1268,7 +1272,7 @@ public class UnitUtil {
         return entity.getEquipment().stream().mapToInt(m -> {
             var heat = m.getType().getHeat();
             if (m instanceof WeaponMounted wm) {
-                if (!countOneshots && wm.getType().hasFlag(WeaponType.F_ONESHOT)) {
+                if (!countOneshots && wm.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
                     return 0;
                 }
 
@@ -1757,7 +1761,7 @@ public class UnitUtil {
     public static void removeTC(Entity unit) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted<?> mount = unit.getEquipment().get(pos);
-            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGCOMP)) {
+            if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TARGETING_COMPUTER)) {
                 UnitUtil.removeMounted(unit, mount);
             }
         }
@@ -1930,7 +1934,7 @@ public class UnitUtil {
     public static void removeHiddenAmmo(Mounted<?> mounted) {
         EquipmentType launcherType = mounted.getType();
         if ((launcherType instanceof WeaponType) &&
-              (launcherType.hasFlag(WeaponType.F_ONESHOT) ||
+              (launcherType.hasFlag(WeaponType.F_ONE_SHOT) ||
                     (((WeaponType) launcherType).getAmmoType() == AmmoType.AmmoTypeEnum.INFANTRY))) {
             Mounted<?> oneShotAmmo = mounted.getLinked();
             if (oneShotAmmo != null) {
@@ -1974,7 +1978,7 @@ public class UnitUtil {
             if (m.getType() instanceof AmmoWeapon ammoWeaponType) {
                 if ((ammoWeaponType.getAmmoType() == ammoType.getAmmoType()) &&
                       (ammoWeaponType.getRackSize() == ammoType.getRackSize()) &&
-                      (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONESHOT))) {
+                      (includeOneShot || !m.getType().hasFlag(WeaponType.F_ONE_SHOT))) {
                     return true;
                 }
             } else if ((ammoType instanceof SmallWeaponAmmoType smallWeaponAmmoType) &&
@@ -2017,7 +2021,7 @@ public class UnitUtil {
                         equipmentType.hasFlag(MiscType.F_INDUSTRIAL_TSM) ||
                         (equipmentType.hasFlag(MiscType.F_MASC) &&
                               !equipmentType.hasSubType(MiscType.S_SUPERCHARGER) &&
-                              !equipmentType.hasSubType(MiscType.S_JETBOOSTER)) ||
+                              !equipmentType.hasSubType(MiscType.S_JET_BOOSTER)) ||
                         equipmentType.hasFlag(MiscType.F_SCM))) {
                 continue;
             }

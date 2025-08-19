@@ -39,14 +39,14 @@ import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
-import megamek.common.annotations.Nullable;
-import megamek.common.equipment.MiscMounted;
+import megamek.common.units.Entity;
 import megameklab.ui.EquipmentToolTip;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
@@ -156,7 +156,7 @@ public final class CritCellUtil {
             // the tip renew itself
             // when crossing from one such slot to the next (avoids them feeling like a
             // single equipment)
-            if (mounted.getCriticals() == 1) {
+            if (mounted.getNumCriticalSlots() == 1) {
                 toolTipText += " ".repeat(index);
             }
             cell.setToolTipText(toolTipText);

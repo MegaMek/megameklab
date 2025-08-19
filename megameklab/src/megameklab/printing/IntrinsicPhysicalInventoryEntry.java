@@ -37,11 +37,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
-import megamek.common.equipment.MiscType;
-import megamek.common.equipment.MiscTypeFlag;
 import megamek.common.units.ProtoMek;
 
 public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {

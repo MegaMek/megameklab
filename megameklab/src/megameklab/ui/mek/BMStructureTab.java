@@ -50,7 +50,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.Engine;
@@ -365,7 +367,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 clearCritsForCockpit(false, false);
                 int cockpitType = getMek().getCockpitType();
                 getMek().addCockpit();
-                // addCockpit sets the criticals but also sets the type to the default.
+                // addCockpit sets the criticalSlots but also sets the type to the default.
                 getMek().setCockpitType(cockpitType);
         }
 
@@ -489,7 +491,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().setStructureType(EquipmentType.getStructureType(structure));
         getMek().setStructureTechLevel(structure.getStaticTechLevel().getCompoundTechLevel(structure.isClan()));
 
-        isCount = structure.getCriticals(getMek());
+        isCount = structure.getNumCriticalSlots(getMek());
         if (isCount < 1) {
             return;
         }
@@ -567,7 +569,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().setArmorTechLevel(aTechLevel);
         getMek().setArmorType(at);
         final EquipmentType armor = ArmorType.of(at, TechConstants.isClan(aTechLevel));
-        int armorCount = armor.getCriticals(getMek());
+        int armorCount = armor.getNumCriticalSlots(getMek());
 
         if (armorCount < 1) {
             return;

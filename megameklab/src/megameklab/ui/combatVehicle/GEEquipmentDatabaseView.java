@@ -39,10 +39,10 @@ import java.util.List;
 
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.GunEmplacement;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
-import megamek.common.equipment.MiscTypeFlag;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.exceptions.LocationFullException;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
@@ -67,7 +67,7 @@ class GEEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     protected void addEquipment(EquipmentType equip, int count) {
         Mounted<?> mount;
         boolean isMisc = equip instanceof MiscType;
-        if (isMisc && equip.hasFlag(MiscType.F_TARGCOMP)) {
+        if (isMisc && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
             if (!UnitUtil.hasTargComp(getTank())) {
                 UnitUtil.updateTC(getTank(), equip);
             }
