@@ -50,6 +50,8 @@ import megamek.common.bays.PillionSeatCargoBay;
 import megamek.common.bays.SecondClassQuartersCargoBay;
 import megamek.common.bays.StandardSeatCargoBay;
 import megamek.common.bays.SteerageQuartersCargoBay;
+import megamek.common.enums.Faction;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -60,8 +62,6 @@ import megamek.common.equipment.Transporter;
 import megamek.common.equipment.enums.FuelType;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
-import megamek.common.interfaces.ITechnology.TechRating;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
@@ -211,7 +211,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

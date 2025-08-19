@@ -51,6 +51,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
@@ -58,7 +59,6 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
 import megamek.common.units.UnitRole;
@@ -283,7 +283,7 @@ public class BAStructureTab extends ITab
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

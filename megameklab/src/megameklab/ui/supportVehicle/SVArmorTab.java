@@ -38,13 +38,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
-import megamek.common.exceptions.LocationFullException;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology.TechRating;
+import megamek.common.TechConstants;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.EntityWeightClass;
 import megamek.common.units.FixedWingSupport;

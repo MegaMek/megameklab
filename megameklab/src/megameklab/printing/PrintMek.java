@@ -42,8 +42,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.MPCalculationSetting;
 import megamek.common.annotations.Nullable;
+import megamek.common.enums.TechBase;
 import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Engine;
@@ -52,7 +54,6 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
 import megamek.common.units.LAMPilot;
@@ -960,7 +961,7 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TechBase.IS)
+                if (mek.isClan() && (m.getType().getTechBase() == TechBase.IS)
                       && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
                 } else if (!mek.isClan() && m.getType().isClan()

@@ -43,11 +43,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.Jumpship;
@@ -189,7 +189,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 

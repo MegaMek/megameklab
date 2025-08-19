@@ -55,6 +55,7 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.enums.TechBase;
 import megamek.common.equipment.*;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
@@ -599,7 +600,7 @@ public class UnitUtil {
                 return false;
             }
         } else {
-            if (tech.getTechBase() != ITechnology.TechBase.ALL && unit.isClan() != tech.isClan()) {
+            if (tech.getTechBase() != TechBase.ALL && unit.isClan() != tech.isClan()) {
                 return false;
             }
 

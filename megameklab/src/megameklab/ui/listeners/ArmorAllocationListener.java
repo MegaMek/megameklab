@@ -32,10 +32,10 @@
  */
 package megameklab.ui.listeners;
 
+import megamek.common.enums.TechRating;
+import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.interfaces.ITechnology;
-import megamek.common.interfaces.ITechnology.TechRating;
-import megamek.common.equipment.ArmorType;
 
 /**
  * Listener for changes to armor. No method is required by all implementing classes so all are given a default noop

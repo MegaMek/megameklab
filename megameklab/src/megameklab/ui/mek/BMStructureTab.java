@@ -54,6 +54,7 @@ import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -63,7 +64,6 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
@@ -237,7 +237,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         return panBasicInfo;
     }
 
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 

@@ -42,16 +42,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
+import megamek.common.SimpleTechLevel;
+import megamek.common.enums.Faction;
+import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
-import megamek.common.equipment.EquipmentType;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
-import megamek.common.SimpleTechLevel;
 import megamek.common.units.UnitRole;
-import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
@@ -176,7 +176,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 

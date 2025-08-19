@@ -49,8 +49,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.bays.Bay;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -58,7 +61,6 @@ import megamek.common.equipment.Mounted;
 import megamek.common.equipment.Transporter;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.InfantryCompartment;
@@ -196,7 +198,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 

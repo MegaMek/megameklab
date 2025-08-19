@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import megamek.common.RangeType;
+import megamek.common.enums.TechBase;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentFlag;
 import megamek.common.equipment.EquipmentType;
@@ -52,7 +53,6 @@ import megamek.common.equipment.Sensor;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.enums.MiscTypeFlag;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
 import megamek.common.units.Aero;
@@ -347,7 +347,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      */
     private boolean showTechBase() {
         if (!mount.getEntity().isMixedTech()
-              || (mount.getType().getTechBase() == ITechnology.TechBase.ALL)) {
+              || (mount.getType().getTechBase() == TechBase.ALL)) {
             return false;
         }
         if (showMixedTechBase.containsKey(mount.getType())) {

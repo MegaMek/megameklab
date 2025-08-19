@@ -39,15 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
 
-import megamek.common.units.Entity;
-import megamek.common.interfaces.ITechnology.TechBase;
-import megamek.common.loaders.MekFileParser;
-import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
+import megamek.common.enums.TechBase;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.BLKTankFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Entity;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +82,7 @@ class BasicInfoViewTest {
         // Confirm expected Tech Base (IS) and Tech Level (Simple Intro)
         TechBase techBase = te.getTechBase();
         int techLevel = te.getTechLevel();
-        assertEquals(TechAdvancement.TechBase.IS, techBase);
+        assertEquals(TechBase.IS, techBase);
         assertEquals(TechConstants.T_SIMPLE_INTRO, techLevel);
 
         // Update Tech Level
@@ -97,7 +96,7 @@ class BasicInfoViewTest {
         techBase = newTE.getTechBase();
         techLevel = newTE.getTechLevel();
         // Confirm expected Tech Base (IS) and Tech Level (IS Unofficial)
-        assertEquals(TechAdvancement.TechBase.IS, techBase);
+        assertEquals(TechBase.IS, techBase);
         assertEquals(TechConstants.T_IS_UNOFFICIAL, techLevel);
         assertFalse(newTE.isClan());
     }
