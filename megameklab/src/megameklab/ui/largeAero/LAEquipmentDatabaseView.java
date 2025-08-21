@@ -43,7 +43,7 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Entity;
-import megamek.common.weapons.bayweapons.BayWeapon;
+import megamek.common.weapons.bayWeapons.BayWeapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
