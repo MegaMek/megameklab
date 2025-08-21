@@ -636,7 +636,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
             directories.add(winDir + "\\Fonts");
             directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
-            directories.add("/System/Library/Fonts");
+            directories.add("/SystemFluff/Library/Fonts");
             directories.add("/Library/Fonts");
             directories.add("~/Library/Fonts");
         } else {

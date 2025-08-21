@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.System;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -582,9 +581,9 @@ public class SVGMassPrinter {
             }
             if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
                 var mounted = new MiscMounted(entity, new MiscType() {{
-                    name = "Full Head Ejection System";
-                    shortName = "Full Head Eject System";
-                    internalName = "Full Head Ejection System";
+                    name = "Full Head Ejection SystemFluff";
+                    shortName = "Full Head Eject SystemFluff";
+                    internalName = "Full Head Ejection SystemFluff";
                 }});
                 mounted.setLocation(Mek.LOC_HEAD);
                 addMiscEntry(list,
@@ -997,7 +996,7 @@ public class SVGMassPrinter {
                 damageModifier *= 1.10;
             }
 
-            // Actuator Enhancement System
+            // Actuator Enhancement SystemFluff
             if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, -1,
                   weapon.getLocation()) &&
                   ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {

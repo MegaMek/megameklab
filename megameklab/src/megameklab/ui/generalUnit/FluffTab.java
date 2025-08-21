@@ -53,7 +53,7 @@ import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityFluff;
-import megamek.common.units.System;
+import megamek.common.units.SystemFluff;
 import megamek.common.util.ImageUtil;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -326,7 +326,7 @@ public class FluffTab extends ITab implements FocusListener {
             gbcRight.insets = elementInsets; // Reset insets
             gbcRight.gridy++;
 
-            // System/Manufacturer/Model Headers
+            // SystemFluff/Manufacturer/Model Headers
             gbcRight.gridx = 0;
             gbcRight.weightx = 0.0;
             gbcRight.anchor = GridBagConstraints.WEST;
@@ -342,25 +342,26 @@ public class FluffTab extends ITab implements FocusListener {
             gbcRight.gridwidth = 1; // Reset gridwidth
 
             // Loop through Systems
-            for (System system : System.values()) {
-                if ((system == System.JUMP_JET)
+            for (SystemFluff systemFluff : SystemFluff.values()) {
+                if ((systemFluff == SystemFluff.JUMP_JET)
                       && eSource.getEntity().hasETypeFlag(Entity.ETYPE_AERO)) {
                     continue;
                 }
 
-                // System Label
+                // SystemFluff Label
                 gbcRight.gridx = 0;
                 gbcRight.weightx = 0.0;
                 gbcRight.fill = GridBagConstraints.NONE;
-                panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + system.toString())), gbcRight);
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.SystemFluff." + systemFluff.toString())),
+                      gbcRight);
 
                 // Manufacturer Text Field
                 gbcRight.gridx = 1;
                 gbcRight.weightx = 0.5; // Match header weight
                 gbcRight.fill = GridBagConstraints.HORIZONTAL;
                 JTextField txtMan = new JTextField(12);
-                txtMan.setText(getFluff().getSystemManufacturer(system));
-                txtMan.setName(system.name() + ":" + TAG_MANUFACTURER);
+                txtMan.setText(getFluff().getSystemManufacturer(systemFluff));
+                txtMan.setName(systemFluff.name() + ":" + TAG_MANUFACTURER);
                 txtMan.addFocusListener(this);
                 panRight.add(txtMan, gbcRight);
 
@@ -370,8 +371,8 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Take rest of line
                 gbcRight.fill = GridBagConstraints.HORIZONTAL;
                 JTextField txtMod = new JTextField(12);
-                txtMod.setText(getFluff().getSystemModel(system));
-                txtMod.setName(system.name() + ":" + TAG_MODEL);
+                txtMod.setText(getFluff().getSystemModel(systemFluff));
+                txtMod.setName(systemFluff.name() + ":" + TAG_MODEL);
                 txtMod.addFocusListener(this);
                 panRight.add(txtMod, gbcRight);
 
@@ -487,16 +488,16 @@ public class FluffTab extends ITab implements FocusListener {
             if (name != null && name.contains(":")) {
                 String[] fields = name.split(":");
                 try {
-                    System system = System.parse(fields[0]);
-                    if (system != null) {
+                    SystemFluff systemFluff = SystemFluff.parse(fields[0]);
+                    if (systemFluff != null) {
                         if (TAG_MANUFACTURER.equals(fields[1])) {
-                            if (!getFluff().getSystemManufacturer(system).equals(text)) {
-                                getFluff().setSystemManufacturer(system, text);
+                            if (!getFluff().getSystemManufacturer(systemFluff).equals(text)) {
+                                getFluff().setSystemManufacturer(systemFluff, text);
                                 changed = true;
                             }
                         } else if (TAG_MODEL.equals(fields[1])) {
-                            if (!getFluff().getSystemModel(system).equals(text)) {
-                                getFluff().setSystemModel(system, text);
+                            if (!getFluff().getSystemModel(systemFluff).equals(text)) {
+                                getFluff().setSystemModel(systemFluff, text);
                                 changed = true;
                             }
                         }
@@ -675,12 +676,12 @@ public class FluffTab extends ITab implements FocusListener {
                 if (name != null && name.contains(":")) {
                     String[] fields = name.split(":");
                     try {
-                        System system = System.parse(fields[0]);
-                        if (system != null) {
+                        SystemFluff systemFluff = SystemFluff.parse(fields[0]);
+                        if (systemFluff != null) {
                             if (TAG_MANUFACTURER.equals(fields[1])) {
-                                textField.setText(fluff.getSystemManufacturer(system));
+                                textField.setText(fluff.getSystemManufacturer(systemFluff));
                             } else if (TAG_MODEL.equals(fields[1])) {
-                                textField.setText(fluff.getSystemModel(system));
+                                textField.setText(fluff.getSystemModel(systemFluff));
                             }
                         }
                     } catch (IllegalArgumentException ex) {

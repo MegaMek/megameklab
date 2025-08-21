@@ -1046,7 +1046,7 @@ public final class MekUtil {
                 }
 
                 AmmoType ammoType = (AmmoType) slots.get(i).getMount().getType();
-                if (lastWeapon.rackSize == ammoType.getRackSize()
+                if (lastWeapon.getRackSize() == ammoType.getRackSize()
                       && lastWeapon.getAmmoType() == lastWeapon.getAmmoType()) {
                     compatibleAmmo.add(slots.get(i));
                 }
