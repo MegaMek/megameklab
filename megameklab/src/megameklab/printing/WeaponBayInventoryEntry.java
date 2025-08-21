@@ -37,14 +37,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import megamek.common.units.Aero;
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Dropship;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
-import megamek.common.equipment.AmmoMounted;
+import megamek.common.units.Aero;
+import megamek.common.units.Dropship;
 import megamek.common.util.AeroAVModCalculator;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
@@ -159,16 +159,16 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 // Show official names of DropShip side arcs. Rear-mounted wing bays
                 // are indicated by (R) appended to the name field.
                 if (ship instanceof Dropship
-                      && (bay.loc.get(i) == Dropship.LOC_LWING
-                      || bay.loc.get(i) == Dropship.LOC_RWING)) {
+                      && (bay.loc.get(i) == Dropship.LOC_LEFT_WING
+                      || bay.loc.get(i) == Dropship.LOC_RIGHT_WING)) {
                     if (ship.isSpheroid()) {
-                        if (bay.loc.get(i) == Dropship.LOC_LWING) {
+                        if (bay.loc.get(i) == Dropship.LOC_LEFT_WING) {
                             locString.add(bay.rear ? "ALS" : "FLS");
                         } else {
                             locString.add(bay.rear ? "ARS" : "FRS");
                         }
                     } else {
-                        if (bay.loc.get(i) == Dropship.LOC_LWING) {
+                        if (bay.loc.get(i) == Dropship.LOC_LEFT_WING) {
                             locString.add("LW");
                         } else {
                             locString.add("RW");

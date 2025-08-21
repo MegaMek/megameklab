@@ -261,7 +261,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     public void removeSystemCrits(int systemType) {
         for (int loc = 0; loc < getAero().locations(); loc++) {
-            for (int slot = 0; slot < getAero().getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < getAero().getNumberOfCriticalSlots(loc); slot++) {
                 CriticalSlot cs = getAero().getCritical(loc, slot);
 
                 if ((cs == null) || (cs.getType() != CriticalSlot.TYPE_SYSTEM)) {
@@ -732,8 +732,8 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                 break;
         }
         getAero().initializeArmor(nose, Aero.LOC_NOSE);
-        getAero().initializeArmor(wing, Aero.LOC_LWING);
-        getAero().initializeArmor(wing, Aero.LOC_RWING);
+        getAero().initializeArmor(wing, Aero.LOC_LEFT_WING);
+        getAero().initializeArmor(wing, Aero.LOC_RIGHT_WING);
         getAero().initializeArmor(aft, Aero.LOC_AFT);
         getAero().autoSetThresh();
 
@@ -749,7 +749,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         UnitUtil.resetArmor(getAero(), location);
 
         int crits = armor.getPatchworkSlotsCVFtr();
-        if (getAero().getEmptyCriticals(location) < crits) {
+        if (getAero().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(null,
                   String.format("%s does not fit in location %s. Resetting to Standard Armor in this location.",
                         armor.getName(), getAero().getLocationName(location)),

@@ -558,7 +558,7 @@ public final class MekUtil {
      */
     public static void expandUnitMounts(Mek unit) {
         for (int location = 0; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticalSlots(location); slot++) {
                 CriticalSlot cs = unit.getCritical(location, slot);
                 if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                     continue;
@@ -619,52 +619,52 @@ public final class MekUtil {
                 }
             } else if (equip.hasFlag(MiscType.F_STEALTH)) {
                 // 2 in arms, legs, side torsos
-                locations.add(Mek.LOC_LLEG);
-                locations.add(Mek.LOC_RLEG);
-                locations.add(Mek.LOC_LARM);
-                locations.add(Mek.LOC_RARM);
-                locations.add(Mek.LOC_LT);
-                locations.add(Mek.LOC_RT);
+                locations.add(Mek.LOC_LEFT_LEG);
+                locations.add(Mek.LOC_RIGHT_LEG);
+                locations.add(Mek.LOC_LEFT_ARM);
+                locations.add(Mek.LOC_RIGHT_ARM);
+                locations.add(Mek.LOC_LEFT_TORSO);
+                locations.add(Mek.LOC_RIGHT_TORSO);
                 blocks = 6;
                 // Need to account for the center leg
                 if (unit instanceof TripodMek) {
-                    locations.add(Mek.LOC_CLEG);
+                    locations.add(Mek.LOC_CENTER_LEG);
                     blocks++;
                 }
             } else if (equip.hasFlag(MiscType.F_SCM)) {
                 // 1 in arms, legs, side torsos
-                locations.add(Mek.LOC_LLEG);
-                locations.add(Mek.LOC_RLEG);
-                locations.add(Mek.LOC_LARM);
-                locations.add(Mek.LOC_RARM);
-                locations.add(Mek.LOC_LT);
-                locations.add(Mek.LOC_RT);
+                locations.add(Mek.LOC_LEFT_LEG);
+                locations.add(Mek.LOC_RIGHT_LEG);
+                locations.add(Mek.LOC_LEFT_ARM);
+                locations.add(Mek.LOC_RIGHT_ARM);
+                locations.add(Mek.LOC_LEFT_TORSO);
+                locations.add(Mek.LOC_RIGHT_TORSO);
                 blocks = 6;
             } else if ((equip.hasFlag(MiscType.F_TRACKS) || equip.hasFlag(MiscType.F_TALON)
                   || equip.hasFlag(MiscType.F_JUMP_BOOSTER))) {
                 // 1 block in each leg
-                locations.add(Mek.LOC_LLEG);
-                locations.add(Mek.LOC_RLEG);
+                locations.add(Mek.LOC_LEFT_LEG);
+                locations.add(Mek.LOC_RIGHT_LEG);
                 if (unit instanceof QuadMek) {
-                    locations.add(Mek.LOC_LARM);
-                    locations.add(Mek.LOC_RARM);
+                    locations.add(Mek.LOC_LEFT_ARM);
+                    locations.add(Mek.LOC_RIGHT_ARM);
                 }
                 blocks = (unit instanceof BipedMek ? 2 : 4);
                 // Need to account for the center leg
                 if (unit instanceof TripodMek) {
-                    locations.add(Mek.LOC_CLEG);
+                    locations.add(Mek.LOC_CENTER_LEG);
                     blocks = 3;
                 }
             } else if (equip.hasFlag(MiscType.F_PARTIAL_WING) || equip.hasFlag(MiscType.F_CHAIN_DRAPE)) {
                 // one block in each side torso
-                locations.add(Mek.LOC_LT);
-                locations.add(Mek.LOC_RT);
+                locations.add(Mek.LOC_LEFT_TORSO);
+                locations.add(Mek.LOC_RIGHT_TORSO);
                 blocks = 2;
             } else if (equip.hasFlag(MiscType.F_RAM_PLATE)) {
                 // one block in each torso
-                locations.add(Mek.LOC_LT);
-                locations.add(Mek.LOC_RT);
-                locations.add(Mek.LOC_CT);
+                locations.add(Mek.LOC_LEFT_TORSO);
+                locations.add(Mek.LOC_RIGHT_TORSO);
+                locations.add(Mek.LOC_CENTER_TORSO);
                 blocks = 3;
             } else if ((equip.hasFlag(MiscType.F_VOID_SIG)
                   || equip.hasFlag(MiscType.F_NULL_SIG)
@@ -674,7 +674,7 @@ public final class MekUtil {
                     blocks++;
                 }
                 // 1 crit in each location, except the head
-                for (int i = Mek.LOC_CT; i < unit.locations(); i++) {
+                for (int i = Mek.LOC_CENTER_TORSO; i < unit.locations(); i++) {
                     locations.add(i);
                 }
             } else if (equip.hasFlag(MiscType.F_CHAMELEON_SHIELD)) {
@@ -683,7 +683,7 @@ public final class MekUtil {
                     blocks++;
                 }
                 // 1 crit in each location except head and CT
-                for (int i = Mek.LOC_RT; i < unit.locations(); i++) {
+                for (int i = Mek.LOC_RIGHT_TORSO; i < unit.locations(); i++) {
                     locations.add(i);
                 }
             }
@@ -743,14 +743,14 @@ public final class MekUtil {
             return true;
         }
         // extra check for the last crit in a location, it shouldn't get a border
-        if ((slot + 1) >= unit.getNumberOfCriticals(location)) {
+        if ((slot + 1) >= unit.getNumberOfCriticalSlots(location)) {
             return false;
         }
 
         int lastIndex = 0;
         if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
 
-            for (int position = 0; position < unit.getNumberOfCriticals(location); position++) {
+            for (int position = 0; position < unit.getNumberOfCriticalSlots(location); position++) {
                 if ((cs.getIndex() == Mek.SYSTEM_ENGINE) && (slot >= 3) && (position < 3)) {
                     position = 3;
                 }
@@ -780,7 +780,7 @@ public final class MekUtil {
     public static int countUsedCriticals(Mek unit) {
         int nCrits = 0;
         for (int i = 0; i < unit.locations(); i++) {
-            for (int j = 0; j < unit.getNumberOfCriticals(i); j++) {
+            for (int j = 0; j < unit.getNumberOfCriticalSlots(i); j++) {
                 CriticalSlot cs = unit.getCritical(i, j);
                 if (null != cs) {
                     nCrits++;
@@ -1067,7 +1067,7 @@ public final class MekUtil {
      */
     public static List<CriticalSlot> extricateCritSlots(Mek mek, int location) {
         List<CriticalSlot> presentGear = new ArrayList<>();
-        for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(location); slot++) {
             CriticalSlot critSlot = mek.getCritical(location, slot);
             if ((critSlot != null) && (critSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 presentGear.add(critSlot);
@@ -1181,7 +1181,7 @@ public final class MekUtil {
             return 0;
         }
         int maxNumOfCrits = 0;
-        for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(location); slot++) {
             maxNumOfCrits = Math.max(availableContiguousCrits(mek, location, slot, ignoreFMU), maxNumOfCrits);
         }
         return maxNumOfCrits;
@@ -1193,7 +1193,7 @@ public final class MekUtil {
      * there is no such slot.
      */
     public static int findSlotWithContiguousNumOfCrits(Entity mek, int location, int length) {
-        for (int slot = 0; slot < mek.getNumberOfCriticals(location); slot++) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(location); slot++) {
             if (canFreeContiguousCrits(mek, location, slot, length)) {
                 return slot;
             }
@@ -1215,32 +1215,32 @@ public final class MekUtil {
      * unhittable and freely moveable (FMU) equipment such as Endo Steel are counted as being free.
      */
     public static int availableContiguousCrits(Entity mek, int location, int startingSlot, boolean ignoreFMU) {
-        for (int slot = startingSlot; slot < mek.getNumberOfCriticals(location); slot++) {
+        for (int slot = startingSlot; slot < mek.getNumberOfCriticalSlots(location); slot++) {
             CriticalSlot critSlot = mek.getCritical(location, slot);
             if ((critSlot != null) && !(ignoreFMU && isFMU(critSlot.getMount()))) {
                 return slot - startingSlot;
             }
         }
-        return mek.getNumberOfCriticals(location) - startingSlot;
+        return mek.getNumberOfCriticalSlots(location) - startingSlot;
     }
 
     /** Add a vehicular grenade launcher, asking the user for the facing. */
     public static boolean addVGL(Mek mek, Mounted<?> vgl, int location, int slotNumber)
           throws LocationFullException {
         String[] facings;
-        if (location == Mek.LOC_LT) {
+        if (location == Mek.LOC_LEFT_TORSO) {
             facings = new String[4];
             facings[0] = "Front";
             facings[1] = "Front-Left";
             facings[2] = "Rear-Left";
             facings[3] = "Rear";
-        } else if (location == Mek.LOC_RT) {
+        } else if (location == Mek.LOC_RIGHT_TORSO) {
             facings = new String[4];
             facings[0] = "Front";
             facings[1] = "Front-Right";
             facings[2] = "Rear-Right";
             facings[3] = "Rear";
-        } else if (location == Mek.LOC_CT) {
+        } else if (location == Mek.LOC_CENTER_TORSO) {
             facings = new String[2];
             facings[0] = "Front";
             facings[1] = "Rear";
@@ -1500,7 +1500,7 @@ public final class MekUtil {
      * @param loc        The location
      */
     public static void removeSystemCrits(Mek mek, int systemType, int loc) {
-        for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(loc); slot++) {
             CriticalSlot cs = mek.getCritical(loc, slot);
             if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_SYSTEM) && (cs.getIndex() == systemType)) {
                 mek.setCritical(loc, slot, null);

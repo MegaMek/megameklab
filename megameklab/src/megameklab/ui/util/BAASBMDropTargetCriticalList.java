@@ -286,8 +286,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         popup.add(info);
                     }
 
-                    if ((mount.getLocation() != Mek.LOC_LARM)
-                          && (mount.getLocation() != Mek.LOC_RARM)) {
+                    if ((mount.getLocation() != Mek.LOC_LEFT_ARM)
+                          && (mount.getLocation() != Mek.LOC_RIGHT_ARM)) {
                         if (mount.getType() instanceof WeaponType) {
                             if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1,
                                   mount.getLocation())
@@ -296,7 +296,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                                   mount.getLocation())
                                   || (getUnit().hasWorkingMisc(
                                   MiscType.F_HEAD_TURRET, -1,
-                                  Mek.LOC_CT)
+                                  Mek.LOC_CENTER_TORSO)
                                   && (mount
                                   .getLocation() == Mek.LOC_HEAD))) {
                                 if (!mount.isMekTurretMounted()) {
@@ -366,10 +366,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 }
 
                 if ((getUnit() instanceof BipedMek || getUnit() instanceof TripodMek)
-                      && ((location == Mek.LOC_LARM) || (location == Mek.LOC_RARM))) {
+                      && ((location == Mek.LOC_LEFT_ARM) || (location == Mek.LOC_RIGHT_ARM))) {
                     boolean canHaveLowerArm = true;
                     if (getUnit().isOmni()) {
-                        int numCrits = getUnit().getNumberOfCriticals(location);
+                        int numCrits = getUnit().getNumberOfCriticalSlots(location);
                         for (int slot = 0; slot < numCrits; slot++) {
                             CriticalSlot crit = getUnit().getCritical(location, slot);
                             if (crit == null) {
@@ -477,7 +477,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         int slot = getSelectedIndex();
         int location = getCritLocation();
         CriticalSlot crit = null;
-        if ((slot >= 0) && (slot < getUnit().getNumberOfCriticals(location))) {
+        if ((slot >= 0) && (slot < getUnit().getNumberOfCriticalSlots(location))) {
             crit = getUnit().getCritical(location, slot);
         }
 

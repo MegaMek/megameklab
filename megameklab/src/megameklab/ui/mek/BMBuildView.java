@@ -208,7 +208,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
 
             final int totalCrits = UnitUtil.getCritsUsed(eq);
             String[] locations = getMek().getLocationNames();
-            String[] abbrLocations = getMek().getLocationAbbrs();
+            String[] abbrLocations = getMek().getLocationAbbreviations();
 
             if ((eq.getType().isSpreadable() || eq.isSplitable())
                   && (totalCrits > 1)
@@ -216,28 +216,35 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                   && !(getMek() instanceof LandAirMek)) {
                 int[] critSpace = UnitUtil.getHighestContinuousNumberOfCritsArray(getMek());
                 // Superheavy Meks may have enough space in the CT for the whole thing.
-                if ((critSpace[Mek.LOC_CT] >= 1) && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_CT)) {
-                    JMenu ctMenu = new JMenu(locations[Mek.LOC_CT]);
+                if ((critSpace[Mek.LOC_CENTER_TORSO] >= 1) && UnitUtil.isValidLocation(getMek(),
+                      eq.getType(),
+                      Mek.LOC_CENTER_TORSO)) {
+                    JMenu ctMenu = new JMenu(locations[Mek.LOC_CENTER_TORSO]);
 
-                    if (critSpace[Mek.LOC_CT] >= totalCrits) {
-                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_CT]));
+                    if (critSpace[Mek.LOC_CENTER_TORSO] >= totalCrits) {
+                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_CENTER_TORSO]));
                         item.addActionListener(
-                              ev -> addSplitEquipment(Mek.LOC_CT, Mek.LOC_NONE, totalCrits, selectedRow));
+                              ev -> addSplitEquipment(Mek.LOC_CENTER_TORSO, Mek.LOC_NONE, totalCrits, selectedRow));
                         ctMenu.add(item);
                     }
 
                     if (UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_HEAD)) {
                         JMenu subMenu = new JMenu(
-                              String.format("%1$s/%2$s", abbrLocations[Mek.LOC_CT], abbrLocations[Mek.LOC_HEAD]));
+                              String.format("%1$s/%2$s",
+                                    abbrLocations[Mek.LOC_CENTER_TORSO],
+                                    abbrLocations[Mek.LOC_HEAD]));
                         int subCrits = critSpace[Mek.LOC_HEAD];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
-                            if (primarySlots <= critSpace[Mek.LOC_CT]) {
+                            if (primarySlots <= critSpace[Mek.LOC_CENTER_TORSO]) {
                                 item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
-                                      abbrLocations[Mek.LOC_CT], primarySlots, abbrLocations[Mek.LOC_HEAD], slots));
+                                      abbrLocations[Mek.LOC_CENTER_TORSO],
+                                      primarySlots,
+                                      abbrLocations[Mek.LOC_HEAD],
+                                      slots));
 
                                 final int secondaryLocation = Mek.LOC_HEAD;
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_CT, secondaryLocation,
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_CENTER_TORSO, secondaryLocation,
                                       primarySlots, selectedRow));
                                 subMenu.add(item);
                             }
@@ -248,33 +255,38 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(ctMenu);
                 }
 
-                if ((critSpace[Mek.LOC_RT] >= 1) && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_RT)) {
-                    JMenu rtMenu = new JMenu(locations[Mek.LOC_RT]);
+                if ((critSpace[Mek.LOC_RIGHT_TORSO] >= 1) && UnitUtil.isValidLocation(getMek(),
+                      eq.getType(),
+                      Mek.LOC_RIGHT_TORSO)) {
+                    JMenu rtMenu = new JMenu(locations[Mek.LOC_RIGHT_TORSO]);
 
-                    if (critSpace[Mek.LOC_RT] >= totalCrits) {
-                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RT]));
+                    if (critSpace[Mek.LOC_RIGHT_TORSO] >= totalCrits) {
+                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RIGHT_TORSO]));
                         item.addActionListener(
-                              ev -> addSplitEquipment(Mek.LOC_RT, Mek.LOC_NONE, totalCrits, selectedRow));
+                              ev -> addSplitEquipment(Mek.LOC_RIGHT_TORSO, Mek.LOC_NONE, totalCrits, selectedRow));
                         rtMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mek.LOC_CT, Mek.LOC_RARM };
+                    int[] splitLocations = new int[] { Mek.LOC_CENTER_TORSO, Mek.LOC_RIGHT_ARM };
 
                     for (int location = 0; location < 2; location++) {
                         if (!UnitUtil.isValidLocation(getMek(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
-                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_RT],
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_RIGHT_TORSO],
                               abbrLocations[splitLocations[location]]));
                         int subCrits = critSpace[splitLocations[location]];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
-                            if (primarySlots <= critSpace[Mek.LOC_RT]) {
-                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mek.LOC_RT],
-                                      primarySlots, abbrLocations[splitLocations[location]], slots));
+                            if (primarySlots <= critSpace[Mek.LOC_RIGHT_TORSO]) {
+                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
+                                      abbrLocations[Mek.LOC_RIGHT_TORSO],
+                                      primarySlots,
+                                      abbrLocations[splitLocations[location]],
+                                      slots));
 
                                 final int secondaryLocation = splitLocations[location];
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RT, secondaryLocation,
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_RIGHT_TORSO, secondaryLocation,
                                       primarySlots, selectedRow));
                                 subMenu.add(item);
                             }
@@ -284,41 +296,46 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(rtMenu);
                 }
 
-                if ((critSpace[Mek.LOC_RARM] >= totalCrits)
-                      && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_RARM)) {
-                    item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RARM]));
+                if ((critSpace[Mek.LOC_RIGHT_ARM] >= totalCrits)
+                      && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_RIGHT_ARM)) {
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_RIGHT_ARM]));
                     item.addActionListener(
-                          ev -> addSplitEquipment(Mek.LOC_RARM, Mek.LOC_RARM, totalCrits, selectedRow));
+                          ev -> addSplitEquipment(Mek.LOC_RIGHT_ARM, Mek.LOC_RIGHT_ARM, totalCrits, selectedRow));
                     popup.add(item);
                 }
 
-                if ((critSpace[Mek.LOC_LT] >= 1) && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_LT)) {
-                    JMenu ltMenu = new JMenu(locations[Mek.LOC_LT]);
+                if ((critSpace[Mek.LOC_LEFT_TORSO] >= 1) && UnitUtil.isValidLocation(getMek(),
+                      eq.getType(),
+                      Mek.LOC_LEFT_TORSO)) {
+                    JMenu ltMenu = new JMenu(locations[Mek.LOC_LEFT_TORSO]);
 
-                    if (critSpace[Mek.LOC_LT] >= totalCrits) {
-                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LT]));
+                    if (critSpace[Mek.LOC_LEFT_TORSO] >= totalCrits) {
+                        item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LEFT_TORSO]));
                         item.addActionListener(
-                              ev -> addSplitEquipment(Mek.LOC_LT, Mek.LOC_NONE, totalCrits, selectedRow));
+                              ev -> addSplitEquipment(Mek.LOC_LEFT_TORSO, Mek.LOC_NONE, totalCrits, selectedRow));
                         ltMenu.add(item);
                     }
 
-                    int[] splitLocations = new int[] { Mek.LOC_CT, Mek.LOC_LARM };
+                    int[] splitLocations = new int[] { Mek.LOC_CENTER_TORSO, Mek.LOC_LEFT_ARM };
 
                     for (int location = 0; location < 2; location++) {
                         if (!UnitUtil.isValidLocation(getMek(), eq.getType(), splitLocations[location])) {
                             continue;
                         }
-                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_LT],
+                        JMenu subMenu = new JMenu(String.format("%1$s/%2$s", abbrLocations[Mek.LOC_LEFT_TORSO],
                               abbrLocations[splitLocations[location]]));
                         int subCrits = critSpace[splitLocations[location]];
                         for (int slots = 1; slots <= subCrits; slots++) {
                             final int primarySlots = totalCrits - slots;
-                            if (primarySlots <= critSpace[Mek.LOC_LT]) {
-                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)", abbrLocations[Mek.LOC_LT],
-                                      primarySlots, abbrLocations[splitLocations[location]], slots));
+                            if (primarySlots <= critSpace[Mek.LOC_LEFT_TORSO]) {
+                                item = new JMenuItem(String.format("%1$s (%2$s)/%3$s (%4$s)",
+                                      abbrLocations[Mek.LOC_LEFT_TORSO],
+                                      primarySlots,
+                                      abbrLocations[splitLocations[location]],
+                                      slots));
 
                                 final int secondaryLocation = splitLocations[location];
-                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LT, secondaryLocation,
+                                item.addActionListener(ev -> addSplitEquipment(Mek.LOC_LEFT_TORSO, secondaryLocation,
                                       primarySlots, selectedRow));
                                 subMenu.add(item);
                             }
@@ -328,11 +345,11 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                     popup.add(ltMenu);
                 }
 
-                if ((critSpace[Mek.LOC_LARM] >= totalCrits)
-                      && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_LARM)) {
-                    item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LARM]));
+                if ((critSpace[Mek.LOC_LEFT_ARM] >= totalCrits)
+                      && UnitUtil.isValidLocation(getMek(), eq.getType(), Mek.LOC_LEFT_ARM)) {
+                    item = new JMenuItem(String.format("Add to %1$s", locations[Mek.LOC_LEFT_ARM]));
                     item.addActionListener(
-                          ev -> addSplitEquipment(Mek.LOC_LARM, Mek.LOC_LARM, totalCrits, selectedRow));
+                          ev -> addSplitEquipment(Mek.LOC_LEFT_ARM, Mek.LOC_LEFT_ARM, totalCrits, selectedRow));
                     popup.add(item);
                 }
 

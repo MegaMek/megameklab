@@ -803,7 +803,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     private void removeTurret(int loc) {
-        for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < getTank().getNumberOfCriticalSlots(loc); slot++) {
             getTank().setCritical(loc, slot, null);
         }
         for (Mounted<?> mount : getTank().getEquipment()) {

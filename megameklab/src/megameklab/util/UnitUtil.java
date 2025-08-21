@@ -38,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -459,7 +460,7 @@ public class UnitUtil {
             if (!locations.contains(loc)) {
                 continue;
             }
-            for (int i = 0; i < unit.getNumberOfCriticals(loc); i++) {
+            for (int i = 0; i < unit.getNumberOfCriticalSlots(loc); i++) {
                 CriticalSlot cs = unit.getCritical(loc, i);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted<?> m1 = cs.getMount();
@@ -499,7 +500,7 @@ public class UnitUtil {
         }
 
         for (int loc = 0; loc < unit.locations(); loc++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
                 CriticalSlot cs = unit.getCritical(loc, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
@@ -533,7 +534,7 @@ public class UnitUtil {
             return;
         }
 
-        for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
             if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                 if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
@@ -781,7 +782,7 @@ public class UnitUtil {
             final int loc = mount.getLocation();
             int start = -1;
 
-            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticalSlots(loc); slot++) {
                 CriticalSlot criticalSlot = entity.getCritical(loc, slot);
                 if ((criticalSlot != null) &&
                       (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
@@ -793,7 +794,7 @@ public class UnitUtil {
 
             removeCriticals(entity, mount);
             compactCriticals(entity, loc);
-            if ((start < 0) || (entity.getEmptyCriticals(loc) < mount.getNumCriticalSlots())) {
+            if ((start < 0) || (entity.getEmptyCriticalSlots(loc) < mount.getNumCriticalSlots())) {
                 changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             } else {
                 // If the number of critical slots increases, we may need to shift existing critical slots to make
@@ -910,7 +911,7 @@ public class UnitUtil {
     public static int[] getHighestContinuousNumberOfCritsArray(Mek unit) {
         int[] criticalSpaces = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        for (int loc = 0; loc <= Mek.LOC_LLEG; loc++) {
+        for (int loc = 0; loc <= Mek.LOC_LEFT_LEG; loc++) {
             criticalSpaces[loc] = UnitUtil.getHighestContinuousNumberOfCrits(unit, loc);
         }
 
@@ -926,7 +927,7 @@ public class UnitUtil {
             return 0;
         }
 
-        for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+        for (int slot = 0; slot < unit.getNumberOfCriticalSlots(location); slot++) {
             if (unit.getCritical(location, slot) == null) {
                 currentCriticalSlotCount++;
             } else {
@@ -1108,7 +1109,7 @@ public class UnitUtil {
 
     public static void compactCriticals(Entity unit, int loc) {
         int firstEmpty = -1;
-        for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
 
             if ((cs == null) && (firstEmpty == -1)) {
@@ -1335,7 +1336,7 @@ public class UnitUtil {
      * @param location The location to check
      */
     public static void updateCritsArmoredStatus(Entity unit, Mounted<?> mount, int location) {
-        for (int position = 0; position < unit.getNumberOfCriticals(location); position++) {
+        for (int position = 0; position < unit.getNumberOfCriticalSlots(location); position++) {
             CriticalSlot cs = unit.getCritical(location, position);
             if ((cs == null) || (cs.getType() == CriticalSlot.TYPE_SYSTEM)) {
                 continue;
@@ -1382,8 +1383,8 @@ public class UnitUtil {
         }
 
         if (cs.getIndex() <= Mek.SYSTEM_GYRO) {
-            for (int loc = Mek.LOC_HEAD; loc <= Mek.LOC_LT; loc++) {
-                for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+            for (int loc = Mek.LOC_HEAD; loc <= Mek.LOC_LEFT_TORSO; loc++) {
+                for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
                     CriticalSlot newCrit = unit.getCritical(loc, slot);
 
                     if ((newCrit != null) &&
@@ -1395,7 +1396,7 @@ public class UnitUtil {
             }
         } else {
             // actuators
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticalSlots(location); slot++) {
                 CriticalSlot newCriticalSlot = unit.getCritical(location, slot);
 
                 if ((newCriticalSlot != null) &&
@@ -1537,7 +1538,7 @@ public class UnitUtil {
         }
 
         for (int location = Mek.LOC_HEAD; location < unit.locations(); location++) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(location); slot++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticalSlots(location); slot++) {
                 CriticalSlot criticalSlot = unit.getCritical(location, slot);
                 if ((criticalSlot != null) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted<?> mount = criticalSlot.getMount();
@@ -1615,7 +1616,7 @@ public class UnitUtil {
 
         EquipmentType eq = EquipmentType.get(name);
         if (null != eq) {
-            for (int slot = 0; slot < unit.getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
                 final CriticalSlot criticalSlot = unit.getCritical(loc, slot);
                 if ((null != criticalSlot) &&
                       (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
@@ -1876,7 +1877,7 @@ public class UnitUtil {
                 }
             }
         } else {
-            for (int slot = 0; slot < entity.getNumberOfCriticals(fromLoc); slot++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticalSlots(fromLoc); slot++) {
                 final CriticalSlot criticalSlot = entity.getCritical(fromLoc, slot);
                 if ((null != criticalSlot) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     copyEquipment(entity, toLoc, criticalSlot.getMount(), removed);
@@ -2230,7 +2231,7 @@ public class UnitUtil {
             mounted.setDumping(false);
         }
         for (int loc = 0; loc < entity.locations(); loc++) {
-            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticalSlots(loc); slot++) {
                 CriticalSlot cs = entity.getCritical(loc, slot);
                 if (cs != null) {
                     cs.setDestroyed(false);
@@ -2262,7 +2263,7 @@ public class UnitUtil {
             }
         }
         for (int loc = 0; loc < entity.locations(); loc++) {
-            for (int slot = 0; slot < entity.getNumberOfCriticals(loc); slot++) {
+            for (int slot = 0; slot < entity.getNumberOfCriticalSlots(loc); slot++) {
                 CriticalSlot cs = entity.getCritical(loc, slot);
                 if (cs != null && (cs.isDamaged() || cs.isMissing())) {
                     return true;

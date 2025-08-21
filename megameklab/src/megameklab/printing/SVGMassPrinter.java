@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.System;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -572,7 +573,7 @@ public class SVGMassPrinter {
                     shortName = "RISC HS Override Kit";
                     internalName = "RISC Heat Sink Override Kit";
                 }});
-                mounted.setLocation(Mek.LOC_CT);
+                mounted.setLocation(Mek.LOC_CENTER_TORSO);
                 addMiscEntry(list,
                       entity,
                       mounted.getType(),
@@ -619,7 +620,7 @@ public class SVGMassPrinter {
             String damage;
             String maxDamage;
             if (type.hasFlag(MiscType.F_TALON)) {
-                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LLEG, false));
+                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
                 maxDamage = damage;
             } else if (type.hasSubType(MiscType.S_CLAW) || type.hasSubType(MiscType.S_CLAW_THB)) {
                 damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
@@ -999,7 +1000,7 @@ public class SVGMassPrinter {
             // Actuator Enhancement System
             if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, -1,
                   weapon.getLocation()) &&
-                  ((weapon.getLocation() == Mek.LOC_LARM) || (weapon.getLocation() == Mek.LOC_RARM))) {
+                  ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
                 damageModifier *= 1.05;
             }
 
@@ -1114,7 +1115,7 @@ public class SVGMassPrinter {
                     //                if (!mekSummary.getName().contains("Field Gun Infantry")) {
                     //                    continue;
                     //                }
-                    //                 logger.info("{}", mekSummary.getName());
+                    //                 LOGGER.info("{}", mekSummary.getName());
 
                     // if (i > 10) break; // For testing, remove this line in production
                     /*
@@ -1137,7 +1138,7 @@ public class SVGMassPrinter {
                      */
                     Entity entity = mekSummary.loadEntity();
                     if ((entity == null) || (entity instanceof GunEmplacement)) {
-                        //                    logger.info("Skipping: {}", mekSummary.getName());
+                        //                    LOGGER.info("Skipping: {}", mekSummary.getName());
                         System.gc();
                         continue;
                     }
@@ -1239,7 +1240,7 @@ public class SVGMassPrinter {
                                 idx++;
                             }
                         }
-                        // logger.info("Printed: {}", finalFilename);
+                        // LOGGER.info("Printed: {}", finalFilename);
                     } catch (Exception e) {
                         logger.error(e, "Printing Error");
                         System.exit(1);

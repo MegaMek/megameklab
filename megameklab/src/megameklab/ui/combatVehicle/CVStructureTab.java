@@ -246,7 +246,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     private void removeTurret(int loc) {
-        for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < getTank().getNumberOfCriticalSlots(loc); slot++) {
             getTank().setCritical(loc, slot, null);
         }
         for (Mounted<?> mount : getTank().getEquipment()) {
@@ -854,7 +854,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         UnitUtil.resetArmor(getTank(), location);
 
         int crits = armor.getPatchworkSlotsCVFtr();
-        if (getTank().getEmptyCriticals(location) < crits) {
+        if (getTank().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(
                   null, armor.getName()
                         + " does not fit in location "

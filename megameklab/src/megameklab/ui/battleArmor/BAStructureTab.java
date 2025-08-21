@@ -610,8 +610,8 @@ public class BAStructureTab extends ITab
             // afterward.
             CriticalSlot[][] slots = new CriticalSlot[getBattleArmor().locations()][];
             for (int loc = 0; loc < getBattleArmor().locations(); loc++) {
-                slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticals(loc)];
-                for (int i = 0; i < getBattleArmor().getNumberOfCriticals(loc); i++) {
+                slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticalSlots(loc)];
+                for (int i = 0; i < getBattleArmor().getNumberOfCriticalSlots(loc); i++) {
                     slots[loc][i] = getBattleArmor().getCritical(loc, i);
                 }
             }

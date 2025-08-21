@@ -39,15 +39,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import megamek.common.units.Aero;
 import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
 import megamek.common.units.Jumpship;
-import megamek.common.equipment.Mounted;
 import megamek.common.units.UnitType;
 import megamek.common.units.Warship;
-import megamek.common.equipment.WeaponType;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGRectElement;
 
@@ -197,19 +197,19 @@ public class PrintDropship extends PrintAero {
     }
 
     int foreLeftHeat() {
-        return ship.getHeatInArc(Dropship.LOC_LWING, false);
+        return ship.getHeatInArc(Dropship.LOC_LEFT_WING, false);
     }
 
     int foreRightHeat() {
-        return ship.getHeatInArc(Dropship.LOC_RWING, false);
+        return ship.getHeatInArc(Dropship.LOC_RIGHT_WING, false);
     }
 
     int aftLeftHeat() {
-        return ship.getHeatInArc(Dropship.LOC_LWING, true);
+        return ship.getHeatInArc(Dropship.LOC_LEFT_WING, true);
     }
 
     int aftRightHeat() {
-        return ship.getHeatInArc(Dropship.LOC_RWING, true);
+        return ship.getHeatInArc(Dropship.LOC_RIGHT_WING, true);
     }
 
     int aftHeat() {

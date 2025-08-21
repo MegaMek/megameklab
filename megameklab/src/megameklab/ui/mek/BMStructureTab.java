@@ -245,16 +245,16 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().clearCockpitCrits();
         getMek().clearGyroCrits();
         getMek().clearEngineCrits();
-        MekUtil.removeSystemCrits(getMek(), LandAirMek.LAM_LANDING_GEAR, Mek.LOC_CT);
+        MekUtil.removeSystemCrits(getMek(), LandAirMek.LAM_LANDING_GEAR, Mek.LOC_CENTER_TORSO);
 
         int[] ctEngine = getMek().getEngine().getCenterTorsoCriticalSlots(getMek().getGyroType());
         int lastEngine = ctEngine[ctEngine.length - 1];
         for (int slot = 0; slot <= lastEngine; slot++) {
-            clearCrit(Mek.LOC_CT, slot);
+            clearCrit(Mek.LOC_CENTER_TORSO, slot);
         }
         for (int slot : getMek().getEngine().getSideTorsoCriticalSlots()) {
-            clearCrit(Mek.LOC_RT, slot);
-            clearCrit(Mek.LOC_LT, slot);
+            clearCrit(Mek.LOC_RIGHT_TORSO, slot);
+            clearCrit(Mek.LOC_LEFT_TORSO, slot);
         }
         getMek().addEngineCrits();
         switch (getMek().getGyroType()) {
@@ -271,7 +271,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 getMek().addXLGyro();
                 break;
             case Mek.GYRO_NONE:
-                UnitUtil.compactCriticals(getMek(), Mek.LOC_CT);
+                UnitUtil.compactCriticals(getMek(), Mek.LOC_CENTER_TORSO);
                 break;
             case Mek.GYRO_SUPERHEAVY:
                 clearCritsForGyro(lastEngine + 1, 2);
@@ -301,26 +301,27 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 break;
             case Mek.COCKPIT_TORSO_MOUNTED:
             case Mek.COCKPIT_VRRP:
-                if (lastEngine + 2 < getMek().getNumberOfCriticals(Mek.LOC_CT)) {
-                    clearCrit(Mek.LOC_CT, lastEngine + 1);
-                    clearCrit(Mek.LOC_CT, lastEngine + 2);
+                if (lastEngine + 2 < getMek().getNumberOfCriticalSlots(Mek.LOC_CENTER_TORSO)) {
+                    clearCrit(Mek.LOC_CENTER_TORSO, lastEngine + 1);
+                    clearCrit(Mek.LOC_CENTER_TORSO, lastEngine + 2);
                 }
                 clearCrit(Mek.LOC_HEAD, 0);
                 clearCrit(Mek.LOC_HEAD, 1);
-                if (getMek().getEmptyCriticals(Mek.LOC_LT) < 1) {
-                    for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_LT); i++) {
-                        if (getMek().getCritical(Mek.LOC_LT, i) != null
-                              && getMek().getCritical(Mek.LOC_LT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                            clearCrit(Mek.LOC_LT, i);
+                if (getMek().getEmptyCriticalSlots(Mek.LOC_LEFT_TORSO) < 1) {
+                    for (int i = 0; i < getMek().getNumberOfCriticalSlots(Mek.LOC_LEFT_TORSO); i++) {
+                        if (getMek().getCritical(Mek.LOC_LEFT_TORSO, i) != null
+                              && getMek().getCritical(Mek.LOC_LEFT_TORSO, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mek.LOC_LEFT_TORSO, i);
                             break;
                         }
                     }
                 }
-                if (getMek().getEmptyCriticals(Mek.LOC_RT) < 1) {
-                    for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_RT); i++) {
-                        if (getMek().getCritical(Mek.LOC_RT, i) != null
-                              && getMek().getCritical(Mek.LOC_RT, i).getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                            clearCrit(Mek.LOC_RT, i);
+                if (getMek().getEmptyCriticalSlots(Mek.LOC_RIGHT_TORSO) < 1) {
+                    for (int i = 0; i < getMek().getNumberOfCriticalSlots(Mek.LOC_RIGHT_TORSO); i++) {
+                        if (getMek().getCritical(Mek.LOC_RIGHT_TORSO, i) != null
+                              && getMek().getCritical(Mek.LOC_RIGHT_TORSO, i).getType()
+                              == CriticalSlot.TYPE_EQUIPMENT) {
+                            clearCrit(Mek.LOC_RIGHT_TORSO, i);
                             break;
                         }
                     }
@@ -375,8 +376,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         // the engine and gyro.
         if (getMek().hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             int lgSlot = 10;
-            for (int i = 0; i < getMek().getNumberOfCriticals(Mek.LOC_CT); i++) {
-                final CriticalSlot slot = getMek().getCritical(Mek.LOC_CT, i);
+            for (int i = 0; i < getMek().getNumberOfCriticalSlots(Mek.LOC_CENTER_TORSO); i++) {
+                final CriticalSlot slot = getMek().getCritical(Mek.LOC_CENTER_TORSO, i);
                 if ((null == slot) || (slot.getType() == CriticalSlot.TYPE_EQUIPMENT)
                       || ((slot.getIndex() != Mek.SYSTEM_ENGINE) && (slot.getIndex() != Mek.SYSTEM_GYRO))) {
                     lgSlot = i;
@@ -385,9 +386,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             }
             CriticalSlot crit = new CriticalSlot(CriticalSlot.TYPE_SYSTEM,
                   LandAirMek.LAM_LANDING_GEAR);
-            getMek().removeCriticals(Mek.LOC_CT, crit);
-            clearCrit(Mek.LOC_CT, lgSlot);
-            getMek().setCritical(Mek.LOC_CT, lgSlot, crit);
+            getMek().removeCriticalSlots(Mek.LOC_CENTER_TORSO, crit);
+            clearCrit(Mek.LOC_CENTER_TORSO, lgSlot);
+            getMek().setCritical(Mek.LOC_CENTER_TORSO, lgSlot, crit);
         }
         // Replace any fixed spreadable equipment
         List<Mounted<?>> toRemove = getMek().getMisc().stream()
@@ -419,8 +420,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     private void clearCritsForGyro(int first, int numSlots) {
         for (int i = first; i < first + numSlots; i++) {
-            clearCrit(Mek.LOC_CT, i);
-            getMek().setCritical(Mek.LOC_CT, i, null);
+            clearCrit(Mek.LOC_CENTER_TORSO, i);
+            getMek().setCritical(Mek.LOC_CENTER_TORSO, i, null);
         }
     }
 
@@ -1272,9 +1273,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             switch (location) {
                 case Mek.LOC_HEAD:
                     break;
-                case Mek.LOC_CT:
-                case Mek.LOC_LT:
-                case Mek.LOC_RT:
+                case Mek.LOC_CENTER_TORSO:
+                case Mek.LOC_LEFT_TORSO:
+                case Mek.LOC_RIGHT_TORSO:
                     int rear = (int) Math.floor(allocate * .25);
                     int front = (int) Math.ceil(allocate * .75);
                     // Make sure rounding doesn't add an additional point to this location,
@@ -1319,33 +1320,33 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             // if two or more are left, add armor to symmetrical locations,
             // to torso, legs, arms, in that order
             if (points >= 2) {
-                if (((getMek().getOArmor(Mek.LOC_LT) + getMek().getOArmor(Mek.LOC_LT,
-                      true)) < (getMek().getOInternal(Mek.LOC_LT) * 2))
-                      && ((getMek().getOArmor(Mek.LOC_RT) + getMek().getOArmor(
-                      Mek.LOC_RT, true)) < (getMek()
-                      .getOInternal(Mek.LOC_RT) * 2))) {
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LT) + 1,
-                          Mek.LOC_LT);
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RT) + 1,
-                          Mek.LOC_RT);
+                if (((getMek().getOArmor(Mek.LOC_LEFT_TORSO) + getMek().getOArmor(Mek.LOC_LEFT_TORSO,
+                      true)) < (getMek().getOInternal(Mek.LOC_LEFT_TORSO) * 2))
+                      && ((getMek().getOArmor(Mek.LOC_RIGHT_TORSO) + getMek().getOArmor(
+                      Mek.LOC_RIGHT_TORSO, true)) < (getMek()
+                      .getOInternal(Mek.LOC_RIGHT_TORSO) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_TORSO) + 1,
+                          Mek.LOC_LEFT_TORSO);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_TORSO) + 1,
+                          Mek.LOC_RIGHT_TORSO);
                     points -= 2;
-                } else if ((getMek().getOArmor(Mek.LOC_LLEG) < (getMek()
-                      .getOInternal(Mek.LOC_LLEG) * 2))
-                      && (getMek().getOArmor(Mek.LOC_RLEG) < (getMek()
-                      .getOInternal(Mek.LOC_RLEG) * 2))) {
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LLEG) + 1,
-                          Mek.LOC_LLEG);
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RLEG) + 1,
-                          Mek.LOC_RLEG);
+                } else if ((getMek().getOArmor(Mek.LOC_LEFT_LEG) < (getMek()
+                      .getOInternal(Mek.LOC_LEFT_LEG) * 2))
+                      && (getMek().getOArmor(Mek.LOC_RIGHT_LEG) < (getMek()
+                      .getOInternal(Mek.LOC_RIGHT_LEG) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_LEG) + 1,
+                          Mek.LOC_LEFT_LEG);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_LEG) + 1,
+                          Mek.LOC_RIGHT_LEG);
                     points -= 2;
-                } else if ((getMek().getOArmor(Mek.LOC_LARM) < (getMek()
-                      .getOInternal(Mek.LOC_LARM) * 2))
-                      && (getMek().getOArmor(Mek.LOC_RARM) < (getMek()
-                      .getOInternal(Mek.LOC_RARM) * 2))) {
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LARM) + 1,
-                          Mek.LOC_LARM);
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RARM) + 1,
-                          Mek.LOC_RARM);
+                } else if ((getMek().getOArmor(Mek.LOC_LEFT_ARM) < (getMek()
+                      .getOInternal(Mek.LOC_LEFT_ARM) * 2))
+                      && (getMek().getOArmor(Mek.LOC_RIGHT_ARM) < (getMek()
+                      .getOInternal(Mek.LOC_RIGHT_ARM) * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_ARM) + 1,
+                          Mek.LOC_LEFT_ARM);
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_ARM) + 1,
+                          Mek.LOC_RIGHT_ARM);
                     points -= 2;
                 }
                 // otherwise, first add to the head, and then even out uneven
@@ -1354,41 +1355,41 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 getMek().initializeArmor(getMek().getOArmor(Mek.LOC_HEAD) + 1,
                       Mek.LOC_HEAD);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_LT) < getMek()
-                  .getOArmor(Mek.LOC_RT)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LT) + 1,
-                      Mek.LOC_LT);
+            } else if (getMek().getOArmor(Mek.LOC_LEFT_TORSO) < getMek()
+                  .getOArmor(Mek.LOC_RIGHT_TORSO)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_TORSO) + 1,
+                      Mek.LOC_LEFT_TORSO);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_RT) < getMek()
-                  .getOArmor(Mek.LOC_LT)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RT) + 1,
-                      Mek.LOC_RT);
+            } else if (getMek().getOArmor(Mek.LOC_RIGHT_TORSO) < getMek()
+                  .getOArmor(Mek.LOC_LEFT_TORSO)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_TORSO) + 1,
+                      Mek.LOC_RIGHT_TORSO);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_RARM) < getMek()
-                  .getOArmor(Mek.LOC_LARM)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RARM) + 1,
-                      Mek.LOC_RARM);
+            } else if (getMek().getOArmor(Mek.LOC_RIGHT_ARM) < getMek()
+                  .getOArmor(Mek.LOC_LEFT_ARM)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_ARM) + 1,
+                      Mek.LOC_RIGHT_ARM);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_LARM) < getMek()
-                  .getOArmor(Mek.LOC_RARM)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LARM) + 1,
-                      Mek.LOC_LARM);
+            } else if (getMek().getOArmor(Mek.LOC_LEFT_ARM) < getMek()
+                  .getOArmor(Mek.LOC_RIGHT_ARM)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_ARM) + 1,
+                      Mek.LOC_LEFT_ARM);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_RLEG) < getMek()
-                  .getArmor(Mek.LOC_LLEG)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RLEG) + 1,
-                      Mek.LOC_RLEG);
+            } else if (getMek().getOArmor(Mek.LOC_RIGHT_LEG) < getMek()
+                  .getArmor(Mek.LOC_LEFT_LEG)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_RIGHT_LEG) + 1,
+                      Mek.LOC_RIGHT_LEG);
                 points--;
-            } else if (getMek().getOArmor(Mek.LOC_LLEG) < getMek()
-                  .getOArmor(Mek.LOC_RLEG)) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LLEG) + 1,
-                      Mek.LOC_LLEG);
+            } else if (getMek().getOArmor(Mek.LOC_LEFT_LEG) < getMek()
+                  .getOArmor(Mek.LOC_RIGHT_LEG)) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_LEFT_LEG) + 1,
+                      Mek.LOC_LEFT_LEG);
                 points--;
                 // if nothing is uneven, add to the CT
-            } else if (((getMek().getOArmor(Mek.LOC_CT) + getMek().getOArmor(
-                  Mek.LOC_CT, true)) < (getMek().getOInternal(Mek.LOC_CT) * 2))) {
-                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CT) + 1,
-                      Mek.LOC_CT);
+            } else if (((getMek().getOArmor(Mek.LOC_CENTER_TORSO) + getMek().getOArmor(
+                  Mek.LOC_CENTER_TORSO, true)) < (getMek().getOInternal(Mek.LOC_CENTER_TORSO) * 2))) {
+                getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CENTER_TORSO) + 1,
+                      Mek.LOC_CENTER_TORSO);
                 points--;
             }
             // if only one is left, and head and CT have max, remove one from CT
@@ -1396,9 +1397,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             // max
             if (points == 1) {
                 if ((getMek().getOArmor(Mek.LOC_HEAD) == headMaxArmor)
-                      && ((getMek().getOArmor(Mek.LOC_CT)
-                      + getMek().getOArmor(Mek.LOC_CT, true)) == (getMek().getOInternal(Mek.LOC_CT) * 2))) {
-                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CT) - 1, Mek.LOC_CT);
+                      && ((getMek().getOArmor(Mek.LOC_CENTER_TORSO)
+                      + getMek().getOArmor(Mek.LOC_CENTER_TORSO, true)) == (getMek().getOInternal(Mek.LOC_CENTER_TORSO)
+                      * 2))) {
+                    getMek().initializeArmor(getMek().getOArmor(Mek.LOC_CENTER_TORSO) - 1, Mek.LOC_CENTER_TORSO);
                     points++;
                 }
             }
@@ -1416,9 +1418,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                             toReturn = false;
                         }
                         break;
-                    case Mek.LOC_CT:
-                    case Mek.LOC_LT:
-                    case Mek.LOC_RT:
+                    case Mek.LOC_CENTER_TORSO:
+                    case Mek.LOC_LEFT_TORSO:
+                    case Mek.LOC_RIGHT_TORSO:
                         if (is > (getMek().getOArmor(location) + getMek().getOArmor(
                               location, true))) {
                             toReturn = false;
@@ -1445,7 +1447,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (getMek().isSuperHeavy()) {
             crits = (crits + 1) / 2;
         }
-        if (getMek().getEmptyCriticals(location) < crits) {
+        if (getMek().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(
                   null, armor.getName()
                         + " does not fit in location "

@@ -297,7 +297,7 @@ public class StringUtils {
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PB,OS,AI]";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
-            info = Integer.toString(KickAttackAction.getDamageFor(unit, Mek.LOC_LLEG, false));
+            info = Integer.toString(KickAttackAction.getDamageFor(unit, Mek.LOC_LEFT_LEG, false));
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {

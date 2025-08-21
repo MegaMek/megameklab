@@ -56,7 +56,9 @@ import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.client.ui.util.UIUtil;
 import megamek.codeUtilities.StringUtility;
-import megamek.common.*;
+import megamek.common.Configuration;
+import megamek.common.CriticalSlot;
+import megamek.common.SimpleTechLevel;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.EquipmentType;
@@ -668,7 +670,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     protected int getHitsCoreComponent(int index) {
         int totalHits = 0;
         for (int loc = 0; loc < getEntity().locations(); loc++) {
-            totalHits += getEntity().getHitCriticals(CriticalSlot.TYPE_SYSTEM, index, loc);
+            totalHits += getEntity().getHitCriticalSlots(CriticalSlot.TYPE_SYSTEM, index, loc);
         }
         return totalHits;
     }

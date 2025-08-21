@@ -88,10 +88,10 @@ public final class CVCriticalView extends IView {
           Tank.LOC_TURRET_2, dualTurretPanel);
 
     private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT, frontPanel,
-          SuperHeavyTank.LOC_FRONTLEFT, leftPanel, SuperHeavyTank.LOC_FRONTRIGHT, rightPanel,
+          SuperHeavyTank.LOC_FRONT_LEFT, leftPanel, SuperHeavyTank.LOC_FRONT_RIGHT, rightPanel,
           Tank.LOC_BODY, bodyPanel, SuperHeavyTank.LOC_REAR, rearPanel, SuperHeavyTank.LOC_TURRET, turretPanel,
           SuperHeavyTank.LOC_TURRET_2, dualTurretPanel,
-          SuperHeavyTank.LOC_REARLEFT, rearLeftPanel, SuperHeavyTank.LOC_REARRIGHT, rearRightPanel);
+          SuperHeavyTank.LOC_REAR_LEFT, rearLeftPanel, SuperHeavyTank.LOC_REAR_RIGHT, rearRightPanel);
 
     public CVCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -174,7 +174,7 @@ public final class CVCriticalView extends IView {
             for (int location = 0; location < getTank().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
-                for (int slot = 0; slot < getTank().getNumberOfCriticals(location); slot++) {
+                for (int slot = 0; slot < getTank().getNumberOfCriticalSlots(location); slot++) {
                     CriticalSlot cs = getTank().getCritical(location, slot);
                     if (cs == null) {
                         continue;

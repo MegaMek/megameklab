@@ -246,7 +246,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         lblNumSquads.setText(isBeastMounted() && !isLargeBeastMount() ?
               resourceMap.getString("PlatoonTypeView.spnNumSquads.creatures") :
               resourceMap.getString("PlatoonTypeView.spnNumSquads.text"));
-        lblBeastMountType.setText(isBeastMounted() ? mount.getName() : "");
+        lblBeastMountType.setText(isBeastMounted() ? mount.name() : "");
     }
 
     private EntityMovementMode getMovementMode() {
@@ -259,7 +259,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
 
     private boolean isLargeBeastMount() {
-        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.LARGE);
+        return (mount != null) && (mount.size() == InfantryMount.BeastSize.LARGE);
     }
 
     private boolean isAltMode() {

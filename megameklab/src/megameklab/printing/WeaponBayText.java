@@ -39,13 +39,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.EquipmentFlag;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.units.Jumpship;
 import megamek.common.equipment.Mounted;
-import megamek.common.units.Warship;
 import megamek.common.equipment.WeaponType;
-import megamek.common.equipment.AmmoMounted;
+import megamek.common.units.Jumpship;
+import megamek.common.units.Warship;
 import megamek.common.weapons.AmmoWeapon;
 
 /**
@@ -231,7 +231,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     private boolean checkOpposingSide(int loc1, int loc2, boolean rear1, boolean rear2) {
         switch (loc1) {
             // Jumpship.LOC_FLS and Jumpship.LOC_FRS are the same indices as
-            // Dropship.LOC_LWING and Dropship.LOC_RWING
+            // Dropship.LOC_LEFT_WING and Dropship.LOC_RIGHT_WING
             case Jumpship.LOC_FLS:
                 return loc2 == Jumpship.LOC_FRS && rear1 == rear2;
             case Jumpship.LOC_FRS:

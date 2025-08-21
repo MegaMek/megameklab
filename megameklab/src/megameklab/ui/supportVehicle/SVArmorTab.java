@@ -248,7 +248,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         UnitUtil.resetArmor(getEntity(), location);
 
         int crits = armor.getPatchworkSlotsMekSV();
-        if (getEntity().getEmptyCriticals(location) < crits) {
+        if (getEntity().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(
                   null, armor.getName()
                         + " does not fit in location "

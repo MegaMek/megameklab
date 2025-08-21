@@ -554,8 +554,8 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
                 break;
         }
         getSmallCraft().initializeArmor(nose + bonusPerFacing, Aero.LOC_NOSE);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LWING);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RWING);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LEFT_WING);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RIGHT_WING);
         getSmallCraft().initializeArmor(aft + bonusPerFacing, Aero.LOC_AFT);
         getSmallCraft().autoSetThresh();
 

@@ -100,7 +100,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         } else {
             // Move the slot number upwards if the drop location is too far down for the
             // equipment (PPC in the last slot)
-            int locationSize = mek.getNumberOfCriticals(location);
+            int locationSize = mek.getNumberOfCriticalSlots(location);
             if ((locationSize >= neededCrits) && (slotNumber + neededCrits > locationSize)) {
                 slotNumber = locationSize - neededCrits;
             }
@@ -175,18 +175,18 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
 
             Set<Integer> secondLocationSet = new HashSet<>();
             secondLocationSet.add(mek.getTransferLocation(location));
-            if (location == Mek.LOC_RT) {
-                secondLocationSet.add(Mek.LOC_CT);
-                secondLocationSet.add(Mek.LOC_RARM);
-            } else if (location == Mek.LOC_LT) {
-                secondLocationSet.add(Mek.LOC_CT);
-                secondLocationSet.add(Mek.LOC_LARM);
-            } else if (location == Mek.LOC_CT) {
-                secondLocationSet.add(Mek.LOC_LT);
-                secondLocationSet.add(Mek.LOC_RT);
+            if (location == Mek.LOC_RIGHT_TORSO) {
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
+                secondLocationSet.add(Mek.LOC_RIGHT_ARM);
+            } else if (location == Mek.LOC_LEFT_TORSO) {
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
+                secondLocationSet.add(Mek.LOC_LEFT_ARM);
+            } else if (location == Mek.LOC_CENTER_TORSO) {
+                secondLocationSet.add(Mek.LOC_LEFT_TORSO);
+                secondLocationSet.add(Mek.LOC_RIGHT_TORSO);
                 secondLocationSet.add(Mek.LOC_HEAD);
             } else if (location == Mek.LOC_HEAD) {
-                secondLocationSet.add(Mek.LOC_CT);
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
             }
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
@@ -239,7 +239,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
-            if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticals(location))) {
+            if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticalSlots(location))) {
                 return false;
             }
 

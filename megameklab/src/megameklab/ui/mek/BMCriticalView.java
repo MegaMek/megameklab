@@ -43,10 +43,10 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.CriticalSlot;
-import megamek.common.units.Mek;
-import megamek.common.equipment.Mounted;
-import megamek.common.units.TripodMek;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Mek;
+import megamek.common.units.TripodMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
@@ -74,9 +74,24 @@ public class BMCriticalView extends IView {
     private final JPanel hdPanel = new JPanel();
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> mekPanels = Map.of(Mek.LOC_HEAD, hdPanel, Mek.LOC_LARM, laPanel,
-          Mek.LOC_RARM, raPanel, Mek.LOC_CT, ctPanel, Mek.LOC_LT, ltPanel, Mek.LOC_RT, rtPanel,
-          Mek.LOC_LLEG, llPanel, Mek.LOC_RLEG, rlPanel, Mek.LOC_CLEG, clPanel);
+    private final Map<Integer, JComponent> mekPanels = Map.of(Mek.LOC_HEAD,
+          hdPanel,
+          Mek.LOC_LEFT_ARM,
+          laPanel,
+          Mek.LOC_RIGHT_ARM,
+          raPanel,
+          Mek.LOC_CENTER_TORSO,
+          ctPanel,
+          Mek.LOC_LEFT_TORSO,
+          ltPanel,
+          Mek.LOC_RIGHT_TORSO,
+          rtPanel,
+          Mek.LOC_LEFT_LEG,
+          llPanel,
+          Mek.LOC_RIGHT_LEG,
+          rlPanel,
+          Mek.LOC_CENTER_LEG,
+          clPanel);
 
     private final List<BAASBMDropTargetCriticalList<String>> currentCritBlocks = new ArrayList<>();
 
@@ -150,7 +165,7 @@ public class BMCriticalView extends IView {
             for (int location = 0; location < getMek().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
-                for (int slot = 0; slot < getMek().getNumberOfCriticals(location); slot++) {
+                for (int slot = 0; slot < getMek().getNumberOfCriticalSlots(location); slot++) {
                     CriticalSlot cs = getMek().getCritical(location, slot);
                     if (cs == null) {
                         critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
@@ -193,21 +208,21 @@ public class BMCriticalView extends IView {
     }
 
     private void setTitles() {
-        String title = getMek().getLocationName(Mek.LOC_LARM) + caseSuffix(Mek.LOC_LARM);
+        String title = getMek().getLocationName(Mek.LOC_LEFT_ARM) + caseSuffix(Mek.LOC_LEFT_ARM);
         laPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_RARM) + caseSuffix(Mek.LOC_RARM);
+        title = getMek().getLocationName(Mek.LOC_RIGHT_ARM) + caseSuffix(Mek.LOC_RIGHT_ARM);
         raPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_LLEG) + caseSuffix(Mek.LOC_LLEG);
+        title = getMek().getLocationName(Mek.LOC_LEFT_LEG) + caseSuffix(Mek.LOC_LEFT_LEG);
         llPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_RLEG) + caseSuffix(Mek.LOC_RLEG);
+        title = getMek().getLocationName(Mek.LOC_RIGHT_LEG) + caseSuffix(Mek.LOC_RIGHT_LEG);
         rlPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_CLEG) + caseSuffix(Mek.LOC_CLEG);
+        title = getMek().getLocationName(Mek.LOC_CENTER_LEG) + caseSuffix(Mek.LOC_CENTER_LEG);
         clPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_LT) + caseSuffix(Mek.LOC_LT);
+        title = getMek().getLocationName(Mek.LOC_LEFT_TORSO) + caseSuffix(Mek.LOC_LEFT_TORSO);
         ltPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_RT) + caseSuffix(Mek.LOC_RT);
+        title = getMek().getLocationName(Mek.LOC_RIGHT_TORSO) + caseSuffix(Mek.LOC_RIGHT_TORSO);
         rtPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
-        title = getMek().getLocationName(Mek.LOC_CT) + caseSuffix(Mek.LOC_CT);
+        title = getMek().getLocationName(Mek.LOC_CENTER_TORSO) + caseSuffix(Mek.LOC_CENTER_TORSO);
         ctPanel.setBorder(CritCellUtil.locationBorderNoLine(title));
         title = getMek().getLocationName(Mek.LOC_HEAD) + caseSuffix(Mek.LOC_HEAD);
         hdPanel.setBorder(CritCellUtil.locationBorderNoLine(title));

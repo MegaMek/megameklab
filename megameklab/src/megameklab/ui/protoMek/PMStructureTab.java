@@ -451,11 +451,11 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                 getProtoMek().setIsQuad(true);
                 getProtoMek().setIsGlider(false);
                 getProtoMek().getEquipment().stream()
-                      .filter(m -> (m.getLocation() == ProtoMek.LOC_LARM)
-                            || (m.getLocation() == ProtoMek.LOC_RARM))
+                      .filter(m -> (m.getLocation() == ProtoMek.LOC_LEFT_ARM)
+                            || (m.getLocation() == ProtoMek.LOC_RIGHT_ARM))
                       .forEach(m -> m.setLocation(Entity.LOC_NONE));
-                getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
-                getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_LEFT_ARM);
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_RIGHT_ARM);
                 break;
             case PMChassisView.MOTIVE_TYPE_GLIDER:
                 getProtoMek().setMovementMode(EntityMovementMode.WIGE);
@@ -466,8 +466,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         getProtoMek().autoSetInternal();
         if (wasQuad) {
             getProtoMek().autoSetInternal();
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_LEFT_ARM);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_RIGHT_ARM);
             Optional<MiscMounted> qms = getProtoMek().getMisc().stream().filter(m -> m.getType()
                   .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
@@ -660,8 +660,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                     points--;
                 }
                 if (points >= 2) {
-                    addArmorPoint(ProtoMek.LOC_LARM);
-                    addArmorPoint(ProtoMek.LOC_RARM);
+                    addArmorPoint(ProtoMek.LOC_LEFT_ARM);
+                    addArmorPoint(ProtoMek.LOC_RIGHT_ARM);
                     points -= 2;
                 }
                 if ((points > 0) && getProtoMek().hasMainGun()) {
@@ -705,14 +705,14 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     public void mainGunChanged(boolean mainGun) {
         getProtoMek().setHasMainGun(mainGun);
         if (!mainGun) {
-            getProtoMek().initializeArmor(IArmorState.ARMOR_NA, ProtoMek.LOC_MAINGUN);
+            getProtoMek().initializeArmor(IArmorState.ARMOR_NA, ProtoMek.LOC_MAIN_GUN);
             getProtoMek().getEquipment().forEach(m -> {
-                if (m.getLocation() == ProtoMek.LOC_MAINGUN) {
+                if (m.getLocation() == ProtoMek.LOC_MAIN_GUN) {
                     m.setLocation(Entity.LOC_NONE);
                 }
             });
         } else {
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_MAINGUN);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_MAIN_GUN);
             getProtoMek().setArmorType(getProtoMek().getArmorType(ProtoMek.LOC_TORSO));
             getProtoMek().setArmorTechLevel(getProtoMek().getArmorTechLevel(ProtoMek.LOC_TORSO));
         }

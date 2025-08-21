@@ -191,8 +191,8 @@ public class CIMountView extends IView implements ActionListener {
                 }
                 int selected = creatureTable.convertRowIndexToModel(view);
                 InfantryMount newMount = selectedMount(selected);
-                if ((getInfantry().getMount() != null) && (getInfantry().getMount().getMovementMode().isSubmarine())
-                      && ((newMount == null) || !newMount.getMovementMode().isSubmarine())) {
+                if ((getInfantry().getMount() != null) && (getInfantry().getMount().movementMode().isSubmarine())
+                      && ((newMount == null) || !newMount.movementMode().isSubmarine())) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
                 }
                 getInfantry().setMount(selectedMount(selected));

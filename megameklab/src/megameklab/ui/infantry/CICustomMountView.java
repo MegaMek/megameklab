@@ -194,16 +194,16 @@ public class CICustomMountView extends BuildView implements ChangeListener {
     public void refresh() {
         InfantryMount mount = getInfantry().getMount();
         if (mount != null) {
-            txtMountName.setText(mount.getName());
-            cbSize.setSelectedItem(mount.getSize());
-            txtWeight.setText(String.valueOf(mount.getWeight()));
+            txtMountName.setText(mount.name());
+            cbSize.setSelectedItem(mount.size());
+            txtWeight.setText(String.valueOf(mount.weight()));
             spnMovementPoints.setValue(mount.getMP());
-            cbMovementMode.setSelectedItem(mount.getMovementMode());
+            cbMovementMode.setSelectedItem(mount.movementMode());
             spnInfantryBonus.setValue(mount.getBurstDamageDice());
-            spnVehicleBonus.setValue(mount.getVehicleDamage());
-            spnDamageDivisor.setValue(mount.getDamageDivisor());
-            spnMaxWaterDepth.setValue(mount.getMaxWaterDepth());
-            spnSecondaryGround.setValue(mount.getSecondaryGroundMP());
+            spnVehicleBonus.setValue(mount.vehicleDamage());
+            spnDamageDivisor.setValue(mount.damageDivisor());
+            spnMaxWaterDepth.setValue(mount.maxWaterDepth());
+            spnSecondaryGround.setValue(mount.secondaryGroundMP());
             spnUWEndurance.setValue(mount.getUWEndurance());
         }
     }
