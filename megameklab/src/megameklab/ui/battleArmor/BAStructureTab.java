@@ -62,6 +62,7 @@ import megamek.common.interfaces.ITechManager;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -739,7 +740,7 @@ public class BAStructureTab extends ITab
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
         double totalTonnage = getBattleArmor().getTrooperWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+              totalTonnage - currentTonnage, Ceil.KILO);
         int points = (int) TestEntity.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
               points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));

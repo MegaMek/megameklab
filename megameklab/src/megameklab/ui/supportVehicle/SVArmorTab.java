@@ -51,6 +51,7 @@ import megamek.common.units.FixedWingSupport;
 import megamek.common.units.LargeSupportTank;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.EntitySource;
@@ -195,7 +196,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         double totalTonnage = getEntity().getWeight();
         double remainingTonnage = totalTonnage - currentTonnage;
         if (getEntity().getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            remainingTonnage = TestEntity.floor(remainingTonnage, TestEntity.Ceil.HALFTON);
+            remainingTonnage = TestEntity.floor(remainingTonnage, Ceil.HALF_TON);
         }
 
         double maxArmor = MathUtility.clamp(getEntity().getArmorWeight() + remainingTonnage, 0,
@@ -213,7 +214,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void armorTonnageChanged(double tonnage) {
-        getEntity().setArmorTonnage(TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON));
+        getEntity().setArmorTonnage(TestEntity.ceil(tonnage, Ceil.HALF_TON));
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
         refresh.refreshStatus();

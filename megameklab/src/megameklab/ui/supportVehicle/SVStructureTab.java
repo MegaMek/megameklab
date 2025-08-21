@@ -68,6 +68,7 @@ import megamek.common.units.EntityWeightClass;
 import megamek.common.units.FixedWingSupport;
 import megamek.common.units.Tank;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.logging.MMLogger;
@@ -363,7 +364,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void tonnageChanged(double tonnage) {
         boolean wasLarge = getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT;
-        getEntity().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
+        getEntity().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ? Ceil.KILO : Ceil.HALF_TON));
         if (!getEntity().isAero() && !getEntity().getMovementMode().equals(EntityMovementMode.VTOL)) {
             if ((getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT) != wasLarge) {
                 toggleLargeSupport();
@@ -826,7 +827,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = TestEntity.round(tonnage,
-              TestEntity.usesKgStandard(getSV()) ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON);
+              TestEntity.usesKgStandard(getSV()) ? Ceil.KILO : Ceil.HALF_TON);
         if (getSV().isAero()) {
             getAero().setFuelTonnage(fuelTons);
         } else {
@@ -845,12 +846,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         } else {
             double tonnage = capacity * getTank().fuelTonnagePer100km() / 100.0;
             if (TestEntity.usesKgStandard(getEntity())) {
-                tonnage = TestEntity.round(tonnage, TestEntity.Ceil.KILO);
+                tonnage = TestEntity.round(tonnage, Ceil.KILO);
             } else if (tonnage > getTank().getFuelTonnage()) {
                 // Round in the same direction as the change.
-                tonnage = TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON);
+                tonnage = TestEntity.ceil(tonnage, Ceil.HALF_TON);
             } else {
-                tonnage = TestEntity.floor(tonnage, TestEntity.Ceil.HALFTON);
+                tonnage = TestEntity.floor(tonnage, Ceil.HALF_TON);
             }
             getTank().setFuelTonnage(tonnage);
         }

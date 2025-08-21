@@ -52,6 +52,7 @@ import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
@@ -374,7 +375,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
         double totalTonnage = getSmallCraft().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getSmallCraft().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getSmallCraft()));

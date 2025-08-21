@@ -58,19 +58,19 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import megamek.common.bays.Bay;
+import megamek.common.bays.InfantryBay;
 import megamek.common.equipment.DockingCollar;
+import megamek.common.equipment.Transporter;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
-import megamek.common.bays.InfantryBay;
 import megamek.common.units.InfantryCompartment;
 import megamek.common.units.Jumpship;
 import megamek.common.util.RoundWeight;
-import megamek.common.equipment.Transporter;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
-import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.verifier.TestSupportVehicle.SVType;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -559,11 +559,11 @@ public class TransportTab extends IView implements ActionListener, ChangeListene
             List<Transporter> toRemove = getEntity().getTransports().stream()
                   .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
             toRemove.forEach(t -> getEntity().removeTransporter(t));
-            double troopTons = TestEntity.round(fixed, Ceil.HALFTON);
+            double troopTons = TestEntity.round(fixed, Ceil.HALF_TON);
             if (troopTons > 0) {
                 getEntity().addTransporter(new InfantryCompartment(troopTons), false);
             }
-            troopTons = TestEntity.round(pod, Ceil.HALFTON);
+            troopTons = TestEntity.round(pod, Ceil.HALF_TON);
             if (troopTons > 0) {
                 getEntity().addTransporter(new InfantryCompartment(troopTons), true);
             }

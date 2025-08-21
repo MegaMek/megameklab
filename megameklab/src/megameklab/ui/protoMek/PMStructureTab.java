@@ -67,6 +67,7 @@ import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
@@ -529,7 +530,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtoMek());
         double totalTonnage = getProtoMek().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+              totalTonnage - currentTonnage, Ceil.KILO);
         // We can only use remaining tonnage equal to whole points of armor.
         remainingTonnage = (int) TestEntity.getRawArmorPoints(getProtoMek(), remainingTonnage)
               * ArmorType.forEntity(getProtoMek()).getWeightPerPoint();

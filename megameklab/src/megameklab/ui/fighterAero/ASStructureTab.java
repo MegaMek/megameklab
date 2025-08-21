@@ -66,6 +66,7 @@ import megamek.common.units.Entity;
 import megamek.common.units.InfantryCompartment;
 import megamek.common.units.UnitRole;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
@@ -497,7 +498,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         double currentTonnage = UnitUtil.getEntityVerifier(getAero()).calculateWeight();
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getAero());
         double totalTonnage = getAero().getWeight();
-        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+        double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getAero()));

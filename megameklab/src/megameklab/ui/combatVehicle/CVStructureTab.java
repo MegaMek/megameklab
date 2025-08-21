@@ -65,6 +65,7 @@ import megamek.common.units.Tank;
 import megamek.common.units.UnitRole;
 import megamek.common.units.VTOL;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megamek.logging.MMLogger;
@@ -519,7 +520,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
         double totalTonnage = getTank().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getTank().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getTank()));

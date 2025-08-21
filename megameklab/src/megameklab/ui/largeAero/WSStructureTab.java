@@ -54,6 +54,7 @@ import megamek.common.units.Jumpship;
 import megamek.common.units.SpaceStation;
 import megamek.common.units.UnitRole;
 import megamek.common.units.Warship;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
@@ -388,7 +389,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getJumpship());
         double totalTonnage = getJumpship().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getJumpship()));

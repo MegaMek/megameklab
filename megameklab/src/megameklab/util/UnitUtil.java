@@ -69,7 +69,6 @@ import megamek.common.options.OptionsConstants;
 import megamek.common.units.*;
 import megamek.common.util.BuildingBlock;
 import megamek.common.verifier.*;
-import megamek.common.verifier.TestEntity.Ceil;
 import megamek.common.weapons.AmmoWeapon;
 import megamek.common.weapons.autocannons.HVACWeapon;
 import megamek.common.weapons.autocannons.RACWeapon;
@@ -1039,7 +1038,7 @@ public class UnitUtil {
             if (unit.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
                 return TestEntity.round(weight, Ceil.KILO);
             } else {
-                return TestEntity.ceil(weight, Ceil.HALFTON);
+                return TestEntity.ceil(weight, Ceil.HALF_TON);
             }
         } else if (unit instanceof Tank) {
             double points = Math.floor((unit.getWeight() * 3.5) + 40);

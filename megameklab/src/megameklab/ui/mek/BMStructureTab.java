@@ -71,6 +71,7 @@ import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadVee;
 import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -1132,7 +1133,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getMek());
         double totalTonnage = getMek().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getMek().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getMek()));

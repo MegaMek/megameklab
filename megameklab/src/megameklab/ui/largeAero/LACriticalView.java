@@ -254,14 +254,14 @@ public class LACriticalView extends IView {
                 btnCopyALS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_LEFT]);
                 btnCopyARS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_RIGHT]);
             } else {
-                ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
-                arcTrees[TestSmallCraft.ARC_LWING].setFacing(BayWeaponCriticalTree.BOTH);
-                arcTrees[TestSmallCraft.ARC_RWING].setFacing(BayWeaponCriticalTree.BOTH);
+                ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LEFT_WING]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RIGHT_WING]);
+                arcTrees[TestSmallCraft.ARC_LEFT_WING].setFacing(BayWeaponCriticalTree.BOTH);
+                arcTrees[TestSmallCraft.ARC_RIGHT_WING].setFacing(BayWeaponCriticalTree.BOTH);
                 aftLeftPanel.setVisible(false);
                 aftRightPanel.setVisible(false);
-                btnCopyFLS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                btnCopyFRS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_RWING]);
+                btnCopyFLS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_LEFT_WING]);
+                btnCopyFRS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_RIGHT_WING]);
             }
         }
 
