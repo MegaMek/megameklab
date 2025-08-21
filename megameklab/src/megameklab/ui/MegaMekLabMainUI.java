@@ -46,11 +46,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import megamek.client.ui.clientGUI.GUIPreferences;
-import megamek.common.EnhancedTabbedPane;
-import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
-import megamek.common.EnhancedTabbedPane.TabStateListener;
-import megamek.common.units.Entity;
 import megamek.common.equipment.Mounted;
+import megamek.common.ui.DetachedTabInfo;
+import megamek.common.ui.EnhancedTabbedPane;
+import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;

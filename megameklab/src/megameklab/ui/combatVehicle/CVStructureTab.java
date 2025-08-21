@@ -365,7 +365,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         if (getTank().hasPatchworkArmor()) {
             for (int loc = 0; loc < getTank().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
-                    getTank().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    getTank().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOX_SET);
                     UnitUtil.resetArmor(getTank(), loc);
                 }
             }
@@ -864,7 +864,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         } else {
             getTank().setArmorType(armor.getArmorType(), location);
             getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));

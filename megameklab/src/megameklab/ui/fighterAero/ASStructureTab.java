@@ -377,7 +377,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         if (getAero().hasPatchworkArmor()) {
             for (int loc = 0; loc < getAero().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
-                    getAero().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    getAero().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOX_SET);
                     UnitUtil.resetArmor(getAero(), loc);
                 }
             }
@@ -756,7 +756,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                         armor.getName(), getAero().getLocationName(location)),
                   "Error", JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         } else {
             getAero().setArmorType(armor.getArmorType(), location);
             getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));

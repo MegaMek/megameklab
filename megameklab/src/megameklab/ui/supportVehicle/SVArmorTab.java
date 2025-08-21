@@ -258,7 +258,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         } else {
             getEntity().setArmorType(armor.getArmorType(), location);
             getEntity().setArmorTechLevel(armor.getTechLevel(techManager.getGameYear(), armor.isClan()));

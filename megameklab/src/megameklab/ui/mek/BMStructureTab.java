@@ -588,7 +588,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                       "Resetting to Standard Armor",
                       JOptionPane.INFORMATION_MESSAGE);
                 getMek().setArmorType(EquipmentType.T_ARMOR_STANDARD);
-                getMek().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+                getMek().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
                 panArmor.setFromEntity(getMek());
             }
         } else {
@@ -685,7 +685,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (getMek().hasPatchworkArmor()) {
             for (int loc = 0; loc < getMek().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
-                    getMek().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    getMek().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOX_SET);
                     UnitUtil.resetArmor(getMek(), loc);
                 }
             }

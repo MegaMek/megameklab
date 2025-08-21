@@ -1628,7 +1628,7 @@ public class UnitUtil {
         }
 
         unit.setArmorType(EquipmentType.T_ARMOR_STANDARD, loc);
-        unit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET, loc);
+        unit.setArmorTechLevel(TechConstants.T_INTRO_BOX_SET, loc);
     }
 
     public static void checkArmor(Entity unit) {

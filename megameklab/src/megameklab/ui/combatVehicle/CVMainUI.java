@@ -37,7 +37,8 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
@@ -178,7 +179,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         Tank newUnit;
         if (entityType == Entity.ETYPE_VTOL) {
             newUnit = new VTOL();
-            newUnit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+            newUnit.setTechLevel(TechConstants.T_INTRO_BOX_SET);
             newUnit.setWeight(20);
             newUnit.setMovementMode(EntityMovementMode.VTOL);
         } else if (entityType == Entity.ETYPE_SUPER_HEAVY_TANK) {
@@ -188,7 +189,7 @@ public class CVMainUI extends MegaMekLabMainUI {
             newUnit.setMovementMode(EntityMovementMode.HOVER);
         } else {
             newUnit = new Tank();
-            newUnit.setTechLevel(TechConstants.T_INTRO_BOXSET);
+            newUnit.setTechLevel(TechConstants.T_INTRO_BOX_SET);
             newUnit.setWeight(20);
             newUnit.setMovementMode(EntityMovementMode.HOVER);
         }
@@ -203,7 +204,7 @@ public class CVMainUI extends MegaMekLabMainUI {
         }
 
         newUnit.setArmorType(EquipmentType.T_ARMOR_STANDARD);
-        newUnit.setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+        newUnit.setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         newUnit.setHasNoDualTurret(true);
         if (Entity.ETYPE_VTOL == entityType) {
