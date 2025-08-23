@@ -41,15 +41,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.MekFileParser;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Entity;
+import megamek.common.units.Tank;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
@@ -204,7 +204,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         int slot = getSelectedIndex();
         int location = getCritLocation();
         CriticalSlot crit = null;
-        if ((slot >= 0) && (slot < getUnit().getNumberOfCriticals(location))) {
+        if ((slot >= 0) && (slot < getUnit().getNumberOfCriticalSlots(location))) {
             crit = getUnit().getCritical(location, slot);
         }
         return crit;

@@ -32,7 +32,7 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 
 public class UnitTypeSummaryItem extends AbstractSummaryItem {
 

@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 
 /**
  * This class contains static methods that each show a commonly used popup message, such as the "unit is invalid"

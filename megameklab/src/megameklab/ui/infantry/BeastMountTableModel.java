@@ -41,7 +41,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 
-import megamek.common.InfantryMount;
+import megamek.common.units.InfantryMount;
 
 final class BeastMountTableModel implements TableModel {
     private enum Columns {
@@ -96,28 +96,28 @@ final class BeastMountTableModel implements TableModel {
         var creature = InfantryMount.sampleMounts.get(rowIndex);
         switch (Columns.values()[columnIndex]) {
             case TYPE:
-                return creature.getName();
+                return creature.name();
             case SIZE:
-                return creature.getSize().displayName();
+                return creature.size().displayName();
             case WEIGHT:
-                return NumberFormat.getInstance().format(creature.getWeight());
+                return NumberFormat.getInstance().format(creature.weight());
             case MP:
-                return String.format("%d (%s)", creature.getMP(), creature.getMovementMode().toString());
+                return String.format("%d (%s)", creature.getMP(), creature.movementMode().toString());
             case BONUS_DAMAGE:
                 return String.format("%+d%s (%d)", creature.getBurstDamageDice(),
-                      creature.getBurstDamageDice() > 0 ? "D6" : "", creature.getVehicleDamage());
+                      creature.getBurstDamageDice() > 0 ? "D6" : "", creature.vehicleDamage());
             case DIVISOR:
-                return NumberFormat.getInstance().format(creature.getDamageDivisor());
+                return NumberFormat.getInstance().format(creature.damageDivisor());
             case TERRAIN:
-                if (creature.getSecondaryGroundMP() > 0) {
+                if (creature.secondaryGroundMP() > 0) {
                     return resourceMap.getString("CIMountView.1groundMP");
-                } else if (creature.getMovementMode().isSubmarine()) {
+                } else if (creature.movementMode().isSubmarine()) {
                     return resourceMap.getString("CIMountView.asSubmarines");
-                } else if (creature.getMovementMode().isVTOL()) {
+                } else if (creature.movementMode().isVTOL()) {
                     return resourceMap.getString("CIMountView.asVTOL");
                 } else {
                     return String.format(resourceMap.getString("CIMountView.waterDepth.format"),
-                          creature.getMaxWaterDepth() + 1);
+                          creature.maxWaterDepth() + 1);
                 }
         }
         return "?";

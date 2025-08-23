@@ -42,12 +42,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.HandheldWeapon;
-import megamek.common.Infantry;
-import megamek.common.ProtoMek;
-import megamek.common.UnitType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.Entity;
+import megamek.common.equipment.HandheldWeapon;
+import megamek.common.units.Infantry;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.UnitType;
 import megameklab.printing.reference.AntiMekAttackTable;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;

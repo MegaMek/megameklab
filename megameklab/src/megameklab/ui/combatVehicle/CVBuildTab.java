@@ -41,9 +41,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.common.Entity;
-import megamek.common.MekFileParser;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;

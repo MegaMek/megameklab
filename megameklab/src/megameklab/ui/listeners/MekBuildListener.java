@@ -32,8 +32,8 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.Engine;
-import megamek.common.EquipmentType;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 
 /**
  * Listener for views used by Meks.

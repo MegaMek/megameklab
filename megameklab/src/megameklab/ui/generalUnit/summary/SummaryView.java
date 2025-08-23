@@ -43,7 +43,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
 

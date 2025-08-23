@@ -37,12 +37,12 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 import java.util.Collection;
 import java.util.List;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Aero;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
 import megameklab.util.UnitUtil;
@@ -65,7 +65,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
     @Override
     protected void addEquipment(EquipmentType equip, int count) {
-        if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGCOMP)) {
+        if ((equip instanceof MiscType) && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
             if (!UnitUtil.hasTargComp(getAero())) {
                 UnitUtil.updateTC(getAero(), equip);
             }

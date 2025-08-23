@@ -39,11 +39,11 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import megamek.common.Aero;
 import megamek.common.CriticalSlot;
-import megamek.common.LocationFullException;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Aero;
 import megamek.common.verifier.TestAero;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -141,8 +141,8 @@ public class ASCriticalView extends IView {
 
         btnCopyLW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         btnCopyRW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        btnCopyLW.addActionListener(ev -> copyLocation(Aero.LOC_LWING, Aero.LOC_RWING));
-        btnCopyRW.addActionListener(ev -> copyLocation(Aero.LOC_RWING, Aero.LOC_LWING));
+        btnCopyLW.addActionListener(ev -> copyLocation(Aero.LOC_LEFT_WING, Aero.LOC_RIGHT_WING));
+        btnCopyRW.addActionListener(ev -> copyLocation(Aero.LOC_RIGHT_WING, Aero.LOC_LEFT_WING));
 
         leftPanel.add(leftWingPanel);
         middlePanel.add(nosePanel);
@@ -163,7 +163,7 @@ public class ASCriticalView extends IView {
             }
             Vector<String> critNames = new Vector<>(5);
             int numWeapons = 0;
-            for (int slot = 0; slot < getAero().getNumberOfCriticals(location); slot++) {
+            for (int slot = 0; slot < getAero().getNumberOfCriticalSlots(location); slot++) {
                 CriticalSlot cs = getAero().getCritical(location, slot);
                 if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
                     Mounted<?> mounted = cs.getMount();
@@ -196,9 +196,9 @@ public class ASCriticalView extends IView {
             String usedCritText = "Weapons: " + numWeapons + " / " + availableSpace(location);
             if (location == Aero.LOC_NOSE) {
                 noseSpace.setText(usedCritText);
-            } else if (location == Aero.LOC_LWING) {
+            } else if (location == Aero.LOC_LEFT_WING) {
                 leftSpace.setText(usedCritText);
-            } else if (location == Aero.LOC_RWING) {
+            } else if (location == Aero.LOC_RIGHT_WING) {
                 rightSpace.setText(usedCritText);
             } else if (location == Aero.LOC_AFT) {
                 aftSpace.setText(usedCritText);
@@ -238,9 +238,9 @@ public class ASCriticalView extends IView {
         switch (location) {
             case Aero.LOC_NOSE:
                 return noseCrits;
-            case Aero.LOC_LWING:
+            case Aero.LOC_LEFT_WING:
                 return leftWingCrits;
-            case Aero.LOC_RWING:
+            case Aero.LOC_RIGHT_WING:
                 return rightWingCrits;
             case Aero.LOC_AFT:
                 return aftCrits;

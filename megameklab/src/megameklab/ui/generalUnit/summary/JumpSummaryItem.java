@@ -32,10 +32,10 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.Tank;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.units.Tank;
 
 public class JumpSummaryItem extends AbstractSummaryItem {
 
@@ -54,7 +54,7 @@ public class JumpSummaryItem extends AbstractSummaryItem {
             if (mt.hasFlag(MiscType.F_JUMP_JET) || mt.hasFlag(MiscType.F_JUMP_BOOSTER)
                   || mt.hasFlag(MiscType.F_UMU)) {
                 totalWeight += m.getTonnage();
-                totalCrits += m.getCriticals();
+                totalCrits += m.getNumCriticalSlots();
                 availabilityLabel.setText(mt.getFullRatingName(entity.isClan()));
             }
         }

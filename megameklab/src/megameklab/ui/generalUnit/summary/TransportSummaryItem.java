@@ -32,7 +32,7 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;
 

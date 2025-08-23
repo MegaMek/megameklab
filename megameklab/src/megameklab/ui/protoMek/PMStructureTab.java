@@ -51,9 +51,23 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.IArmorState;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
@@ -204,7 +218,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -306,8 +320,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         getProtoMek().setArmorType(armor.getArmorType());
         getProtoMek().setArmorTechLevel(armor.getStaticTechLevel().getCompoundTechLevel(armor.isClan()));
 
-        if (armor.getCriticals(getProtoMek()) > 0) {
-            if (freeUpSpace(ProtoMek.LOC_TORSO, armor.getCriticals(getProtoMek()))) {
+        if (armor.getNumCriticalSlots(getProtoMek()) > 0) {
+            if (freeUpSpace(ProtoMek.LOC_TORSO, armor.getNumCriticalSlots(getProtoMek()))) {
                 try {
                     Mounted<?> mount = Mounted.createMounted(getProtoMek(), armor);
                     getProtoMek().addEquipment(mount, ProtoMek.LOC_TORSO, false);
@@ -438,11 +452,11 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                 getProtoMek().setIsQuad(true);
                 getProtoMek().setIsGlider(false);
                 getProtoMek().getEquipment().stream()
-                      .filter(m -> (m.getLocation() == ProtoMek.LOC_LARM)
-                            || (m.getLocation() == ProtoMek.LOC_RARM))
+                      .filter(m -> (m.getLocation() == ProtoMek.LOC_LEFT_ARM)
+                            || (m.getLocation() == ProtoMek.LOC_RIGHT_ARM))
                       .forEach(m -> m.setLocation(Entity.LOC_NONE));
-                getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
-                getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_LEFT_ARM);
+                getProtoMek().initializeArmor(0, ProtoMek.LOC_RIGHT_ARM);
                 break;
             case PMChassisView.MOTIVE_TYPE_GLIDER:
                 getProtoMek().setMovementMode(EntityMovementMode.WIGE);
@@ -453,8 +467,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         getProtoMek().autoSetInternal();
         if (wasQuad) {
             getProtoMek().autoSetInternal();
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_LARM);
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_RARM);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_LEFT_ARM);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_RIGHT_ARM);
             Optional<MiscMounted> qms = getProtoMek().getMisc().stream().filter(m -> m.getType()
                   .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
             if (qms.isPresent()) {
@@ -516,7 +530,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getProtoMek());
         double totalTonnage = getProtoMek().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+              totalTonnage - currentTonnage, Ceil.KILO);
         // We can only use remaining tonnage equal to whole points of armor.
         remainingTonnage = (int) TestEntity.getRawArmorPoints(getProtoMek(), remainingTonnage)
               * ArmorType.forEntity(getProtoMek()).getWeightPerPoint();
@@ -647,8 +661,8 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
                     points--;
                 }
                 if (points >= 2) {
-                    addArmorPoint(ProtoMek.LOC_LARM);
-                    addArmorPoint(ProtoMek.LOC_RARM);
+                    addArmorPoint(ProtoMek.LOC_LEFT_ARM);
+                    addArmorPoint(ProtoMek.LOC_RIGHT_ARM);
                     points -= 2;
                 }
                 if ((points > 0) && getProtoMek().hasMainGun()) {
@@ -692,14 +706,14 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     public void mainGunChanged(boolean mainGun) {
         getProtoMek().setHasMainGun(mainGun);
         if (!mainGun) {
-            getProtoMek().initializeArmor(IArmorState.ARMOR_NA, ProtoMek.LOC_MAINGUN);
+            getProtoMek().initializeArmor(IArmorState.ARMOR_NA, ProtoMek.LOC_MAIN_GUN);
             getProtoMek().getEquipment().forEach(m -> {
-                if (m.getLocation() == ProtoMek.LOC_MAINGUN) {
+                if (m.getLocation() == ProtoMek.LOC_MAIN_GUN) {
                     m.setLocation(Entity.LOC_NONE);
                 }
             });
         } else {
-            getProtoMek().initializeArmor(0, ProtoMek.LOC_MAINGUN);
+            getProtoMek().initializeArmor(0, ProtoMek.LOC_MAIN_GUN);
             getProtoMek().setArmorType(getProtoMek().getArmorType(ProtoMek.LOC_TORSO));
             getProtoMek().setArmorTechLevel(getProtoMek().getArmorTechLevel(ProtoMek.LOC_TORSO));
         }

@@ -37,7 +37,16 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.StringJoiner;
 
-import megamek.common.*;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Infantry;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.Tank;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;

@@ -35,7 +35,7 @@ package megameklab.ui.battleArmor;
 
 import javax.swing.JLabel;
 
-import megamek.common.BattleArmor;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.verifier.TestBattleArmor;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.util.UnitUtil;

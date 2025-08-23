@@ -60,8 +60,7 @@ import org.w3c.dom.svg.SVGRectElement;
  * Utility for determining placement of armor and structure pips. The position and shape of the space is defined by
  * metadata in the svg document. This is used to calculate the number of rows of pips, how many to place in each row,
  * and how far apart to space them. This class is accessed through the static method
- * {@link ArmorPipLayout#addPips(PrintRecordSheet, Element, int, PrintRecordSheet.PipType, double, String, int, boolean)
- * addPips}.
+ * {@link ArmorPipLayout#addPips(PrintRecordSheet, Element, int, PipType, double, String, int, boolean) addPips}.
  * </p>
  *
  *
@@ -90,7 +89,7 @@ class ArmorPipLayout {
 
     private final PrintRecordSheet sheet;
     private final Element group;
-    private final PrintRecordSheet.PipType pipType;
+    private final PipType pipType;
     private final double strokeWidth;
     private final String fill;
     private final Bounds bounds;
@@ -117,7 +116,7 @@ class ArmorPipLayout {
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-          PrintRecordSheet.PipType pipType, double strokeWidth,
+          PipType pipType, double strokeWidth,
           String fill, int damage, boolean alternateMethod) {
         addPips(sheet, group, pipCount, pipType, strokeWidth, fill, damage, alternateMethod, null, null, false);
     }
@@ -140,7 +139,7 @@ class ArmorPipLayout {
      * @param rear            If the pips are for the rear armor
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-          PrintRecordSheet.PipType pipType, double strokeWidth,
+          PipType pipType, double strokeWidth,
           String fill, int damage, boolean alternateMethod, String className, String loc, boolean rear) {
         if (pipCount > 0) {
             boolean multi = false;
@@ -216,7 +215,7 @@ class ArmorPipLayout {
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-          PrintRecordSheet.PipType pipType, double strokeWidth,
+          PipType pipType, double strokeWidth,
           String fill, boolean alternateMethod) {
         addPips(sheet, group, pipCount, pipType, strokeWidth, fill, 0, alternateMethod);
     }
@@ -233,7 +232,7 @@ class ArmorPipLayout {
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
-          PrintRecordSheet.PipType pipType, boolean alternateMethod) {
+          PipType pipType, boolean alternateMethod) {
         addPips(sheet,
               group,
               pipCount,
@@ -255,11 +254,11 @@ class ArmorPipLayout {
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount, boolean alternateMethod) {
-        addPips(sheet, group, pipCount, PrintRecordSheet.PipType.CIRCLE, PrintRecordSheet.DEFAULT_PIP_STROKE,
+        addPips(sheet, group, pipCount, PipType.CIRCLE, PrintRecordSheet.DEFAULT_PIP_STROKE,
               PrintRecordSheet.FILL_WHITE, 0, alternateMethod);
     }
 
-    private ArmorPipLayout(PrintRecordSheet sheet, Element group, PrintRecordSheet.PipType pipType,
+    private ArmorPipLayout(PrintRecordSheet sheet, Element group, PipType pipType,
           double strokeWidth, String fill) {
         this.sheet = sheet;
         this.group = group;

@@ -40,11 +40,11 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.Jumpship;
-import megamek.common.LocationFullException;
-import megamek.common.SmallCraft;
-import megamek.common.Warship;
 import megamek.common.annotations.Nullable;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Jumpship;
+import megamek.common.units.SmallCraft;
+import megamek.common.units.Warship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -171,28 +171,28 @@ public class LACriticalView extends IView {
             if (getAero() instanceof Jumpship) {
                 copyLocation(Jumpship.LOC_FLS, Jumpship.LOC_FRS);
             } else {
-                copyLocation(SmallCraft.LOC_LWING, SmallCraft.LOC_RWING, true, !getAero().isSpheroid());
+                copyLocation(SmallCraft.LOC_LEFT_WING, SmallCraft.LOC_RIGHT_WING, true, !getAero().isSpheroid());
             }
         });
         btnCopyFRS.addActionListener(ev -> {
             if (getAero() instanceof Jumpship) {
                 copyLocation(Jumpship.LOC_FRS, Jumpship.LOC_FLS);
             } else {
-                copyLocation(SmallCraft.LOC_RWING, SmallCraft.LOC_LWING, true, !getAero().isSpheroid());
+                copyLocation(SmallCraft.LOC_RIGHT_WING, SmallCraft.LOC_LEFT_WING, true, !getAero().isSpheroid());
             }
         });
         btnCopyALS.addActionListener(ev -> {
             if (getAero() instanceof Jumpship) {
                 copyLocation(Jumpship.LOC_ALS, Jumpship.LOC_ARS);
             } else {
-                copyLocation(SmallCraft.LOC_LWING, SmallCraft.LOC_RWING, false, true);
+                copyLocation(SmallCraft.LOC_LEFT_WING, SmallCraft.LOC_RIGHT_WING, false, true);
             }
         });
         btnCopyARS.addActionListener(ev -> {
             if (getAero() instanceof Jumpship) {
                 copyLocation(Jumpship.LOC_ARS, Jumpship.LOC_ALS);
             } else {
-                copyLocation(SmallCraft.LOC_RWING, SmallCraft.LOC_LWING, false, true);
+                copyLocation(SmallCraft.LOC_RIGHT_WING, SmallCraft.LOC_LEFT_WING, false, true);
             }
         });
         btnCopyLBS.addActionListener(ev -> copyLocation(Warship.LOC_LBS, Warship.LOC_RBS));
@@ -254,14 +254,14 @@ public class LACriticalView extends IView {
                 btnCopyALS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_LEFT]);
                 btnCopyARS.setText("Copy from " + spheroidArcNames[TestSmallCraft.ARC_AFT_RIGHT]);
             } else {
-                ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RWING]);
-                arcTrees[TestSmallCraft.ARC_LWING].setFacing(BayWeaponCriticalTree.BOTH);
-                arcTrees[TestSmallCraft.ARC_RWING].setFacing(BayWeaponCriticalTree.BOTH);
+                ((TitledBorder) fwdLeftPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_LEFT_WING]);
+                ((TitledBorder) rightPanel.getBorder()).setTitle(aerodyneArcNames[TestSmallCraft.ARC_RIGHT_WING]);
+                arcTrees[TestSmallCraft.ARC_LEFT_WING].setFacing(BayWeaponCriticalTree.BOTH);
+                arcTrees[TestSmallCraft.ARC_RIGHT_WING].setFacing(BayWeaponCriticalTree.BOTH);
                 aftLeftPanel.setVisible(false);
                 aftRightPanel.setVisible(false);
-                btnCopyFLS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_LWING]);
-                btnCopyFRS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_RWING]);
+                btnCopyFLS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_LEFT_WING]);
+                btnCopyFRS.setText("Copy from " + aerodyneArcNames[TestSmallCraft.ARC_RIGHT_WING]);
             }
         }
 

@@ -42,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
-import megamek.common.ITechnology;
+import megamek.common.interfaces.ITechnology;
 import megameklab.ui.util.IntRangeTextField;
 import megameklab.ui.util.SpringUtilities;
 import megameklab.util.CConfig;

@@ -42,11 +42,11 @@ import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
-import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.verifier.EntityVerifier;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -97,10 +97,10 @@ public class BACriticalView extends IView {
               TitledBorder.TOP,
               TitledBorder.DEFAULT_POSITION));
 
-        leftArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LARM]));
+        leftArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_LEFT_ARM]));
         bodyPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_BODY]));
         turretPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_TURRET]));
-        rightArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RARM]));
+        rightArmPanel.setBorder(CritCellUtil.locationBorder(BattleArmor.MOUNT_LOC_NAMES[BattleArmor.MOUNT_LOC_RIGHT_ARM]));
         weightLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         leftPanel.add(leftArmPanel);
@@ -178,10 +178,10 @@ public class BACriticalView extends IView {
                 criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
                 criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
                 switch (location) {
-                    case BattleArmor.MOUNT_LOC_LARM:
+                    case BattleArmor.MOUNT_LOC_LEFT_ARM:
                         leftArmPanel.add(criticalSlotList);
                         break;
-                    case BattleArmor.MOUNT_LOC_RARM:
+                    case BattleArmor.MOUNT_LOC_RIGHT_ARM:
                         rightArmPanel.add(criticalSlotList);
                         break;
                     case BattleArmor.MOUNT_LOC_BODY:
@@ -208,11 +208,11 @@ public class BACriticalView extends IView {
                 }
             }
 
-            leftArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_LARM]));
-            leftArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_LARM]));
+            leftArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_LEFT_ARM]));
+            leftArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_LEFT_ARM]));
 
-            rightArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_RARM]));
-            rightArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_RARM]));
+            rightArmPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_RIGHT_ARM]));
+            rightArmPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_RIGHT_ARM]));
 
             bodyPanel.add(makeLabel(amTxt[BattleArmor.MOUNT_LOC_BODY]));
             bodyPanel.add(makeLabel(apTxt[BattleArmor.MOUNT_LOC_BODY]));

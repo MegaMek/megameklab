@@ -40,7 +40,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestEntity;
 
 /**

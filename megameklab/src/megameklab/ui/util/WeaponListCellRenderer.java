@@ -41,9 +41,9 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EquipmentToolTip;
 import megameklab.util.UnitUtil;
 

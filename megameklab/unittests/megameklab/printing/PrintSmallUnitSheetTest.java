@@ -41,12 +41,12 @@ import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import megamek.common.BattleArmor;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.Infantry;
-import megamek.common.ProtoMek;
-import megamek.common.SupportTank;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.Dropship;
+import megamek.common.units.Entity;
+import megamek.common.units.Infantry;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.SupportTank;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

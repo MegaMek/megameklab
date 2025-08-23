@@ -34,7 +34,8 @@ package megameklab.ui.util;
 
 import java.util.function.Function;
 
-import megamek.common.ITechnology;
+import megamek.common.enums.TechBase;
+import megamek.common.interfaces.ITechnology;
 
 /**
  * ComboBox for equipment that implement ITechnology. Has a boolean flag that can toggle prefixing "Clan" or "IS" to the
@@ -54,12 +55,12 @@ public class TechComboBox<T extends ITechnology> extends CustomComboBox<T> {
         showTechBase = show;
     }
 
-    private String getTechName(String name, ITechnology.TechBase techBase) {
+    private String getTechName(String name, TechBase techBase) {
         StringBuilder sb = new StringBuilder();
         if (showTechBase) {
-            if (techBase == ITechnology.TechBase.CLAN) {
+            if (techBase == TechBase.CLAN) {
                 sb.append("Clan ");
-            } else if (techBase == ITechnology.TechBase.IS) {
+            } else if (techBase == TechBase.IS) {
                 sb.append("IS ");
             }
         }

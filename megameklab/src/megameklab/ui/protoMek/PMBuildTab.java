@@ -42,8 +42,8 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;

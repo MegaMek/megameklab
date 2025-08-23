@@ -42,16 +42,17 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.Aero;
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
 import megamek.common.SimpleTechLevel;
-import megamek.common.UnitRole;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Dropship;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
@@ -176,7 +177,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panInfo.setTechFaction(techFaction);
     }
 
@@ -374,7 +375,7 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getSmallCraft());
         double totalTonnage = getSmallCraft().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getSmallCraft().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getSmallCraft()));
@@ -554,8 +555,8 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
                 break;
         }
         getSmallCraft().initializeArmor(nose + bonusPerFacing, Aero.LOC_NOSE);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LWING);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RWING);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LEFT_WING);
+        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RIGHT_WING);
         getSmallCraft().initializeArmor(aft + bonusPerFacing, Aero.LOC_AFT);
         getSmallCraft().autoSetThresh();
 

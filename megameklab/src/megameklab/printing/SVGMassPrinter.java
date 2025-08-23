@@ -33,9 +33,9 @@
 
 package megameklab.printing;
 
-import static megamek.common.MiscTypeFlag.*;
-import static megamek.common.WeaponType.F_ENERGY;
-import static megamek.common.WeaponType.F_PLASMA;
+import static megamek.common.equipment.WeaponType.F_ENERGY;
+import static megamek.common.equipment.WeaponType.F_PLASMA;
+import static megamek.common.equipment.enums.MiscTypeFlag.*;
 
 import java.awt.print.PageFormat;
 import java.io.File;
@@ -67,32 +67,36 @@ import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.tileset.MekTileset;
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.*;
+import megamek.common.RangeType;
+import megamek.common.SimpleTechLevel;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
 import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.alphaStrike.AlphaStrikeElement;
 import megamek.common.alphaStrike.conversion.ASConverter;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.WeaponSortOrder;
-import megamek.common.equipment.MiscMounted;
-import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.*;
+import megamek.common.loaders.MekSummary;
+import megamek.common.loaders.MekSummaryCache;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.Quirks;
+import megamek.common.units.*;
 import megamek.common.util.C3Util;
 import megamek.common.verifier.TestProtoMek;
-import megamek.common.weapons.autocannons.ACWeapon;
-import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.bayweapons.BayWeapon;
-import megamek.common.weapons.gaussrifles.HAGWeapon;
+import megamek.common.weapons.autoCannons.ACWeapon;
+import megamek.common.weapons.autoCannons.UACWeapon;
+import megamek.common.weapons.bayWeapons.BayWeapon;
+import megamek.common.weapons.gaussRifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MissileWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.missiles.thuunderbolt.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
-import megamek.common.weapons.other.CLFussilade;
+import megamek.common.weapons.other.clan.CLFussilade;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 import megamek.logging.MMLogger;
@@ -166,12 +170,12 @@ public class SVGMassPrinter {
         if (wtype instanceof InfantryWeapon iw) {
             int infantryCount = 1; // Conventional infantry is already handled as a single trooper
             if (entity instanceof BattleArmor ba) {
-                infantryCount = ba.getNumberActiverTroopers();
+                infantryCount = ba.getNumberActiveTroopers();
             }
 
             return iw.getInfantryDamage() * infantryCount;
         }
-        if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+        if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
             if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
                 perMissile = 2;
@@ -264,7 +268,7 @@ public class SVGMassPrinter {
         }
 
         private String getCriticals(Entity entity, EquipmentType type) {
-            if (type.isVariableCriticals()
+            if (type.isVariableCriticalSlots()
                   && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
                 return "V";
@@ -275,7 +279,7 @@ public class SVGMassPrinter {
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                 return String.valueOf(TestProtoMek.requiresSlot(type) ? 1 : 0);
             }
-            return String.valueOf(type.getCriticals(entity));
+            return String.valueOf(type.getNumCriticalSlots(entity));
         }
 
         private String getDamage(Entity entity, WeaponType wtype) {
@@ -315,14 +319,14 @@ public class SVGMassPrinter {
                           + wtype.getDamage(wtype.getMediumRange()) + "/"
                           + wtype.getDamage(wtype.getLongRange());
                 }
-            } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+            } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
                 if (wtype instanceof HAGWeapon) {
                     return wtype.getRackSize() + "";
                 } else if (wtype instanceof MekMortarWeapon) {
                     return "Special";
                 } else if (wtype instanceof MissileWeapon) {
                     int dmg;
-                    if (wtype instanceof ThunderBoltWeapon) {
+                    if (wtype instanceof ThunderboltWeapon) {
                         switch (wtype.getAmmoType()) {
                             case TBOLT_5:
                                 return "5";
@@ -383,9 +387,9 @@ public class SVGMassPrinter {
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
                 entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
-                if (type.hasFlag(WeaponTypeFlag.F_ONESHOT)) {
+                if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
                     entry.os = 1; // If the weapon is oneshot
-                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONESHOT)) {
+                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
                 }
                 entry.c = getCriticals(entity, type);
@@ -483,7 +487,7 @@ public class SVGMassPrinter {
                     continue;
                 }
                 if ((entity instanceof BattleArmor)
-                      && (m.getCriticals() > 0)
+                      && (m.getNumCriticalSlots() > 0)
                       && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
                     continue;
                 }
@@ -568,7 +572,7 @@ public class SVGMassPrinter {
                     shortName = "RISC HS Override Kit";
                     internalName = "RISC Heat Sink Override Kit";
                 }});
-                mounted.setLocation(Mek.LOC_CT);
+                mounted.setLocation(Mek.LOC_CENTER_TORSO);
                 addMiscEntry(list,
                       entity,
                       mounted.getType(),
@@ -577,9 +581,9 @@ public class SVGMassPrinter {
             }
             if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
                 var mounted = new MiscMounted(entity, new MiscType() {{
-                    name = "Full Head Ejection System";
-                    shortName = "Full Head Eject System";
-                    internalName = "Full Head Ejection System";
+                    name = "Full Head Ejection SystemFluff";
+                    shortName = "Full Head Eject SystemFluff";
+                    internalName = "Full Head Ejection SystemFluff";
                 }});
                 mounted.setLocation(Mek.LOC_HEAD);
                 addMiscEntry(list,
@@ -615,7 +619,7 @@ public class SVGMassPrinter {
             String damage;
             String maxDamage;
             if (type.hasFlag(MiscType.F_TALON)) {
-                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LLEG, false));
+                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
                 maxDamage = damage;
             } else if (type.hasSubType(MiscType.S_CLAW) || type.hasSubType(MiscType.S_CLAW_THB)) {
                 damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
@@ -983,7 +987,7 @@ public class SVGMassPrinter {
         private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType) {
             double damageModifier = 1d;
             // Oneshot or Fusillade
-            if (weaponType.hasFlag(WeaponType.F_ONESHOT) && !(weaponType instanceof CLFussilade)) {
+            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT) && !(weaponType instanceof CLFussilade)) {
                 damageModifier *= .1;
             }
 
@@ -992,10 +996,10 @@ public class SVGMassPrinter {
                 damageModifier *= 1.10;
             }
 
-            // Actuator Enhancement System
+            // Actuator Enhancement SystemFluff
             if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, -1,
                   weapon.getLocation()) &&
-                  ((weapon.getLocation() == Mek.LOC_LARM) || (weapon.getLocation() == Mek.LOC_RARM))) {
+                  ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
                 damageModifier *= 1.05;
             }
 
@@ -1110,7 +1114,7 @@ public class SVGMassPrinter {
                     //                if (!mekSummary.getName().contains("Field Gun Infantry")) {
                     //                    continue;
                     //                }
-                    //                 logger.info("{}", mekSummary.getName());
+                    //                 LOGGER.info("{}", mekSummary.getName());
 
                     // if (i > 10) break; // For testing, remove this line in production
                     /*
@@ -1133,7 +1137,7 @@ public class SVGMassPrinter {
                      */
                     Entity entity = mekSummary.loadEntity();
                     if ((entity == null) || (entity instanceof GunEmplacement)) {
-                        //                    logger.info("Skipping: {}", mekSummary.getName());
+                        //                    LOGGER.info("Skipping: {}", mekSummary.getName());
                         System.gc();
                         continue;
                     }
@@ -1235,7 +1239,7 @@ public class SVGMassPrinter {
                                 idx++;
                             }
                         }
-                        // logger.info("Printed: {}", finalFilename);
+                        // LOGGER.info("Printed: {}", finalFilename);
                     } catch (Exception e) {
                         logger.error(e, "Printing Error");
                         System.exit(1);

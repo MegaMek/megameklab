@@ -43,7 +43,12 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import megamek.common.*;
+import megamek.common.bays.Bay;
+import megamek.common.bays.StandardSeatCargoBay;
+import megamek.common.equipment.DockingCollar;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Transporter;
+import megamek.common.units.*;
 import megameklab.printing.reference.AeroHitLocation;
 import megameklab.printing.reference.AeroToHitMods;
 import megameklab.printing.reference.AirToGroundAttackTable;
@@ -204,9 +209,9 @@ public class PrintAero extends PrintEntity {
         } else if ((aero instanceof ConvFighter) && aero.isVSTOL()) {
             sj.add("VSTOL Equipment");
         }
-        if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (aero.hasWorkingMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             sj.add("Advanced Fire Control");
-        } else if (aero.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (aero.hasWorkingMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();

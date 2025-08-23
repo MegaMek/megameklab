@@ -37,6 +37,16 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import megamek.common.*;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.IArmorState;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.loaders.MekSummaryCache;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Jumpship;
+import megamek.common.units.SpaceStation;
+import megamek.common.units.Warship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;

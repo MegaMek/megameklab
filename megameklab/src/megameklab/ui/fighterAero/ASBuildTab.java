@@ -41,8 +41,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;

@@ -36,8 +36,8 @@ package megameklab.ui.handheldWeapon;
 import javax.swing.JLabel;
 
 import megamek.client.ui.clientGUI.GUIPreferences;
-import megamek.common.AmmoType;
-import megamek.common.MiscType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.MiscType;
 import megameklab.ui.generalUnit.StatusBar;
 
 public class HHWStatusBar extends StatusBar {

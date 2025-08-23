@@ -32,11 +32,11 @@
  */
 package megameklab.ui.mek;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;

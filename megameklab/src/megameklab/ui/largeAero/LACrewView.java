@@ -47,10 +47,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
-import megamek.common.EntityWeightClass;
-import megamek.common.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroVesselBuildListener;

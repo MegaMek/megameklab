@@ -47,10 +47,22 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.SimpleTechLevel;
 import megamek.common.annotations.Nullable;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
@@ -233,10 +245,10 @@ public class BAStructureTab extends ITab
               getBattleArmor().getRightManipulatorName());
         rightManipulatorSelect.setSelectedItem(
               BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
-        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSize, spnLeftManipulatorSizeModel);
+        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LEFT_ARM, spnLeftManipulatorSize, spnLeftManipulatorSizeModel);
         // For variable-sized pair-mounted manipulators, we'll only use one spinner
         spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
-        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSize, spnRightManipulatorSizeModel);
+        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RIGHT_ARM, spnRightManipulatorSize, spnRightManipulatorSizeModel);
         lblSize.setVisible(spnLeftManipulatorSize.isVisible() || spnRightManipulatorSize.isVisible());
 
         refreshPreview();
@@ -272,7 +284,7 @@ public class BAStructureTab extends ITab
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -313,8 +325,8 @@ public class BAStructureTab extends ITab
             if (e.getSource().equals(leftManipulatorSelect) || e.getSource().equals(rightManipulatorSelect)) {
                 String name = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
                 setManipulator(BAManipulator.getManipulator(name),
-                      e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LARM
-                            : BattleArmor.MOUNT_LOC_RARM,
+                      e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LEFT_ARM
+                            : BattleArmor.MOUNT_LOC_RIGHT_ARM,
                       true);
             }
         }
@@ -337,8 +349,8 @@ public class BAStructureTab extends ITab
             }
         }
         if (checkPaired) {
-            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LARM) ? BattleArmor.MOUNT_LOC_RARM
-                  : BattleArmor.MOUNT_LOC_LARM;
+            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LEFT_ARM) ? BattleArmor.MOUNT_LOC_RIGHT_ARM
+                  : BattleArmor.MOUNT_LOC_LEFT_ARM;
             if (manipulator.pairMounted) {
                 setManipulator(manipulator, otherArm, false);
             } else if ((current != null) && isPairedManipulator(current.getType())) {
@@ -370,12 +382,12 @@ public class BAStructureTab extends ITab
     @Override
     public void stateChanged(ChangeEvent evt) {
         if (evt.getSource() == spnLeftManipulatorSize) {
-            setManipulatorSize(BattleArmor.MOUNT_LOC_LARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
+            setManipulatorSize(BattleArmor.MOUNT_LOC_LEFT_ARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
             if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
                 spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
             }
         } else if (evt.getSource() == spnRightManipulatorSize) {
-            setManipulatorSize(BattleArmor.MOUNT_LOC_RARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
+            setManipulatorSize(BattleArmor.MOUNT_LOC_RIGHT_ARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
         }
         refresh.refreshAll();
     }
@@ -546,7 +558,7 @@ public class BAStructureTab extends ITab
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
         UnitUtil.removeAllCriticalsFrom(getBattleArmor(),
-              List.of(BattleArmor.MOUNT_LOC_LARM, BattleArmor.MOUNT_LOC_RARM, BattleArmor.MOUNT_LOC_TURRET));
+              List.of(BattleArmor.MOUNT_LOC_LEFT_ARM, BattleArmor.MOUNT_LOC_RIGHT_ARM, BattleArmor.MOUNT_LOC_TURRET));
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());
@@ -599,8 +611,8 @@ public class BAStructureTab extends ITab
             // afterward.
             CriticalSlot[][] slots = new CriticalSlot[getBattleArmor().locations()][];
             for (int loc = 0; loc < getBattleArmor().locations(); loc++) {
-                slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticals(loc)];
-                for (int i = 0; i < getBattleArmor().getNumberOfCriticals(loc); i++) {
+                slots[loc] = new CriticalSlot[getBattleArmor().getNumberOfCriticalSlots(loc)];
+                for (int i = 0; i < getBattleArmor().getNumberOfCriticalSlots(loc); i++) {
                     slots[loc][i] = getBattleArmor().getCritical(loc, i);
                 }
             }
@@ -656,7 +668,7 @@ public class BAStructureTab extends ITab
                 // Spreadable equipment needs to have a Mounted entry
                 // for each critical
                 if (eq.isSpreadable()) {
-                    numTimesToAdd = eq.getCriticals(getBattleArmor());
+                    numTimesToAdd = eq.getNumCriticalSlots(getBattleArmor());
                 }
                 for (int i = 0; i < numTimesToAdd; i++) {
                     Mounted<?> newMount = Mounted.createMounted(getBattleArmor(), eq);
@@ -695,7 +707,7 @@ public class BAStructureTab extends ITab
     @Override
     public void armorTypeChanged(ArmorType armor) {
         UnitUtil.removeISorArmorMounts(getBattleArmor(), false);
-        int armorCount = armor.getCriticals(getBattleArmor());
+        int armorCount = armor.getNumCriticalSlots(getBattleArmor());
         getBattleArmor().setArmorTechLevel(armor.getTechLevel(getBattleArmor().getYear()));
         getBattleArmor().setArmorType(armor.getInternalName());
 
@@ -728,7 +740,7 @@ public class BAStructureTab extends ITab
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getBattleArmor());
         double totalTonnage = getBattleArmor().getTrooperWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.KILO);
+              totalTonnage - currentTonnage, Ceil.KILO);
         int points = (int) TestEntity.getRawArmorPoints(getBattleArmor(), remainingTonnage);
         int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
               points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));

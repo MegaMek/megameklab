@@ -34,56 +34,65 @@ package megameklab.util;
 
 import java.util.Comparator;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
-import megamek.common.weapons.autocannons.ACWeapon;
-import megamek.common.weapons.autocannons.LBXACWeapon;
-import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.battlearmor.CLBAERPulseLaserSmall;
-import megamek.common.weapons.battlearmor.CLBALBX;
-import megamek.common.weapons.battlearmor.CLBAPulseLaserMicro;
-import megamek.common.weapons.battlearmor.CLBAPulseLaserSmall;
-import megamek.common.weapons.battlearmor.ISBALaserPulseSmall;
-import megamek.common.weapons.battlearmor.ISBAPopUpMineLauncher;
+import megamek.common.weapons.autoCannons.ACWeapon;
+import megamek.common.weapons.autoCannons.LBXACWeapon;
+import megamek.common.weapons.autoCannons.UACWeapon;
+import megamek.common.weapons.battleArmor.clan.CLBALBX;
+import megamek.common.weapons.battleArmor.clan.laser.CLBAERPulseLaserSmall;
+import megamek.common.weapons.battleArmor.clan.laser.CLBAPulseLaserMicro;
+import megamek.common.weapons.battleArmor.clan.laser.CLBAPulseLaserSmall;
+import megamek.common.weapons.battleArmor.innerSphere.ISBAPopUpMineLauncher;
+import megamek.common.weapons.battleArmor.innerSphere.laser.ISBALaserPulseSmall;
 import megamek.common.weapons.c3.ISC3M;
 import megamek.common.weapons.c3.ISC3RemoteSensorLauncher;
-import megamek.common.weapons.defensivepods.BPodWeapon;
+import megamek.common.weapons.defensivePods.BPodWeapon;
 import megamek.common.weapons.flamers.FlamerWeapon;
-import megamek.common.weapons.gaussrifles.HAGWeapon;
-import megamek.common.weapons.gaussrifles.ISHGaussRifle;
-import megamek.common.weapons.gaussrifles.ISSilverBulletGauss;
+import megamek.common.weapons.gaussRifles.HAGWeapon;
+import megamek.common.weapons.gaussRifles.innerSphere.ISHGaussRifle;
+import megamek.common.weapons.gaussRifles.innerSphere.ISSilverBulletGauss;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megamek.common.weapons.lasers.*;
+import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
+import megamek.common.weapons.lasers.clan.CLPulseLaserMicro;
+import megamek.common.weapons.lasers.clan.small.CLERPulseLaserSmall;
+import megamek.common.weapons.lasers.clan.small.CLPulseLaserSmall;
+import megamek.common.weapons.lasers.innerSphere.ISBombastLaser;
+import megamek.common.weapons.lasers.innerSphere.large.ISVariableSpeedPulseLaserLarge;
+import megamek.common.weapons.lasers.innerSphere.medium.ISVariableSpeedPulseLaserMedium;
+import megamek.common.weapons.lasers.innerSphere.small.ISPulseLaserSmall;
+import megamek.common.weapons.lasers.innerSphere.small.ISVariableSpeedPulseLaserSmall;
+import megamek.common.weapons.lasers.innerSphere.small.ISXPulseLaserSmall;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.lrms.LRTWeapon;
 import megamek.common.weapons.lrms.StreakLRMWeapon;
 import megamek.common.weapons.mgs.MGWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
-import megamek.common.weapons.missiles.ISThunderBolt10;
-import megamek.common.weapons.missiles.ISThunderBolt15;
-import megamek.common.weapons.missiles.ISThunderBolt20;
-import megamek.common.weapons.missiles.ISThunderBolt5;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MRMWeapon;
-import megamek.common.weapons.missiles.RLWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
-import megamek.common.weapons.mortars.ISVehicularGrenadeLauncher;
+import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt10;
+import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt15;
+import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt20;
+import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt5;
+import megamek.common.weapons.missiles.rocketLauncher.RLWeapon;
+import megamek.common.weapons.missiles.thuunderbolt.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
+import megamek.common.weapons.mortars.innerSphere.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.other.NarcWeapon;
-import megamek.common.weapons.ppc.CLPlasmaCannon;
-import megamek.common.weapons.ppc.ISPlasmaRifle;
-import megamek.common.weapons.ppc.ISSnubNosePPC;
 import megamek.common.weapons.ppc.PPCWeapon;
+import megamek.common.weapons.ppc.clan.CLPlasmaCannon;
+import megamek.common.weapons.ppc.innerSphere.ISPlasmaRifle;
+import megamek.common.weapons.ppc.innerSphere.ISSnubNosePPC;
 import megamek.common.weapons.prototypes.PrototypeRLWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
@@ -181,14 +190,14 @@ public class StringUtils {
                 } else if (weapon instanceof ArtilleryCannonWeapon) {
                     info = Integer.toString(weapon.getRackSize());
                     info += "[DB,AE]";
-                } else if (weapon instanceof ThunderBoltWeapon) {
-                    if (weapon instanceof ISThunderBolt5) {
+                } else if (weapon instanceof ThunderboltWeapon) {
+                    if (weapon instanceof ISThunderbolt5) {
                         info = "5";
-                    } else if (weapon instanceof ISThunderBolt10) {
+                    } else if (weapon instanceof ISThunderbolt10) {
                         info = "10";
-                    } else if (weapon instanceof ISThunderBolt15) {
+                    } else if (weapon instanceof ISThunderbolt15) {
                         info = "15";
-                    } else if (weapon instanceof ISThunderBolt20) {
+                    } else if (weapon instanceof ISThunderbolt20) {
                         info = "20";
                     }
                     info += "[M]";
@@ -267,7 +276,7 @@ public class StringUtils {
                     info += "X,";
                 }
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     info += "OS,";
                 }
 
@@ -288,7 +297,7 @@ public class StringUtils {
         } else if ((mount.getType() instanceof MiscType) && (mount.getType().hasFlag(MiscType.F_AP_POD))) {
             info = "[PB,OS,AI]";
         } else if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(MiscType.F_TALON)) {
-            info = Integer.toString(KickAttackAction.getDamageFor(unit, Mek.LOC_LLEG, false));
+            info = Integer.toString(KickAttackAction.getDamageFor(unit, Mek.LOC_LEFT_LEG, false));
         } else if (mount.is(EquipmentTypeLookup.COOLANT_POD)) {
             info = "[PE,OS,X]";
         } else {
@@ -356,7 +365,7 @@ public class StringUtils {
                     info = "[AE,S,F]";
                 } else if (weapon instanceof ArtilleryCannonWeapon) {
                     info = "[DB,AE]";
-                } else if (weapon instanceof ThunderBoltWeapon) {
+                } else if (weapon instanceof ThunderboltWeapon) {
                     info = "[M]";
                 } else if (weapon instanceof NarcWeapon) {
                     info = "[M]";
@@ -408,7 +417,7 @@ public class StringUtils {
                     info += "X,";
                 }
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     info += "OS,";
                 }
 

@@ -33,7 +33,7 @@
 package megameklab.ui.combatVehicle;
 
 import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
-import megamek.common.Mounted;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.generalUnit.StatusBar;
 
 class GEStatusBar extends StatusBar {

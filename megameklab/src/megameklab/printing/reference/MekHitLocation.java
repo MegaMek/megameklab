@@ -32,8 +32,8 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMek;
-import megamek.common.TripodMek;
+import megamek.common.units.QuadMek;
+import megamek.common.units.TripodMek;
 import megameklab.printing.PrintMek;
 
 /**

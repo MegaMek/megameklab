@@ -47,10 +47,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Dropship;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.SmallCraft;
+import megamek.common.units.Dropship;
+import megamek.common.units.Entity;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.DropshipBuildListener;

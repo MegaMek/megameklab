@@ -32,11 +32,11 @@
  */
 package megameklab.ui.supportVehicle;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.util.AbstractEquipmentDatabaseView;
@@ -70,12 +70,12 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || (etype.hasFlag(MiscType.F_MASC)
                     && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                    && !etype.hasSubType(MiscType.S_JETBOOSTER))
+                    && !etype.hasSubType(MiscType.S_JET_BOOSTER))
                     || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
                     && etype.hasFlag(MiscType.F_TRACKS))
                     || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
-                    || etype.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
-                    || etype.hasFlag(MiscType.F_BASIC_FIRECONTROL)
+                    || etype.hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)
+                    || etype.hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
                     || UnitUtil.isArmorOrStructure(etype));
     }
 }

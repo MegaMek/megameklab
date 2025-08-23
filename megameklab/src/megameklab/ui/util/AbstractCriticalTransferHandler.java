@@ -35,8 +35,8 @@ package megameklab.ui.util;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.util.UnitUtil;
 

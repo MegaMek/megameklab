@@ -43,8 +43,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Bay;
-import megamek.common.Entity;
+import megamek.common.bays.Bay;
+import megamek.common.units.Entity;
 import megamek.common.verifier.BayData;
 import megameklab.ui.listeners.BuildListener;
 

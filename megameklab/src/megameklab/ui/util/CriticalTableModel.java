@@ -51,8 +51,18 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import megamek.common.*;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.HandheldWeapon;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Mek;
+import megamek.common.units.Tank;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
@@ -218,7 +228,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 if (tableType == BUILDTABLE) {
                     return UnitUtil.getCritsUsed(crit);
                 }
-                return crit.getCriticals();
+                return crit.getNumCriticalSlots();
             case EQUIPMENT:
                 return crit;
             case HEAT:

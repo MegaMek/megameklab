@@ -42,9 +42,33 @@ import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import megamek.common.*;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.SimpleTechLevel;
+import megamek.common.bays.CrewQuartersCargoBay;
+import megamek.common.bays.EjectionSeatCargoBay;
+import megamek.common.bays.FirstClassQuartersCargoBay;
+import megamek.common.bays.PillionSeatCargoBay;
+import megamek.common.bays.SecondClassQuartersCargoBay;
+import megamek.common.bays.StandardSeatCargoBay;
+import megamek.common.bays.SteerageQuartersCargoBay;
+import megamek.common.enums.Faction;
+import megamek.common.enums.TechRating;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.Transporter;
+import megamek.common.equipment.enums.FuelType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.units.Tank;
+import megamek.common.units.UnitRole;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megamek.logging.MMLogger;
@@ -188,7 +212,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -340,7 +364,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void tonnageChanged(double tonnage) {
         boolean wasLarge = getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT;
-        getEntity().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON));
+        getEntity().setWeight(TestEntity.ceil(tonnage, tonnage < 5 ? Ceil.KILO : Ceil.HALF_TON));
         if (!getEntity().isAero() && !getEntity().getMovementMode().equals(EntityMovementMode.VTOL)) {
             if ((getEntity().getWeightClass() == EntityWeightClass.WEIGHT_LARGE_SUPPORT) != wasLarge) {
                 toggleLargeSupport();
@@ -655,8 +679,8 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void fireConChanged(int index) {
         final Mounted<?> current = getSV().getMisc().stream()
-              .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRECONTROL)
-                    || m.getType().hasFlag(MiscType.F_ADVANCED_FIRECONTROL))
+              .filter(m -> m.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+                    || m.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL))
               .findFirst().orElse(null);
         if (null != current) {
             getSV().getMisc().remove(current);
@@ -780,7 +804,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     private void removeTurret(int loc) {
-        for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < getTank().getNumberOfCriticalSlots(loc); slot++) {
             getTank().setCritical(loc, slot, null);
         }
         for (Mounted<?> mount : getTank().getEquipment()) {
@@ -803,7 +827,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void fuelTonnageChanged(double tonnage) {
         double fuelTons = TestEntity.round(tonnage,
-              TestEntity.usesKgStandard(getSV()) ? TestEntity.Ceil.KILO : TestEntity.Ceil.HALFTON);
+              TestEntity.usesKgStandard(getSV()) ? Ceil.KILO : Ceil.HALF_TON);
         if (getSV().isAero()) {
             getAero().setFuelTonnage(fuelTons);
         } else {
@@ -822,12 +846,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         } else {
             double tonnage = capacity * getTank().fuelTonnagePer100km() / 100.0;
             if (TestEntity.usesKgStandard(getEntity())) {
-                tonnage = TestEntity.round(tonnage, TestEntity.Ceil.KILO);
+                tonnage = TestEntity.round(tonnage, Ceil.KILO);
             } else if (tonnage > getTank().getFuelTonnage()) {
                 // Round in the same direction as the change.
-                tonnage = TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON);
+                tonnage = TestEntity.ceil(tonnage, Ceil.HALF_TON);
             } else {
-                tonnage = TestEntity.floor(tonnage, TestEntity.Ceil.HALFTON);
+                tonnage = TestEntity.floor(tonnage, Ceil.HALF_TON);
             }
             getTank().setFuelTonnage(tonnage);
         }

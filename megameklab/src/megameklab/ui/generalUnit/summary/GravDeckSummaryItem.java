@@ -32,8 +32,8 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.Jumpship;
+import megamek.common.units.Entity;
+import megamek.common.units.Jumpship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.util.UnitUtil;
 

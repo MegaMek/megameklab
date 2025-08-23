@@ -32,8 +32,9 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.Engine;
-import megamek.common.EntityMovementMode;
+import megamek.common.equipment.Engine;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Entity;
 import megamek.common.verifier.BayData;
 import megameklab.ui.combatVehicle.CVChassisView;
 
@@ -79,7 +80,7 @@ public interface CVBuildListener extends BuildListener {
     void controlSystemsChanged(boolean controlSystems);
 
     /**
-     * Notify of a change in motive type. May require instantiation of a new {@link megamek.common.Entity Entity}.
+     * Notify of a change in motive type. May require instantiation of a new {@link Entity Entity}.
      *
      * @param motive The new motive type
      */

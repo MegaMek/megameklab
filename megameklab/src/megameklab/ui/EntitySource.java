@@ -32,8 +32,8 @@
  */
 package megameklab.ui;
 
-import megamek.common.Entity;
-import megamek.common.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.interfaces.ITechManager;
 
 /**
  * In order to track when changes are made to the unit, we will have one ultimate holder of the Entity instance, and

@@ -47,17 +47,17 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
-import megamek.common.EntityWeightClass;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
-import megamek.common.ITechnology;
-import megamek.common.ITechnology.TechRating;
-import megamek.common.Mek;
-import megamek.common.MiscType;
 import megamek.common.TechConstants;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.interfaces.ITechnology;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.CustomComboBox;
@@ -84,7 +84,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final static String CMD_REMAINING = "REMAINING";
 
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
-    private final CustomComboBox<ITechnology.TechRating> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<TechRating> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);
@@ -353,7 +353,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     public TechRating getTechRating() {
         TechRating selected = (TechRating) cbSVTechRating.getSelectedItem();
-        return selected != null ? selected : ITechnology.TechRating.A;
+        return selected != null ? selected : TechRating.A;
     }
 
     public double getArmorTonnage() {

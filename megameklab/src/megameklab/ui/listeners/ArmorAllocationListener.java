@@ -32,9 +32,10 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.EquipmentType;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechnology;
 
 /**
  * Listener for changes to armor. No method is required by all implementing classes so all are given a default noop
@@ -66,7 +67,7 @@ public interface ArmorAllocationListener {
      * Notifies of a change in the tech rating of support vehicle armor.
      *
      * @param techRating The new tech rating, using the rating constants from
-     *                   {@link megamek.common.ITechnology ITechnology}.
+     *                   {@link ITechnology ITechnology}.
      */
     default void armorTechRatingChanged(TechRating techRating) {
 

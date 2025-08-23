@@ -37,6 +37,18 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import megamek.common.*;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.BipedMek;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.units.QuadMek;
+import megamek.common.units.QuadVee;
+import megamek.common.units.TripodMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;

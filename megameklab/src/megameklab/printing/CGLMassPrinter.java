@@ -38,11 +38,11 @@ import java.util.List;
 import java.util.Locale;
 
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.GunEmplacement;
-import megamek.common.MekSummary;
-import megamek.common.MekSummaryCache;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.GunEmplacement;
+import megamek.common.loaders.MekSummary;
+import megamek.common.loaders.MekSummaryCache;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.util.CConfig;

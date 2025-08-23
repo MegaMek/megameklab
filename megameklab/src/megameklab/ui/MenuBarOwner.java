@@ -37,7 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.annotations.Nullable;
 import megameklab.ui.util.AppCloser;
 

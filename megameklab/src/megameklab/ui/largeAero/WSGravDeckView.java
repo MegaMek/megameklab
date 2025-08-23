@@ -48,7 +48,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import megamek.common.Jumpship;
+import megamek.common.units.Jumpship;
 import megamek.common.annotations.Nullable;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.ui.generalUnit.BuildView;

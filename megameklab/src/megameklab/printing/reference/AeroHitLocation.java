@@ -32,8 +32,8 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.Jumpship;
-import megamek.common.SmallCraft;
+import megamek.common.units.Jumpship;
+import megamek.common.units.SmallCraft;
 import megameklab.printing.PrintAero;
 
 /**

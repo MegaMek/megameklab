@@ -32,7 +32,7 @@
  */
 package megameklab.testing.util;
 
-import megamek.common.EquipmentType;
+import megamek.common.equipment.EquipmentType;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 

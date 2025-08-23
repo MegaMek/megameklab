@@ -49,11 +49,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.Jumpship;
-import megamek.common.SpaceStation;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Jumpship;
+import megamek.common.units.SpaceStation;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
@@ -280,11 +280,11 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
               && techManager.isLegal(Jumpship.getLFBatteryTA()));
         chkMilitary.setVisible((baseType == TYPE_STATION));
         if (baseType == TYPE_STATION) {
-            if ((getTonnage() <= SpaceStation.MODULAR_MININUM_WEIGHT)
+            if ((getTonnage() <= SpaceStation.MODULAR_MINIMUM_WEIGHT)
                   && techManager.isLegal(SpaceStation.getKFAdapterTA())) {
                 chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.text"));
                 chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.tooltip"));
-            } else if ((getTonnage() > SpaceStation.MODULAR_MININUM_WEIGHT)
+            } else if ((getTonnage() > SpaceStation.MODULAR_MINIMUM_WEIGHT)
                   && techManager.isLegal(SpaceStation.getModularTA())) {
                 chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
                 chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));

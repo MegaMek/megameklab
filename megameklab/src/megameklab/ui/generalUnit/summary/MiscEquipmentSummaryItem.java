@@ -32,9 +32,9 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megameklab.util.UnitUtil;
 
 /**
@@ -56,7 +56,7 @@ public class MiscEquipmentSummaryItem extends AbstractSummaryItem {
         for (Mounted<?> m : entity.getMisc()) {
             if (isEquipment(m)) {
                 totalWeight += m.getTonnage();
-                totalCrits += m.getCriticals();
+                totalCrits += m.getNumCriticalSlots();
             }
         }
         weightLabel.setText(formatWeight(totalWeight, entity));

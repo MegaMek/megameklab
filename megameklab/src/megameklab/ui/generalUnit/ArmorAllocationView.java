@@ -48,8 +48,17 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import megamek.common.*;
 import megamek.common.equipment.ArmorType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.Jumpship;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.SuperHeavyTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
@@ -76,13 +85,13 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
 
     private static final int[][] MEK_LAYOUT = {
           { -1, -1, Mek.LOC_HEAD, -1, -1 },
-          { Mek.LOC_LARM, Mek.LOC_LT, Mek.LOC_CT, Mek.LOC_RT, Mek.LOC_RARM },
-          { -1, Mek.LOC_LLEG, Mek.LOC_CLEG, Mek.LOC_RLEG, -1 }
+          { Mek.LOC_LEFT_ARM, Mek.LOC_LEFT_TORSO, Mek.LOC_CENTER_TORSO, Mek.LOC_RIGHT_TORSO, Mek.LOC_RIGHT_ARM },
+          { -1, Mek.LOC_LEFT_LEG, Mek.LOC_CENTER_LEG, Mek.LOC_RIGHT_LEG, -1 }
     };
 
     private static final int[][] PROTOMEK_LAYOUT = {
-          { ProtoMek.LOC_MAINGUN, ProtoMek.LOC_HEAD, -1 },
-          { ProtoMek.LOC_LARM, ProtoMek.LOC_TORSO, ProtoMek.LOC_RARM },
+          { ProtoMek.LOC_MAIN_GUN, ProtoMek.LOC_HEAD, -1 },
+          { ProtoMek.LOC_LEFT_ARM, ProtoMek.LOC_TORSO, ProtoMek.LOC_RIGHT_ARM },
           { -1, ProtoMek.LOC_LEG, -1 }
     };
 
@@ -95,8 +104,8 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
 
     private static final int[][] SH_TANK_LAYOUT = {
           { -1, SuperHeavyTank.LOC_FRONT, -1 },
-          { SuperHeavyTank.LOC_FRONTLEFT, SuperHeavyTank.LOC_TURRET, SuperHeavyTank.LOC_FRONTRIGHT },
-          { SuperHeavyTank.LOC_REARLEFT, SuperHeavyTank.LOC_TURRET_2, SuperHeavyTank.LOC_REARRIGHT },
+          { SuperHeavyTank.LOC_FRONT_LEFT, SuperHeavyTank.LOC_TURRET, SuperHeavyTank.LOC_FRONT_RIGHT },
+          { SuperHeavyTank.LOC_REAR_LEFT, SuperHeavyTank.LOC_TURRET_2, SuperHeavyTank.LOC_REAR_RIGHT },
           { -1, SuperHeavyTank.LOC_REAR, -1 }
     };
 
@@ -109,7 +118,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
 
     private static final int[][] AERODYNE_LAYOUT = {
           { -1, Aero.LOC_NOSE, -1 },
-          { Aero.LOC_LWING, -1, Aero.LOC_RWING },
+          { Aero.LOC_LEFT_WING, -1, Aero.LOC_RIGHT_WING },
           { -1, Aero.LOC_AFT, -1 }
     };
 

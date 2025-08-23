@@ -32,8 +32,8 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.Entity;
-import megamek.common.EntityMovementMode;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
 import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;

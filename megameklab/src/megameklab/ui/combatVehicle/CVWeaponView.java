@@ -48,12 +48,12 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.*;
 
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.logging.MMLogger;
 import megameklab.MMLConstants;
@@ -510,7 +510,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
 
                         // MegaMek automatically adds a ton of ammo for one shots
                         // for tracking. We do not need this in MLab
-                        if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
+                        if (mount.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
                             getTank().getAmmo().remove(getTank().getAmmo().size() - 1);
                         }
@@ -540,7 +540,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                         weaponList.addCrit(mount);
                         // MegaMek automatically adds a ton of ammo for one shots
                         // for tracking. We do not need this in MLab
-                        if (mount.getType().hasFlag(WeaponType.F_ONESHOT)) {
+                        if (mount.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
                             getTank().getEquipment().remove(getTank().getEquipment().size() - 1);
                             getTank().getAmmo().remove(getTank().getAmmo().size() - 1);
                         }
@@ -666,7 +666,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 subLaserAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subLaserWeaponList.elementAt(list.getSelectedIndex());
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     return;
                 }
                 Vector<String> equipmentList = new Vector<>();
@@ -684,7 +684,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                 subMissileAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subMissileWeaponList.elementAt(list.getSelectedIndex());
 
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     return;
                 }
                 Vector<String> equipmentList = new Vector<>();
@@ -692,7 +692,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     if ((ammo.getRackSize() == weapon.getRackSize())
                           && UnitUtil.isLegal(getTank(), ammo)
                           && !ammo.hasFlag(AmmoType.F_BATTLEARMOR)
-                          && !weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                          && !weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                         subMissileAmmoList.add(ammo);
                         equipmentList.add(ammo.getInternalName());
                     }
@@ -701,7 +701,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } else if (list.equals(ballisticWeaponCombo)) {
                 subBallisticAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subBallisticWeaponList.elementAt(list.getSelectedIndex());
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     return;
                 }
                 Vector<String> equipmentList = new Vector<>();
@@ -717,7 +717,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
             } else if (list.equals(artilleryWeaponCombo)) {
                 subArtilleryAmmoList.removeAllElements();
                 WeaponType weapon = (WeaponType) subArtilleryWeaponList.elementAt(list.getSelectedIndex());
-                if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+                if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                     return;
                 }
                 Vector<String> equipmentList = new Vector<>();

@@ -54,8 +54,19 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.*;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.TechAdvancement;
+import megamek.common.enums.TechRating;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.interfaces.ITechnology;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.SupportTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
@@ -98,12 +109,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
 
     private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
     private final JCheckBox chkSmall = new JCheckBox();
-    private final CustomComboBox<ITechnology.TechRating> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<TechRating> cbStructureTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<TestSupportVehicle.SVType> cbType = new CustomComboBox<>(t -> typeNames.getOrDefault(t,
           "?"));
     private final TechComboBox<TestSupportVehicle.SVEngine> cbEngine = new TechComboBox<>(e -> e.engine.getEngineName()
           .replaceAll("^\\d+ ", "").replace("[SV]", ""));
-    private final CustomComboBox<ITechnology.TechRating> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<TechRating> cbEngineTechRating = new CustomComboBox<>(ITechnology::getRatingName);
     private final CustomComboBox<Integer> cbTurrets = new CustomComboBox<>(i -> turretNames[i]);
     private final JCheckBox chkSponson = new JCheckBox();
     private final JLabel lblPintle = createLabel("lblPintle", "");
@@ -387,7 +398,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
      */
     private TechRating getStructuralTechRating() {
         TechRating selected = (TechRating) cbStructureTechRating.getSelectedItem();
-        return selected != null ? selected : ITechnology.TechRating.A;
+        return selected != null ? selected : TechRating.A;
     }
 
     /**
@@ -395,7 +406,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
      */
     private TechRating getEngineTechRating() {
         TechRating selected = (TechRating) cbEngineTechRating.getSelectedItem();
-        return selected != null ? selected : ITechnology.TechRating.A;
+        return selected != null ? selected : TechRating.A;
     }
 
     /**
@@ -453,7 +464,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         // Engine::getTechRating will return the minimum tech rating for the engine type.
         cbEngineTechRating.removeActionListener(this);
         cbEngineTechRating.removeAllItems();
-        for (int r = entity.getEngine().getTechRating().getIndex(); r <= ITechnology.TechRating.F.getIndex(); r++) {
+        for (int r = entity.getEngine().getTechRating().getIndex(); r <= TechRating.F.getIndex(); r++) {
             cbEngineTechRating.addItem(TechRating.fromIndex(r));
         }
         cbEngineTechRating.setSelectedItem(entity.getEngineTechRating());
@@ -507,9 +518,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
             cbTurrets.setEnabled(false);
         }
 
-        if (entity.hasMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (entity.hasMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_ADVANCED);
-        } else if (entity.hasMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (entity.hasMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_BASIC);
         } else {
             cbFireControl.setSelectedIndex(SVBuildListener.FIRECON_NONE);

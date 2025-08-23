@@ -42,7 +42,16 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import megamek.common.*;
+import megamek.common.bays.Bay;
+import megamek.common.bays.StandardSeatCargoBay;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Transporter;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.InfantryCompartment;
+import megamek.common.units.SupportTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.GroundMovementRecord;
 import megameklab.printing.reference.GroundToHitMods;
@@ -201,9 +210,9 @@ public class PrintTank extends PrintEntity {
             sj.add(String.join(", ", chassisMods)
                   + (chassisMods.size() == 1 ? " Chassis Mod" : " Chassis Mods"));
         }
-        if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRECONTROL)) {
+        if (tank.hasWorkingMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
             sj.add("Advanced Fire Control");
-        } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRECONTROL)) {
+        } else if (tank.hasWorkingMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
             sj.add("Basic Fire Control");
         }
         Map<String, Double> transport = new HashMap<>();

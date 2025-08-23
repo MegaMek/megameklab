@@ -34,7 +34,7 @@ package megameklab.ui.generalUnit;
 
 import java.util.Vector;
 
-import megamek.common.AmmoType;
+import megamek.common.equipment.AmmoType;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.IView;

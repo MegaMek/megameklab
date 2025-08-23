@@ -41,17 +41,32 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import megamek.common.*;
+import megamek.common.RangeType;
+import megamek.common.enums.TechBase;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentFlag;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.Sensor;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.SmallCraft;
+import megamek.common.units.Tank;
+import megamek.common.units.TripodMek;
 import megamek.common.weapons.CLIATMWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.lasers.VariableSpeedPulseLaserWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
-import megamek.common.weapons.other.ISCenturionWeaponSystem;
+import megamek.common.weapons.other.innerSphere.ISCenturionWeaponSystem;
 import megameklab.util.CConfig;
 import megameklab.util.StringUtils;
 
@@ -221,11 +236,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else if (mount.getType().hasFlag(MiscType.F_BLOODHOUND)) {
             return CConfig.formatScale(8, false);
         } else if (mount.getType().getInternalName().equals(Sensor.LIGHT_AP)
-              || mount.getType().getInternalName().equals(Sensor.ISBALIGHT_AP)
-              || mount.getType().getInternalName().equals(Sensor.CLBALIGHT_AP)) {
+              || mount.getType().getInternalName().equals(Sensor.IS_BA_LIGHT_AP)
+              || mount.getType().getInternalName().equals(Sensor.CL_BA_LIGHT_AP)) {
             return CConfig.formatScale(3, false);
-        } else if (mount.getType().getInternalName().equals(Sensor.ISIMPROVED)
-              || mount.getType().getInternalName().equals(Sensor.CLIMPROVED)) {
+        } else if (mount.getType().getInternalName().equals(Sensor.IS_IMPROVED)
+              || mount.getType().getInternalName().equals(Sensor.CL_IMPROVED)) {
             return CConfig.formatScale(2, false);
         } else if (mount.getType().isClan()) {
             return CConfig.formatScale(5, false); // Clan active probe
@@ -332,7 +347,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      */
     private boolean showTechBase() {
         if (!mount.getEntity().isMixedTech()
-              || (mount.getType().getTechBase() == ITechnology.TechBase.ALL)) {
+              || (mount.getType().getTechBase() == TechBase.ALL)) {
             return false;
         }
         if (showMixedTechBase.containsKey(mount.getType())) {

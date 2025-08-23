@@ -37,10 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import megamek.common.Compute;
-import megamek.common.Entity;
-import megamek.common.QuadMek;
-import megamek.common.TripodMek;
+import megamek.common.compute.Compute;
+import megamek.common.units.Entity;
+import megamek.common.units.QuadMek;
+import megamek.common.units.TripodMek;
 import megameklab.printing.PrintEntity;
 
 /**

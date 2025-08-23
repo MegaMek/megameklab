@@ -49,11 +49,11 @@ import java.util.regex.Pattern;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mek;
-import megamek.common.MekFileParser;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.Mek;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.equipment.Mounted;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;

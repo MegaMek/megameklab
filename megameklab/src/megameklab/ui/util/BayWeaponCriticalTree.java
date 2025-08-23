@@ -62,22 +62,22 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.AmmoType.AmmoTypeEnum;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.SmallCraft;
-import megamek.common.WeaponType;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.AmmoType.AmmoTypeEnum;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
-import megamek.common.weapons.bayweapons.BayWeapon;
-import megamek.common.weapons.bayweapons.PPCBayWeapon;
+import megamek.common.weapons.bayWeapons.BayWeapon;
+import megamek.common.weapons.bayWeapons.PPCBayWeapon;
 import megamek.common.weapons.lrms.LRMWeapon;
 import megamek.common.weapons.ppc.PPCWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
@@ -897,7 +897,7 @@ public class BayWeaponCriticalTree extends JTree {
      */
     public String getLocationName() {
         if (eSource.getEntity().hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
-            if (location == SmallCraft.LOC_LWING) {
+            if (location == SmallCraft.LOC_LEFT_WING) {
                 if (facing == FORWARD) {
                     return "Forward Left";
                 } else if (facing == AFT) {
@@ -905,7 +905,7 @@ public class BayWeaponCriticalTree extends JTree {
                 } else {
                     return "Left Wing";
                 }
-            } else if (location == SmallCraft.LOC_RWING) {
+            } else if (location == SmallCraft.LOC_RIGHT_WING) {
                 if (facing == FORWARD) {
                     return "Forward Right";
                 } else if (facing == AFT) {

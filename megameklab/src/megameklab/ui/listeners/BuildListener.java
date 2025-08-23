@@ -32,10 +32,10 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.EquipmentType;
-import megamek.common.FuelType;
 import megamek.common.SimpleTechLevel;
-import megamek.common.UnitRole;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.enums.FuelType;
+import megamek.common.units.UnitRole;
 
 /**
  * Combined listener interface for the various subviews of the structure tab. Includes callbacks used by multiple unit

@@ -32,7 +32,7 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.EntityMovementMode;
+import megamek.common.units.EntityMovementMode;
 
 /**
  * Listener for views used by conventional infantry.

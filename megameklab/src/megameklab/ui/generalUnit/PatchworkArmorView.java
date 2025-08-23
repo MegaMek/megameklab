@@ -45,12 +45,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
-import megamek.common.ITechManager;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.Tank;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Mek;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.Tank;
 import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;

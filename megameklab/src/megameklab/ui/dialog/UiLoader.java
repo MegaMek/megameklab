@@ -43,7 +43,7 @@ import javax.swing.SwingUtilities;
 
 import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.StartupGUI;

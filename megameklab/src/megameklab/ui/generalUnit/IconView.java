@@ -48,7 +48,7 @@ import megamek.client.ui.dialogs.iconChooser.EntityImagePanel;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.client.ui.util.PlayerColour;
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 import megamek.common.icons.Camouflage;
 import megamek.common.util.ImageUtil;
 import megamek.logging.MMLogger;

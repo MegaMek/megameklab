@@ -37,11 +37,11 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.HandheldWeapon;
-import megamek.common.ITechManager;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.HandheldWeapon;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.Mounted;
 import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.generalUnit.FluffTab;
