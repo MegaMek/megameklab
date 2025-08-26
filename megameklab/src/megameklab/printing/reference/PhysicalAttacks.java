@@ -32,12 +32,12 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.Entity;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.QuadMek;
 import megamek.common.actions.ClubAttackAction;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.QuadMek;
 import megamek.logging.MMLogger;
 import megameklab.printing.PrintMek;
 import megameklab.util.CConfig;
@@ -79,8 +79,8 @@ public class PhysicalAttacks extends ReferenceTable {
         if (!(sheet.getEntity() instanceof QuadMek)) {
             addRow(bundle.getString("push"), "-1", "\u2014");
         }
-        if (sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LARM)
-              && sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RARM)) {
+        if (sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM)
+              && sheet.getEntity().hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM)) {
             addRow(bundle.getString("club"),
                   "-1",
                   String.format("%.0f", Math.floor(sheet.getEntity().getWeight() / 5.0)));
@@ -102,8 +102,8 @@ public class PhysicalAttacks extends ReferenceTable {
     }
 
     private void addPunchAttacks(Entity entity) {
-        int left = countActuators(entity, Mek.LOC_LARM);
-        int right = countActuators(entity, Mek.LOC_RARM);
+        int left = countActuators(entity, Mek.LOC_LEFT_ARM);
+        int right = countActuators(entity, Mek.LOC_RIGHT_ARM);
         int baseDamage = (int) Math.ceil(entity.getWeight() / 10.0);
         boolean hasTSM = entity.hasWorkingMisc(MiscType.F_TSM);
         if (left == right) {

@@ -38,9 +38,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.TechConstants;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.units.LargeSupportTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.EntitySource;
@@ -185,7 +196,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         double totalTonnage = getEntity().getWeight();
         double remainingTonnage = totalTonnage - currentTonnage;
         if (getEntity().getWeightClass() != EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            remainingTonnage = TestEntity.floor(remainingTonnage, TestEntity.Ceil.HALFTON);
+            remainingTonnage = TestEntity.floor(remainingTonnage, Ceil.HALF_TON);
         }
 
         double maxArmor = MathUtility.clamp(getEntity().getArmorWeight() + remainingTonnage, 0,
@@ -203,7 +214,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
     @Override
     public void armorTonnageChanged(double tonnage) {
-        getEntity().setArmorTonnage(TestEntity.ceil(tonnage, TestEntity.Ceil.HALFTON));
+        getEntity().setArmorTonnage(TestEntity.ceil(tonnage, Ceil.HALF_TON));
         panArmorAllocation.setFromEntity(getEntity());
         refresh.refreshSummary();
         refresh.refreshStatus();
@@ -238,7 +249,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
         UnitUtil.resetArmor(getEntity(), location);
 
         int crits = armor.getPatchworkSlotsMekSV();
-        if (getEntity().getEmptyCriticals(location) < crits) {
+        if (getEntity().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(
                   null, armor.getName()
                         + " does not fit in location "
@@ -247,7 +258,7 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         } else {
             getEntity().setArmorType(armor.getArmorType(), location);
             getEntity().setArmorTechLevel(armor.getTechLevel(techManager.getGameYear(), armor.isClan()));

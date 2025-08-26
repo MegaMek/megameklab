@@ -35,13 +35,13 @@ package megameklab.ui;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestEntity;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
@@ -77,7 +77,7 @@ public final class EquipmentToolTip {
             sb.append(((InfantryWeapon) eq.getType()).getInfantryRange());
         } else {
             sb.append("<br>Crits: ");
-            sb.append(eq.getCriticals());
+            sb.append(eq.getNumCriticalSlots());
             sb.append("<br>Mass: ");
             if (TestEntity.usesKgStandard(unit)) {
                 sb.append(Math.round(eq.getTonnage() * 1000));
@@ -124,7 +124,7 @@ public final class EquipmentToolTip {
     }
 
     private static String getWeaponDamageInfo(WeaponType wType) {
-        if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+        if (wType.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
             if ((wType instanceof SRMWeapon) || (wType instanceof SRTWeapon) || (wType instanceof MMLWeapon)) {
                 perMissile = 2;

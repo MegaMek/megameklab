@@ -55,12 +55,12 @@ import javax.swing.event.ChangeListener;
 
 import megamek.MegaMek;
 import megamek.client.ui.util.UIUtil;
-import megamek.common.EnhancedTabbedPane;
-import megamek.common.EnhancedTabbedPane.CloseableTab;
-import megamek.common.EnhancedTabbedPane.DetachedTabInfo;
-import megamek.common.EnhancedTabbedPane.TabStateListener;
-import megamek.common.Entity;
 import megamek.common.preference.PreferenceManager;
+import megamek.common.ui.CloseableTab;
+import megamek.common.ui.DetachedTabInfo;
+import megamek.common.ui.EnhancedTabbedPane;
+import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
+import megamek.common.units.Entity;
 import megameklab.MMLConstants;
 import megameklab.MegaMekLab;
 import megameklab.ui.dialog.UiLoader;

@@ -35,7 +35,7 @@ package megameklab.ui.generalUnit.summary;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import megamek.common.Entity;
+import megamek.common.units.Entity;
 
 /**
  * This is a base implementation for {@link SummaryItem}. It offers three text items {@link #weightLabel},

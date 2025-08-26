@@ -48,11 +48,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.client.ui.util.DisplayTextfield;
-import megamek.common.EntityMovementMode;
-import megamek.common.ITechManager;
-import megamek.common.Infantry;
-import megamek.common.InfantryMount;
+import megamek.client.ui.util.DisplayTextField;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Infantry;
+import megamek.common.units.InfantryMount;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.generalUnit.StandardBuildLabel;
@@ -91,7 +91,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     private final JLabel lblMaxSize = new JLabel();
     private final JLabel lblMaxSquadSize = new JLabel();
     private final JLabel lblBeastMountLabel = new StandardBuildLabel();
-    private final DisplayTextfield lblBeastMountType = new DisplayTextfield();
+    private final DisplayTextField lblBeastMountType = new DisplayTextField();
 
     private final ITechManager techManager;
 
@@ -246,7 +246,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         lblNumSquads.setText(isBeastMounted() && !isLargeBeastMount() ?
               resourceMap.getString("PlatoonTypeView.spnNumSquads.creatures") :
               resourceMap.getString("PlatoonTypeView.spnNumSquads.text"));
-        lblBeastMountType.setText(isBeastMounted() ? mount.getName() : "");
+        lblBeastMountType.setText(isBeastMounted() ? mount.name() : "");
     }
 
     private EntityMovementMode getMovementMode() {
@@ -259,7 +259,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
 
     private boolean isLargeBeastMount() {
-        return (mount != null) && (mount.getSize() == InfantryMount.BeastSize.LARGE);
+        return (mount != null) && (mount.size() == InfantryMount.BeastSize.LARGE);
     }
 
     private boolean isAltMode() {

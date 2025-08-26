@@ -36,7 +36,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import megamek.client.ui.util.DisplayTextfield;
+import megamek.client.ui.util.DisplayTextField;
 
 /**
  * This is a JLabel that is right-aligned and uses a preferred height equal to that of a JTextField; it can be used in
@@ -45,7 +45,7 @@ import megamek.client.ui.util.DisplayTextfield;
  */
 public class StandardBuildLabel extends JLabel {
 
-    private final DisplayTextfield heightPrototype = new DisplayTextfield("unimportant", 1);
+    private final DisplayTextField heightPrototype = new DisplayTextField("unimportant", 1);
 
     public StandardBuildLabel(String text) {
         super(text, SwingConstants.RIGHT);

@@ -51,7 +51,19 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.units.QuadVee;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -469,7 +481,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 // LAMs cannot use bulky structure
                 if ((null != structure) && techManager.isLegal(structure)
                       && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure.getCriticals(null) == 0))) {
+                      || (structure.getNumCriticalSlots(null) == 0))) {
                     cbStructure.addItem(structure);
                 }
                 name = EquipmentType.getStructureTypeName(i, !isClan);
@@ -477,7 +489,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 if ((null != structure2) && (structure2 != structure)
                       && techManager.isLegal(structure2)
                       && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure2.getCriticals(null) == 0))) {
+                      || (structure2.getNumCriticalSlots(null) == 0))) {
                     cbStructure.addItem(structure2);
                     // If we are allowing the opposite tech base it may be because we are using mixed
                     // tech but it also may be that we are in the transitional early Clan stage when

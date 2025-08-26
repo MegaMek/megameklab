@@ -42,10 +42,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.MPCalculationSetting;
 import megamek.common.annotations.Nullable;
+import megamek.common.enums.TechBase;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentMessages;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.BipedMek;
+import megamek.common.units.Entity;
+import megamek.common.units.LAMPilot;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.units.QuadVee;
 import megamek.logging.MMLogger;
 import megameklab.printing.reference.*;
 import megameklab.util.CConfig;
@@ -336,12 +350,12 @@ public class PrintMek extends PrintEntity {
             case Mek.LOC_HEAD:
                 locAbbr = "Head";
                 break;
-            case Mek.LOC_RARM:
-            case Mek.LOC_LARM:
+            case Mek.LOC_RIGHT_ARM:
+            case Mek.LOC_LEFT_ARM:
                 locAbbr = abbr + "rm";
                 break;
-            case Mek.LOC_RLEG:
-            case Mek.LOC_LLEG:
+            case Mek.LOC_RIGHT_LEG:
+            case Mek.LOC_LEFT_LEG:
                 locAbbr = abbr + "eg";
                 break;
             default:
@@ -546,7 +560,7 @@ public class PrintMek extends PrintEntity {
         double critX = viewX + viewWidth * 0.11;
         double critWidth = viewX + viewWidth - critX;
         double gap = 0;
-        int numberOfCriticals = mek.getNumberOfCriticals(loc);
+        int numberOfCriticals = mek.getNumberOfCriticalSlots(loc);
         if (numberOfCriticals > 6) {
             gap = viewHeight * 0.05;
         }
@@ -575,7 +589,7 @@ public class PrintMek extends PrintEntity {
                   text, fontSize,
                   SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE);
         }
-        for (int slot = 0; slot < mek.getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(loc); slot++) {
             currY += lineHeight;
             if (slot == 6) {
                 currY += gap;
@@ -709,7 +723,7 @@ public class PrintMek extends PrintEntity {
             }
         }
         // Check whether we need to add a bracket for the last piece of equipment.
-        if ((null != startingMount) && (mek.getNumberOfCriticals(loc) - startingSlotIndex > 1)) {
+        if ((null != startingMount) && (mek.getNumberOfCriticalSlots(loc) - startingSlotIndex > 1)) {
             connectSlots(canvas, critX - 1, startingMountY, connWidth, endingMountY - startingMountY);
         }
     }
@@ -765,10 +779,10 @@ public class PrintMek extends PrintEntity {
         int viewX = (int) bbox.getX();
         int viewY = (int) bbox.getY();
 
-        int si = mek.getOInternal(Mek.LOC_CT);
+        int si = mek.getOInternal(Mek.LOC_CENTER_TORSO);
         int damage = 0;
         if (options.showDamage()) {
-            damage = si - mek.getInternal(Mek.LOC_CT);
+            damage = si - mek.getInternal(Mek.LOC_CENTER_TORSO);
         }
         double size = 9.2;
         double radius = 2.8;
@@ -947,7 +961,7 @@ public class PrintMek extends PrintEntity {
             Mounted<?> m = cs.getMount();
             StringBuffer critName = new StringBuffer(m.getType().getShortName());
             if (mek.isMixedTech()) {
-                if (mek.isClan() && (m.getType().getTechBase() == ITechnology.TechBase.IS)
+                if (mek.isClan() && (m.getType().getTechBase() == TechBase.IS)
                       && (critName.indexOf("[IS]") < 0)) {
                     critName.append(" [IS]");
                 } else if (!mek.isClan() && m.getType().isClan()

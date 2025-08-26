@@ -32,9 +32,9 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
 import megamek.common.TechConstants;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;
 
@@ -55,7 +55,7 @@ public class StructureSummaryItem extends AbstractSummaryItem {
                   TechConstants.isClan(entity.getStructureTechLevel()));
             EquipmentType structureType = EquipmentType.get(structName);
             availabilityLabel.setText(structureType.getFullRatingName(entity.isClan()));
-            critLabel.setText(formatCrits(structureType.getCriticals(entity)));
+            critLabel.setText(formatCrits(structureType.getNumCriticalSlots(entity)));
         } else {
             availabilityLabel.setText("");
             critLabel.setText("");

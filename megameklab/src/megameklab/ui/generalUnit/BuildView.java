@@ -38,9 +38,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.common.Engine;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.annotations.Nullable;
 
 /**

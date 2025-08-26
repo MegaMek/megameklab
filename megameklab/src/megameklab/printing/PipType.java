@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -30,34 +30,18 @@
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
  */
-package megameklab.ui.generalUnit.summary;
+package megameklab.printing;
 
-import megamek.common.units.Entity;
-import megamek.common.equipment.MiscType;
-import megamek.common.equipment.Mounted;
-import megamek.common.units.Tank;
+import megamek.common.equipment.EquipmentType;
 
-public class SponsonTurretSummaryItem extends AbstractSummaryItem {
+enum PipType {
+    CIRCLE, DIAMOND;
 
-    @Override
-    public String getName() {
-        return "Sponson Turret";
-    }
-
-    @Override
-    public void refresh(Entity entity) {
-        if (entity instanceof Tank) {
-            weightLabel.setText(formatWeight(getSponsonTurretWeight(entity), entity));
+    public static PipType forAT(int at) {
+        if (at == EquipmentType.T_ARMOR_HARDENED) {
+            return DIAMOND;
+        } else {
+            return CIRCLE;
         }
-    }
-
-    private double getSponsonTurretWeight(Entity entity) {
-        for (Mounted<?> m : entity.getMisc()) {
-            MiscType mt = (MiscType) m.getType();
-            if (mt.hasFlag(MiscType.F_SPONSON_TURRET)) {
-                return m.getTonnage();
-            }
-        }
-        return 0;
     }
 }

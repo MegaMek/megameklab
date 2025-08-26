@@ -35,10 +35,10 @@ package megameklab.printing;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import megamek.common.Jumpship;
-import megamek.common.SpaceStation;
-import megamek.common.UnitType;
-import megamek.common.Warship;
+import megamek.common.units.Jumpship;
+import megamek.common.units.SpaceStation;
+import megamek.common.units.UnitType;
+import megamek.common.units.Warship;
 import megamek.logging.MMLogger;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;

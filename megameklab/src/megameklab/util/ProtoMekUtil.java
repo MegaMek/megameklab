@@ -32,12 +32,12 @@
  */
 package megameklab.util;
 
-import megamek.common.EquipmentType;
-import megamek.common.LocationFullException;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.ProtoMek;
-import megamek.common.WeaponType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.ProtoMek;
+import megamek.common.equipment.WeaponType;
 import megamek.common.verifier.TestProtoMek;
 
 public final class ProtoMekUtil {

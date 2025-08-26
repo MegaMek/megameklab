@@ -36,7 +36,18 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.enums.TechRating;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.units.LargeSupportTank;
+import megamek.common.units.SupportTank;
+import megamek.common.units.SupportVTOL;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
@@ -221,8 +232,8 @@ public class SVMainUI extends MegaMekLabMainUI {
             newUnit.setChassis("New");
             newUnit.setModel("Support Tank");
             newUnit.setYear(3145);
-            newUnit.setStructuralTechRating(ITechnology.TechRating.D);
-            newUnit.setArmorTechRating(ITechnology.TechRating.D);
+            newUnit.setStructuralTechRating(TechRating.D);
+            newUnit.setArmorTechRating(TechRating.D);
             newUnit.setOriginalWalkMP(1);
         } else {
             newUnit.setChassis(oldEntity.getChassis());

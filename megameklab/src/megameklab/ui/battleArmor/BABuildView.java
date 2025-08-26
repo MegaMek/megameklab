@@ -51,13 +51,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -73,7 +73,7 @@ import megameklab.util.UnitUtil;
 
 /**
  * A component that display a table listing all the unallocated equipment for the squad and allows dragging of the
- * equipment to criticals to mount it.
+ * equipment to criticalSlots to mount it.
  *
  * @author Taharqa
  * @author arlith
@@ -141,7 +141,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         for (Mounted<?> mount : getBattleArmor().getMisc()) {
             if ((mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE
                   && !mount.getType().hasFlag(MiscType.F_BA_MANIPULATOR)
-                  && mount.getType().getCriticals(getBattleArmor()) > 0)) {
+                  && mount.getType().getNumCriticalSlots(getBattleArmor()) > 0)) {
                 masterEquipmentList.add(mount);
             }
         }

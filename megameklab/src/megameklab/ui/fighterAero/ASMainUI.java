@@ -37,6 +37,14 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import megamek.common.*;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.AeroSpaceFighter;
+import megamek.common.units.ConvFighter;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;

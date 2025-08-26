@@ -32,7 +32,7 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.QuadMek;
+import megamek.common.units.QuadMek;
 import megameklab.printing.PrintMek;
 
 /**

@@ -32,8 +32,8 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.Aero;
-import megamek.common.Entity;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.util.UnitUtil;

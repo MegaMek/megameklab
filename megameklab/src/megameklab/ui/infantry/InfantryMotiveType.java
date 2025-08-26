@@ -32,7 +32,7 @@
  */
 package megameklab.ui.infantry;
 
-import megamek.common.EntityMovementMode;
+import megamek.common.units.EntityMovementMode;
 
 /**
  * This enum is specifically for use in MML CI construction.

@@ -48,15 +48,25 @@ import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import megamek.common.*;
+import megamek.common.RangeType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.units.Tank;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
-import megamek.common.weapons.autocannons.UACWeapon;
-import megamek.common.weapons.gaussrifles.HAGWeapon;
+import megamek.common.weapons.autoCannons.UACWeapon;
+import megamek.common.weapons.gaussRifles.HAGWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MissileWeapon;
-import megamek.common.weapons.missiles.ThunderBoltWeapon;
+import megamek.common.weapons.missiles.thuunderbolt.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megameklab.util.CConfig;
 import megameklab.util.InfantryUtil;
@@ -410,7 +420,7 @@ public class EquipmentTableModel extends AbstractTableModel {
                 return defaultDecimalFormatter.format(weight);
             }
         } else if (col == COL_CRIT) {
-            if (type.isVariableCriticals()
+            if (type.isVariableCriticalSlots()
                   && (entity.isSupportVehicle() || (entity instanceof Mek))) {
                 // Only Meks and support vehicles require multiple slots for equipment
                 return "variable";
@@ -421,7 +431,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             } else if (entity.hasETypeFlag(Entity.ETYPE_PROTOMEK)) {
                 return TestProtoMek.requiresSlot(type) ? 1 : 0;
             }
-            return type.getCriticals(entity);
+            return type.getNumCriticalSlots(entity);
         } else if (col == COL_TRATING) {
             return type.getFullRatingName(entity.isClan());
         } else if (col == COL_COST) {
@@ -518,14 +528,14 @@ public class EquipmentTableModel extends AbstractTableModel {
             return wtype.getDamage(wtype.getShortRange()) + "/"
                   + wtype.getDamage(wtype.getMediumRange()) + "/"
                   + wtype.getDamage(wtype.getLongRange());
-        } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTERTABLE) {
+        } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
             if (wtype instanceof HAGWeapon) {
                 return wtype.getRackSize() + "";
             } else if (wtype instanceof MekMortarWeapon) {
                 return "Special";
             } else if (wtype instanceof MissileWeapon) {
                 int dmg;
-                if (wtype instanceof ThunderBoltWeapon) {
+                if (wtype instanceof ThunderboltWeapon) {
                     switch (wtype.getAmmoType()) {
                         case TBOLT_5:
                             return "5";

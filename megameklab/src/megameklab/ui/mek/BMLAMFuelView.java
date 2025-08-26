@@ -32,7 +32,7 @@
  */
 package megameklab.ui.mek;
 
-import static megamek.common.EquipmentTypeLookup.LAM_FUEL_TANK;
+import static megamek.common.equipment.EquipmentTypeLookup.LAM_FUEL_TANK;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -48,13 +48,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.LandAirMek;
-import megamek.common.LocationFullException;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.LandAirMek;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Mek;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.IView;

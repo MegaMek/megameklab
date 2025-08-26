@@ -43,12 +43,12 @@ import javax.swing.ListSelectionModel;
 
 import megamek.client.ui.util.UIUtil.FixedYPanel;
 import megamek.common.CriticalSlot;
-import megamek.common.FixedWingSupport;
-import megamek.common.Mounted;
-import megamek.common.SuperHeavyTank;
-import megamek.common.Tank;
-import megamek.common.VTOL;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.units.SuperHeavyTank;
+import megamek.common.units.Tank;
+import megamek.common.units.VTOL;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
@@ -79,8 +79,8 @@ public class SVCriticalView extends IView {
     private RefreshListener refresh;
 
     private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel,
-          FixedWingSupport.LOC_LWING, leftPanel,
-          FixedWingSupport.LOC_RWING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT,
+          FixedWingSupport.LOC_LEFT_WING, leftPanel,
+          FixedWingSupport.LOC_RIGHT_WING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT,
           rearPanel);
 
     private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
@@ -93,10 +93,10 @@ public class SVCriticalView extends IView {
           Tank.LOC_TURRET_2, dualTurretPanel);
 
     private final Map<Integer, JComponent> superHvyLocations = Map.of(Tank.LOC_FRONT, frontPanel,
-          SuperHeavyTank.LOC_FRONTLEFT, leftPanel, SuperHeavyTank.LOC_FRONTRIGHT, rightPanel,
+          SuperHeavyTank.LOC_FRONT_LEFT, leftPanel, SuperHeavyTank.LOC_FRONT_RIGHT, rightPanel,
           Tank.LOC_BODY, bodyPanel, SuperHeavyTank.LOC_REAR, rearPanel, SuperHeavyTank.LOC_TURRET, turretPanel,
           SuperHeavyTank.LOC_TURRET_2, dualTurretPanel,
-          SuperHeavyTank.LOC_REARLEFT, rearLeftPanel, SuperHeavyTank.LOC_REARRIGHT, rearRightPanel);
+          SuperHeavyTank.LOC_REAR_LEFT, rearLeftPanel, SuperHeavyTank.LOC_REAR_RIGHT, rearRightPanel);
 
     SVCriticalView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
@@ -179,7 +179,7 @@ public class SVCriticalView extends IView {
             for (int location = 0; location < getEntity().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
 
-                for (int slot = 0; slot < getEntity().getNumberOfCriticals(location); slot++) {
+                for (int slot = 0; slot < getEntity().getNumberOfCriticalSlots(location); slot++) {
                     CriticalSlot cs = getEntity().getCritical(location, slot);
                     if (cs == null) {
                         continue;

@@ -47,10 +47,10 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
-import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.Mounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -142,7 +142,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         int location = getCritLocation();
         CriticalSlot criticalSlot = null;
 
-        if ((slot >= 0) && (slot < unit.getNumberOfCriticals(location))) {
+        if ((slot >= 0) && (slot < unit.getNumberOfCriticalSlots(location))) {
             criticalSlot = unit.getCritical(location, slot);
         }
 

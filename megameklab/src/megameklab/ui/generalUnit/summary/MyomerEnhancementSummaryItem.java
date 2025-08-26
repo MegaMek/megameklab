@@ -34,9 +34,9 @@ package megameklab.ui.generalUnit.summary;
 
 import java.util.Optional;
 
-import megamek.common.Entity;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 
 public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
 
@@ -51,7 +51,7 @@ public class MyomerEnhancementSummaryItem extends AbstractSummaryItem {
         if (enhancement.isPresent()) {
             availabilityLabel.setText(enhancement.get().getType().getFullRatingName(entity.isClan()));
             weightLabel.setText(formatWeight(enhancement.get().getTonnage(), entity));
-            critLabel.setText(formatCrits(enhancement.get().getCriticals()));
+            critLabel.setText(formatCrits(enhancement.get().getNumCriticalSlots()));
         } else {
             availabilityLabel.setText("");
             weightLabel.setText("");

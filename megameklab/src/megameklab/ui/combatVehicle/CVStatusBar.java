@@ -35,7 +35,7 @@ package megameklab.ui.combatVehicle;
 import javax.swing.JLabel;
 
 import megamek.client.ui.clientGUI.GUIPreferences;
-import megamek.common.Tank;
+import megamek.common.units.Tank;
 import megameklab.ui.generalUnit.StatusBar;
 
 /**

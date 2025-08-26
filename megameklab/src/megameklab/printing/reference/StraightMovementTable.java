@@ -32,10 +32,10 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.ConvFighter;
-import megamek.common.Dropship;
-import megamek.common.EntityMovementMode;
-import megamek.common.SmallCraft;
+import megamek.common.units.ConvFighter;
+import megamek.common.units.Dropship;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.SmallCraft;
 import megameklab.printing.PrintAero;
 
 /**

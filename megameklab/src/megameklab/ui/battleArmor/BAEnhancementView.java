@@ -42,11 +42,11 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JCheckBox;
 
-import megamek.common.BattleArmor;
-import megamek.common.EquipmentType;
-import megamek.common.EquipmentTypeLookup;
-import megamek.common.ITechManager;
-import megamek.common.MiscType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.equipment.MiscType;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 

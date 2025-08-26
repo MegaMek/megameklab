@@ -43,7 +43,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.enums.Faction;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Infantry;
+import megamek.common.units.InfantryMount;
+import megamek.common.units.UnitRole;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
@@ -164,7 +175,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         return basicInfoView;
     }
 
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         basicInfoView.setTechFaction(techFaction);
     }
 

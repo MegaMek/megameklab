@@ -32,9 +32,9 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.Engine;
-import megamek.common.EquipmentType;
-import megamek.common.ITechnology.TechRating;
+import megamek.common.enums.TechRating;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.supportVehicle.SVChassisView;
 
@@ -69,8 +69,8 @@ public interface SVBuildListener extends BuildListener {
      * Notify of a change in the structural tech rating
      *
      * @param techRating The new tech rating. This should be one of the constants
-     *                   {@link megamek.common.ITechnology.TechRating#A } through
-     *                   {@link megamek.common.ITechnology.TechRating#F}
+     *                   {@link TechRating#A } through
+     *                   {@link TechRating#F}
      */
     void structuralTechRatingChanged(TechRating techRating);
 
@@ -85,8 +85,8 @@ public interface SVBuildListener extends BuildListener {
      * Notify of a change in the engine tech rating
      *
      * @param techRating The new tech rating. This should be one of the constants
-     *                   {@link megamek.common.ITechnology.TechRating#A} through
-     *                   {@link megamek.common.ITechnology.TechRating#A}
+     *                   {@link TechRating#A} through
+     *                   {@link TechRating#A}
      */
     void engineTechRatingChanged(TechRating techRating);
 

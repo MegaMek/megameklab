@@ -48,9 +48,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.BattleArmor;
-import megamek.common.EntityWeightClass;
-import megamek.common.ITechManager;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.EntityWeightClass;
+import megamek.common.interfaces.ITechManager;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 import megameklab.ui.util.CustomComboBox;

@@ -95,7 +95,7 @@ abstract public class ReferenceTableBase {
         g.appendChild(border);
         g.appendChild(label);
         g.appendChild(createTableBody(3.0, PADDING * 1.5 + sheet.getFontHeight(FONT_SIZE_LABEL) * 2,
-              width - 8.0, height - 15.0, PrintRecordSheet.FONT_SIZE_VSMALL));
+              width - 8.0, height - 15.0, PrintRecordSheet.FONT_SIZE_VERY_SMALL));
         return g;
     }
 

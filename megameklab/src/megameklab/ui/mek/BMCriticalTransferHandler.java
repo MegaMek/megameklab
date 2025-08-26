@@ -47,7 +47,17 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import megamek.common.*;
+import megamek.common.CriticalSlot;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -90,7 +100,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         } else {
             // Move the slot number upwards if the drop location is too far down for the
             // equipment (PPC in the last slot)
-            int locationSize = mek.getNumberOfCriticals(location);
+            int locationSize = mek.getNumberOfCriticalSlots(location);
             if ((locationSize >= neededCrits) && (slotNumber + neededCrits > locationSize)) {
                 slotNumber = locationSize - neededCrits;
             }
@@ -160,23 +170,23 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         // Determine if we should spread equipment over multiple locations
         if ((neededTotalSlots > freePrimarySlots)
               // TargComps are marked as spreadable as a workaround, see the MiscType comment
-              && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGCOMP))
+              && !((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_TARGETING_COMPUTER))
               && !(getUnit() instanceof LandAirMek)) {
 
             Set<Integer> secondLocationSet = new HashSet<>();
             secondLocationSet.add(mek.getTransferLocation(location));
-            if (location == Mek.LOC_RT) {
-                secondLocationSet.add(Mek.LOC_CT);
-                secondLocationSet.add(Mek.LOC_RARM);
-            } else if (location == Mek.LOC_LT) {
-                secondLocationSet.add(Mek.LOC_CT);
-                secondLocationSet.add(Mek.LOC_LARM);
-            } else if (location == Mek.LOC_CT) {
-                secondLocationSet.add(Mek.LOC_LT);
-                secondLocationSet.add(Mek.LOC_RT);
+            if (location == Mek.LOC_RIGHT_TORSO) {
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
+                secondLocationSet.add(Mek.LOC_RIGHT_ARM);
+            } else if (location == Mek.LOC_LEFT_TORSO) {
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
+                secondLocationSet.add(Mek.LOC_LEFT_ARM);
+            } else if (location == Mek.LOC_CENTER_TORSO) {
+                secondLocationSet.add(Mek.LOC_LEFT_TORSO);
+                secondLocationSet.add(Mek.LOC_RIGHT_TORSO);
                 secondLocationSet.add(Mek.LOC_HEAD);
             } else if (location == Mek.LOC_HEAD) {
-                secondLocationSet.add(Mek.LOC_CT);
+                secondLocationSet.add(Mek.LOC_CENTER_TORSO);
             }
             secondLocationSet.removeIf(loc -> loc == Entity.LOC_DESTROYED);
             secondLocationSet.removeIf(loc -> !UnitUtil.isValidLocation(mek, eq.getType(), loc));
@@ -229,7 +239,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
-            if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticals(location))) {
+            if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticalSlots(location))) {
                 return false;
             }
 
@@ -251,7 +261,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                     }
                 }
 
-                // If this equipment is already mounted, clear the criticals it's mounted in
+                // If this equipment is already mounted, clear the criticalSlots it's mounted in
                 if (!fixedEquipment) {
                     if (eq.getLocation() != Entity.LOC_NONE || eq.getSecondLocation() != Entity.LOC_NONE) {
                         UnitUtil.removeCriticals(getUnit(), eq);
@@ -282,7 +292,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                             canDouble = (((AmmoType) etype).getAmmoType() == ((AmmoType) etype2).getAmmoType())
                                   && (((AmmoType) etype).getRackSize() == ((AmmoType) etype2).getRackSize());
                         } else if (etype.equals(etype2) && UnitUtil.isHeatSink(etype)) {
-                            canDouble = etype.getCriticals(getUnit()) == 1;
+                            canDouble = etype.getNumCriticalSlots(getUnit()) == 1;
                         }
                         if (canDouble) {
                             cs.setMount2(eq);

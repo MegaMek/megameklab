@@ -39,16 +39,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.BattleArmor;
-import megamek.common.Mounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.Mounted;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * A component that creates a table for building the criticals of a unit.  This tab shows a table of the un-allocated
- * equipment and displays criticals for the whole <code>BattleArmor</code> squad.
+ * A component that creates a table for building the criticalSlots of a unit.  This tab shows a table of the un-allocated
+ * equipment and displays criticalSlots for the whole <code>BattleArmor</code> squad.
  *
  * @author Taharqa
  * @author arlith

@@ -35,7 +35,7 @@ package megameklab.printing;
 import static megameklab.printing.PrintRecordSheet.FILL_BLACK;
 import static megameklab.printing.PrintRecordSheet.FILL_WHITE;
 import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
-import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VSMALL;
+import static megameklab.printing.PrintRecordSheet.FONT_SIZE_VERY_SMALL;
 import static megameklab.printing.PrintRecordSheet.svgNS;
 
 import java.text.NumberFormat;
@@ -48,11 +48,26 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import megamek.common.*;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.bays.BattleArmorBay;
+import megamek.common.bays.Bay;
+import megamek.common.bays.InfantryBay;
+import megamek.common.bays.ProtoMekBay;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.common.equipment.AmmoMounted;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.MiscMounted;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Jumpship;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.QuadVee;
+import megamek.common.units.SmallCraft;
+import megamek.common.units.SupportTank;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -345,7 +360,7 @@ public class InventoryWriter {
              * and is mounted on MOUNT_LOC_NONE
              */
             if ((sheet.getEntity() instanceof BattleArmor)
-                  && (m.getCriticals() > 0)
+                  && (m.getNumCriticalSlots() > 0)
                   && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
                 continue;
             }
@@ -382,9 +397,9 @@ public class InventoryWriter {
         }
         if (sheet.getEntity() instanceof Mek mek && mek.hasFullHeadEject()) {
             var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
-                name = "Full Head Ejection System";
-                shortName = "Full Head Eject System";
-                internalName = "Full Head Ejection System";
+                name = "Full Head Ejection SystemFluff";
+                shortName = "Full Head Eject SystemFluff";
+                internalName = "Full Head Ejection SystemFluff";
             }});
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
@@ -1178,22 +1193,22 @@ public class InventoryWriter {
                     break;
                 case SRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(1-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(1-12)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(13-24)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(13-24)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i + 1] - bayColX[i] - 1,
-                          "(25-40)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(25-40)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
                     sheet.addTextElementToFit(canvas, bayColX[i], currY, bayColX[i] - bayColX[i - 1] - 1,
-                          "(41-50)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(41-50)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:
@@ -1220,22 +1235,22 @@ public class InventoryWriter {
                     break;
                 case SRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(1-6)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(1-6)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case MRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(7-12)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(7-12)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case LRV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i + 1] - colX[i] - 1,
-                          "(13-20)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(13-20)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 case ERV:
                     sheet.addTextElementToFit(canvas, colX[i], currY, colX[i] - colX[i - 1] - 1,
-                          "(21-25)", FONT_SIZE_VSMALL, SVGConstants.SVG_MIDDLE_VALUE,
+                          "(21-25)", FONT_SIZE_VERY_SMALL, SVGConstants.SVG_MIDDLE_VALUE,
                           SVGConstants.SVG_NORMAL_VALUE);
                     break;
                 default:

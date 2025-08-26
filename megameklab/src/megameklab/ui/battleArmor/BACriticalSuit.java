@@ -32,17 +32,17 @@
  */
 package megameklab.ui.battleArmor;
 
-import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
 
 /**
  * Since BattleArmor is setup in a squad, the standard CriticalSlot system isn't used. For construction purposes, we
- * keep track of criticals. In MM, for purposes and dealing with hits, the "locations" for BattleArmor must correspond
- * to the troopers in the squad. This means that the standard Mounted.location can't really be used, and it causes
- * problems with the criticals as well. Since these really only matter for constructions, a separate critical system is
- * tracked in MML only for construction purposes.
+ * keep track of criticalSlots. In MM, for purposes and dealing with hits, the "locations" for BattleArmor must
+ * correspond to the troopers in the squad. This means that the standard Mounted.location can't really be used, and it
+ * causes problems with the criticalSlots as well. Since these really only matter for constructions, a separate critical
+ * system is tracked in MML only for construction purposes.
  **/
 public class BACriticalSuit {
 
@@ -60,14 +60,14 @@ public class BACriticalSuit {
                 case BattleArmor.MOUNT_LOC_BODY:
                     crits[i] = new CriticalSlot[ba.getBodyCrits()];
                     break;
-                case BattleArmor.MOUNT_LOC_RARM:
+                case BattleArmor.MOUNT_LOC_RIGHT_ARM:
                     numSlots = ba.getArmCrits();
                     if (ba.getRightManipulator() != null) {
                         numSlots++;
                     }
                     crits[i] = new CriticalSlot[numSlots];
                     break;
-                case BattleArmor.MOUNT_LOC_LARM:
+                case BattleArmor.MOUNT_LOC_LEFT_ARM:
                     numSlots = ba.getArmCrits();
                     if (ba.getLeftManipulator() != null) {
                         numSlots++;
@@ -95,7 +95,7 @@ public class BACriticalSuit {
         if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
-            critsToAdd = m.getCriticals();
+            critsToAdd = m.getNumCriticalSlots();
         }
         int critsAvailable = 0;
         for (int c = 0; c < getNumCriticals(loc); c++) {
@@ -133,7 +133,7 @@ public class BACriticalSuit {
         if (m.getType().isSpreadable()) {
             critsToAdd = 1;
         } else {
-            critsToAdd = m.getCriticals();
+            critsToAdd = m.getNumCriticalSlots();
         }
         if (critsToAdd == 0) {
             return;

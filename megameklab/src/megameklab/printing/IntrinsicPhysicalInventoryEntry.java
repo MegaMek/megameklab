@@ -37,12 +37,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import megamek.common.Entity;
-import megamek.common.LandAirMek;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.MiscTypeFlag;
-import megamek.common.ProtoMek;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.units.Entity;
+import megamek.common.units.LandAirMek;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
 
 public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
     private final static DecimalFormat doubleFormat = new DecimalFormat("#.##");
@@ -123,12 +123,12 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
 
         var hasTsm = mek.hasTSM(true);
 
-        var hasLHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LARM);
-        var hasRHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RARM);
+        var hasLHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM);
+        var hasRHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM);
 
         // Punches
-        boolean hasLArmAES = mek.hasFunctionalArmAES(Mek.LOC_LARM);
-        boolean hasRArmAES = mek.hasFunctionalArmAES(Mek.LOC_RARM);
+        boolean hasLArmAES = mek.hasFunctionalArmAES(Mek.LOC_LEFT_ARM);
+        boolean hasRArmAES = mek.hasFunctionalArmAES(Mek.LOC_RIGHT_ARM);
         if (!mek.isQuadMek()) {
             var baseDmg = Math.ceil(mek.getWeight() / 10);
             var dmg = formatDamage(baseDmg, hasTsm);
@@ -139,11 +139,11 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
             int mod;
             boolean explicitZero;
 
-            if (!mek.hasClaw(Mek.LOC_LARM)) {
+            if (!mek.hasClaw(Mek.LOC_LEFT_ARM)) {
                 explicitZero = false;
                 if (hasLHand) {
                     mod = 0;
-                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LARM)) {
+                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LEFT_ARM)) {
                     mod = 1;
                 } else {
                     mod = 2;
@@ -155,11 +155,11 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
                 entries.add(e("Punch", "LA", dmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
 
-            if (!mek.hasClaw(Mek.LOC_RARM)) {
+            if (!mek.hasClaw(Mek.LOC_RIGHT_ARM)) {
                 explicitZero = false;
                 if (hasRHand) {
                     mod = 0;
-                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RARM)) {
+                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM)) {
                     mod = 1;
                 } else {
                     mod = 2;

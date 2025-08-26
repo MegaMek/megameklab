@@ -40,11 +40,11 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import megamek.common.EquipmentType;
-import megamek.common.HandheldWeapon;
-import megamek.common.ITechManager;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.HandheldWeapon;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.SimpleTechLevel;
-import megamek.common.UnitRole;
+import megamek.common.units.UnitRole;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;

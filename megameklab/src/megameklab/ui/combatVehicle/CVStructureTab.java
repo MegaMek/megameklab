@@ -45,9 +45,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import megamek.codeUtilities.MathUtility;
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
+import megamek.common.bays.Bay;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.Transporter;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.InfantryCompartment;
+import megamek.common.units.SuperHeavyTank;
+import megamek.common.units.Tank;
+import megamek.common.units.UnitRole;
+import megamek.common.units.VTOL;
 import megamek.common.verifier.BayData;
+import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestTank;
 import megamek.logging.MMLogger;
@@ -200,7 +218,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     /*
      * Used by MekHQ to set the tech faction for custom refits.
      */
-    public void setTechFaction(ITechnology.Faction techFaction) {
+    public void setTechFaction(Faction techFaction) {
         panBasicInfo.setTechFaction(techFaction);
     }
 
@@ -229,7 +247,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     private void removeTurret(int loc) {
-        for (int slot = 0; slot < getTank().getNumberOfCriticals(loc); slot++) {
+        for (int slot = 0; slot < getTank().getNumberOfCriticalSlots(loc); slot++) {
             getTank().setCritical(loc, slot, null);
         }
         for (Mounted<?> mount : getTank().getEquipment()) {
@@ -347,7 +365,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         if (getTank().hasPatchworkArmor()) {
             for (int loc = 0; loc < getTank().locations(); loc++) {
                 if (!getTechManager().isLegal(panPatchwork.getArmor(loc))) {
-                    getTank().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOXSET);
+                    getTank().setArmorType(EquipmentType.T_ARMOR_STANDARD, TechConstants.T_INTRO_BOX_SET);
                     UnitUtil.resetArmor(getTank(), loc);
                 }
             }
@@ -502,7 +520,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         currentTonnage += UnitUtil.getUnallocatedAmmoTonnage(getTank());
         double totalTonnage = getTank().getWeight();
         double remainingTonnage = TestEntity.floor(
-              totalTonnage - currentTonnage, TestEntity.Ceil.HALFTON);
+              totalTonnage - currentTonnage, Ceil.HALF_TON);
 
         double maxArmor = MathUtility.clamp(getTank().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getTank()));
@@ -837,7 +855,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         UnitUtil.resetArmor(getTank(), location);
 
         int crits = armor.getPatchworkSlotsCVFtr();
-        if (getTank().getEmptyCriticals(location) < crits) {
+        if (getTank().getEmptyCriticalSlots(location) < crits) {
             JOptionPane.showMessageDialog(
                   null, armor.getName()
                         + " does not fit in location "
@@ -846,7 +864,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
-            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOXSET);
+            getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
         } else {
             getTank().setArmorType(armor.getArmorType(), location);
             getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));

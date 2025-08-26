@@ -39,14 +39,14 @@ import java.util.Objects;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 
-import megamek.common.Aero;
-import megamek.common.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.Entity;
-import megamek.common.LocationFullException;
-import megamek.common.Mek;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -200,7 +200,7 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                         return false;
                     }
                 } else {
-                    // If this equipment is already mounted, clear the criticals it's mounted in
+                    // If this equipment is already mounted, clear the criticalSlots it's mounted in
                     if ((eq.getLocation() != Entity.LOC_NONE)
                           || (eq.getSecondLocation() != Entity.LOC_NONE)) {
                         UnitUtil.removeCriticals(getUnit(), eq);

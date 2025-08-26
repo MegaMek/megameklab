@@ -32,12 +32,12 @@
  */
 package megameklab.printing;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.ProtoMek;
 import megamek.common.TechConstants;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
+import megamek.common.units.ProtoMek;
 import megamek.logging.MMLogger;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
 import org.apache.batik.util.SVGConstants;
@@ -219,11 +219,11 @@ public class PrintProtoMek extends PrintEntity {
     protected void applyCoreComponentsCriticalDamage() {
         if (!options.showDamage()) {return;}
         super.applyCoreComponentsCriticalDamage();
-        fillCoreComponentCriticalDamage(GUN_HIT, proto.getCritsHit(ProtoMek.LOC_MAINGUN));
+        fillCoreComponentCriticalDamage(GUN_HIT, proto.getCritsHit(ProtoMek.LOC_MAIN_GUN));
         fillCoreComponentCriticalDamage(LEGS_HIT, proto.getCritsHit(ProtoMek.LOC_LEG));
         fillCoreComponentCriticalDamage(TORSO_HIT, proto.getCritsHit(ProtoMek.LOC_TORSO));
         fillCoreComponentCriticalDamage(HEAD_HIT, proto.getCritsHit(ProtoMek.LOC_HEAD));
-        fillCoreComponentCriticalDamage(LEFT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_LARM));
-        fillCoreComponentCriticalDamage(RIGHT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_RARM));
+        fillCoreComponentCriticalDamage(LEFT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_LEFT_ARM));
+        fillCoreComponentCriticalDamage(RIGHT_ARM_HIT, proto.getCritsHit(ProtoMek.LOC_RIGHT_ARM));
     }
 }

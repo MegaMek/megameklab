@@ -32,19 +32,19 @@
  */
 package megameklab.printing;
 
-import static megamek.common.MiscTypeFlag.*;
+import static megamek.common.equipment.enums.MiscTypeFlag.*;
 
-import megamek.common.AmmoType;
-import megamek.common.BattleArmor;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.Mek;
-import megamek.common.MiscType;
-import megamek.common.weapons.LegAttack;
-import megamek.common.weapons.StopSwarmAttack;
-import megamek.common.weapons.SwarmAttack;
-import megamek.common.weapons.SwarmWeaponAttack;
-import megamek.common.weapons.infantry.InfantryRifleAutoRifleWeapon;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
+import megamek.common.weapons.attacks.LegAttack;
+import megamek.common.weapons.attacks.StopSwarmAttack;
+import megamek.common.weapons.attacks.SwarmAttack;
+import megamek.common.weapons.attacks.SwarmWeaponAttack;
+import megamek.common.weapons.infantry.rifle.InfantryRifleAutoRifleWeapon;
 import megameklab.util.UnitUtil;
 
 public final class PrintUtil {
@@ -109,8 +109,8 @@ public final class PrintUtil {
               || eq.hasFlag(MiscType.F_CHASSIS_MODIFICATION)
               || eq.hasFlag(MiscType.F_SPONSON_TURRET)
               || eq.hasFlag(MiscType.F_EXTERNAL_STORES_HARDPOINT)
-              || eq.hasFlag(MiscType.F_BASIC_FIRECONTROL)
-              || eq.hasFlag(MiscType.F_ADVANCED_FIRECONTROL)
+              || eq.hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+              || eq.hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)
               || eq.hasFlag(MiscType.F_RISC_LASER_PULSE_MODULE)
               || eq.hasFlag(MiscType.F_LASER_INSULATOR))) {
             return false;

@@ -32,7 +32,7 @@
  */
 package megameklab.ui.listeners;
 
-import megamek.common.Engine;
+import megamek.common.equipment.Engine;
 import megamek.common.verifier.BayData;
 
 /**

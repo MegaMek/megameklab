@@ -32,11 +32,11 @@
  */
 package megameklab.printing.reference;
 
-import megamek.common.Aero;
-import megamek.common.AmmoType;
-import megamek.common.MiscType;
-import megamek.common.Mounted;
-import megamek.common.WeaponType;
+import megamek.common.units.Aero;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.MiscType;
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megameklab.printing.PrintAero;
 import org.apache.batik.util.SVGConstants;
 

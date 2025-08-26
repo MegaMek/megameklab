@@ -32,7 +32,7 @@
  */
 package megameklab.printing;
 
-import megamek.common.BTObject;
+import megamek.common.units.BTObject;
 
 /**
  * Dummy entity that indicates that the page should be broken when printing.

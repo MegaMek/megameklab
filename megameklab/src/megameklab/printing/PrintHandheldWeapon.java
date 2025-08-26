@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.Map;
 
 import megamek.codeUtilities.StringUtility;
-import megamek.common.AmmoType;
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.HandheldWeapon;
-import megamek.common.WeaponType;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.HandheldWeapon;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
 import megameklab.util.CConfig;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -229,7 +229,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         for (Iterator<WeaponMounted> it = getEntity().getWeapons(); it.hasNext(); ) {
             WeaponType weapon = it.next().getType();
             var name = weapon.getName();
-            if (weapon.hasFlag(WeaponType.F_ONESHOT)) {
+            if (weapon.hasFlag(WeaponType.F_ONE_SHOT)) {
                 if (oneShotWeapons.containsKey(name)) {
                     oneShotWeapons.put(name, oneShotWeapons.get(name) + 1);
                 } else {

@@ -42,9 +42,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 
-import megamek.common.Entity;
-import megamek.common.EquipmentType;
-import megamek.common.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.SVBuildListener;
