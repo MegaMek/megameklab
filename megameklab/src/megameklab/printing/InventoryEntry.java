@@ -134,7 +134,16 @@ public interface InventoryEntry {
      *
      * @return The to-hit modifier of the item
      */
-    String getModField(int row);
+    default String getModField(int row) {
+        return getModField(row, false);
+    };
+
+    /**
+     * @param row The row index within the entry
+     *
+     * @return The to-hit modifier of the item
+     */
+    String getModField(int row, boolean baseOnly);
 
     /**
      * @return Whether lines after the first line should be indented

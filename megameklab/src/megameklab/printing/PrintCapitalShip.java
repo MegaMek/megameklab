@@ -367,7 +367,7 @@ public class PrintCapitalShip extends PrintDropship {
         box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
         box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
         if (stroke) {
-            String classAttr = "pip";
+            String classAttr = "pip square";
             if (className != null && !className.isEmpty()) {
                 classAttr += " " + className;
             }

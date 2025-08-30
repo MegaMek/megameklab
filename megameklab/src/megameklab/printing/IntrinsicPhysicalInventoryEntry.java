@@ -326,7 +326,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
     }
 
     @Override
-    public String getModField(int row) {
+    public String getModField(int row, boolean baseOnly) {
         if (row == 0) {
             return mod.replace("-", MINUS);
         }
@@ -416,7 +416,7 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
         }
 
         @Override
-        public String getModField(int row) {
+        public String getModField(int row, boolean baseOnly) {
             return "";
         }
 

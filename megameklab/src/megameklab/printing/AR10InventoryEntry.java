@@ -107,7 +107,7 @@ public class AR10InventoryEntry implements InventoryEntry {
     }
 
     @Override
-    public String getModField(int row) {
+    public String getModField(int row, boolean baseOnly) {
         // Todo: Find out if AR10s have to-hit mods
         return "";
     }

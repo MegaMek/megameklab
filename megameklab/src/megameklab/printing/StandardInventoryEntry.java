@@ -398,7 +398,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private String formatMekLocations(List<Integer> locations) {
         if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
             if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
-                  || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
+                   || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
                 return "Legs";
             }
         } else if (locations.stream().allMatch(l -> ((Mek) mount.getEntity()).locationIsTorso(l))) {
@@ -610,7 +610,14 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     @Override
-    public String getModField(int row) {
+    public String getModField(int row, boolean baseOnly) {
+        if (baseOnly) {
+            if (row != 0) {
+                return "";
+            }
+            var mod = mount.getType().getToHitModifier(mount);
+            return (mod != 0) ? "%+d".formatted(mod).replace("-", MINUS) : "0";
+        }
         var hasTargComp = mount.getEntity().hasTargComp();
         boolean hasAes = mount.getEntity().hasFunctionalArmAES(mount.getLocation());
 
@@ -642,6 +649,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         boolean explicitZero = false;
 
         var mod = mount.getType().getToHitModifier(mount);
+
         var linked = mount.getLinkedBy();
         if (linked != null) {
             if (hasArtemisV || hasApollo) {

@@ -352,7 +352,7 @@ public class FluffTab extends ITab implements FocusListener {
                 gbcRight.gridx = 0;
                 gbcRight.weightx = 0.0;
                 gbcRight.fill = GridBagConstraints.NONE;
-                panRight.add(new JLabel(resourceMap.getString("FluffTab.SystemFluff." + systemFluff.toString())),
+                panRight.add(new JLabel(resourceMap.getString("FluffTab.System." + systemFluff.toString())),
                       gbcRight);
 
                 // Manufacturer Text Field

@@ -67,9 +67,11 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     private boolean apollo = false;
     private final List<String> weaponNames = new ArrayList<>();
     private final List<String> quantities = new ArrayList<>();
+    public final int index;
 
-    public WeaponBayInventoryEntry(Aero ship, WeaponBayText bay, boolean isCapital) {
+    public WeaponBayInventoryEntry(Aero ship, int index, WeaponBayText bay, boolean isCapital) {
         this.ship = ship;
+        this.index = index;
         this.bay = bay;
         this.isCapital = isCapital;
         this.isAR10 = bay.weapons.keySet().stream().anyMatch(w -> w.getAmmoType() == AmmoType.AmmoTypeEnum.AR10);
@@ -78,7 +80,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     @Override
     public String getUniqueId() {
-        return "";
+        return "bay_"+String.valueOf(index);
     }
 
     private void processBay() {
@@ -328,7 +330,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
     }
 
     @Override
-    public String getModField(int row) {
+    public String getModField(int row, boolean baseOnly) {
         // todo: get someone who knows what an aerospace is to implement this
         return "";
     }

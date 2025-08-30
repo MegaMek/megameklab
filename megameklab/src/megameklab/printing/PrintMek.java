@@ -253,7 +253,11 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getShieldDCDamage(m),
-                          useAlternateArmorGrouping());
+                          useAlternateArmorGrouping(),
+                          "shield DC",
+                          loc,
+                          false
+                          );
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
@@ -264,7 +268,10 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getShieldDADamage(m),
-                          useAlternateArmorGrouping());
+                          useAlternateArmorGrouping(),
+                          "shield DA",
+                          loc,
+                          false);
                 }
             }
         }
@@ -494,7 +501,11 @@ public class PrintMek extends PrintEntity {
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),
-                      alternateMethod);
+                      alternateMethod,
+                      "armor",
+                      mek.getLocationAbbr(loc),
+                      false
+                      );
             }
             if (!structComplete) {
                 if ((loc == Mek.LOC_HEAD)) {
@@ -531,7 +542,11 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getArmorDamage(loc, true),
-                          alternateMethod);
+                          alternateMethod,
+                          "armor",
+                          mek.getLocationAbbr(loc),
+                          true
+                          );
 
                 }
             }
