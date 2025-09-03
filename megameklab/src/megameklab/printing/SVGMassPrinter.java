@@ -115,10 +115,9 @@ import org.w3c.dom.svg.SVGDocument;
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
-    private final static boolean SKIP_EQUIPMENT = true; // Set to true to skip equipment generation
-
+    private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final String TYPEFACE = "Roboto";
@@ -1147,7 +1146,7 @@ public class SVGMassPrinter {
                     //                }
                     //                 logger.info("{}", mekSummary.getName());
 
-                    if (!mekSummary.isDropShip()) continue;
+//                    if (!mekSummary.isDropShip()) continue;
 //                    if (mekSummary.getMulId() != 8596) continue;
                     // if (i > 10) break; // For testing, remove this line in production
                     /*
@@ -1366,8 +1365,12 @@ public class SVGMassPrinter {
                 for (int i = 0; i < equipmentTableModel.getRowCount(); i++) {
                     EquipmentType eq = equipmentTableModel.getType(i);
                     Map<String, Object> rowMap = new HashMap<>();
+                    rowMap.put("internalName", eq.getInternalName());
                     rowMap.put("name", eq.getName()); // Use full name
+                    rowMap.put("shortName", eq.getShortName());
+                    rowMap.put("type", eq.getEquipmentType());
                     rowMap.put("hittable", eq.isHittable()?1:0);
+                    rowMap.put("spreadable", eq.isSpreadable()?1:0);
                     if (eq instanceof MiscType misc) {
                         String[] flagStrings = eq.getFlags().getSetFlagNamesAsArray(MiscTypeFlag.class);
                         rowMap.put("flags", flagStrings);
@@ -1377,12 +1380,27 @@ public class SVGMassPrinter {
                         if (!(weapon instanceof ACWeapon) && (weapon.getRackSize() > 0)) {
                             rowMap.put("rackSize", weapon.getRackSize());
                         }
+                        rowMap.put("ammoType", weapon.getAmmoType().getName());
                     } else if (eq instanceof AmmoType ammo) {
                         String[] flagStrings = eq.getFlags().getSetFlagNamesAsArray(AmmoTypeFlag.class);
                         rowMap.put("flags", flagStrings);
+                        rowMap.put("ammoType", ammo.getAmmoType().getName());
                         rowMap.put("category", ammo.getAmmoType().getCategory().name());
                         rowMap.put("rackSize", ammo.getRackSize());
+                        rowMap.put("damagePerShot", ammo.getDamagePerShot());
+                        rowMap.put("shots", ammo.getShots());
                         rowMap.put("kgPerShot", ammo.getKgPerShot());
+                        if (ammo.getBaseAmmo() != null) {
+                            rowMap.put("baseAmmo", ammo.getBaseAmmo().getInternalName());
+                        }
+                        rowMap.put("capital", ammo.isCapital());
+                        rowMap.put("ammoRatio", ammo.getAmmoRatio());
+                        rowMap.put("subMunition", ammo.getSubMunitionName());
+                        String[] munitionStrings = ammo.getMunitionType()
+                              .stream()
+                              .map(munition -> munition.name())
+                              .toArray(String[]::new);
+                        rowMap.put("munitionType", munitionStrings);
                     }
                     for (int j = 0; j < equipmentTableModel.getColumnCount(); j++) {
                         if (j == EquipmentTableModel.COL_NAME) {continue;}
