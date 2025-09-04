@@ -234,9 +234,9 @@ public class InventoryWriter {
                     break;
                 }
             }
-            System.arraycopy(columnTypes, 0, newColumns, 0, minIndex);
+            java.lang.System.arraycopy(columnTypes, 0, newColumns, 0, minIndex);
             newColumns[minIndex] = Column.MOD;
-            System.arraycopy(columnTypes, minIndex, newColumns, minIndex + 1, columnTypes.length - minIndex);
+            java.lang.System.arraycopy(columnTypes, minIndex, newColumns, minIndex + 1, columnTypes.length - minIndex);
             columnTypes = newColumns;
         }
         this.columnTypes = columnTypes;

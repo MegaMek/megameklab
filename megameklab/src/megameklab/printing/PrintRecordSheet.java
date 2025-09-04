@@ -445,7 +445,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (!Files.exists(filePath)) {
             logger
                   .error("SVG file does not exist at path: {}/{}", directoryPath, filename);
-            System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
+            java.lang.System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
             return null;
         }
 
@@ -622,21 +622,21 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
 
         // Define font directories based on OS
-        String osName = System.getProperty("os.name").toLowerCase();
+        String osName = java.lang.System.getProperty("os.name").toLowerCase();
         StringBuilder systemFontDirectories = new StringBuilder();
         List<String> directories = new ArrayList<>();
         if (osName.contains("windows")) {
-            String winDir = System.getenv("WINDIR");
+            String winDir = java.lang.System.getenv("WINDIR");
             if (winDir == null) {
-                winDir = System.getenv("SystemRoot");
+                winDir = java.lang.System.getenv("SystemRoot");
             }
             if (winDir == null) {
                 winDir = "C:\\Windows";
             }
             directories.add(winDir + "\\Fonts");
-            directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
+            directories.add(java.lang.System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
-            directories.add("/SystemFluff/Library/Fonts");
+            directories.add("/System/Library/Fonts");
             directories.add("/Library/Fonts");
             directories.add("~/Library/Fonts");
         } else {

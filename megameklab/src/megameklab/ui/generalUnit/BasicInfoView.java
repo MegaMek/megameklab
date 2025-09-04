@@ -623,7 +623,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
-     * Opens the Master Unit List in the SystemFluff Standard Explorer, if possible.
+     * Opens the Master Unit List in the System Standard Explorer, if possible.
      */
     private void openMUL() {
         try {

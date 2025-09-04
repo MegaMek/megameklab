@@ -144,7 +144,7 @@ public class UiLoader {
 
     private void loadNewUi() {
         try {
-            long start = System.currentTimeMillis();
+            long start = java.lang.System.currentTimeMillis();
             MegaMekLabTabbedUI tabbedUi;
             if (!restore) {
                 MegaMekLabMainUI newUI;
@@ -154,7 +154,7 @@ public class UiLoader {
                 } else {
                     newUI = getUI(type, primitive, industrial);
                 }
-                long loadTime = System.currentTimeMillis() - start;
+                long loadTime = java.lang.System.currentTimeMillis() - start;
                 if (loadTime < MINIMUM_SPLASH_TIME) {
                     // Show the splash for at least the minimum time
                     Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
@@ -167,7 +167,7 @@ public class UiLoader {
                     if (editors.length == 0) {
                         throw new IllegalStateException("Could not restore tabs");
                     }
-                    long loadTime = System.currentTimeMillis() - start;
+                    long loadTime = java.lang.System.currentTimeMillis() - start;
                     if (loadTime < MINIMUM_SPLASH_TIME) {
                         // Show the splash for at least the minimum time
                         Thread.sleep(MINIMUM_SPLASH_TIME - loadTime);
