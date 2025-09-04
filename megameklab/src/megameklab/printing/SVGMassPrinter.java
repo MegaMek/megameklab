@@ -1081,7 +1081,7 @@ public class SVGMassPrinter {
         int processedCount = 0;
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
-        long timestamp = java.lang.java.lang.System.currentTimeMillis();
+        long timestamp = java.lang.System.currentTimeMillis();
         HashMap<String, Entity> uniqueUnitTypes = new HashMap<>();
 
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
