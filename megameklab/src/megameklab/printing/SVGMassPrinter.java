@@ -581,9 +581,9 @@ public class SVGMassPrinter {
             }
             if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
                 var mounted = new MiscMounted(entity, new MiscType() {{
-                    name = "Full Head Ejection SystemFluff";
-                    shortName = "Full Head Eject SystemFluff";
-                    internalName = "Full Head Ejection SystemFluff";
+                    name = "Full Head Ejection System";
+                    shortName = "Full Head Eject System";
+                    internalName = "Full Head Ejection System";
                 }});
                 mounted.setLocation(Mek.LOC_HEAD);
                 addMiscEntry(list,
@@ -996,7 +996,7 @@ public class SVGMassPrinter {
                 damageModifier *= 1.10;
             }
 
-            // Actuator Enhancement SystemFluff
+            // Actuator Enhancement System
             if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, -1,
                   weapon.getLocation()) &&
                   ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
@@ -1058,7 +1058,7 @@ public class SVGMassPrinter {
         if (!sheetsDir.exists() || !sheetsDir.isDirectory()) {
             if (!sheetsDir.mkdirs()) {
                 logger.error("Failed to create sheets directory: {}", sheetsDir.getPath());
-                System.exit(1);
+                java.lang.System.exit(1);
             } else {
                 logger.info("Sheets directory created: {}", sheetsDir.getPath());
             }
@@ -1081,7 +1081,7 @@ public class SVGMassPrinter {
         int processedCount = 0;
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
-        long timestamp = System.currentTimeMillis();
+        long timestamp = java.lang.System.currentTimeMillis();
         HashMap<String, Entity> uniqueUnitTypes = new HashMap<>();
 
         try (FileWriter versionWriter = new FileWriter(ROOT_FOLDER + File.separator + VERSION_FILE)) {
@@ -1138,7 +1138,7 @@ public class SVGMassPrinter {
                     Entity entity = mekSummary.loadEntity();
                     if ((entity == null) || (entity instanceof GunEmplacement)) {
                         //                    LOGGER.info("Skipping: {}", mekSummary.getName());
-                        System.gc();
+                        java.lang.System.gc();
                         continue;
                     }
                     UnitUtil.updateLoadedUnit(entity);
@@ -1157,7 +1157,7 @@ public class SVGMassPrinter {
 
                     if (!sheetPath.exists() && !sheetPath.mkdirs()) {
                         logger.error("Couldn't create folder {}", sheetPath);
-                        System.exit(1);
+                        java.lang.System.exit(1);
                     }
                     String name = generateName(entity);
                     if (processedFiles.contains(name)) {
@@ -1177,7 +1177,7 @@ public class SVGMassPrinter {
                               recordSheetOptions);
                         if (sheets.isEmpty()) {
                             logger.error("No sheets generated for {}", mekSummary.getName());
-                            System.exit(1);
+                            java.lang.System.exit(1);
                         }
                         if (SKIP_SVG) {
                             int pageCount = 0;
@@ -1214,7 +1214,7 @@ public class SVGMassPrinter {
                             }
                             if (svgDocs.isEmpty()) {
                                 logger.error("No SVG documents for {}", mekSummary.getName());
-                                System.exit(1);
+                                java.lang.System.exit(1);
                             }
                             int idx = 0;
                             for (Document svgDoc : svgDocs) {
@@ -1242,7 +1242,7 @@ public class SVGMassPrinter {
                         // LOGGER.info("Printed: {}", finalFilename);
                     } catch (Exception e) {
                         logger.error(e, "Printing Error");
-                        System.exit(1);
+                        java.lang.System.exit(1);
                     }
 
                     // Set additional fields
@@ -1260,7 +1260,7 @@ public class SVGMassPrinter {
                     if (!uniqueUnitTypes.containsKey(unitData.type)) {
                         uniqueUnitTypes.put(unitData.type, entity);
                     }
-                    System.gc();
+                    java.lang.System.gc();
                 }
                 jsonWriter.write("\n]}");
             } catch (IOException e) {
@@ -1409,7 +1409,7 @@ public class SVGMassPrinter {
         // Export Quirks
 
 
-        System.exit(0);
+        java.lang.System.exit(0);
     }
 
     private static String filterQuirkDescription(String desc) {
