@@ -397,9 +397,9 @@ public class InventoryWriter {
         }
         if (sheet.getEntity() instanceof Mek mek && mek.hasFullHeadEject()) {
             var mounted = new MiscMounted(sheet.getEntity(), new MiscType() {{
-                name = "Full Head Ejection SystemFluff";
-                shortName = "Full Head Eject SystemFluff";
-                internalName = "Full Head Ejection SystemFluff";
+                name = "Full Head Ejection System";
+                shortName = "Full Head Eject System";
+                internalName = "Full Head Ejection System";
             }});
             mounted.setLocation(Mek.LOC_NONE);
             equipment.add(new StandardInventoryEntry(mounted));
