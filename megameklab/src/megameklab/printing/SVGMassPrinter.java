@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.System;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -1368,7 +1369,15 @@ public class SVGMassPrinter {
                     rowMap.put("internalName", eq.getInternalName());
                     rowMap.put("name", eq.getName()); // Use full name
                     rowMap.put("shortName", eq.getShortName());
-                    rowMap.put("type", eq.getEquipmentType());
+                    String equipmentType = "equipment";
+                    if (eq instanceof WeaponType) {
+                        equipmentType = "weapon";
+                    } else if (eq instanceof AmmoType) {
+                        equipmentType = "ammo";
+                    } else if (eq instanceof MiscType) {
+                        equipmentType = "misc";
+                    }
+                    rowMap.put("type", equipmentType);
                     rowMap.put("hittable", eq.isHittable()?1:0);
                     rowMap.put("spreadable", eq.isSpreadable()?1:0);
                     if (eq instanceof MiscType misc) {
