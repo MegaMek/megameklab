@@ -126,7 +126,7 @@ public class SVGMassPrinter {
     private static final String VERSION_FILE = "version.json";
     private static final String UNIT_FILE = "units.json";
     private static final String EQUIPMENT_FILE = "equipment.json";
-    private static final String ROOT_FOLDER = "svgexport";
+    private static final String ROOT_FOLDER = "../../svgexport";
     private static final int DEFAULT_MARGINS = 0; // Default margins for the page
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
     private final static MekTileset tileset = MMStaticDirectoryManager.getMekTileset();
