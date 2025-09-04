@@ -2163,7 +2163,7 @@ public class UnitUtil {
                 StringBuilder sb = new StringBuilder();
                 String[] lines = blk.getAllDataAsString();
                 for (String line : lines) {
-                    sb.append(line).append(System.lineSeparator());
+                    sb.append(line).append(java.lang.System.lineSeparator());
                 }
                 unitAsString = sb.toString();
             }
