@@ -38,25 +38,25 @@ import java.util.List;
 import java.util.Locale;
 
 import megamek.client.ui.util.FluffImageHelper;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.GunEmplacement;
 import megamek.common.loaders.MekSummary;
 import megamek.common.loaders.MekSummaryCache;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.MMLOptions;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 
 public class CGLMassPrinter {
-    private static final MMLogger logger = MMLogger.create(CGLMassPrinter.class);
+    private static final MMLogger LOGGER = MMLogger.create(CGLMassPrinter.class);
 
     public static void main(String[] args) {
         File sheetsDir = new File("sheets");
 
         if (!sheetsDir.exists() || !sheetsDir.isDirectory()) {
             sheetsDir.mkdirs();
-            logger.error("Error: sheets directory does not exist, creating it.");
+            LOGGER.error("Error: sheets directory does not exist, creating it.");
         }
 
         Locale.setDefault(new MMLOptions().getLocale());
@@ -65,7 +65,7 @@ public class CGLMassPrinter {
         MekSummaryCache cache = MekSummaryCache.getInstance(true);
 
         for (MekSummary mekSummary : cache.getAllMeks()) {
-            logger.info("Looking at {}", mekSummary.getName());
+            LOGGER.info("Looking at {}", mekSummary.getName());
 
             /*
              * if (!mekSummary.isProtoMek() && !mekSummary.isCombatVehicle()) {
@@ -91,7 +91,7 @@ public class CGLMassPrinter {
                 File sheetPath = new File("sheets", FluffImageHelper.getFluffPath(entity));
 
                 if (!sheetPath.exists() && !sheetPath.mkdirs()) {
-                    logger.error("Couldn't create folder {}", sheetPath);
+                    LOGGER.error("Couldn't create folder {}", sheetPath);
                     System.exit(1);
                 }
 
@@ -100,9 +100,9 @@ public class CGLMassPrinter {
                 try {
                     List<Entity> units = printableListOfUnits(entity);
                     UnitPrintManager.exportUnits(units, file, true);
-                    logger.info("Printed: {}", file);
+                    LOGGER.info("Printed: {}", file);
                 } catch (Exception e) {
-                    logger.error(e, "Printing Error");
+                    LOGGER.error(e, "Printing Error");
                 }
 
                 // Added to keep memory usage from ballooning during processing.
@@ -110,7 +110,7 @@ public class CGLMassPrinter {
             }
         }
 
-        logger.info("Done.");
+        LOGGER.info("Done.");
         System.exit(0);
     }
 

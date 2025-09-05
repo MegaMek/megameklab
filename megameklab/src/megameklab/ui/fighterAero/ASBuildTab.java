@@ -41,8 +41,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.units.Entity;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
@@ -51,24 +51,24 @@ import megameklab.util.UnitUtil;
 
 public class ASBuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
-    private ASCriticalView critView = null;
+    private final ASCriticalView critView;
 
     public ASBuildView getBuildView() {
         return buildView;
     }
 
-    private ASBuildView buildView = null;
-    private JPanel buttonPanel = new JPanel();
-    private JPanel mainPanel = new JPanel();
+    private final ASBuildView buildView;
 
-    private JButton resetButton = new JButton("Reset");
+    private final JButton resetButton = new JButton("Reset");
 
-    private String RESET_COMMAND = "resetbuttoncommand";
+    private final String RESET_COMMAND = "resetButtonCommand";
 
     public ASBuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         GridBagConstraints gbc = new GridBagConstraints();

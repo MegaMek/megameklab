@@ -170,8 +170,9 @@ public class ASCriticalView extends IView {
                     if (mounted == null) {
                         // Critical didn't get removed. Remove it now.
                         getAero().setCritical(location, slot, null);
-                        logger.warn(getAero().getLocationName(location) +
-                              " equipment in slot " + slot + " had not been cleanly removed!");
+                        logger.warn("{} equipment in slot {} had not been cleanly removed!",
+                              getAero().getLocationName(location),
+                              slot);
                         continue;
                     }
                     if (mounted.isWeaponGroup()) {
@@ -235,18 +236,13 @@ public class ASCriticalView extends IView {
     }
 
     private BAASBMDropTargetCriticalList<String> critListFor(int location) {
-        switch (location) {
-            case Aero.LOC_NOSE:
-                return noseCrits;
-            case Aero.LOC_LEFT_WING:
-                return leftWingCrits;
-            case Aero.LOC_RIGHT_WING:
-                return rightWingCrits;
-            case Aero.LOC_AFT:
-                return aftCrits;
-            default:
-                return fuselageCrits;
-        }
+        return switch (location) {
+            case Aero.LOC_NOSE -> noseCrits;
+            case Aero.LOC_LEFT_WING -> leftWingCrits;
+            case Aero.LOC_RIGHT_WING -> rightWingCrits;
+            case Aero.LOC_AFT -> aftCrits;
+            default -> fuselageCrits;
+        };
     }
 
     private void copyLocation(int from, int to) {

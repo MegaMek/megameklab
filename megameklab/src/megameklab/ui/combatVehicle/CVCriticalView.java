@@ -205,13 +205,7 @@ public final class CVCriticalView extends IView {
                 if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList =
-                      new DropTargetCriticalList<>(critNames, eSource, refresh, true);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                DropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(critNames, location);
                 if (isVTOL()) {
                     if (vtolLocations.containsKey(location)) {
                         vtolLocations.get(location).add(criticalSlotList);
@@ -229,5 +223,16 @@ public final class CVCriticalView extends IView {
 
             validate();
         }
+    }
+
+    private DropTargetCriticalList<String> getCriticalSlotList(Vector<String> critNames, int location) {
+        DropTargetCriticalList<String> criticalSlotList =
+              new DropTargetCriticalList<>(critNames, eSource, refresh, true);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + "");
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        return criticalSlotList;
     }
 }

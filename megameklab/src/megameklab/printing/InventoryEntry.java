@@ -52,7 +52,7 @@ public interface InventoryEntry {
      */
     int nRows();
 
-    public abstract String getUniqueId();
+    String getUniqueId();
 
     /**
      * @param row The row index within the entry. Should be &lt; nRows()

@@ -37,7 +37,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -84,7 +83,7 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 public class CVStructureTab extends ITab implements CVBuildListener, ArmorAllocationListener {
-    private static final MMLogger logger = MMLogger.create(CVStructureTab.class);
+    private static final MMLogger LOGGER = MMLogger.create(CVStructureTab.class);
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
@@ -372,9 +371,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
         }
-        // If we have a large engine, a drop in tech level may make it unavailable and
-        // we will need
-        // to reduce speed to a legal value.
+        // If we have a large engine, a drop in tech level may make it unavailable, and we will need to reduce speed
+        // to a legal value.
         if (getTank().getEngine().hasFlag(Engine.LARGE_ENGINE)
               && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
@@ -446,7 +444,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                 try {
                     getTank().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    logger.error("", e);
+                    LOGGER.error("", e);
                 }
             }
             panSummary.refresh();
@@ -728,7 +726,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void troopSpaceChanged(double fixed, double pod) {
         List<Transporter> toRemove = getTank().getTransports().stream()
-              .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
+              .filter(t -> t instanceof InfantryCompartment).toList();
         toRemove.forEach(t -> getTank().removeTransporter(t));
         double troopTons = Math
               .round((fixed) * 2) / 2.0;
@@ -749,7 +747,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         List<Transporter> toRemove = getTank().getTransports().stream()
               .filter(t -> (t instanceof Bay)
                     && (bayType == BayData.getBayType((Bay) t)))
-              .collect(Collectors.toList());
+              .toList();
         toRemove.forEach(t -> getTank().removeTransporter(t));
         double bayTons = Math
               .round((fixed) * 2) / 2.0;

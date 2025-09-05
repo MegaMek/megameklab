@@ -237,19 +237,27 @@ public class BAStructureTab extends ITab
                 rightManipulatorSelect.addItem(et.getName());
             }
         }
-        BAManipulator manipulator = BAManipulator.getManipulator(
-              getBattleArmor().getLeftManipulatorName());
-        leftManipulatorSelect.setSelectedItem(
-              BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
-        manipulator = BAManipulator.getManipulator(
-              getBattleArmor().getRightManipulatorName());
-        rightManipulatorSelect.setSelectedItem(
-              BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
-        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LEFT_ARM, spnLeftManipulatorSize, spnLeftManipulatorSizeModel);
-        // For variable-sized pair-mounted manipulators, we'll only use one spinner
-        spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
-        refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RIGHT_ARM, spnRightManipulatorSize, spnRightManipulatorSizeModel);
-        lblSize.setVisible(spnLeftManipulatorSize.isVisible() || spnRightManipulatorSize.isVisible());
+        BAManipulator manipulator = BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName());
+
+        if (manipulator != null) {
+            leftManipulatorSelect.setSelectedItem(BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+        }
+
+        manipulator = BAManipulator.getManipulator(getBattleArmor().getRightManipulatorName());
+
+        if (manipulator != null) {
+            rightManipulatorSelect.setSelectedItem(BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
+
+            refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LEFT_ARM,
+                  spnLeftManipulatorSize,
+                  spnLeftManipulatorSizeModel);
+            // For variable-sized pair-mounted manipulators, we'll only use one spinner
+            spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
+            refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RIGHT_ARM,
+                  spnRightManipulatorSize,
+                  spnRightManipulatorSizeModel);
+            lblSize.setVisible(spnLeftManipulatorSize.isVisible() || spnRightManipulatorSize.isVisible());
+        }
 
         refreshPreview();
 
@@ -345,7 +353,7 @@ public class BAStructureTab extends ITab
             try {
                 getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
             } catch (LocationFullException ex) {
-                logger.error("Could not mount " + manipulator, ex);
+                logger.error("Could not mount {}", manipulator, ex);
             }
         }
         if (checkPaired) {
@@ -383,7 +391,9 @@ public class BAStructureTab extends ITab
     public void stateChanged(ChangeEvent evt) {
         if (evt.getSource() == spnLeftManipulatorSize) {
             setManipulatorSize(BattleArmor.MOUNT_LOC_LEFT_ARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
-            if (BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName()).pairMounted) {
+            String leftManipulatorName = getBattleArmor().getLeftManipulatorName();
+            BAManipulator manipulator = BAManipulator.getManipulator(leftManipulatorName);
+            if (manipulator != null && manipulator.pairMounted) {
                 spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
             }
         } else if (evt.getSource() == spnRightManipulatorSize) {

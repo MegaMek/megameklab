@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -77,7 +77,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 getAero().addEquipment(mount, location, false);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
-                // location maximum is currently checked in menus and dragndrop
+                // location maximum is currently checked in menus and drag n drop
             }
         }
     }

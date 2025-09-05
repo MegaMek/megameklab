@@ -82,21 +82,19 @@ import megameklab.util.UnitUtil;
 public class BABuildView extends IView implements ActionListener, MouseListener {
     private static final MMLogger logger = MMLogger.create(BABuildView.class);
 
-    private JPanel mainPanel = new JPanel();
-
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
     public BABuildView(EntitySource eSource) {
         super(eSource);
 
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(getBattleArmor(),
               CriticalTableModel.BUILDTABLE);
@@ -118,6 +116,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new Dimension(450, 450));
         equipmentScroll.setPreferredSize(new Dimension(450, 450));
@@ -216,8 +215,8 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         }
 
         // everything else
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted<?> mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
     }
 
@@ -328,15 +327,14 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             }
 
             // Allow number of shots selection
-            if ((getBattleArmor() != null) && (eq.getType() instanceof AmmoType)) {
-                AmmoType at = (AmmoType) eq.getType();
+            if ((getBattleArmor() != null) && (eq.getType() instanceof AmmoType ammoType)) {
                 int maxNumShots = 4;
                 int stepSize = 1;
-                if (at.getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
+                if (ammoType.getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
                     maxNumShots = 8;
                     stepSize = 2;
                 }
-                for (int i = at.getShots(); i <= maxNumShots; i += stepSize) {
+                for (int i = ammoType.getShots(); i <= maxNumShots; i += stepSize) {
                     if (i == eq.getBaseShotsLeft()) {
                         continue;
                     }
@@ -409,7 +407,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                   && !(eq.getType() instanceof AmmoType)
                   && !eq.isDWPMounted()) {
                 for (Mounted<?> m : getBattleArmor().getMisc()) {
-                    // If this isn't a DWP or it's a full DWP, skip
+                    // If this isn't a DWP, or it's a full DWP, skip
                     if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
                           || m.getLinked() != null) {
                         continue;
@@ -443,7 +441,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         continue;
                     }
                     // We only want to enable the menu item if the DWP has a
-                    // mounted weapon and we clicked on a valid ammo type
+                    // mounted weapon, and we clicked on a valid ammo type
                     boolean enabled = false;
                     if (m.getLinked() != null) {
                         EquipmentType equipmentType = m.getLinked().getType();
@@ -500,7 +498,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                   && eq.getType().hasFlag(WeaponType.F_INFANTRY)
                   && !eq.isAPMMounted()) {
                 for (Mounted<?> m : getBattleArmor().getMisc()) {
-                    // If this isn't an AP Mount or it's a full AP Mount, skip
+                    // If this isn't an AP Mount, or it's a full AP Mount, skip
                     if (!m.getType().hasFlag(MiscType.F_AP_MOUNT)
                           || m.getLinked() != null) {
                         continue;
@@ -545,7 +543,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 }
             }
 
-            // Right-clicked on a AP Mount that has an attached weapon
+            // Right-clicked on an AP Mount that has an attached weapon
             if (eq.getType().hasFlag(MiscType.F_AP_MOUNT)
                   && eq.getLinked() != null) {
                 item = new JMenuItem("Remove attached weapon");
@@ -574,8 +572,6 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
      * possible location that is clicked. When the location is clicked, this is the method that adds the selected
      * equipment to the desired location.
      *
-     * @param location
-     * @param selectedRow
      */
     private void mountEquipmentInLocation(int location, int selectedRow) {
         Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow, CriticalTableModel.EQUIPMENT);

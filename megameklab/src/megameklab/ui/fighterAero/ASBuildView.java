@@ -50,12 +50,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import megamek.common.units.Aero;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
 import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
 import megamek.logging.MMLogger;
@@ -76,15 +76,14 @@ import megameklab.util.UnitUtil;
 public class ASBuildView extends IView implements ActionListener, MouseListener {
     private static final MMLogger logger = MMLogger.create(ASBuildView.class);
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
     private int engineHeatSinkCount = 0;
 
     CriticalTransferHandler cth;
@@ -98,7 +97,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setDragEnabled(true);
         cth = new CriticalTransferHandler(eSource, refresh);
         equipmentTable.setTransferHandler(cth);
-        TableColumn column = null;
+        TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
             column = equipmentTable.getColumnModel().getColumn(i);
             if (i == 0) {
@@ -111,6 +110,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new Dimension(400, 400));
         equipmentScroll.setPreferredSize(new Dimension(400, 400));
@@ -224,8 +224,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // TSM
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted<?> mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
     }
 
@@ -362,8 +362,6 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
      * possible location that is clicked. When the location is clicked, this is the method that adds the selected
      * equipment to the desired location.
      *
-     * @param location
-     * @param selectedRow
      */
     private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
         Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
