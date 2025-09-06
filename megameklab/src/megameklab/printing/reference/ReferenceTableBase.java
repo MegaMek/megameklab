@@ -195,7 +195,7 @@ abstract public class ReferenceTableBase {
     }
 
     protected Element createRoundedBorder(double x, double y, double width, double height) {
-        // Constants used for bezier curves on corners
+        // Constants used for Bézier curves on corners
         final double RADIUS = 1.315;
         final double CONTROL = 0.726;
         final String BEZIER = "c %f,%f %f,%f %f,%f";

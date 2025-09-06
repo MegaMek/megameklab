@@ -101,8 +101,9 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 }
                 baySRV += Math.round(Math.ceil(av * 1.5) / 10.0);
                 bayMRV += Math.round(av / 10.0);
-                bayLRV += Math.round(Math.ceil(av * 0.5) / 10.0);
-                bayERV += Math.round(Math.ceil(av * 0.5) / 10.0);
+                long bayRV = Math.round(Math.ceil(av * 0.5) / 10.0);
+                bayLRV += bayRV;
+                bayERV += bayRV;
                 standardBaySRV += Math.ceil(av * 1.5);
                 standardBayMRV += av;
                 standardBayLRV += Math.ceil(av * 0.5);
@@ -137,7 +138,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                 }
             }
         }
-        // PPC capacitors in bays are considered alway charged
+        // PPC capacitors in bays are considered always charged
         if (!isCapital) {
             for (Map<EquipmentType, Integer> entry : bay.augmentations.values()) {
                 heat += entry.entrySet().stream()
@@ -192,7 +193,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
                             ammoDetails.add(am.getBaseShotsLeft() + " " + am.getShortName());
                         }
                     });
-                    nameString.append(ammoDetails.toString());
+                    nameString.append(ammoDetails);
                     nameString.append(")");
                 } else if (weaponType.isCapital() && weaponType.hasFlag(WeaponType.F_MISSILE)) {
                     nameString.append(" (").append(ammo.getBaseShotsLeft()).append(" missiles)");

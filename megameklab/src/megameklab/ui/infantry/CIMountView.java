@@ -69,8 +69,8 @@ public class CIMountView extends IView implements ActionListener {
     private final static String CARD_CUSTOM = "custom";
 
     private final JButton btnSetMount = new JButton("Set Mount");
-    private final JRadioButton rbtnStats = new JRadioButton("Stats");
-    private final JRadioButton rbtnCustom = new JRadioButton("Custom");
+    private final JRadioButton radioButtonStats = new JRadioButton("Stats");
+    private final JRadioButton radioButtonCustom = new JRadioButton("Custom");
     private final BeastMountTableModel tableModel = new BeastMountTableModel();
     private final JTable creatureTable = new JTable();
     private final JPanel creatureView = new JPanel();
@@ -93,7 +93,7 @@ public class CIMountView extends IView implements ActionListener {
         creatureTable.getSelectionModel().addListSelectionListener(ev -> checkValid());
 
         setUpPanels();
-        rbtnStats.setSelected(true);
+        radioButtonStats.setSelected(true);
         refresh();
         checkValid();
     }
@@ -107,14 +107,14 @@ public class CIMountView extends IView implements ActionListener {
         databasePanel.add(btnSetMount, gbc);
         btnSetMount.addActionListener(this);
 
-        ButtonGroup bgroupView = new ButtonGroup();
-        bgroupView.add(rbtnStats);
-        bgroupView.add(rbtnCustom);
-        rbtnStats.addActionListener(ev -> showCard(CARD_TABLE));
-        rbtnCustom.addActionListener(ev -> showCard(CARD_CUSTOM));
+        ButtonGroup buttonGroupView = new ButtonGroup();
+        buttonGroupView.add(radioButtonStats);
+        buttonGroupView.add(radioButtonCustom);
+        radioButtonStats.addActionListener(ev -> showCard(CARD_TABLE));
+        radioButtonCustom.addActionListener(ev -> showCard(CARD_CUSTOM));
         JPanel btnPanel = new JPanel();
-        btnPanel.add(rbtnStats);
-        btnPanel.add(rbtnCustom);
+        btnPanel.add(radioButtonStats);
+        btnPanel.add(radioButtonCustom);
         gbc.gridy++;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         databasePanel.add(btnPanel, gbc);
@@ -159,7 +159,7 @@ public class CIMountView extends IView implements ActionListener {
 
     void checkValid() {
         boolean valid;
-        if (rbtnStats.isSelected()) {
+        if (radioButtonStats.isSelected()) {
             valid = creatureTable.getSelectedRow() >= 0;
         } else {
             valid = !customMountView.txtMountName.getText().isEmpty();
@@ -183,7 +183,7 @@ public class CIMountView extends IView implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource().equals(btnSetMount)) {
-            if (rbtnStats.isSelected()) {
+            if (radioButtonStats.isSelected()) {
                 int view = creatureTable.getSelectedRow();
                 if (view < 0) {
                     // Nothing is selected

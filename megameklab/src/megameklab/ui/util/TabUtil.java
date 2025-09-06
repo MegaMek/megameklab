@@ -49,16 +49,16 @@ import java.util.regex.Pattern;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.units.Mek;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
+import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MtfFile;
 import megamek.common.preference.PreferenceManager;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
@@ -71,16 +71,20 @@ import megameklab.util.UnitUtil;
 import org.apache.commons.io.FileUtils;
 
 public class TabUtil {
-    private final static MMLogger logger = MMLogger.create(TabUtil.class);
+    private final static MMLogger LOGGER = MMLogger.create(TabUtil.class);
 
     private final static String TAB_STATE_DIRECTORY = ".mml_tmp";
     private final static String TAB_STATE_CLEAN = "clean";
     private final static String FILENAME_ASSOCIATIONS = "filenames.db";
 
     public static void saveTabState(List<MegaMekLabMainUI> editors) throws IOException {
-        var dir = getTabStateDirectory(true);
+        File dir = getTabStateDirectory(true);
 
-        var clean = new File(dir, TAB_STATE_CLEAN);
+        if (dir == null) {
+            return;
+        }
+
+        File clean = new File(dir, TAB_STATE_CLEAN);
         if (clean.exists()) {
             if (!clean.delete()) {
                 throw new IOException("Could not delete " + clean);
@@ -101,7 +105,7 @@ public class TabUtil {
                 ) {
                     ps.println(((Mek) editor.getEntity()).getMtf());
                 } catch (Exception e) {
-                    logger.fatal("Failed to write unit while saving tab state.", e);
+                    LOGGER.fatal("Failed to write unit while saving tab state.", e);
                     return;
                 }
             } else {
@@ -109,7 +113,7 @@ public class TabUtil {
                 try {
                     BLKFile.encode(unitFile.getPath(), editor.getEntity());
                 } catch (EntitySavingException e) {
-                    logger.fatal("Failed to write unit while saving tab state.", e);
+                    LOGGER.fatal("Failed to write unit while saving tab state.", e);
                     return;
                 }
             }
@@ -120,7 +124,7 @@ public class TabUtil {
             var metaFile = new File(unitFile.getAbsolutePath().replaceFirst("\\.tmp$", ".meta"));
             try (
                   var fos = new FileOutputStream(metaFile);
-                  var ps = new PrintStream(fos);
+                  var ps = new PrintStream(fos)
             ) {
                 var unallocatedEquipment = editor.getUnallocatedMounted();
                 ps.println(unallocatedEquipment.size());
@@ -133,7 +137,7 @@ public class TabUtil {
                     }
                 }
             } catch (Exception e) {
-                logger.fatal("Failed to write unit metadata while saving tab state.", e);
+                LOGGER.fatal("Failed to write unit metadata while saving tab state.", e);
                 return;
             }
 
@@ -209,24 +213,23 @@ public class TabUtil {
                             loadedUnit.addEquipment(mounted, Entity.LOC_NONE, false);
                         }
                     } catch (Exception e) {
-                        logger.warn("Could not read meta file for entity file %s:%s".formatted(entityFile, fileName),
-                              e);
+                        LOGGER.warn(e, "Could not read meta file for entity file {}:{}", entityFile, fileName);
                     }
                 }
 
                 var editor = UiLoader.getUI(loadedUnit, fileName);
                 editors.add(editor);
             } catch (EntityLoadingException e) {
-                logger.warn("Could not restore tab for entity file %s:%s".formatted(entityFile, fileName), e);
+                LOGGER.warn(e, "Could not restore tab for entity file {}:{}", entityFile, fileName);
             } finally {
                 if (!newFile.delete()) {
-                    logger.warn("Could not delete temporary file %s".formatted(newFile));
+                    LOGGER.warn("Could not delete temporary file {}", newFile);
                 }
             }
         }
 
         if (!clean.delete()) {
-            logger.error("Could not mark tab state as dirty on load!");
+            LOGGER.error("Could not mark tab state as dirty on load!");
         }
 
         return editors;
@@ -265,7 +268,7 @@ public class TabUtil {
                   try {
                       return new MekFileParser(f).getEntity();
                   } catch (EntityLoadingException e) {
-                      logger.errorDialog(e, "Failed to load entity.", "Entity load error.");
+                      LOGGER.errorDialog(e, "Failed to load entity.", "Entity load error.");
                       return null;
                   }
               }).filter(Objects::nonNull).toList(),
@@ -316,7 +319,7 @@ public class TabUtil {
 
             CConfig.setMostRecentFile(fileNames.get(i));
         } catch (Exception e) {
-            logger.errorDialog(e, "Failed to load the unit %s.", "Entity load error.", newUnit.getDisplayName());
+            LOGGER.errorDialog(e, "Failed to load the unit %s.", "Entity load error.", newUnit.getDisplayName());
         }
 
         progress.setProgress(i + 1);

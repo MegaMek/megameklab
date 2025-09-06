@@ -146,7 +146,7 @@ public class RecordSheetOptions {
     private boolean frameless;
     private boolean boldType;
     private boolean damage;
-    private String damageColor;
+    private final String damageColor;
     private WeaponSortOrder weaponsOrder;
     private boolean mergeIdenticalEquipment;
     private HitModStyle includeHitMod;

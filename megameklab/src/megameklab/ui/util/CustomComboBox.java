@@ -41,7 +41,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 /**
- * Version of JComboBox that simplifies rendering custom data types by taking a toString method in its contructors.
+ * Version of JComboBox that simplifies rendering custom data types by taking a toString method in its contractors.
  * <p>
  * This class could use a more descriptive name.
  *
@@ -55,6 +55,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
         setRenderer(new Renderer<>(Object::toString));
     }
 
+    @SafeVarargs
     protected CustomComboBox(T... values) {
         super(values);
         setRenderer(new Renderer<>(Object::toString));
@@ -75,7 +76,7 @@ public class CustomComboBox<T> extends JComboBox<T> {
     }
 
     class Renderer<U> extends JLabel implements ListCellRenderer<U> {
-        private Function<U, String> toString;
+        private final Function<U, String> toString;
 
         protected Renderer(Function<U, String> toString) {
             super();

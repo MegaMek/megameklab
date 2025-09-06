@@ -61,9 +61,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private static final MMLogger logger = MMLogger.create(DropTargetCriticalList.class);
 
-    private EntitySource eSource;
-    private RefreshListener refresh;
-    private boolean buildView;
+    private final EntitySource eSource;
+    private final RefreshListener refresh;
+    private final boolean buildView;
 
     public DropTargetCriticalList(Vector<E> vector, EntitySource eSource, RefreshListener refresh,
           boolean buildView) {
@@ -217,7 +217,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         }
 
         CriticalSlot crit = getCrit();
-        UnitUtil.removeCriticals(getUnit(), mounted);
+        UnitUtil.removeCriticalSlots(getUnit(), mounted);
         mounted.setPintleTurretMounted(false);
         mounted.setSponsonTurretMounted(false);
         mounted.setMekTurretMounted(false);
@@ -226,7 +226,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
             changeMountStatus(mounted, Entity.LOC_NONE, false);
         }
 
-        UnitUtil.compactCriticals(getUnit());
+        UnitUtil.compactCriticalSlots(getUnit());
     }
 
     private void changeWeaponFacing(boolean rear) {
@@ -236,9 +236,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changeSponsonTurretMount(boolean turret) {
-        getMounted().setSponsonTurretMounted(turret);
-        if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setSponsonTurretMounted(turret);
+        Mounted<?> mount = getMounted();
+
+        if (mount != null) {
+            mount.setSponsonTurretMounted(turret);
+            if (mount.getLinkedBy() != null) {
+                mount.getLinkedBy().setSponsonTurretMounted(turret);
+            }
         }
 
         if (refresh != null) {
@@ -247,9 +251,13 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     }
 
     private void changePintleTurretMount(boolean turret) {
-        getMounted().setPintleTurretMounted(turret);
-        if (getMounted().getLinkedBy() != null) {
-            getMounted().getLinkedBy().setPintleTurretMounted(turret);
+        Mounted<?> mount = getMounted();
+
+        if (mount != null) {
+            mount.setPintleTurretMounted(turret);
+            if (mount.getLinkedBy() != null) {
+                mount.getLinkedBy().setPintleTurretMounted(turret);
+            }
         }
 
         if (refresh != null) {
@@ -259,7 +267,8 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
 
     private void changeOmniMounting(boolean pod) {
         Mounted<?> mount = getMounted();
-        if (!pod || UnitUtil.canPodMount(getUnit(), mount)) {
+
+        if (mount != null && (!pod || UnitUtil.canPodMount(getUnit(), mount))) {
             mount.setOmniPodMounted(pod);
         }
 
@@ -279,9 +288,9 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         }
 
         UnitUtil.removeMounted(getUnit(), mounted);
-        UnitUtil.compactCriticals(getUnit());
+        UnitUtil.compactCriticalSlots(getUnit());
         try {
-            // Check linkings after you remove anything
+            // Check linking after you remove anything
             MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
             // do nothing.

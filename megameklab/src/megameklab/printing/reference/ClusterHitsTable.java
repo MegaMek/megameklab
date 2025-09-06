@@ -128,8 +128,7 @@ public class ClusterHitsTable extends ReferenceTable {
             return;
         }
         for (Mounted<?> mounted : entity.getIndividualWeaponList()) {
-            if (mounted.getType() instanceof WeaponType) {
-                final WeaponType weapon = (WeaponType) mounted.getType();
+            if (mounted.getType() instanceof WeaponType weapon) {
                 switch (weapon.getAmmoType()) {
                     case AC_LBX:
                     case EXLRM:

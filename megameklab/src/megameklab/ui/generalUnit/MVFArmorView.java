@@ -53,7 +53,6 @@ import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.interfaces.ITechnology;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
@@ -84,7 +83,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final static String CMD_REMAINING = "REMAINING";
 
     private final TechComboBox<EquipmentType> cbArmorType = new TechComboBox<>(EquipmentType::getName);
-    private final CustomComboBox<TechRating> cbSVTechRating = new CustomComboBox<>(ITechnology::getRatingName);
+    private final CustomComboBox<TechRating> cbSVTechRating = new CustomComboBox<>(TechRating::getName);
     private final SpinnerNumberModel tonnageModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
     private final SpinnerNumberModel factorModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnTonnage = new JSpinner(tonnageModel);

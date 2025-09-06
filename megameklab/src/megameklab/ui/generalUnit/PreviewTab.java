@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008 - jtighe (torren@users.sourceforge.net)
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2013-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -60,7 +60,7 @@ import megameklab.ui.util.ITab;
 import megameklab.util.CConfig;
 
 public class PreviewTab extends ITab {
-    private static final MMLogger logger = MMLogger.create(PreviewTab.class);
+    private static final MMLogger LOGGER = MMLogger.create(PreviewTab.class);
 
     private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
     private final EntityReadoutPanel panelTROView = new EntityReadoutPanel();
@@ -68,7 +68,7 @@ public class PreviewTab extends ITab {
     private final RecordSheetPreviewPanel rsPanel = new RecordSheetPreviewPanel();
     private final AvailabilityPanel factionPanel = new AvailabilityPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
-    private EnhancedTabbedPane panPreview;
+    private final EnhancedTabbedPane panPreview;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
@@ -158,7 +158,7 @@ public class PreviewTab extends ITab {
         try {
             troView = TROView.createView(selectedUnit, ViewFormatting.HTML);
         } catch (Exception e) {
-            logger.error("", e);
+            LOGGER.error("", e);
             // error unit didn't load right. this is bad news.
             populateTextFields = false;
         }

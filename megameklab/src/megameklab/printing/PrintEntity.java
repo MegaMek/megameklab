@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -201,9 +202,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
             StringJoiner sj = new StringJoiner(", ");
             Quirks quirks = getEntity().getQuirks();
             for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
-                IOptionGroup optiongroup = optionGroups.nextElement();
-                if (quirks.count(optiongroup.getKey()) > 0) {
-                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements(); ) {
+                IOptionGroup optionGroup = optionGroups.nextElement();
+                if (quirks.count(optionGroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements(); ) {
                         IOption option = options.nextElement();
                         if (option != null && option.booleanValue()) {
                             sj.add(option.getDisplayableNameWithValue());
@@ -467,23 +468,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 setTextField(GUNNERY_SKILL + i, Integer.toString(getEntity().getCrew().getGunnery(i)), true);
                 setTextField(PILOTING_SKILL + i, Integer.toString(getEntity().getCrew().getPiloting(i)), true);
 
-                StringJoiner spaList = new StringJoiner(", ");
-                PilotOptions spas = getEntity().getCrew().getOptions();
-                for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements(); ) {
-                    IOptionGroup optiongroup = optionGroups.nextElement();
-                    if (optiongroup.getKey().equals(EDGE_ADVANTAGES)) {
-                        // Don't print Edge abilities, only SPAs and Cybernetics
-                        continue;
-                    }
-                    if (spas.count(optiongroup.getKey()) > 0) {
-                        for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements(); ) {
-                            IOption option = options.nextElement();
-                            if (option != null && option.booleanValue()) {
-                                spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
-                            }
-                        }
-                    }
-                }
+                StringJoiner spaList = getSpaList();
                 if (spaList.length() > 0) {
                     Element rect = getSVGDocument().getElementById(SPAS + (getEntity().getCrew().getSlotCount() - 1));
                     if (rect instanceof SVGRectElement) {
@@ -519,6 +504,27 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    private StringJoiner getSpaList() {
+        StringJoiner spaList = new StringJoiner(", ");
+        PilotOptions spas = getEntity().getCrew().getOptions();
+        for (Enumeration<IOptionGroup> optionGroups = spas.getGroups(); optionGroups.hasMoreElements(); ) {
+            IOptionGroup optionGroup = optionGroups.nextElement();
+            if (optionGroup.getKey().equals(EDGE_ADVANTAGES)) {
+                // Don't print Edge abilities, only SPAs and Cybernetics
+                continue;
+            }
+            if (spas.count(optionGroup.getKey()) > 0) {
+                for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements(); ) {
+                    IOption option = options.nextElement();
+                    if (option != null && option.booleanValue()) {
+                        spaList.add(option.getDisplayableNameWithValue().replaceAll(" \\(.*?\\)", ""));
+                    }
+                }
+            }
+        }
+        return spaList;
+    }
+
     protected void hideUnusedCrewElements() {
         Crew crew = getEntity().getCrew();
         for (int i = 0; i < 3; i++) {
@@ -527,7 +533,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
             if (!hide) {
                 blankName = crew.getName(i).isBlank()
                       && crew.getNickname(i).isBlank()
-                      && crew.getName(i) != RandomNameGenerator.UNNAMED;
+                      && !Objects.equals(crew.getName(i), RandomNameGenerator.UNNAMED);
             }
             hideElement(CREW_DAMAGE + i, hide);
             hideElement(PILOT_NAME + i, hide);
@@ -663,9 +669,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
     /**
      * Returns the number of hits on the core component of the unit.
      *
-     * @param index
-     *
-     * @return
      */
     protected int getHitsCoreComponent(int index) {
         int totalHits = 0;
@@ -821,7 +824,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Applies the current scale to a movement point value and adds the units indicator. If the units are hexes, the
+     * Applies the current scale to a movement point value and adds the units' indicator. If the units are hexes, the
      * value is rounded up.
      *
      * @param mp The movement points
@@ -833,7 +836,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     /**
-     * Applies the current scale to a pair of movement point values, puts the second in brackets, and adds the units
+     * Applies the current scale to a pair of movement point values, puts the second in brackets, and adds the units'
      * indicator. This is used for cases when equipment may give a temporary boost to MP, such as MASC. If the units are
      * hexes, the value is rounded up.
      *
@@ -886,7 +889,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         } else {
             level = getEntity().getStaticTechLevel();
         }
-        return level.toString().substring(0, 1)
+        return level.toString().charAt(0)
               + level.toString().substring(1).toLowerCase();
     }
 

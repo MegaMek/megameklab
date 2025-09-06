@@ -41,10 +41,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.common.units.Entity;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
@@ -56,19 +56,19 @@ public class CVBuildTab extends ITab implements ActionListener {
     private static final MMLogger logger = MMLogger.create(CVBuildTab.class);
 
     private RefreshListener refresh = null;
-    private CVCriticalView critView;
+    private final CVCriticalView critView;
 
     public UnallocatedView getUnallocatedView() {
         return unallocatedView;
     }
 
-    private UnallocatedView unallocatedView;
+    private final UnallocatedView unallocatedView;
 
-    private JButton autoFillButton = new JButton("Auto Fill");
-    private JButton resetButton = new JButton("Reset");
+    private final JButton autoFillButton = new JButton("Auto Fill");
+    private final JButton resetButton = new JButton("Reset");
 
-    private String AUTOFILLCOMMAND = "autofillbuttoncommand";
-    private String RESETCOMMAND = "resetbuttoncommand";
+    private final String AUTO_FILL_COMMAND = "autoFillButtonCommand";
+    private final String RESET_COMMAND = "resetButtonCommand";
 
     public CVBuildTab(EntitySource eSource) {
         super(eSource);
@@ -84,9 +84,9 @@ public class CVBuildTab extends ITab implements ActionListener {
         mainPanel.add(unallocatedView);
 
         autoFillButton.setMnemonic('A');
-        autoFillButton.setActionCommand(AUTOFILLCOMMAND);
+        autoFillButton.setActionCommand(AUTO_FILL_COMMAND);
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
+        resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(autoFillButton);
         buttonPanel.add(resetButton);
 
@@ -117,9 +117,9 @@ public class CVBuildTab extends ITab implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(AUTOFILLCOMMAND)) {
+        if (evt.getActionCommand().equals(AUTO_FILL_COMMAND)) {
             autoFillCrits();
-        } else if (evt.getActionCommand().equals(RESETCOMMAND)) {
+        } else if (evt.getActionCommand().equals(RESET_COMMAND)) {
             resetCrits();
         }
     }
@@ -142,7 +142,7 @@ public class CVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        UnitUtil.removeAllCriticals(getTank());
+        UnitUtil.removeAllCriticalSlots(getTank());
         // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getTank());

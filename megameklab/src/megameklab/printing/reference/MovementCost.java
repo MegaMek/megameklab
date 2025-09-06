@@ -176,7 +176,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("3plusLevels"), "", bundle.getString("prohibited"));
         }
         addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
-        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
+        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexSide"));
         if (entity instanceof Mek) {
             addRow("", bundle.getString("dropToGround"), "", "1");
             addRow("", bundle.getString("standUp"), "", bundle.getString("2perAttempt"));
@@ -199,7 +199,7 @@ public class MovementCost extends ReferenceTable {
             addRow(SECTION_HEADER + bundle.getString("levelChangeUpOrDown"), "", "", bundle.getString("1perLevel"));
         }
         addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
-        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
+        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexSide"));
     }
 
     private void addAerialMods() {
@@ -216,7 +216,7 @@ public class MovementCost extends ReferenceTable {
             addRow("", bundle.getString("down1plusLevels"), "", "+0");
         }
         addRow(SECTION_HEADER + bundle.getString("additionalMovementActions"), "", "", "");
-        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
+        addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexSide"));
         if (entity.getMovementMode().equals(EntityMovementMode.WIGE)) {
             addRow("", bundle.getString("liftOff"), "", "5");
             addRow("", bundle.getString("maintainAltitude"), "", "+2");
@@ -362,7 +362,7 @@ public class MovementCost extends ReferenceTable {
         }
         if (entity instanceof ProtoMek) {
             addRow(bundle.getString("additionalMovementActions"), "", "", "");
-            addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexside"));
+            addRow("", bundle.getString("facingChange"), "", bundle.getString("1perHexSide"));
             if (((ProtoMek) entity).isGlider()) {
                 addRow("", bundle.getString("liftOffHover"), "", "4");
             }

@@ -63,12 +63,12 @@ import megamek.client.ui.WrapLayout;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.client.ui.util.UIUtil;
-import megamek.common.equipment.AmmoType;
+import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Mek;
-import megamek.common.annotations.Nullable;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.util.BattleArmorUtil;
@@ -111,7 +111,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     protected final JToggleButton hideTorpedoButton = new JToggleButton(TORPEDO.getDisplayName());
     protected final JToggleButton hideAPButton = new JToggleButton(AP.getDisplayName());
     protected final JToggleButton hideUnusableAmmoButton = new JToggleButton(UNUSABLE_AMMO.getDisplayName(), true);
-    protected final JToggleButton hideUnavailButton = new JToggleButton(UNAVAILABLE.getDisplayName(), true);
+    protected final JToggleButton hideUnavailableButton = new JToggleButton(UNAVAILABLE.getDisplayName(), true);
 
     protected final JTextField txtFilter = new JTextField("", 15);
     private final JButton tableModeButton = new JButton("Switch Table Columns");
@@ -124,7 +124,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
 
     private final Map<JToggleButton, EquipmentDatabaseCategory> hideToggles = Map.of(hideProtoButton, PROTOTYPE,
           hideOneShotButton, ONE_SHOT, hideTorpedoButton, TORPEDO, hideAPButton, AP,
-          hideUnusableAmmoButton, UNUSABLE_AMMO, hideUnavailButton, UNAVAILABLE);
+          hideUnusableAmmoButton, UNUSABLE_AMMO, hideUnavailableButton, UNAVAILABLE);
 
     private static final String ADD_TEXT = "  << Add ";
 
@@ -248,7 +248,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
     }
 
     /**
-     * When this returns true, the Text Filter textfield is shown. By default, this method returns true.
+     * When this returns true, the Text Filter TextField is shown. By default, this method returns true.
      */
     protected boolean useTextFilter() {
         return true;
@@ -290,7 +290,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         gotItButton.setForeground(UIUtil.uiYellow());
         gotItButton.addActionListener(e -> {
             userInfoPanel.setVisible(false);
-            CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(false));
+            CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK, Boolean.toString(false));
             CConfig.saveConfig();
         });
         var userInfoText = new JLabel("Note: Ctrl-Click a filter to add it to the selected filters.");
@@ -338,7 +338,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         updateFilterToggleVisibility();
 
         var buttonAndInfoPanel = Box.createVerticalBox();
-        if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRLCLICK)) {
+        if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK)) {
             buttonAndInfoPanel.add(setupUserInfoPanel());
         }
         buttonAndInfoPanel.add(buttonPanel);
@@ -386,7 +386,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         buttonPanel.add(hideTorpedoButton);
         buttonPanel.add(hideAPButton);
         buttonPanel.add(hideUnusableAmmoButton);
-        buttonPanel.add(hideUnavailButton);
+        buttonPanel.add(hideUnavailableButton);
 
         var hideFilterPanel = Box.createHorizontalBox();
         hideFilterPanel.add(new JLabel("Hide: "));
@@ -562,13 +562,13 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         return isEquipmentForEntity(equipment)
               && includedByFilters(equipment)
               && !hiddenEquipment(equipment)
-              && (eSource.getTechManager().isLegal(equipment) || !hideUnavailButton.isSelected())
+              && (eSource.getTechManager().isLegal(equipment) || !hideUnavailableButton.isSelected())
               && allowedByTextFilter(equipment);
     }
 
     /**
      * @return true when the given equipment is allowed to be shown by an entry in the Text Filter. This is always true
-     *       when the Text Filter is empty. Otherwise the name, tech base and rules ref table columns are checked
+     *       when the Text Filter is empty. Otherwise, the name, tech base and rules ref table columns are checked
      *       against the text filter.
      */
     private boolean allowedByTextFilter(EquipmentType equipment) {

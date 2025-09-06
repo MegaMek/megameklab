@@ -50,8 +50,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.units.Infantry;
 import megamek.common.TechAdvancement;
+import megamek.common.units.Infantry;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
@@ -59,7 +59,7 @@ import megameklab.ui.util.IView;
 import megameklab.util.InfantryUtil;
 
 /**
- * View for selecting infantry specializations, including xenoplanetary conditions training (XCT).
+ * View for selecting infantry specializations, including Xeno-Planetary conditions training (XCT).
  *
  * @author Neoancient
  */
@@ -226,18 +226,13 @@ public class CISpecializationView extends IView implements TableModelListener {
 
         @Override
         public String getColumnName(int column) {
-            switch (column) {
-                case 1:
-                    return "Specialization";
-                case 2:
-                    return "Max Squad Size";
-                case 3:
-                    return "Max # Squads";
-                case 4:
-                    return "Max Secondary Weapons";
-                default:
-                    return "";
-            }
+            return switch (column) {
+                case 1 -> "Specialization";
+                case 2 -> "Max Squad Size";
+                case 3 -> "Max # Squads";
+                case 4 -> "Max Secondary Weapons";
+                default -> "";
+            };
         }
 
         @Override

@@ -59,7 +59,7 @@ public class CIAdvancedView extends IView {
 
     private static final String LIST_ITEM_SEPARATOR = ";";
 
-    private final DisplayTextField txtArmor = new DisplayTextField("None", WidthControlComponent.TEXTFIELD_COLUMNS);
+    private final DisplayTextField txtArmor = new DisplayTextField("None", WidthControlComponent.TEXT_FIELD_COLUMNS);
     private final JTextPane txtSpecializations = new OptionsListTextPane(txtArmor);
     private final JTextPane txtAugmentations = new OptionsListTextPane(txtArmor);
 

@@ -36,15 +36,15 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.equipment.Engine;
-import megamek.common.units.Entity;
-import megamek.common.units.EntityMovementMode;
-import megamek.common.equipment.EquipmentType;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.equipment.Mounted;
-import megamek.common.units.ProtoMek;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
+import megamek.common.units.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
@@ -121,7 +121,7 @@ public class PMMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
         ProtoMek newUnit = new ProtoMek();
         newUnit.setWeight(2);
         newUnit.setMovementMode(EntityMovementMode.BIPED);

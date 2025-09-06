@@ -65,11 +65,11 @@ import megameklab.util.UnitUtil;
  * @author Neoancient
  */
 public class AeroBayTransferHandler extends TransferHandler {
-    private static final MMLogger logger = MMLogger.create(AeroBayTransferHandler.class);
+    private static final MMLogger LOGGER = MMLogger.create(AeroBayTransferHandler.class);
 
-    private EntitySource eSource;
+    private final EntitySource eSource;
 
-    public static final String EMTPYSLOT = "EmptySlot";
+    public static final String EMPTY_SLOT = "EmptySlot";
 
     /*
      * Aliases for local usage.
@@ -104,7 +104,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 }
             }
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
             return false;
         }
         if (eqList.isEmpty()) {
@@ -113,12 +113,9 @@ public class AeroBayTransferHandler extends TransferHandler {
 
         if ((support.getComponent() instanceof BayWeaponCriticalTree tree)) {
             if (eSource.getEntity().usesWeaponBays() && (eqList.size() == 1)) {
-                // If it's a bay we move it and its entire contents. Otherwise we find the bay
-                // that was
-                // dropped on and add it there. A weapon dropped on an illegal bay will create a
-                // new one
-                // and non-bay equipment will be added at the top level regardless of the drop
-                // location.
+                // If it's a bay we move it and its entire contents. Otherwise, we find the bay that was dropped on
+                // and add it there. A weapon dropped on an illegal bay will create a new one and non-bay equipment
+                // will be added at the top level regardless of the drop location.
                 // Non-weapon bay equipment cannot be dropped on an illegal bay.
                 final Mounted<?> mount = eqList.get(0);
                 if (mount.getType() instanceof BayWeapon) {
@@ -132,7 +129,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                     if (transferAmount <= 0) {
                         return false;
                     }
-                    tree.addAmmo((AmmoMounted) mount,
+                    tree.addAmmo(ammo,
                           transferAmount,
                           ((JTree.DropLocation) support.getDropLocation()).getPath());
                 } else {
@@ -156,7 +153,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                     }
                     if (ammoAmount >= ammoMounted.getUsableShotsLeft()) {
                         ammoAmount = ammoMounted.getUsableShotsLeft();
-                        UnitUtil.removeCriticals(eSource.getEntity(), ammoMounted);
+                        UnitUtil.removeCriticalSlots(eSource.getEntity(), ammoMounted);
                         UnitUtil.removeMounted(eSource.getEntity(), ammoMounted);
                     } else {
                         ammoAmount = ammoTransferAmount(ammoMounted);
@@ -164,7 +161,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                             return false;
                         }
                         if (ammoAmount == ammoMounted.getUsableShotsLeft()) {
-                            UnitUtil.removeCriticals(eSource.getEntity(), ammoMounted);
+                            UnitUtil.removeCriticalSlots(eSource.getEntity(), ammoMounted);
                             UnitUtil.removeMounted(eSource.getEntity(), ammoMounted);
                         } else {
                             ammoMounted.setShotsLeft(ammoMounted.getUsableShotsLeft() - ammoAmount);
@@ -178,7 +175,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                             Mounted<?> m = eSource.getEntity().addEquipment(at, Entity.LOC_NONE);
                             m.setShotsLeft(ammoAmount);
                         } catch (LocationFullException e) {
-                            logger.error("Error creating target ammo", e);
+                            LOGGER.error("Error creating target ammo", e);
                         }
                     }
                 } else {
@@ -199,21 +196,21 @@ public class AeroBayTransferHandler extends TransferHandler {
                                 continue;
                             }
                         }
-                        UnitUtil.removeCriticals(eSource.getEntity(), m);
+                        UnitUtil.removeCriticalSlots(eSource.getEntity(), m);
                         UnitUtil.changeMountStatus(eSource.getEntity(), m, Entity.LOC_NONE, Entity.LOC_NONE, false);
                         if ((mount.getType() instanceof WeaponType) && (m.getLinkedBy() != null)) {
-                            UnitUtil.removeCriticals(eSource.getEntity(), m.getLinkedBy());
+                            UnitUtil.removeCriticalSlots(eSource.getEntity(), m.getLinkedBy());
                             UnitUtil.changeMountStatus(eSource.getEntity(), m.getLinkedBy(),
                                   Entity.LOC_NONE, Entity.LOC_NONE, false);
                             m.getLinkedBy().setLinked(null);
                             m.setLinkedBy(null);
                         }
                     }
-                    UnitUtil.compactCriticals(eSource.getEntity());
+                    UnitUtil.compactCriticalSlots(eSource.getEntity());
                 }
-                if (mount.getType() instanceof BayWeapon) {
-                    ((WeaponMounted) mount).getBayWeapons().clear();
-                    ((WeaponMounted) mount).getBayAmmo().clear();
+                if ((mount.getType() instanceof BayWeapon) && (mount instanceof WeaponMounted mountedWeapon)) {
+                    mountedWeapon.getBayWeapons().clear();
+                    mountedWeapon.getBayAmmo().clear();
                     UnitUtil.removeMounted(eSource.getEntity(), mount);
                 }
             }
@@ -231,11 +228,11 @@ public class AeroBayTransferHandler extends TransferHandler {
         if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
             return false;
         }
-        // check if the dragged mounted should be transferrable
+        // check if the dragged mounted should be transferable
         List<Mounted<?>> mounted = new ArrayList<>();
         try {
             String str = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
-            if (str.equals(EMTPYSLOT)) {
+            if (str.equals(EMPTY_SLOT)) {
                 return false;
             }
             if (str.contains(":")) {
@@ -245,7 +242,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 mounted.add(eSource.getEntity().getEquipment(Integer.parseInt(field)));
             }
         } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            logger.error("", e);
+            LOGGER.error("", e);
         }
 
         // not actually dragged a Mounted? not transferable
@@ -293,7 +290,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 ((BayWeaponCriticalTree) source).removeExported((String) data.getTransferData(DataFlavor.stringFlavor),
                       action);
             } catch (Exception ex) {
-                logger.error("", ex);
+                LOGGER.error("", ex);
             }
         }
     }

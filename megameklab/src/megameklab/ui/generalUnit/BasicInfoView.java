@@ -79,7 +79,7 @@ import megameklab.util.CConfig;
  * @author Neoancient
  */
 public class BasicInfoView extends BuildView implements ITechManager, ActionListener, FocusListener {
-    private static final MMLogger logger = MMLogger.create(BasicInfoView.class);
+    private static final MMLogger LOGGER = MMLogger.create(BasicInfoView.class);
 
     // region Variable Declarations
     private static final TechAdvancement TA_MIXED_TECH = Entity.getMixedTechAdvancement();
@@ -96,7 +96,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private TechAdvancement baseTA;
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-    private final JTextField txtChassis = new JTextField(WidthControlComponent.TEXTFIELD_COLUMNS);
+    private final JTextField txtChassis = new JTextField(WidthControlComponent.TEXT_FIELD_COLUMNS);
     private final JTextField txtClanName = new JTextField();
     private final JLabel lblClanName = createLabel(resourceMap, "lblClanName", "BasicInfoView.txtClanName.text",
           "BasicInfoView.txtClanName.tooltip");
@@ -499,7 +499,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             }
         }
 
-        if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() >= baseLevel.ordinal())) {
+        if (!useClanTechBase() && (SimpleTechLevel.INTRO.ordinal() == baseLevel.ordinal())) {
             cbTechLevel.addItem(SimpleTechLevel.INTRO.toString());
         }
 
@@ -565,7 +565,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 prevYear = year;
             } catch (Exception ex) {
                 // If text is not a legal integer value, reset to the previous value
-                logger.error("", ex);
+                LOGGER.error("", ex);
             } finally {
                 setYear(prevYear);
             }
@@ -598,7 +598,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     @Override
     public boolean unofficialNoYear() {
-        return CConfig.getBooleanParam(CConfig.TECH_UNOFFICAL_NO_YEAR);
+        return CConfig.getBooleanParam(CConfig.TECH_UNOFFICIAL_NO_YEAR);
     }
 
     @Override
@@ -631,7 +631,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
                 Desktop.getDesktop().browse(URI.create(MMConstants.MUL_URL_PREFIX + txtMulId.getIntVal()));
             }
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }

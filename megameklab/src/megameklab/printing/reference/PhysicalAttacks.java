@@ -151,7 +151,7 @@ public class PhysicalAttacks extends ReferenceTable {
                 if (mounted.getType().hasSubType(MiscType.S_CLAW)) {
                     addRow(mounted.getName(), "+1", StringUtils.getEquipmentInfo(entity, mounted));
                 } else {
-                    logger.error("Unknown hand weapon %s!".formatted(mounted.getName()));
+                    logger.error("Unknown hand weapon {}!", mounted.getName());
                     addRow(mounted.getName(), "???", StringUtils.getEquipmentInfo(entity, mounted));
                 }
             }

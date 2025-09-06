@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -53,8 +53,9 @@ import megameklab.util.UnitUtil;
  */
 class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
-    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-          COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
+    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TECH_LEVEL,
+          COL_TECH_RATING, COL_DATE_PROTOTYPE,
+          COL_DATE_PRODUCTION, COL_DATE_COMMON, COL_DATE_EXTINCT, COL_DATE_REINTRODUCED, COL_COST);
 
     private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_RANGE,
           COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);
@@ -77,7 +78,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 getAero().addEquipment(mount, location, false);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
-                // location maximum is currently checked in menus and dragndrop
+                // location maximum is currently checked in menus and drag n drop
             }
         }
     }

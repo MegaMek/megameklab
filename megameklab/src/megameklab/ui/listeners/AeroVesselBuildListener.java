@@ -53,7 +53,7 @@ public interface AeroVesselBuildListener extends BuildListener {
 
     void baMarinesChanged(int nBAMarines);
 
-    void quartersChanged(int officer, int standard, int secondclass, int steerage);
+    void quartersChanged(int officer, int standard, int secondClass, int steerage);
 
     void autoAssignQuarters();
 

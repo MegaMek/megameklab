@@ -38,15 +38,15 @@ import static megameklab.ui.util.EquipmentTableModel.*;
 import java.util.Collection;
 import java.util.List;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.BipedMek;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.HandheldWeapon;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
-import megamek.common.equipment.AmmoMounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.BipedMek;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.other.innerSphere.ISAPDS;
@@ -60,10 +60,11 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         super(eSource);
     }
 
-    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TLEVEL, COL_TRATING, COL_DPROTOTYPE,
-          COL_DPRODUCTION, COL_DCOMMON, COL_DEXTINCT, COL_DREINTRO, COL_COST);
+    private final List<Integer> fluffColumns = List.of(COL_NAME, COL_TECH, COL_TECH_LEVEL,
+          COL_TECH_RATING, COL_DATE_PROTOTYPE,
+          COL_DATE_PRODUCTION, COL_DATE_COMMON, COL_DATE_EXTINCT, COL_DATE_REINTRODUCED, COL_COST);
 
-    private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MRANGE, COL_RANGE,
+    private final List<Integer> statsColumns = List.of(COL_NAME, COL_DAMAGE, COL_HEAT, COL_MEDIUM_RANGE, COL_RANGE,
           COL_SHOTS, COL_TECH, COL_BV, COL_TON, COL_REF);
 
     @Override
@@ -116,7 +117,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
 
             //  Items legal for meks to mount and belonging to one or more of the following types: AE, DB, DE, M,
-            //  P, PB. Also allowed are Mine Dispensers and TAG (including Light TAG) --TO:AUE
+            //  P, PB. Also allowed to are Mine Dispensers and TAG (including Light TAG) --TO:AUE
             valid = (wt instanceof ArtilleryWeapon || wt instanceof ArtilleryCannonWeapon)
                   || wt.hasAnyFlag(WeaponType.F_ENERGY,
                   WeaponType.F_PLASMA,

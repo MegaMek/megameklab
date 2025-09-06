@@ -47,21 +47,21 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.units.Aero;
 import megamek.common.battleArmor.BattleArmor;
-import megamek.common.units.EntityWeightClass;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.EntityWeightClass;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroVesselBuildListener;
 
 /**
- * Structure tab panel for setting crew levels and quarters, as well as life boats and escape pods.
+ * Structure tab panel for setting crew levels and quarters, as well as lifeboats and escape pods.
  *
  * @author Neoancient
  */
 public class LACrewView extends BuildView implements ActionListener, ChangeListener {
-    private List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
+    private final List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(AeroVesselBuildListener l) {
         listeners.add(l);

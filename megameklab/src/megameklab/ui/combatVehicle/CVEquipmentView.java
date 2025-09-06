@@ -67,30 +67,26 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     private RefreshListener refresh;
 
-    private JPanel topPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
-    private JPanel buttonPanel = new JPanel();
+    private final JButton addButton = new JButton("Add");
+    private final JButton removeButton = new JButton("Remove");
+    private final JButton removeAllButton = new JButton("Remove All");
 
-    private JButton addButton = new JButton("Add");
-    private JButton removeButton = new JButton("Remove");
-    private JButton removeAllButton = new JButton("Remove All");
+    private final JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
+    private final CriticalTableModel equipmentList;
+    private final Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
-    private JComboBox<EquipmentType> equipmentCombo = new JComboBox<>();
-    private CriticalTableModel equipmentList;
-    private Vector<EquipmentType> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
-    private Vector<EquipmentType> equipmentTypes;
-
-    private String ADD_COMMAND = "ADD";
-    private String REMOVE_COMMAND = "REMOVE";
-    private String REMOVEALL_COMMAND = "REMOVEALL";
+    private final String ADD_COMMAND = "ADD";
+    private final String REMOVE_COMMAND = "REMOVE";
+    private final String REMOVE_ALL_COMMAND = "REMOVE_ALL";
 
     public CVEquipmentView(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
 
+        JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
+        JPanel rightPanel = new JPanel();
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
         equipmentList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.EQUIPMENT);
@@ -104,12 +100,14 @@ public class CVEquipmentView extends IView implements ActionListener {
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
         equipmentTable.setMaximumSize(new Dimension(800, 500));
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
 
         topPanel.setLayout(new BorderLayout());
         topPanel.add(equipmentCombo, BorderLayout.CENTER);
         topPanel.add(addButton, BorderLayout.EAST);
 
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(removeButton);
         buttonPanel.add(removeAllButton);
 
@@ -142,11 +140,9 @@ public class CVEquipmentView extends IView implements ActionListener {
         equipmentCombo.setRenderer(new EquipmentListCellRenderer(getTank()));
         equipmentCombo.setKeySelectionManager(new EquipmentListCellKeySelectionManager());
         equipmentCombo.removeAllItems();
-        equipmentTypes = new Vector<>();
 
         for (EquipmentType eq : masterEquipmentList) {
             if (UnitUtil.isLegal(getTank(), eq)) {
-                equipmentTypes.add(eq);
                 equipmentCombo.addItem(eq);
             }
         }
@@ -178,7 +174,7 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     private void removeHeatSinks() {
         int location = 0;
-        for (; location < equipmentList.getRowCount(); ) {
+        while (location < equipmentList.getRowCount()) {
             Mounted<?> mount = (Mounted<?>) equipmentList.getValueAt(location, CriticalTableModel.EQUIPMENT);
             if (UnitUtil.isHeatSink(mount)) {
                 try {
@@ -221,7 +217,7 @@ public class CVEquipmentView extends IView implements ActionListener {
         removeAllButton.addActionListener(this);
         addButton.setActionCommand(ADD_COMMAND);
         removeButton.setActionCommand(REMOVE_COMMAND);
-        removeAllButton.setActionCommand(REMOVEALL_COMMAND);
+        removeAllButton.setActionCommand(REMOVE_ALL_COMMAND);
         addButton.setMnemonic('A');
         removeButton.setMnemonic('R');
         removeAllButton.setMnemonic('L');
@@ -255,7 +251,7 @@ public class CVEquipmentView extends IView implements ActionListener {
                     equipmentList.removeCrit(startRow);
                 }
             }
-        } else if (e.getActionCommand().equals(REMOVEALL_COMMAND)) {
+        } else if (e.getActionCommand().equals(REMOVE_ALL_COMMAND)) {
             removeAllEquipment();
         } else {
             return;

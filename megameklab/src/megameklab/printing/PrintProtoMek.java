@@ -140,7 +140,7 @@ public class PrintProtoMek extends PrintEntity {
                         }
                     }
                 } catch (NumberFormatException ex) {
-                    logger.warn("Could not parse fieldWidth: " + fieldWidth);
+                    logger.warn("Could not parse fieldWidth: {}", fieldWidth);
                 }
             }
         }

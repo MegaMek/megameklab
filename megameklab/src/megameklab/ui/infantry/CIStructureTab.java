@@ -455,7 +455,7 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
                 // Not on infantry
             }
         } else {
-            UnitUtil.removeAllMounteds(getInfantry(), ANTI_MEK_GEAR);
+            UnitUtil.removeAllMounted(getInfantry(), ANTI_MEK_GEAR);
         }
         TestInfantry.adaptAntiMekAttacks(getInfantry());
         refresh.refreshStatus();

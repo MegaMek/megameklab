@@ -87,17 +87,17 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     /**
      * Creates a task for rendering a list of record sheets as a print job
      *
-     * @param sheets     The sheets to render The contents are removed as each sheet is processed to avoid running out
-     *                   of memory on large jobs.
-     * @param job        The print job
-     * @param aset       A set of attributes to use for printing
-     * @param pageFormat The page format
+     * @param sheets                   The sheets to render The contents are removed as each sheet is processed to avoid
+     *                                 running out of memory on large jobs.
+     * @param job                      The print job
+     * @param printRequestAttributeSet A set of attributes to use for printing
+     * @param pageFormat               The page format
      *
      * @return A {@link SwingWorker} task
      */
     public static RecordSheetTask createPrintTask(List<PrintRecordSheet> sheets, PrinterJob job,
-          PrintRequestAttributeSet aset, PageFormat pageFormat) {
-        return new PrintTask(sheets, job, aset, pageFormat);
+          PrintRequestAttributeSet printRequestAttributeSet, PageFormat pageFormat) {
+        return new PrintTask(sheets, job, printRequestAttributeSet, pageFormat);
     }
 
     /**
@@ -168,13 +168,14 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
     private static class PrintTask extends RecordSheetTask {
         private final PrinterJob job;
-        private final PrintRequestAttributeSet aset;
+        private final PrintRequestAttributeSet printRequestAttributeSet;
 
-        public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job, PrintRequestAttributeSet aset,
+        public PrintTask(List<PrintRecordSheet> sheets, PrinterJob job,
+              PrintRequestAttributeSet printRequestAttributeSet,
               PageFormat pageFormat) {
             super(sheets);
             this.job = job;
-            this.aset = aset;
+            this.printRequestAttributeSet = printRequestAttributeSet;
 
             RSBook book = new RSBook(sheets, pageFormat);
             sheets.clear();
@@ -189,7 +190,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
         @Override
         public Void doInBackground() throws Exception {
-            job.print(aset);
+            job.print(printRequestAttributeSet);
             return null;
         }
     }
@@ -280,7 +281,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
                             bookmark.setDestination(document.getPage(pageNumber));
                             outline.addLast(bookmark);
                         } catch (Exception e) {
-                            logger.warn("Failed to create bookmark for page " + pageNumber + ": " + name, e);
+                            logger.warn("Failed to create bookmark for page {}: {}", pageNumber, name, e);
                         }
                     }
                 }

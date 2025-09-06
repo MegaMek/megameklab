@@ -40,7 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 /**
- * This JScrollPane is used for the tabs (Structure, Fluff etc) of the various unit UIs. It is a standard JScrollPane
+ * This JScrollPane is used for the tabs (Structure, Fluff etc.) of the various unit UIs. It is a standard JScrollPane
  * that sets the Scrollbars to "as needed", removes the border and sets the mouse wheel scroll speed to a sensible
  * value.
  *
@@ -50,9 +50,9 @@ public class TabScrollPane extends JScrollPane {
 
     /**
      * Creates a standardized borderless scroll pane with suitable scroll increment for one of the main tabs in MML
-     * (BMBuildTab etc).
+     * (BMBuildTab etc.).
      *
-     * @param view The tab component (BMBuildTab etc) to show in the scroll pane
+     * @param view The tab component (BMBuildTab etc.) to show in the scroll pane
      */
     public TabScrollPane(Component view) {
         super(view);
@@ -61,7 +61,7 @@ public class TabScrollPane extends JScrollPane {
 
     /**
      * Creates a standardized borderless scroll pane with suitable scroll increment for one of the main tabs in MML
-     * (BMBuildTab etc).
+     * (BMBuildTab etc.).
      */
     public TabScrollPane() {
         super();
@@ -74,7 +74,7 @@ public class TabScrollPane extends JScrollPane {
      * tab is clicked, the "Shown" event is fired for the component directly attached as the tab, but not any
      * subcomponents.)
      *
-     * @param view              The tab component (BMBuildTab etc) to show in the scroll pane
+     * @param view              The tab component (BMBuildTab etc.) to show in the scroll pane
      * @param componentListener The ComponentListener to attach to the scroll pane
      */
     public TabScrollPane(Component view, ComponentListener componentListener) {

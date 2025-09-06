@@ -193,10 +193,7 @@ public class PrintTank extends PrintEntity {
         if (tank.isSuperHeavy() && !(tank instanceof VTOL)) {
             return false;
         }
-        if (tank.isNaval() && !tank.hasNoDualTurret()) {
-            return false;
-        }
-        return true;
+        return !tank.isNaval() || tank.hasNoDualTurret();
     }
 
     @Override
@@ -217,14 +214,14 @@ public class PrintTank extends PrintEntity {
         }
         Map<String, Double> transport = new HashMap<>();
         Map<String, Integer> seating = new HashMap<>();
-        for (Transporter t : tank.getTransports()) {
-            if (t instanceof InfantryCompartment) {
-                transport.merge("Infantry Compartment", t.getUnused(), Double::sum);
-            } else if (t instanceof StandardSeatCargoBay) {
-                seating.merge(((Bay) t).getType(), (int) ((Bay) t).getCapacity(), Integer::sum);
+        for (Transporter transporter : tank.getTransports()) {
+            if (transporter instanceof InfantryCompartment) {
+                transport.merge("Infantry Compartment", transporter.getUnused(), Double::sum);
+            } else if (transporter instanceof StandardSeatCargoBay) {
+                seating.merge(transporter.getType(), (int) ((Bay) transporter).getCapacity(), Integer::sum);
                 // SVs have separate Bay handling similar to Small Craft, with doors. CVs just have bulk cargo space.
-            } else if (t instanceof Bay && !(tank instanceof SupportTank)) {
-                transport.merge(((Bay) t).getType(), ((Bay) t).getCapacity(), Double::sum);
+            } else if (transporter instanceof Bay && !(tank instanceof SupportTank)) {
+                transport.merge(transporter.getType(), ((Bay) transporter).getCapacity(), Double::sum);
             }
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {

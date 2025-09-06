@@ -45,19 +45,19 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
+import megamek.common.equipment.ArmorType;
+import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Mek;
-import megamek.common.equipment.MiscType;
 import megamek.common.units.Tank;
-import megamek.common.equipment.ArmorType;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.util.TechComboBox;
 
 /**
- * Displays a list of comboboxes with labels that displays the current armor type per location for patchwork armor and
+ * Displays a list of ComboBoxes with labels that displays the current armor type per location for patchwork armor and
  * allows it to be changed.
  *
  * @author Neoancient
@@ -91,7 +91,7 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
         setLayout(new GridBagLayout());
 
         setBorder(BorderFactory.createTitledBorder(
-              null, resourceMap.getString("ArmorAllocationView.panPatwork.title"),
+              null, resourceMap.getString("ArmorAllocationView.panPatchwork.title"),
               TitledBorder.TOP,
               TitledBorder.DEFAULT_POSITION));
 

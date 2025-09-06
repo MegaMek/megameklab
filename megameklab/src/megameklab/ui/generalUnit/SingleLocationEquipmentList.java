@@ -46,8 +46,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
@@ -71,7 +71,7 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setPrototypeCellValue(WIDER_CRITCELL_WIDTH_STRING);
         addMouseListener(this);
-        setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, CritCellUtil.CRITCELL_BORDER_COLOR));
+        setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
     }
 
     private static Vector<String> equipNames(Entity entity) {
@@ -84,7 +84,7 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
             }
         }
         if (critNames.isEmpty()) {
-            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+            critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
         }
         return critNames;
     }
@@ -145,14 +145,18 @@ public class SingleLocationEquipmentList extends JList<String> implements MouseL
                 var m = entity.getEquipment().get(index);
                 CritCellUtil.formatCell(this, m, true, entity, index);
             }
-            setBorder(BorderFactory.createMatteBorder(index == 0 ? 1 : 0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
+            setBorder(BorderFactory.createMatteBorder(index == 0 ? 1 : 0,
+                  0,
+                  1,
+                  0,
+                  CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
             return this;
         }
 
         @Override
         public Dimension getPreferredSize() {
             Dimension superSize = super.getPreferredSize();
-            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
+            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITICAL_CELL_ADD_HEIGHT);
         }
     }
 }

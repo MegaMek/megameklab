@@ -62,7 +62,7 @@ public class SingleLocationEquipmentView extends IView {
             }
         }
         if (critNames.isEmpty()) {
-            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+            critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
         }
         mountList = new SingleLocationEquipmentList(getEntity(), refresh);
         add(mountList);

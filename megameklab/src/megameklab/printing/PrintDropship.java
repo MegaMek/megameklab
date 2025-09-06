@@ -41,7 +41,6 @@ import java.util.StringJoiner;
 
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Mounted;
-import megamek.common.equipment.WeaponType;
 import megamek.common.units.Aero;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
@@ -237,7 +236,7 @@ public class PrintDropship extends PrintAero {
             linesPerBlock[BLOCK_STANDARD] += 3;
         }
         if (ship.getTotalWeaponList().stream()
-              .anyMatch(w -> ((WeaponType) w.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.AR10)) {
+              .anyMatch(w -> w.getType().getAmmoType() == AmmoType.AmmoTypeEnum.AR10)) {
             linesPerBlock[BLOCK_AR10_AMMO] = 5;
         }
         // Add lines equal to half the gravity decks (rounded up) and one each for section

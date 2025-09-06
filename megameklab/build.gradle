@@ -45,9 +45,11 @@ ext {
 dependencies {
     implementation "org.megamek:megamek:${version}"
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.19.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.20.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.0'
+
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 
     implementation 'org.apache.logging.log4j:log4j-core:2.25.1'
 
@@ -82,7 +84,7 @@ dependencies {
 
     implementation('org.apache.commons:commons-collections4:4.5.0')
 
-    testImplementation 'org.mockito:mockito-core:5.18.0'
+    testImplementation 'org.mockito:mockito-core:5.19.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
 
     runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
@@ -101,7 +103,7 @@ application {
 }
 
 checkstyle {
-    toolVersion = '10.25.0'
+    toolVersion = '11.0.1'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
     configProperties = [
             'suppressionFile': file("${rootDir}/config/checkstyle/checkstyle-suppressions.xml")

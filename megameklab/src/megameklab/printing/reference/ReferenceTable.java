@@ -141,10 +141,10 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         double rowSpacing = height / (lineCount() + 2);
         double lineHeight = sheet.getFontHeight(fontSize);
         while ((fontSize >= 5.0f) && (rowSpacing < lineHeight)) {
-            fontSize -= 0.1;
+            fontSize -= 0.1F;
             lineHeight = sheet.getFontHeight(fontSize);
         }
-        double ypos = 0.0;
+        double yPosition = 0.0;
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
               String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
@@ -159,7 +159,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
             int lineCount = lineCount(headers);
             for (int col = 0; col < headers.size(); col++) {
                 String[] lines = headers.get(col).split("\\n");
-                double useY = ypos + lineHeight * (lineCount - lines.length);
+                double useY = yPosition + lineHeight * (lineCount - lines.length);
                 for (String line : lines) {
                     g.appendChild(createTextElement(width * colOffsets.get(col), useY,
                           line, fontSize, SVGConstants.SVG_BOLD_VALUE,
@@ -169,7 +169,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 }
             }
             g.appendChild(text);
-            ypos += rowSpacing + lineHeight * (lineCount - 1);
+            yPosition += rowSpacing + lineHeight * (lineCount - 1);
         }
 
         int rowParity = 0;
@@ -193,7 +193,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
             } else {
                 if (i % 2 == rowParity) {
                     g.appendChild(createShadeElement(1,
-                          ypos - fontSize / 3 - rowSpacing / 2,
+                          yPosition - fontSize / 3 - rowSpacing / 2,
                           width - 5,
                           rowSpacing * lineCount(row)));
                 }
@@ -206,7 +206,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                 String[] lines = row.get(c).split("\\n");
                 for (int l = 0; l < lines.length; l++) {
                     g.appendChild(createTextElement(width * colOffsets.get(c),
-                          ypos + rowSpacing * l,
+                          yPosition + rowSpacing * l,
                           lines[l],
                           fontSize,
                           fontWeight.getOrDefault(c,
@@ -217,18 +217,18 @@ public abstract class ReferenceTable extends ReferenceTableBase {
                           null));
                 }
             }
-            ypos += rowSpacing * lineCount(row);
+            yPosition += rowSpacing * lineCount(row);
         }
-        ypos += (rowSpacing / 2);
+        yPosition += (rowSpacing / 2);
         for (String note : notes) {
             String[] lines = note.split("\\n");
             for (String line : lines) {
-                g.appendChild(createTextElement(PADDING, ypos, line, fontSize,
+                g.appendChild(createTextElement(PADDING, yPosition, line, fontSize,
                       SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_NORMAL_VALUE,
                       PrintRecordSheet.FILL_BLACK, false, width - PADDING));
-                ypos += lineHeight;
+                yPosition += lineHeight;
             }
-            ypos += rowSpacing - lineHeight;
+            yPosition += rowSpacing - lineHeight;
         }
         return g;
     }

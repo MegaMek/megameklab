@@ -168,7 +168,7 @@ public class BMCriticalView extends IView {
                 for (int slot = 0; slot < getMek().getNumberOfCriticalSlots(location); slot++) {
                     CriticalSlot cs = getMek().getCritical(location, slot);
                     if (cs == null) {
-                        critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                        critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                     } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -176,7 +176,7 @@ public class BMCriticalView extends IView {
                         if (m == null) {
                             // Critical didn't get removed. Remove it now.
                             getMek().setCritical(location, slot, null);
-                            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                            critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                         } else {
                             StringBuilder critName = new StringBuilder(m.getName());
                             if (m.isRearMounted()) {
@@ -190,13 +190,9 @@ public class BMCriticalView extends IView {
                     }
                 }
 
-                BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
-                      critNames, eSource, refresh, true, this);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                BAASBMDropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(
+                      critNames,
+                      location);
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
                     currentCritBlocks.add(criticalSlotList);
@@ -205,6 +201,18 @@ public class BMCriticalView extends IView {
 
             validate();
         }
+    }
+
+    private BAASBMDropTargetCriticalList<String> getCriticalSlotList(Vector<String> critNames,
+          int location) {
+        BAASBMDropTargetCriticalList<String> criticalSlotList = new BAASBMDropTargetCriticalList<>(
+              critNames, eSource, refresh, true, this);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + "");
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
+        return criticalSlotList;
     }
 
     private void setTitles() {

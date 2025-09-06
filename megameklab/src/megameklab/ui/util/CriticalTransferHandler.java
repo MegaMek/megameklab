@@ -42,11 +42,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
 
-import megamek.common.equipment.AmmoType;
-import megamek.common.battleArmor.BattleArmor;
 import megamek.common.CriticalSlot;
-import megamek.common.units.Entity;
+import megamek.common.battleArmor.BattleArmor;
+import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
@@ -57,8 +57,7 @@ import megameklab.util.UnitUtil;
 public class CriticalTransferHandler extends TransferHandler {
     private static final MMLogger logger = MMLogger.create(CriticalTransferHandler.class);
 
-    private EntitySource eSource;
-    private int location;
+    private final EntitySource eSource;
     private RefreshListener refresh;
     private final BMCriticalView critView;
 
@@ -80,8 +79,8 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
 
-        if (info.getComponent() instanceof DropTargetCriticalList) {
-            DropTargetCriticalList<?> list = (DropTargetCriticalList<?>) info.getComponent();
+        int location;
+        if (info.getComponent() instanceof DropTargetCriticalList<?> list) {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             try {
@@ -103,8 +102,7 @@ public class CriticalTransferHandler extends TransferHandler {
             }
 
             return true;
-        } else if (info.getComponent() instanceof ProtoMekMountList) {
-            ProtoMekMountList list = (ProtoMekMountList) info.getComponent();
+        } else if (info.getComponent() instanceof ProtoMekMountList list) {
             location = list.getMountLocation();
             Transferable t = info.getTransferable();
             try {
@@ -136,9 +134,9 @@ public class CriticalTransferHandler extends TransferHandler {
                 if (getUnit() instanceof BattleArmor) {
                     mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                 } else {
-                    UnitUtil.removeCriticals(getUnit(), mount);
+                    UnitUtil.removeCriticalSlots(getUnit(), mount);
                     if (getUnit().isFighter() && mount.getLocation() != Entity.LOC_NONE) {
-                        UnitUtil.compactCriticals(getUnit(), mount.getLocation());
+                        UnitUtil.compactCriticalSlots(getUnit(), mount.getLocation());
                     }
                     changeMountStatus(mount, Entity.LOC_NONE, false);
                 }
@@ -156,7 +154,7 @@ public class CriticalTransferHandler extends TransferHandler {
         if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
             return false;
         }
-        // check if the dragged mounted should be transferrable
+        // check if the dragged mounted should be transferable
         Mounted<?> mounted = null;
         try {
             mounted = getUnit().getEquipment(Integer
@@ -170,24 +168,20 @@ public class CriticalTransferHandler extends TransferHandler {
             return false;
         }
         // stuff that has a fixed location is also not transferable
-        if (UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())) {
-            return false;
-        }
-        return true;
+        return !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType());
     }
 
     @Override
-    protected Transferable createTransferable(JComponent c) {
-        if (c instanceof JTable) {
-            JTable table = (JTable) c;
+    protected Transferable createTransferable(JComponent component) {
+        if (component instanceof JTable table) {
             Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
                   CriticalTableModel.EQUIPMENT);
             if (critView != null) {
                 critView.markUnavailableLocations(mount);
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-        } else if (c instanceof ProtoMekMountList) {
-            Mounted mount = ((ProtoMekMountList) c).getMounted();
+        } else if (component instanceof ProtoMekMountList) {
+            Mounted<?> mount = ((ProtoMekMountList) component).getMounted();
             if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
                   && !(mount.getType() instanceof AmmoType)) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));

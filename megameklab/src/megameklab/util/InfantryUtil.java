@@ -35,15 +35,16 @@ package megameklab.util;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.units.Infantry;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
+import megamek.common.units.Infantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.logging.MMLogger;
 
@@ -68,7 +69,7 @@ public final class InfantryUtil {
             unit.setPrimaryWeapon(weapon);
         }
         // if there is more than one secondary weapon per squad, then add that
-        // to the unit otherwise add the primary weapon (unless the secondary
+        // to the unit otherwise add the primary weapon unless the secondary
         // is TAG, in which case both are added.
         if (unit.getSecondaryWeapon() != null && unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             try {
@@ -95,10 +96,20 @@ public final class InfantryUtil {
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
         List<Mounted<?>> toRemove = unit.getEquipment().stream()
               .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
-              .collect(Collectors.toList());
-        unit.getEquipment().removeAll(toRemove);
-        unit.getWeaponList().removeAll(toRemove);
-        unit.getAmmo().removeAll(toRemove);
+              .toList();
+
+        for (Mounted<?> mounted : toRemove) {
+            unit.getEquipment().remove(mounted);
+
+            if (mounted instanceof WeaponMounted) {
+                unit.getWeaponList().remove(mounted);
+            }
+
+            if (mounted instanceof AmmoMounted) {
+                unit.getAmmo().remove(mounted);
+            }
+        }
+
         final EnumSet<AmmoType.Munitions> munition;
         if (fieldGun != null && num > 0) {
             if (fieldGun.getAmmoType() == AmmoType.AmmoTypeEnum.AC_LBX
@@ -121,7 +132,7 @@ public final class InfantryUtil {
                     if (ammo.isPresent()) {
                         unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
                     } else {
-                        logger.error("Could not find ammo for field gun " + fieldGun.getName());
+                        logger.error("Could not find ammo for field gun {}", fieldGun.getName());
                     }
                 } catch (Exception ex) {
                     logger.error("", ex);
@@ -130,8 +141,8 @@ public final class InfantryUtil {
         }
     }
 
-    public static String trimInfantryWeaponNames(String wname) {
-        return wname.replace("Infantry ", "");
+    public static String trimInfantryWeaponNames(String weaponName) {
+        return weaponName.replace("Infantry ", "");
     }
 
     public static void resetInfantryArmor(Infantry unit) {

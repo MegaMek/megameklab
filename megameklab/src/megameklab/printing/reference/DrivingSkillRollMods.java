@@ -34,7 +34,6 @@ package megameklab.printing.reference;
 
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
-import megameklab.printing.PrintEntity;
 import megameklab.printing.PrintRecordSheet;
 import org.apache.batik.util.SVGConstants;
 
@@ -52,10 +51,6 @@ public class DrivingSkillRollMods extends ReferenceTable {
         setColumnAnchor(2, SVGConstants.SVG_START_VALUE);
 
         addMods();
-    }
-
-    public DrivingSkillRollMods(PrintEntity sheet) {
-        this(sheet, sheet.getEntity());
     }
 
     private void addMods() {

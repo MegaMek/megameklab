@@ -41,12 +41,12 @@ import javax.swing.JTextField;
  * therefore keep a certain width but adapt to different UI scaling and fonts. It can be used to give the right column
  * on input views like CIPlatoonView or others the same width.
  *
- * @see #TEXTFIELD_COLUMNS
+ * @see #TEXT_FIELD_COLUMNS
  */
 public class WidthControlComponent extends JPanel {
 
-    public static final int TEXTFIELD_COLUMNS = 18;
-    private static final JTextField WIDTH_PROTOTYPE = new JTextField("None", TEXTFIELD_COLUMNS);
+    public static final int TEXT_FIELD_COLUMNS = 18;
+    private static final JTextField WIDTH_PROTOTYPE = new JTextField("None", TEXT_FIELD_COLUMNS);
 
     @Override
     public Dimension getPreferredSize() {

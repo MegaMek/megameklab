@@ -39,10 +39,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import megamek.common.units.Entity;
-import megamek.common.units.Mek;
 import megamek.common.annotations.Nullable;
 import megamek.common.loaders.BLKFile;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.logging.MMLogger;
 import megameklab.ui.FileNameManager;
 import megameklab.ui.PopupMessages;
@@ -74,10 +74,9 @@ public class MegaMekLabFileSaver {
     }
 
     /**
-     * Tries to save the unit directly to its file, if it has a filename already. If it hasn't, it performs a Save As...
-     * Returns true when it successfully saves the unit, false if not.
+     * Tries to save the unit directly to its file, if it has a filename already. If it hasn't, it performs a Save
+     * As...
      *
-     * @return True when the unit was actually saved, false otherwise
      */
     public String saveUnit(JFrame ownerFrame, FileNameManager fileNameManager, Entity entity) {
         String filePathName = fileNameManager.getFileName();

@@ -36,7 +36,8 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.IArmorState;
 import megamek.common.equipment.Mounted;
@@ -72,7 +73,6 @@ public class WSMainUI extends MegaMekLabMainUI {
     private PreviewTab previewTab;
     private LABuildTab buildTab;
     private TransportTab transportTab;
-    private FluffTab fluffTab;
     private QuirksTab quirksTab;
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
@@ -113,17 +113,17 @@ public class WSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         Jumpship newUnit;
-        if (entitytype == Entity.ETYPE_JUMPSHIP) {
+        if (entityType == Entity.ETYPE_JUMPSHIP) {
             newUnit = new Jumpship();
-        } else if (entitytype == Entity.ETYPE_WARSHIP) {
+        } else if (entityType == Entity.ETYPE_WARSHIP) {
             newUnit = new Warship();
             if ((null != oldUnit)
                   && (((Jumpship) oldUnit).getDriveCoreType() == Jumpship.DRIVE_CORE_SUBCOMPACT)) {
                 newUnit.setDriveCoreType(Jumpship.DRIVE_CORE_SUBCOMPACT);
             }
-        } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+        } else if (entityType == Entity.ETYPE_SPACE_STATION) {
             newUnit = new SpaceStation();
         } else {
             logger.error("Received incorrect entityType!");
@@ -144,7 +144,7 @@ public class WSMainUI extends MegaMekLabMainUI {
             newUnit.setArmorType(EquipmentType.T_ARMOR_AEROSPACE);
         }
         newUnit.setWeight(TestAdvancedAerospace.getMinTonnage(newUnit));
-        if (entitytype == Entity.ETYPE_WARSHIP) {
+        if (entityType == Entity.ETYPE_WARSHIP) {
             newUnit.setOriginalWalkMP(2); // Start at 1G
             newUnit.setOSI(3);
         } else {
@@ -165,9 +165,9 @@ public class WSMainUI extends MegaMekLabMainUI {
         }
         if (null == oldUnit) {
             newUnit.setChassis("New");
-            if ((entitytype == Entity.ETYPE_WARSHIP) && !isPrimitive) {
+            if ((entityType == Entity.ETYPE_WARSHIP) && !isPrimitive) {
                 newUnit.setModel("Warship");
-            } else if (entitytype == Entity.ETYPE_SPACE_STATION) {
+            } else if (entityType == Entity.ETYPE_SPACE_STATION) {
                 newUnit.setModel("Station");
             } else {
                 newUnit.setModel("Jumpship");
@@ -203,7 +203,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(this);
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
-        fluffTab = new FluffTab(this);
+        FluffTab fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);

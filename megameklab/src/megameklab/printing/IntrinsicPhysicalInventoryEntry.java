@@ -44,22 +44,9 @@ import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
 import megamek.common.units.ProtoMek;
 
-public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
+public record IntrinsicPhysicalInventoryEntry(String name, String location, String damage, String mod, boolean optional)
+      implements InventoryEntry {
     private final static DecimalFormat doubleFormat = new DecimalFormat("#.##");
-
-    private final String name;
-    private final String location;
-    private final String damage;
-    private final String mod;
-    private final boolean optional;
-
-    private IntrinsicPhysicalInventoryEntry(String name, String location, String damage, String mod, boolean optional) {
-        this.name = name;
-        this.location = location;
-        this.damage = damage;
-        this.mod = mod;
-        this.optional = optional;
-    }
 
     private static IntrinsicPhysicalInventoryEntry e(String name, String location, String damage, String mod) {
         return new IntrinsicPhysicalInventoryEntry(name, location, damage, mod, false);
@@ -256,7 +243,8 @@ public class IntrinsicPhysicalInventoryEntry implements InventoryEntry {
     /**
      * @return true if this physical should only be shown when the "Extra physicals" option is enabled.
      */
-    public boolean isOptional() {
+    @Override
+    public boolean optional() {
         return optional;
     }
 

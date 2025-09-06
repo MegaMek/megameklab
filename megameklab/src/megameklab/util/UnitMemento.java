@@ -38,16 +38,16 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.equipment.Mounted;
+import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MtfFile;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
 
 public class UnitMemento {
-    private static final MMLogger logger = MMLogger.create(UnitMemento.class);
+    private static final MMLogger LOGGER = MMLogger.create(UnitMemento.class);
 
     private final String entityState;
     private final String unallocatedEquipment;
@@ -111,16 +111,16 @@ public class UnitMemento {
                             }
                             entity.addEquipment(mounted, Entity.LOC_NONE, false);
                         } catch (Exception e) {
-                            logger.warn("Could not restore unallocated equipment item", e);
+                            LOGGER.warn("Could not restore unallocated equipment item", e);
                         }
                     }
                 } catch (Exception e) {
-                    logger.warn("Could not restore unallocated equipment", e);
+                    LOGGER.warn("Could not restore unallocated equipment", e);
                 }
             }
             return entity;
         } catch (Exception e) {
-            logger.error("Failed to apply saved state", e);
+            LOGGER.error("Failed to apply saved state", e);
         }
         return null;
     }
@@ -162,13 +162,10 @@ public class UnitMemento {
         }
         // Compare unallocatedEquipment
         if (unallocatedEquipment == null) {
-            if (other.unallocatedEquipment != null) {
-                return false;
-            }
-        } else if (!unallocatedEquipment.equals(other.unallocatedEquipment)) {
-            return false;
+            return other.unallocatedEquipment == null;
+        } else {
+            return unallocatedEquipment.equals(other.unallocatedEquipment);
         }
         // If we get here, both fields are equal
-        return true;
     }
 }

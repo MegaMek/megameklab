@@ -42,7 +42,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -74,9 +73,7 @@ import megameklab.ui.dialog.PrintQueueDialog;
 import org.apache.commons.io.FilenameUtils;
 
 public class UnitPrintManager {
-    private static final MMLogger logger = MMLogger.create(UnitPrintManager.class);
-
-    private static final ResourceBundle menuResources = ResourceBundle.getBundle("megameklab.resources.Menu");
+    private static final MMLogger LOGGER = MMLogger.create(UnitPrintManager.class);
 
     public static void printEntity(Entity entity) {
         List<Entity> unitList = Collections.singletonList(entity);
@@ -103,7 +100,6 @@ public class UnitPrintManager {
 
         int returnVal = f.showOpenDialog(parent);
         if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
             return;
         }
         printMUL(parent, printToPdf, f.getSelectedFile());
@@ -119,7 +115,7 @@ public class UnitPrintManager {
             loadedUnits = new MULParser(file, options).getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
             return;
         }
 
@@ -147,7 +143,6 @@ public class UnitPrintManager {
 
         int returnVal = f.showSaveDialog(parent);
         if (returnVal != JFileChooser.APPROVE_OPTION) {
-            // I want a file, y'know!
             return null;
         }
 
@@ -182,7 +177,9 @@ public class UnitPrintManager {
                 // assign base unit and override only if damage should be hidden and entity is damaged
                 if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
                     unit = UnitUtil.cloneUnit(entity);
-                    UnitUtil.resetUnit(unit);
+                    if (unit != null) {
+                        UnitUtil.resetUnit(unit);
+                    }
                 } else {
                     unit = entity;
                 }
@@ -201,7 +198,7 @@ public class UnitPrintManager {
                     } else {
                         tank1 = (Tank) unit;
                     }
-                } else if (unit.hasETypeFlag(Entity.ETYPE_AERO)) {
+                } else if (unit != null && unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                     if (unit instanceof Jumpship) {
                         PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount, options);
                         pageCount += pcs.getPageCount();
@@ -344,8 +341,8 @@ public class UnitPrintManager {
      * @param loadedUnits The units to print
      * @param singlePrint Whether to limit each record sheet to a single unit
      */
-    public static boolean printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint) {
-        return printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
+    public static void printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint) {
+        printAllUnits(loadedUnits, singlePrint, new RecordSheetOptions());
     }
 
     /**
@@ -357,16 +354,16 @@ public class UnitPrintManager {
      */
     public static boolean printAllUnits(List<? extends BTObject> loadedUnits, boolean singlePrint,
           RecordSheetOptions options) {
-        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(options.getPaperSize().sizeName);
-        aset.add(options.getPaperSize().printableArea);
-        aset.add(DialogTypeSelection.COMMON);
+        HashPrintRequestAttributeSet hashPrintRequestAttributeSet = new HashPrintRequestAttributeSet();
+        hashPrintRequestAttributeSet.add(options.getPaperSize().sizeName);
+        hashPrintRequestAttributeSet.add(options.getPaperSize().printableArea);
+        hashPrintRequestAttributeSet.add(DialogTypeSelection.COMMON);
         PrinterJob masterPrintJob = PrinterJob.getPrinterJob();
-        if (!masterPrintJob.printDialog(aset)) {
+        if (!masterPrintJob.printDialog(hashPrintRequestAttributeSet)) {
             return false;
         }
 
-        PageFormat pageFormat = masterPrintJob.getPageFormat(aset);
+        PageFormat pageFormat = masterPrintJob.getPageFormat(hashPrintRequestAttributeSet);
         // If something besides letter and A4 is selected, use the template that's
         // closest to the aspect
         // ratio of the paper size.
@@ -391,7 +388,10 @@ public class UnitPrintManager {
             masterPrintJob.setJobName(name);
         }
 
-        RecordSheetTask task = RecordSheetTask.createPrintTask(sheets, masterPrintJob, aset, pageFormat);
+        RecordSheetTask task = RecordSheetTask.createPrintTask(sheets,
+              masterPrintJob,
+              hashPrintRequestAttributeSet,
+              pageFormat);
         task.execute(CConfig.getBooleanParam(CConfig.RS_PROGRESS_BAR));
         return true;
     }
@@ -418,29 +418,28 @@ public class UnitPrintManager {
         }
     }
 
-    public static boolean printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
+    public static void printUnitFile(JFrame parent, boolean singleUnit, boolean pdf) {
         String filePathName = System.getProperty("user.dir") + "/data/mekfiles/"; // TODO : Remove inline file path
 
-        JFileChooser f = new JFileChooser(filePathName);
-        f.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
-        f.setDialogTitle("Print Unit File");
-        f.setMultiSelectionEnabled(true);
+        JFileChooser jFileChooser = new JFileChooser(filePathName);
+        jFileChooser.setLocation(parent.getLocation().x + 150, parent.getLocation().y + 100);
+        jFileChooser.setDialogTitle("Print Unit File");
+        jFileChooser.setMultiSelectionEnabled(true);
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf");
 
         // Add a filter for mul files
-        f.setFileFilter(filter);
+        jFileChooser.setFileFilter(filter);
 
-        int returnVal = f.showOpenDialog(parent);
-        if ((returnVal != JFileChooser.APPROVE_OPTION) || (f.getSelectedFile() == null)) {
-            // I want a file, y'know!
-            return false;
+        int returnVal = jFileChooser.showOpenDialog(parent);
+        if ((returnVal != JFileChooser.APPROVE_OPTION) || (jFileChooser.getSelectedFile() == null)) {
+            return;
         }
 
         try {
             List<Entity> unitList = new ArrayList<>();
 
-            for (File entityFile : f.getSelectedFiles()) {
+            for (File entityFile : jFileChooser.getSelectedFiles()) {
                 Entity tempEntity = new MekFileParser(entityFile).getEntity();
                 unitList.add(tempEntity);
             }
@@ -450,12 +449,10 @@ public class UnitPrintManager {
                     exportUnits(unitList, exportFile, singleUnit);
                 }
             } else {
-                return printAllUnits(unitList, singleUnit);
+                printAllUnits(unitList, singleUnit);
             }
-            return true;
         } catch (Exception ex) {
-            logger.error("", ex);
-            return false;
+            LOGGER.error("", ex);
         }
     }
 }

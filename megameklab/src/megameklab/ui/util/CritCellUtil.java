@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -57,13 +57,13 @@ import megameklab.util.UnitUtil;
 public final class CritCellUtil {
 
     /** The base width of Crit Cells across units with 3 columns of crit lists */
-    public static final String CRITCELL_WIDTH_STRING = "X".repeat(22);
+    public static final String CRITICAL_CELL_WIDTH_STRING = "X".repeat(22);
 
     /** The height added to the text height of Crit Cells (padding) */
-    public static final int CRITCELL_ADD_HEIGHT = 5;
+    public static final int CRITICAL_CELL_ADD_HEIGHT = 5;
 
-    public static final Color CRITCELL_BORDER_COLOR = Color.BLACK;
-    public static final String EMPTY_CRITCELL_TEXT = "- Empty -";
+    public static final Color CRITICAL_CELL_BORDER_COLOR = Color.BLACK;
+    public static final String EMPTY_CRITICAL_CELL_TEXT = "- Empty -";
 
     /**
      * @param title the title for this component
@@ -74,7 +74,7 @@ public final class CritCellUtil {
      */
     public static Border locationBorder(String title) {
         return BorderFactory.createTitledBorder(
-              new LocationBorder(CRITCELL_BORDER_COLOR, 2f),
+              new LocationBorder(CRITICAL_CELL_BORDER_COLOR, 2f),
               " " + title + " ",
               TitledBorder.TOP,
               TitledBorder.DEFAULT_POSITION);
@@ -106,8 +106,8 @@ public final class CritCellUtil {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EMPTY));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_EMPTY));
             } else if (!mounted.getType().isHittable()) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NONHITTABLE));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NONHITTABLE));
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
             } else if (mounted.getType() instanceof WeaponType) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_WEAPONS));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_WEAPONS));
@@ -121,7 +121,7 @@ public final class CritCellUtil {
         }
 
         if (mounted == null) {
-            cell.setText(" " + EMPTY_CRITCELL_TEXT);
+            cell.setText(" " + EMPTY_CRITICAL_CELL_TEXT);
             cell.setToolTipText(null);
         } else {
             String name = UnitUtil.getCritName(entity, mounted.getType());

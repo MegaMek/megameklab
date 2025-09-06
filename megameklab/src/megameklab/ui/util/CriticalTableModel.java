@@ -37,9 +37,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.AbstractCellEditor;
-import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
@@ -47,7 +45,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
@@ -56,7 +53,6 @@ import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.HandheldWeapon;
-import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Entity;
@@ -67,8 +63,6 @@ import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.weapons.infantry.InfantryWeapon;
-import megameklab.ui.EquipmentToolTip;
-import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
 public class CriticalTableModel extends AbstractTableModel {
@@ -86,9 +80,9 @@ public class CriticalTableModel extends AbstractTableModel {
     public static final int N_COLS = 3;
     public static final int N_COLS_WEAPON_TABLE = 6;
 
-    public static final int EQUIPMENTTABLE = 0;
-    public static final int WEAPONTABLE = 1;
-    public static final int BUILDTABLE = 2;
+    public static final int EQUIPMENT_TABLE = 0;
+    public static final int WEAPON_TABLE = 1;
+    public static final int BUILD_TABLE = 2;
 
     private final int tableType;
     private boolean kgStandard;
@@ -100,7 +94,7 @@ public class CriticalTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        if (tableType != WEAPONTABLE) {
+        if (tableType != WEAPON_TABLE) {
             return N_COLS;
         } else {
             return N_COLS_WEAPON_TABLE;
@@ -225,7 +219,7 @@ public class CriticalTableModel extends AbstractTableModel {
                 if (unit.usesWeaponBays() && (crit.getType() instanceof AmmoType)) {
                     return crit.getUsableShotsLeft() / ((AmmoType) crit.getType()).getShots();
                 }
-                if (tableType == BUILDTABLE) {
+                if (tableType == BUILD_TABLE) {
                     return UnitUtil.getCritsUsed(crit);
                 }
                 return crit.getNumCriticalSlots();
@@ -296,82 +290,8 @@ public class CriticalTableModel extends AbstractTableModel {
         }
     }
 
-    public CriticalTableModel.Renderer getRenderer() {
-        return new Renderer();
-    }
-
-    /*
-     * Rendered cannot be static because it uses parent data structs.
-     */
-    private class Renderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table,
-              Object value, boolean isSelected, boolean hasFocus, int row,
-              int column) {
-
-            JLabel c = (JLabel) super.getTableCellRendererComponent(table,
-                  value, isSelected, hasFocus, row, column);
-
-            if ((crits.size() < row) || (row < 0)) {
-                return c;
-            }
-            if (table.getModel().getValueAt(row, column) != null) {
-                c.setText(table.getModel().getValueAt(row, column).toString());
-            }
-
-            Mounted<?> mount = crits.get(row);
-            if ((unit instanceof BattleArmor) && column == NAME) {
-                String modifier = "";
-                if (mount.getType() instanceof AmmoType) {
-                    modifier += " (" + mount.getBaseShotsLeft() + ")";
-                }
-                if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
-                    modifier += " (Personal)";
-                } else {
-                    modifier += " (Squad)";
-                }
-                if (mount.isDWPMounted()) {
-                    modifier += " (DWP)";
-                }
-                if (mount.isSquadSupportWeapon()) {
-                    modifier += " (Squad Support Weapon)";
-                }
-                if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                      || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                      && mount.getLinked() != null) {
-                    modifier += " (attached " + mount.getLinked().getName()
-                          + ")";
-                }
-                if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
-                      mount.getLinkedBy() == null) {
-                    modifier += "*";
-                }
-                c.setText(c.getText() + modifier);
-            } else if ((column == NAME) && unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)
-                  && (mount.getType() instanceof AmmoType)) {
-                c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");
-            }
-            c.setToolTipText(EquipmentToolTip.getToolTipInfo(unit, mount));
-            c.setHorizontalAlignment(getAlignment(column));
-
-            if (isSelected) {
-                return c;
-            }
-
-            String equipmentType = CConfig.GUI_COLOR_EQUIPMENT;
-
-            if (!mount.getType().isHittable()) {
-                equipmentType = CConfig.GUI_COLOR_NONHITTABLE;
-            } else if (mount.getType() instanceof WeaponType) {
-                equipmentType = CConfig.GUI_COLOR_WEAPONS;
-            } else if (mount.getType() instanceof AmmoType) {
-                equipmentType = CConfig.GUI_COLOR_AMMO;
-            }
-
-            c.setBackground(CConfig.getBackgroundColor(equipmentType));
-            c.setForeground(CConfig.getForegroundColor(equipmentType));
-            return c;
-        }
+    public Renderer getRenderer() {
+        return new Renderer(this);
     }
 
     /**
@@ -441,7 +361,7 @@ public class CriticalTableModel extends AbstractTableModel {
     public void removeCrits(int... locs) {
         crits.removeAll(Arrays.stream(locs)
               .mapToObj(crits::get)
-              .collect(Collectors.toList()));
+              .toList());
     }
 
     public void removeAllCrits() {
@@ -457,14 +377,11 @@ public class CriticalTableModel extends AbstractTableModel {
         return crits;
     }
 
-    private int getAlignment(int col) {
-        switch (col) {
-            case NAME:
-                return SwingConstants.LEFT;
-            case TONNAGE:
-                return SwingConstants.RIGHT;
-            default:
-                return SwingConstants.CENTER;
-        }
+    int getAlignment(int col) {
+        return switch (col) {
+            case NAME -> SwingConstants.LEFT;
+            case TONNAGE -> SwingConstants.RIGHT;
+            default -> SwingConstants.CENTER;
+        };
     }
 }

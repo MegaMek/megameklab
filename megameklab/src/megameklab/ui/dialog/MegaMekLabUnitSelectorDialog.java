@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -51,9 +51,9 @@ import megamek.client.ui.dialogs.unitSelectorDialogs.AbstractUnitSelectorDialog;
 import megamek.client.ui.tileset.EntityImage;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
-import megamek.common.units.Entity;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
+import megamek.common.units.Entity;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
@@ -66,7 +66,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private final boolean allowPickWithoutClose;
     private Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback;
     private RecordSheetPreviewPanel recordSheetPanel;
-    private JPanel recordSheetContainer;
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
 
@@ -206,7 +205,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             toolbarPanel.add(exportToPDFRecordSheetButton);
 
             // Create a container panel for the record sheet and toolbar
-            recordSheetContainer = new JPanel(new BorderLayout());
+            JPanel recordSheetContainer = new JPanel(new BorderLayout());
             recordSheetContainer.add(toolbarPanel, BorderLayout.NORTH);
             recordSheetContainer.add(recordSheetPanel);
 

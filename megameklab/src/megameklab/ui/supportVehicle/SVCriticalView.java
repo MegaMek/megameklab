@@ -49,7 +49,6 @@ import megamek.common.units.FixedWingSupport;
 import megamek.common.units.SuperHeavyTank;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
-import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
@@ -63,7 +62,6 @@ import megameklab.ui.util.RefreshListener;
  * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
-    private static final MMLogger logger = MMLogger.create(SVCriticalView.class);
 
     private final JPanel leftPanel = new JPanel();
     private final JPanel rightPanel = new JPanel();
@@ -187,46 +185,57 @@ public class SVCriticalView extends IView {
                     if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
                         critNames.add(getMek().getSystemName(cs.getIndex()));
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
-                        Mounted<?> m = cs.getMount();
+                        Mounted<?> mounted = cs.getMount();
                         // Critical didn't get removed. Remove it now.
-                        if (m == null) {
+                        if (mounted == null) {
                             getEntity().setCritical(location, slot, null);
                             continue;
                         }
-                        StringBuilder critName = new StringBuilder(m.getName());
-                        if (critName.length() > 25) {
-                            critName.setLength(25);
-                            critName.append("...");
-                        }
-                        if (m.isRearMounted()) {
-                            critName.append(" (R)");
-                        }
-                        if (m.isSponsonTurretMounted()) {
-                            critName.append(" (ST)");
-                        }
-                        if (m.isPintleTurretMounted()) {
-                            critName.append(" (PT)");
-                        }
+                        StringBuilder critName = getCritName(mounted);
                         critNames.add(critName.toString());
                     }
                 }
 
                 if (critNames.isEmpty()) {
-                    critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                    critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                 }
-                DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource,
-                      refresh, true);
-                criticalSlotList.setVisibleRowCount(critNames.size());
-                criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                criticalSlotList.setName(location + "");
-                criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+                DropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(critNames,
+                      location);
                 if (panelForLocation(location) != null) {
                     panelForLocation(location).add(criticalSlotList);
                 }
             }
             validate();
         }
+    }
+
+    private DropTargetCriticalList<String> getCriticalSlotList(Vector<String> critNames, int location) {
+        DropTargetCriticalList<String> criticalSlotList = new DropTargetCriticalList<>(critNames, eSource,
+              refresh, true);
+        criticalSlotList.setVisibleRowCount(critNames.size());
+        criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        criticalSlotList.setName(location + "");
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
+        return criticalSlotList;
+    }
+
+    private static StringBuilder getCritName(Mounted<?> m) {
+        StringBuilder critName = new StringBuilder(m.getName());
+        if (critName.length() > 25) {
+            critName.setLength(25);
+            critName.append("...");
+        }
+        if (m.isRearMounted()) {
+            critName.append(" (R)");
+        }
+        if (m.isSponsonTurretMounted()) {
+            critName.append(" (ST)");
+        }
+        if (m.isPintleTurretMounted()) {
+            critName.append(" (PT)");
+        }
+        return critName;
     }
 
     private @Nullable JComponent panelForLocation(int location) {

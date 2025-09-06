@@ -36,7 +36,8 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.IArmorState;
 import megamek.common.equipment.Mounted;
@@ -108,12 +109,12 @@ public class DSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         SmallCraft newUnit;
-        if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
+        if (entityType == Entity.ETYPE_SMALL_CRAFT) {
             newUnit = new SmallCraft();
             newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
-        } else if (entitytype == Entity.ETYPE_DROPSHIP) {
+        } else if (entityType == Entity.ETYPE_DROPSHIP) {
             newUnit = new Dropship();
             newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         } else {
@@ -146,7 +147,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         }
         if (null == oldUnit) {
             newUnit.setChassis("New");
-            if (entitytype == Entity.ETYPE_SMALL_CRAFT) {
+            if (entityType == Entity.ETYPE_SMALL_CRAFT) {
                 newUnit.setModel("Small Craft");
             } else {
                 newUnit.setModel("Dropship");

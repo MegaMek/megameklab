@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import megamek.common.RangeType;
 import megamek.common.enums.TechBase;
@@ -55,7 +54,6 @@ import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
-import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.SmallCraft;
@@ -179,15 +177,13 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         } else {
             String[] r = new String[4];
             Arrays.fill(r, DASH);
-            if (mount.getType() instanceof InfantryWeapon) {
-                final InfantryWeapon weapon = (InfantryWeapon) mount.getType();
+            if (mount.getType() instanceof InfantryWeapon weapon) {
                 r[RangeType.RANGE_SHORT] = CConfig.formatScale(weapon.getInfantryRange(), false);
                 if (weapon.getInfantryRange() > 0) {
                     r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weapon.getInfantryRange() * 2, false);
                     r[RangeType.RANGE_LONG] = CConfig.formatScale(weapon.getInfantryRange() * 3, false);
                 }
-            } else if (mount.getType() instanceof WeaponType) {
-                final WeaponType weaponType = (WeaponType) mount.getType();
+            } else if (mount.getType() instanceof WeaponType weaponType) {
                 if (weaponType.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
@@ -292,25 +288,15 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     private String formatName() {
-        String eqName = mount.getName();
-        if (eqName.length() > 20) {
-            eqName = mount.getShortName();
-        }
-        // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
-        // including possible leading space. For mixed tech units this is presumably needed to remove
-        // ambiguity.
-        if (!mount.getEntity().isMixedTech()) {
-            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
-        }
-        StringBuilder name = new StringBuilder(eqName);
-        // For mixed tech units, we want to append the tech base if there is ambiguity
-        // and it isn't already part of the name.
+        StringBuilder name = getName();
+        // For mixed tech units, we want to append the tech base if there is ambiguity, and it isn't already part of
+        // the name.
         if (showTechBase()) {
             name.append(mount.getType().isClan() ? " (C)" : " (IS)");
         }
         // Spheroid Small Craft / DropShips use a different location name for aft side weapons
         if (mount.isRearMounted()
-              && !(mount.getEntity() instanceof SmallCraft && ((Aero) mount.getEntity()).isSpheroid())) {
+              && !(mount.getEntity() instanceof SmallCraft && mount.getEntity().isSpheroid())) {
             name.append(" (R)");
         }
         if (mount.isMekTurretMounted()) {
@@ -337,6 +323,20 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                   .append(" shots]");
         }
         return name.toString().trim();
+    }
+
+    private StringBuilder getName() {
+        String eqName = mount.getName();
+        if (eqName.length() > 20) {
+            eqName = mount.getShortName();
+        }
+        // If this is not a mixed tech unit, remove trailing IS or Clan tag in brackets or parentheses,
+        // including possible leading space. For mixed tech units this is presumably needed to remove
+        // ambiguity.
+        if (!mount.getEntity().isMixedTech()) {
+            eqName = eqName.replaceAll(" ?[\\[(](Clan|IS)[])]", "");
+        }
+        return new StringBuilder(eqName);
     }
 
     /**
@@ -378,7 +378,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "RT";
         }
         if (mount.getEntity() instanceof SmallCraft) {
-            if (((Aero) mount.getEntity()).isSpheroid()) {
+            if (mount.getEntity().isSpheroid()) {
                 return SPHEROID_ARCS[mount.isRearMounted() ? mount.getLocation() + 4 : mount.getLocation()];
             } else {
                 return AERODYNE_ARCS[mount.getLocation()];
@@ -491,8 +491,6 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             return "";
         }
     }
-
-    private static final Pattern digits = Pattern.compile("\\d+");
 
     @Override
     public String getDamageField(int row) {
@@ -751,7 +749,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         StringBuilder sb = new StringBuilder();
         final WeaponQuirks quirks = mount.getQuirks();
         for (IOption quirk : quirks.activeQuirks()) {
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 sb.append(", ");
             }
             sb.append(quirk.getDisplayableName());
