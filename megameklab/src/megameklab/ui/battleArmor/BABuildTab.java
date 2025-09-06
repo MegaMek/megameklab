@@ -47,8 +47,8 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 /**
- * A component that creates a table for building the criticalSlots of a unit.  This tab shows a table of the un-allocated
- * equipment and displays criticalSlots for the whole <code>BattleArmor</code> squad.
+ * A component that creates a table for building the criticalSlots of a unit.  This tab shows a table of the
+ * un-allocated equipment and displays criticalSlots for the whole <code>BattleArmor</code> squad.
  *
  * @author Taharqa
  * @author arlith
@@ -153,7 +153,7 @@ public class BABuildTab extends ITab {
     }
 
     private void resetCrits() {
-        UnitUtil.removeAllCriticals(getBattleArmor());
+        UnitUtil.removeAllCriticalSlots(getBattleArmor());
         refreshAll();
     }
 

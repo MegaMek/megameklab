@@ -91,7 +91,7 @@ import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 public class BMStructureTab extends ITab implements MekBuildListener, ArmorAllocationListener {
-    private static final MMLogger logger = MMLogger.create(BMStructureTab.class);
+    private static final MMLogger LOGGER = MMLogger.create(BMStructureTab.class);
 
     private BasicInfoView panBasicInfo;
     private BMChassisView panChassis;
@@ -272,7 +272,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 getMek().addXLGyro();
                 break;
             case Mek.GYRO_NONE:
-                UnitUtil.compactCriticals(getMek(), Mek.LOC_CENTER_TORSO);
+                UnitUtil.compactCriticalSlots(getMek(), Mek.LOC_CENTER_TORSO);
                 break;
             case Mek.GYRO_SUPERHEAVY:
                 clearCritsForGyro(lastEngine + 1, 2);
@@ -438,18 +438,18 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         if (mounted == null) {
             return;
         }
-        UnitUtil.removeCriticals(getMek(), mounted);
+        UnitUtil.removeCriticalSlots(getMek(), mounted);
         if (crit.getMount2() != null) {
-            UnitUtil.removeCriticals(getMek(), crit.getMount2());
+            UnitUtil.removeCriticalSlots(getMek(), crit.getMount2());
         }
 
-        // Check linkings after you remove everything.
+        // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getMek());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
 
         if (crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
@@ -503,7 +503,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                       Mounted.createMounted(getMek(), structure),
                       Entity.LOC_NONE, false);
             } catch (Exception ex) {
-                logger.error("", ex);
+                LOGGER.error("", ex);
             }
         }
     }
@@ -692,9 +692,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getMek(), false);
         }
-        // If we have a large engine, a drop in tech level may make it unavailable and
-        // we will need
-        // to reduce speed to a legal value.
+        // If we have a large engine, a drop in tech level may make it unavailable, and we will need to reduce speed
+        // to a legal value.
         if (getMek().getEngine().hasFlag(Engine.LARGE_ENGINE)
               && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
@@ -750,7 +749,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             // if we switch from being superheavy to not being superheavy, remove crits
             for (Mounted<?> mount : getMek().getEquipment()) {
                 if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                    UnitUtil.removeCriticals(getMek(), mount);
+                    UnitUtil.removeCriticalSlots(getMek(), mount);
                     UnitUtil.changeMountStatus(getMek(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
             }
@@ -900,7 +899,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             panChassis.setEngine(getMek().getEngine());
             panChassis.addListener(this);
         } else {
-            // Make sure we keep same number of base heat sinks for omnis
+            // Make sure we keep same number of base heat sinks for Omni's
             engine.setBaseChassisHeatSinks(getMek().getEngine()
                   .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
             getMek().setEngine(engine);
@@ -1054,7 +1053,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 // prototype
                 // doubles to switch over.
                 if (i >= doubles.size()) {
-                    logger.warn("Not enough prototype double heat sinks to switch to single");
+                    LOGGER.warn("Not enough prototype double heat sinks to switch to single");
                 }
                 UnitUtil.removeMounted(getMek(), doubles.get(i));
             }
@@ -1069,7 +1068,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                   .collect(Collectors.toList());
             for (int i = 0; i < netChange; i++) {
                 if (i >= singles.size()) {
-                    logger.warn("Not enough single heat sinks to switch to prototype double");
+                    LOGGER.warn("Not enough single heat sinks to switch to prototype double");
                 }
                 UnitUtil.removeMounted(getMek(), singles.get(i));
             }
@@ -1206,7 +1205,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private void addOrRemoveMekMechanicalJumpBoosters(final int jumpMP, EquipmentType jumpJet) {
         assert (jumpJet.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER));
         if (jumpMP == 0) {
-            UnitUtil.removeAllMounteds(getMek(), jumpJet);
+            UnitUtil.removeAllMounted(getMek(), jumpJet);
         } else {
             Optional<MiscMounted> mekMechanicalJumpBooster = getMek().getMisc().stream()
                   .filter(m -> m.is(EquipmentTypeLookup.MECHANICAL_JUMP_BOOSTER))
@@ -1279,7 +1278,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 case Mek.LOC_RIGHT_TORSO:
                     int rear = (int) Math.floor(allocate * .25);
                     int front = (int) Math.ceil(allocate * .75);
-                    // Make sure rounding doesn't add an additional point to this location,
+                    // Make sure rounding doesn't add a point to this location,
                     // which could cause us to run out of armor before we get to the end.
                     if (rear + front > allocate) {
                         if (front > rear * 3) {

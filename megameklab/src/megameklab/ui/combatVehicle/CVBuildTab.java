@@ -142,7 +142,7 @@ public class CVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        UnitUtil.removeAllCriticals(getTank());
+        UnitUtil.removeAllCriticalSlots(getTank());
         // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getTank());

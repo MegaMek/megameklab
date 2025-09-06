@@ -37,7 +37,7 @@ import megamek.common.units.Jumpship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.util.UnitUtil;
 
-public class LfBatterySummaryItem extends AbstractSummaryItem {
+public class LFBatterySummaryItem extends AbstractSummaryItem {
 
     @Override
     public String getName() {

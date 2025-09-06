@@ -133,7 +133,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
         leftPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
         rightPanel.setBorder(BorderFactory.createEtchedBorder(Color.WHITE.brighter(), Color.blue.darker()));
 
-        weaponList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPONTABLE);
+        weaponList = new CriticalTableModel(eSource.getEntity(), CriticalTableModel.WEAPON_TABLE);
 
         equipmentTable.setModel(weaponList);
         weaponList.initColumnSizes(equipmentTable);

@@ -42,14 +42,16 @@ import megameklab.ui.supportVehicle.SVChassisView;
  * Listener for views used by support vehicle construction.
  */
 public interface SVBuildListener extends BuildListener {
-    /* Turret configuration constants */ int TURRET_NONE = 0;
+    // Turret configuration constants
+    int TURRET_NONE = 0;
     int TURRET_SINGLE = 1;
     int TURRET_DUAL = 2;
     int TURRET_CHIN = 3;
 
-    /* Fire control constants */ int FIRECON_NONE = 0;
-    int FIRECON_BASIC = 1;
-    int FIRECON_ADVANCED = 2;
+    // Fire control constants
+    int FIRE_CONTROL_NONE = 0;
+    int FIRE_CONTROL_BASIC = 1;
+    int FIRE_CONTROL_ADVANCED = 2;
 
     /**
      * Notify of a change in the unit tonnage
@@ -68,8 +70,7 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify of a change in the structural tech rating
      *
-     * @param techRating The new tech rating. This should be one of the constants
-     *                   {@link TechRating#A } through
+     * @param techRating The new tech rating. This should be one of the constants {@link TechRating#A } through
      *                   {@link TechRating#F}
      */
     void structuralTechRatingChanged(TechRating techRating);
@@ -84,8 +85,7 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify of a change in the engine tech rating
      *
-     * @param techRating The new tech rating. This should be one of the constants
-     *                   {@link TechRating#A} through
+     * @param techRating The new tech rating. This should be one of the constants {@link TechRating#A} through
      *                   {@link TechRating#A}
      */
     void engineTechRatingChanged(TechRating techRating);
@@ -131,7 +131,7 @@ public interface SVBuildListener extends BuildListener {
     /**
      * Notify of a change the type of fire control
      *
-     * @param index One of the FIRECON_* constants
+     * @param index One of the FIRE_CONTROL_* constants
      */
     void fireConChanged(int index);
 
@@ -175,7 +175,7 @@ public interface SVBuildListener extends BuildListener {
     void resetChassis();
 
     /**
-     * Notify of a change in the base chassis sponson/pintle weight for omnivehicles.
+     * Notify of a change in the base chassis sponson/pintle weight for OmniVehicles.
      *
      * @param turretWeight The weight of the sponson or pintle turrets.
      */

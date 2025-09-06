@@ -116,7 +116,7 @@ public class ASBuildTab extends ITab implements ActionListener {
         for (Mounted<?> mount : getAero().getEquipment()) {
             if (!mount.isWeaponGroup() && TestAero.eqRequiresLocation(mount.getType(), true)
                   && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                UnitUtil.removeCriticals(getAero(), mount);
+                UnitUtil.removeCriticalSlots(getAero(), mount);
                 UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }

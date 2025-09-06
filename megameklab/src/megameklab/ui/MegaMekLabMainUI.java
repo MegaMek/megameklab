@@ -76,8 +76,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean forceDirtyUntilNextSave = false;
     private UnitMemento savedUnitSnapshot = null;
     private UnitMemento currentSnapshot = null;
-    private Deque<UnitMemento> undoStack = new LinkedList<>();
-    private Deque<UnitMemento> redoStack = new LinkedList<>();
+    private final Deque<UnitMemento> undoStack = new LinkedList<>();
+    private final Deque<UnitMemento> redoStack = new LinkedList<>();
     private boolean ignoreNextStateChange = false;
 
     public MegaMekLabMainUI() {
@@ -153,7 +153,7 @@ public abstract class MegaMekLabMainUI extends JPanel
             if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))) {
                 pushUndoState(currentSnapshot);
             } else
-                // If we don't have a currentSnapshot, the undoStack is empty and we have a
+                // If we don't have a currentSnapshot, the undoStack is empty, and we have a
                 // savedUnitSnapshot, this is the first undo point
                 if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
                     pushUndoState(savedUnitSnapshot);
@@ -189,12 +189,10 @@ public abstract class MegaMekLabMainUI extends JPanel
      * Pushes the state of the unit to the undo stack.
      *
      * @param state The state to push to the undo stack.
-     *
-     * @return true if the state was pushed, false if it was not (e.g., if it was the same as the previous state).
      */
-    private boolean pushUndoState(UnitMemento state) {
+    private void pushUndoState(UnitMemento state) {
         if (!undoStack.isEmpty() && undoStack.peek().equals(state)) {
-            return false; // Avoid pushing the same state multiple times
+            return; // Avoid pushing the same state multiple times
         }
         // Clear redo stack when a new action is performed
         redoStack.clear();
@@ -204,13 +202,11 @@ public abstract class MegaMekLabMainUI extends JPanel
             undoStack.removeLast();
         }
         refreshMenuBar();
-        return true;
     }
 
     /**
      * Checks if there is an undo operation available.
      *
-     * @return
      */
     public boolean hasUndo() {
         return !undoStack.isEmpty();
@@ -219,7 +215,6 @@ public abstract class MegaMekLabMainUI extends JPanel
     /**
      * Checks if there is a redo operation available.
      *
-     * @return
      */
     public boolean hasRedo() {
         return !redoStack.isEmpty();
@@ -305,7 +300,6 @@ public abstract class MegaMekLabMainUI extends JPanel
     /**
      * Returns true if the unit has been modified since it was last saved.
      *
-     * @return
      */
     public boolean isDirty() {
         return dirty || forceDirtyUntilNextSave;
@@ -369,7 +363,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     public boolean saveUnitAs() {
         warnOnInvalid();
-        UnitUtil.compactCriticals(getEntity());
+        UnitUtil.compactCriticalSlots(getEntity());
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
@@ -392,7 +386,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         } else {
             warnOnInvalid();
         }
-        UnitUtil.compactCriticals(entity);
+        UnitUtil.compactCriticalSlots(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
               resources.getString("dialog.saveAs.title"));

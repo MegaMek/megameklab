@@ -1317,12 +1317,12 @@ public class SVGMassPrinter {
                     }
                     for (int j = 0; j < equipmentTableModel.getColumnCount(); j++) {
                         if (j == EquipmentTableModel.COL_NAME) {continue;}
-                        if (j == EquipmentTableModel.COL_TRATING) {continue;}
-                        if (j == EquipmentTableModel.COL_DPROTOTYPE) {continue;}
-                        if (j == EquipmentTableModel.COL_DPRODUCTION) {continue;}
-                        if (j == EquipmentTableModel.COL_DCOMMON) {continue;}
-                        if (j == EquipmentTableModel.COL_DEXTINCT) {continue;}
-                        if (j == EquipmentTableModel.COL_DREINTRO) {continue;}
+                        if (j == EquipmentTableModel.COL_TECH_RATING) {continue;}
+                        if (j == EquipmentTableModel.COL_DATE_PROTOTYPE) {continue;}
+                        if (j == EquipmentTableModel.COL_DATE_PRODUCTION) {continue;}
+                        if (j == EquipmentTableModel.COL_DATE_COMMON) {continue;}
+                        if (j == EquipmentTableModel.COL_DATE_EXTINCT) {continue;}
+                        if (j == EquipmentTableModel.COL_DATE_REINTRODUCED) {continue;}
                         String key = normalizedKeys.get(j);
                         Object value = equipmentTableModel.getValueAt(i, j);
                         rowMap.put(key, value);

@@ -97,7 +97,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         equipmentList = new CriticalTableModel(getBattleArmor(),
-              CriticalTableModel.BUILDTABLE);
+              CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);

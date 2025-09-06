@@ -449,7 +449,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
-            UnitUtil.compactCriticals(getAero());
+            UnitUtil.compactCriticalSlots(getAero());
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
             panArmorAllocation.showPatchwork(false);

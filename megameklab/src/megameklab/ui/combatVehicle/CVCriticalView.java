@@ -203,7 +203,7 @@ public final class CVCriticalView extends IView {
                 }
 
                 if (critNames.isEmpty()) {
-                    critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                    critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                 }
                 DropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(critNames, location);
                 if (isVTOL()) {
@@ -232,7 +232,7 @@ public final class CVCriticalView extends IView {
         criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         criticalSlotList.setName(location + "");
         criticalSlotList.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         return criticalSlotList;
     }
 }

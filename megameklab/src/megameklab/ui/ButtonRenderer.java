@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -25,35 +25,38 @@
  * Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
  * InMediaRes Productions, LLC.
  *
- * MechWarrior Copyright Microsoft Corporation. MegaMek was created under
+ * MechWarrior Copyright Microsoft Corporation. MegaMekLab was created under
  * Microsoft's "Game Content Usage Rules"
  * <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
  * affiliated with Microsoft.
  */
-package megameklab.ui.listeners;
+package megameklab.ui;
 
-import megamek.common.units.EntityMovementMode;
+import java.awt.Component;
+import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.table.TableCellRenderer;
 
-/**
- * Listener for views used by conventional infantry.
- *
- * @author Neoancient
- */
-public interface InfantryBuildListener extends BuildListener {
-    void numSecondaryChanged(int count);
+// Inner class for rendering the button in the table cell
+class ButtonRenderer extends JButton implements TableCellRenderer {
+    public ButtonRenderer() {
+        setOpaque(true);
+        setIcon(UIManager.getIcon("InternalFrame.closeIcon"));
+        setMargin(new Insets(0, 0, 0, 0));
+    }
 
-    void numFieldGunsChanged(int count);
-
-    void antiMekChanged(boolean antiMek);
-
-    /**
-     * @param motiveType The selected motive type
-     * @param alt        If motiveType is VTOL or INF_UMU, alt is true for microlite and motorized scuba respectively,
-     *                   false for MicroCopter and foot scuba. It has no meaning for other motive types.
-     */
-    void motiveTypeChanged(EntityMovementMode motiveType, boolean alt);
-
-    void platoonSizeChanged(int numSquads, int squadSize);
-
-    void specializationsChanged();
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+          int row, int column) {
+        if (isSelected) {
+            setForeground(table.getSelectionForeground());
+            setBackground(table.getSelectionBackground());
+        } else {
+            setForeground(table.getForeground());
+            setBackground(UIManager.getColor("Button.background"));
+        }
+        return this;
+    }
 }

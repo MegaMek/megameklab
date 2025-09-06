@@ -91,7 +91,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     public ASBuildView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
 
-        equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);

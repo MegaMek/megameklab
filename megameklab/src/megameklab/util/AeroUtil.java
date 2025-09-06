@@ -210,10 +210,10 @@ public final class AeroUtil {
      * @param aero        The vessel
      * @param officer     The number of officer/first class quarters
      * @param standard    The number of standard crew quarters
-     * @param secondclass The number second class passenger quarters
+     * @param secondClass The number second class passenger quarters
      * @param steerage    The number of steerage class crew/passenger quarters
      */
-    public static void assignQuarters(Aero aero, int officer, int standard, int secondclass, int steerage) {
+    public static void assignQuarters(Aero aero, int officer, int standard, int secondClass, int steerage) {
         Map<TestAero.Quarters, Integer> sizes = TestAero.Quarters.getQuartersByType(aero);
         if (sizes.get(TestAero.Quarters.FIRST_CLASS) != officer) {
             setQuarters(aero, TestAero.Quarters.FIRST_CLASS, officer);
@@ -221,8 +221,8 @@ public final class AeroUtil {
         if (sizes.get(TestAero.Quarters.STANDARD) != standard) {
             setQuarters(aero, TestAero.Quarters.STANDARD, standard);
         }
-        if (sizes.get(TestAero.Quarters.SECOND_CLASS) != secondclass) {
-            setQuarters(aero, TestAero.Quarters.SECOND_CLASS, secondclass);
+        if (sizes.get(TestAero.Quarters.SECOND_CLASS) != secondClass) {
+            setQuarters(aero, TestAero.Quarters.SECOND_CLASS, secondClass);
         }
         if (sizes.get(TestAero.Quarters.STEERAGE) != steerage) {
             setQuarters(aero, TestAero.Quarters.STEERAGE, steerage);
@@ -261,29 +261,29 @@ public final class AeroUtil {
         // Limit the steerage quarters to the number of crew that have not been assigned
         // standard
         // or officer quarters and passengers that have not been assigned first class.
-        int steeragePsgr = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
+        int steeragePassenger = Math.min(aero.getNPassenger() - firstClass + enlistedNeeds - standardCrew,
               quartersCount.get(TestAero.Quarters.STEERAGE));
         // Assign any existing steerage quarters first to marines that have not already
         // been assigned standard
         // quarters
         int steerageCrew = 0;
         if (enlistedNeeds > standardCrew) {
-            steerageCrew = Math.min(steeragePsgr, marines);
-            steeragePsgr -= steerageCrew;
+            steerageCrew = Math.min(steeragePassenger, marines);
+            steeragePassenger -= steerageCrew;
         }
         // Assign any remaining steerage quarters to passengers first, then remaining
         // crew.
-        if (steeragePsgr > aero.getNPassenger() - firstClass) {
-            int excess = steeragePsgr - aero.getNPassenger() - firstClass;
+        if (steeragePassenger > aero.getNPassenger() - firstClass) {
+            int excess = steeragePassenger - aero.getNPassenger() - firstClass;
             steerageCrew += excess;
-            steeragePsgr -= excess;
+            steeragePassenger -= excess;
         }
 
         // Any leftovers go to standard crew or second class
         standardCrew = enlistedNeeds - steerageCrew;
-        int secondClass = aero.getNPassenger() - firstClass - steeragePsgr;
+        int secondClass = aero.getNPassenger() - firstClass - steeragePassenger;
 
-        assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePsgr);
+        assignQuarters(aero, officer + firstClass, standardCrew, secondClass, steerageCrew + steeragePassenger);
     }
 
     public static void updateLoadedAero(Aero unit) {

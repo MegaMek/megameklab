@@ -438,7 +438,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
         if (null != jumpJet) {
-            UnitUtil.removeAllMiscMounteds(getTank(), MiscType.F_JUMP_JET);
+            UnitUtil.removeAllMiscMounted(getTank(), MiscType.F_JUMP_JET);
             getTank().setOriginalJumpMP(0);
             for (int i = 0; i < jumpMP; i++) {
                 try {
@@ -467,7 +467,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             UnitUtil.removeISorArmorMounts(getTank(), false);
-            UnitUtil.compactCriticals(getTank());
+            UnitUtil.compactCriticalSlots(getTank());
             getTank().setArmorTechLevel(aTechLevel);
             getTank().setArmorType(at);
             panArmorAllocation.showPatchwork(false);

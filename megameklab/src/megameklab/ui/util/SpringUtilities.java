@@ -42,7 +42,7 @@ import megamek.logging.MMLogger;
  * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout.
  */
 public class SpringUtilities {
-    private static final MMLogger logger = MMLogger.create(SpringUtilities.class);
+    private static final MMLogger LOGGER = MMLogger.create(SpringUtilities.class);
 
     private static Constraints getConstraintsForCell(int row, int col, Container parent, int cols) {
         SpringLayout layout = (SpringLayout) parent.getLayout();
@@ -69,7 +69,7 @@ public class SpringUtilities {
         try {
             layout = (SpringLayout) parent.getLayout();
         } catch (ClassCastException ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
             return;
         }
 

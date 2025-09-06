@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 import megamek.logging.MMLogger;
 
 public class SingleInstanceService {
-    private static final MMLogger logger = MMLogger.create(SingleInstanceService.class);
+    private static final MMLogger LOGGER = MMLogger.create(SingleInstanceService.class);
     private final String applicationId;
     private final int port;
     private FileLock fileLock;
@@ -125,7 +125,7 @@ public class SingleInstanceService {
             return true;
 
         } catch (Exception e) {
-            logger.error("Error registering single instance", e);
+            LOGGER.error("Error registering single instance", e);
             cleanup();
             // In case of error, assume we're the only instance
             return true;
@@ -136,16 +136,14 @@ public class SingleInstanceService {
      * Send a message to the running instance
      *
      * @param message Message to send
-     *
-     * @return true if successful, false otherwise
      */
-    public boolean sendMessage(String message) {
+    public void sendMessage(String message) {
         Path portFile = getPortFilePath();
 
         try {
             // Check if the port file exists
             if (!Files.exists(portFile)) {
-                return false;
+                return;
             }
 
             // Read the port number from the port file (not the lock file)
@@ -158,12 +156,10 @@ public class SingleInstanceService {
 
                 // Send the message
                 out.println(message);
-                return true;
             }
 
         } catch (Exception e) {
-            logger.error("Error sending message to running instance", e);
-            return false;
+            LOGGER.error("Error sending message to running instance", e);
         }
     }
 
@@ -193,7 +189,7 @@ public class SingleInstanceService {
                             }
 
                         } catch (Exception e) {
-                            logger.error("Error processing client connection", e);
+                            LOGGER.error("Error processing client connection", e);
                         } finally {
                             try {
                                 clientSocket.close();
@@ -205,7 +201,7 @@ public class SingleInstanceService {
 
                 } catch (Exception e) {
                     if (!Thread.currentThread().isInterrupted()) {
-                        logger.error("Error accepting client connection", e);
+                        LOGGER.error("Error accepting client connection", e);
                     }
                 }
             }
@@ -267,7 +263,7 @@ public class SingleInstanceService {
                 serverSocket.close();
             }
         } catch (Exception e) {
-            logger.error("Error closing server socket", e);
+            LOGGER.error("Error closing server socket", e);
         }
 
         try {
@@ -275,7 +271,7 @@ public class SingleInstanceService {
                 fileLock.release();
             }
         } catch (Exception e) {
-            logger.error("Error releasing file lock", e);
+            LOGGER.error("Error releasing file lock", e);
         }
         try {
             if (fileChannel != null) {
@@ -285,13 +281,13 @@ public class SingleInstanceService {
                 raf.close();
             }
         } catch (Exception e) {
-            logger.error("Error closing file channel", e);
+            LOGGER.error("Error closing file channel", e);
         }
         // Clean up the port file
         try {
             Files.deleteIfExists(getPortFilePath());
         } catch (Exception e) {
-            logger.error("Error deleting port file", e);
+            LOGGER.error("Error deleting port file", e);
         }
         // Shut down the executor service
         if (connectionExecutor != null) {

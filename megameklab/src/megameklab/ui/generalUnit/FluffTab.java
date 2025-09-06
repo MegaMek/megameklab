@@ -98,8 +98,8 @@ public class FluffTab extends ITab implements FocusListener {
 
     private RefreshListener refresh;
 
-    public FluffTab(EntitySource esource) {
-        super(esource);
+    public FluffTab(EntitySource entitySource) {
+        super(entitySource);
         initUi();
     }
 
@@ -218,8 +218,6 @@ public class FluffTab extends ITab implements FocusListener {
         imgScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         imgScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        gbcRight.gridx = 0;
-        gbcRight.gridy = 0;
         gbcRight.gridwidth = GridBagConstraints.REMAINDER; // Image spans all columns initially
         gbcRight.weightx = 1.0;
         gbcRight.weighty = 0.0; // Image area doesn't stretch vertically initially

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 22025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -37,12 +37,12 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.units.Entity;
+import megamek.common.TechConstants;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.HandheldWeapon;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.equipment.Mounted;
-import megamek.common.TechConstants;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.PreviewTab;
@@ -175,7 +175,7 @@ public class HHWMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         HandheldWeapon newUnit = new HandheldWeapon();
         newUnit.setWeight(6);
         newUnit.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);

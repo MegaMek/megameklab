@@ -48,8 +48,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
-import megamek.common.units.Jumpship;
 import megamek.common.annotations.Nullable;
+import megamek.common.units.Jumpship;
 import megamek.common.verifier.TestAdvancedAerospace;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AdvancedAeroBuildListener;
@@ -149,7 +149,7 @@ public class WSGravDeckView extends BuildView implements ActionListener, TableMo
         final static int NUM_COLS = 3;
 
         private final String[] colNames;
-        private List<Integer> deckSizes = new ArrayList<>();
+        private final List<Integer> deckSizes = new ArrayList<>();
         private int maxSize = 250;
 
         GravDeckTableModel() {

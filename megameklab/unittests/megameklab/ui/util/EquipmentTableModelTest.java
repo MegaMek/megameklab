@@ -45,12 +45,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Entity;
 import megameklab.testing.util.InitializeTypes;
 import megameklab.ui.EntitySource;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -72,15 +72,15 @@ class EquipmentTableModelTest {
         eSource = mock(ASMainUI.class);
     }
 
-    private Entity configureFromFilename(String fname) throws EntityLoadingException {
+    private Entity configureFromFilename(String fileName) throws EntityLoadingException {
         // Load as InputStream
         // testresources and Classpath are not working together in this project somehow.
         // This only works if the file is in the test resources root
-        InputStream is = getClass().getResourceAsStream(fname);
+        InputStream is = getClass().getResourceAsStream(fileName);
         assertNotNull(is);
 
         // Read InputStream into Entity
-        Entity testEntity = new MekFileParser(is, fname).getEntity();
+        Entity testEntity = new MekFileParser(is, fileName).getEntity();
         doReturn(testEntity).when(eSource).getEntity();
 
         // Set up EquipmentTypeModel instance
@@ -113,8 +113,8 @@ class EquipmentTableModelTest {
         ));
         Entity e;
 
-        for (String fname : testItems) {
-            e = configureFromFilename(fname);
+        for (String fileName : testItems) {
+            e = configureFromFilename(fileName);
             assertNotNull(e);
             for (int i = 0; i < etm.getColumnCount(); i++) {
                 etm.getValueAt(0, i);
@@ -125,10 +125,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForAero() throws EntityLoadingException {
         // Test reading damage strings for ASF weapons
-        String fname = "/Kirghiz C.blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Kirghiz C.blk";
+        Entity te = configureFromFilename(fileName);
         assertTrue(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             if (dString.contains("/")) {
@@ -145,10 +145,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForCI() throws EntityLoadingException {
         // Test reading damage strings for CI weapons
-        String fname = "/Jump Squad (LRM).blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Jump Squad (LRM).blk";
+        Entity te = configureFromFilename(fileName);
         assertFalse(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double
@@ -161,10 +161,10 @@ class EquipmentTableModelTest {
     @Test
     void testGetDamageStringForGEArty() throws EntityLoadingException {
         // Test reading damage strings for CI weapons
-        String fname = "/Long Tom Cannon Turret (Quad).blk";
-        Entity te = configureFromFilename(fname);
+        String fileName = "/Long Tom Cannon Turret (Quad).blk";
+        Entity te = configureFromFilename(fileName);
         assertFalse(te.isAero());
-        for (Mounted weapon : te.getWeaponList()) {
+        for (Mounted<?> weapon : te.getWeaponList()) {
             WeaponType weaponType = (WeaponType) weapon.getType();
             String dString = EquipmentTableModel.getDamageString(weaponType, te.isAero());
             // Confirm can convert to double

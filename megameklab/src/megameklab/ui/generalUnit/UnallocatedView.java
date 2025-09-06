@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -48,9 +48,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.common.weapons.Weapon;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -67,14 +67,14 @@ import megameklab.util.UnitUtil;
 public class UnallocatedView extends IView implements ActionListener, MouseListener {
     private static final MMLogger logger = MMLogger.create(UnallocatedView.class);
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
     private final CriticalTransferHandler cth;
     private final Supplier<RefreshListener> refresh;
@@ -85,7 +85,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(getEntity(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getEntity(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);

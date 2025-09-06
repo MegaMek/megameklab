@@ -66,15 +66,15 @@ public class BMBuildTab extends ITab {
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Tabs");
 
     private final JToggleButton autoFillUnHitTables = new JToggleButton(resources.getString(
-          "BuildTab.autoFillUnhittables.text"));
+          "BuildTab.autoFillUnhitTables.text"));
     private final JToggleButton autoCompact = new JToggleButton(resources.getString("BuildTab.autoCompact.text"));
     private final JToggleButton autoSort = new JToggleButton(resources.getString("BuildTab.autoSort.text"));
 
     public BMBuildTab(EntitySource eSource) {
         super(eSource);
         autoFillUnHitTables.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOFILL));
-        autoSort.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOSORT));
-        autoCompact.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTOCOMPACT));
+        autoSort.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTO_SORT));
+        autoCompact.setSelected(CConfig.getBooleanParam(CConfig.MEK_AUTO_COMPACT));
         critView = new BMCriticalView(eSource, refresh);
         buildView = new BMBuildView(eSource, refresh, critView);
 
@@ -90,7 +90,7 @@ public class BMBuildTab extends ITab {
 
     private JComponent createButtonPanel() {
         autoFillUnHitTables.addActionListener(e -> refresh());
-        autoFillUnHitTables.setToolTipText(resources.getString("BuildTab.autoFillUnhittables.tooltip"));
+        autoFillUnHitTables.setToolTipText(resources.getString("BuildTab.autoFillUnhitTables.tooltip"));
         autoCompact.addActionListener(e -> refresh());
         autoCompact.setToolTipText(resources.getString("BuildTab.autoCompact.tooltip"));
         autoSort.addActionListener(e -> refresh());
@@ -143,8 +143,8 @@ public class BMBuildTab extends ITab {
 
     public void refresh() {
         CConfig.setParam(CConfig.MEK_AUTOFILL, Boolean.toString(autoFillUnHitTables.isSelected()));
-        CConfig.setParam(CConfig.MEK_AUTOSORT, Boolean.toString(autoSort.isSelected()));
-        CConfig.setParam(CConfig.MEK_AUTOCOMPACT, Boolean.toString(autoCompact.isSelected()));
+        CConfig.setParam(CConfig.MEK_AUTO_SORT, Boolean.toString(autoSort.isSelected()));
+        CConfig.setParam(CConfig.MEK_AUTO_COMPACT, Boolean.toString(autoCompact.isSelected()));
         autoFillUnHitTables();
         autoCompactCrits();
         autoSortCrits();
@@ -164,7 +164,7 @@ public class BMBuildTab extends ITab {
     }
 
     private void resetCrits() {
-        UnitUtil.removeAllCriticals(getMek());
+        UnitUtil.removeAllCriticalSlots(getMek());
         refresh.refreshAll();
     }
 
@@ -175,7 +175,7 @@ public class BMBuildTab extends ITab {
      */
     private void autoCompactCrits() {
         if (autoCompact.isSelected() && !autoSort.isSelected()) {
-            MekUtil.compactCriticals(getMek());
+            MekUtil.compactCriticalSlots(getMek());
         }
     }
 
@@ -184,7 +184,7 @@ public class BMBuildTab extends ITab {
      * in a loop!
      */
     private void compactCrits() {
-        MekUtil.compactCriticals(getMek());
+        MekUtil.compactCriticalSlots(getMek());
         refresh.refreshAll();
     }
 

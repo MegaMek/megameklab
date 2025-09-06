@@ -37,8 +37,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import megamek.client.ui.util.UIUtil;
-import megamek.common.units.Entity;
 import megamek.common.annotations.Nullable;
+import megamek.common.units.Entity;
 import megameklab.ui.util.AppCloser;
 
 /**
@@ -94,7 +94,7 @@ public interface MenuBarOwner extends AppCloser {
     void refreshMenuBar();
 
     /**
-     * Sets the look and feel for the application and lets Swing update the current components.
+     * Sets the look and feel for the application and let's Swing update the current components.
      *
      * @param lookAndFeelInfo The look and feel to use for the application.
      */
@@ -104,7 +104,7 @@ public interface MenuBarOwner extends AppCloser {
 
 
     /**
-     * Sets the look and feel for the application and lets Swing update the current components. *
+     * Sets the look and feel for the application and let's Swing update the current components. *
      *
      * @param lookAndFeelInfo The name of the look and feel to use for the application.
      */

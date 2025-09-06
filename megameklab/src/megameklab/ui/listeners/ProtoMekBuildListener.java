@@ -35,7 +35,7 @@ package megameklab.ui.listeners;
 import megamek.common.equipment.EquipmentType;
 
 /**
- * Listener for views used by Protomechs.
+ * Listener for views used by ProtoMeks.
  *
  * @author Neoancient
  */

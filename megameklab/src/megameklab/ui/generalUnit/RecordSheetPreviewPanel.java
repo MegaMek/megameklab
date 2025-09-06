@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -41,8 +41,6 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -71,6 +69,7 @@ import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import jakarta.annotation.Nonnull;
 import megamek.common.units.BTObject;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
@@ -95,8 +94,8 @@ public class RecordSheetPreviewPanel extends JPanel {
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
         @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r, "RecordSheetRenderer-" + threadNumber.getAndIncrement());
+        public Thread newThread(Runnable runnable) {
+            Thread t = new Thread(runnable, "RecordSheetRenderer-" + threadNumber.getAndIncrement());
             t.setDaemon(true); // Allow JVM exit even if rendering threads are active
             t.setPriority(Thread.MIN_PRIORITY + 1); // Render at lower priority
             return t;
@@ -123,17 +122,13 @@ public class RecordSheetPreviewPanel extends JPanel {
         }, "RecordSheetRenderer-ShutdownHook"));
     }
 
-    private static class RenderResult {
-        final BufferedImage image;
-        final double zoomFactor; // The zoom used to render this image
-
-        RenderResult(BufferedImage image, double zoomFactor) {
-            this.image = image;
-            this.zoomFactor = zoomFactor;
-        }
+    /**
+     * @param zoomFactor The zoom used to render this image
+     */
+    private record RenderResult(BufferedImage image, double zoomFactor) {
     }
 
-    private class SheetPageInfo {
+    private static class SheetPageInfo {
         GraphicsNode graphicsNode; // The raw Batik node for this page
         final int originalSheetIndex; // Index of the PrintRecordSheet this page belongs to
         final int pageIndexInSheet; // Index of this page within its PrintRecordSheet
@@ -214,10 +209,10 @@ public class RecordSheetPreviewPanel extends JPanel {
     private volatile double minZoom = DEFAULT_MIN_ZOOM; // Minimum zoom
     private volatile double minFitZoom = 1.0; // Minimum zoom to fit content
     private volatile double zoomFactor = 1.0; // Current view zoom
-    private Point2D panOffset = new Point2D.Double(0, 0);
+    private final Point2D panOffset = new Point2D.Double(0, 0);
     private Point lastMousePoint;
     private boolean isPanning = false;
-    private boolean fullAsyncMode = false; // Use full async mode for rendering (good for view only)
+    private boolean fullAsyncMode = false; // useful async mode for rendering (good for view only)
     private volatile boolean isHighQualityPaint = true;
     private final AffineTransform paintTransform = new AffineTransform(); // Reusable transform for clipboard painting
 
@@ -227,7 +222,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     private Boolean showPilotData = null;
     private Boolean showDamage = null;
     private List<BTObject> currentEntities = Collections.emptyList();
-    private List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
+    private final List<SheetPageInfo> sheetPages = Collections.synchronizedList(new ArrayList<>());
     private List<PrintRecordSheet> generatedSheets = null; // Cache generated sheets for clipboard
     private final ReentrantLock sheetGenerationLock = new ReentrantLock(); // Lock for sheet generation
     private int lastRegenerationEntitiesCount = 0; // Track last regeneration entities count for repaint optimization
@@ -245,12 +240,12 @@ public class RecordSheetPreviewPanel extends JPanel {
     private boolean isInitialRender = true; // Flag to track if this is the first render
 
     private enum ScheduledAction {
-        NONE(0), // No pending action
+        NONE(0), // No, pending action
         RESET_VIEW(1), // Reset view pending
         UPDATE_SHEET_CONTENT(2), // Update sheet content pending
         REGENERATE_AND_RESET(3); // Regenerate and reset view pending
 
-        private int idx;
+        private final int idx;
 
         ScheduledAction(int idx) {
             this.idx = idx;
@@ -282,7 +277,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         hScrollBar.addAdjustmentListener(e -> {
             if (adjustingHScrollBar) {return;}
             panOffset.setLocation(-e.getValue(), panOffset.getY());
-            // while dragging, do a quick lowres paint
+            // while dragging, do a quick low res paint
             if (e.getValueIsAdjusting()) {
                 isHighQualityPaint = false;
                 repaint();
@@ -297,7 +292,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         vScrollBar.addAdjustmentListener(e -> {
             if (adjustingVScrollBar) {return;}
             panOffset.setLocation(panOffset.getX(), -e.getValue());
-            // while dragging, do a quick lowres paint
+            // while dragging, do a quick low res paint
             if (e.getValueIsAdjusting()) {
                 isHighQualityPaint = false;
                 repaint();
@@ -391,17 +386,12 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set the minimum zoom level for the preview.
      *
-     * @param minZoom
      */
     public void setMinZoom(double minZoom) {
         if (minZoom == this.minZoom) {
             return;
         }
-        if (minZoom < DEFAULT_MIN_ZOOM) {
-            this.minZoom = DEFAULT_MIN_ZOOM;
-        } else {
-            this.minZoom = minZoom;
-        }
+        this.minZoom = Math.max(minZoom, DEFAULT_MIN_ZOOM);
         scheduleResetView();
     }
 
@@ -409,7 +399,6 @@ public class RecordSheetPreviewPanel extends JPanel {
      * When this mode is active, the rendering of the SVG happens in a background thread and not in EDT. Can cause
      * issues during unit editing, but is much faster for viewing. Use it when you are not editing the unit.
      *
-     * @param fullAsyncMode
      */
     public void setFullAsyncMode(boolean fullAsyncMode) {
         this.fullAsyncMode = fullAsyncMode;
@@ -444,37 +433,34 @@ public class RecordSheetPreviewPanel extends JPanel {
 
     private void setupMouseHandlers() {
         // Zoom
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (sheetPages.isEmpty()) {return;}
+        addMouseWheelListener(e -> {
+            if (sheetPages.isEmpty()) {return;}
 
-                Point mousePoint = e.getPoint();
-                double oldZoom = zoomFactor;
+            Point mousePoint = e.getPoint();
+            double oldZoom = zoomFactor;
 
-                double scroll = e.getPreciseWheelRotation();
-                double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
+            double scroll = e.getPreciseWheelRotation();
+            double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
 
-                newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
+            newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
 
-                if (Math.abs(oldZoom - newZoom) > 0.001) {
-                    double zoomRatio = newZoom / oldZoom;
-                    panOffset.setLocation(
-                          mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
-                          mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
+            if (Math.abs(oldZoom - newZoom) > 0.001) {
+                double zoomRatio = newZoom / oldZoom;
+                panOffset.setLocation(
+                      mousePoint.getX() - (mousePoint.getX() - panOffset.getX()) * zoomRatio,
+                      mousePoint.getY() - (mousePoint.getY() - panOffset.getY()) * zoomRatio);
 
-                    zoomFactor = newZoom;
+                zoomFactor = newZoom;
 
-                    // Constrain pan offset to keep content visible
-                    panOffset.setLocation(
-                          constrainPanX(panOffset.getX()),
-                          constrainPanY(panOffset.getY()));
+                // Constrain pan offset to keep content visible
+                panOffset.setLocation(
+                      constrainPanX(panOffset.getX()),
+                      constrainPanY(panOffset.getY()));
 
-                    isHighQualityPaint = false;
-                    repaint();
-                    updateScrollbars();
-                    zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
-                }
+                isHighQualityPaint = false;
+                repaint();
+                updateScrollbars();
+                zoomRenderDebounceTimer.restart(); // Schedule high-res render after zoom stops
             }
         });
 
@@ -604,7 +590,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set to true if only one unit should be printed per sheet.
      *
-     * @param oneUnitPerSheet
      */
     public void setOneUnitPerSheet(boolean oneUnitPerSheet) {
         if (this.oneUnitPerSheet == oneUnitPerSheet) {
@@ -617,7 +602,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set to true/false if you want C3 and other special equips to affect the BV
      *
-     * @param enabled
      */
     public void includeC3inBV(Boolean enabled) {
         if (this.includeC3inBV == enabled) {
@@ -630,7 +614,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set to true/false if you want to show the pilot data on the record sheet.
      *
-     * @param enabled
      */
     public void showPilotData(Boolean enabled) {
         if (this.showPilotData == enabled) {
@@ -643,7 +626,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set to true/false if you want to show the damage on the record sheet.
      *
-     * @param enabled
      */
     public void showDamage(Boolean enabled) {
         if (this.showDamage == enabled) {
@@ -678,7 +660,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Set a single entity to be displayed in the record sheet preview.
      *
-     * @param entity
      */
     public void setEntity(Entity entity) {
         setEntities(entity == null ? null : List.of(entity));
@@ -764,7 +745,6 @@ public class RecordSheetPreviewPanel extends JPanel {
     /**
      * Returns the current RecordSheetOptions based on the current settings.
      *
-     * @return
      */
     public RecordSheetOptions getRecordSheetOptions() {
         RecordSheetOptions options = new RecordSheetOptions();
@@ -865,9 +845,9 @@ public class RecordSheetPreviewPanel extends JPanel {
                                   pageIndexInSheet);
                         }
                     } catch (Exception e) {
-                        logger.error(
-                              "Error generating GraphicsNode for sheet " + sheetIndex + ", page " + pageIndexInSheet,
-                              e);
+                        logger.error(e, "Error generating GraphicsNode for sheet {}, page {}",
+                              sheetIndex,
+                              pageIndexInSheet);
                     }
                 }
             }
@@ -918,11 +898,10 @@ public class RecordSheetPreviewPanel extends JPanel {
                 return Collections.emptyList();
             }
         }
-        List<PrintRecordSheet> tempGeneratedSheets = UnitPrintManager.createSheets(entitiesToGenerate,
+        return UnitPrintManager.createSheets(entitiesToGenerate,
               singlePrint,
               options,
               true);
-        return tempGeneratedSheets;
     }
 
     private void performUpdateSheetContentInPlace() {
@@ -942,7 +921,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         repaint(); // Ensure placeholders might show if needed
 
         renderExecutor.submit(() -> {
-            List<PrintRecordSheet> newGeneratedSheets = null;
+            List<PrintRecordSheet> newGeneratedSheets;
             List<SheetPageInfo> newPageInfos = new ArrayList<>();
             boolean structureChanged = false;
 
@@ -1005,8 +984,9 @@ public class RecordSheetPreviewPanel extends JPanel {
                                           sheetIndex, pageIndexInSheet);
                                 }
                             } catch (Exception e) {
-                                logger.error("Error generating GraphicsNode (in-place) for sheet " + sheetIndex
-                                      + ", page " + pageIndexInSheet, e);
+                                logger.error(e, "Error generating GraphicsNode (in-place) for sheet {}, page {}",
+                                      sheetIndex,
+                                      pageIndexInSheet);
                             }
                         }
                     }
@@ -1159,7 +1139,7 @@ public class RecordSheetPreviewPanel extends JPanel {
 
         RecordSheetOptions options = getRecordSheetOptions();
         PaperSize pz = options.getPaperSize();
-        double maxBaseHeight = 0;
+        double maxBaseHeight;
         if (!sheetPages.isEmpty()) {
             SheetPageInfo firstPage = sheetPages.get(0);
             maxBaseHeight = firstPage.baseHeightPx;
@@ -1202,7 +1182,9 @@ public class RecordSheetPreviewPanel extends JPanel {
             if (Thread.currentThread().isInterrupted()) {return new RenderResult(null, targetZoom);}
 
             GraphicsNode node = pageInfo.graphicsNode;
-            if (node == null) {return new RenderResult(null, targetZoom);}
+            if (node == null) {
+                return new RenderResult(null, targetZoom);
+            }
 
             int renderWidth = (int) Math.ceil(pageInfo.baseWidthPx * targetZoom);
             int renderHeight = (int) Math.ceil(pageInfo.baseHeightPx * targetZoom);
@@ -1213,19 +1195,19 @@ public class RecordSheetPreviewPanel extends JPanel {
                 return new RenderResult(null, targetZoom); // Cannot render
             }
 
-            BufferedImage img = null;
-            Graphics2D g = null;
+            BufferedImage bufferedImage;
+            Graphics2D graphics2D = null;
             AffineTransform originalTransform = null;
             boolean success = false;
             try {
-                img = createCompatibleImage(renderWidth, renderHeight);
-                if (img == null) {
+                bufferedImage = createCompatibleImage(renderWidth, renderHeight);
+                if (bufferedImage == null) {
                     return new RenderResult(null, targetZoom); // Failed to create image, possible OOM
                 }
-                g = GraphicsUtil.createGraphics(img);
-                setupRenderingHints(g, true, false, img);
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, renderWidth, renderHeight);
+                graphics2D = GraphicsUtil.createGraphics(bufferedImage);
+                setupRenderingHints(graphics2D, true, false, bufferedImage);
+                graphics2D.setColor(Color.WHITE);
+                graphics2D.fillRect(0, 0, renderWidth, renderHeight);
 
                 originalTransform = node.getTransform(); // Save original
 
@@ -1249,18 +1231,18 @@ public class RecordSheetPreviewPanel extends JPanel {
                 workTransform.translate(-bounds.getX(), -bounds.getY());
                 node.setTransform(workTransform);
 
-                node.paint(g); // Render the node
+                node.paint(graphics2D); // Render the node
                 success = true; // Mark as successful render
             } catch (OutOfMemoryError oom) {
                 logger.error("OOM rendering page {} at zoom {}", pageInfo.globalPageIndex, targetZoom, oom);
-                img = null; // Discard partial image
+                bufferedImage = null; // Discard partial image
             } catch (Exception ex) {
                 logger.error("Error rendering page {}", pageInfo.globalPageIndex, ex);
-                img = null; // Discard on error
+                bufferedImage = null; // Discard on error
             } finally {
-                if (g != null) {g.dispose();}
+                if (graphics2D != null) {graphics2D.dispose();}
                 // Restore original transform
-                if (node != null && originalTransform != null) {
+                if (originalTransform != null) {
                     try {
                         node.setTransform(originalTransform);
                     } catch (Exception e) {
@@ -1268,7 +1250,8 @@ public class RecordSheetPreviewPanel extends JPanel {
                     }
                 }
             }
-            return new RenderResult(success ? img : null, targetZoom); // Return rendered image (or null on error)
+            return new RenderResult(success ? bufferedImage : null,
+                  targetZoom); // Return rendered image (or null on error)
         };
 
         final CompletableFuture<RenderResult> completableRenderFuture = CompletableFuture.supplyAsync(() -> {
@@ -1520,16 +1503,14 @@ public class RecordSheetPreviewPanel extends JPanel {
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Rendering...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
-                              (int) Math.round(targetY + targetH / 2));
+                        g2d.drawString(msg, targetX + (targetW - sw) / 2, targetY + targetH / 2);
                     } else if (pageInfo.graphicsNode != null) {
                         // Has node but no image and no task
                         g2d.setColor(Color.DARK_GRAY);
                         setupRenderingHints(g2d, true, false, null);
                         String msg = "Waiting...";
                         int sw = g2d.getFontMetrics().stringWidth(msg);
-                        g2d.drawString(msg, (int) Math.round(targetX + (targetW - sw) / 2),
-                              (int) Math.round(targetY + targetH / 2));
+                        g2d.drawString(msg, targetX + (targetW - sw) / 2, targetY + targetH / 2);
                     }
                 }
             } // End loop over pages
@@ -1660,27 +1641,29 @@ public class RecordSheetPreviewPanel extends JPanel {
         int pageImgHeight = (int) Math.ceil(pz.pxHeight * CLIPBOARD_ZOOM_SCALE);
         int totalWidth = pageImgWidth * numPages;
 
-        BufferedImage img = null;
-        Graphics2D g = null;
+        BufferedImage bufferedImage;
+        Graphics2D graphics2D = null;
         try {
-            img = new BufferedImage(totalWidth, pageImgHeight, BufferedImage.TYPE_INT_RGB);
-            g = GraphicsUtil.createGraphics(img);
+            bufferedImage = new BufferedImage(totalWidth, pageImgHeight, BufferedImage.TYPE_INT_RGB);
+            graphics2D = GraphicsUtil.createGraphics(bufferedImage);
 
-            setupRenderingHints(g, true, true, img);
+            setupRenderingHints(graphics2D, true, true, bufferedImage);
 
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, totalWidth, pageImgHeight);
+            graphics2D.setColor(Color.WHITE);
+            graphics2D.fillRect(0, 0, totalWidth, pageImgHeight);
 
             int k = 0;
             for (SheetPageInfo pageInfo : pagesToCopy) {
-                GraphicsNode gn = pageInfo.graphicsNode;
-                if (gn == null) {continue;}
+                GraphicsNode graphicsNode = pageInfo.graphicsNode;
+                if (graphicsNode == null) {
+                    continue;
+                }
 
                 AffineTransform originalTransform = null;
                 try {
-                    originalTransform = gn.getTransform(); // Save original
+                    originalTransform = graphicsNode.getTransform(); // Save original
 
-                    Rectangle2D bounds = gn.getBounds();
+                    Rectangle2D bounds = graphicsNode.getBounds();
                     if (bounds == null || bounds.getWidth() <= 0 || bounds.getHeight() <= 0) {
                         logger.warn("Skipping page {} for clipboard due to invalid node bounds.",
                               pageInfo.globalPageIndex);
@@ -1709,16 +1692,16 @@ public class RecordSheetPreviewPanel extends JPanel {
                     paintTransform.scale(scale, scale);
                     paintTransform.translate(-bounds.getX(), -bounds.getY());
 
-                    gn.setTransform(paintTransform);
-                    gn.paint(g); // Render this node onto the big image
+                    graphicsNode.setTransform(paintTransform);
+                    graphicsNode.paint(graphics2D); // Render this node onto the big image
                     k++;
                 } catch (Exception ex) {
                     logger.error("Error painting node for page {} to clipboard", pageInfo.globalPageIndex, ex);
                 } finally {
                     // Restore original transform
-                    if (gn != null && originalTransform != null) {
+                    if (originalTransform != null) {
                         try {
-                            gn.setTransform(originalTransform);
+                            graphicsNode.setTransform(originalTransform);
                         } catch (Exception e) {
                             logger.error("Failed to restore transform for page {} after clipboard render",
                                   pageInfo.globalPageIndex, e);
@@ -1728,7 +1711,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             }
 
             // Copy to clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new TransferableImage(img), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new TransferableImage(bufferedImage), null);
             logger.info("Record sheet ({} pages) copied to clipboard.", k);
 
         } catch (OutOfMemoryError ex) {
@@ -1737,19 +1720,14 @@ public class RecordSheetPreviewPanel extends JPanel {
         } catch (Exception ex) {
             logger.error("Error copying record sheet to clipboard.", ex);
         } finally {
-            if (g != null) {
-                g.dispose();
+            if (graphics2D != null) {
+                graphics2D.dispose();
             }
         }
     }
 
     // Helper class for Transferable Image
-    private static class TransferableImage implements Transferable {
-        private final BufferedImage image;
-
-        public TransferableImage(BufferedImage image) {
-            this.image = image;
-        }
+    private record TransferableImage(BufferedImage image) implements Transferable {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
@@ -1762,6 +1740,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         }
 
         @Override
+        @Nonnull
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
             if (!isDataFlavorSupported(flavor)) {
                 throw new UnsupportedFlavorException(flavor);

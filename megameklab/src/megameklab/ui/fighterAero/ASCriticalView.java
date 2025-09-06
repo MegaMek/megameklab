@@ -92,19 +92,19 @@ public class ASCriticalView extends IView {
     private void setUI() {
         noseCrits = new BAASBMDropTargetCriticalList<>(
               new ArrayList<>(), eSource, refreshListener, true, this);
-        noseCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        noseCrits.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         leftWingCrits = new BAASBMDropTargetCriticalList<>(
               new ArrayList<>(), eSource, refreshListener, true, this);
-        leftWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        leftWingCrits.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         rightWingCrits = new BAASBMDropTargetCriticalList<>(
               new ArrayList<>(), eSource, refreshListener, true, this);
-        rightWingCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        rightWingCrits.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         aftCrits = new BAASBMDropTargetCriticalList<>(
               new ArrayList<>(), eSource, refreshListener, true, this);
-        aftCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        aftCrits.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         fuselageCrits = new BAASBMDropTargetCriticalList<>(
               new ArrayList<>(), eSource, refreshListener, true, this);
-        fuselageCrits.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        fuselageCrits.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
 
         Box mainPanel = Box.createHorizontalBox();
         Box leftPanel = Box.createVerticalBox();
@@ -187,7 +187,7 @@ public class ASCriticalView extends IView {
 
             if (critNames.isEmpty()) {
                 // In a completely empty location, display a single empty slot
-                critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
             }
 
             critListFor(location).setListData(critNames);

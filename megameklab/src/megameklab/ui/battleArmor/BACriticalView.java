@@ -92,7 +92,7 @@ public class BACriticalView extends IView {
         Box rightPanel = Box.createVerticalBox();
 
         mainPanel.setBorder(BorderFactory.createTitledBorder(
-              BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR),
+              BorderFactory.createMatteBorder(2, 0, 0, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR),
               " Trooper " + trooper + " ",
               TitledBorder.TOP,
               TitledBorder.DEFAULT_POSITION));
@@ -155,13 +155,13 @@ public class BACriticalView extends IView {
                     CriticalSlot cs = critSuit.getCritical(location, slot);
                     if (cs == null) {
                         if (showEmpty) {
-                            critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                            critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                         }
                     } else if (cs.getType() == CriticalSlot.TYPE_EQUIPMENT) {
                         Mounted<?> m = cs.getMount();
                         if (m == null) {
                             if (showEmpty) {
-                                critNames.add(CritCellUtil.EMPTY_CRITCELL_TEXT);
+                                critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                             }
                         } else {
                             critNames.add(m.getName() + ":" + slot + ":" + getBattleArmor().getEquipmentNum(m));
@@ -240,8 +240,8 @@ public class BACriticalView extends IView {
         criticalSlotList.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         criticalSlotList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         criticalSlotList.setName(location + ":" + trooper);
-        criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
-        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITCELL_WIDTH_STRING);
+        criticalSlotList.setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
+        criticalSlotList.setPrototypeCellValue(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
         return criticalSlotList;
     }
 

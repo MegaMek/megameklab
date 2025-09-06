@@ -40,7 +40,7 @@ import megamek.common.units.Entity;
 /**
  * This is a base implementation for {@link SummaryItem}. It offers three text items {@link #weightLabel},
  * {@link #critLabel} and {@link #availabilityLabel} that should be updated in {@link SummaryItem#refresh(Entity)}.
- * These are currently JLabels but JTextfields could also be used (they obviously have to support showing a text but the
+ * These are currently JLabels but JTextFields could also be used (they obviously have to support showing a text but the
  * common base class of both is JComponent which does not allow setting a text).
  */
 public abstract class AbstractSummaryItem implements SummaryItem {

@@ -95,8 +95,7 @@ import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 
 public class UnitUtil {
-
-    private static final MMLogger logger = MMLogger.create(UnitUtil.class);
+    private static final MMLogger LOGGER = MMLogger.create(UnitUtil.class);
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
@@ -265,7 +264,7 @@ public class UnitUtil {
      * @param mount The equipment
      */
     public static void removeMounted(Entity unit, Mounted<?> mount) {
-        UnitUtil.removeCriticals(unit, mount);
+        UnitUtil.removeCriticalSlots(unit, mount);
 
         // Some special checks for BA
         if (unit instanceof BattleArmor) {
@@ -331,13 +330,13 @@ public class UnitUtil {
             unit.getTotalWeaponList().remove(mount);
         }
 
-        if (bayWeapons.containsKey(mount)) {
+        if (mount instanceof WeaponMounted && bayWeapons.containsKey(mount)) {
             bayWeapons.get(mount).forEach(w -> {
-                removeCriticals(unit, w);
+                removeCriticalSlots(unit, w);
                 changeMountStatus(unit, w, Entity.LOC_NONE, Entity.LOC_NONE, false);
             });
             bayAmmo.get(mount).forEach(a -> {
-                removeCriticals(unit, a);
+                removeCriticalSlots(unit, a);
                 Mounted<?> moveTo = UnitUtil.findUnallocatedAmmo(unit, a.getType());
 
                 if (null != moveTo) {
@@ -422,17 +421,17 @@ public class UnitUtil {
     /**
      * Removes all criticalSlots of the given unit.
      */
-    synchronized public static void removeAllCriticals(Entity unit) {
-        removeAllCriticalsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
+    synchronized public static void removeAllCriticalSlots(Entity unit) {
+        removeAllCriticalSlotsFrom(unit, IntStream.range(0, unit.locations()).boxed().toList());
 
-        // cleanup of remnants if any (should not be needed but we never know)
+        // cleanup of remnants if any (should not be needed, but we never know)
         unit.getEquipment()
               .stream()
               .filter(m -> (m != null) &&
                     (m.getLocation() != Entity.LOC_NONE) &&
                     (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
               .forEach(m -> {
-                  UnitUtil.removeCriticals(unit, m);
+                  UnitUtil.removeCriticalSlots(unit, m);
                   UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
               });
     }
@@ -440,7 +439,7 @@ public class UnitUtil {
     /**
      * Removes all criticalSlots from the given locations for the given unit.
      */
-    synchronized public static void removeAllCriticalsFrom(Entity unit, List<Integer> locations) {
+    synchronized public static void removeAllCriticalSlotsFrom(Entity unit, List<Integer> locations) {
         // Special handling for BattleArmor
         if (unit instanceof BattleArmor ba) {
             ba.getEquipment()
@@ -464,24 +463,24 @@ public class UnitUtil {
                     Mounted<?> m1 = cs.getMount();
                     Mounted<?> m2 = cs.getMount2();
                     if ((m2 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m2.getType()))) {
-                        UnitUtil.removeCriticals(unit, m2);
+                        UnitUtil.removeCriticalSlots(unit, m2);
                         UnitUtil.changeMountStatus(unit, m2, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     }
                     if ((m1 != null) && (!UnitUtil.isFixedLocationSpreadEquipment(m1.getType()))) {
-                        UnitUtil.removeCriticals(unit, m1);
+                        UnitUtil.removeCriticalSlots(unit, m1);
                         UnitUtil.changeMountStatus(unit, m1, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     }
                 }
             }
         }
-        // cleanup of remnants if any (should not be needed but we never know)
+        // cleanup of remnants if any (should not be needed, but we never know)
         unit.getEquipment()
               .stream()
               .filter(m -> (m != null) && locations.contains(m.getLocation()))
               .filter(m -> (m.getLocation() != Entity.LOC_NONE) &&
                     (!UnitUtil.isFixedLocationSpreadEquipment(m.getType())))
               .forEach(m -> {
-                  UnitUtil.removeCriticals(unit, m);
+                  UnitUtil.removeCriticalSlots(unit, m);
                   UnitUtil.changeMountStatus(unit, m, Entity.LOC_NONE, Entity.LOC_NONE, false);
               });
     }
@@ -492,28 +491,27 @@ public class UnitUtil {
      * @param unit The entity
      * @param eq   The equipment to test
      */
-    public static void removeCriticals(Entity unit, Mounted<?> eq) {
+    public static void removeCriticalSlots(Entity unit, Mounted<?> eq) {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
 
         for (int loc = 0; loc < unit.locations(); loc++) {
             for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
-                CriticalSlot cs = unit.getCritical(loc, slot);
-                if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                    if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
-                        // If there are two pieces of equipment in this slot, remove first one, and replace it with the
-                        // second
-                        if (cs.getMount2() != null) {
-                            cs.setMount(cs.getMount2());
-                            cs.setMount2(null);
+                CriticalSlot criticalSlot = unit.getCritical(loc, slot);
+                if ((criticalSlot != null) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                    if ((criticalSlot.getMount() != null) && (criticalSlot.getMount().equals(eq))) {
+                        // If there are two pieces of equipment in this slot, remove first one, and replace it with
+                        // the second
+                        if (criticalSlot.getMount2() != null) {
+                            criticalSlot.setMount(criticalSlot.getMount2());
+                            criticalSlot.setMount2(null);
                         } else {
                             // If it's the only Mounted, clear the slot
-                            cs = null;
-                            unit.setCritical(loc, slot, cs);
+                            unit.setCritical(loc, slot, null);
                         }
-                    } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
-                        cs.setMount2(null);
+                    } else if ((criticalSlot.getMount2() != null) && (criticalSlot.getMount2().equals(eq))) {
+                        criticalSlot.setMount2(null);
                     }
                 }
             }
@@ -527,27 +525,26 @@ public class UnitUtil {
      * @param eq   The equipment to test
      * @param loc  The location to remove critical slots from.
      */
-    public static void removeCriticals(Entity unit, Mounted<?> eq, int loc) {
+    public static void removeCriticalSlots(Entity unit, Mounted<?> eq, int loc) {
         if (eq.getLocation() == Entity.LOC_NONE) {
             return;
         }
 
         for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
-            CriticalSlot cs = unit.getCritical(loc, slot);
-            if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
-                if ((cs.getMount() != null) && (cs.getMount().equals(eq))) {
+            CriticalSlot criticalSlot = unit.getCritical(loc, slot);
+            if ((criticalSlot != null) && (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+                if ((criticalSlot.getMount() != null) && (criticalSlot.getMount().equals(eq))) {
                     // If there are two pieces of equipment in this slot,
                     // remove first one, and replace it with the second
-                    if (cs.getMount2() != null) {
-                        cs.setMount(cs.getMount2());
-                        cs.setMount2(null);
+                    if (criticalSlot.getMount2() != null) {
+                        criticalSlot.setMount(criticalSlot.getMount2());
+                        criticalSlot.setMount2(null);
                     } else {
                         // If it's the only Mounted, clear the slot
-                        cs = null;
-                        unit.setCritical(loc, slot, cs);
+                        unit.setCritical(loc, slot, null);
                     }
-                } else if ((cs.getMount2() != null) && (cs.getMount2().equals(eq))) {
-                    cs.setMount2(null);
+                } else if ((criticalSlot.getMount2() != null) && (criticalSlot.getMount2().equals(eq))) {
+                    criticalSlot.setMount2(null);
                 }
             }
         }
@@ -790,8 +787,8 @@ public class UnitUtil {
                 }
             }
 
-            removeCriticals(entity, mount);
-            compactCriticals(entity, loc);
+            removeCriticalSlots(entity, mount);
+            compactCriticalSlots(entity, loc);
             if ((start < 0) || (entity.getEmptyCriticalSlots(loc) < mount.getNumCriticalSlots())) {
                 changeMountStatus(entity, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             } else {
@@ -1072,12 +1069,12 @@ public class UnitUtil {
         }
     }
 
-    public static void compactCriticals(Entity unit) {
+    public static void compactCriticalSlots(Entity unit) {
         for (int loc = 0; loc < unit.locations(); loc++) {
             if (unit instanceof Mek) {
-                MekUtil.compactCriticals((Mek) unit, loc);
+                MekUtil.compactCriticalSlots((Mek) unit, loc);
             } else {
-                compactCriticals(unit, loc);
+                compactCriticalSlots(unit, loc);
             }
         }
     }
@@ -1105,7 +1102,7 @@ public class UnitUtil {
         return null;
     }
 
-    public static void compactCriticals(Entity unit, int loc) {
+    public static void compactCriticalSlots(Entity unit, int loc) {
         int firstEmpty = -1;
         for (int slot = 0; slot < unit.getNumberOfCriticalSlots(loc); slot++) {
             CriticalSlot cs = unit.getCritical(loc, slot);
@@ -1189,7 +1186,10 @@ public class UnitUtil {
 
         for (Mounted<?> mount : ammoList) {
             unit.getEquipment().remove(mount);
-            unit.getAmmo().remove(mount);
+
+            if (mount instanceof AmmoMounted) {
+                unit.getAmmo().remove(mount);
+            }
         }
     }
 
@@ -1239,10 +1239,10 @@ public class UnitUtil {
     }
 
     /**
-     * Return the number of critical-space free heatsinks that the given entity can have.
+     * Return the number of critical-space free heat sinks that the given entity can have.
      *
-     * @param unit    The entity The unit mounting the heatsinks
-     * @param compact Whether the heatsinks are compact or not
+     * @param unit    The entity The unit mounting the heat sinks
+     * @param compact Whether the heat sinks are compact or not
      *
      * @return The number of critical-free heat sinks.
      */
@@ -1266,13 +1266,13 @@ public class UnitUtil {
     /**
      * Returns the total heat generation of the entity
      *
-     * @param countOneshots If false, one-shot weapons are excluded.
+     * @param countOneShots If false, one-shot weapons are excluded.
      */
-    public static int getTotalHeatGeneration(Entity entity, boolean countOneshots) {
+    public static int getTotalHeatGeneration(Entity entity, boolean countOneShots) {
         return entity.getEquipment().stream().mapToInt(m -> {
             var heat = m.getType().getHeat();
             if (m instanceof WeaponMounted wm) {
-                if (!countOneshots && wm.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
+                if (!countOneShots && wm.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
                     return 0;
                 }
 
@@ -1544,8 +1544,7 @@ public class UnitUtil {
                     if ((mount != null) &&
                           (mount.getType() instanceof MiscType) &&
                           mountList.contains(mount.getType().getInternalName())) {
-                        criticalSlot = null;
-                        unit.setCritical(location, slot, criticalSlot);
+                        unit.setCritical(location, slot, null);
                     }
                 }
             }
@@ -1620,7 +1619,12 @@ public class UnitUtil {
                       (criticalSlot.getType() == CriticalSlot.TYPE_EQUIPMENT) &&
                       (null != criticalSlot.getMount()) &&
                       criticalSlot.getMount().getType().equals(eq)) {
-                    unit.getMisc().remove(criticalSlot.getMount());
+                    Mounted<?> mount = criticalSlot.getMount();
+
+                    if (mount instanceof MiscMounted) {
+                        unit.getMisc().remove(mount);
+                    }
+
                     unit.setCritical(loc, slot, null);
                 }
             }
@@ -1740,7 +1744,7 @@ public class UnitUtil {
         return sb.toString();
     }
 
-    public static void removeAllMiscMounteds(Entity unit, EquipmentFlag flag) {
+    public static void removeAllMiscMounted(Entity unit, EquipmentFlag flag) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted<?> mount = unit.getEquipment().get(pos);
             if ((mount.getType() instanceof MiscType) && mount.getType().hasFlag(flag)) {
@@ -1749,7 +1753,7 @@ public class UnitUtil {
         }
     }
 
-    public static void removeAllMounteds(Entity unit, EquipmentType et) {
+    public static void removeAllMounted(Entity unit, EquipmentType et) {
         for (int pos = unit.getEquipment().size() - 1; pos >= 0; pos--) {
             Mounted<?> mount = unit.getEquipment().get(pos);
             if (mount.getType().equals(et)) {
@@ -1829,7 +1833,7 @@ public class UnitUtil {
               .filter(m -> m.getLocation() == Entity.LOC_NONE)
               .toList();
 
-        removed.forEach(m -> UnitUtil.removeCriticals(entity, m));
+        removed.forEach(m -> UnitUtil.removeCriticalSlots(entity, m));
 
         removed.stream()
               .filter(m -> !(m.getType() instanceof BayWeapon))
@@ -1887,7 +1891,7 @@ public class UnitUtil {
         try {
             MekFileParser.postLoadInit(entity);
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
     }
 
@@ -1939,7 +1943,11 @@ public class UnitUtil {
             Mounted<?> oneShotAmmo = mounted.getLinked();
             if (oneShotAmmo != null) {
                 mounted.getEntity().getEquipment().remove(oneShotAmmo);
-                mounted.getEntity().getAmmo().remove(oneShotAmmo);
+
+                if (oneShotAmmo instanceof AmmoMounted) {
+                    mounted.getEntity().getAmmo().remove(oneShotAmmo);
+                }
+
                 mounted.setLinked(null);
             }
         }
@@ -2205,13 +2213,13 @@ public class UnitUtil {
             newEntity.setOwner(entity.getOwner());
             return newEntity;
         } catch (Exception e) {
-            logger.error(e, "Failed to break references for entity {}", entity);
+            LOGGER.error(e, "Failed to break references for entity {}", entity);
             return null;
         }
     }
 
     /**
-     * Reset the damage of the unity to its original state.
+     * Reset the damage to the unit to its original state.
      *
      * @param entity The entity to reset
      */
