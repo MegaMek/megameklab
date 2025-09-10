@@ -255,7 +255,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
     @Override
     public String getUniqueId() {
-        return String.valueOf(hashCode());
+        return name + "@" + location;
     }
 
     @Override

@@ -116,7 +116,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
@@ -1142,32 +1142,12 @@ public class SVGMassPrinter {
                 jsonWriter.write("\"units\":[\n");
                 boolean firstUnit = true;
                 for (MekSummary mekSummary : meks) {
-                    //                if (!mekSummary.getName().contains("Field Gun Infantry")) {
-                    //                    continue;
-                    //                }
-                    //                 logger.info("{}", mekSummary.getName());
-
-//                    if (!mekSummary.isDropShip()) continue;
+//                    if (!mekSummary.getName().contains("Field Gun Infantry")) {
+//                        continue;
+//                    }
+                    if (!mekSummary.isMek()) continue;
 //                    if (mekSummary.getMulId() != 8596) continue;
-                    // if (i > 10) break; // For testing, remove this line in production
-                    /*
-                     * if (!mekSummary.isProtoMek() && !mekSummary.isCombatVehicle()) {
-                     * continue;
-                     * }
-                     *
-                     * // 1 - uncomment this block and cycle all the start characters A-Z (only
-                     * // uppercase)
-                     * if (!mekSummary.getName().toUpperCase().startsWith("C")) {
-                     * continue;
-                     * }
-                     *
-                     * // 2 - uncomment this block, comment the above block, run once more
-                     * if (mekSummary.getName().toUpperCase().charAt(0) <= 'Z' &&
-                     * mekSummary.getName().toUpperCase().charAt(0) >= 'A') {
-                     * continue;
-                     * }
-                     *
-                     */
+//                    logger.info("{}", mekSummary.getName());
                     Entity entity = mekSummary.loadEntity();
                     if ((entity == null) || (entity instanceof GunEmplacement)) {
                         //                    logger.info("Skipping: {}", mekSummary.getName());
