@@ -38,8 +38,8 @@ import megamek.common.units.Entity;
 import megameklab.util.UnitUtil;
 
 /**
- * This Summary Item sums up all misctype equipment not handled elsewhere (it excludes JJ, UMU, heat sinks, TSM) and
- * without weapons and ammo.
+ * This Summary Item sums up all {@link MiscType} equipment not handled elsewhere (it excludes JJ, UMU, heat sinks, TSM)
+ * and without weapons and ammo.
  */
 public class MiscEquipmentSummaryItem extends AbstractSummaryItem {
 

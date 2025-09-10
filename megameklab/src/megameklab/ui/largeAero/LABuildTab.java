@@ -52,24 +52,24 @@ import megameklab.util.UnitUtil;
  */
 public class LABuildTab extends ITab implements ActionListener {
     private RefreshListener refresh = null;
-    private LACriticalView critView = null;
+    private final LACriticalView critView;
 
     public LABuildView getBuildView() {
         return buildView;
     }
 
-    private LABuildView buildView = null;
-    private JPanel buttonPanel = new JPanel();
-    private JPanel mainPanel = new JPanel();
+    private final LABuildView buildView;
 
-    private JButton resetButton = new JButton("Reset");
+    private final JButton resetButton = new JButton("Reset");
 
-    private String RESETCOMMAND = "resetbuttoncommand";
+    private final String RESET_COMMAND = "resetButtonCommand";
 
     public LABuildTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         buildView = new LABuildView(eSource, refresh);
@@ -77,7 +77,7 @@ public class LABuildTab extends ITab implements ActionListener {
         critView.addAllocationListeners(buildView);
 
         resetButton.setMnemonic('R');
-        resetButton.setActionCommand(RESETCOMMAND);
+        resetButton.setActionCommand(RESET_COMMAND);
         buttonPanel.add(resetButton);
 
         buildView.setAlignmentX(JComponent.LEFT_ALIGNMENT);
@@ -103,13 +103,13 @@ public class LABuildTab extends ITab implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(RESETCOMMAND)) {
+        if (evt.getActionCommand().equals(RESET_COMMAND)) {
             resetCrits();
         }
     }
 
     private void resetCrits() {
-        UnitUtil.removeAllCriticals(getAero());
+        UnitUtil.removeAllCriticalSlots(getAero());
         refresh.refreshAll();
     }
 

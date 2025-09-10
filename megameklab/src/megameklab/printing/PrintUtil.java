@@ -120,11 +120,7 @@ public final class PrintUtil {
             return RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE.equals(options.intrinsicPhysicalAttacks());
         }
 
-        if (UnitUtil.isHeatSink(eq)) {
-            return false;
-        }
-
-        return true;
+        return !UnitUtil.isHeatSink(eq);
     }
 
     private PrintUtil() {
@@ -166,13 +162,9 @@ public final class PrintUtil {
             return false;
         }
 
-        if ((eq instanceof LegAttack) || (eq instanceof SwarmAttack)
-              || (eq instanceof StopSwarmAttack)
-              || (eq instanceof InfantryRifleAutoRifleWeapon)
-              || (eq instanceof SwarmWeaponAttack)) {
-            return false;
-        }
-
-        return true;
+        return (!(eq instanceof LegAttack)) && (!(eq instanceof SwarmAttack))
+              && (!(eq instanceof StopSwarmAttack))
+              && (!(eq instanceof InfantryRifleAutoRifleWeapon))
+              && (!(eq instanceof SwarmWeaponAttack));
     }
 }

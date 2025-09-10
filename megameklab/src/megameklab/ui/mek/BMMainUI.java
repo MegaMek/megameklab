@@ -36,7 +36,8 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.*;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -151,7 +152,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         } else if (entityType == Entity.ETYPE_QUADVEE) {
             newUnit = new QuadVee(Mek.GYRO_STANDARD, QuadVee.MOTIVE_TRACK);
             newUnit.setTechLevel(TechConstants.T_CLAN_ADVANCED);
-            MekUtil.createSpreadMounts((Mek) newUnit, EquipmentType.get(EquipmentTypeLookup.MEK_TRACKS));
+            MekUtil.createSpreadMounts(newUnit, EquipmentType.get(EquipmentTypeLookup.MEK_TRACKS));
             newUnit.setManualBV(-1);
         } else { // type == 0
             newUnit = new BipedMek(Mek.GYRO_STANDARD, cockpit);
@@ -160,7 +161,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         newUnit.setWeight(25);
         if (entityType == Entity.ETYPE_LAND_AIR_MEK) {
             newUnit.setEngine(new Engine(75, Engine.NORMAL_ENGINE, 0));
-            MekUtil.updateJumpJets(((Mek) newUnit), 3, Mek.JUMP_STANDARD);
+            MekUtil.updateJumpJets(newUnit, 3, Mek.JUMP_STANDARD);
         } else {
             newUnit.setEngine(new Engine(25, Engine.NORMAL_ENGINE, 0));
         }

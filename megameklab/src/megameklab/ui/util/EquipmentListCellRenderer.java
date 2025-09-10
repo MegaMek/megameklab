@@ -37,15 +37,15 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-import megamek.common.units.Entity;
-import megamek.common.equipment.EquipmentType;
 import megamek.common.TechConstants;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.units.Entity;
 
 /*
  * Thanks to Lost in space of the Solaris Sunk Works Project for the code snippet and idea.
  */
 public class EquipmentListCellRenderer extends DefaultListCellRenderer {
-    private Entity unit;
+    private final Entity unit;
 
     public EquipmentListCellRenderer(Entity unit) {
         this.unit = unit;
@@ -55,7 +55,7 @@ public class EquipmentListCellRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
           boolean cellHasFocus) {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        StringBuffer text = new StringBuffer();
+        StringBuilder text = new StringBuilder();
         EquipmentType etype = (EquipmentType) value;
         text.append(etype.getName());
         if (unit.isClan() && (!TechConstants.isClan(etype.getTechLevel(unit.getTechLevelYear())))) {

@@ -133,9 +133,6 @@ public class SVGOptimizer {
         removeComments(document);
         roundFloatValues(root);
         simplifyTransformsParams(root);
-        //        roundTransformValues(root); //Already done by SimplifyTransformsParams
-        //        simplifyTransforms(root); // This collapses all to matrix() transforms, which is not always desired.
-        //        convertShapesToPaths(root); // The size of the file tends to increase, not good!
         simplifyPathData(root);
         removeInvisiblePreservedIdGroups(root);
         removeInvisibleElements(root);
@@ -849,8 +846,8 @@ public class SVGOptimizer {
         return switch (propertyName) {
             case SVGConstants.SVG_FILL_ATTRIBUTE -> "black";
             case SVGConstants.SVG_STROKE_ATTRIBUTE -> SVGConstants.SVG_NONE_VALUE;
-            case SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE -> "1";
-            case SVGConstants.SVG_OPACITY_ATTRIBUTE,
+            case SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE,
+                 SVGConstants.SVG_OPACITY_ATTRIBUTE,
                  SVGConstants.SVG_FILL_OPACITY_ATTRIBUTE,
                  SVGConstants.SVG_STROKE_OPACITY_ATTRIBUTE -> "1";
             default -> "";
@@ -957,8 +954,9 @@ public class SVGOptimizer {
 
     private static String optimizeAttributeValue(String name, String value) {
         if (value == null) {
-            return value;
+            return null;
         }
+
         String trimmedValue = value.trim();
         if ("font-weight".equalsIgnoreCase(name)) {
             if ("bold".equalsIgnoreCase(trimmedValue)) {
@@ -1228,24 +1226,17 @@ public class SVGOptimizer {
     }
 
     private static Element convertShapeToPath(Element shape) {
-        String d = null;
+        String d;
         String tagName = shape.getTagName();
 
-        switch (tagName) {
-            case SVGConstants.SVG_RECT_TAG:
-                d = convertRectToPath(shape);
-                break;
-            case SVGConstants.SVG_CIRCLE_TAG:
-                d = convertCircleToPath(shape);
-                break;
-            case SVGConstants.SVG_POLYGON_TAG:
-                d = convertPolygonToPath(shape);
-                break;
-            case SVGConstants.SVG_LINE_TAG:
-                d = convertLineToPath(shape);
-                break;
-            // Other shapes like ellipse, polyline could be added here
-        }
+        // Other shapes like ellipse, polyline could be added here
+        d = switch (tagName) {
+            case SVGConstants.SVG_RECT_TAG -> convertRectToPath(shape);
+            case SVGConstants.SVG_CIRCLE_TAG -> convertCircleToPath(shape);
+            case SVGConstants.SVG_POLYGON_TAG -> convertPolygonToPath(shape);
+            case SVGConstants.SVG_LINE_TAG -> convertLineToPath(shape);
+            default -> null;
+        };
 
         if (d == null || d.isEmpty()) {
             return null;
@@ -1356,7 +1347,7 @@ public class SVGOptimizer {
         }
     }
 
-    private static String simplifyTransformString(String transformStr) throws Exception {
+    private static String simplifyTransformString(String transformStr) {
         if (transformStr == null || transformStr.trim().isEmpty()) {
             return "";
         }

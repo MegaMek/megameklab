@@ -32,11 +32,12 @@
  */
 package megameklab.printing.reference;
 
+import megamek.common.equipment.Mounted;
+import megamek.common.equipment.WeaponType;
 import megamek.common.units.ConvFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.Jumpship;
-import megamek.common.equipment.WeaponType;
 import megameklab.printing.PrintAero;
 import org.apache.batik.util.SVGConstants;
 
@@ -81,12 +82,12 @@ public class AeroToHitMods extends ReferenceTable {
             addRow("", bundle.getString("targetAirToGround"), "-3");
         }
         addRow("", bundle.getString("target0velocity"), "-2");
-        if (entity.getWeaponList().stream().map(m -> (WeaponType) m.getType())
+        if (entity.getWeaponList().stream().map(Mounted::getType)
               .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
               .anyMatch(WeaponType::isCapital)) {
             addRow("", bundle.getString("capitalAgainstSmallTarget"), "+5");
         }
-        if (entity.getWeaponList().stream().map(m -> (WeaponType) m.getType())
+        if (entity.getWeaponList().stream().map(Mounted::getType)
               .filter(w -> w.getAtClass() != WeaponType.CLASS_CAPITAL_MISSILE)
               .anyMatch(WeaponType::isSubCapital)) {
             addRow("", bundle.getString("subcapitalAgainstSmallTarget"), "+3");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -38,11 +38,11 @@ import java.util.Collection;
 import java.util.List;
 
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
 import megamek.common.units.ProtoMek;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
@@ -60,20 +60,20 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     private final List<Integer> fluffColumns = List.of(
           COL_NAME,
           COL_TECH,
-          COL_TLEVEL,
-          COL_TRATING,
-          COL_DPROTOTYPE,
-          COL_DPRODUCTION,
-          COL_DCOMMON,
-          COL_DEXTINCT,
-          COL_DREINTRO,
+          COL_TECH_LEVEL,
+          COL_TECH_RATING,
+          COL_DATE_PROTOTYPE,
+          COL_DATE_PRODUCTION,
+          COL_DATE_COMMON,
+          COL_DATE_EXTINCT,
+          COL_DATE_REINTRODUCED,
           COL_COST);
 
     private final List<Integer> statsColumns = List.of(
           COL_NAME,
           COL_DAMAGE,
           COL_HEAT,
-          COL_MRANGE,
+          COL_MEDIUM_RANGE,
           COL_RANGE,
           COL_SHOTS,
           COL_TECH,
@@ -103,7 +103,7 @@ class PMEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
             }
         } catch (LocationFullException ex) {
             PopupMessages.showLocationFullError(this, equip.getName());
-            logger.error("Location full while trying to add " + equip.getName());
+            logger.error("Location full while trying to add {}", equip.getName());
         }
     }
 

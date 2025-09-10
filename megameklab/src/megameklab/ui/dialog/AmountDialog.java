@@ -56,13 +56,13 @@ public class AmountDialog extends AbstractMMLButtonDialog {
 
     private int amount;
     private JSpinner amountSpinner;
-    private final String itemname;
+    private final String itemName;
     private final String actionName;
     private final int maxAmount;
 
-    private AmountDialog(JFrame frame, String itemname, int maxAmount, String actionName) {
+    private AmountDialog(JFrame frame, String itemName, int maxAmount, String actionName) {
         super(frame, "AmountDialog", "AmountDialog.title.text");
-        this.itemname = itemname;
+        this.itemName = itemName;
         this.actionName = actionName;
         this.maxAmount = maxAmount;
         this.amount = maxAmount;
@@ -77,23 +77,18 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         });
     }
 
-    public static int showDialog(JFrame frame, String itemname, int maxAmount, String actionName) {
+    public static int showDialog(JFrame frame, String itemName, int maxAmount, String actionName) {
+        AmountDialog dialog = new AmountDialog(frame, itemName, maxAmount, actionName);
         try {
-            AmountDialog dialog = new AmountDialog(frame, itemname, maxAmount, actionName);
-            try {
-                dialog.setModal(true);
-                dialog.setLocationRelativeTo(frame);
-                dialog.setVisible(true);
-                if (dialog.getResult() != DialogResult.CONFIRMED) {
-                    return 0;
-                }
-                return dialog.getAmount();
-            } finally {
-                dialog.dispose();
+            dialog.setModal(true);
+            dialog.setLocationRelativeTo(frame);
+            dialog.setVisible(true);
+            if (dialog.getResult() != DialogResult.CONFIRMED) {
+                return 0;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
+            return dialog.getAmount();
+        } finally {
+            dialog.dispose();
         }
     }
 
@@ -106,7 +101,7 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add some padding
 
-        String bodyText = resources.getString("AmountDialog.body.text").replace("{0}", this.itemname);
+        String bodyText = resources.getString("AmountDialog.body.text").replace("{0}", this.itemName);
         if (this.actionName != null) {
             bodyText = bodyText.replace("{1}", resources.getString(this.actionName));
         }
@@ -114,7 +109,7 @@ public class AmountDialog extends AbstractMMLButtonDialog {
         bodyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(bodyLabel, BorderLayout.NORTH);
 
-        int spinnerMaxValue = (this.maxAmount < 0) ? 0 : this.maxAmount;
+        int spinnerMaxValue = Math.max(this.maxAmount, 0);
         if (this.amount < 0) {this.amount = 0;}
         if (this.amount > spinnerMaxValue) {this.amount = spinnerMaxValue;}
 

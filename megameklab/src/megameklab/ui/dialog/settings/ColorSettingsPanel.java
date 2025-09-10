@@ -60,7 +60,7 @@ public class ColorSettingsPanel extends JPanel {
         addColorRow(CConfig.GUI_COLOR_EQUIPMENT);
         addColorRow(CConfig.GUI_COLOR_AMMO);
         addColorRow(CConfig.GUI_COLOR_SYSTEMS);
-        addColorRow(CConfig.GUI_COLOR_NONHITTABLE);
+        addColorRow(CConfig.GUI_COLOR_NON_HITTABLE);
         addColorRow(CConfig.GUI_COLOR_EMPTY);
         SpringUtilities.makeCompactGrid(gridPanel, 6, 4, 0, 0, 15, 10);
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -93,20 +93,14 @@ public class ColorSettingsPanel extends JPanel {
     }
 
     private String exampleText(String colorType) {
-        switch (colorType) {
-            case CConfig.GUI_COLOR_WEAPONS:
-                return "Medium Pulse Laser";
-            case CConfig.GUI_COLOR_EQUIPMENT:
-                return "Heat Sink";
-            case CConfig.GUI_COLOR_AMMO:
-                return "AC/5 Ammo";
-            case CConfig.GUI_COLOR_SYSTEMS:
-                return "XL Engine";
-            case CConfig.GUI_COLOR_NONHITTABLE:
-                return "Endo Steel";
-            default:
-                return CritCellUtil.EMPTY_CRITCELL_TEXT;
-        }
+        return switch (colorType) {
+            case CConfig.GUI_COLOR_WEAPONS -> "Medium Pulse Laser";
+            case CConfig.GUI_COLOR_EQUIPMENT -> "Heat Sink";
+            case CConfig.GUI_COLOR_AMMO -> "AC/5 Ammo";
+            case CConfig.GUI_COLOR_SYSTEMS -> "XL Engine";
+            case CConfig.GUI_COLOR_NON_HITTABLE -> "Endo Steel";
+            default -> CritCellUtil.EMPTY_CRITICAL_CELL_TEXT;
+        };
     }
 
     private void callColorChooser(String type, String fgOrBg, JLabel exampleLabel) {

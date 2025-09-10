@@ -157,7 +157,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miNewUnit.setMnemonic(mnemonic);
         }
         miNewUnit.addActionListener(evt -> {
-            MegaMekLabTabbedUI tabbedUI = null;
+            MegaMekLabTabbedUI tabbedUI;
             if (owner instanceof MegaMekLabTabbedUI) {
                 tabbedUI = (MegaMekLabTabbedUI) owner;
             } else {
@@ -460,20 +460,20 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return saveMenu;
     }
 
-    public boolean saveUnitAs() {
+    public void saveUnitAs() {
         MegaMekLabMainUI mainUI = getUnitMainUi();
         if (mainUI == null) {
-            return false;
+            return;
         }
-        return mainUI.saveUnitAs();
+        mainUI.saveUnitAs();
     }
 
-    public boolean saveUnit() {
+    public void saveUnit() {
         MegaMekLabMainUI mainUI = getUnitMainUi();
         if (mainUI == null) {
-            return false;
+            return;
         }
-        return mainUI.saveUnit();
+        mainUI.saveUnit();
     }
 
     /**
@@ -789,6 +789,14 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             }
         }
 
+        final JMenuItem miCConfig = getMiCConfig(fileNumber, recent, path);
+        miCConfig.setName("miCConfig");
+        miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
+        miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
+        return miCConfig;
+    }
+
+    private static JMenuItem getMiCConfig(int fileNumber, File recent, String path) {
         String content;
         if (OSUtil.isMac()) {
             content = "%d. %s ".formatted(fileNumber, recent.getName()) + "(" + path + ")";
@@ -799,11 +807,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                   recent.getName()) + UIUtil.spanCSS("small", path));
         }
 
-        final JMenuItem miCConfig = new JMenuItem(content);
-        miCConfig.setName("miCConfig");
-        miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
-        miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
-        return miCConfig;
+        return new JMenuItem(content);
     }
 
     private boolean activeEditorHasRedo() {
@@ -1281,7 +1285,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     try {
                         java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
                     } catch (Exception ex) {
-                        logger.error("Could not open link: " + e.getURL(), ex);
+                        logger.error(ex, "Could not open link: {}", e.getURL());
                     }
                 }
             }
@@ -1330,7 +1334,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
                     try {
                         java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
                     } catch (Exception ex) {
-                        logger.error("Could not open link: " + e.getURL(), ex);
+                        logger.error(ex, "Could not open link: {}", e.getURL());
                     }
                 }
             }

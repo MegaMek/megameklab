@@ -57,8 +57,8 @@ import megamek.client.ui.widget.SkinSpecification.UIComponents;
 import megamek.client.ui.widget.SkinXMLHandler;
 import megamek.client.ui.widget.SkinnedJPanel;
 import megamek.common.Configuration;
-import megamek.common.units.Entity;
 import megamek.common.annotations.Nullable;
+import megamek.common.units.Entity;
 import megamek.common.util.ImageUtil;
 import megamek.common.util.ManagedVolatileImage;
 import megamek.common.util.TipOfTheDay;
@@ -84,7 +84,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     JFrame frame;
     MenuBar mmlMenuBar;
     RawImagePanel splashPanel;
-    private Image splashImage;
     private ManagedVolatileImage logoImage;
     private ManagedVolatileImage medalImage;
     private double lastDpiScaleFactor;
@@ -94,7 +93,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private static final String FILENAME_LOGO = "../misc/logo.png";
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
-    private TipOfTheDay tipOfTheDay;
+    private final TipOfTheDay tipOfTheDay;
 
     private StartupGUI() {
         super(UIComponents.MainMenuBorder, 1);
@@ -114,9 +113,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private void setupDpiChangeListeners() {
         try {
             // This works on Windows 10+ for per-monitor DPI awareness
-            Toolkit.getDefaultToolkit().addPropertyChangeListener("win.displayChange", evt -> {
-                SwingUtilities.invokeLater(this::handleDpiChange);
-            });
+            Toolkit.getDefaultToolkit()
+                  .addPropertyChangeListener("win.displayChange",
+                        evt -> SwingUtilities.invokeLater(this::handleDpiChange));
 
             //For all other platforms
             frame.addComponentListener(new ComponentAdapter() {
@@ -127,11 +126,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
             });
 
             // Display changes
-            frame.addWindowStateListener(e -> {
-                SwingUtilities.invokeLater(this::handleDpiChange);
-            });
+            frame.addWindowStateListener(e -> SwingUtilities.invokeLater(this::handleDpiChange));
         } catch (Exception e) {
-            logger.error("Per-monitor DPI awareness not supported: " + e.getMessage());
+            logger.error("Per-monitor DPI awareness not supported: {}", e.getMessage());
         }
     }
 
@@ -144,7 +141,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
             return;
         }
         if (!SwingUtilities.isEventDispatchThread()) {
-            SwingUtilities.invokeLater(() -> handleDpiChange());
+            SwingUtilities.invokeLater(this::handleDpiChange);
             return;
         }
         lastDpiScaleFactor = newDpiScaleFactor;
@@ -165,7 +162,6 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     /**
      * Checks if the StartupGUI instance is already created.
      *
-     * @return
      */
     static public boolean hasInstance() {
         return instance != null;
@@ -221,7 +217,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.setJMenuBar(mmlMenuBar);
 
         Dimension scaledMonitorSize = UIUtil.getScaledScreenSize(frame);
-        splashImage = getImage(FILENAME_MEGAMEK_SPLASH, scaledMonitorSize.width, scaledMonitorSize.height);
+        Image splashImage = getImage(FILENAME_MEGAMEK_SPLASH, scaledMonitorSize.width, scaledMonitorSize.height);
         logoImage = new ManagedVolatileImage(getImage(FILENAME_LOGO, scaledMonitorSize.width, scaledMonitorSize.height),
               Transparency.TRANSLUCENT);
         medalImage = new ManagedVolatileImage(getImage(FILENAME_MEDAL,
@@ -309,22 +305,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
 
         FontMetrics metrics = btnNewDropper.getFontMetrics(btnNewDropper.getFont());
         int width = metrics.stringWidth(btnNewDropper.getText());
-        int height = metrics.getHeight();
-        Dimension textDim = new Dimension(width + 50, height + 10);
-
-        // Strive for no more than ~90% of the screen and use golden ratio to make
-        // the button width "look" reasonable.
-        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splashPanel.getPreferredSize().width;
-
-        // no more than 50% of image width
-        if (maximumWidth > (int) (0.5 * splashPanel.getPreferredSize().width)) {
-            maximumWidth = (int) (0.5 * splashPanel.getPreferredSize().width);
-        }
-
-        Dimension minButtonDim = new Dimension((int) (maximumWidth / 1.618), 25);
-        if (textDim.getWidth() > minButtonDim.getWidth()) {
-            minButtonDim = textDim;
-        }
+        Dimension minButtonDim = getButtonDim(metrics, width, scaledMonitorSize);
 
         btnLoadUnit.setMinimumSize(minButtonDim);
         btnLoadUnit.setPreferredSize(minButtonDim);
@@ -407,6 +388,26 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private Dimension getButtonDim(FontMetrics metrics, int width, Dimension scaledMonitorSize) {
+        int height = metrics.getHeight();
+        Dimension textDim = new Dimension(width + 50, height + 10);
+
+        // Strive for no more than ~90% of the screen and use golden ratio to make
+        // the button width "look" reasonable.
+        int maximumWidth = (int) (0.9 * scaledMonitorSize.width) - splashPanel.getPreferredSize().width;
+
+        // no more than 50% of image width
+        if (maximumWidth > (int) (0.5 * splashPanel.getPreferredSize().width)) {
+            maximumWidth = (int) (0.5 * splashPanel.getPreferredSize().width);
+        }
+
+        Dimension minButtonDim = new Dimension((int) (maximumWidth / 1.618), 25);
+        if (textDim.getWidth() > minButtonDim.getWidth()) {
+            minButtonDim = textDim;
+        }
+        return minButtonDim;
     }
 
 

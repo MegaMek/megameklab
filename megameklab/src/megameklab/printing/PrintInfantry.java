@@ -127,9 +127,9 @@ public class PrintInfantry extends PrintEntity {
 
         setTextField(TRANSPORT_WT, String.format("%.1f tons", infantry.getWeight()));
 
-        String mode1 = null,
+        String mode1,
               mode2 = null,
-              mp1 = null,
+              mp1,
               mp2 = null;
         switch (infantry.getMovementMode()) {
             case INF_JUMP:
@@ -315,6 +315,19 @@ public class PrintInfantry extends PrintEntity {
             sj.add("Invisible to standard/light active probes.");
         }
 
+        StringJoiner enhancements = getEnhancements();
+        if (enhancements.length() > 0) {
+            sj.add("Cybernetically enhanced: " + enhancements);
+        }
+
+        if (sj.length() > 0) {
+            return sj.toString();
+        } else {
+            return "None";
+        }
+    }
+
+    private StringJoiner getEnhancements() {
         StringJoiner enhancements = new StringJoiner(", ");
         var spas = infantry.getCrew().getOptions();
         for (Enumeration<IOptionGroup> e = spas.getGroups(); e.hasMoreElements(); ) {
@@ -333,15 +346,7 @@ public class PrintInfantry extends PrintEntity {
                 }
             }
         }
-        if (enhancements.length() > 0) {
-            sj.add("Cybernetically enhanced: " + enhancements.toString());
-        }
-
-        if (sj.length() > 0) {
-            return sj.toString();
-        } else {
-            return "None";
-        }
+        return enhancements;
     }
 
     private boolean isFlameBased(WeaponType type) {

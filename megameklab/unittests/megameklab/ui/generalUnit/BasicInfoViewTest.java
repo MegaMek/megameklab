@@ -56,9 +56,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(value = InitializeTypes.class)
 class BasicInfoViewTest {
 
-    // Filenames must be preceded with a slash to load from the testresources path
-    private final String resourcesPath = "/ui/generalUnit/BasicInfoViewTest/";
-
     @BeforeEach
     void setUp() {
     }
@@ -68,6 +65,8 @@ class BasicInfoViewTest {
     }
 
     private Entity loadEntity(String filename) throws EntityLoadingException {
+        // Filenames must be preceded with a slash to load from the testresources path
+        String resourcesPath = "/ui/generalUnit/BasicInfoViewTest/";
         String path = resourcesPath + filename;
         InputStream is = getClass().getResourceAsStream(path);
         assertNotNull(is);
@@ -76,8 +75,8 @@ class BasicInfoViewTest {
 
     @Test
     void testSetTechAdvancementFromEarlyISUnofficial() throws EntityLoadingException, EntitySavingException {
-        String fname = "Puma Assault Tank PAT-001.blk";
-        Entity te = loadEntity(fname);
+        String fileName = "Puma Assault Tank PAT-001.blk";
+        Entity te = loadEntity(fileName);
 
         // Confirm expected Tech Base (IS) and Tech Level (Simple Intro)
         TechBase techBase = te.getTechBase();

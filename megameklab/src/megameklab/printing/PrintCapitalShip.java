@@ -158,7 +158,7 @@ public class PrintCapitalShip extends PrintDropship {
 
     @Override
     protected void drawStructure() {
-        setTextField(TEXT_KFDRIVE, ship.getKFIntegrity());
+        setTextField(TEXT_KF_DRIVE, ship.getKFIntegrity());
         setTextField(TEXT_SAIL, ship.getSailIntegrity());
         setTextField(TEXT_DOCKING_COLLARS, ship.getDockingCollars().size());
 
@@ -183,7 +183,7 @@ public class PrintCapitalShip extends PrintDropship {
                 printArmorRegion((SVGRectElement) element, ship.getOArmor(loc),
                       (ship.getOArmor(loc) - ship.getArmor(loc)), ship.getLocationAbbr(loc));
             } else {
-                logger.error("No SVGRectElement found with id " + id);
+                logger.error("No SVGRectElement found with id {}", id);
             }
         }
     }
@@ -293,28 +293,28 @@ public class PrintCapitalShip extends PrintDropship {
         }
         final double startY = bbox.getY() + ((bbox.getHeight() - actualHeight) / 2.0);
 
-        double xpos = startX;
-        double ypos = startY;
+        double xPosition = startX;
+        double yPosition = startY;
         int remainingBlocks = numBlocks;
         AtomicInteger remainingDamage = new AtomicInteger(damage);
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                armor = printPipBlock(xpos, ypos, (SVGElement) svgRect.getParentNode(),
+                armor = printPipBlock(xPosition, yPosition, (SVGElement) svgRect.getParentNode(),
                       armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location);
                 remainingBlocks--;
-                xpos += blockWidth;
+                xPosition += blockWidth;
             }
-            xpos = startX;
-            ypos += blockWidth;
+            xPosition = startX;
+            yPosition += blockWidth;
             // Check whether the last row is a short one.
             if (remainingBlocks < cols) {
-                xpos += blockWidth / 2.0;
+                xPosition += blockWidth / 2.0;
             }
         }
     }
 
     /**
-     * Helper function to print a armor pip block. Can print up to 100 points of armor. Any unprinted armor pips are
+     * Helper function to print an armor pip block. Can print up to 100 points of armor. Any unprinted armor pips are
      * returned.
      *
      * @param startX  The x coordinate of the top left of the block

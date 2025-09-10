@@ -84,7 +84,7 @@ public class PrintMek extends PrintEntity {
     private static final MMLogger logger = MMLogger.create(PrintMek.class);
     private static final String IS_PIP_HD_PREFIX = "is_pip_hd_";
     private static final String IS_PIP_HD_SH_PREFIX = "is_pip_hd_sh_";
-    private static final int EXTEND_DAMAGE_LINETHROUGH_LENGTH = 2;
+    private static final int EXTEND_DAMAGE_LINE_THROUGH_LENGTH = 2;
     private static final float DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE = 7f;
 
     /**
@@ -196,7 +196,7 @@ public class PrintMek extends PrintEntity {
         for (int loc = 0; loc < mek.locations(); loc++) {
             Element critRect = getSVGDocument().getElementById(CRITS + mek.getLocationAbbr(loc));
             if (critRect instanceof SVGRectElement) {
-                writeLocationCriticals(loc, (SVGRectElement) critRect);
+                writeLocationCriticalSlots(loc, (SVGRectElement) critRect);
             }
         }
 
@@ -305,15 +305,15 @@ public class PrintMek extends PrintEntity {
 
         if (mek instanceof LandAirMek lam) {
             if (lam.getLAMType() == LandAirMek.LAM_BIMODAL) {
-                setTextField(MP_AIRMEK_WALK, "\u2014"); // em dash
-                setTextField(MP_AIRMEK_RUN, "\u2014");
-                setTextField(MP_AIRMEK_CRUISE, "\u2014");
-                setTextField(MP_AIRMEK_FLANK, "\u2014");
+                setTextField(MP_AIR_MEK_WALK, "\u2014"); // em dash
+                setTextField(MP_AIR_MEK_RUN, "\u2014");
+                setTextField(MP_AIR_MEK_CRUISE, "\u2014");
+                setTextField(MP_AIR_MEK_FLANK, "\u2014");
             } else {
-                setTextField(MP_AIRMEK_WALK, formatMovement(lam.getAirMekWalkMP()));
-                setTextField(MP_AIRMEK_RUN, formatMovement(lam.getAirMekWalkMP() * 1.5));
-                setTextField(MP_AIRMEK_CRUISE, formatMovement(lam.getAirMekCruiseMP()));
-                setTextField(MP_AIRMEK_FLANK, formatMovement(lam.getAirMekCruiseMP() * 1.5));
+                setTextField(MP_AIR_MEK_WALK, formatMovement(lam.getAirMekWalkMP()));
+                setTextField(MP_AIR_MEK_RUN, formatMovement(lam.getAirMekWalkMP() * 1.5));
+                setTextField(MP_AIR_MEK_CRUISE, formatMovement(lam.getAirMekCruiseMP()));
+                setTextField(MP_AIR_MEK_FLANK, formatMovement(lam.getAirMekCruiseMP() * 1.5));
             }
             setTextField(MP_SAFE_THRUST, Integer.toString(lam.getJumpMP()));
             setTextField(MP_MAX_THRUST, Integer.toString((int) Math.ceil(lam.getJumpMP() * 1.5)));
@@ -352,23 +352,12 @@ public class PrintMek extends PrintEntity {
 
     private boolean loadArmorPips(int loc, boolean rear) {
         final String abbr = mek.getLocationAbbr(loc);
-        String locAbbr;
-        switch (loc) {
-            case Mek.LOC_HEAD:
-                locAbbr = "Head";
-                break;
-            case Mek.LOC_RIGHT_ARM:
-            case Mek.LOC_LEFT_ARM:
-                locAbbr = abbr + "rm";
-                break;
-            case Mek.LOC_RIGHT_LEG:
-            case Mek.LOC_LEFT_LEG:
-                locAbbr = abbr + "eg";
-                break;
-            default:
-                locAbbr = abbr;
-                break;
-        }
+        String locAbbr = switch (loc) {
+            case Mek.LOC_HEAD -> "Head";
+            case Mek.LOC_RIGHT_ARM, Mek.LOC_LEFT_ARM -> abbr + "rm";
+            case Mek.LOC_RIGHT_LEG, Mek.LOC_LEFT_LEG -> abbr + "eg";
+            default -> abbr;
+        };
         if (rear) {
             locAbbr += "_R";
         }
@@ -456,12 +445,12 @@ public class PrintMek extends PrintEntity {
             SAXDocumentFactory df = new SAXDocumentFactory(impl, parser);
             doc = df.createDocument(f.toURI().toASCIIString(), is);
         } catch (Exception e) {
-            logger.error("Failed to open pip SVG " + f.getName() + ": " + e.getMessage(), e);
+            logger.error("Failed to open pip SVG {}: {}", f.getName(), e.getMessage(), e);
             return null;
         }
 
         if (doc == null) {
-            logger.error("Document is null for svg file: " + f.getName());
+            logger.error("Document is null for svg file: {}", f.getName());
             return null;
         }
         return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
@@ -482,7 +471,7 @@ public class PrintMek extends PrintEntity {
                 element = getElementById(ARMOR_PIPS + mek.getLocationAbbr(loc) + "_SH");
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
-                // Otherwise superheavies may get a mix of pattern types.
+                // Otherwise, superheavies may get a mix of pattern types.
                 if (!mek.isSuperHeavy() && (mek instanceof BipedMek) && !alternateMethod) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mek.hasRearArmor(loc) || loadArmorPips(loc, true);
@@ -519,7 +508,7 @@ public class PrintMek extends PrintEntity {
                             }
                         }
                     }
-                } else if (loc > Mek.LOC_HEAD) {
+                } else {
                     element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                     if (null != element) {
                         ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE,
@@ -564,7 +553,7 @@ public class PrintMek extends PrintEntity {
         }
     }
 
-    private void writeLocationCriticals(int loc, SVGRectElement svgRect) {
+    private void writeLocationCriticalSlots(int loc, SVGRectElement svgRect) {
         Rectangle2D bbox = getRectBBox(svgRect);
         Element canvas = (Element) svgRect.getParentNode();
         int viewWidth = (int) bbox.getWidth();
@@ -575,11 +564,11 @@ public class PrintMek extends PrintEntity {
         double critX = viewX + viewWidth * 0.11;
         double critWidth = viewX + viewWidth - critX;
         double gap = 0;
-        int numberOfCriticals = mek.getNumberOfCriticalSlots(loc);
-        if (numberOfCriticals > 6) {
+        int numberOfCriticalSlots = mek.getNumberOfCriticalSlots(loc);
+        if (numberOfCriticalSlots > 6) {
             gap = viewHeight * 0.05;
         }
-        double lineHeight = (viewHeight - gap) / numberOfCriticals;
+        double lineHeight = (viewHeight - gap) / numberOfCriticalSlots;
         double currY = viewY;
         float fontSize = DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE; //(float) Math.floor(lineHeight * 0.85f);
         Mounted<?> startingMount = null;
@@ -613,7 +602,7 @@ public class PrintMek extends PrintEntity {
             Element g = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
             locGroup.appendChild(g);
             if (crit != null) {
-                String uniqueId = null;
+                String uniqueId;
                 g.setAttributeNS(null, "class", "critSlot");
                 g.setAttributeNS(null, "loc", locName);
                 g.setAttributeNS(null, "slot", String.valueOf(slot));
@@ -651,8 +640,8 @@ public class PrintMek extends PrintEntity {
             String weight = SVGConstants.SVG_BOLD_VALUE;
             String fill = FILL_BLACK;
             if (crit != null && crit.isDamaged()) {
-                addLineThrough(g, viewX - EXTEND_DAMAGE_LINETHROUGH_LENGTH, currY - (fontSize * 0.3),
-                      (critX - viewX) + EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                addLineThrough(g, viewX - EXTEND_DAMAGE_LINE_THROUGH_LENGTH, currY - (fontSize * 0.3),
+                      (critX - viewX) + EXTEND_DAMAGE_LINE_THROUGH_LENGTH);
             }
             addTextElement(locGroup, viewX, currY, ((slot % 6) + 1) + ".", fontSize, SVGConstants.SVG_START_VALUE,
                   SVGConstants.SVG_BOLD_VALUE);
@@ -665,10 +654,8 @@ public class PrintMek extends PrintEntity {
                       SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
                 g.setAttributeNS(null, "armored", "1");
-                int damage = 0;
-                final boolean isDamagedPip = damage > 0;
                 Element pip = createPip(critX, currY - fontSize * 0.8, fontSize * 0.4, 0.7, PipType.CIRCLE,
-                      isDamagedPip ? getDamageFillColor() : FILL_WHITE, "armoredLocPip", null, false);
+                      FILL_WHITE, "armoredLocPip", null, false);
                 g.appendChild(pip);
                 addTextElement(g, critX + fontSize, currY, formatCritName(crit), fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
@@ -681,7 +668,7 @@ public class PrintMek extends PrintEntity {
                     addLineThrough(locGroup,
                           critX,
                           currY - (fontSize * 0.3),
-                          textLength + EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                          textLength + EXTEND_DAMAGE_LINE_THROUGH_LENGTH);
                 }
                 addTextElement(g, critX, currY, critName, fontSize, SVGConstants.SVG_START_VALUE, weight,
                       SVGConstants.SVG_NORMAL_VALUE, fill);
@@ -693,18 +680,20 @@ public class PrintMek extends PrintEntity {
                 double y = currY - lineHeight + spacing;
                 double y2 = currY - spacing;
                 x += spacing;
-                int damage = 0;
                 for (int i = 0; i < 10; i++) {
                     if (i == 5) {
                         x -= spacing * 5.5;
                         y = y2;
                     }
-                    final boolean isDamagedPip = damage > 0;
-                    if (damage > 0) {
-                        damage--;
-                    }
-                    Element pip = createPip(x, y, radius, 0.5, PipType.CIRCLE, isDamagedPip ? getDamageFillColor() :
-                          FILL_WHITE, "modularArmorPip", null, false);
+                    Element pip = createPip(x,
+                          y,
+                          radius,
+                          0.5,
+                          PipType.CIRCLE,
+                          FILL_WHITE,
+                          "modularArmorPip",
+                          null,
+                          false);
                     g.appendChild(pip);
                     x += spacing;
                 }
@@ -714,7 +703,7 @@ public class PrintMek extends PrintEntity {
                     addLineThrough(locGroup,
                           critX,
                           currY - (fontSize * 0.3),
-                          getTextLength(critName, fontSize, weight) + EXTEND_DAMAGE_LINETHROUGH_LENGTH);
+                          getTextLength(critName, fontSize, weight) + EXTEND_DAMAGE_LINE_THROUGH_LENGTH);
                 }
                 addTextElement(g, critX, currY, critName, fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
@@ -918,38 +907,8 @@ public class PrintMek extends PrintEntity {
             return "Roll Again";
         } else if (cs.getType() == CriticalSlot.TYPE_SYSTEM) {
             if (cs.getIndex() == Mek.SYSTEM_ENGINE) {
-                StringBuilder sb = new StringBuilder();
-                if (mek.isPrimitive()) {
-                    sb.append("Primitive ");
-                }
-                switch (mek.getEngine().getEngineType()) {
-                    case Engine.COMBUSTION_ENGINE:
-                        sb.append("I.C.E.");
-                        break;
-                    case Engine.NORMAL_ENGINE:
-                        sb.append("Fusion");
-                        break;
-                    case Engine.XL_ENGINE:
-                        sb.append("XL Fusion");
-                        break;
-                    case Engine.LIGHT_ENGINE:
-                        sb.append("Light Fusion");
-                        break;
-                    case Engine.XXL_ENGINE:
-                        sb.append("XXL Fusion");
-                        break;
-                    case Engine.COMPACT_ENGINE:
-                        sb.append("Compact Fusion");
-                        break;
-                    case Engine.FUEL_CELL:
-                        sb.append("Fuel Cell");
-                        break;
-                    case Engine.FISSION:
-                        sb.append("Fission");
-                        break;
-                }
-                sb.append(" Engine");
-                return sb.toString();
+                StringBuilder stringBuilder = getStringBuilder();
+                return stringBuilder.toString();
             } else {
                 String name = mek.getSystemName(cs.getIndex());
                 if (((cs.getIndex() >= Mek.ACTUATOR_UPPER_ARM) && (cs.getIndex() <= Mek.ACTUATOR_HAND))
@@ -994,9 +953,8 @@ public class PrintMek extends PrintEntity {
                 critName.append(" (R)");
             } else if (m.isMekTurretMounted()) {
                 critName.append(" (T)");
-            } else if ((m.getType() instanceof AmmoType)
+            } else if ((m.getType() instanceof AmmoType ammo)
                   && (((AmmoType) m.getType()).getAmmoType() != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
-                AmmoType ammo = (AmmoType) m.getType();
 
                 critName = new StringBuffer("Ammo (");
                 appendAmmoCritName(critName, ammo);
@@ -1038,6 +996,41 @@ public class PrintMek extends PrintEntity {
             }
             return critName.toString();
         }
+    }
+
+    private StringBuilder getStringBuilder() {
+        StringBuilder sb = new StringBuilder();
+        if (mek.isPrimitive()) {
+            sb.append("Primitive ");
+        }
+        switch (mek.getEngine().getEngineType()) {
+            case Engine.COMBUSTION_ENGINE:
+                sb.append("I.C.E.");
+                break;
+            case Engine.NORMAL_ENGINE:
+                sb.append("Fusion");
+                break;
+            case Engine.XL_ENGINE:
+                sb.append("XL Fusion");
+                break;
+            case Engine.LIGHT_ENGINE:
+                sb.append("Light Fusion");
+                break;
+            case Engine.XXL_ENGINE:
+                sb.append("XXL Fusion");
+                break;
+            case Engine.COMPACT_ENGINE:
+                sb.append("Compact Fusion");
+                break;
+            case Engine.FUEL_CELL:
+                sb.append("Fuel Cell");
+                break;
+            case Engine.FISSION:
+                sb.append("Fission");
+                break;
+        }
+        sb.append(" Engine");
+        return sb;
     }
 
     private void appendAmmoCritName(StringBuffer buffer, AmmoType ammo) {

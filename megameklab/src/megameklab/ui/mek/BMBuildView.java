@@ -73,9 +73,9 @@ import megameklab.util.UnitUtil;
  * @author Simon (Juliez)
  */
 public class BMBuildView extends IView implements ActionListener, MouseListener {
-    private static final MMLogger logger = MMLogger.create(BMBuildView.class);
+    private static final MMLogger LOGGER = MMLogger.create(BMBuildView.class);
 
-    private final CriticalTableModel equipmentList = new CriticalTableModel(getMek(), CriticalTableModel.BUILDTABLE);
+    private final CriticalTableModel equipmentList = new CriticalTableModel(getMek(), CriticalTableModel.BUILD_TABLE);
     private final JTable equipmentTable = new JTable(equipmentList);
     private int engineHeatSinkCount = 0;
     private final CriticalTransferHandler transferHandler;
@@ -385,7 +385,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMek(), eq, location, false);
             } catch (Exception ex) {
-                logger.error("", ex);
+                LOGGER.error("", ex);
             }
         }
 
@@ -394,7 +394,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             try {
                 UnitUtil.addMounted(getMek(), eq, secondaryLocation, false);
             } catch (Exception ex) {
-                logger.error("", ex);
+                LOGGER.error("", ex);
             }
         }
 
@@ -410,10 +410,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
             } else if (!(eq.getType() instanceof MiscType) || !eq.getType().hasFlag(MiscType.F_TARGETING_COMPUTER)) {
                 addSplitEquipment(location, Entity.LOC_NONE, 1, selectedRow);
             } else {
-                // Targetting computer is flagged as spreadable so the slots will be added one
-                // at a time when loaded,
-                // since we don't have a way of indicating the number of slots until we know all
-                // the weapons. But
+                // Targeting computer is flagged as spreadable so the slots will be added one at a time when loaded,
+                // since we don't have a way of indicating the number of slots until we know all the weapons. But
                 // it's not really splittable, so we need to put add all the slots at once.
                 addSplitEquipment(location, Entity.LOC_NONE, eq.getNumCriticalSlots(), selectedRow);
             }
@@ -428,7 +426,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
                 UnitUtil.addMounted(getMek(), eq, location, false);
             }
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
         UnitUtil.changeMountStatus(getMek(), eq, location, -1, false);
         doRefresh();

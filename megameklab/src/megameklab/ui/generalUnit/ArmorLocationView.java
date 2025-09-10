@@ -107,8 +107,6 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * Changes the location name in the title and whether it has a rear armor location.
      *
-     * @param locName
-     * @param rear
      */
     public void updateLocation(String locName, boolean rear) {
         ((TitledBorder) getBorder()).setTitle(locName);
@@ -131,7 +129,6 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
      * Sets the maximum number of armor points that can be assigned to this location. A value of null indicates that
      * there is no maximum.
      *
-     * @param max
      */
     public void setMaxPoints(@Nullable Integer max) {
         maxPoints = max;
@@ -155,7 +152,6 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * Sets the number of points for this location. If the location has rear armor, this sets only the front.
      *
-     * @param points
      */
     public void setPoints(int points) {
         spnPoints.removeChangeListener(this);
@@ -180,7 +176,6 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * Sets the number of points of armor for this location in the rear.
      *
-     * @param points
      */
     public void setPointsRear(int points) {
         spnPointsRear.removeChangeListener(this);

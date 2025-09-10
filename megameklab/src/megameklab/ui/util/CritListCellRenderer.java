@@ -37,8 +37,8 @@
 
 package megameklab.ui.util;
 
-import static megameklab.ui.util.CritCellUtil.CRITCELL_WIDTH_STRING;
-import static megameklab.ui.util.CritCellUtil.EMPTY_CRITCELL_TEXT;
+import static megameklab.ui.util.CritCellUtil.CRITICAL_CELL_WIDTH_STRING;
+import static megameklab.ui.util.CritCellUtil.EMPTY_CRITICAL_CELL_TEXT;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -71,9 +71,9 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         this.list = list;
 
-        if (value.equals(CRITCELL_WIDTH_STRING)) {
+        if (value.equals(CRITICAL_CELL_WIDTH_STRING)) {
             // For the "prototype" cell value, the text must stay unchanged to set the correct width of the list
-            setText(CRITCELL_WIDTH_STRING);
+            setText(CRITICAL_CELL_WIDTH_STRING);
             setBorder(new EmptyBorder(0, 0, 0, 0));
             return this;
         }
@@ -92,7 +92,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
             cs = eq != null ? new CriticalSlot(eq) : null;
         } else if (split.length > 1) {
             cs = getCrit(Integer.parseInt(split[1]));
-        } else if (!value.equals(EMPTY_CRITCELL_TEXT)) {
+        } else if (!value.equals(EMPTY_CRITICAL_CELL_TEXT)) {
             cs = getCrit(index);
         }
 
@@ -120,11 +120,11 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         if ((cs != null) &&
               UnitUtil.isLastCrit(unit, cs, index, loc) &&
               UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isLastCrit(unit, cs, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
+            setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
         } else if ((cs != null) && UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
-            setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
+            setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
         } else {
             setBorder(new EmptyBorder(0, 0, 0, 0));
         }
@@ -135,7 +135,7 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Dimension getPreferredSize() {
         Dimension superSize = super.getPreferredSize();
-        return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
+        return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITICAL_CELL_ADD_HEIGHT);
     }
 
     private CriticalSlot getCrit(int slot) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import megamek.common.annotations.Nullable;
@@ -103,7 +102,7 @@ class ArmorPipLayout {
 
     /**
      * Processes the rect elements within a group to find the width of the region at each marked point and adds pip
-     * elements to the group layed out in a symmetric pattern.
+     * elements to the group laid out in a symmetric pattern.
      *
      * @param sheet           The record sheet being printed.
      * @param group           The group element that contains the rect elements that mark the dimensions of the area on
@@ -123,7 +122,7 @@ class ArmorPipLayout {
 
     /**
      * Processes the rect elements within a group to find the width of the region at each marked point and adds pip
-     * elements to the group layed out in a symmetric pattern.
+     * elements to the group laid out in a symmetric pattern.
      *
      * @param sheet           The record sheet being printed.
      * @param group           The group element that contains the rect elements that mark the dimensions of the area on
@@ -203,7 +202,7 @@ class ArmorPipLayout {
 
     /**
      * Processes the rect elements within a group to find the width of the region at each marked point and adds pip
-     * elements to the group layed out in a symmetric pattern.
+     * elements to the group laid out in a symmetric pattern.
      *
      * @param sheet           The record sheet being printed.
      * @param group           The group element that contains the rect elements that mark the dimensions of the area on
@@ -222,7 +221,7 @@ class ArmorPipLayout {
 
     /**
      * Processes the rect elements within a group to find the width of the region at each marked point and adds pip
-     * elements to the group layed out in a symmetric pattern.
+     * elements to the group laid out in a symmetric pattern.
      *
      * @param sheet           The record sheet being printed.
      * @param group           The group element that contains the rect elements that mark the dimensions of the area on
@@ -245,7 +244,7 @@ class ArmorPipLayout {
 
     /**
      * Processes the rect elements within a group to find the width of the region at each marked point and adds circular
-     * pip elements to the group layed out in a symmetric pattern.
+     * pip elements to the group laid out in a symmetric pattern.
      *
      * @param sheet           The record sheet being printed.
      * @param group           The group element that contains the rect elements that mark the dimensions of the area on
@@ -315,7 +314,8 @@ class ArmorPipLayout {
      * @param bbox The dimensions of the rectangle bounding box defining the pip row
      * @param rect The SVG rect element
      *
-     * @return The dimensions of the section of the row to leave blank, or null if no gap is defined or it is malformed.
+     * @return The dimensions of the section of the row to leave blank, or null if no gap is defined, or it is
+     *       malformed.
      */
     private @Nullable Bounds parseGap(Bounds bbox, Element rect) {
         final String gap = PrintRecordSheet.parseStyle(rect, IdConstants.MML_GAP);
@@ -330,16 +330,16 @@ class ArmorPipLayout {
                           && right <= bbox.right + PRECISION) {
                         return new Bounds(left, bbox.top, right, bbox.bottom);
                     } else {
-                        logger.error("Gap is not contained within bounding rectangle in "
-                              + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                        logger.error("Gap is not contained within bounding rectangle in {}",
+                              rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                     }
                 } else {
-                    logger.error("Incorrect number of parameters to " + IdConstants.MML_GAP
-                          + " in " + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                    logger.error("Incorrect number of parameters to " + IdConstants.MML_GAP + " in {}",
+                          rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
                 }
             } catch (NumberFormatException ex) {
-                logger.error("NumberFormatException parsing gap parameters in "
-                      + rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
+                logger.error("NumberFormatException parsing gap parameters in {}",
+                      rect.getAttributeNS(null, SVGConstants.SVG_ID_ATTRIBUTE));
             }
         }
         return null;
@@ -347,7 +347,7 @@ class ArmorPipLayout {
 
     private Iterable<Bounds> iterateRegionsFromMiddle() {
         return () -> new Iterator<>() {
-            private Bounds[] r = regions.values().toArray(new Bounds[0]);
+            private final Bounds[] r = regions.values().toArray(new Bounds[0]);
             private int left = regions.size() / 2 - 1;
             private int right = regions.size() / 2;
             private boolean nextRight = true;
@@ -487,8 +487,7 @@ class ArmorPipLayout {
         boolean staggered = false;
         double radius = avgHeight * DEFAULT_PIP_SIZE;
         double spacing = Math.min(avgHeight, bounds.height() / nRows);
-        // If the orthagonal arrangement is not possible, we may also have to scale down
-        // this size of the pips.
+        // If the orthogonal arrangement is not possible, we may also have to scale down this size of the pips.
         if (spacing < avgHeight) {
             staggered = true;
             radius = Math.min(radius, spacing * 0.5);
@@ -503,27 +502,25 @@ class ArmorPipLayout {
         // Expand the spacing between rows geometrically to reduce crowding in the
         // middle of the region
         spacing = Math.sqrt(spacing * nRows / bounds.height()) * bounds.height() / nRows;
-        double ypos = Math.max(bounds.top, bounds.top + (bounds.height() - spacing * nRows) / 2.0
+        double yPosition = Math.max(bounds.top, bounds.top + (bounds.height() - spacing * nRows) / 2.0
               + spacing * 0.5 - radius);
-        // As we add or remove pips to make the count come all even or odd (or
-        // alternating for staggered)
-        // keep track of the shift and adjust up or down to keep the shift close to zero
+        // As we add or remove pips to make the count come all even or odd (or alternating for staggered) keep track
+        // of the shift and adjust up or down to keep the shift close to zero
         int shift = 0;
-        // If staggered, toggle the parity after each row. Otherwise try to keep the
-        // same parity.
+        // If staggered, toggle the parity after each row. Otherwise, try to keep the same parity.
         int parity = nCols % 2;
         for (int r = 0; r < nRows; r++) {
-            Map.Entry<Double, Bounds> upperEntry = regions.floorEntry(ypos);
+            Map.Entry<Double, Bounds> upperEntry = regions.floorEntry(yPosition);
             Bounds upper = upperEntry.getValue();
-            Map.Entry<Double, Bounds> lowerEntry = regions.ceilingEntry(ypos);
+            Map.Entry<Double, Bounds> lowerEntry = regions.ceilingEntry(yPosition);
             Bounds lower = lowerEntry == null ? upper : lowerEntry.getValue();
             Bounds row = new Bounds(Math.max(upper.left, lower.left),
-                  ypos, Math.min(upper.right, lower.right), ypos + spacing);
+                  yPosition, Math.min(upper.right, lower.right), yPosition + spacing);
             Bounds gap = mergeGaps(row, negativeRegions.get(upperEntry.getKey()),
                   lowerEntry == null ? null : negativeRegions.get(lowerEntry.getKey()));
             if (gap.width() > 0 && gap.left <= row.left + PRECISION
                   && gap.right >= row.right - PRECISION) {
-                ypos += spacing;
+                yPosition += spacing;
                 continue;
             }
             rows.add(row);
@@ -550,7 +547,7 @@ class ArmorPipLayout {
                 }
             }
             rowCount.add(count);
-            ypos += spacing;
+            yPosition += spacing;
             if (staggered) {
                 parity = 1 - parity;
             }
@@ -619,12 +616,10 @@ class ArmorPipLayout {
         // Sort the indices from the most extra space to the least
         List<Integer> indices = IntStream.range(0, rows.size()).boxed()
               .sorted(Comparator.comparingDouble(i -> rowCount.get(i) / (rows.get(i).width() - gaps.get(i).width())))
-              .collect(Collectors.toList());
-        // If there is a gap in the row with equal space on either side (+/- a pip
-        // width), try to keep
-        // the same number of pips on either side. If they're all mirrored and we have
-        // an odd number of
-        // pips, the last one will have to defy the symmetry.
+              .toList();
+        // If there is a gap in the row with equal space on either side (+/- a pip width), try to keep the same
+        // number of pips on either side. If they're all mirrored, and we have an odd number of pips, the last one
+        // will have to defy the symmetry.
         List<Boolean> mirrored = new ArrayList<>();
         for (int index = 0; index < rows.size(); index++) {
             mirrored.add(gaps.get(index).width() > 0
@@ -650,9 +645,8 @@ class ArmorPipLayout {
             skipped = 0;
             while ((current != pipCount) && skipped < rows.size()) {
                 int index = indices.get(row % indices.size());
-                // Keep the same number of pips in each half of split rows if the sizes
-                // are within a cell width, unless all the rows are mirrored and we're down to
-                // an odd pip.
+                // Keep the same number of pips in each half of split rows if the sizes are within a cell width,
+                // unless all the rows are mirrored, and we're down to an odd pip.
                 boolean mirror = mirrored.get(index) && (!allMirrored || Math.abs(pipCount - current) > 1);
                 if (pipCount > current) {
                     int change;
@@ -707,7 +701,7 @@ class ArmorPipLayout {
      * @param rows      A list of bounding rectangles defining the position and width of each row
      * @param gaps      A list of the bounding boxes of any gaps to be left in the rows.
      * @param rowCount  The number of pips to place in the row with the same index
-     * @param staggered If true, the horizontal spacing will be double the verticle.
+     * @param staggered If true, the horizontal spacing will be double the vertical.
      * @param radius    The radius of each pip.
      */
     private void drawPips(List<Bounds> rows, List<Bounds> gaps, List<Integer> rowCount,
@@ -778,16 +772,16 @@ class ArmorPipLayout {
 
     private double drawRow(Bounds row, int count, double radius, double dx, double centerX, double xPadding,
           AtomicInteger damageCounter, String className, String loc, boolean rear) {
-        double xpos = calcRowStartX(centerX, count, dx) + xPadding;
-        while (xpos < row.left) {
-            xpos += dx;
+        double xPosition = calcRowStartX(centerX, count, dx) + xPadding;
+        while (xPosition < row.left) {
+            xPosition += dx;
         }
-        while (xpos + dx * count > row.right) {
-            xpos -= dx;
+        while (xPosition + dx * count > row.right) {
+            xPosition -= dx;
         }
-        if (xpos < row.left || count == 1) {
+        if (xPosition < row.left || count == 1) {
             centerX = row.centerX();
-            xpos = calcRowStartX(centerX, count, dx) + xPadding;
+            xPosition = calcRowStartX(centerX, count, dx) + xPadding;
         }
         for (int i = 0; i < count; i++) {
             boolean isDamaged = false;
@@ -797,9 +791,17 @@ class ArmorPipLayout {
                 }
             }
             final String fillColor = (isDamaged) ? sheet.getDamageFillColor() : fill;
-            Element pip = sheet.createPip(xpos, row.top, radius, strokeWidth, pipType, fillColor, className, loc, rear);
+            Element pip = sheet.createPip(xPosition,
+                  row.top,
+                  radius,
+                  strokeWidth,
+                  pipType,
+                  fillColor,
+                  className,
+                  loc,
+                  rear);
             group.appendChild(pip);
-            xpos += dx;
+            xPosition += dx;
         }
         return centerX;
     }

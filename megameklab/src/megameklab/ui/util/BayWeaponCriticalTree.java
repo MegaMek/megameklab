@@ -32,7 +32,7 @@
  */
 package megameklab.ui.util;
 
-import static megameklab.ui.util.AeroBayTransferHandler.EMTPYSLOT;
+import static megameklab.ui.util.AeroBayTransferHandler.EMPTY_SLOT;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -132,9 +132,8 @@ public class BayWeaponCriticalTree extends JTree {
         // Remove lines and icons as far as possible (depends on LaF)
         setShowsRootHandles(false);
         putClientProperty("JTree.lineStyle", "None");
-        renderer.setLeafIcon(null);
-        renderer.setClosedIcon(null);
-        renderer.setOpenIcon(null);
+
+        DefaultTreeCellRenderer renderer = getDefaultTreeCellRenderer(eSource);
 
         addFocusListener(new FocusAdapter() {
             @Override
@@ -151,17 +150,71 @@ public class BayWeaponCriticalTree extends JTree {
             @Override
             protected int ammoTransferAmount(AmmoMounted ammo) {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(BayWeaponCriticalTree.this);
-                int amount = AmountDialog.showDialog(frame,
+                return AmountDialog.showDialog(frame,
                       ammo.getType().getName(),
                       ammo.getUsableShotsLeft(),
                       "AmountDialog.add.text");
-                return amount;
             }
         };
         setDragEnabled(true);
         setTransferHandler(cth);
         ToolTipManager.sharedInstance().registerComponent(this);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    }
+
+    private DefaultTreeCellRenderer getDefaultTreeCellRenderer(EntitySource eSource) {
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
+
+            /**
+             * This internal label is not shown but used to control the size of the actual
+             * label.
+             */
+            private final JLabel internalSizingLabel = new JLabel("X".repeat(28));
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+                  boolean leaf, int row, boolean hasFocus) {
+                super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                setOpaque(true);
+                setBorder(null);
+                if (value instanceof EquipmentNode node) {
+                    CritCellUtil.formatCell(this, node.getMounted(), true, eSource.getEntity(), 0);
+
+                    if (node.isLeaf()) {
+                        if (node.getParent() != null
+                              && node != node.getParent().getChildAt(node.getParent().getChildCount() - 1)) {
+                            Border dashed = BorderFactory.createDashedBorder(CritCellUtil.CRITICAL_CELL_BORDER_COLOR,
+                                  5,
+                                  5);
+                            Border empty = BorderFactory.createEmptyBorder(-1, -1, 0, -1);
+                            Border compound = new CompoundBorder(empty, dashed);
+                            setBorder(compound);
+                        }
+                    } else {
+                        if (row != 0) {
+                            setBorder(BorderFactory.createMatteBorder(1,
+                                  0,
+                                  0,
+                                  0,
+                                  CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
+                        }
+                    }
+                } else {
+                    CritCellUtil.formatCell(this, null, true, eSource.getEntity(), 0);
+                }
+                return this;
+            }
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension superSize = internalSizingLabel.getPreferredSize();
+                return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITICAL_CELL_ADD_HEIGHT);
+            }
+        };
+        renderer.setLeafIcon(null);
+        renderer.setClosedIcon(null);
+        renderer.setOpenIcon(null);
+        return renderer;
     }
 
     /**
@@ -305,7 +358,6 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Removes equipment node and assigns its mount to LOC_NONE.
      *
-     * @param node
      */
     private void removeEquipment(final EquipmentNode node) {
         removeEquipment(node, true, true);
@@ -318,7 +370,7 @@ public class BayWeaponCriticalTree extends JTree {
      * @param shouldRefresh If false, will not trigger refreshes. This is used when removing all equipment in a bay to
      *                      hold the refresh until the end.
      * @param updateMount   If true, the mount location will be set to LOC_NONE. The transfer handler takes care of this
-     *                      separately to keep from unallocating equipment that has been transferred to another bay.
+     *                      separately to keep from un-allocating equipment that has been transferred to another bay.
      */
     private void removeEquipment(final EquipmentNode node, boolean shouldRefresh, boolean updateMount) {
         model.removeNodeFromParent(node);
@@ -344,21 +396,21 @@ public class BayWeaponCriticalTree extends JTree {
                 moveTo = UnitUtil.findUnallocatedAmmo(eSource.getEntity(), mounted.getType());
                 if (null != moveTo) {
                     moveTo.setShotsLeft(moveTo.getBaseShotsLeft() + mounted.getBaseShotsLeft());
-                    UnitUtil.removeCriticals(eSource.getEntity(), mounted);
+                    UnitUtil.removeCriticalSlots(eSource.getEntity(), mounted);
                     UnitUtil.removeMounted(eSource.getEntity(), mounted);
                 }
             }
             if (null == moveTo) {
-                UnitUtil.removeCriticals(eSource.getEntity(), mounted);
+                UnitUtil.removeCriticalSlots(eSource.getEntity(), mounted);
                 UnitUtil.changeMountStatus(eSource.getEntity(), mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 if ((node.getMounted().getType() instanceof WeaponType)
                       && (node.getMounted().getLinkedBy() != null)) {
-                    UnitUtil.removeCriticals(eSource.getEntity(), node.getMounted().getLinkedBy());
+                    UnitUtil.removeCriticalSlots(eSource.getEntity(), node.getMounted().getLinkedBy());
                     UnitUtil.changeMountStatus(eSource.getEntity(), node.getMounted().getLinkedBy(),
                           Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
             }
-            UnitUtil.compactCriticals(eSource.getEntity());
+            UnitUtil.compactCriticalSlots(eSource.getEntity());
         }
 
         if (shouldRefresh) {
@@ -425,8 +477,6 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Sets the rearMounted flag on this bay and all equipment mounted in it.
      *
-     * @param node
-     * @param rear
      */
     private void setBayFacing(EquipmentNode node, boolean rear) {
         if (node.isLeaf() && (node.getParent() instanceof BayNode)) {
@@ -453,7 +503,6 @@ public class BayWeaponCriticalTree extends JTree {
     /**
      * Removes the node and removes the equipment from the unit entirely.
      *
-     * @param node
      */
     private void deleteEquipment(final EquipmentNode node) {
         model.removeNodeFromParent(node);
@@ -464,7 +513,7 @@ public class BayWeaponCriticalTree extends JTree {
         if ((mounted.getType() instanceof WeaponType) && (mounted.getLinkedBy() != null)) {
             UnitUtil.removeMounted(eSource.getEntity(), mounted.getLinkedBy());
         }
-        UnitUtil.compactCriticals(eSource.getEntity());
+        UnitUtil.compactCriticalSlots(eSource.getEntity());
         refresh.refreshEquipment();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -506,7 +555,11 @@ public class BayWeaponCriticalTree extends JTree {
 
         @Override
         public int getIndex(TreeNode node) {
-            return children.indexOf(node);
+            if (node instanceof MutableTreeNode) {
+                return children.indexOf(node);
+            }
+
+            return -1;
         }
 
         @Override
@@ -580,13 +633,12 @@ public class BayWeaponCriticalTree extends JTree {
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(this);
-            if (getMounted().getType() instanceof WeaponType) {
-                final WeaponType wtype = (WeaponType) getMounted().getType();
+            if (getMounted().getType() instanceof WeaponType weaponType) {
                 final int bonus = avMod(getMounted());
-                sb.append("<br/>AV: ").append(wtype.getShortAV() + bonus).append("/")
-                      .append(wtype.getMedAV() + bonus).append("/")
-                      .append(wtype.getLongAV() + bonus);
-                sb.append("<br/>Heat: ").append(wtype.getHeat());
+                sb.append("<br/>AV: ").append(weaponType.getShortAV() + bonus).append("/")
+                      .append(weaponType.getMedAV() + bonus).append("/")
+                      .append(weaponType.getLongAV() + bonus);
+                sb.append("<br/>Heat: ").append(weaponType.getHeat());
             }
             sb.append("</html>");
             return sb.toString();
@@ -666,12 +718,12 @@ public class BayWeaponCriticalTree extends JTree {
             int heat = 0;
             double weight = 0;
             for (WeaponMounted eq : getMounted().getBayWeapons()) {
-                final WeaponType wtype = eq.getType();
+                final WeaponType weaponType = eq.getType();
                 final int bonus = avMod(eq);
-                shortAV += wtype.getShortAV() + bonus;
-                medAV += wtype.getMedAV() + bonus;
-                longAV += wtype.getLongAV() + bonus;
-                heat += wtype.getHeat();
+                shortAV += weaponType.getShortAV() + bonus;
+                medAV += weaponType.getMedAV() + bonus;
+                longAV += weaponType.getLongAV() + bonus;
+                heat += weaponType.getHeat();
                 weight += eq.getTonnage();
                 if (eq.getLinkedBy() != null) {
                     weight += eq.getLinkedBy().getTonnage();
@@ -725,54 +777,6 @@ public class BayWeaponCriticalTree extends JTree {
         return 0;
     }
 
-    /**
-     * Sets node name and text/background colors.
-     */
-    private final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer() {
-        private EquipmentNode node;
-
-        /**
-         * This internal label is not shown but used to control the size of the actual
-         * label.
-         */
-        private final JLabel internalSizingLabel = new JLabel("X".repeat(28));
-
-        @Override
-        public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-              boolean leaf, int row, boolean hasFocus) {
-            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-            setOpaque(true);
-            setBorder(null);
-            if (value instanceof EquipmentNode) {
-                node = (EquipmentNode) value;
-                CritCellUtil.formatCell(this, node.getMounted(), true, eSource.getEntity(), 0);
-
-                if (node.isLeaf()) {
-                    if (node.getParent() != null
-                          && node != node.getParent().getChildAt(node.getParent().getChildCount() - 1)) {
-                        Border dashed = BorderFactory.createDashedBorder(CritCellUtil.CRITCELL_BORDER_COLOR, 5, 5);
-                        Border empty = BorderFactory.createEmptyBorder(-1, -1, 0, -1);
-                        Border compound = new CompoundBorder(empty, dashed);
-                        setBorder(compound);
-                    }
-                } else {
-                    if (row != 0) {
-                        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, CritCellUtil.CRITCELL_BORDER_COLOR));
-                    }
-                }
-            } else {
-                CritCellUtil.formatCell(this, null, true, eSource.getEntity(), 0);
-            }
-            return this;
-        }
-
-        @Override
-        public Dimension getPreferredSize() {
-            Dimension superSize = internalSizingLabel.getPreferredSize();
-            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
-        }
-    };
-
     @Override
     public Dimension getMinimumSize() {
         // Prevents layout problems with empty locations
@@ -786,8 +790,7 @@ public class BayWeaponCriticalTree extends JTree {
         @Override
         public void mousePressed(MouseEvent e) {
             final int row = getClosestRowForLocation(e.getX(), e.getY());
-            if (getPathForRow(row).getLastPathComponent() instanceof EquipmentNode) {
-                final EquipmentNode node = (EquipmentNode) getPathForRow(row).getLastPathComponent();
+            if (getPathForRow(row).getLastPathComponent() instanceof EquipmentNode node) {
                 if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2)) {
                     if (node.isLeaf()) {
                         if (node.getMounted().getType() instanceof AmmoType at) {
@@ -820,8 +823,7 @@ public class BayWeaponCriticalTree extends JTree {
                     JMenuItem info;
 
                     if (node.isLeaf()) {
-                        if (node.getMounted().getType() instanceof AmmoType) {
-                            AmmoType at = (AmmoType) node.getMounted().getType();
+                        if (node.getMounted().getType() instanceof AmmoType at) {
                             if (node.getMounted().getBaseShotsLeft() > at.getShots()) {
                                 JMenuItem remove = new JMenuItem("Remove...");
                                 popup.add(remove);
@@ -1024,14 +1026,14 @@ public class BayWeaponCriticalTree extends JTree {
                   || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO)
                   || eq.getType().hasFlag(MiscType.F_ARTEMIS_V)) {
                 for (WeaponMounted weapon : bay.getBayWeapons()) {
-                    final WeaponType wtype = weapon.getType();
+                    final WeaponType weaponType = weapon.getType();
                     if ((weapon.getLinkedBy() == null)
-                          && ((wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM)
-                          || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
-                          || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.MML)
-                          || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_IMP)
-                          || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
-                          || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.NLRM))) {
+                          && ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.MML)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_IMP)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.NLRM))) {
                         moveToArc(eq);
                         eq.setLinked(weapon);
                         break;
@@ -1090,8 +1092,10 @@ public class BayWeaponCriticalTree extends JTree {
                     bay.addAmmoToBay(eSource.getEntity().getEquipmentNum(eq));
                 }
             } else {
-                logger.debug(bay.getName() + "[" + eSource.getEntity().getEquipmentNum(bay)
-                      + "] not found in " + getLocationName());
+                logger.debug("{}[{}] not found in {}",
+                      bay.getName(),
+                      eSource.getEntity().getEquipmentNum(bay),
+                      getLocationName());
             }
         }
         refresh.refreshEquipment();
@@ -1106,7 +1110,7 @@ public class BayWeaponCriticalTree extends JTree {
         // by the number
         // of slots to get the total capacity of the ammo bin.
         double weight = ammoMount.getTonnage()
-              * Math.max(1, ammoMount.getBaseShotsLeft() / ((AmmoType) ammoMount.getType()).getShots());
+              * Math.max(1, ammoMount.getBaseShotsLeft() / ammoMount.getType().getShots());
         ammoMount.setAmmoCapacity(weight);
     }
 
@@ -1199,11 +1203,10 @@ public class BayWeaponCriticalTree extends JTree {
      * @param path The tree node under the drop point
      */
     public void addToArc(Mounted<?> eq, TreePath path) {
-        if ((null == path) || !(path.getLastPathComponent() instanceof EquipmentNode)) {
+        if ((null == path) || !(path.getLastPathComponent() instanceof EquipmentNode node)) {
             addToBay(null, eq);
             return;
         }
-        EquipmentNode node = (EquipmentNode) path.getLastPathComponent();
         if (node instanceof BayNode) {
             addToBay(((BayNode) node).getMounted(), eq);
         } else if ((eq.getType() instanceof MiscType)
@@ -1227,8 +1230,6 @@ public class BayWeaponCriticalTree extends JTree {
      * should be moved. A copy command (ctrl key held) will transfer all ammo using
      * {@link #addToArc(Mounted, TreePath) addToArc}.
      *
-     * @param eq
-     * @param path
      */
     public void addAmmo(AmmoMounted eq, int shots, TreePath path) {
         EquipmentNode node = (EquipmentNode) path.getLastPathComponent();
@@ -1276,7 +1277,7 @@ public class BayWeaponCriticalTree extends JTree {
     }
 
     private void moveToArc(Mounted<?> eq) {
-        UnitUtil.removeCriticals(eSource.getEntity(), eq);
+        UnitUtil.removeCriticalSlots(eSource.getEntity(), eq);
         try {
             eSource.getEntity().addEquipment(eq, location, false);
         } catch (Exception ex) {
@@ -1339,14 +1340,14 @@ public class BayWeaponCriticalTree extends JTree {
               || eq.getType().hasFlag(MiscType.F_ARTEMIS_V))
               || eq.getType().hasFlag(MiscType.F_ARTEMIS_PROTO))) {
             for (WeaponMounted weapon : bay.getBayWeapons()) {
-                final AmmoTypeEnum atype = weapon.getType().getAmmoType();
+                final AmmoTypeEnum ammoType = weapon.getType().getAmmoType();
                 if ((weapon.getLinkedBy() == null)
-                      && ((atype == AmmoType.AmmoTypeEnum.LRM)
-                      || (atype == AmmoType.AmmoTypeEnum.SRM)
-                      || (atype == AmmoType.AmmoTypeEnum.MML)
-                      || (atype == AmmoType.AmmoTypeEnum.LRM_IMP)
-                      || (atype == AmmoType.AmmoTypeEnum.SRM_IMP)
-                      || (atype == AmmoType.AmmoTypeEnum.NLRM))) {
+                      && ((ammoType == AmmoType.AmmoTypeEnum.LRM)
+                      || (ammoType == AmmoType.AmmoTypeEnum.SRM)
+                      || (ammoType == AmmoType.AmmoTypeEnum.MML)
+                      || (ammoType == AmmoType.AmmoTypeEnum.LRM_IMP)
+                      || (ammoType == AmmoType.AmmoTypeEnum.SRM_IMP)
+                      || (ammoType == AmmoType.AmmoTypeEnum.NLRM))) {
                     return true;
                 }
             }
@@ -1388,13 +1389,10 @@ public class BayWeaponCriticalTree extends JTree {
         WeaponMounted bay = null;
         TreePath path = loc.getPath();
         if (null != path) {
-            // If we're dropping a PPC capacitor on a PPC we need to check that it doesn't
-            // already
-            // have one. If on a PPC bay, we need to check that there is a PPC in the bay
-            // without a capacitor.
+            // If we're dropping a PPC capacitor on a PPC we need to check that it doesn't already have one. If on a
+            // PPC bay, we need to check that there is a PPC in the bay without a capacitor.
             if ((eq.getType() instanceof MiscType) && eq.getType().hasFlag(MiscType.F_PPC_CAPACITOR)
-                  && (path.getLastPathComponent() instanceof EquipmentNode)) {
-                EquipmentNode node = (EquipmentNode) path.getLastPathComponent();
+                  && (path.getLastPathComponent() instanceof EquipmentNode node)) {
                 if (node.getMounted().getType() instanceof PPCWeapon) {
                     return node.getMounted().getLinkedBy() == null;
                 } else if (node.getMounted().getType() instanceof PPCBayWeapon) {
@@ -1408,14 +1406,10 @@ public class BayWeaponCriticalTree extends JTree {
             }
             bay = getBayFromPath(path);
         }
-        // disallow dropping a bay into its current arc or a weapon or ammo into its
-        // current bay
+        // disallow dropping a bay into its current arc or a weapon or ammo into its current bay
         if (null != bay) {
-            if ((eq == bay)
-                  || ((eq instanceof WeaponMounted)
-                  && bay.getBayWeapons().contains(eq))
-                  || ((eq instanceof AmmoMounted)
-                  && bay.getBayAmmo().contains(eq))) {
+            if ((eq == bay) || ((eq instanceof WeaponMounted) && bay.getBayWeapons().contains(eq))
+                  || ((eq instanceof AmmoMounted) && bay.getBayAmmo().contains(eq))) {
                 return false;
             }
         }
@@ -1458,8 +1452,7 @@ public class BayWeaponCriticalTree extends JTree {
      */
     public String encodeSelection() {
         TreePath path = getSelectionPath();
-        if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode)) {
-            EquipmentNode node = (EquipmentNode) path.getLastPathComponent();
+        if ((null != path) && (path.getLastPathComponent() instanceof EquipmentNode node)) {
             StringJoiner sj = new StringJoiner(":");
             sj.add(String.valueOf(eSource.getEntity().getEquipmentNum(node.getMounted())));
             sj.add(String.valueOf(node.getParent().getIndex(node)));
@@ -1468,7 +1461,7 @@ public class BayWeaponCriticalTree extends JTree {
             }
             return sj.toString();
         } else {
-            return EMTPYSLOT;
+            return EMPTY_SLOT;
         }
     }
 

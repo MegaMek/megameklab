@@ -49,11 +49,11 @@ import megamek.SuiteConstants;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.client.ui.util.UIUtil;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
+import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.PopupMessages;
@@ -243,9 +243,9 @@ public class MegaMekLab {
             case NEW_DROPSHIP -> UiLoader.loadUi(Entity.ETYPE_DROPSHIP, false, false);
             case NEW_PROTOMEK -> UiLoader.loadUi(Entity.ETYPE_PROTOMEK, false, false);
             case NEW_JUMPSHIP -> UiLoader.loadUi(Entity.ETYPE_JUMPSHIP, false, false);
-            case NEW_SUPPORTVEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
+            case NEW_SUPPORT_VEE -> UiLoader.loadUi(Entity.ETYPE_SUPPORT_TANK, false, false);
             case NEW_BATTLEARMOR -> UiLoader.loadUi(Entity.ETYPE_BATTLEARMOR, false, false);
-            case NEW_CONVINFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
+            case NEW_CONVENTIONAL_INFANTRY -> UiLoader.loadUi(Entity.ETYPE_INFANTRY, false, false);
             case RECENT_UNIT -> {
                 if (!loadMostRecentUnit()) {
                     StartupGUI.getInstance().setVisible(true);
@@ -321,9 +321,7 @@ public class MegaMekLab {
                 }
                 UiLoader.loadUi(e, file.toString());
             } else if (file.getName().toLowerCase().endsWith(".mul")) {
-                Runnable printMul = () -> {
-                    MULManager.processMULFile(file, null);
-                };
+                Runnable printMul = () -> MULManager.processMULFile(file, null);
                 if (noStartup) {
                     printMul.run();
                 } else {

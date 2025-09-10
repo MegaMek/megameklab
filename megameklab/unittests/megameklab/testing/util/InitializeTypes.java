@@ -40,7 +40,7 @@ public class InitializeTypes implements BeforeAllCallback {
     private static boolean initialized = false;
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(ExtensionContext extensionContext) {
         if (!initialized) {
             initialized = true;
             EquipmentType.initializeTypes();

@@ -33,8 +33,8 @@
 package megameklab.ui.listeners;
 
 import megamek.common.equipment.Engine;
-import megamek.common.units.EntityMovementMode;
 import megamek.common.units.Entity;
+import megamek.common.units.EntityMovementMode;
 import megamek.common.verifier.BayData;
 import megameklab.ui.combatVehicle.CVChassisView;
 
@@ -104,7 +104,7 @@ public interface CVBuildListener extends BuildListener {
     void turretChanged(int turretConfig);
 
     /**
-     * Notify of a change in the base weight of one or more turrets. This is used for omnivehicles, which have to set
+     * Notify of a change in the base weight of one or more turrets. This is used for OmniVehicles, which have to set
      * the limit of pod space in the turret(s) as part of the base chassis design.
      *
      * @param turret1 The weight of the turret, or the rear turret in dual-turret vehicles
@@ -130,7 +130,7 @@ public interface CVBuildListener extends BuildListener {
     void cargoSpaceChanged(BayData bayType, double fixed, double pod);
 
     /**
-     * Notify of a command to remove all pod-mounted equipment from an omnivehicle and reset it to the base chassis.
+     * Notify of a command to remove all pod-mounted equipment from an OmniVehicle and reset it to the base chassis.
      */
     void resetChassis();
 

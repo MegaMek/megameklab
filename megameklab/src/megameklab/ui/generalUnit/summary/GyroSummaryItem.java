@@ -46,8 +46,7 @@ public class GyroSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if ((entity instanceof Mek) && (entity.getGyroType() != Mek.GYRO_NONE)) {
-            Mek mek = (Mek) entity;
+        if ((entity instanceof Mek mek) && (entity.getGyroType() != Mek.GYRO_NONE)) {
             availabilityLabel.setText(mek.getGyroTechAdvancement().getFullRatingName(entity.isClan()));
             TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
             weightLabel.setText(formatWeight(testMek.getWeightGyro(), entity));
@@ -60,13 +59,10 @@ public class GyroSummaryItem extends AbstractSummaryItem {
     }
 
     private int getGyroCrits(Entity entity) {
-        switch (entity.getGyroType()) {
-            case Mek.GYRO_COMPACT:
-                return 2;
-            case Mek.GYRO_XL:
-                return 6;
-            default:
-                return 4;
-        }
+        return switch (entity.getGyroType()) {
+            case Mek.GYRO_COMPACT -> 2;
+            case Mek.GYRO_XL -> 6;
+            default -> 4;
+        };
     }
 }

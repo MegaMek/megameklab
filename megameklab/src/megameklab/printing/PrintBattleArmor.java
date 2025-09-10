@@ -217,18 +217,12 @@ public class PrintBattleArmor extends PrintEntity {
      * 6 Troopers: Level I (ComStar, Word of Blake)
      */
     private String squadName() {
-        switch (battleArmor.getTroopers()) {
-            case 1:
-                return "SUIT";
-            case 3:
-                return "UN";
-            case 5:
-                return "POINT";
-            case 6:
-                return "LEVEL I";
-            default:
-            case 4:
-                return "SQUAD";
-        }
+        return switch (battleArmor.getTroopers()) {
+            case 1 -> "SUIT";
+            case 3 -> "UN";
+            case 5 -> "POINT";
+            case 6 -> "LEVEL I";
+            default -> "SQUAD";
+        };
     }
 }

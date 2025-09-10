@@ -54,14 +54,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
+import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.equipment.WeaponType;
-import megamek.common.equipment.AmmoMounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.units.Entity;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.dialog.AmountDialog;
@@ -84,20 +84,19 @@ public class LABuildView extends IView implements MouseListener {
         arcViews.add(l);
     }
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
     public LABuildView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
 
-        equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -105,11 +104,10 @@ public class LABuildView extends IView implements MouseListener {
             @Override
             protected int ammoTransferAmount(AmmoMounted ammo) {
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(LABuildView.this);
-                int amount = AmountDialog.showDialog(frame,
+                return AmountDialog.showDialog(frame,
                       ammo.getType().getName(),
                       ammo.getUsableShotsLeft(),
                       "AmountDialog.remove.text");
-                return amount;
             }
         };
         equipmentTable.setTransferHandler(cth);
@@ -126,6 +124,7 @@ public class LABuildView extends IView implements MouseListener {
         equipmentTable.setShowGrid(false);
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setTransferHandler(cth);
 
@@ -200,7 +199,7 @@ public class LABuildView extends IView implements MouseListener {
         fireTableRefresh();
     }
 
-    public void actionPerformed(ActionEvent evt) {
+    public void actionPerformed(ActionEvent actionEvent) {
         fireTableRefresh();
     }
 

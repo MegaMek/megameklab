@@ -49,16 +49,15 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import megamek.client.ui.models.XTableColumnModel;
-import megamek.common.equipment.EquipmentType;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.equipment.MiscType;
 import megamek.common.TechConstants;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.StandardBuildLabel;
 import megameklab.ui.util.EquipmentTableModel;
@@ -75,9 +74,9 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     private final JButton btnSetArmor = new JButton("Set Armor");
     private final JButton btnRemoveArmor = new JButton("Remove Armor");
     private final JTextField txtFilter = new JTextField(12);
-    private final JRadioButton rbtnStats = new JRadioButton("Stats");
-    private final JRadioButton rbtnFluff = new JRadioButton("Fluff");
-    private final JRadioButton rbtnCustom = new JRadioButton("Custom");
+    private final JRadioButton radioButtonStats = new JRadioButton("Stats");
+    private final JRadioButton radioButtonFluff = new JRadioButton("Fluff");
+    private final JRadioButton radioButtonCustom = new JRadioButton("Custom");
     final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
     private final TableRowSorter<EquipmentTableModel> equipmentSorter;
     private final EquipmentTableModel masterEquipmentList;
@@ -124,6 +123,14 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         masterEquipmentTable.setIntercellSpacing(new Dimension(0, 0));
         masterEquipmentTable.setShowGrid(false);
         masterEquipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSelectionListener selectionListener = e -> {
+            int selected = masterEquipmentTable.getSelectedRow();
+            EquipmentType etype = null;
+            if (selected >= 0) {
+                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
+            }
+            btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+        };
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
@@ -169,19 +176,19 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
         });
 
-        ButtonGroup bgroupView = new ButtonGroup();
-        bgroupView.add(rbtnStats);
-        bgroupView.add(rbtnFluff);
-        bgroupView.add(rbtnCustom);
+        ButtonGroup buttonGroupView = new ButtonGroup();
+        buttonGroupView.add(radioButtonStats);
+        buttonGroupView.add(radioButtonFluff);
+        buttonGroupView.add(radioButtonCustom);
 
-        rbtnStats.setSelected(true);
-        rbtnStats.addActionListener(ev -> setEquipmentView());
-        rbtnFluff.addActionListener(ev -> setEquipmentView());
-        rbtnCustom.addActionListener(ev -> setEquipmentView());
+        radioButtonStats.setSelected(true);
+        radioButtonStats.addActionListener(ev -> setEquipmentView());
+        radioButtonFluff.addActionListener(ev -> setEquipmentView());
+        radioButtonCustom.addActionListener(ev -> setEquipmentView());
         chkShowAll.addActionListener(ev -> filterEquipment());
 
         setUpPanels();
-        rbtnStats.setSelected(true);
+        radioButtonStats.setSelected(true);
         setEquipmentView();
         refresh();
     }
@@ -201,9 +208,9 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         btnRemoveArmor.addActionListener(this);
 
         JPanel btnPanel = new JPanel();
-        btnPanel.add(rbtnStats);
-        btnPanel.add(rbtnFluff);
-        btnPanel.add(rbtnCustom);
+        btnPanel.add(radioButtonStats);
+        btnPanel.add(radioButtonFluff);
+        btnPanel.add(radioButtonCustom);
         btnPanel.add(chkShowAll);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -306,16 +313,12 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             chSneakECM.setEnabled(true);
         }
 
-        if (getInfantry().hasDEST() &&
-              (getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM())) {
-            lblSneakWarning.setVisible(true);
-        } else {
-            lblSneakWarning.setVisible(false);
-        }
+        lblSneakWarning.setVisible(getInfantry().hasDEST() &&
+              (getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM()));
 
         filterEquipment();
         btnRemoveArmor.setEnabled(hasArmor());
-        rbtnCustom.setEnabled(getInfantry().getArmorKit() == null);
+        radioButtonCustom.setEnabled(getInfantry().getArmorKit() == null);
         addAllListeners();
     }
 
@@ -336,7 +339,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             EquipmentType equip = masterEquipmentList.getType(selected);
             if ((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT))) {
                 getInfantry().setArmorKit(equip);
-                rbtnCustom.setEnabled(false);
+                radioButtonCustom.setEnabled(false);
             }
         } else if (evt.getSource().equals(btnRemoveArmor)) {
             getInfantry().setArmorKit(null);
@@ -347,7 +350,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             getInfantry().setSneakCamo(false);
             getInfantry().setSneakIR(false);
             getInfantry().setSneakECM(false);
-            rbtnCustom.setEnabled(true);
+            radioButtonCustom.setEnabled(true);
         }
 
         if (evt.getSource().equals(chEncumber)) {
@@ -429,7 +432,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
 
     public void setEquipmentView() {
-        if (rbtnCustom.isSelected()) {
+        if (radioButtonCustom.isSelected()) {
             equipmentLayout.show(equipmentView, CARD_CUSTOM);
             btnSetArmor.setEnabled(false);
             return;
@@ -437,23 +440,28 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         equipmentLayout.show(equipmentView, CARD_TABLE);
         btnSetArmor.setEnabled(true);
         XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
-        if (rbtnStats.isSelected()) {
+        if (radioButtonStats.isSelected()) {
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MEDIUM_RANGE),
+                  false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE),
+                  false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PRODUCTION),
+                  false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT),
+                  false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_REINTRODUCED),
+                  false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
@@ -466,17 +474,21 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MRANGE), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MEDIUM_RANGE),
+                  false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TLEVEL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TRATING), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPROTOTYPE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DPRODUCTION), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DCOMMON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DEXTINCT), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DREINTRO), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE),
+                  false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PRODUCTION),
+                  false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_REINTRODUCED),
+                  true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
@@ -491,15 +503,4 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
               || !getInfantry().getArmorDesc().equals("1.0");
     }
 
-    private final ListSelectionListener selectionListener = new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            int selected = masterEquipmentTable.getSelectedRow();
-            EquipmentType etype = null;
-            if (selected >= 0) {
-                etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
-            }
-            btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
-        }
-    };
 }

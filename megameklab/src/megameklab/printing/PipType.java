@@ -34,7 +34,7 @@ package megameklab.printing;
 
 import megamek.common.equipment.EquipmentType;
 
-enum PipType {
+public enum PipType {
     CIRCLE, DIAMOND;
 
     public static PipType forAT(int at) {

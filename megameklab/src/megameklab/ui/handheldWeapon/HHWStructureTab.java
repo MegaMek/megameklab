@@ -41,10 +41,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import megamek.common.SimpleTechLevel;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.HandheldWeapon;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.SimpleTechLevel;
 import megamek.common.units.UnitRole;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -70,7 +70,7 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     private SummaryView panSummary;
     private IconView panIcon;
 
-    RefreshListener refresh = null;
+    RefreshListener refresh;
     JPanel masterPanel;
 
     public HHWStructureTab(EntitySource eSource, RefreshListener refresh) {

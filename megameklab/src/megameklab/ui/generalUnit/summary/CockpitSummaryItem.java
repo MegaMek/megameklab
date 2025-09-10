@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -47,12 +47,11 @@ public class CockpitSummaryItem extends AbstractSummaryItem {
 
     @Override
     public void refresh(Entity entity) {
-        if ((entity instanceof Mek) && (((Mek) entity).getCockpitType() != Mek.COCKPIT_UNKNOWN)) {
-            Mek mek = (Mek) entity;
+        if ((entity instanceof Mek mek) && (mek.getCockpitType() != Mek.COCKPIT_UNKNOWN)) {
             availabilityLabel.setText(mek.getCockpitTechAdvancement().getFullRatingName(entity.isClan()));
             TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
             weightLabel.setText(formatWeight(testMek.getWeightCockpit(), entity));
-            critLabel.setText(formatCrits(getCockpitCrits((Mek) entity)));
+            critLabel.setText(formatCrits(getCockpitCrits(mek)));
         } else if (entity instanceof AeroSpaceFighter fighter) {
             availabilityLabel.setText(fighter.getCockpitTechAdvancement().getFullRatingName(entity.isClan()));
         } else {

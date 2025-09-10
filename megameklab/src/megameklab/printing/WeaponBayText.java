@@ -69,8 +69,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     /**
      * Track any linked equipment that affects the AV or heat. By the rules, most of them are either all or none for the
      * entire bay (or ship), but for PPC capacitors there is no published rule I can find that the entire bay has to
-     * have them, or even all of the same type within the bay. It's easier to treat them all the same, and this will
-     * also support illegal builds that only put Artemis on some weapons, or mix Artemis types.
+     * have them, or even all the same type within the bay. It's easier to treat them all the same, and this will also
+     * support illegal builds that only put Artemis on some weapons, or mix Artemis types.
      */
     final Map<WeaponType, Map<EquipmentType, Integer>> augmentations = new HashMap<>();
 
@@ -131,14 +131,10 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
                     ammoList.add(ammo);
                     weaponAmmo.put(weaponType, ammoList);
                 }
-            } else {
-                // If the ammo is empty, we don't want to add it to the bay.
-                return;
             }
-        } else {
-            // If the weapon isn't an ammo weapon, we don't want to add it to the bay.
-            return;
+            // If the ammo is empty, we don't want to add it to the bay.
         }
+        // If the weapon isn't an ammo weapon, we don't want to add it to the bay.
     }
 
     /**
@@ -155,7 +151,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
         return loc.size() == 1
               && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
               && weapons.equals(other.weapons)
-              && ammosMatch(other) && augmentations.equals(other.augmentations);
+              && ammunitionMatch(other) && augmentations.equals(other.augmentations);
     }
 
     /**
@@ -166,7 +162,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      *
      * @return Whether the ammo types and number of shots per type match
      */
-    private boolean ammosMatch(WeaponBayText other) {
+    private boolean ammunitionMatch(WeaponBayText other) {
         // If the number is different, the ammo doesn't match
         if ((weaponAmmo.size() != other.weaponAmmo.size())) {
             return false;
@@ -229,24 +225,17 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     }
 
     private boolean checkOpposingSide(int loc1, int loc2, boolean rear1, boolean rear2) {
-        switch (loc1) {
+        return switch (loc1) {
             // Jumpship.LOC_FLS and Jumpship.LOC_FRS are the same indices as
             // Dropship.LOC_LEFT_WING and Dropship.LOC_RIGHT_WING
-            case Jumpship.LOC_FLS:
-                return loc2 == Jumpship.LOC_FRS && rear1 == rear2;
-            case Jumpship.LOC_FRS:
-                return loc2 == Jumpship.LOC_FLS && rear1 == rear2;
-            case Jumpship.LOC_ALS:
-                return loc2 == Jumpship.LOC_ARS;
-            case Jumpship.LOC_ARS:
-                return loc2 == Jumpship.LOC_ALS;
-            case Warship.LOC_LBS:
-                return loc2 == Warship.LOC_RBS;
-            case Warship.LOC_RBS:
-                return loc2 == Warship.LOC_LBS;
-            default:
-                return false;
-        }
+            case Jumpship.LOC_FLS -> loc2 == Jumpship.LOC_FRS && rear1 == rear2;
+            case Jumpship.LOC_FRS -> loc2 == Jumpship.LOC_FLS && rear1 == rear2;
+            case Jumpship.LOC_ALS -> loc2 == Jumpship.LOC_ARS;
+            case Jumpship.LOC_ARS -> loc2 == Jumpship.LOC_ALS;
+            case Warship.LOC_LBS -> loc2 == Warship.LOC_RBS;
+            case Warship.LOC_RBS -> loc2 == Warship.LOC_LBS;
+            default -> false;
+        };
     }
 
     /**
@@ -319,25 +308,16 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      * @return The sort order for the location
      */
     private int getLocWeight(int loc) {
-        switch (loc) {
-            case Jumpship.LOC_NOSE:
-                return 0;
-            case Jumpship.LOC_FLS:
-                return rear ? 2 : 1;
-            case Jumpship.LOC_FRS:
-                return rear ? 4 : 3;
-            case Warship.LOC_LBS:
-                return 5;
-            case Warship.LOC_RBS:
-                return 6;
-            case Jumpship.LOC_ALS:
-                return 7;
-            case Jumpship.LOC_ARS:
-                return 8;
-            case Jumpship.LOC_AFT:
-            default:
-                return 9;
-        }
+        return switch (loc) {
+            case Jumpship.LOC_NOSE -> 0;
+            case Jumpship.LOC_FLS -> rear ? 2 : 1;
+            case Jumpship.LOC_FRS -> rear ? 4 : 3;
+            case Warship.LOC_LBS -> 5;
+            case Warship.LOC_RBS -> 6;
+            case Jumpship.LOC_ALS -> 7;
+            case Jumpship.LOC_ARS -> 8;
+            default -> 9;
+        };
     }
 
 }
