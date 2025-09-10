@@ -117,8 +117,7 @@ public class PrintHandheldWeapon extends PrintEntity {
      * @param pipsCount           The number of pips to draw
      * @param useAlternateColumns true if the pips will be drawn in alternate columns
      */
-    private void drawArmorPips(SVGRectElement svgRect, int pipsCount,
-          boolean useAlternateColumns) {
+    private void drawArmorPips(SVGRectElement svgRect, int pipsCount, boolean useAlternateColumns) {
         if (pipsCount < 1) {
             return;
         }
@@ -266,10 +265,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         if (ammoList.size() > 1 && ammoCount > LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT2) {
             return true;
         }
-        if (ammoCount > LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT1) {
-            return true;
-        }
-        return false;
+        return ammoCount > LARGE_LAYOUT_THRESHOLD_AMMO_AMOUNT1;
     }
 
     @Override
@@ -480,7 +476,6 @@ public class PrintHandheldWeapon extends PrintEntity {
 
         if (colsToUse <= 1) {
             spacingX = 0;
-            effectiveWidth = layoutDiameter;
         } else {
             // Calculate initial spacing based on full width to estimate the shift
             double initialSpacingX = (bbox.getWidth() - colsToUse * layoutDiameter) / (colsToUse - 1);
@@ -567,8 +562,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         effectiveMarginAbove = Math.max(MIN_MARGIN_ABOVE_LABEL, effectiveMarginAbove);
         effectiveMarginAbove = Math.min(effectiveMarginAbove, MAX_MARGIN_ABOVE_LABEL);
 
-        double effectiveMarginBelow = MARGIN_BELOW_LABEL;
-        effectiveMarginBelow = MARGIN_BELOW_LABEL + additionalSpacingY * 0.2;
+        double effectiveMarginBelow = MARGIN_BELOW_LABEL + additionalSpacingY * 0.2;
 
         // Finally we start drawing
         double currentY = bbox.getY(); // We start drawing from the top
@@ -615,7 +609,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                       + r * (layoutDiameter + spacingY); // Offset for subsequent rows
 
                 double rowStartX;
-                double horizontalShift = 0; // for alternate mode
+                double horizontalShift; // for alternate mode
                 boolean isEvenRow = alternate && (r % 2 == 1);
 
                 if (isEvenRow && colsToUse > 1) {
@@ -712,8 +706,7 @@ public class PrintHandheldWeapon extends PrintEntity {
         }
 
         double pipDiameter = 2 * radiusToTest;
-        double pipStroke = PIP_STROKE_WIDTH;
-        double layoutDiameter = pipDiameter + pipStroke;
+        double layoutDiameter = pipDiameter + PIP_STROKE_WIDTH;
         double boxWidth = bbox.getWidth();
         double boxHeight = bbox.getHeight();
 
@@ -741,7 +734,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
                 // Calculate rows needed for this ammo type with 'colsToCheck' columns
                 int rows = (int) Math.ceil((double) pipsCount / colsToCheck);
-                if (rows == 0 && pipsCount > 0) {
+                if (rows == 0) {
                     rows = 1;
                 }
 

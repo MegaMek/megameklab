@@ -95,21 +95,21 @@ public final class CConfig {
     public static final String GUI_COLOR_EQUIPMENT = "Equipment";
     public static final String GUI_COLOR_SYSTEMS = "Systems";
     public static final String GUI_COLOR_EMPTY = "Empty";
-    public static final String GUI_COLOR_NONHITTABLE = "Nonhittable";
+    public static final String GUI_COLOR_NON_HITTABLE = "Non Hittable";
     public static final String GUI_FOREGROUND = "-Foreground";
     public static final String GUI_BACKGROUND = "-Background";
 
     public static final String GUI_FULLSCREEN = "FullScreen";
-    public static final String GUI_BM_MAINUI_WINDOW = "BMWindow";
-    public static final String GUI_CV_MAINUI_WINDOW = "CVWindow";
-    public static final String GUI_AS_MAINUI_WINDOW = "ASWindow";
-    public static final String GUI_SV_MAINUI_WINDOW = "SVWindow";
-    public static final String GUI_PM_MAINUI_WINDOW = "PMWindow";
-    public static final String GUI_BA_MAINUI_WINDOW = "BAWindow";
-    public static final String GUI_CI_MAINUI_WINDOW = "CIWindow";
-    public static final String GUI_DS_MAINUI_WINDOW = "DSWindow";
-    public static final String GUI_WS_MAINUI_WINDOW = "WSWindow";
-    public static final String GUI_HHW_MAINUI_WINDOW = "HHWWindow";
+    public static final String GUI_BM_MAIN_UI_WINDOW = "BMWindow";
+    public static final String GUI_CV_MAIN_UI_WINDOW = "CVWindow";
+    public static final String GUI_AS_MAIN_UI_WINDOW = "ASWindow";
+    public static final String GUI_SV_MAIN_UI_WINDOW = "SVWindow";
+    public static final String GUI_PM_MAIN_UI_WINDOW = "PMWindow";
+    public static final String GUI_BA_MAIN_UI_WINDOW = "BAWindow";
+    public static final String GUI_CI_MAIN_UI_WINDOW = "CIWindow";
+    public static final String GUI_DS_MAIN_UI_WINDOW = "DSWindow";
+    public static final String GUI_WS_MAIN_UI_WINDOW = "WSWindow";
+    public static final String GUI_HHW_MAIN_UI_WINDOW = "HHWWindow";
     public static final String GUI_TABBED_WINDOW = "TabbedWindow";
 
     public static final int RECENT_FILE_COUNT = 10;
@@ -123,7 +123,7 @@ public final class CConfig {
     public static final String TECH_YEAR = "techYear";
     public static final String TECH_SHOW_FACTION = "techShowFaction";
     public static final String TECH_EXTINCT = "techShowExtinct";
-    public static final String TECH_UNOFFICAL_NO_YEAR = "techUnofficialNoYear";
+    public static final String TECH_UNOFFICIAL_NO_YEAR = "techUnofficialNoYear";
 
     public static final String RS_PAPER_SIZE = "rs_paper_size";
     public static final String RS_COLOR = "rs_color";
@@ -155,12 +155,12 @@ public final class CConfig {
     public static final String RS_EXPLICIT_ZERO_MOD = "rs_explicit_zero_mod";
     public static final String RS_EXTRA_PHYSICALS = "rs_extra_physicals";
 
-    public static final String NAG_EQUIPMENT_CTRLCLICK = "nag_equipment_ctrlclick";
+    public static final String NAG_EQUIPMENT_CTRL_CLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
 
     public static final String MEK_AUTOFILL = "mekAutofill";
-    public static final String MEK_AUTOSORT = "mekAutosort";
-    public static final String MEK_AUTOCOMPACT = "mekAutocompact";
+    public static final String MEK_AUTO_SORT = "mekAutoSort";
+    public static final String MEK_AUTO_COMPACT = "mekAutoCompact";
 
     public static final String PQ_SINGLE_PRINT = "pqSinglePrint";
     public static final String PQ_ADJUSTED_BV = "pqAdjustedBV";
@@ -194,10 +194,10 @@ public final class CConfig {
         defaults.setProperty(RS_BOLD_TYPE, Boolean.toString(false));
         defaults.setProperty(RS_DAMAGE, Boolean.toString(false));
         defaults.setProperty(RS_DAMAGE_COLOR, PrintRecordSheet.FILL_RED);
-        defaults.setProperty(NAG_EQUIPMENT_CTRLCLICK, Boolean.toString(true));
+        defaults.setProperty(NAG_EQUIPMENT_CTRL_CLICK, Boolean.toString(true));
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
-        defaults.setProperty(MEK_AUTOSORT, Boolean.toString(true));
-        defaults.setProperty(MEK_AUTOCOMPACT, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTO_SORT, Boolean.toString(true));
+        defaults.setProperty(MEK_AUTO_COMPACT, Boolean.toString(true));
         defaults.setProperty(FILE_LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());
@@ -302,11 +302,13 @@ public final class CConfig {
         if (param.endsWith(":")) {
             param = param.substring(0, param.lastIndexOf(":"));
         }
-        String tparam = config.getProperty(param);
-        if (tparam == null) {
-            tparam = defaultVal;
+
+        String tParam = config.getProperty(param);
+        if (tParam == null) {
+            tParam = defaultVal;
         }
-        return tparam;
+
+        return tParam;
     }
 
     /**
@@ -362,11 +364,6 @@ public final class CConfig {
     /**
      * Return the enum value of a given config property.
      *
-     * @param key
-     * @param enumClass
-     * @param defaultVal
-     *
-     * @return
      */
     public static <E extends Enum<E>> E getEnumParam(String key, Class<E> enumClass, E defaultVal) {
         String name = getParam(key, defaultVal.name());
@@ -553,25 +550,25 @@ public final class CConfig {
     public static void resetWindowPositions() {
         setParam(GUI_FULLSCREEN, Boolean.toString(false));
         setParam(FILE_CHOOSER_WINDOW, "");
-        setParam(GUI_BM_MAINUI_WINDOW, "");
-        setParam(GUI_CV_MAINUI_WINDOW, "");
-        setParam(GUI_AS_MAINUI_WINDOW, "");
-        setParam(GUI_SV_MAINUI_WINDOW, "");
-        setParam(GUI_PM_MAINUI_WINDOW, "");
-        setParam(GUI_BA_MAINUI_WINDOW, "");
-        setParam(GUI_CI_MAINUI_WINDOW, "");
-        setParam(GUI_DS_MAINUI_WINDOW, "");
-        setParam(GUI_WS_MAINUI_WINDOW, "");
-        setParam(GUI_HHW_MAINUI_WINDOW, "");
+        setParam(GUI_BM_MAIN_UI_WINDOW, "");
+        setParam(GUI_CV_MAIN_UI_WINDOW, "");
+        setParam(GUI_AS_MAIN_UI_WINDOW, "");
+        setParam(GUI_SV_MAIN_UI_WINDOW, "");
+        setParam(GUI_PM_MAIN_UI_WINDOW, "");
+        setParam(GUI_BA_MAIN_UI_WINDOW, "");
+        setParam(GUI_CI_MAIN_UI_WINDOW, "");
+        setParam(GUI_DS_MAIN_UI_WINDOW, "");
+        setParam(GUI_WS_MAIN_UI_WINDOW, "");
+        setParam(GUI_HHW_MAIN_UI_WINDOW, "");
         setParam(GUI_TABBED_WINDOW, "");
         saveConfig();
     }
 
     // Internals ####################
 
-    private static Optional<Dimension> getWindowSize(String cconfigSetting) {
+    private static Optional<Dimension> getWindowSize(String cConfigSetting) {
         try {
-            String param = getParam(cconfigSetting);
+            String param = getParam(cConfigSetting);
             if (param.isBlank()) {
                 return Optional.empty();
             }
@@ -587,9 +584,9 @@ public final class CConfig {
         }
     }
 
-    private static Optional<Point> getWindowPosition(String cconfigSetting) {
+    private static Optional<Point> getWindowPosition(String cConfigSetting) {
         try {
-            String param = getParam(cconfigSetting);
+            String param = getParam(cConfigSetting);
             if (param.isBlank()) {
                 return Optional.empty();
             }
@@ -605,34 +602,34 @@ public final class CConfig {
         }
     }
 
-    private static void writeWindowSettings(String cconfigSetting, Component component) {
+    private static void writeWindowSettings(String cConfigSetting, Component component) {
         Dimension size = component.getSize();
         Point pos = component.getLocation();
-        setParam(cconfigSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
+        setParam(cConfigSetting, pos.x + ";" + pos.y + ";" + size.width + ";" + size.height);
         saveConfig();
     }
 
     private static String settingForMainUi(MenuBarOwner ui) {
         if (ui instanceof BMMainUI) {
-            return GUI_BM_MAINUI_WINDOW;
+            return GUI_BM_MAIN_UI_WINDOW;
         } else if (ui instanceof CVMainUI) {
-            return GUI_CV_MAINUI_WINDOW;
+            return GUI_CV_MAIN_UI_WINDOW;
         } else if (ui instanceof DSMainUI) {
-            return GUI_DS_MAINUI_WINDOW;
+            return GUI_DS_MAIN_UI_WINDOW;
         } else if (ui instanceof ASMainUI) {
-            return GUI_AS_MAINUI_WINDOW;
+            return GUI_AS_MAIN_UI_WINDOW;
         } else if (ui instanceof PMMainUI) {
-            return GUI_PM_MAINUI_WINDOW;
+            return GUI_PM_MAIN_UI_WINDOW;
         } else if (ui instanceof BAMainUI) {
-            return GUI_BA_MAINUI_WINDOW;
+            return GUI_BA_MAIN_UI_WINDOW;
         } else if (ui instanceof CIMainUI) {
-            return GUI_CI_MAINUI_WINDOW;
+            return GUI_CI_MAIN_UI_WINDOW;
         } else if (ui instanceof SVMainUI) {
-            return GUI_SV_MAINUI_WINDOW;
+            return GUI_SV_MAIN_UI_WINDOW;
         } else if (ui instanceof WSMainUI) {
-            return GUI_WS_MAINUI_WINDOW;
+            return GUI_WS_MAIN_UI_WINDOW;
         } else if (ui instanceof HHWMainUI) {
-            return GUI_WS_MAINUI_WINDOW;
+            return GUI_WS_MAIN_UI_WINDOW;
         } else if (ui instanceof MegaMekLabTabbedUI) {
             return GUI_TABBED_WINDOW;
         }

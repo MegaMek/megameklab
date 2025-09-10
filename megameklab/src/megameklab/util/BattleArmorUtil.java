@@ -59,27 +59,23 @@ public final class BattleArmorUtil {
         } else if (eq instanceof WeaponType) {
             return isBattleArmorWeapon(eq, ba);
         }
-        // This leaves ammotype, which is filtered according to having a weapon that can
-        // use it
+        // This leaves AmmoType, which is filtered according to having a weapon that can use it
         return false;
     }
 
     public static boolean isBattleArmorAPWeapon(@Nullable EquipmentType etype) {
-        if (!(etype instanceof InfantryWeapon)) {
+        if (!(etype instanceof InfantryWeapon infWeapon)) {
             return false;
         } else {
-            InfantryWeapon infWeap = (InfantryWeapon) etype;
-            return infWeap.hasFlag(WeaponType.F_INFANTRY)
-                  && !infWeap.hasFlag(WeaponType.F_INF_POINT_BLANK)
-                  && !infWeap.hasFlag(WeaponType.F_INF_ARCHAIC)
-                  && (infWeap.getCrew() < 2);
+            return infWeapon.hasFlag(WeaponType.F_INFANTRY)
+                  && !infWeapon.hasFlag(WeaponType.F_INF_POINT_BLANK)
+                  && !infWeapon.hasFlag(WeaponType.F_INF_ARCHAIC)
+                  && (infWeapon.getCrew() < 2);
         }
     }
 
     public static boolean isBattleArmorWeapon(EquipmentType eq, Entity unit) {
-        if (eq instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) eq;
-
+        if (eq instanceof WeaponType weapon) {
             if (!weapon.hasFlag(WeaponType.F_BA_WEAPON)) {
                 return false;
             }
@@ -108,13 +104,9 @@ public final class BattleArmorUtil {
                 return true;
             }
 
-            if (weapon.hasFlag(WeaponType.F_ENERGY)
-                  && weapon.hasFlag(WeaponType.F_PLASMA)
-                  && (weapon.getAmmoType() == AmmoType.AmmoTypeEnum.NA)) {
-                return false;
-            }
-
-            return true;
+            return !weapon.hasFlag(WeaponType.F_ENERGY)
+                  || !weapon.hasFlag(WeaponType.F_PLASMA)
+                  || (weapon.getAmmoType() != AmmoType.AmmoTypeEnum.NA);
         }
 
         return false;

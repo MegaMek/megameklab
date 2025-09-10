@@ -49,11 +49,11 @@ public enum MMLStartUp {
     NEW_MEK,
     NEW_TANK,
     NEW_BATTLEARMOR,
-    NEW_CONVINFANTRY,
+    NEW_CONVENTIONAL_INFANTRY,
     NEW_FIGHTER,
     NEW_DROPSHIP,
     NEW_JUMPSHIP,
-    NEW_SUPPORTVEE,
+    NEW_SUPPORT_VEE,
     NEW_PROTOMEK;
 
     private final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");

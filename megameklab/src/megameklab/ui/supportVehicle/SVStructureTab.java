@@ -87,7 +87,7 @@ import megameklab.util.UnitUtil;
  * Structure tab for support vehicle construction
  */
 public class SVStructureTab extends ITab implements SVBuildListener {
-    private static final MMLogger logger = MMLogger.create(SVStructureTab.class);
+    private static final MMLogger LOGGER = MMLogger.create(SVStructureTab.class);
 
     private RefreshListener refresh = null;
     private JPanel masterPanel;
@@ -336,13 +336,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     @Override
     public void jumpChanged(int jumpMP, EquipmentType jumpJet) {
         if (null != jumpJet) {
-            UnitUtil.removeAllMiscMounteds(getSV(), MiscType.F_JUMP_JET);
+            UnitUtil.removeAllMiscMounted(getSV(), MiscType.F_JUMP_JET);
             getSV().setOriginalJumpMP(0);
             for (int i = 0; i < jumpMP; i++) {
                 try {
                     getSV().addEquipment(jumpJet, Tank.LOC_BODY);
                 } catch (LocationFullException e) {
-                    logger.error("", e);
+                    LOGGER.error("", e);
                 }
             }
             panSummary.refresh();
@@ -496,12 +496,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(mod, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since chassis mods don't occupy slots
-                logger.error("LocationFullException when adding chassis mod " + mod.getName());
+                LOGGER.error("LocationFullException when adding chassis mod {}", mod.getName());
             }
         } else if (!installed && (null != current)) {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
-            UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.removeCriticalSlots(getSV(), current);
             UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         if (mod.equals(TestSupportVehicle.ChassisModification.OMNI.equipment)) {
@@ -586,16 +586,19 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.SPONSON_TURRET), Tank.LOC_RIGHT);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                logger.error("LocationFullException when adding sponson turret");
+                LOGGER.error("LocationFullException when adding sponson turret");
             }
         } else if (!installed) {
             for (Mounted<?> m : getEntity().getEquipment()) {
                 m.setSponsonTurretMounted(false);
             }
             for (Mounted<?> sponson : current) {
-                getSV().getMisc().remove(sponson);
+                if (sponson instanceof MiscMounted) {
+                    getSV().getMisc().remove(sponson);
+                }
+
                 getSV().getEquipment().remove(sponson);
-                UnitUtil.removeCriticals(getSV(), sponson);
+                UnitUtil.removeCriticalSlots(getSV(), sponson);
                 UnitUtil.changeMountStatus(getSV(), sponson, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
         }
@@ -619,7 +622,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(EquipmentType.get(EquipmentTypeLookup.PINTLE_TURRET), loc);
             } catch (LocationFullException e) {
                 // This should not be possible since sponson turrets mods don't occupy slots
-                logger.error("LocationFullException when adding pintle turret");
+                LOGGER.error("LocationFullException when adding pintle turret");
             }
         } else if (!addPintle && installedPintle.isPresent()) {
             for (Mounted<?> m : getEntity().getEquipment()) {
@@ -630,7 +633,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             MiscMounted pintle = installedPintle.get();
             getSV().getMisc().remove(pintle);
             getSV().getEquipment().remove(pintle);
-            UnitUtil.removeCriticals(getSV(), pintle);
+            UnitUtil.removeCriticalSlots(getSV(), pintle);
             UnitUtil.changeMountStatus(getSV(), pintle, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         resetSponsonPintleWeight();
@@ -685,13 +688,13 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         if (null != current) {
             getSV().getMisc().remove(current);
             getSV().getEquipment().remove(current);
-            UnitUtil.removeCriticals(getSV(), current);
+            UnitUtil.removeCriticalSlots(getSV(), current);
             UnitUtil.changeMountStatus(getSV(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         EquipmentType eq = null;
-        if (index == SVBuildListener.FIRECON_BASIC) {
+        if (index == SVBuildListener.FIRE_CONTROL_BASIC) {
             eq = EquipmentType.get("Basic Fire Control");
-        } else if (index == SVBuildListener.FIRECON_ADVANCED) {
+        } else if (index == SVBuildListener.FIRE_CONTROL_ADVANCED) {
             eq = EquipmentType.get("Advanced Fire Control");
         }
         if (null != eq) {
@@ -699,7 +702,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                 getSV().addEquipment(eq, getSV().isAero() ? FixedWingSupport.LOC_BODY : Tank.LOC_BODY);
             } catch (LocationFullException e) {
                 // This should not be possible since fire control doesn't occupy slots
-                logger.error("LocationFullException when adding fire control " + eq.getName());
+                LOGGER.error("LocationFullException when adding fire control {}", eq.getName());
             }
         }
         panChassis.setFromEntity(getSV());
@@ -728,7 +731,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         // Clear out any existing seating.
         final List<Transporter> current = getSV().getTransports().stream()
               .filter(t -> t instanceof StandardSeatCargoBay)
-              .collect(Collectors.toList());
+              .toList();
         for (Transporter t : current) {
             getSV().removeTransporter(t);
         }
@@ -768,7 +771,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
                     || (t instanceof SecondClassQuartersCargoBay)
                     || (t instanceof CrewQuartersCargoBay)
                     || (t instanceof SteerageQuartersCargoBay))
-              .collect(Collectors.toList());
+              .toList();
         for (Transporter t : current) {
             getSV().removeTransporter(t);
         }

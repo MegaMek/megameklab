@@ -32,12 +32,12 @@
  */
 package megameklab.ui.generalUnit.summary;
 
-import megamek.common.units.Entity;
+import megamek.common.annotations.Nullable;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.units.Mek;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.annotations.Nullable;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMek;
 import megameklab.util.MekUtil;
@@ -46,14 +46,13 @@ import megameklab.util.UnitUtil;
 public class HeatSinkSummaryItem extends AbstractSummaryItem {
     @Override
     public String getName() {
-        return "Heatsinks";
+        return "Heat Sinks";
     }
 
     @Override
     public void refresh(Entity entity) {
-        if (entity instanceof Mek) {
+        if (entity instanceof Mek mek) {
             TestMek testMek = (TestMek) UnitUtil.getEntityVerifier(entity);
-            Mek mek = (Mek) entity;
             int numberSinks = MekUtil.countActualHeatSinks(mek);
             numberSinks = Math.max(0, numberSinks - UnitUtil.getCriticalFreeHeatSinks(mek, mek.hasCompactHeatSinks()));
             int critSinks = numberSinks;

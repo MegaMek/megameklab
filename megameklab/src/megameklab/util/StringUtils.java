@@ -124,8 +124,7 @@ public class StringUtils {
     public static String getEquipmentInfo(Entity unit, Mounted<?> mount, boolean capacitor) {
         String info = "";
 
-        if (mount.getType() instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) mount.getType();
+        if (mount.getType() instanceof WeaponType weapon) {
             if (weapon instanceof InfantryWeapon) {
                 info = Integer.toString((int) Math.round(((InfantryWeapon) weapon).getInfantryDamage()));
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {
@@ -286,7 +285,7 @@ public class StringUtils {
         } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
               || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
-                // manually set vibros to active to get correct damage
+                // manually set vibro to active to get correct damage
                 mount.setMode(1);
             }
             if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
@@ -309,8 +308,7 @@ public class StringUtils {
     public static String getAeroEquipmentInfo(Mounted<?> mount) {
         String info;
 
-        if (mount.getType() instanceof WeaponType) {
-            WeaponType weapon = (WeaponType) mount.getType();
+        if (mount.getType() instanceof WeaponType weapon) {
             if (weapon instanceof InfantryWeapon) {
                 info = "";
                 if (weapon.hasFlag(WeaponType.F_BALLISTIC)) {

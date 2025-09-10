@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -62,10 +62,10 @@ public interface IdConstants {
     String MP_FLANK = "mpFlank";
     String MP_SAFE_THRUST = "mpSafeThrust";
     String MP_MAX_THRUST = "mpMaxThrust";
-    String MP_AIRMEK_WALK = "mpAirMekWalk";
-    String MP_AIRMEK_RUN = "mpAirMekRun";
-    String MP_AIRMEK_CRUISE = "mpAirMekCruise";
-    String MP_AIRMEK_FLANK = "mpAirMekFlank";
+    String MP_AIR_MEK_WALK = "mpAirMekWalk";
+    String MP_AIR_MEK_RUN = "mpAirMekRun";
+    String MP_AIR_MEK_CRUISE = "mpAirMekCruise";
+    String MP_AIR_MEK_FLANK = "mpAirMekFlank";
     String LBL_VEE_MODE = "lblVeeMode";
     String MOVEMENT_TYPE = "movementType";
     String ENGINE_TYPE = "engineType";
@@ -120,7 +120,7 @@ public interface IdConstants {
     String TEXT_IS = "textIS_";
     String TEXT_SI = "textSI";
     String TEXT_SAIL = "textSail";
-    String TEXT_KFDRIVE = "textKFDrive";
+    String TEXT_KF_DRIVE = "textKFDrive";
     String TEXT_DOCKING_COLLARS = "textDockingCollars";
     String ARMOR_PIPS = "armorPips";
     String AMMO_PIPS = "ammoPips";

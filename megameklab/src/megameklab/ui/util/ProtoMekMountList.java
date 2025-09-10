@@ -49,14 +49,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
-import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
-import megamek.common.exceptions.LocationFullException;
-import megamek.common.equipment.Mounted;
-import megamek.common.units.ProtoMek;
-import megamek.common.equipment.WeaponType;
 import megamek.common.annotations.Nullable;
+import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.Entity;
+import megamek.common.units.ProtoMek;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.util.ProtoMekUtil;
@@ -75,7 +75,6 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
     private final int location;
     private RefreshListener refresh;
     private static final WeaponType widthWeaponType = new WeaponType();
-    private final WeaponMounted critcellWidthMounted;
 
     public ProtoMekMountList(EntitySource eSource, RefreshListener refresh, int location) {
         this.eSource = eSource;
@@ -83,13 +82,90 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
         this.location = location;
         refreshContents();
         setCellRenderer(new MountCellRenderer());
+        MouseListener mouseListener = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+                if (e.isPopupTrigger() && isChangeable(mounted)) {
+                    showPopup(e, mounted);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
+                if (!isChangeable(mounted)) {
+                    return;
+                }
+
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
+                        try {
+                            ProtoMekUtil.addProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
+                        } catch (LocationFullException ex) {
+                            logger.error("", ex);
+                        }
+                        refresh();
+                        return;
+                    }
+                }
+
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (e.isAltDown() && isTorso()) {
+                        changeFacing(mounted);
+                        return;
+                    }
+                    if (e.isControlDown()) {
+                        if ((mounted.getType() instanceof AmmoType)) {
+                            ProtoMekUtil.reduceProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
+                        } else {
+                            removeMount(mounted);
+                        }
+                        refresh();
+                        return;
+                    }
+                }
+
+                if (e.isPopupTrigger()) {
+                    showPopup(e, mounted);
+                }
+            }
+
+            private boolean isChangeable(@Nullable Mounted<?> mounted) {
+                return (mounted != null)
+                      && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
+                      && !UnitUtil.isArmor(mounted.getType());
+            }
+
+            private void showPopup(MouseEvent e, Mounted<?> mounted) {
+                JPopupMenu popup = new JPopupMenu();
+                JMenuItem menuItem;
+                if (!(mounted.getType() instanceof AmmoType)) {
+                    menuItem = new JMenuItem("Remove " + mounted.getName());
+                    menuItem.addActionListener(ev -> removeMount(mounted));
+                    popup.add(menuItem);
+                }
+
+                menuItem = new JMenuItem("Delete " + mounted.getName());
+                menuItem.addActionListener(ev -> deleteMount(mounted));
+                popup.add(menuItem);
+
+                if (isTorso() && (mounted.getType() instanceof WeaponType)) {
+                    menuItem = new JMenuItem("Change Facing");
+                    menuItem.addActionListener(ev -> changeFacing(mounted));
+                    popup.add(menuItem);
+                }
+
+                popup.show(ProtoMekMountList.this, e.getX(), e.getY());
+            }
+        };
         addMouseListener(mouseListener);
         setDragEnabled(true);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        critcellWidthMounted = new WeaponMounted(eSource.getEntity(), widthWeaponType);
-        setPrototypeCellValue(critcellWidthMounted);
+        WeaponMounted criticalCellWidthMounted = new WeaponMounted(eSource.getEntity(), widthWeaponType);
+        setPrototypeCellValue(criticalCellWidthMounted);
     }
 
     public ProtoMek getProtoMek() {
@@ -140,84 +216,6 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
         refresh();
     }
 
-    private final MouseListener mouseListener = new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-            final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
-            if (e.isPopupTrigger() && isChangeable(mounted)) {
-                showPopup(e, mounted);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            final Mounted<?> mounted = getModel().getElementAt(locationToIndex(e.getPoint()));
-            if (!isChangeable(mounted)) {
-                return;
-            }
-
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                if (e.isControlDown() && (mounted.getType() instanceof AmmoType)) {
-                    try {
-                        ProtoMekUtil.addProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
-                    } catch (LocationFullException ex) {
-                        logger.error("", ex);
-                    }
-                    refresh();
-                    return;
-                }
-            }
-
-            if (SwingUtilities.isRightMouseButton(e)) {
-                if (e.isAltDown() && isTorso()) {
-                    changeFacing(mounted);
-                    return;
-                }
-                if (e.isControlDown()) {
-                    if ((mounted.getType() instanceof AmmoType)) {
-                        ProtoMekUtil.reduceProtoMekAmmo(getProtoMek(), mounted.getType(), 1);
-                    } else {
-                        removeMount(mounted);
-                    }
-                    refresh();
-                    return;
-                }
-            }
-
-            if (e.isPopupTrigger()) {
-                showPopup(e, mounted);
-            }
-        }
-
-        private boolean isChangeable(@Nullable Mounted<?> mounted) {
-            return (mounted != null)
-                  && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
-                  && !UnitUtil.isArmor(mounted.getType());
-        }
-
-        private void showPopup(MouseEvent e, Mounted<?> mounted) {
-            JPopupMenu popup = new JPopupMenu();
-            JMenuItem menuItem;
-            if (!(mounted.getType() instanceof AmmoType)) {
-                menuItem = new JMenuItem("Remove " + mounted.getName());
-                menuItem.addActionListener(ev -> removeMount(mounted));
-                popup.add(menuItem);
-            }
-
-            menuItem = new JMenuItem("Delete " + mounted.getName());
-            menuItem.addActionListener(ev -> deleteMount(mounted));
-            popup.add(menuItem);
-
-            if (isTorso() && (mounted.getType() instanceof WeaponType)) {
-                menuItem = new JMenuItem("Change Facing");
-                menuItem.addActionListener(ev -> changeFacing(mounted));
-                popup.add(menuItem);
-            }
-
-            popup.show(ProtoMekMountList.this, e.getX(), e.getY());
-        }
-    };
-
     private static class MountedListModel extends AbstractListModel<Mounted<?>> {
 
         private final List<Mounted<?>> list = new ArrayList<>();
@@ -247,10 +245,13 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
             final Entity entity = lstMount.eSource.getEntity();
             if ((value instanceof Mounted<?> mounted) && (mounted.getType() == widthWeaponType)) {
                 // For the "prototype" cell value, use the prototype text to set the correct width of the list
-                setText(CritCellUtil.CRITCELL_WIDTH_STRING);
+                setText(CritCellUtil.CRITICAL_CELL_WIDTH_STRING);
                 setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
             } else {
-                CritCellUtil.formatCell(this, (Mounted) value, true, entity, index);
+                if (value instanceof Mounted<?> mounted) {
+                    CritCellUtil.formatCell(this, mounted, true, entity, index);
+                }
+
                 if ((index > 0) && (index < list.getModel().getSize())) {
                     setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black));
                 }
@@ -261,7 +262,7 @@ public class ProtoMekMountList extends JList<Mounted<?>> {
         @Override
         public Dimension getPreferredSize() {
             Dimension superSize = super.getPreferredSize();
-            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITCELL_ADD_HEIGHT);
+            return new Dimension(superSize.width, superSize.height + CritCellUtil.CRITICAL_CELL_ADD_HEIGHT);
         }
     }
 

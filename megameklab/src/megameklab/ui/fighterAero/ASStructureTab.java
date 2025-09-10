@@ -38,7 +38,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -140,7 +139,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
               new MiscEquipmentSummaryItem(),
               new OtherSummaryItem());
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagConstraints gbc;
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -154,8 +153,6 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         leftPanel.add(iconView);
         leftPanel.add(panChassis);
         leftPanel.add(panHeat);
-        //leftPanel.add(Box.createGlue());
-        //leftPanel.add(Box.createVerticalGlue());
 
         midPanel.add(panMovement);
         midPanel.add(panFuel);
@@ -384,7 +381,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         } else if (!getTechManager().isLegal(panArmor.getArmor())) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
         }
-        // If we have a large engine, a drop in tech level may make it unavailable and we will need
+        // If we have a large engine, a drop in tech level may make it unavailable, and we will need
         // to reduce speed to a legal value.
         if (getAero().getEngine().hasFlag(Engine.LARGE_ENGINE) && panChassis.getAvailableEngines().isEmpty()) {
             int walk;
@@ -452,7 +449,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
             UnitUtil.removeISorArmorMounts(getAero(), false);
-            UnitUtil.compactCriticals(getAero());
+            UnitUtil.compactCriticalSlots(getAero());
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
             panArmorAllocation.showPatchwork(false);
@@ -592,7 +589,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
     @Override
     public void engineChanged(Engine engine) {
-        // Make sure we keep same number of base heat sinks for omnis
+        // Make sure we keep same number of base heat sinks for OmniMeks
         engine.setBaseChassisHeatSinks(getAero().getEngine()
               .getBaseChassisHeatSinks(false));
         getAero().setEngine(engine);
@@ -627,7 +624,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void troopSpaceChanged(double fixed, double pod) {
         List<Transporter> toRemove = getAero().getTransports().stream()
-              .filter(t -> t instanceof InfantryCompartment).collect(Collectors.toList());
+              .filter(t -> t instanceof InfantryCompartment).toList();
         toRemove.forEach(t -> getAero().removeTransporter(t));
         double troopTons = Math
               .round((fixed) * 2) / 2.0;
@@ -655,7 +652,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         List<Transporter> toRemove = getAero().getTransports().stream()
               .filter(t -> (t instanceof Bay)
                     && (bayType == BayData.getBayType((Bay) t)))
-              .collect(Collectors.toList());
+              .toList();
         toRemove.forEach(t -> getAero().removeTransporter(t));
         double bayTons = Math
               .round((fixed) * 2) / 2.0;

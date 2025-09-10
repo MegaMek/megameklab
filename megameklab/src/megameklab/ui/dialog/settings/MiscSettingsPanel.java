@@ -115,8 +115,7 @@ public class MiscSettingsPanel extends JPanel {
             URL helpFile = new File(MMConstants.USER_DIR_README_FILE).toURI().toURL();
             userDirHelp.addActionListener(e -> new HelpDialog(helpTitle, helpFile, parent).setVisible(true));
         } catch (MalformedURLException e) {
-            logger.error("Could not find the user data directory readme file at "
-                  + MMConstants.USER_DIR_README_FILE);
+            logger.error("Could not find the user data directory readme file at {}", MMConstants.USER_DIR_README_FILE);
         }
         JPanel userDirLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         userDirLine.add(userDirLabel);

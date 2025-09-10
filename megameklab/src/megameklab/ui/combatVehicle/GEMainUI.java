@@ -36,12 +36,12 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.units.Entity;
+import megamek.common.TechConstants;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.GunEmplacement;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.equipment.Mounted;
-import megamek.common.TechConstants;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
@@ -181,7 +181,7 @@ public class GEMainUI extends MegaMekLabMainUI {
     }
 
     @Override
-    public void createNewUnit(long entitytype, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
+    public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldUnit) {
         var newUnit = new GunEmplacement();
         newUnit.setWeight(0);
         newUnit.setTechLevel(TechConstants.T_IS_TW_ALL);

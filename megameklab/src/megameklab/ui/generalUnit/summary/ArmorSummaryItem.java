@@ -93,17 +93,11 @@ public class ArmorSummaryItem extends AbstractSummaryItem {
             int slots = 0;
             for (int loc = 0; loc < Aero.LOC_WINGS; loc++) {
                 ArmorType aeroArmor = getArmorType(entity, loc);
-                if (aeroArmor == null) {
-                    return "?";
-                }
                 slots += aeroArmor.getPatchworkSlotsCVFtr();
             }
             return formatCrits(slots);
         } else {
             ArmorType aeroArmor = getArmorType(entity, Aero.LOC_NOSE);
-            if (aeroArmor == null) {
-                return "?";
-            }
             return formatCrits(aeroArmor.getFighterSlots());
         }
     }

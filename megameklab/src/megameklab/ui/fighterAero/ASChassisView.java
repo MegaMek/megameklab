@@ -49,10 +49,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.units.Aero;
 import megamek.common.equipment.Engine;
-import megamek.common.units.Entity;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -94,7 +94,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(Aero::getCockpitTypeString);
     final private JButton btnResetChassis = new JButton();
 
-    private ITechManager techManager;
+    private final ITechManager techManager;
     private boolean primitive = false;
     private boolean conventional = false;
     private int engineRating;
@@ -258,7 +258,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     private void refreshFighterType() {
         // aerospace and conventional fighters have the same tech progression,
         // so we only need to change this if switch between standard and primitive,
-        // which use support vehicle rules for conventional fighers.
+        // which use support vehicle rules for conventional fighters.
         int size = cbFighterType.getModel().getSize();
         if ((size == 0) || (isPrimitive() != (size == 1))) {
             Integer prev = (Integer) cbFighterType.getSelectedItem();
@@ -386,7 +386,13 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public int getFighterType() {
-        return (Integer) cbFighterType.getSelectedItem();
+        Object value = cbFighterType.getSelectedItem();
+
+        if (value instanceof Integer intValue) {
+            return intValue;
+        }
+
+        return 0;
     }
 
     public Engine getEngine() {
@@ -426,7 +432,12 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public int getCockpitType() {
-        return (Integer) cbCockpit.getSelectedItem();
+        Object value = cbCockpit.getSelectedItem();
+
+        if (value instanceof Integer intValue) {
+            return intValue;
+        }
+        return 0;
     }
 
     public void setCockpitType(int cockpit) {
@@ -447,7 +458,10 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         } else if (e.getSource() == chkVSTOL) {
             listeners.forEach(l -> l.vstolChanged(isVSTOL()));
         } else if (e.getSource() == cbFighterType) {
-            listeners.forEach(l -> l.fighterTypeChanged((Integer) cbFighterType.getSelectedItem()));
+            Object value = cbFighterType.getSelectedItem();
+            if (value instanceof Integer intValue) {
+                listeners.forEach(l -> l.fighterTypeChanged(intValue));
+            }
         } else if (e.getSource() == cbEngine) {
             listeners.forEach(l -> l.engineChanged(getEngine()));
         } else if (e.getSource() == cbCockpit) {

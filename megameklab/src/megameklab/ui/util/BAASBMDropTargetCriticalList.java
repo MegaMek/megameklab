@@ -75,7 +75,7 @@ import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
 public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseListener {
-    private static final MMLogger logger = MMLogger.create(BAASBMDropTargetCriticalList.class);
+    private static final MMLogger LOGGER = MMLogger.create(BAASBMDropTargetCriticalList.class);
 
     private final EntitySource eSource;
     private RefreshListener refresh;
@@ -101,7 +101,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         setTransferHandler(transferHandler);
         setAlignmentX(JLabel.CENTER_ALIGNMENT);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITCELL_BORDER_COLOR));
+        setBorder(BorderFactory.createLineBorder(CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
     }
 
     public void setRefresh(RefreshListener refresh) {
@@ -215,9 +215,8 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                           && ((BattleArmor) getUnit()).getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
                         boolean enabled = false;
                         for (Mounted<?> weapon : getUnit().getWeaponList()) {
-                            WeaponType wtype = (WeaponType) weapon.getType();
-                            if (weapon.isSquadSupportWeapon()
-                                  && AmmoType.isAmmoValid(mount, wtype)) {
+                            WeaponType weaponType = (WeaponType) weapon.getType();
+                            if (weapon.isSquadSupportWeapon() && AmmoType.isAmmoValid(mount, weaponType)) {
                                 enabled = true;
                             }
                         }
@@ -268,7 +267,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         popup.add(info);
                     }
 
-                    // Right-clicked on a AP Mount that has an attached weapon
+                    // Right-clicked on an AP Mount that has an attached weapon
                     if (mount.getType().hasFlag(MiscType.F_AP_MOUNT)
                           && (mount.getLinked() != null)) {
                         info = new JMenuItem("Remove attached weapon");
@@ -325,9 +324,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     }
 
                     // Allow number of shots selection
-                    if ((getUnit() instanceof BattleArmor)
-                          && (mount.getType() instanceof AmmoType)) {
-                        AmmoType at = (AmmoType) mount.getType();
+                    if ((getUnit() instanceof BattleArmor) && (mount.getType() instanceof AmmoType at)) {
                         int maxNumShots = TestBattleArmor.NUM_SHOTS_PER_CRIT;
                         int stepSize = 1;
                         if (at.getAmmoType() == AmmoType.AmmoTypeEnum.BA_TUBE) {
@@ -467,7 +464,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                 return crit.getMount();
             }
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
 
         return null;
@@ -497,23 +494,23 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (UnitUtil.isArmor(mounted.getType())) {
             UnitUtil.removeISorArmorMounts(getUnit(), false);
         } else if (mounted.getType().isSpreadable()) {
-            UnitUtil.removeAllMounteds(getUnit(), mounted.getType());
+            UnitUtil.removeAllMounted(getUnit(), mounted.getType());
         } else {
-            UnitUtil.removeCriticals(getUnit(), mounted);
+            UnitUtil.removeCriticalSlots(getUnit(), mounted);
             UnitUtil.removeMounted(getUnit(), mounted);
         }
 
         if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
-            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+            UnitUtil.compactCriticalSlots(getUnit(), mounted.getLocation());
         }
 
-        // Check linkings after you remove everything.
+        // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ele) {
             // do nothing.
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
 
         if (refresh != null) {
@@ -536,18 +533,18 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             return;
         }
 
-        UnitUtil.removeCriticals(getUnit(), mounted);
+        UnitUtil.removeCriticalSlots(getUnit(), mounted);
         if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
-            UnitUtil.compactCriticals(getUnit(), mounted.getLocation());
+            UnitUtil.compactCriticalSlots(getUnit(), mounted.getLocation());
         }
 
-        // Check linkings after you remove everything.
+        // Check linking after you remove everything.
         try {
             MekFileParser.postLoadInit(getUnit());
         } catch (EntityLoadingException ignored) {
 
         } catch (Exception ex) {
-            logger.error("", ex);
+            LOGGER.error("", ex);
         }
 
         if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -616,7 +613,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         if (cs != null) {
             Mounted<?> mount = cs.getMount();
-            UnitUtil.removeCriticals(getUnit(), mount);
+            UnitUtil.removeCriticalSlots(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
         getUnit().setCritical(location, 3, new CriticalSlot(
@@ -647,7 +644,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
 
         if ((cs != null) && (cs.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
             Mounted<?> mount = cs.getMount();
-            UnitUtil.removeCriticals(getUnit(), mount);
+            UnitUtil.removeCriticalSlots(getUnit(), mount);
             changeMountStatus(mount, Entity.LOC_NONE, false);
         }
 

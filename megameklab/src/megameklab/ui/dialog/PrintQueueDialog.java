@@ -62,9 +62,9 @@ import megamek.client.ui.Messages;
 import megamek.client.ui.buttons.MMButton;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.Configuration;
+import megamek.common.Player;
 import megamek.common.game.Game;
 import megamek.common.loaders.MekFileParser;
-import megamek.common.Player;
 import megamek.common.units.BTObject;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityListFile;
@@ -174,28 +174,20 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         oneUnitPerSheetCheck.setToolTipText(
               "When unchecked, the record sheets for some unit types may be printed on the same page. " +
                     "Note that the result may depend on whether reference tables are printed. This can be changed in the Settings.");
-        oneUnitPerSheetCheck.addActionListener(e -> {
-            recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected());
-        });
+        oneUnitPerSheetCheck.addActionListener(e -> recordSheetPanel.setOneUnitPerSheet(oneUnitPerSheetCheck.isSelected()));
 
         showPilotDataCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         showPilotDataCheck.setToolTipText(
               "When checked, pilot data will be printed if available. BV will be adjusted for pilot skills.");
-        showPilotDataCheck.addActionListener(e -> {
-            recordSheetPanel.showPilotData(showPilotDataCheck.isSelected());
-        });
+        showPilotDataCheck.addActionListener(e -> recordSheetPanel.showPilotData(showPilotDataCheck.isSelected()));
 
         adjustedBvCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         adjustedBvCheck.setToolTipText("When checked, printed BV is adjusted for force modifiers (C3, TAG, etc.).");
-        adjustedBvCheck.addActionListener(e -> {
-            recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected());
-        });
+        adjustedBvCheck.addActionListener(e -> recordSheetPanel.includeC3inBV(adjustedBvCheck.isSelected()));
 
         showDamageCheck.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         showDamageCheck.setToolTipText("When checked, damage will be shown on the Record Sheet.");
-        showDamageCheck.addActionListener(e -> {
-            recordSheetPanel.showDamage(showDamageCheck.isSelected());
-        });
+        showDamageCheck.addActionListener(e -> recordSheetPanel.showDamage(showDamageCheck.isSelected()));
 
         queuedUnitList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queuedUnitList.addListSelectionListener(new OnSelectionChanged());

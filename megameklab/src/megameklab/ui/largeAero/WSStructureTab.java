@@ -118,7 +118,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
               new FuelSummaryItem(),
               new HeatSinkSummaryItem(),
               new ControlsSummaryItem(),
-              new LfBatterySummaryItem(),
+              new LFBatterySummaryItem(),
               new KfDriveSummaryItem(),
               new SailSummaryItem(),
               new ArmorSummaryItem(),

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2015-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -38,7 +38,7 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 
 /**
- * Since BattleArmor is setup in a squad, the standard CriticalSlot system isn't used. For construction purposes, we
+ * Since BattleArmor is set up in a squad, the standard CriticalSlot system isn't used. For construction purposes, we
  * keep track of criticalSlots. In MM, for purposes and dealing with hits, the "locations" for BattleArmor must
  * correspond to the troopers in the squad. This means that the standard Mounted.location can't really be used, and it
  * causes problems with the criticalSlots as well. Since these really only matter for constructions, a separate critical
@@ -86,7 +86,7 @@ public class BACriticalSuit {
         return BattleArmor.MOUNT_NUM_LOCS;
     }
 
-    public int getNumCriticals(int loc) {
+    public int getNumCriticalSlots(int loc) {
         return crits[loc].length;
     }
 
@@ -98,7 +98,7 @@ public class BACriticalSuit {
             critsToAdd = m.getNumCriticalSlots();
         }
         int critsAvailable = 0;
-        for (int c = 0; c < getNumCriticals(loc); c++) {
+        for (int c = 0; c < getNumCriticalSlots(loc); c++) {
             if (crits[loc][c] == null) {
                 critsAvailable++;
             }
@@ -138,7 +138,7 @@ public class BACriticalSuit {
         if (critsToAdd == 0) {
             return;
         }
-        for (int slot = 0; slot < getNumCriticals(loc); slot++) {
+        for (int slot = 0; slot < getNumCriticalSlots(loc); slot++) {
             if (crits[loc][slot] == null) {
                 crits[loc][slot] = new CriticalSlot(m);
                 critsToAdd--;

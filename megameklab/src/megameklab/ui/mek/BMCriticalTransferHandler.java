@@ -234,8 +234,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             return false;
         }
 
-        if (info.getComponent() instanceof BAASBMDropTargetCriticalList) {
-            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) info.getComponent();
+        if (info.getComponent() instanceof BAASBMDropTargetCriticalList<?> list) {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
@@ -264,13 +263,13 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 // If this equipment is already mounted, clear the criticalSlots it's mounted in
                 if (!fixedEquipment) {
                     if (eq.getLocation() != Entity.LOC_NONE || eq.getSecondLocation() != Entity.LOC_NONE) {
-                        UnitUtil.removeCriticals(getUnit(), eq);
+                        UnitUtil.removeCriticalSlots(getUnit(), eq);
                         UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, Entity.LOC_NONE, false);
                     } else {
                         eq.setOmniPodMounted(UnitUtil.canPodMount(getUnit(), eq));
                     }
                 } else {
-                    UnitUtil.removeCriticals(getUnit(), eq, fixedLocation);
+                    UnitUtil.removeCriticalSlots(getUnit(), eq, fixedLocation);
                     UnitUtil.changeMountStatus(getUnit(), eq, Entity.LOC_NONE, Entity.LOC_NONE, false);
                 }
 
@@ -324,7 +323,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         if (!(info.getComponent() instanceof BAASBMDropTargetCriticalList)) {
             return false;
         }
-        // check if the dragged mounted should be transferrable
+        // check if the dragged mounted should be transferable
         Mounted<?> mounted = null;
         try {
             int index = Integer.parseInt(((String) info.getTransferable()
@@ -334,22 +333,16 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             logger.error("", e);
         }
         // not actually dragged a Mounted? not transferable
-        if (mounted == null) {
-            return false;
-        }
-
-        return true;
+        return mounted != null;
     }
 
     @Override
-    protected Transferable createTransferable(JComponent c) {
+    protected Transferable createTransferable(JComponent component) {
         Mounted<?> mount = null;
         int location = Entity.LOC_NONE;
-        if (c instanceof JTable) {
-            JTable table = (JTable) c;
+        if (component instanceof JTable table) {
             mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        } else if (c instanceof BAASBMDropTargetCriticalList) {
-            BAASBMDropTargetCriticalList<?> list = (BAASBMDropTargetCriticalList<?>) c;
+        } else if (component instanceof BAASBMDropTargetCriticalList<?> list) {
             mount = list.getMounted();
             location = list.getCritLocation();
         }

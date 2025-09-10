@@ -68,15 +68,18 @@ public class LocationBorder extends AbstractBorder {
 
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        if ((thickness > 0) && (lineColor != null) && (width > 0) && (height > 0) && (g instanceof Graphics2D)) {
-            Graphics2D g2d = (Graphics2D) g;
+        if ((thickness > 0)
+              && (lineColor != null)
+              && (width > 0)
+              && (height > 0)
+              && (g instanceof Graphics2D graphics2D)) {
 
-            Color oldColor = g2d.getColor();
-            Stroke oldStroke = g2d.getStroke();
+            Color oldColor = graphics2D.getColor();
+            Stroke oldStroke = graphics2D.getStroke();
 
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(this.lineColor);
-            g2d.setStroke(new BasicStroke(thickness));
+            graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics2D.setColor(this.lineColor);
+            graphics2D.setStroke(new BasicStroke(thickness));
 
             Path2D.Float line = new Path2D.Float();
             float xc = x + thickness;
@@ -103,10 +106,10 @@ public class LocationBorder extends AbstractBorder {
                 line.curveTo(xc + HCL, yh, xc + HCL, yh, xc, yh - HCH);
             }
             line.closePath();
-            g2d.draw(line);
+            graphics2D.draw(line);
 
-            g2d.setStroke(oldStroke);
-            g2d.setColor(oldColor);
+            graphics2D.setStroke(oldStroke);
+            graphics2D.setColor(oldColor);
         }
     }
 

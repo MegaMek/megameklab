@@ -47,9 +47,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.generalUnit.BuildView;
@@ -87,7 +87,7 @@ public class DSChassisView extends BuildView implements ActionListener, ChangeLi
     final private JComboBox<String> cbChassisType = new JComboBox<>();
     final private JSpinner spnSI = new JSpinner(spnSIModel);
 
-    private ITechManager techManager;
+    private final ITechManager techManager;
     private boolean dropship;
     private boolean primitive;
     private int maxTonnage;

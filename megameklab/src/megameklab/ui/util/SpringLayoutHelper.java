@@ -44,9 +44,6 @@ import javax.swing.SpringLayout;
  * @author urgru
  */
 public class SpringLayoutHelper {
-
-    public static SpringLayoutHelper slh;
-
     public static void setupSpringGrid(JPanel panel, int columns) {
         int count = panel.getComponentCount();
 

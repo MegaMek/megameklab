@@ -49,21 +49,21 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import megamek.common.units.Aero;
-import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.interfaces.ITechManager;
-import megamek.common.units.Mek;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Aero;
+import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestAero;
 import megameklab.ui.listeners.BuildListener;
 import megameklab.ui.util.CustomComboBox;
 import megameklab.util.UnitUtil;
 
 /**
- * Controls for selecting type and number of heat sinks for Meks and asfs.
+ * Controls for selecting type and number of heat sinks for Meks and ASFs.
  *
  * @author Neoancient
  */

@@ -491,9 +491,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                       && ((getBaseTypeIndex() != BASE_TYPE_LAM)
                       || (structure2.getNumCriticalSlots(null) == 0))) {
                     cbStructure.addItem(structure2);
-                    // If we are allowing the opposite tech base it may be because we are using mixed
-                    // tech but it also may be that we are in the transitional early Clan stage when
-                    // IS equipment is available without a mixed base.
+                    // If we are allowing the opposite tech base it may be because we are using mixed tech, but it
+                    // also may be that we are in the transitional early Clan stage when IS equipment is available
+                    // without a mixed base.
                     cbStructure.showTechBase(true);
                 }
             }
@@ -785,7 +785,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public int getGyroType() {
-        return (Integer) cbGyro.getSelectedItem();
+        Object value = cbGyro.getSelectedItem();
+
+        if (value instanceof Integer intValue) {
+            return intValue;
+        }
+
+        return 0;
     }
 
     public void setGyroType(int gyro) {
@@ -793,7 +799,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public int getCockpitType() {
-        return (Integer) cbCockpit.getSelectedItem();
+        Object value = cbCockpit.getSelectedItem();
+
+        if (value instanceof Integer intValue) {
+            return intValue;
+        }
+
+        return 0;
     }
 
     public void setCockpitType(int cockpit) {

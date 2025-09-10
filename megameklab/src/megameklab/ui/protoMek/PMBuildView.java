@@ -48,9 +48,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import megamek.common.equipment.AmmoType;
-import megamek.common.units.Entity;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.units.Entity;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CriticalTableModel;
@@ -67,25 +67,24 @@ import megameklab.util.UnitUtil;
  * @author Neoancient
  */
 public class PMBuildView extends IView implements ActionListener, MouseListener {
-    private JPanel mainPanel = new JPanel();
 
-    private CriticalTableModel equipmentList;
+    private final CriticalTableModel equipmentList;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
     }
 
-    private Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
-    private JTable equipmentTable = new JTable();
-    private JScrollPane equipmentScroll = new JScrollPane();
+    private final Vector<Mounted<?>> masterEquipmentList = new Vector<>(10, 1);
+    private final JTable equipmentTable = new JTable();
 
     CriticalTransferHandler cth;
 
     public PMBuildView(EntitySource eSource, RefreshListener refresh) {
         super(eSource);
 
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        equipmentList = new CriticalTableModel(getProtoMek(), CriticalTableModel.BUILDTABLE);
+        equipmentList = new CriticalTableModel(getProtoMek(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
@@ -103,6 +102,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
 
         equipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         equipmentTable.setDoubleBuffered(true);
+        JScrollPane equipmentScroll = new JScrollPane();
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setTransferHandler(cth);
 
@@ -164,8 +164,8 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
         }
 
         // everything else
-        for (int pos = 0; pos < masterEquipmentList.size(); pos++) {
-            equipmentList.addCrit(masterEquipmentList.get(pos));
+        for (Mounted<?> mounted : masterEquipmentList) {
+            equipmentList.addCrit(mounted);
         }
     }
 
