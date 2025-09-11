@@ -1004,7 +1004,10 @@ public class InventoryWriter {
                     if (line instanceof StandardInventoryEntry stdInv) {
                         Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
                         if (modMount != null) {
-                            String uniqueId2 = String.valueOf(System.identityHashCode(modMount));
+                            final String name = modMount.getType().getInternalName();
+                            final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());
+                            final int position = modMount.getEntity().slotNumber(modMount);
+                            final String uniqueId2 = name + "@" + location + "#" + position;
                             if ((uniqueId == null) || !uniqueId.equals(uniqueId2)) {
                                 Element rowGroup2 = sheet.getSVGDocument().createElementNS(svgNS,
                                       SVGConstants.SVG_G_TAG);
