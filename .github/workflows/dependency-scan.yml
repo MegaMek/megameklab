@@ -5,10 +5,19 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   dependency-submission:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Data Repo
+        uses: actions/checkout@v5
+        with:
+          repository: megamek/mm-data
+          path: mm-data
+
       - name: "Check out MegaMekLab"
         uses: actions/checkout@v5
         with:
@@ -20,6 +29,11 @@ jobs:
           repository: MegaMek/megamek
           ref: main
           path: megamek
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
