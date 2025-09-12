@@ -159,7 +159,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         final String name = this.mount.getType().getInternalName();
         final String location = this.mount.getEntity().getLocationAbbr(this.mount.getLocation());
         final int position = this.mount.getEntity().slotNumber(this.mount);
-        return name + "@" + location + "#" + position;
+        return name.replace(' ', '_') + "@" + location + "#" + position;
     }
 
     public Mounted<?> getMounted() {

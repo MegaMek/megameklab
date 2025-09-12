@@ -1145,7 +1145,7 @@ public class SVGMassPrinter {
 //                    if (!mekSummary.getName().contains("Field Gun Infantry")) {
 //                        continue;
 //                    }
-                    if (!mekSummary.isMek()) continue;
+//                    if (!mekSummary.isMek()) continue;
 //                    if (mekSummary.getMulId() != 8596) continue;
 //                    logger.info("{}", mekSummary.getName());
                     Entity entity = mekSummary.loadEntity();
