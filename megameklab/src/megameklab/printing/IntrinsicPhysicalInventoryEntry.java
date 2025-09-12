@@ -255,7 +255,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
     @Override
     public String getUniqueId() {
-        return name.replace(' ', '_') + "@" + location;
+        return name + "@" + location;
     }
 
     @Override

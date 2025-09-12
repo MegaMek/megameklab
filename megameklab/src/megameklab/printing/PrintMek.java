@@ -610,7 +610,7 @@ public class PrintMek extends PrintEntity {
                     final String internalName = crit.getMount().getType().getInternalName();
                     final String location = crit.getMount().getEntity().getLocationAbbr(crit.getMount().getLocation());
                     final int position = crit.getMount().getEntity().slotNumber(crit.getMount());
-                    uniqueId = internalName.replace(' ', '_') + "@" + location + "#" + position;
+                    uniqueId = internalName + "@" + location + "#" + position;
                     g.setAttributeNS(null, "type", "eq");
                     g.setAttributeNS(null, "name", internalName);
                     g.setAttributeNS(null, "uid", uniqueId);
