@@ -116,7 +116,7 @@ import org.w3c.dom.svg.SVGDocument;
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
@@ -1487,11 +1487,11 @@ public class SVGMassPrinter {
         // Remove trailing "Not yet implemented." after a parenthetical reference
         desc = desc.replaceAll("(\\([^)]+\\))\\s*Not yet implemented\\.?$", "$1");
         // Remove any leading punctuation and whitespace before a parenthetical reference
-        desc = desc.replaceAll("^[\\s\\.,;:]+\\(([^)]+)\\)", "$1");
+        desc = desc.replaceAll("^[\\s.,;:]+\\(([^)]+)\\)", "$1");
         // If only a reference in parentheses remains, keep just that
         desc = desc.replaceAll("^\\s*\\(([^)]+)\\)\\s*$", "$1");
         // Ensure a space before any parenthesis that follows a word character
-        desc = desc.replaceAll("([\\w])\\(", "$1 (");
+        desc = desc.replaceAll("(\\w)\\(", "$1 (");
         // Remove any leftover leading/trailing whitespace
         return desc.trim();
     }
