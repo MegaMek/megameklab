@@ -107,7 +107,7 @@ public class InventoryWriter {
         BAY("Bay", 0.02),
         LOCATION("Loc", 0.40, 0.49),
         LOCATION_NO_HEAT("Loc", 0.45, 0.54),
-        HEAT("Ht", 0.47, 0.57),
+        HEAT("Ht", 0.465, 0.57),
         DAMAGE("Dmg", 0.5, 0.5, 0.43),
         MOD("Tn", 0.725, 0.625, 0.65),
         MIN("Min", 0.785, 0.785, 0.72),
