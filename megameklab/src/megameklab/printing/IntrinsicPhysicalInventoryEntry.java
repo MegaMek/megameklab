@@ -255,7 +255,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
     @Override
     public String getUniqueId() {
-        return String.valueOf(hashCode());
+        return name + "@" + location;
     }
 
     @Override
@@ -314,7 +314,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
     }
 
     @Override
-    public String getModField(int row) {
+    public String getModField(int row, boolean baseOnly) {
         if (row == 0) {
             return mod.replace("-", MINUS);
         }
@@ -404,7 +404,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         }
 
         @Override
-        public String getModField(int row) {
+        public String getModField(int row, boolean baseOnly) {
             return "";
         }
 

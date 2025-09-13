@@ -37,6 +37,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
@@ -592,12 +593,23 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     @Override
     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
         Graphics2D g2d = (Graphics2D) graphics;
-        if (null != g2d) {
-            if (!createDocument(pageIndex, pageFormat, true)) {
-                return NO_SUCH_PAGE;
+        if (g2d != null) {
+            // Expand clip to full paper so overflow content can be painted
+            Shape oldClip = g2d.getClip();
+            g2d.setClip(new java.awt.geom.Rectangle2D.Double(
+                  0, 0, pageFormat.getWidth(), pageFormat.getHeight()));
+            try {
+                if (!createDocument(pageIndex, pageFormat, true)) {
+                    return NO_SUCH_PAGE;
+                }
+                GraphicsNode node = build();
+                if (node != null) {
+                    node.paint(g2d);
+                }
+            } finally {
+                // Restore original clip
+                g2d.setClip(oldClip);
             }
-            GraphicsNode node = build();
-            node.paint(g2d);
         }
         if (callback != null) {
             callback.accept(pageIndex);

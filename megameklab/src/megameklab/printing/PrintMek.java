@@ -253,7 +253,11 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getShieldDCDamage(m),
-                          useAlternateArmorGrouping());
+                          useAlternateArmorGrouping(),
+                          "shield DC",
+                          loc,
+                          false
+                          );
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
@@ -264,7 +268,10 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getShieldDADamage(m),
-                          useAlternateArmorGrouping());
+                          useAlternateArmorGrouping(),
+                          "shield DA",
+                          loc,
+                          false);
                 }
             }
         }
@@ -483,7 +490,11 @@ public class PrintMek extends PrintEntity {
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),
-                      alternateMethod);
+                      alternateMethod,
+                      "armor",
+                      mek.getLocationAbbr(loc),
+                      false
+                      );
             }
             if (!structComplete) {
                 if ((loc == Mek.LOC_HEAD)) {
@@ -520,7 +531,11 @@ public class PrintMek extends PrintEntity {
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getArmorDamage(loc, true),
-                          alternateMethod);
+                          alternateMethod,
+                          "armor",
+                          mek.getLocationAbbr(loc),
+                          true
+                          );
 
                 }
             }
@@ -592,9 +607,12 @@ public class PrintMek extends PrintEntity {
                 g.setAttributeNS(null, "loc", locName);
                 g.setAttributeNS(null, "slot", String.valueOf(slot));
                 if (crit.getMount() != null) {
-                    uniqueId = String.valueOf(System.identityHashCode(crit.getMount()));
+                    final String internalName = crit.getMount().getType().getInternalName();
+                    final String location = crit.getMount().getEntity().getLocationAbbr(crit.getMount().getLocation());
+                    final int position = crit.getMount().getEntity().slotNumber(crit.getMount());
+                    uniqueId = internalName + "@" + location + "#" + position;
                     g.setAttributeNS(null, "type", "eq");
-                    g.setAttributeNS(null, "name", crit.getMount().getType().getInternalName());
+                    g.setAttributeNS(null, "name", internalName);
                     g.setAttributeNS(null, "uid", uniqueId);
                     if (crit.getMount().getType().isHittable()) {
                         g.setAttributeNS(null, "hittable", "1");

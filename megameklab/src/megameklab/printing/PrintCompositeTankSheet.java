@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -37,10 +37,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import megamek.common.annotations.Nullable;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
+import megamek.common.annotations.Nullable;
 import megameklab.printing.reference.ClusterHitsTable;
 import megameklab.printing.reference.DrivingSkillRollMods;
 import megameklab.printing.reference.GroundMovementRecord;

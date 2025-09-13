@@ -420,6 +420,7 @@ public class InventoryWriter {
     }
 
     private void parseBays() {
+        int weaponBayIndex = 0;
         List<WeaponMounted> standardWeapons = new ArrayList<>();
         List<WeaponMounted> capitalWeapons = new ArrayList<>();
         for (WeaponMounted m : sheet.getEntity().getWeaponList()) {
@@ -432,14 +433,15 @@ public class InventoryWriter {
         List<AmmoMounted> ammoMountedList = sheet.getEntity().getAmmo();
         List<WeaponBayText> list = computeWeaponBayTexts(capitalWeapons, ammoMountedList);
         for (WeaponBayText text : list) {
-            capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, true));
+            capitalBays.add(new WeaponBayInventoryEntry((Aero) sheet.getEntity(), ++weaponBayIndex, text, true));
         }
         list = computeWeaponBayTexts(standardWeapons, ammoMountedList);
         boolean artemisIV = false;
         boolean artemisV = false;
         boolean apollo = false;
         for (WeaponBayText text : list) {
-            WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry((Aero) sheet.getEntity(), text, false);
+            WeaponBayInventoryEntry entry = new WeaponBayInventoryEntry((Aero) sheet.getEntity(), ++weaponBayIndex,
+                  text, false);
             standardBays.add(entry);
             artemisIV |= entry.hasArtemisIV();
             artemisV |= entry.hasArtemisV();
@@ -965,9 +967,18 @@ public class InventoryWriter {
                 continue;
             }
             Element rowGroup = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+            if (line instanceof WeaponBayInventoryEntry) {
+                rowGroup.setAttributeNS(null, "class", "inventoryEntry bay");
+            } else {
+                rowGroup.setAttributeNS(null, "class", "inventoryEntry");
+            }
             String uniqueId = line.getUniqueId();
             if (null != uniqueId && !uniqueId.isEmpty()) {
                 rowGroup.setAttributeNS(null, "id", uniqueId);
+                final String baseHitMod = line.getModField(0, true);
+                if (baseHitMod != null && !baseHitMod.isEmpty()) {
+                    rowGroup.setAttributeNS(null, "baseHitMod", baseHitMod);
+                }
                 final String hitMod = getModFieldWithSettings(line, 0);
                 if (hitMod != null && !hitMod.isEmpty()) {
                     rowGroup.setAttributeNS(null, "hitMod", hitMod);
@@ -979,10 +990,35 @@ public class InventoryWriter {
                 if (line instanceof IntrinsicPhysicalInventoryEntry) {
                     rowGroup.setAttributeNS(null, "iPhysAtk", line.getNameField(0).toLowerCase());
                 }
+                if (line instanceof StandardInventoryEntry sie) {
+                    if (sie.getMounted().isSquadSupportWeapon()) {
+                        rowGroup.setAttributeNS(null, "SSW", "1");
+                    }
+                }
             }
             canvas.appendChild(rowGroup);
-
+            Element rootGroup = rowGroup;
             for (int row = 0; row < line.nRows(); row++) {
+                rowGroup = rootGroup;
+                if (row > 0) {
+                    if (line instanceof StandardInventoryEntry stdInv) {
+                        Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
+                        if (modMount != null) {
+                            final String name = modMount.getType().getInternalName();
+                            final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());
+                            final int position = modMount.getEntity().slotNumber(modMount);
+                            final String uniqueId2 = name + "@" + location + "#" + position;
+                            if ((uniqueId == null) || !uniqueId.equals(uniqueId2)) {
+                                Element rowGroup2 = sheet.getSVGDocument().createElementNS(svgNS,
+                                      SVGConstants.SVG_G_TAG);
+                                rowGroup2.setAttributeNS(null, "id", uniqueId2);
+                                rowGroup2.setAttributeNS(null, "class", "inventoryEntry linked");
+                                rootGroup.appendChild(rowGroup2);
+                                rowGroup = rowGroup2; // For this row, we use the new subgroup
+                            }
+                        }
+                    }
+                }
                 int lines = 1;
                 if (line.isDamaged()) {
                     sheet.addLineThrough(rowGroup,
@@ -1160,7 +1196,7 @@ public class InventoryWriter {
                         rowGroup.appendChild(rect);
 
                         sheet.addTextElement(rowGroup, 0, yPosition, getModFieldWithSettings(line, row), fontSize,
-                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE,
                               SVGConstants.SVG_NORMAL_VALUE, FILL_WHITE, null, "hitmod");
                     }
                 }
@@ -1168,7 +1204,7 @@ public class InventoryWriter {
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
-                int lines = sheet.addMultilineTextElement(rowGroup, colX[1] + indent,
+                int lines = sheet.addMultilineTextElement(rootGroup, colX[1] + indent,
                       yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight * QUIRKS_FONT_SCALING),
                       line.getQuirksField(), fontSize * QUIRKS_FONT_SCALING, SVGConstants.SVG_START_VALUE,
                       SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE, "weaponQuirks");
