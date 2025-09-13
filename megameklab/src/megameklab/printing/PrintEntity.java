@@ -625,7 +625,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),
-                      useAlternateArmorGrouping());
+                      useAlternateArmorGrouping(),
+                      "armor",
+                      getEntity().getLocationAbbr(loc),
+                      false);
             }
 
             element = getElementById(STRUCTURE_PIPS + getEntity().getLocationAbbr(loc));
@@ -637,7 +640,10 @@ public abstract class PrintEntity extends PrintRecordSheet {
                       DEFAULT_PIP_STROKE,
                       structurePipFill(),
                       getStructureDamage(loc),
-                      useAlternateArmorGrouping());
+                      useAlternateArmorGrouping(),
+                      "structure",
+                      getEntity().getLocationAbbr(loc),
+                      false);
             }
         }
     }

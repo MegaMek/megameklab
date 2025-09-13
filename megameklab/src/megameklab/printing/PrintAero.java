@@ -170,7 +170,8 @@ public class PrintAero extends PrintEntity {
         final int damage = (aero.getOSI() - aero.getSI());
         if (null != element) {
             ArmorPipLayout.addPips(this, element, aero.getOSI(),
-                  PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, damage, useAlternateArmorGrouping());
+                  PipType.CIRCLE, DEFAULT_PIP_STROKE, FILL_WHITE, damage, useAlternateArmorGrouping(), "structure",
+                  "SI", false);
         }
     }
 
