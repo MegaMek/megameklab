@@ -1196,7 +1196,7 @@ public class InventoryWriter {
                         rowGroup.appendChild(rect);
 
                         sheet.addTextElement(rowGroup, 0, yPosition, getModFieldWithSettings(line, row), fontSize,
-                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_NORMAL_VALUE,
+                              SVGConstants.SVG_MIDDLE_VALUE, SVGConstants.SVG_BOLD_VALUE,
                               SVGConstants.SVG_NORMAL_VALUE, FILL_WHITE, null, "hitmod");
                     }
                 }
