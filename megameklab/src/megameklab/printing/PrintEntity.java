@@ -905,8 +905,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
     }
 
     private String entityName() {
-        return CConfig.getMekNameArrangement().printChassis(getEntity())
-              + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+        return UnitUtil.getPrintName(getEntity());
     }
 
     protected boolean useAlternateArmorGrouping() {

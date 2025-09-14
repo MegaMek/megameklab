@@ -49,6 +49,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import megamek.client.Client;
+import megamek.codeUtilities.StringUtility;
 import megamek.common.CriticalSlot;
 import megamek.common.Player;
 import megamek.common.SimpleTechLevel;
@@ -2302,5 +2303,10 @@ public class UnitUtil {
             }
         }
         return false;
+    }
+
+    public static String getPrintName(Entity e) {
+        return CConfig.getMekNameArrangement().printChassis(e)
+              + (StringUtility.isNullOrBlank(e.getModel()) ? "" : " " + e.getModel());
     }
 }

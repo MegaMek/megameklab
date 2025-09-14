@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.swing.*;
@@ -63,11 +64,18 @@ import megamek.client.ui.buttons.MMButton;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.Configuration;
 import megamek.common.Player;
+import megamek.common.battleArmor.BattleArmor;
 import megamek.common.game.Game;
 import megamek.common.loaders.MekFileParser;
+import megamek.common.units.Aero;
 import megamek.common.units.BTObject;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityListFile;
+import megamek.common.units.FixedWingSupport;
+import megamek.common.units.Infantry;
+import megamek.common.units.Mek;
+import megamek.common.units.ProtoMek;
+import megamek.common.units.Tank;
 import megamek.common.util.C3Util;
 import megamek.logging.MMLogger;
 import megameklab.printing.PageBreak;
@@ -75,6 +83,7 @@ import megameklab.printing.RecordSheetOptions;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
+import megameklab.util.UnitUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -92,6 +101,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private final JButton addFromCacheButton = new JButton("Add From Cache");
     private final JButton addPageBreakButton = new JButton("Add Page Break");
     private final JButton removeButton = new JButton("Remove Selected");
+    private final JButton sortButton = new JButton("Sort");
     private final JButton saveButton = new JButton("Save Unit List");
 
     private final JButton moveTopButton = new JButton(icon("moveTop.png"));
@@ -154,6 +164,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
         removeButton.setMnemonic(KeyEvent.VK_R);
+        sortButton.addActionListener(e -> sortSelectedUnits());
+        sortButton.setMnemonic(KeyEvent.VK_O);
         saveButton.addActionListener(e -> saveUnitList());
         saveButton.setMnemonic(KeyEvent.VK_S);
 
@@ -201,6 +213,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         buttonPanel.add(addFromFileButton);
         buttonPanel.add(addPageBreakButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(sortButton);
         buttonPanel.add(saveButton);
         buttonPanel.setAlignmentY(JComponent.TOP_ALIGNMENT);
 
@@ -475,6 +488,75 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         refresh();
     }
 
+
+    private void sortSelectedUnits() {
+        units.removeIf(o -> !(o instanceof Entity));
+        var ba = new ArrayList<Entity>();
+        var ci = new ArrayList<Entity>();
+        var cv = new ArrayList<Entity>();
+        var mek = new ArrayList<Entity>();
+        var proto = new ArrayList<Entity>();
+        var aero = new ArrayList<Entity>();
+        var others = new ArrayList<Entity>();
+        for (BTObject u : units) {
+            var e = (Entity) u;
+            if (e instanceof BattleArmor) {
+                ba.add(e);
+            } else if (e instanceof Infantry) {
+                ci.add(e);
+            } else if (e instanceof Tank || e instanceof FixedWingSupport) {
+                cv.add(e);
+            } else if (e instanceof Mek) {
+                mek.add(e);
+            } else if (e instanceof ProtoMek) {
+                proto.add(e);
+            } else if (e instanceof Aero) {
+                aero.add(e);
+            } else {
+                others.add(e);
+            }
+        }
+
+        for (var list : List.of(ba, ci, cv, mek, proto, aero, others)) {
+            list.sort(Comparator.comparing(Entity::isClan).reversed()
+                        .thenComparingDouble(Entity::getWeight)
+                        .thenComparing(UnitUtil::getPrintName));
+        }
+
+        units.clear();
+
+        // Putting a page break after each unit type makes it so "incomplete" small unit sheets don't get pushed to
+        // the end, since those normally wait until they're full to be processed.
+        if (!ba.isEmpty()) {
+            units.addAll(ba);
+            units.add(new PageBreak());
+        }
+        if (!ci.isEmpty()) {
+            units.addAll(ci);
+            units.add(new PageBreak());
+        }
+        // Add a page break after every tank since we want one per page in official RS books
+        for (var i : cv) {
+            units.add(i);
+            units.add(new PageBreak());
+        }
+        if (!mek.isEmpty()) {
+            units.addAll(mek);
+            units.add(new PageBreak());
+        }
+        if (!proto.isEmpty()) {
+            units.addAll(proto);
+            units.add(new PageBreak());
+        }
+        if (!aero.isEmpty()) {
+            units.addAll(aero);
+            units.add(new PageBreak());
+        }
+        units.addAll(others);
+
+        refresh();
+    }
+
     private void moveTop() {
         List<BTObject> newListTop = new ArrayList<>();
         List<BTObject> newListBottom = new ArrayList<>();
@@ -550,6 +632,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             removeButton.setEnabled(!queuedUnitList.isSelectionEmpty());
+            sortButton.setEnabled(!queuedUnitList.isSelectionEmpty());
 
             if (!isSelectionContiguous()) {
                 moveTopButton.setEnabled(false);
