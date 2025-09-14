@@ -164,7 +164,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         removeButton.addActionListener(e -> removeSelectedUnits());
         removeButton.setEnabled(false);
         removeButton.setMnemonic(KeyEvent.VK_R);
-        sortButton.addActionListener(e -> sortSelectedUnits());
+        sortButton.addActionListener(e -> sortAllUnits());
+        sortButton.setToolTipText("Sort all units by type, tech-base, weight, name.");
         sortButton.setMnemonic(KeyEvent.VK_O);
         saveButton.addActionListener(e -> saveUnitList());
         saveButton.setMnemonic(KeyEvent.VK_S);
@@ -489,7 +490,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
 
-    private void sortSelectedUnits() {
+    private void sortAllUnits() {
         units.removeIf(o -> !(o instanceof Entity));
         var ba = new ArrayList<Entity>();
         var ci = new ArrayList<Entity>();
@@ -536,8 +537,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             units.add(new PageBreak());
         }
         // Add a page break after every tank since we want one per page in official RS books
-        for (var i : cv) {
-            units.add(i);
+        for (var vehicle : cv) {
+            units.add(vehicle);
             units.add(new PageBreak());
         }
         if (!mek.isEmpty()) {
@@ -632,7 +633,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         @Override
         public void valueChanged(ListSelectionEvent e) {
             removeButton.setEnabled(!queuedUnitList.isSelectionEmpty());
-            sortButton.setEnabled(!queuedUnitList.isSelectionEmpty());
+            sortButton.setEnabled(!units.isEmpty());
 
             if (!isSelectionContiguous()) {
                 moveTopButton.setEnabled(false);
