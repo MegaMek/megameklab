@@ -83,8 +83,7 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * @author pavelbraginskiy
- * @author drake Simply fills itself with the record sheet for the given unit. Uses background rendering for
+ * Simply fills itself with the record sheet for the given unit. Uses background rendering for
  *       performance, rendering each page independently.
  */
 public class RecordSheetPreviewPanel extends JPanel {
@@ -198,7 +197,7 @@ public class RecordSheetPreviewPanel extends JPanel {
     }
 
     // Zoom and pan state
-    public static final int MAX_PREVIEW_ENTITIES = 10;
+    public static final int MAX_PREVIEW_ENTITIES = 30;
     private final double DEFAULT_MIN_ZOOM = 0.1;
     private final double MAX_ZOOM = 4.0;
     private final double ZOOM_STEP = 0.2;

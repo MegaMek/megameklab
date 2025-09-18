@@ -48,6 +48,7 @@ import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Entity;
 import megameklab.util.CConfig;
+import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -290,8 +291,7 @@ public class PrintHandheldWeapon extends PrintEntity {
     @Override
     protected void writeTextFields() {
         super.writeTextFields();
-        final String entityName = CConfig.getMekNameArrangement().printChassis(getEntity())
-              + (StringUtility.isNullOrBlank(getEntity().getModel()) ? "" : " " + getEntity().getModel());
+        final String entityName = UnitUtil.getPrintName(getEntity());
         setTextField(TYPE, entityName + " (" + formatWeight(getEntity().getWeight()) + ")");
 
     }
