@@ -135,6 +135,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             }
 
             @Override
+            public void onTabReattached(int tabIndex, Component component) {
+                if (component instanceof MegaMekLabMainUI editor) {
+                    editor.setTabOwner(MegaMekLabTabbedUI.this);
+                    if (!editors.contains(editor)) {
+                        editors.add(editor);
+                    }
+                }
+            }
+
+            @Override
             public boolean onTabDetaching(int tabIndex, Component component) {
                 // If there is only one tab, don't allow detachment
                 return tabs.getTabCount() > 1;
