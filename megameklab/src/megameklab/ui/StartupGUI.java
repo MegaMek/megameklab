@@ -88,9 +88,9 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     private ManagedVolatileImage medalImage;
     private double lastDpiScaleFactor;
     private static volatile StartupGUI instance = null;
-    private static final String FILENAME_MEGAMEK_SPLASH = "../misc/background.jpg";
-    private static final String FILENAME_MEDAL = "../misc/medal.png";
-    private static final String FILENAME_LOGO = "../misc/logo.png";
+    private static final String FILENAME_MEGAMEK_SPLASH = "../misc/mml-background.jpg";
+    private static final String FILENAME_MEDAL = "../misc/mml-medal.png";
+    private static final String FILENAME_LOGO = "../misc/mml-logo.png";
 
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Splash");
     private final TipOfTheDay tipOfTheDay;
