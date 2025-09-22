@@ -1204,7 +1204,7 @@ public class InventoryWriter {
                 yPosition += lineHeight * lines;
             }
             if (sheet.showQuirks() && line.hasQuirks()) {
-                int lines = sheet.addMultilineTextElement(rootGroup, colX[1] + indent,
+                int lines = sheet.addMultilineTextElement(rootGroup, colX[0] + indent,
                       yPosition, (viewWidth * 0.96) - (colX[0] + indent), (lineHeight * QUIRKS_FONT_SCALING),
                       line.getQuirksField(), fontSize * QUIRKS_FONT_SCALING, SVGConstants.SVG_START_VALUE,
                       SVGConstants.SVG_NORMAL_VALUE, SVGConstants.SVG_ITALIC_VALUE, "weaponQuirks");
