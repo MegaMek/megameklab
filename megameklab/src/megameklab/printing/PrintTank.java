@@ -151,6 +151,9 @@ public class PrintTank extends PrintEntity {
         if (tank.isSupportVehicle()) {
             sb.append("Support ");
         }
+        if (tank.isOmni()) {
+            sb.append("Omni");
+        }
         if (tank instanceof VTOL) {
             sb.append("VTOL");
         } else {
