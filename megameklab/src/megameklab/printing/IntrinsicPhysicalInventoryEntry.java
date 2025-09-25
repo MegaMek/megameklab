@@ -112,17 +112,22 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
         var hasLHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM);
         var hasRHand = mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM);
+        boolean hasLLowerActuator = mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LEFT_ARM);
+        boolean hasRLowerActuator = mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM);
 
         // Punches
         boolean hasLArmAES = mek.hasFunctionalArmAES(Mek.LOC_LEFT_ARM);
         boolean hasRArmAES = mek.hasFunctionalArmAES(Mek.LOC_RIGHT_ARM);
         if (!mek.isQuadMek()) {
             var baseDmg = Math.ceil(mek.getWeight() / 10);
-            var dmg = formatDamage(baseDmg, hasTsm);
+
             if (mek instanceof LandAirMek) {
-                var airMekDamage = baseDmg / 2;
-                dmg = "%s/%s".formatted(dmg, formatDamage(airMekDamage, hasTsm));
+                baseDmg /= 2;
             }
+
+            var lDmg = formatDamage(hasLLowerActuator ? baseDmg : Math.floor(baseDmg / 2), hasTsm);
+            var rDmg = formatDamage(hasRLowerActuator ? baseDmg : Math.floor(baseDmg / 2), hasTsm);
+
             int mod;
             boolean explicitZero;
 
@@ -130,7 +135,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 explicitZero = false;
                 if (hasLHand) {
                     mod = 0;
-                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LEFT_ARM)) {
+                } else if (hasLLowerActuator) {
                     mod = 1;
                 } else {
                     mod = 2;
@@ -139,14 +144,14 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                     mod--;
                     explicitZero = true;
                 }
-                entries.add(e("Punch", "LA", dmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
+                entries.add(e("Punch", "LA", lDmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
 
             if (!mek.hasClaw(Mek.LOC_RIGHT_ARM)) {
                 explicitZero = false;
                 if (hasRHand) {
                     mod = 0;
-                } else if (mek.hasSystem(Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM)) {
+                } else if (hasRLowerActuator) {
                     mod = 1;
                 } else {
                     mod = 2;
@@ -155,7 +160,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                     mod--;
                     explicitZero = true;
                 }
-                entries.add(e("Punch", "RA", dmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
+                entries.add(e("Punch", "RA", rDmg, mod != 0 ? "%+d".formatted(mod) : (explicitZero ? DASH : "")));
             }
         }
 
