@@ -73,6 +73,8 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGPathElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 /**
@@ -499,9 +501,33 @@ public class PrintMek extends PrintEntity {
             }
             if (!structComplete) {
                 if ((loc == Mek.LOC_HEAD)) {
+                    final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+
+                    // replace head pips with shaped pips
+                    if (fancyPips) {
+                        for (int i = 1; i <= mek.getOInternal(loc); i++) {
+                            element = getElementById(prefixHeadPip + i);
+                            if (element instanceof SVGPathElement oldPip) {
+                                var parent = oldPip.getParentNode();
+                                var bounds = oldPip.getBBox();
+                                var x = bounds.getX();
+                                var y = bounds.getY();
+                                var radius = bounds.getWidth() / 2;
+                                // Scale up the pips slightly so they're prettier
+                                x -= radius * .3f;
+                                y -= radius * .3f;
+                                radius *= 1.3f;
+                                var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
+                                      PipType.forST(mek.getStructureType()),
+                                      FILL_WHITE);
+                                parent.replaceChild(newPip, oldPip);
+                            }
+                        }
+                    }
+
                     final int headDamage = getStructureDamage(loc);
                     if (headDamage > 0) {
-                        final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+                        // apply damage coloring
                         for (int i = 1; i <= headDamage; i++) {
                             element = getElementById(prefixHeadPip + i);
                             if (null != element) {
@@ -512,7 +538,7 @@ public class PrintMek extends PrintEntity {
                 } else {
                     element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                     if (null != element) {
-                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE,
+                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.forST(mek.getStructureType()),
                               DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod, "structure",
                               mek.getLocationAbbr(loc), false);
                     }

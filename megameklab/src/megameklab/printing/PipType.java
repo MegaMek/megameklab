@@ -33,6 +33,7 @@
 package megameklab.printing;
 
 import megamek.common.equipment.EquipmentType;
+import org.apache.fop.pdf.StructureType;
 
 public enum PipType {
     CIRCLE, DIAMOND;
@@ -43,5 +44,12 @@ public enum PipType {
         } else {
             return CIRCLE;
         }
+    }
+
+    public static PipType forST(int st) {
+        return switch (st) {
+            case EquipmentType.T_STRUCTURE_REINFORCED -> DIAMOND;
+            default -> CIRCLE;
+        };
     }
 }
