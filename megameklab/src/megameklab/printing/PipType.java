@@ -44,7 +44,7 @@ public enum PipType {
     private static final List<Integer> buffArmors = List.of(
           T_ARMOR_REACTIVE, T_ARMOR_REFLECTIVE, T_ARMOR_FERRO_LAMELLOR, T_ARMOR_ANTI_PENETRATIVE_ABLATION,
           T_ARMOR_HEAT_DISSIPATING, T_ARMOR_IMPACT_RESISTANT, T_ARMOR_BALLISTIC_REINFORCED,
-          T_ARMOR_BA_FIRE_RESIST, T_ARMOR_BA_REACTIVE, T_ARMOR_BA_REACTIVE);
+          T_ARMOR_BA_FIRE_RESIST, T_ARMOR_BA_REFLECTIVE, T_ARMOR_BA_REACTIVE);
 
     public static PipType forAT(int at, RecordSheetOptions options) {
         if (!options.fancyPips()) {
