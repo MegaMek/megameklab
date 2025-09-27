@@ -32,21 +32,24 @@
  */
 package megameklab.printing;
 
-import megamek.common.equipment.EquipmentType;
-import org.apache.fop.pdf.StructureType;
+import megamek.common.equipment.ArmorType;
+
+import static megamek.common.equipment.EquipmentType.*;
 
 public enum PipType {
-    CIRCLE, DIAMOND;
+    CIRCLE, DIAMOND, CIRCLE_DASHED;
 
     public static PipType forAT(int at, RecordSheetOptions options) {
         if (!options.fancyPips()) {
             return CIRCLE;
         }
 
-        return switch (at) {
-            case EquipmentType.T_ARMOR_HARDENED -> DIAMOND;
-            default -> CIRCLE;
-        };
+        if (at == T_ARMOR_HARDENED) {
+            return DIAMOND;
+        } else if (ArmorType.of(at, false).getBAR() < 10) {
+            return CIRCLE_DASHED;
+        }
+        return CIRCLE;
     }
 
     public static PipType forST(int st, RecordSheetOptions options) {
@@ -55,7 +58,8 @@ public enum PipType {
         }
 
         return switch (st) {
-            case EquipmentType.T_STRUCTURE_REINFORCED -> DIAMOND;
+            case T_STRUCTURE_REINFORCED -> DIAMOND;
+            case T_STRUCTURE_COMPOSITE -> CIRCLE_DASHED;
             default -> CIRCLE;
         };
     }
