@@ -173,7 +173,7 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(chkIncludeLicense);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 7, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
