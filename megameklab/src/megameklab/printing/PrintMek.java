@@ -514,9 +514,9 @@ public class PrintMek extends PrintEntity {
                                 var y = bounds.getY();
                                 var radius = bounds.getWidth() / 2;
                                 // Scale up the pips slightly so they're prettier
-                                x -= radius * .3f;
-                                y -= radius * .3f;
-                                radius *= 1.3f;
+                                x -= radius * .15f;
+                                y -= radius * .15f;
+                                radius *= 1.15f;
                                 var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
                                       PipType.forST(mek.getStructureType(), options),
                                       FILL_WHITE);
