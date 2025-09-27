@@ -621,7 +621,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 ArmorPipLayout.addPips(this,
                       element,
                       getEntity().getOArmor(loc),
-                      PipType.forAT(getEntity().getArmorType(loc)),
+                      PipType.forAT(getEntity().getArmorType(loc), options),
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),

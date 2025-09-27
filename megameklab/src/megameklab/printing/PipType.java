@@ -38,15 +38,22 @@ import org.apache.fop.pdf.StructureType;
 public enum PipType {
     CIRCLE, DIAMOND;
 
-    public static PipType forAT(int at) {
-        if (at == EquipmentType.T_ARMOR_HARDENED) {
-            return DIAMOND;
-        } else {
+    public static PipType forAT(int at, RecordSheetOptions options) {
+        if (!options.fancyPips()) {
             return CIRCLE;
         }
+
+        return switch (at) {
+            case EquipmentType.T_ARMOR_HARDENED -> DIAMOND;
+            default -> CIRCLE;
+        };
     }
 
-    public static PipType forST(int st) {
+    public static PipType forST(int st, RecordSheetOptions options) {
+        if (!options.fancyPips()) {
+            return CIRCLE;
+        }
+
         return switch (st) {
             case EquipmentType.T_STRUCTURE_REINFORCED -> DIAMOND;
             default -> CIRCLE;

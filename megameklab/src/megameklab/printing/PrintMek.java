@@ -489,7 +489,7 @@ public class PrintMek extends PrintEntity {
                 ArmorPipLayout.addPips(this,
                       element,
                       mek.getOArmor(loc),
-                      PipType.forAT(mek.getArmorType(loc)),
+                      PipType.forAT(mek.getArmorType(loc), options),
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),
@@ -518,7 +518,7 @@ public class PrintMek extends PrintEntity {
                                 y -= radius * .3f;
                                 radius *= 1.3f;
                                 var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
-                                      PipType.forST(mek.getStructureType()),
+                                      PipType.forST(mek.getStructureType(), options),
                                       FILL_WHITE);
                                 parent.replaceChild(newPip, oldPip);
                             }
@@ -538,7 +538,8 @@ public class PrintMek extends PrintEntity {
                 } else {
                     element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                     if (null != element) {
-                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.forST(mek.getStructureType()),
+                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc),
+                              PipType.forST(mek.getStructureType(), options),
                               DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod, "structure",
                               mek.getLocationAbbr(loc), false);
                     }
@@ -554,7 +555,7 @@ public class PrintMek extends PrintEntity {
                     ArmorPipLayout.addPips(this,
                           element,
                           mek.getOArmor(loc, true),
-                          PipType.forAT(mek.getArmorType(loc)),
+                          PipType.forAT(mek.getArmorType(loc), options),
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getArmorDamage(loc, true),
