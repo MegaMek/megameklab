@@ -908,7 +908,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
         return UnitUtil.getPrintName(getEntity());
     }
 
-    protected boolean useAlternateArmorGrouping() {
+    protected final boolean useAlternateArmorGrouping() {
         return options.useAlternateArmorGrouping() && supportsAlternateArmorGrouping();
     }
 

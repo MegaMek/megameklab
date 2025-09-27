@@ -462,8 +462,9 @@ public class PrintMek extends PrintEntity {
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
         boolean alternateMethod = useAlternateArmorGrouping();
+        boolean fancyPips = options.fancyPips();
         Element element;
-        boolean structComplete = !alternateMethod && (mek instanceof BipedMek) && loadISPips();
+        boolean structComplete = !alternateMethod && !fancyPips && (mek instanceof BipedMek) && loadISPips();
         for (int loc = 0; loc < mek.locations(); loc++) {
             boolean frontComplete = false;
             boolean rearComplete = false;
@@ -472,7 +473,7 @@ public class PrintMek extends PrintEntity {
             } else {
                 // For consistency, only use the canon pip layout on non-superheavies.
                 // Otherwise, superheavies may get a mix of pattern types.
-                if (!mek.isSuperHeavy() && (mek instanceof BipedMek) && !alternateMethod) {
+                if (!mek.isSuperHeavy() && (mek instanceof BipedMek) && !alternateMethod && !fancyPips) {
                     frontComplete = loadArmorPips(loc, false);
                     rearComplete = !mek.hasRearArmor(loc) || loadArmorPips(loc, true);
                     if (frontComplete && rearComplete) {
