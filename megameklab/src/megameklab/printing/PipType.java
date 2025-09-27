@@ -34,10 +34,17 @@ package megameklab.printing;
 
 import megamek.common.equipment.ArmorType;
 
+import java.util.List;
+
 import static megamek.common.equipment.EquipmentType.*;
 
 public enum PipType {
-    CIRCLE, DIAMOND, CIRCLE_DASHED;
+    CIRCLE, DIAMOND, CIRCLE_DASHED, PENTAGON;
+
+    private static final List<Integer> buffArmors = List.of(
+          T_ARMOR_REACTIVE, T_ARMOR_REFLECTIVE, T_ARMOR_FERRO_LAMELLOR, T_ARMOR_ANTI_PENETRATIVE_ABLATION,
+          T_ARMOR_HEAT_DISSIPATING, T_ARMOR_IMPACT_RESISTANT, T_ARMOR_BALLISTIC_REINFORCED,
+          T_ARMOR_BA_FIRE_RESIST, T_ARMOR_BA_REACTIVE, T_ARMOR_BA_REACTIVE);
 
     public static PipType forAT(int at, RecordSheetOptions options) {
         if (!options.fancyPips()) {
@@ -48,6 +55,8 @@ public enum PipType {
             return DIAMOND;
         } else if (ArmorType.of(at, false).getBAR() < 10) {
             return CIRCLE_DASHED;
+        } else if (buffArmors.contains(at)) {
+            return PENTAGON;
         }
         return CIRCLE;
     }
