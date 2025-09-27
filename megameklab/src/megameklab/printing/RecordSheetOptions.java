@@ -153,6 +153,7 @@ public class RecordSheetOptions {
     private IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks;
     private ExplicitZeroModifierStyle explicitZeroModifier;
     private boolean extraPhysicals;
+    private boolean fancyPips;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -191,6 +192,7 @@ public class RecordSheetOptions {
         this.explicitZeroModifier = CConfig.getEnumParam(CConfig.RS_EXPLICIT_ZERO_MOD,
               ExplicitZeroModifierStyle.class, ExplicitZeroModifierStyle.DASH);
         this.extraPhysicals = CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS);
+        this.fancyPips = CConfig.getBooleanParam(CConfig.RS_FANCY_PIPS);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -219,6 +221,7 @@ public class RecordSheetOptions {
         intrinsicPhysicalAttacks = options.intrinsicPhysicalAttacks;
         explicitZeroModifier = options.explicitZeroModifier;
         extraPhysicals = options.extraPhysicals;
+        fancyPips = options.fancyPips;
     }
 
     public PaperSize getPaperSize() {
@@ -415,5 +418,13 @@ public class RecordSheetOptions {
 
     public void setExtraPhysicals(boolean extraPhysicals) {
         this.extraPhysicals = extraPhysicals;
+    }
+
+    public boolean fancyPips() {
+        return fancyPips;
+    }
+
+    public void setFancyPips(boolean fancyPips) {
+        this.fancyPips = fancyPips;
     }
 }

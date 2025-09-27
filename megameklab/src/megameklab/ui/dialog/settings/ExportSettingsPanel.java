@@ -94,6 +94,7 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<RecordSheetOptions.IntrinsicPhysicalAttacksStyle> comboIntrinsicPhysicals;
     private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle> comboExplicitZeroModifier;
     private final JCheckBox chkExtraPhysicals = new JCheckBox();
+    private final JCheckBox chkFancyPips = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -299,6 +300,9 @@ class ExportSettingsPanel extends JPanel {
         chkTacOpsHeat.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsHeat.tooltip"));
         chkTacOpsHeat.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT));
 
+        chkFancyPips.setText(resourceMap.getString("ConfigurationDialog.chkFancyPips.text"));
+        chkFancyPips.setToolTipText(resourceMap.getString("ConfigurationDialog.chkFancyPips.tooltip"));
+        chkFancyPips.setSelected(CConfig.getBooleanParam(CConfig.RS_FANCY_PIPS));
 
         mekChassis.setRenderer(mekNameArrangementRenderer);
         mekChassis.setSelectedItem(CConfig.getMekNameArrangement());
@@ -362,6 +366,7 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(chkHeatProfile);
         innerGridPanel.add(chkTacOpsHeat);
         innerGridPanel.add(chkAlternateArmorGrouping);
+        innerGridPanel.add(chkFancyPips);
         innerGridPanel.add(chkFrameless);
         innerGridPanel.add(chkMergeIdenticalEquipment);
         innerGridPanel.add(hitModPanel);
@@ -445,6 +450,7 @@ class ExportSettingsPanel extends JPanel {
         recordSheetSettings.put(CConfig.RS_HEAT_SCALE_MARKER,
               Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_EXTRA_PHYSICALS, Boolean.toString(chkExtraPhysicals.isSelected()));
+        recordSheetSettings.put(CConfig.RS_FANCY_PIPS, Boolean.toString(chkFancyPips.isSelected()));
         return recordSheetSettings;
     }
 

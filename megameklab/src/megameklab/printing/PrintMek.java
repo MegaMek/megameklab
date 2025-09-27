@@ -66,13 +66,21 @@ import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGPathElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 /**
@@ -373,7 +381,8 @@ public class PrintMek extends PrintEntity {
         if (null == nl) {
             return false;
         }
-        return copyPipPattern(nl, CANON_ARMOR_PIPS, getArmorDamage(loc, rear), "pip armor", abbr, rear);
+        return copyPipPattern(nl, CANON_ARMOR_PIPS, getArmorDamage(loc, rear), "pip armor", abbr, rear, false,
+              mek.getArmorType(loc));
     }
 
     private boolean loadISPips() {
@@ -399,17 +408,20 @@ public class PrintMek extends PrintEntity {
         if (null == nl) {
             return false;
         }
-        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, getStructureDamage(loc), "pip structure", locAbbr, false);
+        return copyPipPattern(nl, CANON_STRUCTURE_PIPS, getStructureDamage(loc), "pip structure", locAbbr, false,
+              true, mek.getStructureType());
     }
 
     private boolean copyPipPattern(NodeList nl, String parentName, int damage, String className, String location,
-          boolean rear) {
+          boolean rear, boolean structure, int type) {
         Element parent = getSVGDocument().getElementById(parentName);
         if (null == parent) {
             return false;
         }
-        // Append nodes and apply damage
-        int remainingDamage = damage;
+
+        var importedNodes = new ArrayList<Node>(nl.getLength());
+
+        // Add pips to the document
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element el) {
                 String currentClass = el.getAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE);
@@ -419,6 +431,20 @@ public class PrintMek extends PrintEntity {
                 if (rear) {
                     el.setAttributeNS(null, "rear", "1");
                 }
+                var importedNode = getSVGDocument().importNode(el, true);
+                parent.appendChild(importedNode);
+                importedNodes.add(importedNode);
+            }
+        }
+
+        // Post-process pips with damage markings and pip type replacement
+        int remainingDamage = damage;
+        for (Node importedNode : importedNodes) {
+            if (importedNode instanceof SVGElement el) {
+                if (el instanceof SVGPathElement oldPip) {
+                    el = (SVGElement) makeFancy(oldPip, structure, type);
+                }
+
                 if (remainingDamage > 0) {
                     remainingDamage--;
                     // Set the fill attribute to black for damaged pips
@@ -427,7 +453,6 @@ public class PrintMek extends PrintEntity {
                     // Else we make it solid white
                     el.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, FILL_WHITE);
                 }
-                parent.appendChild(getSVGDocument().importNode(el, true)); // Final append
             }
         }
         return true;
@@ -462,6 +487,7 @@ public class PrintMek extends PrintEntity {
     protected void drawArmorStructurePips() {
         final String FORMAT = "( %d )";
         boolean alternateMethod = useAlternateArmorGrouping();
+        boolean fancyPips = options.fancyPips();
         Element element;
         boolean structComplete = !alternateMethod && (mek instanceof BipedMek) && loadISPips();
         for (int loc = 0; loc < mek.locations(); loc++) {
@@ -486,7 +512,7 @@ public class PrintMek extends PrintEntity {
                 ArmorPipLayout.addPips(this,
                       element,
                       mek.getOArmor(loc),
-                      PipType.forAT(mek.getArmorType(loc)),
+                      PipType.forAT(mek.getArmorType(loc), options),
                       DEFAULT_PIP_STROKE,
                       FILL_WHITE,
                       getArmorDamage(loc, false),
@@ -498,9 +524,21 @@ public class PrintMek extends PrintEntity {
             }
             if (!structComplete) {
                 if ((loc == Mek.LOC_HEAD)) {
+                    final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+
+                    // replace head pips with shaped pips
+                    if (fancyPips) {
+                        for (int i = 1; i <= mek.getOInternal(loc); i++) {
+                            element = getElementById(prefixHeadPip + i);
+                            if (element instanceof SVGPathElement oldPip) {
+                                makeFancy(oldPip, true, mek.getStructureType());
+                            }
+                        }
+                    }
+
                     final int headDamage = getStructureDamage(loc);
                     if (headDamage > 0) {
-                        final String prefixHeadPip = mek.isSuperHeavy() ? IS_PIP_HD_SH_PREFIX : IS_PIP_HD_PREFIX;
+                        // apply damage coloring
                         for (int i = 1; i <= headDamage; i++) {
                             element = getElementById(prefixHeadPip + i);
                             if (null != element) {
@@ -511,7 +549,8 @@ public class PrintMek extends PrintEntity {
                 } else {
                     element = getElementById(IS_PIPS + mek.getLocationAbbr(loc));
                     if (null != element) {
-                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc), PipType.CIRCLE,
+                        ArmorPipLayout.addPips(this, element, mek.getOInternal(loc),
+                              PipType.forST(mek.getStructureType(), options),
                               DEFAULT_PIP_STROKE, FILL_WHITE, getStructureDamage(loc), alternateMethod, "structure",
                               mek.getLocationAbbr(loc), false);
                     }
@@ -527,7 +566,7 @@ public class PrintMek extends PrintEntity {
                     ArmorPipLayout.addPips(this,
                           element,
                           mek.getOArmor(loc, true),
-                          PipType.forAT(mek.getArmorType(loc)),
+                          PipType.forAT(mek.getArmorType(loc), options),
                           DEFAULT_PIP_STROKE,
                           FILL_WHITE,
                           getArmorDamage(loc, true),
@@ -551,6 +590,31 @@ public class PrintMek extends PrintEntity {
                 hideElement(element, false);
             }
         }
+    }
+
+    private Element makeFancy(SVGPathElement oldPip, boolean structure, int type) {
+        var parent = oldPip.getParentNode();
+        var bounds = oldPip.getBBox();
+        if (bounds == null) {
+            return oldPip;
+        }
+        var x = bounds.getX();
+        var y = bounds.getY();
+        var radius = bounds.getWidth() / 2;
+        // "Official" structure pips are oddly small, scale them up a bit so they look nicer
+        if (structure) {
+            x -= radius * .15f;
+            y -= radius * .15f;
+            radius *= 1.15f;
+        }
+
+        var pipType = structure ? PipType.forST(type, options) : PipType.forAT(type, options);
+
+        var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
+              pipType,
+              FILL_WHITE);
+        parent.replaceChild(newPip, oldPip);
+        return newPip;
     }
 
     private void writeLocationCriticalSlots(int loc, SVGRectElement svgRect) {
