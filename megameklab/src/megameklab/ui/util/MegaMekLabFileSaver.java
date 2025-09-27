@@ -35,6 +35,7 @@ package megameklab.ui.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Calendar;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -52,7 +53,7 @@ import megameklab.util.UnitUtil;
 
 public class MegaMekLabFileSaver {
     private static final String LICENSE_HEADER = """
-          # MegaMek Data (C) 2025 by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+          # MegaMek Data (C) %s by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
           # To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
           #
           # NOTICE: The MegaMek organization is a non-profit group of volunteers
@@ -68,7 +69,7 @@ public class MegaMekLabFileSaver {
           # Microsoft's "Game Content Usage Rules"
           # <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
           # affiliated with Microsoft.
-          """;
+          """.formatted(Calendar.getInstance().get(Calendar.YEAR));
 
 
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
