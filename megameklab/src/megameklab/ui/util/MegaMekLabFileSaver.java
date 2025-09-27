@@ -35,6 +35,7 @@ package megameklab.ui.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Calendar;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -48,8 +49,28 @@ import megameklab.ui.FileNameManager;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.util.CConfig;
+import megameklab.util.UnitUtil;
 
 public class MegaMekLabFileSaver {
+    private static final String LICENSE_HEADER = """
+          # MegaMek Data (C) %s by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+          # To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+          #
+          # NOTICE: The MegaMek organization is a non-profit group of volunteers
+          # creating free software for the BattleTech community.
+          #
+          # MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+          # of The Topps Company, Inc. All Rights Reserved.
+          #
+          # Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+          # InMediaRes Productions, LLC.
+          #
+          # MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
+          # Microsoft's "Game Content Usage Rules"
+          # <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+          # affiliated with Microsoft.
+          """.formatted(Calendar.getInstance().get(Calendar.YEAR));
+
 
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
     private final MMLogger logger;
@@ -126,13 +147,12 @@ public class MegaMekLabFileSaver {
             return null;
         }
         try {
-            if (entity instanceof Mek) {
-                try (FileOutputStream fos = new FileOutputStream(file);
-                      PrintStream ps = new PrintStream(fos)) {
-                    ps.println(((Mek) entity).getMtf());
+            try (FileOutputStream fos = new FileOutputStream(file);
+                  PrintStream ps = new PrintStream(fos)) {
+                if (CConfig.includeLicense()) {
+                    ps.println(LICENSE_HEADER);
                 }
-            } else {
-                BLKFile.encode(file.getPath(), entity);
+                ps.println(UnitUtil.saveUnitToString(entity, true));
             }
 
             PopupMessages.showUnitSavedMessage(ownerFrame, entity, file);

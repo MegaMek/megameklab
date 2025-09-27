@@ -69,6 +69,7 @@ public class MiscSettingsPanel extends JPanel {
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkApplicationExitPrompt = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
+    private final JCheckBox chkIncludeLicense = new JCheckBox();
     private final JTextField txtUserDir = new JTextField(20);
     private final JSlider guiScale = new JSlider();
     private final MMComboBox<MulDndBehaviour> cbMulOpenBehaviour = new MMComboBox<>("MUL Drag and Drop behaviour",
@@ -139,6 +140,10 @@ public class MiscSettingsPanel extends JPanel {
         chkSkipSavePrompts.setToolTipText(resources.getString("ConfigurationDialog.chkSkipSavePrompts.tooltip"));
         chkSkipSavePrompts.setSelected(CConfig.getBooleanParam(CConfig.MISC_SKIP_SAFETY_PROMPTS));
 
+        chkIncludeLicense.setText(resources.getString("ConfigurationDialog.chkIncludeLicense.text"));
+        chkIncludeLicense.setToolTipText(resources.getString("ConfigurationDialog.chkIncludeLicense.tooltip"));
+        chkIncludeLicense.setSelected(CConfig.includeLicense());
+
         guiScale.setMajorTickSpacing(3);
         guiScale.setMinimum(7);
         guiScale.setMaximum(24);
@@ -165,9 +170,10 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(chkApplicationExitPrompt);
         gridPanel.add(chkSummaryFormatTRO);
         gridPanel.add(chkSkipSavePrompts);
+        gridPanel.add(chkIncludeLicense);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 7, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -178,6 +184,7 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.MISC_APPLICATION_EXIT_PROMPT, String.valueOf(chkApplicationExitPrompt.isSelected()));
         miscSettings.put(CConfig.MISC_SUMMARY_FORMAT_TRO, String.valueOf(chkSummaryFormatTRO.isSelected()));
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
+        miscSettings.put(CConfig.MISC_INCLUDE_LICENSE, String.valueOf(chkIncludeLicense.isSelected()));
         MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null
               ? MMLStartUp.SPLASH_SCREEN
               : startUpMMComboBox.getSelectedItem();

@@ -88,6 +88,7 @@ public final class CConfig {
     public static final String MISC_SKIP_SAFETY_PROMPTS = "skipSafetyPrompts";
     public static final String MISC_APPLICATION_EXIT_PROMPT = "applicationExitPrompt";
     public static final String MISC_MUL_OPEN_BEHAVIOUR = "mulDndBehaviour";
+    public static final String MISC_INCLUDE_LICENSE = "includeLicense";
 
     public static final String GUI_PLAF = "lookAndFeel";
     public static final String GUI_COLOR_WEAPONS = "Weapons";
@@ -180,6 +181,7 @@ public final class CConfig {
         defaults.setProperty(MISC_SUMMARY_FORMAT_TRO, Boolean.toString(true));
         defaults.setProperty(MISC_SKIP_SAFETY_PROMPTS, Boolean.toString(false));
         defaults.setProperty(MISC_APPLICATION_EXIT_PROMPT, Boolean.toString(true));
+        defaults.setProperty(MISC_INCLUDE_LICENSE, Boolean.toString(false));
         defaults.setProperty(RS_PROGRESS_BAR, Boolean.toString(true));
         defaults.setProperty(RS_COLOR, RecordSheetOptions.ColorMode.LOGO_ONLY.name());
         defaults.setProperty(RS_HEAT_SCALE_MARKER, RecordSheetOptions.HeatScaleMarker.ASTERISK.name());
@@ -545,6 +547,10 @@ public final class CConfig {
 
     public static MekChassisArrangement getMekNameArrangement() {
         return MekChassisArrangement.parse(CConfig.getParam(CConfig.RS_MEK_NAMES));
+    }
+
+    public static boolean includeLicense() {
+        return CConfig.getBooleanParam(CConfig.MISC_INCLUDE_LICENSE);
     }
 
     public static void resetWindowPositions() {
