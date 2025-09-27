@@ -446,7 +446,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (!Files.exists(filePath)) {
             logger
                   .error("SVG file does not exist at path: {}/{}", directoryPath, filename);
-            java.lang.System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
+            System.out.println("SVG file does not exist at path: " + directoryPath + "/" + filename);
             return null;
         }
 
@@ -596,7 +596,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (g2d != null) {
             // Expand clip to full paper so overflow content can be painted
             Shape oldClip = g2d.getClip();
-            g2d.setClip(new java.awt.geom.Rectangle2D.Double(
+            g2d.setClip(new Rectangle2D.Double(
                   0, 0, pageFormat.getWidth(), pageFormat.getHeight()));
             try {
                 if (!createDocument(pageIndex, pageFormat, true)) {
@@ -634,19 +634,19 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
 
         // Define font directories based on OS
-        String osName = java.lang.System.getProperty("os.name").toLowerCase();
+        String osName = System.getProperty("os.name").toLowerCase();
         StringBuilder systemFontDirectories = new StringBuilder();
         List<String> directories = new ArrayList<>();
         if (osName.contains("windows")) {
-            String winDir = java.lang.System.getenv("WINDIR");
+            String winDir = System.getenv("WINDIR");
             if (winDir == null) {
-                winDir = java.lang.System.getenv("SystemRoot");
+                winDir = System.getenv("SystemRoot");
             }
             if (winDir == null) {
                 winDir = "C:\\Windows";
             }
             directories.add(winDir + "\\Fonts");
-            directories.add(java.lang.System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
+            directories.add(System.getenv("LOCALAPPDATA") + "\\Microsoft\\Windows\\Fonts");
         } else if (osName.contains("mac")) {
             directories.add("/System/Library/Fonts");
             directories.add("/Library/Fonts");
@@ -1179,47 +1179,86 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (className != null && !className.isEmpty()) {
             classAttr += " " + className;
         }
-        if (type == PipType.DIAMOND) {
-            // Use diamond shape for hardened armor pips
-            Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
-            path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
-            if (loc != null && !loc.isEmpty()) {
-                path.setAttributeNS(null, "loc", loc);
+        switch (type) {
+            case DIAMOND -> {
+                // Use diamond shape for hardened armor pips
+                Element path = preparePolygonalPip(strokeWidth, fill, loc, rear, classAttr);
+                String d = "M" + (x + radius * 2) + "," + (y + radius)
+                      + String.format(FMT_LINE, -radius, -radius)
+                      + String.format(FMT_LINE, -radius, radius)
+                      + String.format(FMT_LINE, radius, radius)
+                      + String.format(FMT_LINE, radius, -radius);
+                path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d);
+                return path;
             }
-            if (rear) {
-                path.setAttributeNS(null, "rear", "true");
-            }
-            path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-            path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
-            path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
-            String d = "M" + (x + radius * 2) + "," + (y + radius)
-                  + String.format(FMT_LINE, -radius, -radius)
-                  + String.format(FMT_LINE, -radius, radius)
-                  + String.format(FMT_LINE, radius, radius)
-                  + String.format(FMT_LINE, radius, -radius);
-            path.setAttributeNS(null, SVGConstants.SVG_D_ATTRIBUTE, d);
-            return path;
-        } else {
-            // Use circle element for normal pips
-            Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
-            circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
-            if (loc != null && !loc.isEmpty()) {
-                circle.setAttributeNS(null, "loc", loc);
-            }
-            if (rear) {
-                circle.setAttributeNS(null, "rear", "true");
-            }
-            double centerX = x + radius;
-            double centerY = y + radius;
-            circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));
-            circle.setAttributeNS(null, SVGConstants.SVG_CY_ATTRIBUTE, Double.toString(centerY));
-            circle.setAttributeNS(null, SVGConstants.SVG_R_ATTRIBUTE, Double.toString(radius));
-            circle.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
-            circle.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
-            circle.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
-            return circle;
+            case PENTAGON -> {
+                Element path = preparePolygonalPip(strokeWidth, fill, loc, rear, classAttr);
 
+                // This formula was generated by the following Mathematica code:
+                // $Assumptions = r > 0
+                // Simplify[
+                //  RegionBoundary[
+                //   ReflectionTransform[{0, 1}, {0, y + r}][
+                //    RegularPolygon[{x + r, y + r}, r, 5]]]][[1]]
+                var r = radius;
+                var s5 = Math.sqrt(5);
+                var a = Math.sqrt(5d/8 - s5/8);
+                var b = Math.sqrt(2 * (5 + s5));
+                var c = Math.sqrt(10 - 2 * s5);
+                String d = ("M %f %f" + " L %f %f".repeat(5)).formatted(
+                      0.25 * (4 + c) * r + x, -((5 * r)/(-5 + s5)) + y,
+                      r - a * r + x, 0.25 * (5 + s5) * r + y,
+                      -0.25 * (-4 + b) * r + x, -0.25 * (-5 + s5) * r + y,
+                      r + x, y,
+                      0.25 * (4 + b) * r + x, -0.25 * (-5 + s5) * r + y,
+                      0.25 * (4 + c) * r + x, -((5 * r)/(-5 + s5)) + y
+                );
+
+                path.setAttribute(SVGConstants.SVG_D_ATTRIBUTE, d);
+                return path;
+            }
+            case CIRCLE, CIRCLE_DASHED -> {
+                // Use circle element for normal pips
+                Element circle = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_CIRCLE_TAG);
+                circle.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+                if (loc != null && !loc.isEmpty()) {
+                    circle.setAttributeNS(null, "loc", loc);
+                }
+                if (rear) {
+                    circle.setAttributeNS(null, "rear", "true");
+                }
+                double centerX = x + radius;
+                double centerY = y + radius;
+                circle.setAttributeNS(null, SVGConstants.SVG_CX_ATTRIBUTE, Double.toString(centerX));
+                circle.setAttributeNS(null, SVGConstants.SVG_CY_ATTRIBUTE, Double.toString(centerY));
+                circle.setAttributeNS(null, SVGConstants.SVG_R_ATTRIBUTE, Double.toString(radius));
+                circle.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+                circle.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
+                circle.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
+
+                if (type == PipType.CIRCLE_DASHED) {
+                    circle.setAttribute(SVGConstants.SVG_STROKE_DASHARRAY_ATTRIBUTE, "1.8 .85");
+                }
+
+                return circle;
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + type);
         }
+    }
+
+    private Element preparePolygonalPip(double strokeWidth, String fill, String loc, boolean rear, String classAttr) {
+        Element path = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_PATH_TAG);
+        path.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+        if (loc != null && !loc.isEmpty()) {
+            path.setAttributeNS(null, "loc", loc);
+        }
+        if (rear) {
+            path.setAttributeNS(null, "rear", "true");
+        }
+        path.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fill);
+        path.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
+        path.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, Double.toString(strokeWidth));
+        return path;
     }
 
     /**
