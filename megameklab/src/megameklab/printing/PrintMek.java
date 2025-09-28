@@ -441,8 +441,13 @@ public class PrintMek extends PrintEntity {
         int remainingDamage = damage;
         for (Node importedNode : importedNodes) {
             if (importedNode instanceof SVGElement el) {
-                if (el instanceof SVGPathElement oldPip) {
+                if (options.fancyPips() && el instanceof SVGPathElement oldPip) {
                     el = (SVGElement) makeFancy(oldPip, structure, type);
+                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE, oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
+                    el.setAttribute("loc", oldPip.getAttribute("loc"));
+                    if (oldPip.hasAttribute("rear")) {
+                        el.setAttribute("rear", oldPip.getAttribute("rear"));
+                    }
                 }
 
                 if (remainingDamage > 0) {
