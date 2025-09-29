@@ -1503,7 +1503,7 @@ public class SVGMassPrinter {
 
     private static void generateSheetHash(File filename) {
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             try (InputStream is = Files.newInputStream(filename.toPath())) {
                 byte[] buffer = new byte[8192];
                 int read;
@@ -1516,11 +1516,11 @@ public class SVGMassPrinter {
             for (byte b : digest) {
                 sb.append(String.format("%02x", b));
             }
-            String md5Hash = sb.toString();
+            String hash = sb.toString();
 
             File hashFile = new File(filename.getPath() + ".hash");
             try (FileWriter fw = new FileWriter(hashFile)) {
-                fw.write(md5Hash);
+                fw.write(hash);
             }
         } catch (NoSuchAlgorithmException | IOException e) {
             logger.error("Failed to generate hash for {}", filename.getName(), e);
