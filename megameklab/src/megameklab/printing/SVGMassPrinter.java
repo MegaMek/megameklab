@@ -1277,7 +1277,6 @@ public class SVGMassPrinter {
                               StreamResult result = new StreamResult(fos);
                               transformer.transform(source, result);
                           }
-                          generateSheetHash(finalUnoptimizedFilename);
 
                           String pathToSave = (svgPath + File.separator + unoptimizedSvgFilename).replace("\\",
                                 "/");
@@ -1324,6 +1323,7 @@ public class SVGMassPrinter {
 
         logger.info("Processed {} units.", processedCounter.get());
 
+        // Export Quirks
         try (FileWriter quirksWriter = new FileWriter(ROOT_FOLDER + File.separator + "quirks.json")) {
             ResourceBundle quirksBundle = ResourceBundle.getBundle("megamek.common.options.messages");
             List<Map<String, String>> quirksList = new ArrayList<>();
@@ -1495,36 +1495,7 @@ public class SVGMassPrinter {
             logger.info("Done. Processed {} equipments.", processedCount);
         }
 
-        // Export Quirks
-
-
         System.exit(0);
-    }
-
-    private static void generateSheetHash(File filename) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            try (InputStream is = Files.newInputStream(filename.toPath())) {
-                byte[] buffer = new byte[8192];
-                int read;
-                while ((read = is.read(buffer)) > 0) {
-                    md.update(buffer, 0, read);
-                }
-            }
-            byte[] digest = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : digest) {
-                sb.append(String.format("%02x", b));
-            }
-            String hash = sb.toString();
-
-            File hashFile = new File(filename.getPath() + ".hash");
-            try (FileWriter fw = new FileWriter(hashFile)) {
-                fw.write(hash);
-            }
-        } catch (NoSuchAlgorithmException | IOException e) {
-            logger.error("Failed to generate hash for {}", filename.getName(), e);
-        }
     }
 
     private static String filterQuirkDescription(String desc) {
