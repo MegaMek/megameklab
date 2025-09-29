@@ -1472,6 +1472,7 @@ public class SVGMassPrinter {
                           )
                     ));
                     equipmentMap.put(eq.getInternalName(), rowMap);
+                    processedCount++;
                 }
                 equipmentJsonMap.put(unitTypeKey, equipmentMap);
             }
