@@ -1202,6 +1202,12 @@ public class SVGMassPrinter {
                   return null;
               }
               UnitUtil.updateLoadedUnit(entity);
+            for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+                        entity.getCrew().setName("", i);
+                    }
+                    if (entity.getId() == -1) {
+                        entity.setId(entity.getGame().getNextEntityId());
+                    }
               String svgPath = FluffImageHelper.getFluffPath(entity)
                     .toLowerCase()
                     .replaceAll("[^a-zA-Z0-9_]", "");
