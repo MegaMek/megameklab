@@ -112,11 +112,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGDocument;
 
+import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
+import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
+import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
+
 /**
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
@@ -548,10 +552,6 @@ public class SVGMassPrinter {
                         ))) {
                             continue;
                         }
-                    } else {
-                        if (UnitUtil.isFixedLocationSpreadEquipment(mtype) && !mtype.hasFlag(MiscType.F_TALON)) {
-                            continue;
-                        }
                     }
                     if (mtype.hasFlag(MiscType.F_CLUB) || mtype.hasFlag(MiscType.F_HAND_WEAPON) || mtype.hasFlag(
                           MiscType.F_TALON)) {
@@ -565,6 +565,8 @@ public class SVGMassPrinter {
                         addMiscEntry(list, entity, mm, mtype, entity.joinLocationAbbr(m.allLocations(), 2),
                               m.getLocation());
                     } else {
+                        // TODO: maybe evaluate for UnitUtil.isFixedLocationSpreadEquipment(mtype) and spread the
+                        //  component?
                         addMiscEntry(list, entity, mm, mtype, entity.joinLocationAbbr(m.allLocations(), 2),
                               m.getLocation());
                     }
@@ -680,14 +682,17 @@ public class SVGMassPrinter {
         public String techBase;
         public String techRating;
         public String engine;
+        public int engineRating;
         public String type; // Major type, "Mek", "Vehicle", etc.
         public String subtype; // Subtype, "Assault", "Light", etc.
         public String source; // Source of the unit, e.g. "TRO 3050"
         public String role; // Role, "Assault", "Scout", etc.
+        public String armorType; // Armor Type
         public int armor; // Total armor
         public int internal; // Total internal structure
         public int heat; // Total heat generation
         public int dissipation; // Heat capacity
+        public String moveType; // Movement type
         public int walk; // Walk MP
         public int run; // Run MP
         public int jump; // Jump MP
@@ -879,7 +884,9 @@ public class SVGMassPrinter {
             this.techBase = formatTechBase(entity);
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
-            this.engine = (entity.getEngine() != null) ? entity.getEngine().getShortEngineName() : null;
+            this.engineRating = (entity.getEngine() != null) ? entity.getEngine().getRating() : 0;
+            this.engine = (entity.getEngine() != null) ?
+                  Engine.getEngineTypeName(entity.getEngine().getEngineType()) : null;
             // This is over-convoluted for no reason, should be simplified and unified at the source
             final String majorType = Entity.getEntityMajorTypeName(entity.getEntityType());
             final String type = Entity.getEntityTypeName(entity.getEntityType());
@@ -900,6 +907,7 @@ public class SVGMassPrinter {
             //            }
             this.source = entity.getSource();
             this.role = formatRole(entity);
+            this.armorType = getArmorType(entity);
             this.armor = entity.getTotalOArmor();
             this.internal = entity.getTotalInternal();
             if (entity.tracksHeat()) {
@@ -909,6 +917,7 @@ public class SVGMassPrinter {
                 this.heat = -1;
                 this.dissipation = -1;
             }
+            this.moveType = getMoveType(entity);
             this.walk = entity.getWalkMP();
             this.run = entity.getRunMP();
             this.jump = entity.getJumpMP();
@@ -1055,6 +1064,43 @@ public class SVGMassPrinter {
                 return "None";
             }
         }
+
+        private String getArmorType(Entity entity) {
+            if (entity.isSupportVehicle()
+                  && (entity.hasBARArmor(0))) {
+                return "BAR: " + entity.getBARRating(0);
+            } else if (!entity.hasPatchworkArmor()) {
+                final int at = entity.getArmorType(0);
+                String armorType = (at == T_ARMOR_STANDARD) ? "Standard Armor" : EquipmentType.getArmorTypeName(at);
+                if (entity.hasBARArmor(0)) {
+                    armorType += ", BAR: " + entity.getBARRating(0);
+                }
+                return armorType;
+            } else {
+                boolean hasSpecial = false;
+                for (int loc = 0; loc < entity.locations(); loc++) {
+                    if ((entity.getArmorType(loc) != T_ARMOR_STANDARD)
+                          && (entity.getArmorType(loc) != T_ARMOR_BA_STANDARD)
+                          && (entity.getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
+                          // Stealth armor loses special properties when used with patchwork, so we don't
+                          // need to show it.
+                          && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
+                          && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
+                        String atName = EquipmentType.getArmorTypeName(entity.getArmorType(loc));
+                        hasSpecial = true;
+                    }
+                }
+                if (hasSpecial) {
+                    return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK);
+                } else {
+                    return "Standard Armor";
+                }
+            }
+        }
+
+        private String getMoveType(Entity entity) {
+            return entity.getMovementModeAsString();
+        }
     }
 
     protected static String formatRulesLevel(Entity entity, RecordSheetOptions options) {
@@ -1146,7 +1192,7 @@ public class SVGMassPrinter {
 //                        continue;
 //                    }
 //                    if (!mekSummary.isMek()) continue;
-//                    if (mekSummary.getMulId() != 8596) continue;
+//                    if (mekSummary.getMulId() != 6336) continue;
 //                    logger.info("{}", mekSummary.getName());
                     Entity entity = mekSummary.loadEntity();
                     if ((entity == null) || (entity instanceof GunEmplacement)) {
@@ -1515,6 +1561,8 @@ public class SVGMassPrinter {
         recordSheetOptions.setIntrinsicPhysicalAttacks(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER);
         recordSheetOptions.setExplicitZeroModifier(RecordSheetOptions.ExplicitZeroModifierStyle.PLUS_ZERO);
         recordSheetOptions.setExtraPhysicals(true);
+        recordSheetOptions.setAlternateArmorGrouping(true);
+        recordSheetOptions.setFancyPips(true);
         return recordSheetOptions;
     }
 
