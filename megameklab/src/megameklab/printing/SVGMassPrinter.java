@@ -1301,7 +1301,7 @@ public class SVGMassPrinter {
                   uniqueUnitTypes.put(unitData.type, entity);
               }
               if (processedCounter.incrementAndGet() % 100 == 0) {
-                  System.gc();
+                  // Removed explicit System.gc() call to avoid performance degradation.
               }
               return unitData;
             })
