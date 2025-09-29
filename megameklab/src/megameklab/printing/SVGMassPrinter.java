@@ -114,9 +114,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.io.InputStream;
+import java.util.Set;
+import java.util.HashSet;
 
 import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
@@ -861,7 +860,7 @@ public class SVGMassPrinter {
         }
 
         private List<String> getQuirks(Entity entity) {
-            List<String> sj = new ArrayList<>();
+            Set<String> sj = new HashSet<>();
             Quirks quirks = entity.getQuirks();
             for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
                 IOptionGroup optiongroup = optionGroups.nextElement();
@@ -874,7 +873,7 @@ public class SVGMassPrinter {
                     }
                 }
             }
-            return sj;
+            return new ArrayList<>(sj);
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
@@ -1091,8 +1090,8 @@ public class SVGMassPrinter {
                           // need to show it.
                           && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
                           && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
-                        String atName = EquipmentType.getArmorTypeName(entity.getArmorType(loc));
                         hasSpecial = true;
+                        break;
                     }
                 }
                 if (hasSpecial) {
