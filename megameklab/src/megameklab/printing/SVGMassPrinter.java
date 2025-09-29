@@ -1553,7 +1553,8 @@ public class SVGMassPrinter {
         recordSheetOptions.setIntrinsicPhysicalAttacks(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER);
         recordSheetOptions.setExplicitZeroModifier(RecordSheetOptions.ExplicitZeroModifierStyle.PLUS_ZERO);
         recordSheetOptions.setExtraPhysicals(true);
-        recordSheetOptions.setAlternateArmorGrouping(true);
+        recordSheetOptions.setAlternateArmorGrouping(false);
+        recordSheetOptions.setRowShading(true);
         recordSheetOptions.setFancyPips(true);
         return recordSheetOptions;
     }
