@@ -1218,7 +1218,7 @@ public class SVGMassPrinter {
                   return null;
               }
               String name = generateName(entity);
-              if (!processedFiles.add(name)) {
+              if (processedFiles.putIfAbsent(name, Boolean.TRUE) != null) {
                   logger.warn("Duplication detected! Hash {} already exists for {} {}", name,
                         mekSummary.getFullChassis(), mekSummary.getModel());
                   return null;
