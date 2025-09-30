@@ -1300,9 +1300,6 @@ public class SVGMassPrinter {
               if (!uniqueUnitTypes.containsKey(unitData.type)) {
                   uniqueUnitTypes.put(unitData.type, entity);
               }
-              if (processedCounter.incrementAndGet() % 100 == 0) {
-                  // Removed explicit System.gc() call to avoid performance degradation.
-              }
               return unitData;
             })
             .filter(Objects::nonNull)
