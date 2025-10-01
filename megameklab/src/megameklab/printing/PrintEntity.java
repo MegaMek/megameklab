@@ -201,7 +201,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     public String formatQuirks() {
         if (options.showQuirks()) {
-            Set<String> sj = new HashSet<>();
+            List<String> sj = new ArrayList<>();
             Quirks quirks = getEntity().getQuirks();
             for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
                 IOptionGroup optiongroup = optionGroups.nextElement();

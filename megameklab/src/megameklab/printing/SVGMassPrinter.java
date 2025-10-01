@@ -692,6 +692,7 @@ public class SVGMassPrinter {
         public String source; // Source of the unit, e.g. "TRO 3050"
         public String role; // Role, "Assault", "Scout", etc.
         public String armorType; // Armor Type
+        public String structureType; // Internal Structure Type
         public int armor; // Total armor
         public int internal; // Total internal structure
         public int heat; // Total heat generation
@@ -860,7 +861,7 @@ public class SVGMassPrinter {
         }
 
         private List<String> getQuirks(Entity entity) {
-            Set<String> sj = new HashSet<>();
+            List<String> sj = new ArrayList<>();
             Quirks quirks = entity.getQuirks();
             for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
                 IOptionGroup optiongroup = optionGroups.nextElement();
@@ -873,7 +874,7 @@ public class SVGMassPrinter {
                     }
                 }
             }
-            return new ArrayList<>(sj);
+            return sj;
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
@@ -912,6 +913,7 @@ public class SVGMassPrinter {
             this.source = entity.getSource();
             this.role = formatRole(entity);
             this.armorType = getArmorType(entity);
+            this.structureType = getStructureType(entity);
             this.armor = entity.getTotalOArmor();
             this.internal = entity.getTotalInternal();
             if (entity.tracksHeat()) {
@@ -1100,6 +1102,10 @@ public class SVGMassPrinter {
                     return "Standard Armor";
                 }
             }
+        }
+
+        private String getStructureType(Entity entity) {
+            return EquipmentType.getStructureTypeName(entity.getStructureType());
         }
 
         private String getMoveType(Entity entity) {
