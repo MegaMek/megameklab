@@ -71,6 +71,7 @@ import megamek.common.equipment.enums.AmmoTypeFlag;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.loaders.MekSummary;
 import megamek.common.loaders.MekSummaryCache;
+import megamek.common.templates.CapitalShipTROView;
 import megamek.common.units.*;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.actions.KickAttackAction;
@@ -902,6 +903,9 @@ public class SVGMassPrinter {
                 this.type = majorType;
             }
             this.subtype = unitTypeAsString(entity).trim();
+            if (entity.isOmni()) {
+                this.subtype = " Omni";
+            }
             //            if (mekSummary.isSupport()) {
             //                this.subtype = unitTypes.get(UnitType.SIZE);
             //            } else
