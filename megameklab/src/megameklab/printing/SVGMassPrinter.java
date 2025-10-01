@@ -106,6 +106,7 @@ import megameklab.util.CConfig;
 import megameklab.util.SVGOptimizer;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
+import org.apache.fop.pdf.StructureType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -126,7 +127,7 @@ import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
-    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -211,26 +212,28 @@ public class SVGMassPrinter {
             return comps.values();
         }
 
-        private String getWeaponCategory(WeaponType eq) {
-            if (eq.hasFlag(WeaponType.F_ENERGY)
-                  || ((eq.hasFlag(WeaponType.F_PLASMA) && (eq.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA)))
-                  || eq.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Energy)) {
-                return "E";
-            }
-            if (eq.hasFlag(WeaponType.F_MISSILE) || eq.getAmmoType()
-                  .getCategory()
-                  .equals(AmmoType.AmmoCategory.Missile)) {
-                return "M";
-            }
-            if (eq.hasFlag(WeaponType.F_BALLISTIC) || eq.getAmmoType()
-                  .getCategory()
-                  .equals(AmmoType.AmmoCategory.Ballistic)) {
-                return "B";
-            }
-            if (eq.hasFlag(WeaponType.F_ARTILLERY) || eq.getAmmoType()
-                  .getCategory()
-                  .equals(AmmoType.AmmoCategory.Artillery)) {
-                return "A";
+        private String getMWCategory(EquipmentType eq) {
+            if (eq instanceof WeaponType wp) {
+                if (wp.hasFlag(WeaponType.F_ENERGY)
+                      || ((wp.hasFlag(WeaponType.F_PLASMA) && (wp.getAmmoType() == AmmoType.AmmoTypeEnum.PLASMA)))
+                      || wp.getAmmoType().getCategory().equals(AmmoType.AmmoCategory.Energy)) {
+                    return "E";
+                }
+                if (wp.hasFlag(WeaponType.F_MISSILE) || wp.getAmmoType()
+                      .getCategory()
+                      .equals(AmmoType.AmmoCategory.Missile)) {
+                    return "M";
+                }
+                if (wp.hasFlag(WeaponType.F_BALLISTIC) || wp.getAmmoType()
+                      .getCategory()
+                      .equals(AmmoType.AmmoCategory.Ballistic)) {
+                    return "B";
+                }
+                if (wp.hasFlag(WeaponType.F_ARTILLERY) || wp.getAmmoType()
+                      .getCategory()
+                      .equals(AmmoType.AmmoCategory.Artillery)) {
+                    return "A";
+                }
             }
             if (EquipmentDatabaseCategory.isIndustrialEquipment(eq) || UnitUtil.isPhysicalWeapon(eq)) {
                 return "P";
@@ -385,7 +388,7 @@ public class SVGMassPrinter {
                 ExportInventoryEntry entry = new ExportInventoryEntry();
                 entry.id = type.getInternalName();
                 entry.n = cleanupName(name);
-                entry.t = getWeaponCategory(type);
+                entry.t = getMWCategory(type);
                 entry.q = 1;
                 entry.p = locId;
                 entry.l = location;
@@ -420,7 +423,7 @@ public class SVGMassPrinter {
             ExportInventoryEntry entry = new ExportInventoryEntry();
             entry.id = type.getInternalName();
             entry.n = cleanupName(name);
-            entry.t = getWeaponCategory(type);
+            entry.t = getMWCategory(type);
             entry.q = 1;
             entry.p = locId;
             entry.l = location;
@@ -449,7 +452,7 @@ public class SVGMassPrinter {
                     ExportInventoryEntry entry = new ExportInventoryEntry();
                     entry.id = primaryWeapon.getInternalName();
                     entry.n = cleanupName(primaryWeapon.getShortName());
-                    entry.t = getWeaponCategory(primaryWeapon);
+                    entry.t = getMWCategory(primaryWeapon);
                     entry.q = (inf.getSquadSize() - inf.getSecondaryWeaponsPerSquad()) * inf.getSquadCount();
                     entry.p = 0;
                     entry.l = "Troop";
@@ -466,7 +469,7 @@ public class SVGMassPrinter {
                     ExportInventoryEntry entry = new ExportInventoryEntry();
                     entry.id = secondaryWeapon.getInternalName();
                     entry.n = cleanupName(secondaryWeapon.getShortName());
-                    entry.t = getWeaponCategory(secondaryWeapon);
+                    entry.t = getMWCategory(secondaryWeapon);
                     entry.q = inf.getSecondaryWeaponsPerSquad() * inf.getSquadCount();
                     entry.p = 0;
                     entry.l = "Troop";
@@ -484,8 +487,10 @@ public class SVGMassPrinter {
                 if (m.isWeaponGroup()) {
                     continue;
                 }
-                if ((m.getType() instanceof AmmoType) && (((AmmoType) m.getType()).getAmmoType()
+                if ((m.getType() instanceof AmmoType ammo) && (((AmmoType) m.getType()).getAmmoType()
                       != AmmoType.AmmoTypeEnum.COOLANT_POD)) {
+//                    addAmmoEntry(list, entity, (AmmoMounted) m, ammo, entity.joinLocationAbbr(m.allLocations(), 2),
+//                          m.getLocation());
                     continue;
                 }
                 if ((entity instanceof QuadVee)
@@ -622,6 +627,27 @@ public class SVGMassPrinter {
                 entry.n = cleanupName(name);
                 entry.t = "O"; // Other
                 entry.q = 1;
+                entry.p = locId;
+                entry.l = location;
+                entry.c = getCriticals(entity, type);
+                list.put(key, entry);
+            }
+        }
+
+        private void addAmmoEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, AmmoMounted mounted,
+              AmmoType type,
+              String location, int locId) {
+            final String name = type.getShortName()+" Ammo";
+            final String key = name + "_" + location;
+            if (list.containsKey(key)) {
+                ExportInventoryEntry entry = list.get(key);
+                entry.q += mounted.getBaseShotsLeft();
+            } else {
+                ExportInventoryEntry entry = new ExportInventoryEntry();
+                entry.id = type.getInternalName();
+                entry.n = cleanupName(name);
+                entry.t = "S"; // Salvo
+                entry.q = mounted.getBaseShotsLeft();
                 entry.p = locId;
                 entry.l = location;
                 entry.c = getCriticals(entity, type);
@@ -904,7 +930,7 @@ public class SVGMassPrinter {
             }
             this.subtype = unitTypeAsString(entity).trim();
             if (entity.isOmni()) {
-                this.subtype = " Omni";
+                this.subtype += " Omni";
             }
             //            if (mekSummary.isSupport()) {
             //                this.subtype = unitTypes.get(UnitType.SIZE);
@@ -1108,7 +1134,10 @@ public class SVGMassPrinter {
             }
         }
 
-        private String getStructureType(Entity entity) {
+        private @Nullable String getStructureType(Entity entity) {
+            if (entity.getStructureType() < 0) {
+                return null;
+            }
             return EquipmentType.getStructureTypeName(entity.getStructureType());
         }
 
