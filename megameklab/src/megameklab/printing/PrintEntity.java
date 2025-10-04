@@ -46,9 +46,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -199,12 +201,12 @@ public abstract class PrintEntity extends PrintRecordSheet {
      */
     public String formatQuirks() {
         if (options.showQuirks()) {
-            StringJoiner sj = new StringJoiner(", ");
+            List<String> sj = new ArrayList<>();
             Quirks quirks = getEntity().getQuirks();
             for (Enumeration<IOptionGroup> optionGroups = quirks.getGroups(); optionGroups.hasMoreElements(); ) {
-                IOptionGroup optionGroup = optionGroups.nextElement();
-                if (quirks.count(optionGroup.getKey()) > 0) {
-                    for (Enumeration<IOption> options = optionGroup.getOptions(); options.hasMoreElements(); ) {
+                IOptionGroup optiongroup = optionGroups.nextElement();
+                if (quirks.count(optiongroup.getKey()) > 0) {
+                    for (Enumeration<IOption> options = optiongroup.getOptions(); options.hasMoreElements(); ) {
                         IOption option = options.nextElement();
                         if (option != null && option.booleanValue()) {
                             sj.add(option.getDisplayableNameWithValue());
@@ -212,7 +214,7 @@ public abstract class PrintEntity extends PrintRecordSheet {
                     }
                 }
             }
-            return sj.toString();
+            return String.join(", ", sj);
         } else {
             return "";
         }
