@@ -443,11 +443,6 @@ public class PrintMek extends PrintEntity {
             if (importedNode instanceof SVGElement el) {
                 if (options.fancyPips() && el instanceof SVGPathElement oldPip) {
                     el = (SVGElement) makeFancy(oldPip, structure, type);
-                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE, oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
-                    el.setAttribute("loc", oldPip.getAttribute("loc"));
-                    if (oldPip.hasAttribute("rear")) {
-                        el.setAttribute("rear", oldPip.getAttribute("rear"));
-                    }
                 }
 
                 if (remainingDamage > 0) {
@@ -537,12 +532,6 @@ public class PrintMek extends PrintEntity {
                             element = getElementById(prefixHeadPip + i);
                             if (element instanceof SVGPathElement oldPip) {
                                 var newElement = makeFancy(oldPip, true, mek.getStructureType());
-                                if (element.hasAttribute("loc")) {
-                                    newElement.setAttribute("loc", element.getAttribute("loc"));
-                                }
-                                newElement.setAttribute("class", newElement.getAttribute("class") + " structure");
-                                newElement.setAttribute("id", element.getAttribute("id"));
-                                element.setAttribute("id", "__replaced__" + element.getAttribute("id"));
                             }
                         }
                     }
@@ -624,6 +613,14 @@ public class PrintMek extends PrintEntity {
         var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
               pipType,
               FILL_WHITE);
+
+        for (String attr : new String[] { "id", "loc", "rear", "class" }) {
+            if (oldPip.hasAttribute(attr)) {
+                newPip.setAttribute(attr, oldPip.getAttribute(attr));
+            }
+        }
+        oldPip.setAttribute("id", "__replaced__" + oldPip.getAttribute("id"));
+
         parent.replaceChild(newPip, oldPip);
         return newPip;
     }
