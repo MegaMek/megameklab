@@ -400,7 +400,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             txtSource.setToolTipText(resourceMap.getString("BasicInfoView.txtSource.tooltip"));
         }
         sourceMulLinkButton.setEnabled(sourceBooks.loadSourceBook(sourceAbbreviation).isPresent());
-        listeners.forEach(l -> l.sourceChanged(source));
+        listeners.forEach(l -> l.sourceChanged(sourceAbbreviation));
     }
 
     /**
@@ -599,8 +599,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             } finally {
                 setYear(prevYear);
             }
-        } else if (e.getSource() == txtSource) {
-            listeners.forEach(l -> l.sourceChanged(getSource()));
         } else if (e.getSource() == txtManualBV) {
             int manualBv = getManualBV();
             txtManualBV.setText((manualBv > 0) ? String.valueOf(manualBv) : "");
