@@ -536,7 +536,13 @@ public class PrintMek extends PrintEntity {
                         for (int i = 1; i <= mek.getOInternal(loc); i++) {
                             element = getElementById(prefixHeadPip + i);
                             if (element instanceof SVGPathElement oldPip) {
-                                makeFancy(oldPip, true, mek.getStructureType());
+                                var newElement = makeFancy(oldPip, true, mek.getStructureType());
+                                if (element.hasAttribute("loc")) {
+                                    newElement.setAttribute("loc", element.getAttribute("loc"));
+                                }
+                                newElement.setAttribute("class", newElement.getAttribute("class") + " structure");
+                                newElement.setAttribute("id", element.getAttribute("id"));
+                                element.setAttribute("id", "__replaced__" + element.getAttribute("id"));
                             }
                         }
                     }
