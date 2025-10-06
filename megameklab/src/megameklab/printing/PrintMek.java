@@ -95,6 +95,7 @@ public class PrintMek extends PrintEntity {
     private static final int EXTEND_DAMAGE_LINE_THROUGH_LENGTH = 2;
     private static final float DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE = 7f;
 
+
     /**
      * The current Mek being printed.
      */
@@ -531,7 +532,7 @@ public class PrintMek extends PrintEntity {
                         for (int i = 1; i <= mek.getOInternal(loc); i++) {
                             element = getElementById(prefixHeadPip + i);
                             if (element instanceof SVGPathElement oldPip) {
-                                var newElement = makeFancy(oldPip, true, mek.getStructureType());
+                                makeFancy(oldPip, true, mek.getStructureType());
                             }
                         }
                     }
@@ -592,6 +593,8 @@ public class PrintMek extends PrintEntity {
         }
     }
 
+
+    public static final String[] PRESERVED_PIP_ATTRIBUTES = { "id", "loc", "rear", "class" };
     private Element makeFancy(SVGPathElement oldPip, boolean structure, int type) {
         var parent = oldPip.getParentNode();
         var bounds = oldPip.getBBox();
@@ -614,7 +617,7 @@ public class PrintMek extends PrintEntity {
               pipType,
               FILL_WHITE);
 
-        for (String attr : new String[] { "id", "loc", "rear", "class" }) {
+        for (String attr : PRESERVED_PIP_ATTRIBUTES) {
             if (oldPip.hasAttribute(attr)) {
                 newPip.setAttribute(attr, oldPip.getAttribute(attr));
             }
