@@ -95,6 +95,7 @@ public class PrintMek extends PrintEntity {
     private static final int EXTEND_DAMAGE_LINE_THROUGH_LENGTH = 2;
     private static final float DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE = 7f;
 
+
     /**
      * The current Mek being printed.
      */
@@ -443,11 +444,6 @@ public class PrintMek extends PrintEntity {
             if (importedNode instanceof SVGElement el) {
                 if (options.fancyPips() && el instanceof SVGPathElement oldPip) {
                     el = (SVGElement) makeFancy(oldPip, structure, type);
-                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE, oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
-                    el.setAttribute("loc", oldPip.getAttribute("loc"));
-                    if (oldPip.hasAttribute("rear")) {
-                        el.setAttribute("rear", oldPip.getAttribute("rear"));
-                    }
                 }
 
                 if (remainingDamage > 0) {
@@ -597,6 +593,8 @@ public class PrintMek extends PrintEntity {
         }
     }
 
+
+    public static final String[] PRESERVED_PIP_ATTRIBUTES = { "id", "loc", "rear", "class" };
     private Element makeFancy(SVGPathElement oldPip, boolean structure, int type) {
         var parent = oldPip.getParentNode();
         var bounds = oldPip.getBBox();
@@ -618,6 +616,14 @@ public class PrintMek extends PrintEntity {
         var newPip = createPip(x, y, radius, DEFAULT_PIP_STROKE,
               pipType,
               FILL_WHITE);
+
+        for (String attr : PRESERVED_PIP_ATTRIBUTES) {
+            if (oldPip.hasAttribute(attr)) {
+                newPip.setAttribute(attr, oldPip.getAttribute(attr));
+            }
+        }
+        oldPip.setAttribute("id", "__replaced__" + oldPip.getAttribute("id"));
+
         parent.replaceChild(newPip, oldPip);
         return newPip;
     }
