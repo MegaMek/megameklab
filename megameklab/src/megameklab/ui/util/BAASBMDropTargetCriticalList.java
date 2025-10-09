@@ -426,7 +426,11 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
-                    } else if (!((getUnit() instanceof Mek) && getUnit().isSuperHeavy())) {
+                    } else if (!((getUnit() instanceof Mek)
+                          && (getUnit().isSuperHeavy()
+                          || (((Mek) getUnit()).getCockpitType() == Mek.COCKPIT_INTERFACE
+                          && cs.getType() == CriticalSlot.TYPE_SYSTEM
+                          && cs.getIndex() == Mek.SYSTEM_COCKPIT)))) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
