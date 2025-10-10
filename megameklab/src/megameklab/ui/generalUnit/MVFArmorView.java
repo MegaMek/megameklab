@@ -278,7 +278,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
             if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
                   && ((armor.getSVWeightPerPoint(getTechRating()) == 0.0)
-                  || (svLimitedArmor && armor.getSVWeightPerPoint(getTechRating()) >= 0.050))) {
+                  || (svLimitedArmor && armor.getSVWeightPerPoint(getTechRating()) > 0.050))) {
                 continue;
             }
             cbArmorType.addItem(armor);

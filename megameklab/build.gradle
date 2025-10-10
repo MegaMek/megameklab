@@ -36,7 +36,7 @@ sourceSets {
 }
 
 ext {
-    mmlJvmOptions = ['-Xmx1024m']
+    mmlJvmOptions = ['-Xmx1024m', '-Dsun.awt.disablegrab=true']
     fileStagingDir = "${layout.buildDirectory.get()}/files"
 
     mmDir = "${rootDir}/../megamek"
