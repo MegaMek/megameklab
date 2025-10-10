@@ -426,7 +426,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
                         popup.add(info);
-                    } else if (!((getUnit() instanceof Mek) && getUnit().isSuperHeavy())) {
+                    } else if (canAddArmoringToCriticalSlot(cs)) {
                         JMenuItem info = new JMenuItem("Add Armoring");
                         info.setActionCommand(Integer.toString(location));
                         info.addActionListener(evt -> changeArmoring());
@@ -653,6 +653,33 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
         if (refresh != null) {
             refresh.scheduleRefresh();
         }
+    }
+
+    /**
+     * Determines if armoring can be added to a critical slot.
+     * Armoring is not allowed for Superheavy meks or Interface Cockpit slots.
+     *
+     * @param cs The critical slot to check
+     * @return true if armoring is allowed, false otherwise
+     */
+    private boolean canAddArmoringToCriticalSlot(CriticalSlot cs) {
+        if (!(getUnit() instanceof Mek mek)) {
+            return false;
+        }
+
+        // Superheavy meks cannot have any armored components
+        if (mek.isSuperHeavy()) {
+            return false;
+        }
+
+        // Interface Cockpit slots cannot be armored
+        if (mek.getCockpitType() == Mek.COCKPIT_INTERFACE
+              && cs.getType() == CriticalSlot.TYPE_SYSTEM
+              && cs.getIndex() == Mek.SYSTEM_COCKPIT) {
+            return false;
+        }
+
+        return true;
     }
 
     private void changeArmoring() {
