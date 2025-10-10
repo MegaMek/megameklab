@@ -212,7 +212,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         var sourcePanel = Box.createHorizontalBox();
         sourcePanel.add(txtSource);
         var clearSourceButton = new JButton(new DeleteIcon());
-        clearSourceButton.setToolTipText("Clear Sourcebook");
+        clearSourceButton.setToolTipText(resourceMap.getString("BasicInfoView.deleteSource.tooltip"));
         clearSourceButton.addActionListener(e -> setSource(""));
         sourcePanel.add(clearSourceButton);
         var editSourceButton = new JButton(new BooksIcon());
