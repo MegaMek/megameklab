@@ -50,6 +50,7 @@ import javax.swing.*;
 
 import megamek.MMConstants;
 import megamek.client.ui.baseComponents.BooksIcon;
+import megamek.client.ui.baseComponents.DeleteIcon;
 import megamek.client.ui.baseComponents.MulLinkIcon;
 import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.client.ui.dialogs.SourceChooserDialog;
@@ -210,6 +211,10 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         gbc.gridx = 1;
         var sourcePanel = Box.createHorizontalBox();
         sourcePanel.add(txtSource);
+        var clearSourceButton = new JButton(new DeleteIcon());
+        clearSourceButton.setToolTipText(resourceMap.getString("BasicInfoView.deleteSource.tooltip"));
+        clearSourceButton.addActionListener(e -> setSource(""));
+        sourcePanel.add(clearSourceButton);
         var editSourceButton = new JButton(new BooksIcon());
         sourcePanel.add(editSourceButton);
         editSourceButton.setToolTipText(resourceMap.getString("BasicInfoView.configSource.tooltip"));
