@@ -1,6 +1,8 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.07
+0.50.08
+
+0.50.07 (2025-10- 2130 UTC)
 * Updated Gradle to 8.14. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1882
 * Fix Gradle warning due to a deprecation by @rjhancock in https://github.com/MegaMek/megameklab/pull/1893
 * Deprecation Removal from 0.50.05 and before, and legacy code. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1896
