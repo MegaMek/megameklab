@@ -1,6 +1,106 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
 0.50.07
+* Updated Gradle to 8.14. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1882
+* Fix Gradle warning due to a deprecation by @rjhancock in https://github.com/MegaMek/megameklab/pull/1893
+* Deprecation Removal from 0.50.05 and before, and legacy code. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1896
+* ENUMs by @exeea in https://github.com/MegaMek/megameklab/pull/1890
+* Tip of the Day by @exeea in https://github.com/MegaMek/megameklab/pull/1821
+* Data Updates by @rjhancock in https://github.com/MegaMek/megameklab/pull/1897
+* Fix: Ensured all properties files are UTF-8. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1898
+* Fix: JavaDoc issues related to the ENUMs PR by @rjhancock in https://github.com/MegaMek/megameklab/pull/1899
+* fixed shields in RS by @exeea in https://github.com/MegaMek/megameklab/pull/1901
+* new rendering panel + adjusted resolution brakets by @exeea in https://github.com/MegaMek/megameklab/pull/1900
+* RS minor fixes by @exeea in https://github.com/MegaMek/megameklab/pull/1902
+* Fix: Code and resource files for Mech -> Mek by @rjhancock in https://github.com/MegaMek/megameklab/pull/1903
+* RS fixes (part 3) by @exeea in https://github.com/MegaMek/megameklab/pull/1907
+* feat: add checkstyle tied to test by @Scoppio in https://github.com/MegaMek/megameklab/pull/1905
+* Legal: License update by @rjhancock in https://github.com/MegaMek/megameklab/pull/1908
+* Refactor: group classes together in ui/dialog by @kuronekochomusuke in https://github.com/MegaMek/megameklab/pull/1909
+* Small layouting code change (QuirksTab) by @SJuliez in https://github.com/MegaMek/megameklab/pull/1906
+* sort the quirks top to bottom, left to right by @exeea in https://github.com/MegaMek/megameklab/pull/1912
+* FIX: Documentation by @rjhancock in https://github.com/MegaMek/megameklab/pull/1911
+* Quirks using VerticalGridLayout by @exeea in https://github.com/MegaMek/megameklab/pull/1913
+* pdfbox 3.0.5 by @exeea in https://github.com/MegaMek/megameklab/pull/1884
+* Don't read the config if the setting is empty by @exeea in https://github.com/MegaMek/megameklab/pull/1914
+* Composite splash image by @exeea in https://github.com/MegaMek/megameklab/pull/1916
+* Fix: Updated EditorConfig File by @rjhancock in https://github.com/MegaMek/megameklab/pull/1923
+* AmmoTypeEnum and BombTypeEnum by @exeea in https://github.com/MegaMek/megameklab/pull/1918
+* FIX: Issue with Copy License Command. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1929
+* Issue #1860: Change field gun handling by @SJuliez in https://github.com/MegaMek/megameklab/pull/1933
+* fix: logs for megamek lab now in line with most modern implementation by @Scoppio in https://github.com/MegaMek/megameklab/pull/1935
+* Fix: Updated EC and Eclipse.XML file by @rjhancock in https://github.com/MegaMek/megameklab/pull/1936
+* Allow Gun Emplacement construction by @SJuliez in https://github.com/MegaMek/megameklab/pull/1927
+* Fix: Adjusted to sync then copy the license files. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1937
+* Faction Availability by @exeea in https://github.com/MegaMek/megameklab/pull/1940
+* Fix: Tweaks and updates to the CI pipeline by @rjhancock in https://github.com/MegaMek/megameklab/pull/1941
+* SV/IM validation updates by @SJuliez in https://github.com/MegaMek/megameklab/pull/1947
+* Faction data as yml by @SJuliez in https://github.com/MegaMek/megameklab/pull/1945
+* Faction data as yml (data) by @SJuliez in https://github.com/MegaMek/megameklab/pull/1946
+* correct BLORD faction data by @SJuliez in https://github.com/MegaMek/megameklab/pull/1948
+* Various fixes by @exeea in https://github.com/MegaMek/megameklab/pull/1955
+* Don't allow hull-only equipment to be dropped in locations other than the hull. by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1957
+* Fix: Fixed Start Year of the Mercenary's Guild by @IllianiBird in https://github.com/MegaMek/megameklab/pull/1950
+* Improvement: Faction Data Update by @IllianiBird in https://github.com/MegaMek/megameklab/pull/1956
+* Increase precision of weight display for sub-kg items by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1958
+* Enforce correct maximum number of CI squads by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1959
+* Fix NPE from unit selector by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1961
+* Infantry GUI and code updates by @SJuliez in https://github.com/MegaMek/megameklab/pull/1964
+* Treat capacitors as explosive when giving clan case by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1966
+* Fix ProtoMek bays for construction by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1963
+* Don't double-count beast damage divisor by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1962
+* Improve heat readout for RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1967
+* Fix test by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1968
+* Exclude BA MWM from RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1969
+* Don't include ammo twice on HHW RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1973
+* Include ammo count in HHW ammo display by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1974
+* Improve UX of setting BA ammo bin size by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1970
+* Fix extra thicc cluster chart on HHWs by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1975
+* Improve HHW RS handling of OS weapons by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1977
+* Additional classes in RS SVG by @exeea in https://github.com/MegaMek/megameklab/pull/1978
+* Improvement: Added YML Containing Milestone Information for Use in MegaMek by @IllianiBird in https://github.com/MegaMek/megameklab/pull/1980
+* New RS options: hit-mod column and physical attacks by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1979
+* MM#7342 Entity Readout adaptations by @SJuliez in https://github.com/MegaMek/megameklab/pull/1984
+* Make extra physical attacks optional by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1985
+* Add roboto fonts by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/1987
+* Improvement: MHQ->MML Data Update by @IllianiBird in https://github.com/MegaMek/megameklab/pull/1986
+* Removed Data. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1989
+* Updated Copyright Headers - MML by @rjhancock in https://github.com/MegaMek/megameklab/pull/1991
+* Updated Actions for master -> main by @rjhancock in https://github.com/MegaMek/megameklab/pull/1992
+* Gradle and Dependency Updates by @rjhancock in https://github.com/MegaMek/megameklab/pull/1993
+* Integrate mm data with repos by @rjhancock in https://github.com/MegaMek/megameklab/pull/1994
+* Fixes for Build. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1997
+* Data Overhaul: Fixed Failing MegaMekLab Tests by @IllianiBird in https://github.com/MegaMek/megameklab/pull/1998
+* Class rename codeql copyrights by @rjhancock in https://github.com/MegaMek/megameklab/pull/1999
+* Class rename codeql copyrights by @rjhancock in https://github.com/MegaMek/megameklab/pull/2000
+* Final fixes pre-release from embargo by @rjhancock in https://github.com/MegaMek/megameklab/pull/2007
+* Graphql and copyright checks by @rjhancock in https://github.com/MegaMek/megameklab/pull/2008
+* Fix typo'd resource names by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2009
+* Dependency Scan Fix for Actions by @rjhancock in https://github.com/MegaMek/megameklab/pull/2011
+* Fixing copyright headers that had MM instead of MML by @rjhancock in https://github.com/MegaMek/megameklab/pull/2012
+* additional metadata in RSs by @exeea in https://github.com/MegaMek/megameklab/pull/2014
+* Tweak spacing between Ht and Dmg columns by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2013
+* Add button to sort record sheets in print queue by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2017
+* Fix MML splash by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2019
+* fixed tab reattachment event trigger on tab transfer by @exeea in https://github.com/MegaMek/megameklab/pull/2020
+* weapon quirks alignment by @exeea in https://github.com/MegaMek/megameklab/pull/2022
+* Show omnivees are omni in RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2025
+* Halve punch damage on missing low arm actuator by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2024
+* Add option to include license header in units by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2030
+* Fancy Pips by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2028
+* Include MekBay attributes in fancy pips by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2031
+* Bump gradle/actions from 4 to 5 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2033
+* MekBay stuffs by @exeea in https://github.com/MegaMek/megameklab/pull/2032
+* Sourcebooks Data by @SJuliez in https://github.com/MegaMek/megameklab/pull/2035
+* Add proper attributes to head structure pips by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2037
+* Fix: Added Missing 's' to /logs in Build Directory Construction by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2038
+* Bump github/codeql-action from 3 to 4 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2039
+* Fix MML part of MML 2002: BAR 4 not allowed for Tech Rating B without Armoured Chassis by @Sleet01 in https://github.com/MegaMek/megameklab/pull/2042
+* Clear button for MML's sourcebook entry by @SJuliez in https://github.com/MegaMek/megameklab/pull/2046
+* Bug: Interface Cockpits incorrectly allowed cockpit component armor… by @HammerGS in https://github.com/MegaMek/megameklab/pull/2043
+
+
+**Full Changelog**: https://github.com/MegaMek/megameklab/compare/v0.50.06...v0.50.07
 
 0.50.06 (2025-05-19 1830 UTC) (MILESTONE RELEASE) - DEV NOTE - Starting with this release the History file is built on release rather than on going.
 DEV NOTE - Starting with this release the History file is built on release rather than on going.
