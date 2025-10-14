@@ -729,6 +729,7 @@ public class SVGMassPrinter {
         public String armorType; // Armor Type
         public String structureType; // Internal Structure Type
         public int armor; // Total armor
+        public double armorPer; // Armor %
         public int internal; // Total internal structure
         public int heat; // Total heat generation
         public int dissipation; // Heat capacity
@@ -955,7 +956,9 @@ public class SVGMassPrinter {
             this.role = formatRole(entity);
             this.armorType = getArmorType(entity);
             this.structureType = getStructureType(entity);
+            int maxArmor = UnitUtil.getMaximumArmorPoints(entity);
             this.armor = entity.getTotalOArmor();
+            this.armorPer = maxArmor > 0 ? Math.round(((double) this.armor / maxArmor) * 10d) / 10d : 0;
             this.internal = entity.getTotalInternal();
             if (entity.tracksHeat()) {
                 this.heat = UnitUtil.getTotalHeatGeneration(entity);
