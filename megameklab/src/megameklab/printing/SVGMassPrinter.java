@@ -958,6 +958,10 @@ public class SVGMassPrinter {
             this.structureType = getStructureType(entity);
             int maxArmor = UnitUtil.getMaximumArmorPoints(entity);
             this.armor = entity.getTotalOArmor();
+            entity.isBattleArmor();
+            if (entity instanceof BattleArmor ba) {
+                maxArmor *= ba.getTotalInternal(); // for BA this is the number of internal units
+            }
             this.armorPer = maxArmor > 0 ? Math.round((double) this.armor / maxArmor * 100d) : 0;
             this.internal = entity.getTotalInternal();
             if (entity.tracksHeat()) {
