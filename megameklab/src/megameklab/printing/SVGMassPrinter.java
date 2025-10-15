@@ -1048,7 +1048,7 @@ public class SVGMassPrinter {
                     String model = entityFluff.getSystemModel(system);
                     Map<String, String> entry = new HashMap<>();
                     if (manufacturer != null && !manufacturer.isBlank()) {
-                        entry.put("Manufacturer", manufacturer);
+                        entry.put("manufacturer", manufacturer);
                     }
                     if (model != null && !model.isBlank()) {
                         entry.put("model", model);
