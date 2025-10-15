@@ -95,7 +95,6 @@ public class PrintMek extends PrintEntity {
     private static final int EXTEND_DAMAGE_LINE_THROUGH_LENGTH = 2;
     private static final float DEFAULT_CRITICAL_SLOT_ENTRY_FONT_SIZE = 7f;
 
-
     /**
      * The current Mek being printed.
      */
@@ -444,6 +443,11 @@ public class PrintMek extends PrintEntity {
             if (importedNode instanceof SVGElement el) {
                 if (options.fancyPips() && el instanceof SVGPathElement oldPip) {
                     el = (SVGElement) makeFancy(oldPip, structure, type);
+                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE, oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
+                    el.setAttribute("loc", oldPip.getAttribute("loc"));
+                    if (oldPip.hasAttribute("rear")) {
+                        el.setAttribute("rear", oldPip.getAttribute("rear"));
+                    }
                 }
 
                 if (remainingDamage > 0) {
