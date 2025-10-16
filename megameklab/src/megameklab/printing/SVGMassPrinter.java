@@ -33,6 +33,7 @@
 
 package megameklab.printing;
 
+import java.awt.GridBagConstraints;
 import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +43,8 @@ import java.lang.System;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -128,6 +131,7 @@ import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
+    static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
@@ -745,7 +749,7 @@ public class SVGMassPrinter {
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public int crewSize; // Number of crew members, if applicable
         public String icon; // Path to the unit icon
-        public Map<String, String> fluff;
+        public Map<String, Object> fluff;
         public List<String> sheets; // Path to the SVG sheet
         public HashMap<String, Object> as = null;
         //        public String summary;
@@ -981,7 +985,7 @@ public class SVGMassPrinter {
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
             this.icon = getEntityIcon(entity);
-            Map<String, String> fluffMap = getFluffAttributes(entity);
+            Map<String, Object> fluffMap = getFluffAttributes(entity);
             if (!fluffMap.isEmpty()) {
                 this.fluff = fluffMap;
             }
@@ -997,8 +1001,8 @@ public class SVGMassPrinter {
             }
         }
 
-        private static Map<String, String> getFluffAttributes(Entity entity) {
-            Map<String, String> fluffMap = new HashMap<>();
+        private static Map<String, Object> getFluffAttributes(Entity entity) {
+            Map<String, Object> fluffMap = new HashMap<>();
             EntityFluff entityFluff = entity.getFluff();
             String fluffPath = FluffImageHelper.getFluffImagePath(entity);
             if (fluffPath != null) {
@@ -1028,6 +1032,34 @@ public class SVGMassPrinter {
                 }
                 if (entityFluff.getPrimaryFactory() != null && !entityFluff.getPrimaryFactory().isBlank()) {
                     fluffMap.put("primaryFactory", entityFluff.getPrimaryFactory());
+                }
+
+                // Loop through Systems
+                List<Map> systems = new ArrayList<>();
+                for (megamek.common.units.System system : megamek.common.units.System.values()) {
+                    if ((system == megamek.common.units.System.JUMP_JET)
+                          && entity.hasETypeFlag(Entity.ETYPE_AERO)) {
+                        continue;
+                    }
+
+                    // System Label
+                    String label = resourcesTabs.getString("FluffTab.System." + system.toString());
+                    String manufacturer = entityFluff.getSystemManufacturer(system);
+                    String model = entityFluff.getSystemModel(system);
+                    Map<String, String> entry = new HashMap<>();
+                    if (manufacturer != null && !manufacturer.isBlank()) {
+                        entry.put("manufacturer", manufacturer);
+                    }
+                    if (model != null && !model.isBlank()) {
+                        entry.put("model", model);
+                    }
+                    if (!entry.isEmpty()) {
+                        entry.put("label", label);
+                        systems.add(entry);
+                    }
+                }
+                if (!systems.isEmpty()) {
+                    fluffMap.put("systems", systems);
                 }
             }
             return fluffMap;
