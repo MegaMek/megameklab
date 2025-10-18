@@ -10,6 +10,11 @@ plugins {
     id 'checkstyle'
 }
 
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = true
+    reproducibleFileOrder = true
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -286,17 +291,6 @@ tasks.register("packagePrepWork") {
     dependsOn startScripts
     dependsOn createStartScripts
     dependsOn createAllExecutables
-
-    doLast {
-        def now = System.currentTimeMillis()
-        fileTree(fileStagingDir).matching {
-            include '**/*'
-        }.files.each { File f ->
-            if (f.isFile()) {
-                f.setLastModified(now)
-            }
-        }
-    }
 }
 
 distZip {
