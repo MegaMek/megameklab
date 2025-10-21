@@ -171,7 +171,6 @@ public class PreviewTab extends ITab {
                 cardPanel.setASElement(null);
             }
             rsPanel.setEntity(selectedUnit);
-            //factionPanel.setUnit(selectedUnit.getModel(), selectedUnit.getChassis());
             factionPanel.setUnit(selectedUnit.getModel(), selectedUnit.getFullChassis());
         } else {
             panelMekView.reset();
