@@ -1430,7 +1430,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         }
         final Path filePath = Paths.get(imageFile.getPath());
         try (InputStream is = Files.newInputStream(filePath)) {
-            embedImage(ImageIO.read(is), canvas, bbox, center);
+            embedImage(ImageIO.read(is), canvas, bbox, center, null);
         } catch (FileNotFoundException e) {
             logger.error("Fluff image file not found: {}", filePath);
         } catch (IOException e) {
@@ -1446,7 +1446,8 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      * @param bbox   The bounding box for the image. The image will be scaled to fit.
      * @param center Whether to center the image vertically and horizontally.
      */
-    public void embedImage(@Nullable Image image, Element canvas, Rectangle2D bbox, boolean center) {
+    public void embedImage(@Nullable Image image, Element canvas, Rectangle2D bbox, boolean center,
+          @Nullable String className) {
         if (image == null) {
             return;
         }
@@ -1469,6 +1470,9 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 y += (bbox.getHeight() - height) / 2;
             }
             Element img = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_IMAGE_TAG);
+            if (className != null && !className.isEmpty()) {
+                img.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, className);
+            }
             img.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, Double.toString(x));
             img.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, Double.toString(y));
             img.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, Double.toString(width));
