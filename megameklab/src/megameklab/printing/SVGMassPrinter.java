@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.lang.System;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.util.*;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -68,7 +69,14 @@ import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.tileset.MekTileset;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.*;
+import megamek.common.alphaStrike.ASDamageVector;
+import megamek.common.alphaStrike.ASSpecialAbilityCollection;
+import megamek.common.alphaStrike.AlphaStrikeHelper;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.bays.BattleArmorBay;
+import megamek.common.bays.Bay;
+import megamek.common.bays.InfantryBay;
+import megamek.common.bays.ProtoMekBay;
 import megamek.common.equipment.*;
 import megamek.common.equipment.enums.AmmoTypeFlag;
 import megamek.common.equipment.enums.MiscTypeFlag;
@@ -110,6 +118,7 @@ import megameklab.util.CConfig;
 import megameklab.util.SVGOptimizer;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
+import org.apache.batik.util.SVGConstants;
 import org.apache.fop.pdf.StructureType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -126,13 +135,14 @@ import java.util.HashSet;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
+import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
 
 /**
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -708,6 +718,7 @@ public class SVGMassPrinter {
 
     }
 
+//    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
         public int id; // Unique identifier for the unit on MUL
@@ -750,6 +761,7 @@ public class SVGMassPrinter {
         public int crewSize; // Number of crew members, if applicable
         public String icon; // Path to the unit icon
         public Map<String, Object> fluff;
+        public List<Object> cargo;
         public List<String> sheets; // Path to the SVG sheet
         public HashMap<String, Object> as = null;
         //        public String summary;
@@ -759,28 +771,80 @@ public class SVGMassPrinter {
             if (ASConverter.canConvert(entity)) {
                 AlphaStrikeElement asElement = ASConverter.convert(entity, new FlexibleCalculationReport());
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode node = mapper.valueToTree(asElement);
-                ((ObjectNode) node).remove(Arrays.asList("type", "id", "chassis", "model"));
                 this.as = new HashMap<>();
-                node.fields().forEachRemaining(entry -> {
-                    final String value = entry.getValue().asText();
-                    if (value.isEmpty()) {
-                        return; // Skip empty values
-                    }
-                    this.as.put(entry.getKey(), value);
-                });
-                // Convert "specials" from a comma-separated string to an array
-                if (this.as.containsKey("specials")) {
-                    Object specialsValue = this.as.get("specials");
-                    if (specialsValue instanceof String specialsStr) {
-                        String[] specialsArr = Arrays.stream(specialsStr.split(","))
-                              .map(String::trim)
-                              .filter(s -> !s.isEmpty())
-                              .toArray(String[]::new);
-                        this.as.put("specials", specialsArr);
-                    }
+                this.as.put("PV", asElement.getPointValue());
+                this.as.put("TP", asElement.getASUnitType().toString());
+                this.as.put("SZ", asElement.getSize());
+                this.as.put("TMM", asElement.getTMM());
+                this.as.put("OV", asElement.getOV());
+                this.as.put("usesOV", asElement.usesOV());
+                this.as.put("MV", AlphaStrikeHelper.getMovementAsString(asElement));
+                this.as.put("MVm", asElement.getMovement());
+                this.as.put("usesArcs", asElement.usesArcs());
+                this.as.put("dmg", dmgData(asElement.getStandardDamage()));
+                this.as.put("usesE", asElement.usesSMLE());
+                this.as.put("Arm", asElement.getFullArmor());
+                this.as.put("Th", asElement.getThreshold());
+                this.as.put("usesTh", asElement.usesThreshold());
+                this.as.put("Str", asElement.getFullStructure());
+                String[] specialsArr = splitCommasOutsideParens(asElement.getSpecialAbilities()
+                            .getSpecialsDisplayString(",", asElement));
+                this.as.put("specials", specialsArr);
+                if (asElement.usesArcs()) {
+                    this.as.put("frontArc", arcData(asElement, asElement.getFrontArc()));
+                    this.as.put("leftArc", arcData(asElement, asElement.getLeftArc()));
+                    this.as.put("rightArc", arcData(asElement, asElement.getRightArc()));
+                    this.as.put("rearArc", arcData(asElement, asElement.getRearArc()));
                 }
             }
+        }
+
+        private HashMap<String, Object> arcData(AlphaStrikeElement element, ASSpecialAbilityCollection arc) {
+            HashMap<String, Object> arcData = new HashMap<>();
+            arcData.put("STD", dmgData(arc.getStdDamage()));
+            arcData.put("CAP", dmgData(arc.getCAP()));
+            arcData.put("SCAP", dmgData(arc.getSCAP()));
+            arcData.put("MSL", dmgData(arc.getMSL()));
+            arcData.put("specials", splitCommasOutsideParens(arc.getSpecialsDisplayString(element)));
+            return arcData;
+        }
+
+        private HashMap<String, Object> dmgData(ASDamageVector dmg) {
+            HashMap<String, Object> dmgData = new HashMap<>();
+            dmgData.put("dmgS", dmg.S().toStringWithZero());
+            dmgData.put("dmgM", dmg.M().toStringWithZero());
+            dmgData.put("dmgL", dmg.L().toStringWithZero());
+            dmgData.put("dmgE", dmg.E().toStringWithZero());
+            return dmgData;
+        }
+
+
+    private static String[] splitCommasOutsideParens(String input) {
+            if (input == null || input.isEmpty()) {
+                return new String[0];
+            }
+            List<String> parts = new ArrayList<>();
+            StringBuilder cur = new StringBuilder();
+            int depth = 0;
+            for (int i = 0; i < input.length(); i++) {
+                char c = input.charAt(i);
+                if (c == '(') {
+                    depth++;
+                    cur.append(c);
+                } else if (c == ')') {
+                    if (depth > 0) depth--;
+                    cur.append(c);
+                } else if (c == ',' && depth == 0) {
+                    parts.add(cur.toString().trim());
+                    cur.setLength(0);
+                } else {
+                    cur.append(c);
+                }
+            }
+            if (cur.length() > 0) {
+                parts.add(cur.toString().trim());
+            }
+            return parts.stream().filter(s -> !s.isEmpty()).toArray(String[]::new);
         }
 
         private static String unitTypeAsString(Entity entity) {
@@ -931,9 +995,10 @@ public class SVGMassPrinter {
             this.techBase = formatTechBase(entity);
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
-            this.engineRating = (entity.getEngine() != null) ? entity.getEngine().getRating() : 0;
-            this.engine = (entity.getEngine() != null) ?
-                  Engine.getEngineTypeName(entity.getEngine().getEngineType()) : null;
+            if (entity.hasEngine() && !(entity instanceof SmallCraft || entity instanceof Jumpship)) {
+                this.engineRating = entity.getEngine().getRating();
+                this.engine = Engine.getEngineTypeName(entity.getEngine().getEngineType());
+            }
             // This is over-convoluted for no reason, should be simplified and unified at the source
             final String majorType = Entity.getEntityMajorTypeName(entity.getEntityType());
             final String type = Entity.getEntityTypeName(entity.getEntityType());
@@ -988,6 +1053,10 @@ public class SVGMassPrinter {
             Map<String, Object> fluffMap = getFluffAttributes(entity);
             if (!fluffMap.isEmpty()) {
                 this.fluff = fluffMap;
+            }
+            List<Object> cargoMap = getCargo(entity);
+            if (!cargoMap.isEmpty()) {
+                this.cargo = cargoMap;
             }
             this.sheets = new ArrayList<>();
             this.loadASUnitData(entity);
@@ -1063,6 +1132,79 @@ public class SVGMassPrinter {
                 }
             }
             return fluffMap;
+        }
+
+        public static List<Object> getCargo(Entity entity) {
+            List<Object> output = new ArrayList<>();
+//            if (!(entity instanceof SmallCraft || entity instanceof SupportTank)) {
+//                return output;
+//            }
+            List<Transporter> tansports = entity.getTransports().stream().collect(Collectors.toList());
+            if (tansports.isEmpty()) return output;
+            // We can have multiple Bay instances within one conceptual bay on the ship
+            // We need to gather all bays with the same ID
+            Map<Integer, List<Bay>> bayMap = new TreeMap<>();
+            for (Transporter transport : tansports) {
+                if (!(transport instanceof Bay)) continue; // TODO: need implementation
+                if (transport instanceof Bay bay) {
+                    if (bay.isQuarters()) continue; // TODO: need implementation
+                    List<Bay> bays = bayMap.get(bay.getBayNumber());
+                    if (bays == null) {
+                        bays = new ArrayList<>();
+                        bays.add(bay);
+                        bayMap.put(bay.getBayNumber(), bays);
+                    } else {
+                        bays.add(bay);
+                    }
+                }
+            }
+            // Print each bay
+            for (Integer bayNum : bayMap.keySet()) {
+                StringBuilder bayTypeString = new StringBuilder();
+                StringBuilder bayCapacityString = new StringBuilder();
+                List<Bay> bays = bayMap.get(bayNum);
+                // Display larger storage first
+                bays.sort(Comparator.comparing(Bay::getCapacity));
+                int doors = 0;
+                for (int i = 0; i < bays.size(); i++) {
+                    Bay bay = bays.get(i);
+                    bayTypeString.append(bay.getNameForRecordSheets());
+                    // BA bays are shown per suit rather than squad
+                    double capacity = getCapacity(bay);
+                    bayCapacityString.append(NumberFormat.getInstance().format(capacity));
+                    if ((i + 1) < bays.size()) {
+                        bayTypeString.append('/');
+                        bayCapacityString.append('/');
+                    }
+                    doors = Math.max(doors, bay.getDoors());
+                }
+                Map<String, Object> bayEntry = new HashMap<>();
+                bayEntry.put("n", bayNum.toString());
+                bayEntry.put("type", bayTypeString.toString());
+                bayEntry.put("capacity", bayCapacityString.toString());
+                bayEntry.put("doors", doors);
+                output.add(bayEntry);
+            }
+            return output;
+        }
+
+        private static double getCapacity(Bay b) {
+            double capacity = b.getCapacity();
+            if (b instanceof BattleArmorBay) {
+                if (b.isClan()) {
+                    capacity *= 5;
+                } else if (((BattleArmorBay) b).isComStar()) {
+                    capacity *= 6;
+                } else {
+                    capacity *= 4;
+                }
+            } else if (b instanceof InfantryBay) {
+                // Divide total weight by weight required by platoon to get platoon capacity
+                capacity /= ((InfantryBay) b).getPlatoonType().getWeight();
+            } else if (b instanceof ProtoMekBay) {
+                capacity *= 5;
+            }
+            return capacity;
         }
 
         private String getEntityIcon(Entity entity) {
@@ -1319,32 +1461,43 @@ public class SVGMassPrinter {
         final AtomicInteger processedCounter = new AtomicInteger(0);
         int parallelism = ForkJoinPool.getCommonPoolParallelism();
         logger.info("Starting parallel processing with {} threads...", parallelism);
+
+        final Object loadEntityLock = new Object();
+        final Object updateUnitLock = new Object();
+        final Object idLock = new Object();
+        final Object mkdirLock = new Object();
         List<UnitData> unitDataList = Arrays.stream(meks)
               .parallel()
               .map(mekSummary -> {
 //                    if (!mekSummary.isMek()) return null;
 //                    if (mekSummary.getMulId() != 6336) return null;
 //                    logger.info("{}", mekSummary.getName());
-              Entity entity = mekSummary.loadEntity();
+              Entity entity;
+              synchronized (loadEntityLock) {
+                  entity = mekSummary.loadEntity();
+              }
               if ((entity == null) || (entity instanceof GunEmplacement)) {
                   return null;
               }
-              UnitUtil.updateLoadedUnit(entity);
-            for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
-                        entity.getCrew().setName("", i);
-                    }
-                    if (entity.getId() == -1) {
-                        entity.setId(entity.getGame().getNextEntityId());
-                    }
+              synchronized (updateUnitLock) {
+                  UnitUtil.updateLoadedUnit(entity);
+              }
+              for (int i = 0; i < entity.getCrew().getSlotCount(); i++) {
+                    entity.getCrew().setName("", i);
+              }
+              if (entity.getId() == -1) {
+                  synchronized (idLock) {
+                      entity.setId(entity.getGame().getNextEntityId());
+                  }
+              }
               String svgPath = FluffImageHelper.getFluffPath(entity)
                     .toLowerCase()
                     .replaceAll("[^a-zA-Z0-9_]", "");
               File sheetPath = new File(sheetsDir.getPath(), svgPath);
-
-              if (!sheetPath.exists() && !sheetPath.mkdirs()) {
-                  logger.error("Couldn't create folder {}", sheetPath);
-                  // Returning null will skip this entry
-                  return null;
+              synchronized (mkdirLock) {
+                  if (!sheetPath.exists() && !sheetPath.mkdirs()) {
+                      logger.error("Couldn't create folder {}", sheetPath);
+                  }
               }
               String name = generateName(entity);
                   if (!processedFiles.add(name)) {

@@ -83,6 +83,7 @@ abstract public class ReferenceTableBase {
 
     public Element createTable(double x, double y, double width, double height) {
         final Element g = sheet.getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
+        g.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, "referenceTable");
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
               String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         double labelWidth = width - bevelX * 2 - 6.0f;
