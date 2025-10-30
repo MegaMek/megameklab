@@ -718,7 +718,6 @@ public class SVGMassPrinter {
 
     }
 
-//    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
         public int id; // Unique identifier for the unit on MUL
@@ -1136,15 +1135,12 @@ public class SVGMassPrinter {
 
         public static List<Object> getCargo(Entity entity) {
             List<Object> output = new ArrayList<>();
-//            if (!(entity instanceof SmallCraft || entity instanceof SupportTank)) {
-//                return output;
-//            }
-            List<Transporter> tansports = entity.getTransports().stream().collect(Collectors.toList());
-            if (tansports.isEmpty()) return output;
+            List<Transporter> transports = entity.getTransports().stream().collect(Collectors.toList());
+            if (transports.isEmpty()) return output;
             // We can have multiple Bay instances within one conceptual bay on the ship
             // We need to gather all bays with the same ID
             Map<Integer, List<Bay>> bayMap = new TreeMap<>();
-            for (Transporter transport : tansports) {
+            for (Transporter transport : transports) {
                 if (!(transport instanceof Bay)) continue; // TODO: need implementation
                 if (transport instanceof Bay bay) {
                     if (bay.isQuarters()) continue; // TODO: need implementation

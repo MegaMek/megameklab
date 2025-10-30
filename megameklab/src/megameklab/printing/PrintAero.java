@@ -246,7 +246,7 @@ public class PrintAero extends PrintEntity {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {
                 embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true,
-                      "fluff-image");
+                      FLUFF_IMAGE);
             }
             hideElement(getSVGDocument().getElementById(NOTES));
         }
