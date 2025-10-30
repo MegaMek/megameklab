@@ -852,7 +852,8 @@ public class PrintMek extends PrintEntity {
                       bbox.getWidth() + 6.0, bbox.getHeight() + 6.0);
             } else {
                 embedImage(getFluffImage(),
-                      (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                      (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true,
+                      FLUFF_IMAGE);
             }
         }
     }

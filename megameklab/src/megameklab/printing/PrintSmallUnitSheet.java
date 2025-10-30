@@ -185,7 +185,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (fluffImage != null) {
             Element rect = getSVGDocument().getElementById(FLUFF_IMAGE);
             if (rect instanceof SVGRectElement) {
-                embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true);
+                embedImage(fluffImage, (Element) rect.getParentNode(), getRectBBox((SVGRectElement) rect), true,
+                      FLUFF_IMAGE);
                 hideElement(DEFAULT_FLUFF_IMAGE, true);
             }
         }
