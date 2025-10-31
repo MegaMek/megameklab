@@ -60,9 +60,9 @@ public class GroundMovementRecord extends ReferenceTableBase {
         g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
               String.format("%s(%f %f)", SVGConstants.SVG_TRANSLATE_VALUE, x, y));
         addTrack(PADDING * 1.5, PADDING,
-              width - PADDING * 3, height * 0.3, 1, 10, g);
+              width - PADDING * 3, height * 0.35, 1, 10, g);
         addTrack(PADDING * 1.5, height * 0.5,
-              width - PADDING * 3, height * 0.3, 11, 20, g);
+              width - PADDING * 3, height * 0.35, 11, 20, g);
         return g;
     }
 
@@ -73,7 +73,8 @@ public class GroundMovementRecord extends ReferenceTableBase {
         double colOffset = x + width * 0.2;
         double colWidth = (width - colOffset) / (toTurn - fromTurn + 1);
         StringJoiner path = new StringJoiner(" ");
-        int rows = showHeat ? 4 : 3;
+        int rows = 4;
+        if (showHeat) rows++;
         for (int i = 0; i <= rows; i++) {
             path.add(String.format("M %f,%f h %f", x, y + height / rows * i, width));
         }
@@ -90,18 +91,22 @@ public class GroundMovementRecord extends ReferenceTableBase {
         parent.appendChild(grid);
         final float fontSize = PrintRecordSheet.FONT_SIZE_MEDIUM;
         double startX = colOffset + colWidth * 0.5;
-        double startY = y + (height - sheet.getFontHeight(fontSize)) * 0.5 - 1 - height * 0.2;
+        double rowHeight = height / rows;
+        double fontH = sheet.getFontHeight(fontSize);
+        double baselineOffset = fontH * 0.30;
+        double startY = y + rowHeight * 0.5 + baselineOffset;
         parent.appendChild(createTextElement(x + PADDING, startY, bundle.getString("turnNum"),
               fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height / rows + startY,
+        parent.appendChild(createTextElement(x + PADDING, rowHeight + startY,
               bundle.getString(showFacing ? "hexFacing" : "hex"),
               fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 2.0 / rows + startY, bundle.getString("moveMode"),
+        parent.appendChild(createTextElement(x + PADDING, (rowHeight * 2.0) + startY, bundle.getString("moveMode"),
               fontSize, SVGConstants.SVG_BOLD_VALUE));
-        parent.appendChild(createTextElement(x + PADDING, height * 3.0 * rows + startY, bundle.getString("hexesMoved"),
+        parent.appendChild(createTextElement(x + PADDING, (rowHeight * 3.0) + startY, bundle.getString(
+              "hexesMoved"),
               fontSize, SVGConstants.SVG_BOLD_VALUE));
         if (showHeat) {
-            parent.appendChild(createTextElement(x + PADDING, height * 4.0 * rows + startY, bundle.getString("heat"),
+            parent.appendChild(createTextElement(x + PADDING, (rowHeight * 4.0) + startY, bundle.getString("heat"),
                   fontSize, SVGConstants.SVG_BOLD_VALUE));
         }
         for (int i = 0; i <= toTurn - fromTurn; i++) {
