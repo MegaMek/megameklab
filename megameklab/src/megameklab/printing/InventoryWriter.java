@@ -60,6 +60,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.Jumpship;
@@ -357,10 +358,17 @@ public class InventoryWriter {
              * We can't rely on LOC_NONE as a filter because it matches LOC_SQUAD (which is a valid location for BA).
              * The solution is to filter out everything that has critical slots (means can't be for squad only)
              * and is mounted on MOUNT_LOC_NONE
+             *
+             * The exception is weapons mounted in a DWP, these have MOUNT_LOC_NONE for some reason but should be
+             * included as if they were normal weapons.
              */
             if ((sheet.getEntity() instanceof BattleArmor)
                   && (m.getNumCriticalSlots() > 0)
-                  && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)) {
+                  && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)
+                  && !(
+                        m.getLinkedBy() != null && m.getLinkedBy().getType().hasFlag(MiscTypeFlag.F_DETACHABLE_WEAPON_PACK)
+                  )
+            ) {
                 continue;
             }
             StandardInventoryEntry entry = new StandardInventoryEntry(m);
