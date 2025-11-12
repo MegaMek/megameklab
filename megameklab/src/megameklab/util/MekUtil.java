@@ -983,6 +983,7 @@ public final class MekUtil {
               && equipment.getType().getNumCriticalSlots(equipment.getEntity()) > 0
               && !equipment.getType().isHittable()
               && (equipment.getType() instanceof MiscType)
+              && !UnitUtil.isFixedLocationSpreadEquipment(equipment.getType())
               && !equipment.getType().hasFlag(MiscType.F_CASE)
               && !equipment.getType().hasFlag(MiscType.F_CASEP)
               && !equipment.getType().hasFlag(MiscType.F_CASEII);
