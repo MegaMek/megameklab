@@ -53,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JViewport;
 
 import megamek.client.ui.clientGUI.DialogOptionListener;
@@ -71,11 +73,15 @@ import megameklab.ui.util.RefreshListener;
 public class QuirksTab extends ITab implements DialogOptionListener {
 
     private static final boolean SORT_QUIRKS_ALPHABETICALLY = true;
-    private final Map<JPanel, List<DialogOptionComponentYPanel>> groupLayoutMap = new LinkedHashMap<>();
+    private final Map<JPanel, List<DialogOptionComponentYPanel>> panelQuirksMap = new LinkedHashMap<>();
     private final Map<DialogOptionComponentYPanel, Dimension> originalPreferredSizes = new HashMap<>();
+    private final Map<JPanel, Integer> panelLastCalculatedCols = new HashMap<>();
     RefreshListener refresh = null;
     private int globalMaxItemWidth = 0;
-    private int lastCalculatedNumCols = -1;
+
+    private JPanel positiveQuirksPanel;
+    private JPanel negativeQuirksPanel;
+    private JPanel weaponQuirksPanel;
 
     private record GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
     }
@@ -109,114 +115,194 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private void refreshQuirks() {
         // Cleanup
         removeAll();
-        groupLayoutMap.clear();
+        panelQuirksMap.clear();
         originalPreferredSizes.clear();
+        panelLastCalculatedCols.clear();
         globalMaxItemWidth = 0;
-        lastCalculatedNumCols = -1;
 
-        // Collect all quirks
+        // Collect all quirks into lists
         List<DialogOptionComponentYPanel> allQuirks = new ArrayList<>();
-        List<GroupInfo> groupsToDisplay = new ArrayList<>();
-        collectGeneralQuirksInfo(groupsToDisplay, allQuirks);
-        collectWeaponQuirksInfo(groupsToDisplay, allQuirks);
+        List<DialogOptionComponentYPanel> positiveQuirksList = new ArrayList<>();
+        List<DialogOptionComponentYPanel> negativeQuirksList = new ArrayList<>();
 
-        // Calculate the maximum width of all quirks
+        // Create positive and negative quirks panels
+        positiveQuirksPanel = new JPanel(new GridBagLayout());
+        positiveQuirksPanel.setBorder(BorderFactory.createTitledBorder("Chassis Quirks (Positive)"));
+        negativeQuirksPanel = new JPanel(new GridBagLayout());
+        negativeQuirksPanel.setBorder(BorderFactory.createTitledBorder("Chassis Quirks (Negative)"));
+
+        // Collect general (chassis) quirks and separate into positive/negative
+        collectGeneralQuirks(positiveQuirksList, negativeQuirksList, allQuirks);
+
+        // Sort quirks alphabetically if enabled
+        if (SORT_QUIRKS_ALPHABETICALLY) {
+            positiveQuirksList.sort(Comparator.comparing(comp -> comp.getOption().getDisplayableName()));
+            negativeQuirksList.sort(Comparator.comparing(comp -> comp.getOption().getDisplayableName()));
+        }
+
+        // Create main weapon quirks container panel
+        JPanel weaponQuirksContainer = new JPanel(new GridBagLayout());
+        weaponQuirksContainer.setBorder(BorderFactory.createTitledBorder("Weapon Quirks"));
+
+        // Collect weapon quirks as titled groups
+        collectWeaponQuirks(weaponQuirksContainer, allQuirks);
+
+        // Calculate global max width across ALL quirks
         calculateGlobalMaxWidth(allQuirks);
 
-        // Create all groups and quirks entries
-        createAndAddGroupPanels(groupsToDisplay);
+        // Initially populate chassis quirk panels with single column (no responsive layout)
+        relayoutPanel(positiveQuirksPanel, positiveQuirksList, 1);
+        relayoutPanel(negativeQuirksPanel, negativeQuirksList, 1);
 
-        // Relayout all columns
+        // Note: Chassis quirk panels are NOT added to panelQuirksMap, so they stay single-column
+        // Only weapon panels get responsive multi-column layout
+
+        // Wrap panels in scroll panes
+        JScrollPane positiveScrollPane = new JScrollPane(positiveQuirksPanel);
+        positiveScrollPane.setBorder(null);
+        JScrollPane negativeScrollPane = new JScrollPane(negativeQuirksPanel);
+        negativeScrollPane.setBorder(null);
+        JScrollPane weaponScrollPane = new JScrollPane(weaponQuirksContainer);
+        weaponScrollPane.setBorder(null);
+
+        // Create nested split panes for three-way horizontal split
+        JSplitPane leftSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+            positiveScrollPane, negativeScrollPane);
+        leftSplitPane.setResizeWeight(0.5);
+
+        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+            leftSplitPane, weaponScrollPane);
+        mainSplitPane.setResizeWeight(0.67);
+
+        // Add the split pane to the main panel
+        setLayout(new GridBagLayout());
+        add(mainSplitPane, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 0, 0));
+
+        validate();
+        repaint();
+
+        // Set divider locations and trigger layout after component is shown
         if (isShowing()) {
-            triggerRelayoutCheck();
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                leftSplitPane.setDividerLocation(0.5);
+                mainSplitPane.setDividerLocation(0.67);
+                // Small delay to ensure dividers are positioned before responsive layout
+                javax.swing.SwingUtilities.invokeLater(this::triggerRelayoutCheck);
+            });
         } else {
-            // If not visible yet, add a one-time listener to do layout when shown
             addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentShown(ComponentEvent e) {
-                    triggerRelayoutCheck();
+                    leftSplitPane.setDividerLocation(0.5);
+                    mainSplitPane.setDividerLocation(0.67);
+                    // Small delay to ensure dividers are positioned before responsive layout
+                    javax.swing.SwingUtilities.invokeLater(() -> triggerRelayoutCheck());
                     removeComponentListener(this);
                 }
             });
         }
-
-        validate();
-        repaint();
     }
 
     /**
-     * Collects general quirks
+     * Collects general (chassis) quirks and separates into positive/negative lists.
      */
-    private void collectGeneralQuirksInfo(List<GroupInfo> groupsToDisplay,
-          List<DialogOptionComponentYPanel> quirksList) {
+    private void collectGeneralQuirks(List<DialogOptionComponentYPanel> positiveList,
+          List<DialogOptionComponentYPanel> negativeList,
+          List<DialogOptionComponentYPanel> allQuirks) {
         for (Enumeration<IOptionGroup> i = getEntity().getQuirks().getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
-            List<DialogOptionComponentYPanel> quirks = collectQuirksForOptionGroup(group, quirksList);
-            if (!quirks.isEmpty()) {
-                groupsToDisplay.add(new GroupInfo(group.getDisplayableName(), quirks));
+            boolean isPositive = Quirks.POS_QUIRKS.equals(group.getKey());
+            boolean isNegative = Quirks.NEG_QUIRKS.equals(group.getKey());
+
+            if (isPositive || isNegative) {
+                List<DialogOptionComponentYPanel> targetList = isPositive ? positiveList : negativeList;
+
+                for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
+                    IOption option = j.nextElement();
+
+                    if (null == option || Quirks.isQuirkDisallowed(option, getEntity())) {
+                        continue;
+                    }
+
+                    addQuirkInfo(option, targetList, allQuirks);
+                }
             }
         }
     }
 
     /**
-     * Collect weapon quirks
+     * Collects weapon quirks as titled groups within the weapon container.
      */
-    private void collectWeaponQuirksInfo(List<GroupInfo> groupsToDisplay,
-          List<DialogOptionComponentYPanel> quirksList) {
+    private void collectWeaponQuirks(JPanel weaponContainer, List<DialogOptionComponentYPanel> allQuirks) {
         List<Mounted<?>> equipmentList = new ArrayList<>(getEntity().getWeaponList());
         for (Mounted<?> miscItem : getEntity().getMisc()) {
             if (miscItem.getType().hasFlag(MiscType.F_CLUB)) {
                 equipmentList.add(miscItem);
             }
         }
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(2, 2, 2, 2);
+
         for (Mounted<?> m : equipmentList) {
-            List<DialogOptionComponentYPanel> quirks = collectQuirksForWeapon(m, quirksList);
-            if (!quirks.isEmpty()) {
-                String title = m.getName() + " (" + getEntity().getLocationName(m.getLocation()) + ")";
-                groupsToDisplay.add(new GroupInfo(title, quirks));
+            List<DialogOptionComponentYPanel> weaponQuirksList = collectQuirksForWeapon(m, allQuirks);
+
+            // Sort weapon quirks if enabled
+            if (SORT_QUIRKS_ALPHABETICALLY && !weaponQuirksList.isEmpty()) {
+                weaponQuirksList.sort(Comparator.comparing(comp -> comp.getOption().getDisplayableName()));
+            }
+
+            // Create a titled panel for this weapon if it has quirks
+            if (!weaponQuirksList.isEmpty()) {
+                JPanel weaponPanel = new JPanel(new GridBagLayout());
+                String weaponTitle = m.getName() + " (" + getEntity().getLocationName(m.getLocation()) + ")";
+                weaponPanel.setBorder(BorderFactory.createTitledBorder(weaponTitle));
+
+                // Initially populate with single-column layout
+                relayoutPanel(weaponPanel, weaponQuirksList, 1);
+
+                weaponContainer.add(weaponPanel, gbc);
+                gbc.gridy++;
+
+                // Track this weapon panel for responsive layout
+                panelQuirksMap.put(weaponPanel, weaponQuirksList);
             }
         }
+
+        // Add vertical glue to push weapon groups to the top
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        weaponContainer.add(new JPanel(), gbc);
     }
 
     /**
-     * Collects and optionally sorts quirks for a general group
-     */
-    private List<DialogOptionComponentYPanel> collectQuirksForOptionGroup(IOptionGroup group,
-          List<DialogOptionComponentYPanel> quirksList) {
-        List<DialogOptionComponentYPanel> quirksInGroup = new ArrayList<>();
-        for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
-            IOption option = j.nextElement();
-            if (null == option || Quirks.isQuirkDisallowed(option, getEntity())) {
-                continue;
-            }
-            
-            addQuirkInfo(option, quirksInGroup, quirksList);
-        }
-        if (SORT_QUIRKS_ALPHABETICALLY && !quirksInGroup.isEmpty()) {
-            quirksInGroup.sort(Comparator.comparing(comp -> comp.getOption().getDisplayableName()));
-        }
-        return quirksInGroup;
-    }
-
-    /**
-     * Collects and optionally sorts quirks for a specific weapon
+     * Collects quirks for a specific weapon.
      */
     private List<DialogOptionComponentYPanel> collectQuirksForWeapon(Mounted<?> m,
           List<DialogOptionComponentYPanel> allQuirksList) {
         WeaponQuirks wq = m.getQuirks();
-        if (wq == null) {return Collections.emptyList();}
+        if (wq == null) {
+            return Collections.emptyList();
+        }
 
         List<DialogOptionComponentYPanel> weaponComps = new ArrayList<>();
         for (Enumeration<IOptionGroup> i = wq.getGroups(); i.hasMoreElements(); ) {
             IOptionGroup group = i.nextElement();
             for (Enumeration<IOption> j = group.getSortedOptions(); j.hasMoreElements(); ) {
                 IOption option = j.nextElement();
-                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType())) {continue;}
+                if (WeaponQuirks.isQuirkDisallowed(option, getEntity(), m.getType())) {
+                    continue;
+                }
                 addQuirkInfo(option, weaponComps, allQuirksList);
             }
-        }
-        if (SORT_QUIRKS_ALPHABETICALLY && !weaponComps.isEmpty()) {
-            weaponComps.sort(Comparator.comparing(comp -> comp.getOption().getDisplayableName()));
         }
         return weaponComps;
     }
@@ -267,34 +353,6 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Creates group panels and adds them to the layout.
-     */
-    private void createAndAddGroupPanels(List<GroupInfo> groupsToDisplay) {
-        // Creates the main container
-        GridBagConstraints mainGbc = new GridBagConstraints();
-        mainGbc.gridx = 0;
-        mainGbc.gridy = 0;
-        mainGbc.weightx = 1;
-        mainGbc.weighty = 0;
-        mainGbc.fill = GridBagConstraints.HORIZONTAL;
-        mainGbc.anchor = GridBagConstraints.NORTHWEST;
-        mainGbc.insets = new Insets(5, 5, 0, 5);
-        // Add each group panel to the main layout
-        for (GroupInfo info : groupsToDisplay) {
-            // Create a new group panel
-            JPanel groupPanel = new JPanel(new GridBagLayout());
-            groupPanel.setBorder(BorderFactory.createTitledBorder(info.title));
-            add(groupPanel, mainGbc);
-            groupLayoutMap.put(groupPanel, info.quirks);
-            mainGbc.gridy++;
-        }
-        // Add a vertical spacer to push content to the top
-        mainGbc.weighty = 1.0;
-        mainGbc.fill = GridBagConstraints.BOTH;
-        add(new JPanel(), mainGbc);
-    }
-
-    /**
      * Calculates the number of columns based on available width and max item width.
      */
     private int calculateNumberOfColumns(int containerWidth, int maxItemWidth) {
@@ -303,29 +361,30 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Checks if relayout is needed based on width changes (number of columns drawable) and triggers it.
+     * Checks if relayout is needed based on width changes and triggers it for each panel.
      */
     private void triggerRelayoutCheck() {
-        if (!isShowing() || groupLayoutMap.isEmpty() || globalMaxItemWidth <= 0) {
+        if (!isShowing() || panelQuirksMap.isEmpty() || globalMaxItemWidth <= 0) {
             return;
         }
 
-        int containerWidth = getVisibleContainerWidth();
-        if (containerWidth <= 0) {
-            return;
-        }
+        for (Map.Entry<JPanel, List<DialogOptionComponentYPanel>> entry : panelQuirksMap.entrySet()) {
+            JPanel panel = entry.getKey();
+            List<DialogOptionComponentYPanel> quirks = entry.getValue();
 
-        int availableWidthInPanel = calculateAvailableWidthInPanel(containerWidth);
-        if (availableWidthInPanel <= 0) {
-            return;
-        }
+            int availableWidth = calculateAvailableWidthInPanel(panel);
+            if (availableWidth <= 0) {
+                continue;
+            }
 
-        int currentNumCols = calculateNumberOfColumns(availableWidthInPanel, globalMaxItemWidth);
+            int currentNumCols = calculateNumberOfColumns(availableWidth, globalMaxItemWidth);
+            Integer lastNumCols = panelLastCalculatedCols.get(panel);
 
-        // Only relayout if the number of columns needs to change
-        if (currentNumCols != lastCalculatedNumCols) {
-            lastCalculatedNumCols = currentNumCols;
-            relayoutAllGroups(currentNumCols);
+            // Only relayout if the number of columns needs to change
+            if (lastNumCols == null || currentNumCols != lastNumCols) {
+                panelLastCalculatedCols.put(panel, currentNumCols);
+                relayoutPanel(panel, quirks, currentNumCols);
+            }
         }
     }
 
@@ -342,41 +401,56 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     }
 
     /**
-     * Calculates the usable width inside a group panel's content area.
+     * Calculates the usable width inside a panel's content area.
      */
-    private int calculateAvailableWidthInPanel(int containerWidth) {
-        Insets tabInsets = getInsets(); // Insets of the QuirksTab
-        int availableWidthForPanels = containerWidth - tabInsets.left - tabInsets.right - (5 + 5);
-        JPanel firstPanel = groupLayoutMap.keySet().iterator().next();
-        Insets panelInsets = firstPanel.getInsets();
-        return availableWidthForPanels - panelInsets.left - panelInsets.right;
-    }
-
-    /**
-     * Relayouts all group panels based on the calculated number of columns.
-     */
-    private void relayoutAllGroups(int numCols) {
-        for (Map.Entry<JPanel, List<DialogOptionComponentYPanel>> entry : groupLayoutMap.entrySet()) {
-            relayoutGroupPanel(entry.getKey(), entry.getValue(), numCols);
+    private int calculateAvailableWidthInPanel(JPanel panel) {
+        Container scrollPaneParent = panel.getParent();
+        if (scrollPaneParent instanceof JViewport) {
+            JViewport viewport = (JViewport) scrollPaneParent;
+            int viewportWidth = viewport.getWidth();
+            Insets panelInsets = panel.getInsets();
+            return viewportWidth - panelInsets.left - panelInsets.right;
         }
-        revalidate();
-        repaint();
+        return panel.getWidth() - panel.getInsets().left - panel.getInsets().right;
     }
 
     /**
-     * Arranges quirks within a single group panel and makes them fixed-width from globalMaxItemWidth
+     * Arranges quirks within a panel using GridBagLayout for natural component heights.
      */
-    private void relayoutGroupPanel(JPanel groupPanel, List<DialogOptionComponentYPanel> quirks, int numCols) {
-        groupPanel.removeAll();
+    private void relayoutPanel(JPanel panel, List<DialogOptionComponentYPanel> quirks, int numCols) {
+        panel.removeAll();
         if (!quirks.isEmpty() && (numCols > 0)) {
-            groupPanel.setLayout(new VerticalGridLayout(0, numCols, 1, 1));
-            for (DialogOptionComponentYPanel quirk : quirks) {
-                groupPanel.add(quirk);
-            }
-        }
+            panel.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.weightx = 1.0;
+            gbc.insets = new Insets(0, 2, 0, 2);
 
-        groupPanel.revalidate();
-        groupPanel.repaint();
+            int currentCol = 0;
+            for (DialogOptionComponentYPanel quirk : quirks) {
+                gbc.gridx = currentCol;
+                panel.add(quirk, gbc);
+
+                currentCol++;
+                if (currentCol >= numCols) {
+                    currentCol = 0;
+                    gbc.gridy++;
+                }
+            }
+
+            // Add vertical glue to push content to top
+            gbc.gridx = 0;
+            gbc.gridy++;
+            gbc.gridwidth = numCols;
+            gbc.weighty = 1.0;
+            gbc.fill = GridBagConstraints.BOTH;
+            panel.add(new JPanel(), gbc);
+        }
+        panel.revalidate();
+        panel.repaint();
     }
 
     @Override
