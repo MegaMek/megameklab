@@ -928,11 +928,11 @@ public class PrintMek extends PrintEntity {
     }
 
     private String formatQuadVeeFlank() {
-        double baseFlank = ((QuadVee) mek).getCruiseMP(MPCalculationSetting.STANDARD);
-        baseFlank *= 1.5;
+        double baseCruise = ((QuadVee) mek).getCruiseMP(MPCalculationSetting.STANDARD);
+        double baseFlank = baseCruise * 1.5;
         double fullFlank;
         if (mek.getSuperCharger() != null) {
-            fullFlank = baseFlank * 2;
+            fullFlank = baseCruise * 2;
         } else {
             fullFlank = baseFlank;
         }
