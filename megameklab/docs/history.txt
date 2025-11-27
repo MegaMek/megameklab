@@ -1,6 +1,28 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.08
+0.50.10 (2025-10- 2030 UTC)
+## What's Changed
+* Fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2051
+* Systems fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2053
+* Fix: Fixed Hammer Traveling Back in Time to Release MegaMek Before MegaMek Was Invented, Thus Creating an Time Paradox That Breaches the Temporal Prime Directive by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2054
+* Fix: Added Additional Cache Exclusions from Build Scripts by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2057
+* FIX: Issue 7400 - fixes missing faction availability for clan mechs with is names by @GypsyFromTheSatelliteofLove in https://github.com/MegaMek/megameklab/pull/2056
+* Improvement: Updated CodeQL to (Hopefully) Analyze Using the Right Version of Java by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2061
+* Bump actions/upload-artifact from 4 to 5 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2062
+* improved parallelism, added cargo data and AS data by @exeea in https://github.com/MegaMek/megameklab/pull/2063
+* fixed ground movement table by @exeea in https://github.com/MegaMek/megameklab/pull/2064
+* Include weapons in a BA Detachable Weapon Pack in RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2067
+* Stealth armor isn't FMU by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2068
+* Align QuirksTab with MegaMek's 3-panel layout by @HammerGS in https://github.com/MegaMek/megameklab/pull/2071
+* Properly calculate flank BV for quadvee with supercharger by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2073
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2072
+* Enforce WiGE has at least 5 cruise mp by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2074
+
+## New Contributors
+* @GypsyFromTheSatelliteofLove made their first contribution in https://github.com/MegaMek/megameklab/pull/2056
+
+================PLEASE NOTE VERSION JUMP IS DUE TO GRADLE PACKAGING BUG THE WON'T ALLOW FOR VERSIONS LIKE 0.50.08 or 0.50.09================
+
 
 0.50.07 (2025-10- 2130 UTC)
 * Updated Gradle to 8.14. by @rjhancock in https://github.com/MegaMek/megameklab/pull/1882
