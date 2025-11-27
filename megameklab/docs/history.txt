@@ -1,6 +1,8 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.10 (2025-10- 2030 UTC)
+0.50.11
+
+0.50.10 (2025-10-12 2030 UTC)
 ## What's Changed
 * Fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2051
 * Systems fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2053
