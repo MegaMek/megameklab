@@ -643,6 +643,11 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             getTank().setTrailer(false);
             getTank().setHasNoControlSystems(false);
         }
+
+        if (motive == EntityMovementMode.WIGE && getTank().getOriginalWalkMP() < 5) {
+            getTank().setOriginalWalkMP(5);
+        }
+
         panChassis.removeListener(this);
         panChassis.setFromEntity(getTank());
         panChassis.addListener(this);
