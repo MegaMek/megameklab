@@ -247,7 +247,11 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle() && !en.isTrailer()) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
             minWalk = Math.max(1, (int) (minRating / en.getWeight()));
-        } else if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
+        }
+        if (en instanceof Tank && en.getMovementMode() == EntityMovementMode.WIGE && minWalk < 5) {
+            minWalk = 5;
+        }
+        if (en.hasETypeFlag(Entity.ETYPE_LAND_AIR_MEK)) {
             minJump = minWalk = 3;
             // If the unit has improved JJs the walk can be 2 and still meet the minimum jump MP requirement of 3.
             int jumpType = en.getJumpType();
