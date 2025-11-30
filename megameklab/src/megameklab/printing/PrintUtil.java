@@ -153,7 +153,8 @@ public final class PrintUtil {
               F_HARJEL,
               F_MASS,
               F_DETACHABLE_WEAPON_PACK,
-              F_MODULAR_WEAPON_MOUNT
+              F_MODULAR_WEAPON_MOUNT,
+              F_JUMP_BOOSTER
         ))) {
             return false;
         }
