@@ -221,10 +221,10 @@ public class PrintTank extends PrintEntity {
             if (transporter instanceof InfantryCompartment) {
                 transport.merge("Infantry Compartment", transporter.getUnused(), Double::sum);
             } else if (transporter instanceof StandardSeatCargoBay) {
-                seating.merge(transporter.getType(), (int) ((Bay) transporter).getCapacity(), Integer::sum);
+                seating.merge(transporter.getTransporterType(), (int) ((Bay) transporter).getCapacity(), Integer::sum);
                 // SVs have separate Bay handling similar to Small Craft, with doors. CVs just have bulk cargo space.
             } else if (transporter instanceof Bay && !(tank instanceof SupportTank)) {
-                transport.merge(transporter.getType(), ((Bay) transporter).getCapacity(), Double::sum);
+                transport.merge(transporter.getTransporterType(), ((Bay) transporter).getCapacity(), Double::sum);
             }
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {

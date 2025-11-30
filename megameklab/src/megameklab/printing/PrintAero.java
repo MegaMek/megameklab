@@ -221,12 +221,12 @@ public class PrintAero extends PrintEntity {
             if (transporter instanceof InfantryCompartment) {
                 transport.merge("Infantry Compartment", transporter.getUnused(), Double::sum);
             } else if (transporter instanceof StandardSeatCargoBay) {
-                seating.merge(transporter.getType(), (int) ((Bay) transporter).getCapacity(), Integer::sum);
+                seating.merge(transporter.getTransporterType(), (int) ((Bay) transporter).getCapacity(), Integer::sum);
                 // include cargo bays for fighters and fixed wing, but small craft get a block for transport bays
             } else if (transporter instanceof Bay
                   && !((Bay) transporter).isQuarters()
                   && !(aero instanceof SmallCraft)) {
-                transport.merge(transporter.getType(), ((Bay) transporter).getCapacity(), Double::sum);
+                transport.merge(transporter.getTransporterType(), ((Bay) transporter).getCapacity(), Double::sum);
             }
         }
         for (Map.Entry<String, Integer> e : seating.entrySet()) {

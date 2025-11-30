@@ -233,7 +233,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
     /**
      * Gets the size of the force list.
-     *
      */
     public static synchronized int getForceSize() {
         if (instance == null) {
@@ -464,7 +463,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
     /**
      * Gets the list of all entities in the force.
-     *
      */
     public ArrayList<Entity> getAllEntities() {
         return forceList;
