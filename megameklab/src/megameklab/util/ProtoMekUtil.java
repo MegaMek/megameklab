@@ -33,6 +33,7 @@
 package megameklab.util;
 
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
@@ -51,10 +52,10 @@ public final class ProtoMekUtil {
             if (eq.hasFlag(MiscType.F_MAGNETIC_CLAMP) && (proto.isQuad() || proto.isGlider())) {
                 return false;
             }
-            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTOMEK_WEAPON) && proto.isQuad()) {
+            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasFlag(MiscTypeFlag.S_PROTOMEK_WEAPON) && proto.isQuad()) {
                 return false;
             }
-            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasSubType(MiscType.S_PROTO_QMS) && !proto.isQuad()) {
+            if (eq.hasFlag(MiscType.F_CLUB) && eq.hasFlag(MiscTypeFlag.S_PROTO_QMS) && !proto.isQuad()) {
                 return false;
             }
         }

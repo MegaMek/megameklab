@@ -54,6 +54,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -245,7 +246,7 @@ public class EquipmentTableModel extends AbstractTableModel {
             }
         } else if (col == COL_DIVISOR) {
             if ((miscType != null) && (miscType.hasFlag(MiscType.F_ARMOR_KIT))) {
-                if ((miscType.getSubType() & MiscType.S_ENCUMBERING) == 0) {
+                if (!miscType.hasFlag(MiscTypeFlag.S_ENCUMBERING)) {
                     return String.valueOf(miscType.getDamageDivisor());
                 } else {
                     return miscType.getDamageDivisor() + "E";
@@ -276,19 +277,19 @@ public class EquipmentTableModel extends AbstractTableModel {
                 }
             }
             if ((miscType != null) && (miscType.hasFlag(MiscType.F_ARMOR_KIT))) {
-                if ((miscType.getSubType() & MiscType.S_DEST) != 0) {
+                if (miscType.hasFlag(MiscTypeFlag.S_DEST)) {
                     special += "DEST ";
                 }
-                if ((miscType.getSubType() & MiscType.S_SNEAK_CAMO) != 0) {
+                if (miscType.hasFlag(MiscTypeFlag.S_SNEAK_CAMO)) {
                     special += "Camo ";
                 }
-                if ((miscType.getSubType() & MiscType.S_SNEAK_IR) != 0) {
+                if (miscType.hasFlag(MiscTypeFlag.S_SNEAK_IR)) {
                     special += "IR ";
                 }
-                if ((miscType.getSubType() & MiscType.S_SNEAK_ECM) != 0) {
+                if (miscType.hasFlag(MiscTypeFlag.S_SNEAK_ECM)) {
                     special += "ECM ";
                 }
-                if ((miscType.getSubType() & MiscType.S_SPACE_SUIT) != 0) {
+                if (miscType.hasFlag(MiscTypeFlag.S_SPACE_SUIT)) {
                     special += "SPC ";
                 }
             }
