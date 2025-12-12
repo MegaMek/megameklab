@@ -331,13 +331,26 @@ public class QuirksTab extends ITab implements DialogOptionListener {
           List<DialogOptionComponentYPanel> allList) {
         DialogOptionComponentYPanel comp = new DialogOptionComponentYPanel(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
-        // For INTEGER quirks (like obsolete), check if value is non-zero
-        boolean isActive = (option.getType() == IOption.INTEGER)
-              ? option.intValue() != 0
-              : option.booleanValue();
+        boolean isActive = isOptionActive(option);
         updateQuirkFontStyle(comp, isActive);
         groupList.add(comp);
         allList.add(comp);
+    }
+
+    /**
+     * Determines if an option is considered "active" for highlighting purposes. Boolean options are active if true,
+     * INTEGER if non-zero, STRING if non-empty.
+     */
+    private boolean isOptionActive(IOption option) {
+        return switch (option.getType()) {
+            case IOption.BOOLEAN -> option.booleanValue();
+            case IOption.INTEGER -> option.intValue() != 0;
+            case IOption.STRING -> {
+                String value = option.stringValue();
+                yield value != null && !value.isEmpty();
+            }
+            default -> false;
+        };
     }
 
     /**
@@ -465,8 +478,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
             // For non-boolean options (INTEGER, STRING, etc.), get value from component
             Object value = comp.getValue();
             option.setValue(value);
-            boolean isSet = value != null && !value.equals(option.getDefault());
-            updateQuirkFontStyle(comp, isSet);
+            boolean isActive = isOptionActive(option);
+            updateQuirkFontStyle(comp, isActive);
         }
         if (refresh != null) {
             refresh.refreshPreview();
