@@ -59,6 +59,7 @@ import javax.swing.JViewport;
 
 import megamek.client.ui.clientGUI.DialogOptionListener;
 import megamek.client.ui.panels.DialogOptionComponentYPanel;
+import megamek.client.ui.util.VerticalGridLayout;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.options.IOption;
@@ -331,11 +332,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
           List<DialogOptionComponentYPanel> allList) {
         DialogOptionComponentYPanel comp = new DialogOptionComponentYPanel(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
-        // For INTEGER quirks (like obsolete), check if value is non-zero
-        boolean isActive = (option.getType() == IOption.INTEGER)
-              ? option.intValue() != 0
-              : option.booleanValue();
-        updateQuirkFontStyle(comp, isActive);
+        updateQuirkFontStyle(comp, option.booleanValue());
         groupList.add(comp);
         allList.add(comp);
     }
@@ -458,16 +455,8 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
     @Override
     public void optionClicked(DialogOptionComponentYPanel comp, IOption option, boolean state) {
-        if (option.getType() == IOption.BOOLEAN) {
-            option.setValue(state);
-            updateQuirkFontStyle(comp, state);
-        } else {
-            // For non-boolean options (INTEGER, STRING, etc.), get value from component
-            Object value = comp.getValue();
-            option.setValue(value);
-            boolean isSet = value != null && !value.equals(option.getDefault());
-            updateQuirkFontStyle(comp, isSet);
-        }
+        option.setValue(state);
+        updateQuirkFontStyle(comp, state);
         if (refresh != null) {
             refresh.refreshPreview();
         }
