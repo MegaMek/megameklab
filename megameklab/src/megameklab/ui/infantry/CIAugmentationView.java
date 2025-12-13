@@ -139,10 +139,12 @@ public class CIAugmentationView extends IView implements ActionListener {
                     IOption otherOption = getInfantry().getCrew().getOptions().getOption(mutuallyExclusiveOption);
                     if ((otherOption != null) && otherOption.booleanValue()) {
                         otherOption.setValue(false);
-                        // Update the checkbox in the UI
+                        // Update the checkbox in the UI without triggering another actionPerformed
                         for (IOption opt : options.keySet()) {
                             if (opt.getName().equals(mutuallyExclusiveOption)) {
+                                handleEvents = false;
                                 options.get(opt).setSelected(false);
+                                handleEvents = true;
                                 break;
                             }
                         }
