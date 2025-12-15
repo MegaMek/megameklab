@@ -46,6 +46,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import megamek.common.options.IOption;
+import megamek.common.options.OptionsConstants;
 import megamek.common.options.PilotOptions;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
@@ -122,7 +123,34 @@ public class CIAugmentationView extends IView implements ActionListener {
             return;
         }
         if (e.getSource() instanceof JCheckBox checkBox) {
-            getInfantry().getCrew().getOptions().getOption(e.getActionCommand()).setValue(checkBox.isSelected());
+            String optionName = e.getActionCommand();
+            getInfantry().getCrew().getOptions().getOption(optionName).setValue(checkBox.isSelected());
+
+            // Dermal Armor and Dermal Camo Armor are mutually exclusive
+            if (checkBox.isSelected()) {
+                String mutuallyExclusiveOption = null;
+                if (optionName.equals(OptionsConstants.MD_DERMAL_ARMOR)) {
+                    mutuallyExclusiveOption = OptionsConstants.MD_DERMAL_CAMO_ARMOR;
+                } else if (optionName.equals(OptionsConstants.MD_DERMAL_CAMO_ARMOR)) {
+                    mutuallyExclusiveOption = OptionsConstants.MD_DERMAL_ARMOR;
+                }
+
+                if (mutuallyExclusiveOption != null) {
+                    IOption otherOption = getInfantry().getCrew().getOptions().getOption(mutuallyExclusiveOption);
+                    if ((otherOption != null) && otherOption.booleanValue()) {
+                        otherOption.setValue(false);
+                        // Update the checkbox in the UI without triggering another actionPerformed
+                        for (IOption opt : options.keySet()) {
+                            if (opt.getName().equals(mutuallyExclusiveOption)) {
+                                handleEvents = false;
+                                options.get(opt).setSelected(false);
+                                handleEvents = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
         if (refresh != null) {
             refresh.refreshStructure();
