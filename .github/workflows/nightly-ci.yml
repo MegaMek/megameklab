@@ -71,7 +71,7 @@ jobs:
         run: ./gradlew testAll --stacktrace --scan
 
       - name: Upload Test Logs on Failure
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ${{ matrix.os }}-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}-ci-failure-logs
@@ -89,7 +89,7 @@ jobs:
         run: ./gradlew build -x test -PextraVersion="nightly-$(date +'%Y-%m-%d')"
 
       - name: Upload TarGZ Release
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: mml-release-tgz-${{ matrix.java-distribution }}-jdk${{ matrix.java-version }}
           path: megameklab/megameklab/build/distributions/*.tar.gz
