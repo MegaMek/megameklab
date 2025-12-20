@@ -35,6 +35,7 @@ package megameklab.printing.reference;
 import megamek.common.actions.ClubAttackAction;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadMek;
@@ -148,7 +149,7 @@ public class PhysicalAttacks extends ReferenceTable {
                       String.format("%+d", ClubAttackAction.getHitModFor((MiscType) mounted.getType())),
                       StringUtils.getEquipmentInfo(entity, mounted));
             } else if (mounted.getType().hasFlag(MiscType.F_HAND_WEAPON)) {
-                if (mounted.getType().hasSubType(MiscType.S_CLAW)) {
+                if (mounted.getType().hasFlag(MiscTypeFlag.S_CLAW)) {
                     addRow(mounted.getName(), "+1", StringUtils.getEquipmentInfo(entity, mounted));
                 } else {
                     logger.error("Unknown hand weapon {}!", mounted.getName());

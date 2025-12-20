@@ -714,7 +714,7 @@ public class PrintMek extends PrintEntity {
                 } else if ((crit.getType() == CriticalSlot.TYPE_SYSTEM) && (crit.getIndex() >= 0)) {
                     uniqueId = mek.getRawSystemName(crit.getIndex());
                     g.setAttributeNS(null, "type", "sys");
-                    g.setAttributeNS(null, "name", uniqueId);
+                    g.setAttributeNS(null, "name", formatCritName(crit));
                     g.setAttributeNS(null, "uid", uniqueId);
                     g.setAttributeNS(null, "hittable", "1");
                 }

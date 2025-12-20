@@ -288,13 +288,13 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
                     if ((mount.getLocation() != Mek.LOC_LEFT_ARM)
                           && (mount.getLocation() != Mek.LOC_RIGHT_ARM)) {
                         if (mount.getType() instanceof WeaponType) {
-                            if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, -1,
+                            if (getUnit().hasWorkingMisc(MiscType.F_QUAD_TURRET, null,
                                   mount.getLocation())
                                   || getUnit().hasWorkingMisc(
-                                  MiscType.F_SHOULDER_TURRET, -1,
+                                  MiscType.F_SHOULDER_TURRET, null,
                                   mount.getLocation())
                                   || (getUnit().hasWorkingMisc(
-                                  MiscType.F_HEAD_TURRET, -1,
+                                  MiscType.F_HEAD_TURRET, null,
                                   Mek.LOC_CENTER_TORSO)
                                   && (mount
                                   .getLocation() == Mek.LOC_HEAD))) {

@@ -32,6 +32,7 @@
  */
 package megameklab.ui.mek;
 
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -70,7 +71,7 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasSubType(MiscType.S_SUPERCHARGER))
+                    || (etype.hasFlag(MiscType.F_MASC) && !etype.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
                     || ((getMek().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE
                     && etype.hasFlag(MiscType.F_TRACKS))
                     || UnitUtil.isArmorOrStructure(etype)

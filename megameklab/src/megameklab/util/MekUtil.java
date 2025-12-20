@@ -59,6 +59,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
@@ -1329,7 +1330,7 @@ public final class MekUtil {
             }
 
             if ((unit instanceof LandAirMek)
-                  && ((eq.hasFlag(MiscType.F_MASC) && eq.getSubType() == MiscType.S_SUPERCHARGER)
+                  && ((eq.hasFlag(MiscType.F_MASC) && eq.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
                   || eq.hasFlag(MiscType.F_MODULAR_ARMOR)
                   || eq.hasFlag(MiscType.F_JUMP_BOOSTER)
                   || eq.hasFlag(MiscType.F_PARTIAL_WING)
@@ -1343,8 +1344,7 @@ public final class MekUtil {
                   || eq.hasFlag(MiscType.F_MEDIUM_BRIDGE_LAYER)
                   || eq.hasFlag(MiscType.F_LIGHT_BRIDGE_LAYER)
                   || (eq.hasFlag(MiscType.F_CLUB)
-                  && (eq.getSubType() == MiscType.S_BACKHOE)
-                  || (eq.getSubType() == MiscType.S_COMBINE)))) {
+                  && (eq.hasAnyFlag(MiscTypeFlag.S_BACKHOE, MiscTypeFlag.S_COMBINE))))) {
                 return false;
             }
 

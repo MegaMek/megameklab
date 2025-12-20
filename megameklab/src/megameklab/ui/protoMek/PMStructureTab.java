@@ -61,6 +61,7 @@ import megamek.common.equipment.IArmorState;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
@@ -470,7 +471,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
             getProtoMek().initializeArmor(0, ProtoMek.LOC_LEFT_ARM);
             getProtoMek().initializeArmor(0, ProtoMek.LOC_RIGHT_ARM);
             Optional<MiscMounted> qms = getProtoMek().getMisc().stream().filter(m -> m.getType()
-                  .hasFlag(MiscType.F_CLUB) && m.getType().hasSubType(MiscType.S_PROTO_QMS)).findFirst();
+                  .hasFlag(MiscType.F_CLUB) && m.getType().hasFlag(MiscTypeFlag.S_PROTO_QMS)).findFirst();
             qms.ifPresent(miscMounted -> UnitUtil.removeMounted(getProtoMek(), miscMounted));
         }
         List<Mounted<?>> toRemove = getProtoMek().getMisc().stream()

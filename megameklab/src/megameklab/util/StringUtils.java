@@ -42,6 +42,7 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -288,7 +289,7 @@ public class StringUtils {
                 // manually set vibro to active to get correct damage
                 mount.setMode(1);
             }
-            if (mount.getType().hasSubType(MiscType.S_CLAW) || mount.getType().hasSubType(MiscType.S_CLAW_THB)) {
+            if (mount.getType().hasAnyFlag(MiscTypeFlag.S_CLAW, MiscTypeFlag.S_CLAW_THB)) {
                 info = Integer.toString((int) Math.ceil(unit.getWeight() / 7.0));
             } else {
                 info = Integer.toString(ClubAttackAction.getDamageFor(unit, (MiscMounted) mount, false, false));
