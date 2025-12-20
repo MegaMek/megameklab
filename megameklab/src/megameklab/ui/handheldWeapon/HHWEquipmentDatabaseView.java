@@ -86,6 +86,8 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
 
         try {
             getEntity().addEquipment(mount, HandheldWeapon.LOC_GUN, false);
+            // Link weapons with weapon enhancements (artemis etc)
+            UnitUtil.changeMountStatus(getEntity(), mount, HandheldWeapon.LOC_GUN, HandheldWeapon.LOC_NONE, false);
             UnitUtil.removeHiddenAmmo(mount);
         } catch (LocationFullException e) {
             // Shouldn't happen, panic if it does.
