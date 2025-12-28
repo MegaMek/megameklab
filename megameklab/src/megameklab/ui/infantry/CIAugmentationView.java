@@ -40,11 +40,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.HashMap;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import megamek.common.enums.ProstheticEnhancementType;
 import megamek.common.options.IOption;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.PilotOptions;
@@ -63,6 +66,15 @@ public class CIAugmentationView extends IView implements ActionListener {
     private RefreshListener refresh;
 
     private final HashMap<IOption, JCheckBox> options = new HashMap<>();
+
+    // Prosthetic Enhancement controls (IO p.84)
+    private JPanel prostheticPanel;
+    private JComboBox<ProstheticEnhancementType> cbEnhancement1;
+    private JComboBox<Integer> cbCount1;
+    private JLabel lblEnhancement2;
+    private JComboBox<ProstheticEnhancementType> cbEnhancement2;
+    private JLabel lblCount2;
+    private JComboBox<Integer> cbCount2;
 
     private boolean handleEvents;
 
@@ -95,6 +107,13 @@ public class CIAugmentationView extends IView implements ActionListener {
             augPanel.add(new JLabel(opt.getDescription()), gbc);
         }
 
+        // Prosthetic Enhancement panel (IO p.84)
+        gbc.gridy++;
+        gbc.gridwidth = 3;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        prostheticPanel = createProstheticPanel();
+        augPanel.add(prostheticPanel, gbc);
+
         // make top-aligned
         gbc.gridy++;
         gbc.weighty = 1;
@@ -105,12 +124,107 @@ public class CIAugmentationView extends IView implements ActionListener {
         handleEvents = true;
     }
 
+    /**
+     * Creates the panel for configuring prosthetic enhancement types and counts. Visible only when Enhanced or Improved
+     * Enhanced prosthetic limbs are selected.
+     */
+    private JPanel createProstheticPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Prosthetic Enhancement Configuration (IO p.84)"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 5, 2, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Slot 1
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Enhancement 1:"), gbc);
+
+        gbc.gridx = 1;
+        cbEnhancement1 = new JComboBox<>(ProstheticEnhancementType.values());
+        cbEnhancement1.insertItemAt(null, 0);
+        cbEnhancement1.setSelectedIndex(0);
+        cbEnhancement1.addActionListener(this);
+        panel.add(cbEnhancement1, gbc);
+
+        gbc.gridx = 2;
+        panel.add(new JLabel("Count:"), gbc);
+
+        gbc.gridx = 3;
+        cbCount1 = new JComboBox<>(new Integer[] { 0, 1, 2 });
+        cbCount1.addActionListener(this);
+        panel.add(cbCount1, gbc);
+
+        // Slot 2 (only for Improved Enhanced)
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        lblEnhancement2 = new JLabel("Enhancement 2:");
+        panel.add(lblEnhancement2, gbc);
+
+        gbc.gridx = 1;
+        cbEnhancement2 = new JComboBox<>(ProstheticEnhancementType.values());
+        cbEnhancement2.insertItemAt(null, 0);
+        cbEnhancement2.setSelectedIndex(0);
+        cbEnhancement2.addActionListener(this);
+        panel.add(cbEnhancement2, gbc);
+
+        gbc.gridx = 2;
+        lblCount2 = new JLabel("Count:");
+        panel.add(lblCount2, gbc);
+
+        gbc.gridx = 3;
+        cbCount2 = new JComboBox<>(new Integer[] { 0, 1, 2 });
+        cbCount2.addActionListener(this);
+        panel.add(cbCount2, gbc);
+
+        return panel;
+    }
+
     public void refresh() {
         handleEvents = false;
         for (IOption opt : options.keySet()) {
             options.get(opt).setSelected(getInfantry().getCrew().getOptions().booleanOption(opt.getName()));
         }
+
+        // Update prosthetic enhancement controls
+        refreshProstheticPanel();
         handleEvents = true;
+    }
+
+    /**
+     * Updates the prosthetic enhancement panel visibility and values.
+     */
+    private void refreshProstheticPanel() {
+        boolean hasEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_ENHANCED);
+        boolean hasImprovedEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_I_ENHANCED);
+
+        // Panel visible only when Enhanced or Improved Enhanced is selected
+        prostheticPanel.setVisible(hasEnhanced || hasImprovedEnhanced);
+
+        if (hasEnhanced || hasImprovedEnhanced) {
+            // Slot 1 is always available
+            ProstheticEnhancementType type1 = getInfantry().getProstheticEnhancement1();
+            cbEnhancement1.setSelectedItem(type1);
+            cbCount1.setSelectedItem(getInfantry().getProstheticEnhancement1Count());
+
+            // Slot 2 only available for Improved Enhanced
+            boolean slot2Visible = hasImprovedEnhanced;
+            lblEnhancement2.setVisible(slot2Visible);
+            cbEnhancement2.setVisible(slot2Visible);
+            lblCount2.setVisible(slot2Visible);
+            cbCount2.setVisible(slot2Visible);
+
+            if (slot2Visible) {
+                ProstheticEnhancementType type2 = getInfantry().getProstheticEnhancement2();
+                cbEnhancement2.setSelectedItem(type2);
+                cbCount2.setSelectedItem(getInfantry().getProstheticEnhancement2Count());
+            } else {
+                // Clear slot 2 when switching from Improved to Standard
+                getInfantry().setProstheticEnhancement2(null);
+                getInfantry().setProstheticEnhancement2Count(0);
+            }
+        }
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -151,7 +265,75 @@ public class CIAugmentationView extends IView implements ActionListener {
                     }
                 }
             }
+
+            // Enhanced and Improved Enhanced prosthetics are mutually exclusive
+            if (checkBox.isSelected()) {
+                String mutuallyExclusiveOption = null;
+                if (optionName.equals(OptionsConstants.MD_PL_ENHANCED)) {
+                    mutuallyExclusiveOption = OptionsConstants.MD_PL_I_ENHANCED;
+                } else if (optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
+                    mutuallyExclusiveOption = OptionsConstants.MD_PL_ENHANCED;
+                }
+
+                if (mutuallyExclusiveOption != null) {
+                    IOption otherOption = getInfantry().getCrew().getOptions().getOption(mutuallyExclusiveOption);
+                    if ((otherOption != null) && otherOption.booleanValue()) {
+                        otherOption.setValue(false);
+                        for (IOption opt : options.keySet()) {
+                            if (opt.getName().equals(mutuallyExclusiveOption)) {
+                                handleEvents = false;
+                                options.get(opt).setSelected(false);
+                                handleEvents = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Update prosthetic panel visibility when Enhanced/Improved Enhanced changes
+            if (optionName.equals(OptionsConstants.MD_PL_ENHANCED)
+                  || optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
+                handleEvents = false;
+                refreshProstheticPanel();
+                handleEvents = true;
+            }
+
+        } else if (e.getSource() == cbEnhancement1) {
+            // Handle enhancement type 1 change
+            ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbEnhancement1.getSelectedItem();
+            getInfantry().setProstheticEnhancement1(selectedType);
+            // Set default count of 1 if selecting a type and count is 0
+            if (selectedType != null && getInfantry().getProstheticEnhancement1Count() == 0) {
+                getInfantry().setProstheticEnhancement1Count(1);
+                handleEvents = false;
+                cbCount1.setSelectedItem(1);
+                handleEvents = true;
+            }
+
+        } else if (e.getSource() == cbCount1) {
+            // Handle count 1 change
+            Integer selectedCount = (Integer) cbCount1.getSelectedItem();
+            getInfantry().setProstheticEnhancement1Count(selectedCount != null ? selectedCount : 0);
+
+        } else if (e.getSource() == cbEnhancement2) {
+            // Handle enhancement type 2 change
+            ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbEnhancement2.getSelectedItem();
+            getInfantry().setProstheticEnhancement2(selectedType);
+            // Set default count of 1 if selecting a type and count is 0
+            if (selectedType != null && getInfantry().getProstheticEnhancement2Count() == 0) {
+                getInfantry().setProstheticEnhancement2Count(1);
+                handleEvents = false;
+                cbCount2.setSelectedItem(1);
+                handleEvents = true;
+            }
+
+        } else if (e.getSource() == cbCount2) {
+            // Handle count 2 change
+            Integer selectedCount = (Integer) cbCount2.getSelectedItem();
+            getInfantry().setProstheticEnhancement2Count(selectedCount != null ? selectedCount : 0);
         }
+
         if (refresh != null) {
             refresh.refreshStructure();
             refresh.refreshPreview();
