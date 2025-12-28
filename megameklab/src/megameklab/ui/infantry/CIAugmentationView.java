@@ -231,6 +231,48 @@ public class CIAugmentationView extends IView implements ActionListener {
         refresh = l;
     }
 
+    /**
+     * Handles mutually exclusive options by unchecking one when the other is selected.
+     *
+     * @param selectedOptionName  The option that was just selected
+     * @param exclusiveOptionName The option that should be deselected
+     */
+    private void handleMutuallyExclusiveOption(String selectedOptionName, String exclusiveOptionName) {
+        if (exclusiveOptionName == null) {
+            return;
+        }
+        IOption otherOption = getInfantry().getCrew().getOptions().getOption(exclusiveOptionName);
+        if ((otherOption != null) && otherOption.booleanValue()) {
+            otherOption.setValue(false);
+            // Update the checkbox in the UI without triggering another actionPerformed
+            for (IOption opt : options.keySet()) {
+                if (opt.getName().equals(exclusiveOptionName)) {
+                    handleEvents = false;
+                    options.get(opt).setSelected(false);
+                    handleEvents = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Clears all prosthetic enhancement data and resets UI controls.
+     */
+    private void clearAllProstheticData() {
+        getInfantry().setProstheticEnhancement1(null);
+        getInfantry().setProstheticEnhancement1Count(0);
+        getInfantry().setProstheticEnhancement2(null);
+        getInfantry().setProstheticEnhancement2Count(0);
+
+        handleEvents = false;
+        cbEnhancement1.setSelectedItem(null);
+        cbCount1.setSelectedItem(0);
+        cbEnhancement2.setSelectedItem(null);
+        cbCount2.setSelectedItem(0);
+        handleEvents = true;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!handleEvents) {
@@ -240,60 +282,33 @@ public class CIAugmentationView extends IView implements ActionListener {
             String optionName = e.getActionCommand();
             getInfantry().getCrew().getOptions().getOption(optionName).setValue(checkBox.isSelected());
 
-            // Dermal Armor and Dermal Camo Armor are mutually exclusive
+            // Handle mutually exclusive options when selecting
             if (checkBox.isSelected()) {
-                String mutuallyExclusiveOption = null;
+                // Dermal Armor and Dermal Camo Armor are mutually exclusive
                 if (optionName.equals(OptionsConstants.MD_DERMAL_ARMOR)) {
-                    mutuallyExclusiveOption = OptionsConstants.MD_DERMAL_CAMO_ARMOR;
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_DERMAL_CAMO_ARMOR);
                 } else if (optionName.equals(OptionsConstants.MD_DERMAL_CAMO_ARMOR)) {
-                    mutuallyExclusiveOption = OptionsConstants.MD_DERMAL_ARMOR;
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_DERMAL_ARMOR);
                 }
 
-                if (mutuallyExclusiveOption != null) {
-                    IOption otherOption = getInfantry().getCrew().getOptions().getOption(mutuallyExclusiveOption);
-                    if ((otherOption != null) && otherOption.booleanValue()) {
-                        otherOption.setValue(false);
-                        // Update the checkbox in the UI without triggering another actionPerformed
-                        for (IOption opt : options.keySet()) {
-                            if (opt.getName().equals(mutuallyExclusiveOption)) {
-                                handleEvents = false;
-                                options.get(opt).setSelected(false);
-                                handleEvents = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Enhanced and Improved Enhanced prosthetics are mutually exclusive
-            if (checkBox.isSelected()) {
-                String mutuallyExclusiveOption = null;
+                // Enhanced and Improved Enhanced prosthetics are mutually exclusive
                 if (optionName.equals(OptionsConstants.MD_PL_ENHANCED)) {
-                    mutuallyExclusiveOption = OptionsConstants.MD_PL_I_ENHANCED;
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_PL_I_ENHANCED);
                 } else if (optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
-                    mutuallyExclusiveOption = OptionsConstants.MD_PL_ENHANCED;
-                }
-
-                if (mutuallyExclusiveOption != null) {
-                    IOption otherOption = getInfantry().getCrew().getOptions().getOption(mutuallyExclusiveOption);
-                    if ((otherOption != null) && otherOption.booleanValue()) {
-                        otherOption.setValue(false);
-                        for (IOption opt : options.keySet()) {
-                            if (opt.getName().equals(mutuallyExclusiveOption)) {
-                                handleEvents = false;
-                                options.get(opt).setSelected(false);
-                                handleEvents = true;
-                                break;
-                            }
-                        }
-                    }
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_PL_ENHANCED);
                 }
             }
 
-            // Update prosthetic panel visibility when Enhanced/Improved Enhanced changes
+            // Handle prosthetic panel visibility and cleanup
             if (optionName.equals(OptionsConstants.MD_PL_ENHANCED)
                   || optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
+                // Clear prosthetic data when both options are deselected
+                boolean hasEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_ENHANCED);
+                boolean hasImprovedEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_I_ENHANCED);
+                if (!hasEnhanced && !hasImprovedEnhanced) {
+                    clearAllProstheticData();
+                }
+
                 handleEvents = false;
                 refreshProstheticPanel();
                 handleEvents = true;
@@ -303,8 +318,14 @@ public class CIAugmentationView extends IView implements ActionListener {
             // Handle enhancement type 1 change
             ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbEnhancement1.getSelectedItem();
             getInfantry().setProstheticEnhancement1(selectedType);
-            // Set default count of 1 if selecting a type and count is 0
-            if (selectedType != null && getInfantry().getProstheticEnhancement1Count() == 0) {
+            if (selectedType == null) {
+                // Reset count to 0 when clearing the enhancement type
+                getInfantry().setProstheticEnhancement1Count(0);
+                handleEvents = false;
+                cbCount1.setSelectedItem(0);
+                handleEvents = true;
+            } else if (getInfantry().getProstheticEnhancement1Count() == 0) {
+                // Set default count of 1 if selecting a type and count is 0
                 getInfantry().setProstheticEnhancement1Count(1);
                 handleEvents = false;
                 cbCount1.setSelectedItem(1);
@@ -320,8 +341,14 @@ public class CIAugmentationView extends IView implements ActionListener {
             // Handle enhancement type 2 change
             ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbEnhancement2.getSelectedItem();
             getInfantry().setProstheticEnhancement2(selectedType);
-            // Set default count of 1 if selecting a type and count is 0
-            if (selectedType != null && getInfantry().getProstheticEnhancement2Count() == 0) {
+            if (selectedType == null) {
+                // Reset count to 0 when clearing the enhancement type
+                getInfantry().setProstheticEnhancement2Count(0);
+                handleEvents = false;
+                cbCount2.setSelectedItem(0);
+                handleEvents = true;
+            } else if (getInfantry().getProstheticEnhancement2Count() == 0) {
+                // Set default count of 1 if selecting a type and count is 0
                 getInfantry().setProstheticEnhancement2Count(1);
                 handleEvents = false;
                 cbCount2.setSelectedItem(1);
