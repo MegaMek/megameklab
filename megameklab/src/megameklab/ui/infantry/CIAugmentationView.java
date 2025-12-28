@@ -78,6 +78,7 @@ public class CIAugmentationView extends IView implements ActionListener {
 
     // Extraneous Limbs controls (IO p.84)
     private JPanel extraneousPanel;
+    private JLabel lblExtraneousPair1;
     private JComboBox<ProstheticEnhancementType> cbExtraneousPair1;
     private JLabel lblExtraneousPair2;
     private JComboBox<ProstheticEnhancementType> cbExtraneousPair2;
@@ -207,7 +208,8 @@ public class CIAugmentationView extends IView implements ActionListener {
         // Pair 1 (always visible when panel is shown)
         gbc.gridx = 0;
         gbc.gridy = 0;
-        panel.add(new JLabel("Pair 1 (x2 items):"), gbc);
+        lblExtraneousPair1 = new JLabel("Pair 1 (x2 items):");
+        panel.add(lblExtraneousPair1, gbc);
 
         gbc.gridx = 1;
         cbExtraneousPair1 = new JComboBox<>(ProstheticEnhancementType.values());
