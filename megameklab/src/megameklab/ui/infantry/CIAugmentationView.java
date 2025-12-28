@@ -76,6 +76,12 @@ public class CIAugmentationView extends IView implements ActionListener {
     private JLabel lblCount2;
     private JComboBox<Integer> cbCount2;
 
+    // Extraneous Limbs controls (IO p.84)
+    private JPanel extraneousPanel;
+    private JComboBox<ProstheticEnhancementType> cbExtraneousPair1;
+    private JLabel lblExtraneousPair2;
+    private JComboBox<ProstheticEnhancementType> cbExtraneousPair2;
+
     private boolean handleEvents;
 
     public CIAugmentationView(EntitySource eSource) {
@@ -113,6 +119,11 @@ public class CIAugmentationView extends IView implements ActionListener {
         gbc.insets = new Insets(10, 10, 10, 10);
         prostheticPanel = createProstheticPanel();
         augPanel.add(prostheticPanel, gbc);
+
+        // Extraneous Limbs panel (IO p.84)
+        gbc.gridy++;
+        extraneousPanel = createExtraneousPanel();
+        augPanel.add(extraneousPanel, gbc);
 
         // make top-aligned
         gbc.gridy++;
@@ -181,6 +192,53 @@ public class CIAugmentationView extends IView implements ActionListener {
         return panel;
     }
 
+    /**
+     * Creates the panel for configuring extraneous limb enhancement types. Visible only when Extraneous (Enhanced)
+     * Limbs option is selected. Each pair always provides 2 items (no count selection needed).
+     */
+    private JPanel createExtraneousPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Extraneous Limbs Configuration (IO p.84)"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(2, 5, 2, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Pair 1 (always visible when panel is shown)
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Pair 1 (x2 items):"), gbc);
+
+        gbc.gridx = 1;
+        cbExtraneousPair1 = new JComboBox<>(ProstheticEnhancementType.values());
+        cbExtraneousPair1.insertItemAt(null, 0);
+        cbExtraneousPair1.setSelectedIndex(0);
+        cbExtraneousPair1.addActionListener(this);
+        panel.add(cbExtraneousPair1, gbc);
+
+        // Pair 2
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        lblExtraneousPair2 = new JLabel("Pair 2 (x2 items):");
+        panel.add(lblExtraneousPair2, gbc);
+
+        gbc.gridx = 1;
+        cbExtraneousPair2 = new JComboBox<>(ProstheticEnhancementType.values());
+        cbExtraneousPair2.insertItemAt(null, 0);
+        cbExtraneousPair2.setSelectedIndex(0);
+        cbExtraneousPair2.addActionListener(this);
+        panel.add(cbExtraneousPair2, gbc);
+
+        // Add note about conventional infantry only
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        panel.add(new JLabel("<html><i>Conventional infantry only. Each pair provides 2 identical items.</i></html>"),
+              gbc);
+
+        return panel;
+    }
+
     public void refresh() {
         handleEvents = false;
         for (IOption opt : options.keySet()) {
@@ -189,6 +247,7 @@ public class CIAugmentationView extends IView implements ActionListener {
 
         // Update prosthetic enhancement controls
         refreshProstheticPanel();
+        refreshExtraneousPanel();
         handleEvents = true;
     }
 
@@ -224,6 +283,30 @@ public class CIAugmentationView extends IView implements ActionListener {
                 getInfantry().setProstheticEnhancement2(null);
                 getInfantry().setProstheticEnhancement2Count(0);
             }
+        }
+    }
+
+    /**
+     * Updates the extraneous limbs panel visibility and values.
+     */
+    private void refreshExtraneousPanel() {
+        boolean hasExtraneous = getInfantry().hasAbility(OptionsConstants.MD_PL_EXTRA_LIMBS);
+
+        // Panel visible only when Extraneous Limbs option is selected
+        extraneousPanel.setVisible(hasExtraneous);
+
+        if (hasExtraneous) {
+            // Pair 1 is always available
+            ProstheticEnhancementType pair1Type = getInfantry().getExtraneousPair1();
+            cbExtraneousPair1.setSelectedItem(pair1Type);
+
+            // Pair 2 is also available
+            ProstheticEnhancementType pair2Type = getInfantry().getExtraneousPair2();
+            cbExtraneousPair2.setSelectedItem(pair2Type);
+        } else {
+            // Clear extraneous data when option is deselected
+            getInfantry().setExtraneousPair1(null);
+            getInfantry().setExtraneousPair2(null);
         }
     }
 
@@ -273,6 +356,19 @@ public class CIAugmentationView extends IView implements ActionListener {
         handleEvents = true;
     }
 
+    /**
+     * Clears all extraneous limb data and resets UI controls.
+     */
+    private void clearAllExtraneousData() {
+        getInfantry().setExtraneousPair1(null);
+        getInfantry().setExtraneousPair2(null);
+
+        handleEvents = false;
+        cbExtraneousPair1.setSelectedItem(null);
+        cbExtraneousPair2.setSelectedItem(null);
+        handleEvents = true;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!handleEvents) {
@@ -311,6 +407,17 @@ public class CIAugmentationView extends IView implements ActionListener {
 
                 handleEvents = false;
                 refreshProstheticPanel();
+                handleEvents = true;
+            }
+
+            // Handle extraneous panel visibility and cleanup
+            if (optionName.equals(OptionsConstants.MD_PL_EXTRA_LIMBS)) {
+                if (!checkBox.isSelected()) {
+                    clearAllExtraneousData();
+                }
+
+                handleEvents = false;
+                refreshExtraneousPanel();
                 handleEvents = true;
             }
 
@@ -359,6 +466,16 @@ public class CIAugmentationView extends IView implements ActionListener {
             // Handle count 2 change
             Integer selectedCount = (Integer) cbCount2.getSelectedItem();
             getInfantry().setProstheticEnhancement2Count(selectedCount != null ? selectedCount : 0);
+
+        } else if (e.getSource() == cbExtraneousPair1) {
+            // Handle extraneous pair 1 type change
+            ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbExtraneousPair1.getSelectedItem();
+            getInfantry().setExtraneousPair1(selectedType);
+
+        } else if (e.getSource() == cbExtraneousPair2) {
+            // Handle extraneous pair 2 type change
+            ProstheticEnhancementType selectedType = (ProstheticEnhancementType) cbExtraneousPair2.getSelectedItem();
+            getInfantry().setExtraneousPair2(selectedType);
         }
 
         if (refresh != null) {
