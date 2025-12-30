@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.50.12
+
 0.50.11 (2025-12-30 1900 UTC)
 * Added Testing against Java 25 LTS by @rjhancock in https://github.com/MegaMek/megameklab/pull/2078
 * PR: Refactor `Transporter.getType()` and `InfantryTransporter.getType()` to prevent conflicts in classes that implement both `IBuilding` and `Transporter` by @psikomonkie in https://github.com/MegaMek/megameklab/pull/2076
