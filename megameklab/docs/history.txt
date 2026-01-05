@@ -1,9 +1,22 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.11
+0.50.12
+
+0.50.11 (2025-12-30 1900 UTC)
+* Added Testing against Java 25 LTS by @rjhancock in https://github.com/MegaMek/megameklab/pull/2078
+* PR: Refactor `Transporter.getType()` and `InfantryTransporter.getType()` to prevent conflicts in classes that implement both `IBuilding` and `Transporter` by @psikomonkie in https://github.com/MegaMek/megameklab/pull/2076
+* Revert "PR: Refactor `Transporter.getType()` and `InfantryTransporter.getType()` to prevent conflicts in classes that implement both `IBuilding` and `Transporter`" by @HammerGS in https://github.com/MegaMek/megameklab/pull/2079
+* No BA JB on RS by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2081
+* Revert "Revert "PR: Refactor `Transporter.getType()` and `InfantryTransporter.getType()` to prevent conflicts in classes that implement both `IBuilding` and `Transporter`"" by @psikomonkie in https://github.com/MegaMek/megameklab/pull/2080
+* Implement Obsolete Quirk the MML Part.  by @HammerGS in https://github.com/MegaMek/megameklab/pull/2089
+* Mutual Exclusion: Dermal Armor & Dermal Camo Armor by @HammerGS in https://github.com/MegaMek/megameklab/pull/2090
+* Task: Updated Description of K-F Adaptor & Modular Space Station Options by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2091
+* Bump actions/upload-artifact from 5 to 6 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2092
+* Fix: Updated Unified Log Save Policy by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2096
+* Bump org.apache.logging.log4j:log4j-core from 2.25.1 to 2.25.3 in /megameklab in the gradle group across 1 directory by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2099
+* Properly link weapon enhancements on HHWs by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2100
 
 0.50.10 (2025-10-12 2030 UTC)
-## What's Changed
 * Fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2051
 * Systems fluff data for MekBay by @exeea in https://github.com/MegaMek/megameklab/pull/2053
 * Fix: Fixed Hammer Traveling Back in Time to Release MegaMek Before MegaMek Was Invented, Thus Creating an Time Paradox That Breaches the Temporal Prime Directive by @IllianiBird in https://github.com/MegaMek/megameklab/pull/2054

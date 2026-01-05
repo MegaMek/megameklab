@@ -59,7 +59,6 @@ import javax.swing.JViewport;
 
 import megamek.client.ui.clientGUI.DialogOptionListener;
 import megamek.client.ui.panels.DialogOptionComponentYPanel;
-import megamek.client.ui.util.VerticalGridLayout;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.options.IOption;
@@ -332,9 +331,26 @@ public class QuirksTab extends ITab implements DialogOptionListener {
           List<DialogOptionComponentYPanel> allList) {
         DialogOptionComponentYPanel comp = new DialogOptionComponentYPanel(this, option, true);
         originalPreferredSizes.put(comp, comp.getPreferredSize()); // Store for layout
-        updateQuirkFontStyle(comp, option.booleanValue());
+        boolean isActive = isOptionActive(option);
+        updateQuirkFontStyle(comp, isActive);
         groupList.add(comp);
         allList.add(comp);
+    }
+
+    /**
+     * Determines if an option is considered "active" for highlighting purposes. Boolean options are active if true,
+     * INTEGER if non-zero, STRING if non-empty.
+     */
+    private boolean isOptionActive(IOption option) {
+        return switch (option.getType()) {
+            case IOption.BOOLEAN -> option.booleanValue();
+            case IOption.INTEGER -> option.intValue() != 0;
+            case IOption.STRING -> {
+                String value = option.stringValue();
+                yield value != null && !value.isEmpty();
+            }
+            default -> false;
+        };
     }
 
     /**
@@ -455,8 +471,16 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
     @Override
     public void optionClicked(DialogOptionComponentYPanel comp, IOption option, boolean state) {
-        option.setValue(state);
-        updateQuirkFontStyle(comp, state);
+        if (option.getType() == IOption.BOOLEAN) {
+            option.setValue(state);
+            updateQuirkFontStyle(comp, state);
+        } else {
+            // For non-boolean options (INTEGER, STRING, etc.), get value from component
+            Object value = comp.getValue();
+            option.setValue(value);
+            boolean isActive = isOptionActive(option);
+            updateQuirkFontStyle(comp, isActive);
+        }
         if (refresh != null) {
             refresh.refreshPreview();
         }

@@ -45,8 +45,10 @@ import javax.swing.JTextPane;
 import com.formdev.flatlaf.ui.FlatTextBorder;
 import megamek.client.ui.util.DisplayTextField;
 import megamek.common.SimpleTechLevel;
+import megamek.common.enums.ProstheticEnhancementType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.options.IOption;
+import megamek.common.options.OptionsConstants;
 import megamek.common.options.PilotOptions;
 import megamek.common.units.Infantry;
 import megameklab.ui.EntitySource;
@@ -130,14 +132,72 @@ public class CIAdvancedView extends IView {
 
     private void updateAugments() {
         StringJoiner sj = new StringJoiner(LIST_ITEM_SEPARATOR + "<br>");
-        for (Enumeration<IOption> e = getInfantry().getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
+        Infantry infantry = getInfantry();
+        for (Enumeration<IOption> e = infantry.getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
               e.hasMoreElements(); ) {
             IOption opt = e.nextElement();
-            if (getInfantry().getCrew().getOptions().booleanOption(opt.getName())) {
-                sj.add(sanitizeAugmentationName(opt.getDisplayableName()));
+            if (infantry.getCrew().getOptions().booleanOption(opt.getName())) {
+                String displayText = sanitizeAugmentationName(opt.getDisplayableName());
+
+                // Append prosthetic enhancement details for Enhanced/Improved Enhanced options
+                if (OptionsConstants.MD_PL_ENHANCED.equals(opt.getName())
+                      || OptionsConstants.MD_PL_I_ENHANCED.equals(opt.getName())) {
+                    String details = getRegularProstheticDetails(infantry);
+                    if (!details.isEmpty()) {
+                        displayText += " (" + details + ")";
+                    }
+                }
+
+                // Append extraneous limb details for Extraneous Limbs option
+                if (OptionsConstants.MD_PL_EXTRA_LIMBS.equals(opt.getName())) {
+                    String details = getExtraneousLimbDetails(infantry);
+                    if (!details.isEmpty()) {
+                        displayText += " (" + details + ")";
+                    }
+                }
+
+                sj.add(displayText);
             }
         }
         txtAugmentations.setText((sj.length() > 0) ? sj.toString() : "None");
+    }
+
+    /**
+     * Gets regular prosthetic enhancement details (slot 1 and 2 only).
+     */
+    private String getRegularProstheticDetails(Infantry infantry) {
+        StringBuilder details = new StringBuilder();
+        if (infantry.hasProstheticEnhancement1()) {
+            ProstheticEnhancementType type1 = infantry.getProstheticEnhancement1();
+            details.append(type1.getDisplayName()).append(" x").append(infantry.getProstheticEnhancement1Count());
+        }
+        if (infantry.hasProstheticEnhancement2()) {
+            if (details.length() > 0) {
+                details.append(", ");
+            }
+            ProstheticEnhancementType type2 = infantry.getProstheticEnhancement2();
+            details.append(type2.getDisplayName()).append(" x").append(infantry.getProstheticEnhancement2Count());
+        }
+        return details.toString();
+    }
+
+    /**
+     * Gets extraneous limb details (pair 1 and 2 only).
+     */
+    private String getExtraneousLimbDetails(Infantry infantry) {
+        StringBuilder details = new StringBuilder();
+        if (infantry.hasExtraneousPair1()) {
+            ProstheticEnhancementType pair1Type = infantry.getExtraneousPair1();
+            details.append(pair1Type.getDisplayName()).append(" x2");
+        }
+        if (infantry.hasExtraneousPair2()) {
+            if (details.length() > 0) {
+                details.append(", ");
+            }
+            ProstheticEnhancementType pair2Type = infantry.getExtraneousPair2();
+            details.append(pair2Type.getDisplayName()).append(" x2");
+        }
+        return details.toString();
     }
 
     private String sanitizeAugmentationName(String originalName) {
