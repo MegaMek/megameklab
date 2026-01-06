@@ -36,6 +36,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
@@ -69,8 +70,8 @@ public class SVEquipmentTab extends AbstractEquipmentTab {
                     || etype.hasFlag(MiscType.F_TSM)
                     || etype.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || (etype.hasFlag(MiscType.F_MASC)
-                    && !etype.hasSubType(MiscType.S_SUPERCHARGER)
-                    && !etype.hasSubType(MiscType.S_JET_BOOSTER))
+                    && !etype.hasFlag(MiscTypeFlag.S_SUPERCHARGER)
+                    && !etype.hasFlag(MiscTypeFlag.S_JET_BOOSTER))
                     || (((eSource.getEntity().getEntityType() & Entity.ETYPE_QUADVEE) == Entity.ETYPE_QUADVEE)
                     && etype.hasFlag(MiscType.F_TRACKS))
                     || etype.hasFlag(MiscType.F_CHASSIS_MODIFICATION)

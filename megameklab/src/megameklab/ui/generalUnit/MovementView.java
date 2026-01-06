@@ -57,6 +57,7 @@ import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.ConvFighter;
@@ -441,8 +442,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
                     break;
             }
 
-            int medShields = en.getNumberOfShields(MiscType.S_SHIELD_MEDIUM);
-            int lgShields = en.getNumberOfShields(MiscType.S_SHIELD_LARGE);
+            int medShields = en.getNumberOfShields(MiscTypeFlag.S_SHIELD_MEDIUM);
+            int lgShields = en.getNumberOfShields(MiscTypeFlag.S_SHIELD_LARGE);
             if (lgShields + medShields > 0) {
                 walkTooltip.add(String.format("-%d (Shield)", lgShields + medShields));
             }

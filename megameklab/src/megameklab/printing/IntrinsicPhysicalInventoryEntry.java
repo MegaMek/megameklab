@@ -189,7 +189,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         if (hasLHand && hasRHand) {
             var dmg = formatDamage(mek.getWeight() / 5, hasTsm);
             var mod = -1;
-            if (mek.hasWorkingMisc(MiscTypeFlag.F_CLUB, MiscType.S_CLAW)) {
+            if (mek.hasWorkingMisc(MiscTypeFlag.F_CLUB, MiscTypeFlag.S_CLAW)) {
                 mod += 2;
             }
             if (hasLArmAES && hasRArmAES) {

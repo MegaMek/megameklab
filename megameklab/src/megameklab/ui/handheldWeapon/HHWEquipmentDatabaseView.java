@@ -45,6 +45,7 @@ import megamek.common.equipment.HandheldWeapon;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.BipedMek;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
@@ -134,15 +135,14 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 }
                 // These weapons have constant damage
                 // Assuming vibroblades are out.
-                valid = mt.hasAnySubType(MiscType.S_PILE_DRIVER,
-                      MiscType.S_FLAIL,
-                      MiscType.S_DUAL_SAW,
-                      MiscType.S_CHAIN_WHIP,
-                      MiscType.S_BACKHOE,
-                      MiscType.S_MINING_DRILL,
-                      MiscType.S_WRECKING_BALL,
-                      MiscType.S_BUZZSAW,
-                      MiscType.S_CHAIN_WHIP);
+                valid = mt.hasAnyFlag(MiscTypeFlag.S_PILE_DRIVER,
+                      MiscTypeFlag.S_FLAIL,
+                      MiscTypeFlag.S_DUAL_SAW,
+                      MiscTypeFlag.S_CHAIN_WHIP,
+                      MiscTypeFlag.S_BACKHOE,
+                      MiscTypeFlag.S_MINING_DRILL,
+                      MiscTypeFlag.S_WRECKING_BALL,
+                      MiscTypeFlag.S_BUZZSAW);
             } else {
                 // Mine Dispensers are allowed explicitly, A-Pods have type PB, Weapon Enhancements are Artemis and PPC Caps and such
                 valid = mt.hasAnyFlag(MiscType.F_VEHICLE_MINE_DISPENSER,

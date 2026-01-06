@@ -58,6 +58,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
@@ -376,7 +377,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
         // the list for the first matching.
         Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
-              .filter(et -> (et.hasFlag(MiscType.F_MASC) && et.getSubType() == 0)
+              .filter(et -> (et.hasFlag(MiscType.F_MASC) && !et.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
                     || et.hasFlag(MiscType.F_TSM)
                     || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
                     || et.hasFlag(MiscType.F_SCM)).findFirst();

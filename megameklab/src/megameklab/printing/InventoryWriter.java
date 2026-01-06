@@ -69,6 +69,7 @@ import megamek.common.units.ProtoMek;
 import megamek.common.units.QuadVee;
 import megamek.common.units.SmallCraft;
 import megamek.common.units.SupportTank;
+import megamek.common.weapons.missiles.MMLWeapon;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -109,7 +110,7 @@ public class InventoryWriter {
         LOCATION("Loc", 0.40, 0.49),
         LOCATION_NO_HEAT("Loc", 0.45, 0.54),
         HEAT("Ht", 0.465, 0.57),
-        DAMAGE("Dmg", 0.5, 0.5, 0.43),
+        DAMAGE("Dmg", 0.5, 0.5, 0.5),
         MOD("Tn", 0.725, 0.625, 0.65),
         MIN("Min", 0.785, 0.785, 0.72),
         SHORT("Sht", 0.843, 0.843, 0.803),
@@ -652,7 +653,8 @@ public class InventoryWriter {
     }
 
     static private final float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
-    static private final float LINE_SPACING_REDUCTION_STEP = 0.05f; // the amount we reduce the line spacing each attempt
+    static private final float LINE_SPACING_REDUCTION_STEP = 0.04f; // the amount we reduce the line spacing each
+    // attempt
     static private final float FONT_SIZE_REDUCTION_STEP = 0.25f; // the amount we reduce the font each attempt
     // the minimum line spacing during the first "line spacing only" attempts
     // if we can't fit the text, we will roll back, and we will start reducing the
@@ -1011,6 +1013,9 @@ public class InventoryWriter {
                 if (row > 0) {
                     if (line instanceof StandardInventoryEntry stdInv) {
                         Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
+                        if (stdInv.getMounted().getType() instanceof MMLWeapon) {
+                            modMount = null; //MML print their module directly inline
+                        }
                         if (modMount != null) {
                             final String name = modMount.getType().getInternalName();
                             final String location = modMount.getEntity().getLocationAbbr(modMount.getLocation());
@@ -1024,6 +1029,14 @@ public class InventoryWriter {
                                 rootGroup.appendChild(rowGroup2);
                                 rowGroup = rowGroup2; // For this row, we use the new subgroup
                             }
+                        } else {
+                            // No linked mounted, this is probably an alternative mode
+                            Element rowGroup2 = sheet.getSVGDocument().createElementNS(svgNS,
+                                  SVGConstants.SVG_G_TAG);
+                            rowGroup2.setAttributeNS(null, "class", "alternativeMode");
+                            rowGroup2.setAttributeNS(null, "mode", line.getNameField(row));
+                            rootGroup.appendChild(rowGroup2);
+                            rowGroup = rowGroup2; // For this row, we use the new subgroup
                         }
                     }
                 }

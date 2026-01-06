@@ -215,7 +215,7 @@ public class UnitUtil {
      * @param eq The equipment to test
      */
     public static boolean isMASC(EquipmentType eq) {
-        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) && !eq.hasSubType(MiscType.S_SUPERCHARGER));
+        return (eq instanceof MiscType) && (eq.hasFlag(MiscType.F_MASC) && !eq.hasFlag(MiscTypeFlag.S_SUPERCHARGER));
     }
 
     /**
@@ -651,7 +651,7 @@ public class UnitUtil {
         if (eq.hasFlag(MiscType.F_CLUB)) {
             // We don't want makeshift clubs picked up on the battlefield showing up as
             // construction options
-            return !eq.hasSubType(MiscType.S_CLUB | MiscType.S_TREE_CLUB);
+            return !eq.hasAnyFlag(MiscTypeFlag.S_CLUB, MiscTypeFlag.S_TREE_CLUB);
         }
         return eq.hasFlag(MiscType.F_HAND_WEAPON) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_RAM_PLATE);
     }
@@ -2029,8 +2029,8 @@ public class UnitUtil {
                   (equipmentType.hasFlag(MiscType.F_TSM) ||
                         equipmentType.hasFlag(MiscType.F_INDUSTRIAL_TSM) ||
                         (equipmentType.hasFlag(MiscType.F_MASC) &&
-                              !equipmentType.hasSubType(MiscType.S_SUPERCHARGER) &&
-                              !equipmentType.hasSubType(MiscType.S_JET_BOOSTER)) ||
+                              !equipmentType.hasFlag(MiscTypeFlag.S_SUPERCHARGER) &&
+                              !equipmentType.hasFlag(MiscTypeFlag.S_JET_BOOSTER)) ||
                         equipmentType.hasFlag(MiscType.F_SCM))) {
                 continue;
             }
