@@ -247,10 +247,6 @@ public class CIAugmentationView extends IView implements ActionListener {
 
         int year = getInfantry().getYear();
         boolean isClan = getInfantry().isClan();
-
-        // Check wing validity constraints (IO p.85)
-        boolean hasGliderWings = getInfantry().hasAbility(OptionsConstants.MD_PL_GLIDER);
-        boolean hasPoweredFlight = getInfantry().hasAbility(OptionsConstants.MD_PL_FLIGHT);
         boolean canUseWings = isFootInfantry();
 
         for (IOption opt : options.keySet()) {
@@ -264,13 +260,13 @@ public class CIAugmentationView extends IView implements ActionListener {
                 boolean isAvailable = augType.isAvailableIn(year, isClan);
 
                 // Apply wing-specific restrictions (IO p.85)
+                // Note: Mutual exclusion between wing types is handled in actionPerformed
+                // to allow single-click switching between glider and powered flight
                 String optName = opt.getName();
-                if (optName.equals(OptionsConstants.MD_PL_GLIDER)) {
-                    // Glider wings: only foot infantry, mutually exclusive with powered flight
-                    isAvailable = isAvailable && canUseWings && !hasPoweredFlight;
-                } else if (optName.equals(OptionsConstants.MD_PL_FLIGHT)) {
-                    // Powered flight: only foot infantry, mutually exclusive with glider wings
-                    isAvailable = isAvailable && canUseWings && !hasGliderWings;
+                if (optName.equals(OptionsConstants.MD_PL_GLIDER)
+                      || optName.equals(OptionsConstants.MD_PL_FLIGHT)) {
+                    // Wings: only foot infantry can use them
+                    isAvailable = isAvailable && canUseWings;
                 }
 
                 checkBox.setEnabled(isAvailable);
