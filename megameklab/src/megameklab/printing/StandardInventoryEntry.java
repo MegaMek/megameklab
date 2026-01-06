@@ -316,7 +316,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_BODY) {
                 name.append(" (Body)");
             } else
-            if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
+            if (!mount.isMekTurretMounted() && mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
                 name.append(" (T)");
             }
         }

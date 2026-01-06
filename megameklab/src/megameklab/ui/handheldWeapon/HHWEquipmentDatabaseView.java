@@ -142,8 +142,7 @@ public class HHWEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                       MiscTypeFlag.S_BACKHOE,
                       MiscTypeFlag.S_MINING_DRILL,
                       MiscTypeFlag.S_WRECKING_BALL,
-                      MiscTypeFlag.S_BUZZSAW,
-                      MiscTypeFlag.S_CHAIN_WHIP);
+                      MiscTypeFlag.S_BUZZSAW);
             } else {
                 // Mine Dispensers are allowed explicitly, A-Pods have type PB, Weapon Enhancements are Artemis and PPC Caps and such
                 valid = mt.hasAnyFlag(MiscType.F_VEHICLE_MINE_DISPENSER,

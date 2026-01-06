@@ -1014,9 +1014,7 @@ public class InventoryWriter {
                     if (line instanceof StandardInventoryEntry stdInv) {
                         Mounted<?> modMount = stdInv.getMounted().getLinkedBy();
                         if (stdInv.getMounted().getType() instanceof MMLWeapon) {
-                            if ((modMount != null)) {
-                                modMount = null; //MML print their module directly inline
-                            }
+                            modMount = null; //MML print their module directly inline
                         }
                         if (modMount != null) {
                             final String name = modMount.getType().getInternalName();
