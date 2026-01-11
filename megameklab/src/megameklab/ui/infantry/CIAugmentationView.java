@@ -47,6 +47,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import megamek.common.enums.MDAugmentationType;
 import megamek.common.enums.ProstheticEnhancementType;
 import megamek.common.options.IOption;
 import megamek.common.options.OptionsConstants;
@@ -243,14 +244,54 @@ public class CIAugmentationView extends IView implements ActionListener {
 
     public void refresh() {
         handleEvents = false;
+
+        int year = getInfantry().getYear();
+        boolean isClan = getInfantry().isClan();
+        boolean canUseWings = isFootInfantry();
+
         for (IOption opt : options.keySet()) {
-            options.get(opt).setSelected(getInfantry().getCrew().getOptions().booleanOption(opt.getName()));
+            JCheckBox checkBox = options.get(opt);
+            boolean isSelected = getInfantry().getCrew().getOptions().booleanOption(opt.getName());
+            checkBox.setSelected(isSelected);
+
+            // Enable/disable based on tech availability for the unit's year
+            MDAugmentationType augType = MDAugmentationType.getByOptionName(opt.getName());
+            if (augType != null) {
+                boolean isAvailable = augType.isAvailableIn(year, isClan);
+
+                // Apply wing-specific restrictions (IO p.85)
+                // Note: Mutual exclusion between wing types is handled in actionPerformed
+                // to allow single-click switching between glider and powered flight
+                String optName = opt.getName();
+                if (optName.equals(OptionsConstants.MD_PL_GLIDER)
+                      || optName.equals(OptionsConstants.MD_PL_FLIGHT)) {
+                    // Wings: only foot infantry can use them
+                    isAvailable = isAvailable && canUseWings;
+                }
+
+                checkBox.setEnabled(isAvailable);
+                // If not available and was selected, deselect it
+                if (!isAvailable && isSelected) {
+                    checkBox.setSelected(false);
+                    getInfantry().getCrew().getOptions().getOption(opt.getName()).setValue(false);
+                }
+            }
         }
 
         // Update prosthetic enhancement controls
         refreshProstheticPanel();
         refreshExtraneousPanel();
         handleEvents = true;
+    }
+
+    /**
+     * Returns true if the infantry is foot infantry (not motorized, mechanized, or beast-mounted). Per IO p.85, glider
+     * and powered flight wings can only be used by foot infantry.
+     */
+    private boolean isFootInfantry() {
+        return !getInfantry().isMechanized()
+              && !getInfantry().getMovementMode().isMotorizedInfantry()
+              && (getInfantry().getMount() == null);
     }
 
     /**
@@ -280,16 +321,14 @@ public class CIAugmentationView extends IView implements ActionListener {
                 ProstheticEnhancementType type2 = getInfantry().getProstheticEnhancement2();
                 cbEnhancement2.setSelectedItem(type2);
                 cbCount2.setSelectedItem(getInfantry().getProstheticEnhancement2Count());
-            } else {
-                // Clear slot 2 when switching from Improved to Standard
-                getInfantry().setProstheticEnhancement2(null);
-                getInfantry().setProstheticEnhancement2Count(0);
             }
+            // Don't clear slot 2 data - preserve for re-selection
         }
     }
 
     /**
      * Updates the extraneous limbs panel visibility and values.
+     * Per IO p.85, if wings are installed, only one pair of extraneous limbs is allowed.
      */
     private void refreshExtraneousPanel() {
         boolean hasExtraneous = getInfantry().hasAbility(OptionsConstants.MD_PL_EXTRA_LIMBS);
@@ -302,14 +341,24 @@ public class CIAugmentationView extends IView implements ActionListener {
             ProstheticEnhancementType pair1Type = getInfantry().getExtraneousPair1();
             cbExtraneousPair1.setSelectedItem(pair1Type);
 
-            // Pair 2 is also available
-            ProstheticEnhancementType pair2Type = getInfantry().getExtraneousPair2();
-            cbExtraneousPair2.setSelectedItem(pair2Type);
-        } else {
-            // Clear extraneous data when option is deselected
-            getInfantry().setExtraneousPair1(null);
-            getInfantry().setExtraneousPair2(null);
+            // Check if wings are installed - limits to 1 pair only (IO p.85)
+            boolean hasWings = getInfantry().hasAbility(OptionsConstants.MD_PL_GLIDER)
+                  || getInfantry().hasAbility(OptionsConstants.MD_PL_FLIGHT);
+            boolean pair2Allowed = !hasWings;
+
+            lblExtraneousPair2.setVisible(pair2Allowed);
+            cbExtraneousPair2.setVisible(pair2Allowed);
+
+            if (pair2Allowed) {
+                ProstheticEnhancementType pair2Type = getInfantry().getExtraneousPair2();
+                cbExtraneousPair2.setSelectedItem(pair2Type);
+            } else {
+                // Clear pair 2 data when wings restrict us to 1 pair
+                getInfantry().setExtraneousPair2(null);
+                cbExtraneousPair2.setSelectedItem(null);
+            }
         }
+        // Don't clear data when option is deselected - preserve for re-selection
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -395,29 +444,33 @@ public class CIAugmentationView extends IView implements ActionListener {
                 } else if (optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
                     handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_PL_ENHANCED);
                 }
+
+                // Glider and Powered Flight wings are mutually exclusive (IO p.85)
+                if (optionName.equals(OptionsConstants.MD_PL_GLIDER)) {
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_PL_FLIGHT);
+                } else if (optionName.equals(OptionsConstants.MD_PL_FLIGHT)) {
+                    handleMutuallyExclusiveOption(optionName, OptionsConstants.MD_PL_GLIDER);
+                }
             }
 
-            // Handle prosthetic panel visibility and cleanup
+            // Handle prosthetic panel visibility (don't clear data - preserve for re-selection)
             if (optionName.equals(OptionsConstants.MD_PL_ENHANCED)
                   || optionName.equals(OptionsConstants.MD_PL_I_ENHANCED)) {
-                // Clear prosthetic data when both options are deselected
-                boolean hasEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_ENHANCED);
-                boolean hasImprovedEnhanced = getInfantry().hasAbility(OptionsConstants.MD_PL_I_ENHANCED);
-                if (!hasEnhanced && !hasImprovedEnhanced) {
-                    clearAllProstheticData();
-                }
-
                 handleEvents = false;
                 refreshProstheticPanel();
                 handleEvents = true;
             }
 
-            // Handle extraneous panel visibility and cleanup
+            // Handle extraneous panel visibility (don't clear data - preserve for re-selection)
             if (optionName.equals(OptionsConstants.MD_PL_EXTRA_LIMBS)) {
-                if (!checkBox.isSelected()) {
-                    clearAllExtraneousData();
-                }
+                handleEvents = false;
+                refreshExtraneousPanel();
+                handleEvents = true;
+            }
 
+            // Handle wing changes - affects extraneous limb pair limits (IO p.85)
+            if (optionName.equals(OptionsConstants.MD_PL_GLIDER)
+                  || optionName.equals(OptionsConstants.MD_PL_FLIGHT)) {
                 handleEvents = false;
                 refreshExtraneousPanel();
                 handleEvents = true;
@@ -482,6 +535,7 @@ public class CIAugmentationView extends IView implements ActionListener {
 
         if (refresh != null) {
             refresh.refreshStructure();
+            refresh.refreshStatus();
             refresh.refreshPreview();
         }
     }

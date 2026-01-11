@@ -230,6 +230,20 @@ public class BayWeaponCriticalTree extends JTree {
         this.refresh = refresh;
     }
 
+    /**
+     * Safely triggers a full refresh of all UI components.
+     * Guards against null refresh listener which can occur during initialization.
+     */
+    private void safeRefreshAll() {
+        if (refresh != null) {
+            refresh.refreshEquipment();
+            refresh.refreshBuild();
+            refresh.refreshPreview();
+            refresh.refreshStatus();
+            refresh.refreshSummary();
+        }
+    }
+
     public void rebuild() {
         List<Integer> expandedBays = getExpandedBayIds();
         setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_WEAPONS));
@@ -347,11 +361,7 @@ public class BayWeaponCriticalTree extends JTree {
             UnitUtil.removeMounted(eSource.getEntity(), bayNode.getMounted());
         }
         if (shouldRefresh) {
-            refresh.refreshEquipment();
-            refresh.refreshBuild();
-            refresh.refreshPreview();
-            refresh.refreshStatus();
-            refresh.refreshSummary();
+            safeRefreshAll();
         }
     }
 
@@ -414,11 +424,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
 
         if (shouldRefresh) {
-            refresh.refreshEquipment();
-            refresh.refreshBuild();
-            refresh.refreshPreview();
-            refresh.refreshStatus();
-            refresh.refreshSummary();
+            safeRefreshAll();
         }
     }
 
@@ -451,11 +457,7 @@ public class BayWeaponCriticalTree extends JTree {
 
             }
         }
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -467,11 +469,7 @@ public class BayWeaponCriticalTree extends JTree {
      */
     private void deleteAmmo(final AmmoMounted ammo, int shots) {
         ammo.setShotsLeft(ammo.getBaseShotsLeft());
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -493,11 +491,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
         UnitUtil.changeMountStatus(eSource.getEntity(), node.getMounted(),
               location, Entity.LOC_NONE, rear);
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -514,11 +508,7 @@ public class BayWeaponCriticalTree extends JTree {
             UnitUtil.removeMounted(eSource.getEntity(), mounted.getLinkedBy());
         }
         UnitUtil.compactCriticalSlots(eSource.getEntity());
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -997,11 +987,7 @@ public class BayWeaponCriticalTree extends JTree {
         } catch (Exception ignored) {
             // should not happen
         }
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -1061,11 +1047,7 @@ public class BayWeaponCriticalTree extends JTree {
                     addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + eq.getBaseShotsLeft());
                     updateAmmoCapacity(addMount.get());
                     UnitUtil.removeMounted(eSource.getEntity(), eq);
-                    refresh.refreshEquipment();
-                    refresh.refreshBuild();
-                    refresh.refreshPreview();
-                    refresh.refreshStatus();
-                    refresh.refreshSummary();
+                    safeRefreshAll();
                     return;
                 }
             }
@@ -1098,11 +1080,7 @@ public class BayWeaponCriticalTree extends JTree {
                       getLocationName());
             }
         }
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     private void updateAmmoCapacity(AmmoMounted ammoMount) {
@@ -1126,11 +1104,7 @@ public class BayWeaponCriticalTree extends JTree {
         if (addMount.isPresent()) {
             addMount.get().setShotsLeft(addMount.get().getBaseShotsLeft() + shots);
             updateAmmoCapacity(addMount.get());
-            refresh.refreshEquipment();
-            refresh.refreshBuild();
-            refresh.refreshPreview();
-            refresh.refreshStatus();
-            refresh.refreshSummary();
+            safeRefreshAll();
         } else {
             try {
                 Mounted<?> m = eSource.getEntity().addEquipment(at, bay.getLocation());
@@ -1156,11 +1130,7 @@ public class BayWeaponCriticalTree extends JTree {
             expandRow(0);
             setRootVisible(false);
         }
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     /**
@@ -1215,11 +1185,7 @@ public class BayWeaponCriticalTree extends JTree {
               && (node.getMounted().getLinkedBy() == null)) {
             moveToArc(eq);
             eq.setLinked(node.getMounted());
-            refresh.refreshEquipment();
-            refresh.refreshBuild();
-            refresh.refreshPreview();
-            refresh.refreshStatus();
-            refresh.refreshSummary();
+            safeRefreshAll();
         } else {
             addToBay(getBayFromPath(path), eq);
         }
@@ -1238,8 +1204,10 @@ public class BayWeaponCriticalTree extends JTree {
         } else {
             addAmmoToBay(getBayFromPath(path), eq, shots);
         }
-        refresh.refreshSummary();
-        refresh.refreshPreview();
+        if (refresh != null) {
+            refresh.refreshSummary();
+            refresh.refreshPreview();
+        }
     }
 
     /**
@@ -1513,11 +1481,7 @@ public class BayWeaponCriticalTree extends JTree {
         } catch (NumberFormatException e) {
             return; // Failed to parse equipment selection
         }
-        refresh.refreshEquipment();
-        refresh.refreshBuild();
-        refresh.refreshPreview();
-        refresh.refreshStatus();
-        refresh.refreshSummary();
+        safeRefreshAll();
     }
 
     private void restoreExpandedBays(List<Integer> expandedBayIds) {
