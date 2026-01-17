@@ -156,6 +156,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         ranges = setRanges();
     }
 
+    @Override
     public String getUniqueId() {
         final String name = this.mount.getType().getInternalName();
         final String location = this.mount.getEntity().getLocationAbbr(this.mount.getLocation());
