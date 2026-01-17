@@ -231,6 +231,7 @@ public class PMMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    @Override
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }

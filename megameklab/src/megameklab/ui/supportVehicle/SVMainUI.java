@@ -280,6 +280,7 @@ public class SVMainUI extends MegaMekLabMainUI {
         return structureTab.getTechManager();
     }
 
+    @Override
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
