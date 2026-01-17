@@ -70,7 +70,7 @@ public class SummaryWeightLabel extends JLabel {
 
     @Override
     public Dimension getPreferredSize() {
-        if (internalSizingLabel != null) { // KEEP THIS - could be called before initialization
+        if (internalSizingLabel != null) { // KEEP THIS - defensive in case called from the super constructor
             return internalSizingLabel.getPreferredSize();
         } else {
             return super.getPreferredSize();
