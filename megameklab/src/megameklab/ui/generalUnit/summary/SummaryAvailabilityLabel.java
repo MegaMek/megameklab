@@ -58,20 +58,22 @@ public class SummaryAvailabilityLabel extends JLabel {
     @Override
     public void setFont(Font font) {
         super.setFont(font);
-        if (internalSizingLabel != null) {
+        if (internalSizingLabel != null) { // KEEP THIS - called from the super constructor!
             internalSizingLabel.setFont(font);
         }
     }
 
     private void initialize() {
         setBorder(SummaryItem.labelBorder);
-        if (internalSizingLabel != null) {
-            internalSizingLabel.setBorder(SummaryItem.labelBorder);
-        }
+        internalSizingLabel.setBorder(SummaryItem.labelBorder);
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return internalSizingLabel.getPreferredSize();
+        if (internalSizingLabel != null) { // KEEP THIS - could be called before initialization
+            return internalSizingLabel.getPreferredSize();
+        } else {
+            return super.getPreferredSize();
+        }
     }
 }
