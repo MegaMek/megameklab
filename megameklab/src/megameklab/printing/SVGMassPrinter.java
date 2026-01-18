@@ -1023,6 +1023,10 @@ public class SVGMassPrinter {
                       && mek.getCockpitType() != Mek.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL) {
                     feats.add(mek.getCockpitTypeString());
                 }
+                if (mek.getGyroType() != Mek.GYRO_STANDARD
+                && mek.getGyroType() != Mek.GYRO_NONE) {
+                    feats.add(mek.getGyroTypeString());
+                }
                 if (mek.hasFullHeadEject()) {
                     feats.add(Mek.FULL_HEAD_EJECT_STRING);
                 }
@@ -1408,7 +1412,7 @@ public class SVGMassPrinter {
                 damageModifier *= 1.42; // Rapid mode
             }
 
-            if (entity instanceof BattleArmor ba && !weapon.isSquadSupportWeapon()) {
+            if (entity instanceof BattleArmor ba && (weapon.getLocation()==BattleArmor.LOC_SQUAD) && !weapon.isSquadSupportWeapon()) {
                 // We have an entry of a single weapon but in real is N weapons equal to the squad size so we use the
                 // cluster table
                 damageModifier *=  (expectedHitsByRackSize[ba.getSquadSize()]);
