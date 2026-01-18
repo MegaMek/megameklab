@@ -148,7 +148,7 @@ import static megamek.common.equipment.WeaponType.DAMAGE_VARIABLE;
  */
 public class SVGMassPrinter {
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
@@ -1800,7 +1800,7 @@ public class SVGMassPrinter {
                     rowMap.put("shortName", eq.getShortName());
                     rowMap.put("level", eq.getStaticTechLevel().toString());
                     TechBase techBase = eq.getTechBase();
-                    switch  (techBase) {
+                    switch (techBase) {
                         case IS -> rowMap.put("techBase", "IS");
                         case CLAN -> rowMap.put("techBase", "Clan");
                         case ALL -> rowMap.put("techBase", "All");

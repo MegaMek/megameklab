@@ -135,10 +135,10 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 explicitZero = false;
                 mod = 0;
                 if (!hasLHand) {
-                    mod+=1;
+                    mod += 1;
                 }
                 if (!hasLLowerActuator) {
-                    mod+=2;
+                    mod += 2;
                 }
                 if (hasLArmAES) {
                     mod--;
@@ -151,10 +151,10 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 explicitZero = false;
                 mod = 0;
                 if (!hasRHand) {
-                    mod+=1;
+                    mod += 1;
                 }
                 if (!hasRLowerActuator) {
-                    mod+=2;
+                    mod += 2;
                 }
                 if (hasRArmAES) {
                     mod--;
