@@ -530,33 +530,43 @@ public class SVGOptimizer {
         final AffineTransform combined = new AffineTransform();
 
         parser.setTransformListHandler(new TransformListHandler() {
+            @Override
             public void startTransformList() {}
 
+            @Override
             public void endTransformList() {}
 
+            @Override
             public void matrix(float a, float b, float c, float d, float e,
                   float f) {combined.concatenate(new AffineTransform(a, b, c, d, e, f));}
 
+            @Override
             public void rotate(
                   float theta) {combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta)));}
 
+            @Override
             public void rotate(float theta, float cx, float cy) {
                 combined.concatenate(AffineTransform.getRotateInstance(Math.toRadians(theta),
                       cx,
                       cy));
             }
 
+            @Override
             public void translate(float tx) {combined.concatenate(AffineTransform.getTranslateInstance(tx, 0));}
 
+            @Override
             public void translate(float tx, float ty) {
                 combined.concatenate(AffineTransform.getTranslateInstance(tx,
                       ty));
             }
 
+            @Override
             public void scale(float sx) {combined.concatenate(AffineTransform.getScaleInstance(sx, sx));}
 
+            @Override
             public void scale(float sx, float sy) {combined.concatenate(AffineTransform.getScaleInstance(sx, sy));}
 
+            @Override
             public void skewX(float skx) {
                 combined.concatenate(new AffineTransform(1,
                       0,
@@ -566,6 +576,7 @@ public class SVGOptimizer {
                       0));
             }
 
+            @Override
             public void skewY(float sky) {
                 combined.concatenate(new AffineTransform(1,
                       Math.tan(Math.toRadians(sky)),

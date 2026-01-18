@@ -289,6 +289,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         previewTab.refresh();
     }
 
+    @Override
     public JDialog getFloatingEquipmentDatabase() {
         return floatingEquipmentDatabase;
     }
