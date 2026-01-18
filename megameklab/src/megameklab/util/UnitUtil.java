@@ -1298,7 +1298,7 @@ public class UnitUtil {
             return heat;
         }).sum();
 
-        if (entity.getArmorType(1) == EquipmentType.T_ARMOR_STEALTH && !entity.hasPatchworkArmor()) {
+        if (entity.getArmorType(0) == EquipmentType.T_ARMOR_STEALTH && !entity.hasPatchworkArmor()) {
             total += 10;
         }
 
