@@ -337,7 +337,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         }
 
         if (mount.isOneShot()) {
-            if (mount.getLinked().getType() instanceof AmmoType at) {
+            if ((mount.getLinked() != null) && (mount.getLinked().getType() instanceof AmmoType at)) {
                 if (at.getBaseAmmo() != null) {
                     name.append(" [")
                           .append(at.getMutatorName().replace("(Clan) ", ""))
