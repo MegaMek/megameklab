@@ -335,6 +335,17 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                   .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
                   .append(" shots]");
         }
+
+        if (mount.isOneShot()) {
+            if (mount.getLinked().getType() instanceof AmmoType at) {
+                if (at.getBaseAmmo() != null) {
+                    name.append(" [")
+                          .append(at.getMutatorName().replace("(Clan) ", ""))
+                          .append("]");
+                }
+            }
+        }
+
         return name.toString().trim();
     }
 
