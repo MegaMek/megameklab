@@ -1265,12 +1265,12 @@ public class UnitUtil {
     }
 
     /**
-     * Returns the total heat generation of the entity
+     * Returns the total equipment (not movement) heat generation of the entity
      *
      * @param countOneShots If false, one-shot weapons are excluded.
      */
     public static int getTotalHeatGeneration(Entity entity, boolean countOneShots) {
-        return entity.getEquipment().stream().mapToInt(m -> {
+        int total = entity.getEquipment().stream().mapToInt(m -> {
             var heat = m.getType().getHeat();
             if (m instanceof WeaponMounted wm) {
                 if (!countOneShots && wm.getType().hasFlag(WeaponType.F_ONE_SHOT)) {
@@ -1297,6 +1297,12 @@ public class UnitUtil {
             }
             return heat;
         }).sum();
+
+        if (entity.getArmorType(0) == EquipmentType.T_ARMOR_STEALTH && !entity.hasPatchworkArmor()) {
+            total += 10;
+        }
+
+        return total;
     }
 
     /**
