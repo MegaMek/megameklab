@@ -1494,7 +1494,7 @@ public class SVGMassPrinter {
             // Oneshot or TwoShots
             if (weaponType.hasFlag(WeaponType.F_DOUBLE_ONE_SHOT)) {
                 damageModifier *= 2.0 / SUSTAINED_TURNS; // Two shots over SUSTAINED_TURNS
-            }
+            } else
             if (weaponType.hasFlag(WeaponType.F_ONE_SHOT)) {
                 damageModifier *= 1.0 / SUSTAINED_TURNS; // One shot over SUSTAINED_TURNS
             }
