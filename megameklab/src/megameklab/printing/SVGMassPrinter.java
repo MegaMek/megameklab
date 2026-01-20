@@ -152,6 +152,7 @@ public class SVGMassPrinter {
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
+    private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
     private static final String TYPEFACE = "Roboto";
     private static final String SHEETS_DIR = "sheets";
     private static final String UNIT_FILE = "units.json";
@@ -427,10 +428,10 @@ public class SVGMassPrinter {
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
                 entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
-                if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
-                    entry.os = 1; // If the weapon is oneshot
-                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
+                if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
+                } else if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
+                    entry.os = 1; // If the weapon is oneshot
                 }
                 entry.c = getCriticals(entity, type);
                 list.put(key, entry);
@@ -1344,7 +1345,7 @@ public class SVGMassPrinter {
         }
 
         /**
-         * Calculates sustained Damage per Turn (DPT) considering heat limits.
+         * Calculates sustained Damage per Turn (DPT) considering heat limits and ammo availability.
          */
         public double calculateSustainedDPT(Entity entity) {
             double totalDPT = 0;
@@ -1357,6 +1358,7 @@ public class SVGMassPrinter {
                 }
             }
 
+            // Calculate fire fraction based on heat FIRST, as it affects ammo consumption
             if (entity.tracksHeat()) {
                 int maxHeat = this.dissipation;
                 int totalWeaponHeat = 0;
@@ -1370,6 +1372,10 @@ public class SVGMassPrinter {
                 fireFraction = totalWeaponHeat > maxHeat ? (double) maxHeat / totalWeaponHeat : 1.0;
             }
 
+            // Pre-calculate ammo multipliers, accounting for reduced fire rate due to heat
+            // If we only fire at 50% rate due to heat, we only consume 50% of the ammo
+            Map<String, Double> ammoMultipliers = calculateAmmoMultipliers(entity, allWeapons, fireFraction);
+
             for (WeaponMounted weapon : allWeapons) {
                 double damage;
                 if (weapon.getType() instanceof RACWeapon || weapon.getType() instanceof UACWeapon) {
@@ -1377,21 +1383,128 @@ public class SVGMassPrinter {
                 } else {
                     damage = SVGMassPrinter.getMaxDamage(entity, weapon.getType());
                 }
-                double damageModifier = getDamageMultiplier(entity, weapon, weapon.getType());
+                double damageModifier = getDamageMultiplier(entity, weapon, weapon.getType(), ammoMultipliers);
                 totalDPT += damage * damageModifier * fireFraction;
             }
             return totalDPT;
+        }
+
+        /**
+         * Calculates ammo availability multipliers for all weapon types.
+         * For weapons sharing the same ammo type, calculates how many turns worth of ammo is available
+         * over the SUSTAINED_TURNS period, accounting for reduced fire rate due to heat.
+         *
+         * @param entity The entity to analyze
+         * @param allWeapons List of all weapons to consider
+         * @param fireFraction The fraction of time weapons can fire (0.0 to 1.0), based on heat management
+         * @return Map of ammo key (ammoType:rackSize) to multiplier (0.0 to 1.0)
+         */
+        private Map<String, Double> calculateAmmoMultipliers(Entity entity, List<WeaponMounted> allWeapons,
+                                                              double fireFraction) {
+            // Map to track total shots needed per ammo type over effective firing turns
+            Map<String, Double> shotsNeededPerType = new HashMap<>();
+            // Map to track total ammo available per type
+            Map<String, Integer> ammoAvailablePerType = new HashMap<>();
+
+            // Effective turns of firing, accounting for heat-limited fire rate
+            double effectiveTurns = SUSTAINED_TURNS * fireFraction;
+
+            // Calculate shots needed for each weapon type
+            for (WeaponMounted weapon : allWeapons) {
+                WeaponType wtype = weapon.getType();
+                if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.NA) {
+                    continue; // Weapon doesn't use ammo
+                }
+                if (wtype.hasFlag(WeaponType.F_ONE_SHOT) || wtype.hasFlag(WeaponType.F_DOUBLE_ONE_SHOT)) {
+                    continue; // One-shot weapons already handled separately
+                }
+
+                String ammoKey = getAmmoKey(wtype);
+                int shotsPerTurn = getShotsPerTurn(wtype);
+                double totalShotsNeeded = shotsPerTurn * effectiveTurns;
+
+                // For Battle Armor squad weapons, multiply by expected squad size
+                if (entity instanceof BattleArmor ba
+                        && weapon.getLocation() == BattleArmor.LOC_SQUAD
+                        && !weapon.isSquadSupportWeapon()) {
+                    totalShotsNeeded *= ba.getSquadSize();
+                }
+
+                shotsNeededPerType.merge(ammoKey, totalShotsNeeded, Double::sum);
+            }
+
+            // Calculate total ammo available for each type
+            for (AmmoMounted ammo : entity.getAmmo()) {
+                AmmoType ammoType = ammo.getType();
+                String ammoKey = ammoType.getAmmoType() + ":" + ammoType.getRackSize();
+                int shotsAvailable = ammo.getBaseShotsLeft();
+                ammoAvailablePerType.merge(ammoKey, shotsAvailable, Integer::sum);
+            }
+
+            // Calculate multipliers
+            Map<String, Double> multipliers = new HashMap<>();
+            for (Map.Entry<String, Double> entry : shotsNeededPerType.entrySet()) {
+                String ammoKey = entry.getKey();
+                double shotsNeeded = entry.getValue();
+                int shotsAvailable = ammoAvailablePerType.getOrDefault(ammoKey, 0);
+
+                if (shotsNeeded <= 0) {
+                    multipliers.put(ammoKey, 1.0);
+                } else if (shotsAvailable <= 0) {
+                    multipliers.put(ammoKey, 0.0);
+                } else {
+                    multipliers.put(ammoKey, Math.min(1.0, shotsAvailable / shotsNeeded));
+                }
+            }
+
+            return multipliers;
+        }
+
+        /**
+         * Gets a unique key for ammo type matching (ammoType:rackSize).
+         */
+        private String getAmmoKey(WeaponType wtype) {
+            return wtype.getAmmoType() + ":" + wtype.getRackSize();
+        }
+
+        /**
+         * Calculates the number of shots consumed per turn for a weapon type.
+         * Accounts for multi-shot weapons like RAC (6 shots) and UAC (2 shots).
+         */
+        private int getShotsPerTurn(WeaponType wtype) {
+            // RAC fires 6 shots per turn at max rate
+            if (wtype instanceof RACWeapon) {
+                return 6;
+            }
+            // UAC fires 2 shots per turn in ultra mode
+            if (wtype instanceof UACWeapon) {
+                return 2;
+            }
+            // Standard weapons fire 1 shot per turn
+            return 1;
         }
 
         private static float[] expectedHitsByRackSize = { 0.0f, 1.0f, 1.58f, 2.0f,
                                                           2.63f, 3.17f, 4.0f, 4.49f, 4.98f, 5.47f, 6.31f, 7.23f, 8.14f,
                                                           8.59f, 9.04f, 9.5f, 10.1f, 10.8f, 11.42f, 12.1f, 12.7f };
 
-        private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType) {
+        private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType,
+                                             Map<String, Double> ammoMultipliers) {
             double damageModifier = 1d;
-            // Oneshot or Fusillade
-            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT) && !(weaponType instanceof CLFussilade)) {
-                damageModifier *= .1;
+            // Oneshot or TwoShots
+            if (weaponType.hasFlag(WeaponType.F_DOUBLE_ONE_SHOT)) {
+                damageModifier *= 2.0 / SUSTAINED_TURNS; // Two shots over SUSTAINED_TURNS
+            } else
+            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT)) {
+                damageModifier *= 1.0 / SUSTAINED_TURNS; // One shot over SUSTAINED_TURNS
+            }
+
+            // Apply ammo availability multiplier for ammo-using weapons (non-oneshot)
+            if (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.NA
+                  && !weaponType.hasAnyFlag(WeaponType.F_ONE_SHOT, WeaponType.F_DOUBLE_ONE_SHOT)) {
+                String ammoKey = getAmmoKey(weaponType);
+                double ammoMultiplier = ammoMultipliers.getOrDefault(ammoKey, 1.0);
+                damageModifier *= ammoMultiplier;
             }
 
             // cluster weapons or Battle Armor (cluster table)
@@ -1406,7 +1519,7 @@ public class SVGMassPrinter {
             }
 
             if (weaponType instanceof RACWeapon) {
-                damageModifier *= 3.17; // 5 shots
+                damageModifier *= 3.17; // 5 shots average expected hits
             } else
             if (weaponType instanceof UACWeapon) {
                 damageModifier *= 1.42; // Rapid mode
@@ -1419,16 +1532,15 @@ public class SVGMassPrinter {
             }
 
             // Targeting Computer
-            if (entity.hasTargComp() && weaponType.hasFlag(WeaponType.F_DIRECT_FIRE)) {
-                damageModifier *= 1.10;
-            }
-
+//           if (entity.hasTargComp() && weaponType.hasFlag(WeaponType.F_DIRECT_FIRE)) {
+//               damageModifier *= 1.10;
+//           }
             // Actuator Enhancement System
-            if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, null,
-                  weapon.getLocation()) &&
-                  ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
-                damageModifier *= 1.05;
-            }
+//           if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, null,
+//                 weapon.getLocation()) &&
+//                 ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
+//               damageModifier *= 1.05;
+//           }
 
             return damageModifier;
         }
@@ -1597,7 +1709,7 @@ public class SVGMassPrinter {
               .parallel()
               .map(mekSummary -> {
 //                    if (!mekSummary.isBattleArmor()) return null;
-//                    if (mekSummary.getMulId() != 4513) return null;
+//                    if (mekSummary.getMulId() != 4669) return null;
 //                    logger.info("{}", mekSummary.getName());
               Entity entity;
               synchronized (loadEntityLock) {
