@@ -143,21 +143,22 @@ public abstract class MegaMekLabMainUI extends JPanel
     private void dirtyCheck() {
         dirtyCheckPending = false;
         final UnitMemento newSnapshot = new UnitMemento(entity, this);
-        final boolean dirtyState = newSnapshot == null || !newSnapshot.equals(savedUnitSnapshot);
+        final boolean dirtyState = !newSnapshot.equals(savedUnitSnapshot);
 
         if (ignoreNextStateChange) {
             ignoreNextStateChange = false;
-        } else
-            // If we have a previous currentSnapshot, we need to push it to the undo stack
-            // before overwriting it.
-            if (newSnapshot != null && currentSnapshot != null && (!newSnapshot.equals(currentSnapshot))) {
+        } else {
+            // If we have a previous currentSnapshot, we need to push it to the undo stack before overwriting it
+            if (currentSnapshot != null && !newSnapshot.equals(currentSnapshot)) {
                 pushUndoState(currentSnapshot);
-            } else
+            } else {
                 // If we don't have a currentSnapshot, the undoStack is empty, and we have a
                 // savedUnitSnapshot, this is the first undo point
                 if (currentSnapshot == null && savedUnitSnapshot != null && undoStack.isEmpty()) {
                     pushUndoState(savedUnitSnapshot);
                 }
+            }
+        }
         currentSnapshot = newSnapshot;
         if (dirty != dirtyState) {
             dirty = dirtyState;

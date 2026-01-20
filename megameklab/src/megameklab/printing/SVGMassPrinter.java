@@ -78,11 +78,13 @@ import megamek.common.bays.BattleArmorBay;
 import megamek.common.bays.Bay;
 import megamek.common.bays.InfantryBay;
 import megamek.common.bays.ProtoMekBay;
+import megamek.common.enums.TechBase;
 import megamek.common.equipment.*;
 import megamek.common.equipment.enums.AmmoTypeFlag;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.loaders.MekSummary;
 import megamek.common.loaders.MekSummaryCache;
+import megamek.common.loaders.MtfFile;
 import megamek.common.templates.CapitalShipTROView;
 import megamek.common.units.*;
 import megamek.common.actions.ClubAttackAction;
@@ -136,7 +138,10 @@ import java.util.HashSet;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
-import static megameklab.printing.PrintRecordSheet.FONT_SIZE_MEDIUM;
+import static megamek.common.equipment.WeaponType.DAMAGE_ARTILLERY;
+import static megamek.common.equipment.WeaponType.DAMAGE_BY_CLUSTER_TABLE;
+import static megamek.common.equipment.WeaponType.DAMAGE_SPECIAL;
+import static megamek.common.equipment.WeaponType.DAMAGE_VARIABLE;
 
 /**
  * @author drake Generates SVG sheets for all units in the Mek Summary Cache and saves them
@@ -147,6 +152,7 @@ public class SVGMassPrinter {
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
+    private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
     private static final String TYPEFACE = "Roboto";
     private static final String SHEETS_DIR = "sheets";
     private static final String UNIT_FILE = "units.json";
@@ -196,17 +202,17 @@ public class SVGMassPrinter {
         if (wtype instanceof InfantryWeapon iw) {
             return iw.getInfantryDamage();
         }
-        if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
+        if (wtype.getDamage() == DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
             if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
                 perMissile = 2;
             }
             return wtype.getRackSize() * perMissile;
-        } else if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+        } else if (wtype.getDamage() == DAMAGE_VARIABLE) {
             return Math.max(0, wtype.getDamage(1));
-        } else if (wtype.getDamage() == WeaponType.DAMAGE_SPECIAL) {
+        } else if (wtype.getDamage() == DAMAGE_SPECIAL) {
             return 0;
-        } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+        } else if (wtype.getDamage() == DAMAGE_ARTILLERY) {
             return wtype.getRackSize();
         }
         int damage = wtype.getDamage();
@@ -337,7 +343,7 @@ public class SVGMassPrinter {
                 return Double.toString(wi.getInfantryDamage());
             }
 
-            if (wtype.getDamage() == WeaponType.DAMAGE_VARIABLE) {
+            if (wtype.getDamage() == DAMAGE_VARIABLE) {
                 if (wtype.getDamage(1) <= 0) {
                     return "0";
                 } else {
@@ -345,7 +351,7 @@ public class SVGMassPrinter {
                           + wtype.getDamage(wtype.getMediumRange()) + "/"
                           + wtype.getDamage(wtype.getLongRange());
                 }
-            } else if (wtype.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
+            } else if (wtype.getDamage() == DAMAGE_BY_CLUSTER_TABLE) {
                 if (wtype instanceof HAGWeapon) {
                     return wtype.getRackSize() + "";
                 } else if (wtype instanceof MekMortarWeapon) {
@@ -379,7 +385,7 @@ public class SVGMassPrinter {
                     return dmg + "/msl";
                 }
                 return "Cluster";
-            } else if (wtype.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
+            } else if (wtype.getDamage() == DAMAGE_ARTILLERY) {
                 return wtype.getRackSize() + "A";
             } else if (wtype instanceof UACWeapon) {
                 return wtype.getDamage() + "/Shot";
@@ -422,10 +428,10 @@ public class SVGMassPrinter {
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
                 entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
-                if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
-                    entry.os = 1; // If the weapon is oneshot
-                } else if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
+                if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
+                } else if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
+                    entry.os = 1; // If the weapon is oneshot
                 }
                 entry.c = getCriticals(entity, type);
                 list.put(key, entry);
@@ -608,35 +614,6 @@ public class SVGMassPrinter {
                     }
                 }
             }
-            // Special entries for mek features which aren't represented by a MiscType.
-            if (entity instanceof Mek mek && mek.hasRiscHeatSinkOverrideKit()) {
-                var mounted = new MiscMounted(entity, new MiscType() {{
-                    name = "RISC Heat Sink Override Kit";
-                    shortName = "RISC HS Override Kit";
-                    internalName = "RISC Heat Sink Override Kit";
-                }});
-                mounted.setLocation(Mek.LOC_CENTER_TORSO);
-                addMiscEntry(list,
-                      entity,
-                      mounted,
-                      mounted.getType(),
-                      entity.joinLocationAbbr(mounted.allLocations(), 2),
-                      mounted.getLocation());
-            }
-            if (entity instanceof Mek mek && mek.hasFullHeadEject()) {
-                var mounted = new MiscMounted(entity, new MiscType() {{
-                    name = "Full Head Ejection System";
-                    shortName = "Full Head Eject System";
-                    internalName = "Full Head Ejection System";
-                }});
-                mounted.setLocation(Mek.LOC_HEAD);
-                addMiscEntry(list,
-                      entity,
-                      mounted,
-                      mounted.getType(),
-                      entity.joinLocationAbbr(mounted.allLocations(), 2),
-                      mounted.getLocation());
-            }
         }
 
         private void addMiscEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
@@ -764,6 +741,7 @@ public class SVGMassPrinter {
         public String c3; // C3 system, if applicable
         public double dpt; // Damage per Turn, if applicable
         public List<String> quirks;
+        public List<String> features;
         public Collection<ExportInventoryEntry> comp;
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
         public int crewSize; // Number of crew members, if applicable
@@ -792,6 +770,7 @@ public class SVGMassPrinter {
                 this.as.put("usesOV", asElement.usesOV());
                 this.as.put("MV", AlphaStrikeHelper.getMovementAsString(asElement));
                 this.as.put("MVm", asElement.getMovement());
+                this.as.put("MVp", asElement.getPrimaryMovementMode());
                 this.as.put("usesArcs", asElement.usesArcs());
                 this.as.put("dmg", dmgData(asElement.getStandardDamage()));
                 this.as.put("usesE", asElement.usesSMLE());
@@ -965,14 +944,30 @@ public class SVGMassPrinter {
         }
 
         private String getC3Property(Entity entity) {
+            // Check weapons for C3 Master computers (these are weapon-mounted)
             for (WeaponMounted m : entity.getWeaponList()) {
                 if (m.getType().hasFlag(WeaponType.F_C3M) || m.getType().hasFlag(WeaponType.F_C3MBS)) {
-                    return m.getType().getShortName();
+                    return "C3";
                 }
             }
+            // Check misc equipment for other C3 systems
             for (MiscMounted m : entity.getMisc()) {
-                if (m.getType().isC3Equipment()) {
-                    return m.getType().getShortName();
+                MiscType type = m.getType();
+                // C3 family: F_C3S, F_C3SBS, F_C3EM
+                if (type.hasFlag(MiscType.F_C3S) || type.hasFlag(MiscType.F_C3SBS) || type.hasFlag(MiscType.F_C3EM)) {
+                    return "C3";
+                }
+                // C3i family
+                if (type.hasFlag(MiscType.F_C3I)) {
+                    return "C3i";
+                }
+                // Naval C3
+                if (type.hasFlag(MiscType.F_NAVAL_C3)) {
+                    return "Naval C3";
+                }
+                // Nova CEWS
+                if (type.hasFlag(MiscType.F_NOVA)) {
+                    return "Nova CEWS";
                 }
             }
             return "None";
@@ -993,6 +988,83 @@ public class SVGMassPrinter {
                 }
             }
             return sj;
+        }
+
+        private List<String> getFeatures(Entity entity) {
+            List<String> feats = new ArrayList<>();
+
+            // Cockpit type for Aero (if not standard/primitive)
+            if (entity instanceof Aero aero) {
+                if ((aero.getCockpitType() != Aero.COCKPIT_STANDARD)
+                      && (aero.getCockpitType() != Aero.COCKPIT_PRIMITIVE)) {
+                    feats.add(aero.getCockpitTypeString());
+                }
+                // VSTOL for conventional fighters
+                if ((aero instanceof ConvFighter) && aero.isVSTOL()) {
+                    feats.add("VSTOL Equipment");
+                }
+                // LF Battery for Jumpships
+                if (aero instanceof Jumpship && ((Jumpship) aero).hasLF()) {
+                    feats.add("LF Battery");
+                }
+            }
+
+            if (entity instanceof Mek mek) {
+                if (mek.getCockpitType() != Mek.COCKPIT_STANDARD
+                      && mek.getCockpitType() != Mek.COCKPIT_UNKNOWN
+                      && mek.getCockpitType() != Mek.COCKPIT_PRIMITIVE
+                      && mek.getCockpitType() != Mek.COCKPIT_INDUSTRIAL
+                      && mek.getCockpitType() != Mek.COCKPIT_PRIMITIVE_INDUSTRIAL
+                      && mek.getCockpitType() != Mek.COCKPIT_TRIPOD
+                      && mek.getCockpitType() != Mek.COCKPIT_QUADVEE
+                      && mek.getCockpitType() != Mek.COCKPIT_SUPERHEAVY
+                      && mek.getCockpitType() != Mek.COCKPIT_SUPERHEAVY_TRIPOD
+                      && mek.getCockpitType() != Mek.COCKPIT_SUPERHEAVY_INDUSTRIAL
+                      && mek.getCockpitType() != Mek.COCKPIT_TRIPOD_INDUSTRIAL
+                      && mek.getCockpitType() != Mek.COCKPIT_SUPERHEAVY_TRIPOD_INDUSTRIAL) {
+                    feats.add(mek.getCockpitTypeString());
+                }
+                if (mek.getGyroType() != Mek.GYRO_STANDARD
+                && mek.getGyroType() != Mek.GYRO_NONE) {
+                    feats.add(mek.getGyroTypeString());
+                }
+                if (mek.hasFullHeadEject()) {
+                    feats.add(Mek.FULL_HEAD_EJECT_STRING);
+                }
+                if (mek.hasRiscHeatSinkOverrideKit()) {
+                    feats.add(Mek.RISC_HEAT_SINK_OVERRIDE_KIT);
+                }
+            }
+            // Chassis modifications (for support vehicles and tanks)
+            if (entity.isSupportVehicle() || entity instanceof Tank) {
+                List<String> chassisMods = entity.getMisc()
+                      .stream()
+                      .filter(m -> m.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+                      .map(m -> "Chassis Mod: " + m.getType().getShortName())
+                      .distinct()
+                      .collect(Collectors.toList());
+                feats.addAll(chassisMods);
+            }
+
+            // Fire control systems
+            if (entity.hasWorkingMisc(MiscType.F_ADVANCED_FIRE_CONTROL)) {
+                feats.add("Advanced Fire Control");
+            } else if (entity.hasWorkingMisc(MiscType.F_BASIC_FIRE_CONTROL)) {
+                feats.add("Basic Fire Control");
+            }
+
+            // Transport types (just the type names, no capacities)
+            Set<String> transportTypes = new HashSet<>();
+            for (Transporter transporter : entity.getTransports()) {
+                if (transporter instanceof InfantryCompartment) {
+                    transportTypes.add("Infantry Compartment");
+                } else if (transporter instanceof Bay bay && !bay.isQuarters()) {
+                    transportTypes.add("Bay: " + transporter.getTransporterType());
+                }
+            }
+            feats.addAll(transportTypes);
+
+            return feats;
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
@@ -1068,6 +1140,7 @@ public class SVGMassPrinter {
             this.comp = (new Components(entity)).getComp();
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
+            this.features = getFeatures(entity);
             this.icon = getEntityIcon(entity);
             Map<String, Object> fluffMap = getFluffAttributes(entity);
             if (!fluffMap.isEmpty()) {
@@ -1272,7 +1345,7 @@ public class SVGMassPrinter {
         }
 
         /**
-         * Calculates sustained Damage per Turn (DPT) considering heat limits.
+         * Calculates sustained Damage per Turn (DPT) considering heat limits and ammo availability.
          */
         public double calculateSustainedDPT(Entity entity) {
             double totalDPT = 0;
@@ -1285,6 +1358,7 @@ public class SVGMassPrinter {
                 }
             }
 
+            // Calculate fire fraction based on heat FIRST, as it affects ammo consumption
             if (entity.tracksHeat()) {
                 int maxHeat = this.dissipation;
                 int totalWeaponHeat = 0;
@@ -1298,6 +1372,10 @@ public class SVGMassPrinter {
                 fireFraction = totalWeaponHeat > maxHeat ? (double) maxHeat / totalWeaponHeat : 1.0;
             }
 
+            // Pre-calculate ammo multipliers, accounting for reduced fire rate due to heat
+            // If we only fire at 50% rate due to heat, we only consume 50% of the ammo
+            Map<String, Double> ammoMultipliers = calculateAmmoMultipliers(entity, allWeapons, fireFraction);
+
             for (WeaponMounted weapon : allWeapons) {
                 double damage;
                 if (weapon.getType() instanceof RACWeapon || weapon.getType() instanceof UACWeapon) {
@@ -1305,25 +1383,132 @@ public class SVGMassPrinter {
                 } else {
                     damage = SVGMassPrinter.getMaxDamage(entity, weapon.getType());
                 }
-                double damageModifier = getDamageMultiplier(entity, weapon, weapon.getType());
+                double damageModifier = getDamageMultiplier(entity, weapon, weapon.getType(), ammoMultipliers);
                 totalDPT += damage * damageModifier * fireFraction;
             }
             return totalDPT;
+        }
+
+        /**
+         * Calculates ammo availability multipliers for all weapon types.
+         * For weapons sharing the same ammo type, calculates how many turns worth of ammo is available
+         * over the SUSTAINED_TURNS period, accounting for reduced fire rate due to heat.
+         *
+         * @param entity The entity to analyze
+         * @param allWeapons List of all weapons to consider
+         * @param fireFraction The fraction of time weapons can fire (0.0 to 1.0), based on heat management
+         * @return Map of ammo key (ammoType:rackSize) to multiplier (0.0 to 1.0)
+         */
+        private Map<String, Double> calculateAmmoMultipliers(Entity entity, List<WeaponMounted> allWeapons,
+                                                              double fireFraction) {
+            // Map to track total shots needed per ammo type over effective firing turns
+            Map<String, Double> shotsNeededPerType = new HashMap<>();
+            // Map to track total ammo available per type
+            Map<String, Integer> ammoAvailablePerType = new HashMap<>();
+
+            // Effective turns of firing, accounting for heat-limited fire rate
+            double effectiveTurns = SUSTAINED_TURNS * fireFraction;
+
+            // Calculate shots needed for each weapon type
+            for (WeaponMounted weapon : allWeapons) {
+                WeaponType wtype = weapon.getType();
+                if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.NA) {
+                    continue; // Weapon doesn't use ammo
+                }
+                if (wtype.hasFlag(WeaponType.F_ONE_SHOT) || wtype.hasFlag(WeaponType.F_DOUBLE_ONE_SHOT)) {
+                    continue; // One-shot weapons already handled separately
+                }
+
+                String ammoKey = getAmmoKey(wtype);
+                int shotsPerTurn = getShotsPerTurn(wtype);
+                double totalShotsNeeded = shotsPerTurn * effectiveTurns;
+
+                // For Battle Armor squad weapons, multiply by expected squad size
+                if (entity instanceof BattleArmor ba
+                        && weapon.getLocation() == BattleArmor.LOC_SQUAD
+                        && !weapon.isSquadSupportWeapon()) {
+                    totalShotsNeeded *= ba.getSquadSize();
+                }
+
+                shotsNeededPerType.merge(ammoKey, totalShotsNeeded, Double::sum);
+            }
+
+            // Calculate total ammo available for each type
+            for (AmmoMounted ammo : entity.getAmmo()) {
+                AmmoType ammoType = ammo.getType();
+                String ammoKey = ammoType.getAmmoType() + ":" + ammoType.getRackSize();
+                int shotsAvailable = ammo.getBaseShotsLeft();
+                ammoAvailablePerType.merge(ammoKey, shotsAvailable, Integer::sum);
+            }
+
+            // Calculate multipliers
+            Map<String, Double> multipliers = new HashMap<>();
+            for (Map.Entry<String, Double> entry : shotsNeededPerType.entrySet()) {
+                String ammoKey = entry.getKey();
+                double shotsNeeded = entry.getValue();
+                int shotsAvailable = ammoAvailablePerType.getOrDefault(ammoKey, 0);
+
+                if (shotsNeeded <= 0) {
+                    multipliers.put(ammoKey, 1.0);
+                } else if (shotsAvailable <= 0) {
+                    multipliers.put(ammoKey, 0.0);
+                } else {
+                    multipliers.put(ammoKey, Math.min(1.0, shotsAvailable / shotsNeeded));
+                }
+            }
+
+            return multipliers;
+        }
+
+        /**
+         * Gets a unique key for ammo type matching (ammoType:rackSize).
+         */
+        private String getAmmoKey(WeaponType wtype) {
+            return wtype.getAmmoType() + ":" + wtype.getRackSize();
+        }
+
+        /**
+         * Calculates the number of shots consumed per turn for a weapon type.
+         * Accounts for multi-shot weapons like RAC (6 shots) and UAC (2 shots).
+         */
+        private int getShotsPerTurn(WeaponType wtype) {
+            // RAC fires 6 shots per turn at max rate
+            if (wtype instanceof RACWeapon) {
+                return 6;
+            }
+            // UAC fires 2 shots per turn in ultra mode
+            if (wtype instanceof UACWeapon) {
+                return 2;
+            }
+            // Standard weapons fire 1 shot per turn
+            return 1;
         }
 
         private static float[] expectedHitsByRackSize = { 0.0f, 1.0f, 1.58f, 2.0f,
                                                           2.63f, 3.17f, 4.0f, 4.49f, 4.98f, 5.47f, 6.31f, 7.23f, 8.14f,
                                                           8.59f, 9.04f, 9.5f, 10.1f, 10.8f, 11.42f, 12.1f, 12.7f };
 
-        private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType) {
+        private double getDamageMultiplier(Entity entity, Mounted<?> weapon, WeaponType weaponType,
+                                             Map<String, Double> ammoMultipliers) {
             double damageModifier = 1d;
-            // Oneshot or Fusillade
-            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT) && !(weaponType instanceof CLFussilade)) {
-                damageModifier *= .1;
+            // Oneshot or TwoShots
+            if (weaponType.hasFlag(WeaponType.F_DOUBLE_ONE_SHOT)) {
+                damageModifier *= 2.0 / SUSTAINED_TURNS; // Two shots over SUSTAINED_TURNS
+            } else
+            if (weaponType.hasFlag(WeaponType.F_ONE_SHOT)) {
+                damageModifier *= 1.0 / SUSTAINED_TURNS; // One shot over SUSTAINED_TURNS
+            }
+
+            // Apply ammo availability multiplier for ammo-using weapons (non-oneshot)
+            if (weaponType.getAmmoType() != AmmoType.AmmoTypeEnum.NA
+                  && !weaponType.hasAnyFlag(WeaponType.F_ONE_SHOT, WeaponType.F_DOUBLE_ONE_SHOT)) {
+                String ammoKey = getAmmoKey(weaponType);
+                double ammoMultiplier = ammoMultipliers.getOrDefault(ammoKey, 1.0);
+                damageModifier *= ammoMultiplier;
             }
 
             // cluster weapons or Battle Armor (cluster table)
-            if ((weaponType.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE)) {
+            if ((weaponType.getDamage() == DAMAGE_BY_CLUSTER_TABLE)) {
                 if ((weaponType.getRackSize() != 40) && (weaponType.getRackSize() != 30)) {
                     final double expectedHits = (expectedHitsByRackSize[weaponType.getRackSize()]);
                     damageModifier *= expectedHits / weaponType.getRackSize();
@@ -1334,29 +1519,28 @@ public class SVGMassPrinter {
             }
 
             if (weaponType instanceof RACWeapon) {
-                damageModifier *= 3.17; // 5 shots
+                damageModifier *= 3.17; // 5 shots average expected hits
             } else
             if (weaponType instanceof UACWeapon) {
                 damageModifier *= 1.42; // Rapid mode
             }
 
-            if (entity instanceof BattleArmor ba && !weapon.isSquadSupportWeapon()) {
+            if (entity instanceof BattleArmor ba && (weapon.getLocation()==BattleArmor.LOC_SQUAD) && !weapon.isSquadSupportWeapon()) {
                 // We have an entry of a single weapon but in real is N weapons equal to the squad size so we use the
                 // cluster table
                 damageModifier *=  (expectedHitsByRackSize[ba.getSquadSize()]);
             }
 
             // Targeting Computer
-            if (entity.hasTargComp() && weaponType.hasFlag(WeaponType.F_DIRECT_FIRE)) {
-                damageModifier *= 1.10;
-            }
-
+//           if (entity.hasTargComp() && weaponType.hasFlag(WeaponType.F_DIRECT_FIRE)) {
+//               damageModifier *= 1.10;
+//           }
             // Actuator Enhancement System
-            if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, null,
-                  weapon.getLocation()) &&
-                  ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
-                damageModifier *= 1.05;
-            }
+//           if (weapon != null && entity.hasWorkingMisc(MiscType.F_ACTUATOR_ENHANCEMENT_SYSTEM, null,
+//                 weapon.getLocation()) &&
+//                 ((weapon.getLocation() == Mek.LOC_LEFT_ARM) || (weapon.getLocation() == Mek.LOC_RIGHT_ARM))) {
+//               damageModifier *= 1.05;
+//           }
 
             return damageModifier;
         }
@@ -1381,7 +1565,32 @@ public class SVGMassPrinter {
         }
 
         private String getArmorType(Entity entity) {
-            if (entity.isSupportVehicle()
+            if (!entity.isBattleArmor() && entity instanceof Infantry infantry) {
+                EquipmentType armor = infantry.getArmorKit();
+                if (armor != null) {
+                    return armor.getName();
+                } else {
+                    if (infantry.hasDEST()) {
+                        return "Custom DEST";
+                    } else {
+                        StringJoiner sj = new StringJoiner("/");
+                        if (infantry.hasSneakCamo()) {
+                            sj.add("Camo");
+                        }
+                        if (infantry.hasSneakIR()) {
+                            sj.add("IR");
+                        }
+                        if (infantry.hasSneakECM()) {
+                            sj.add("ECM");
+                        }
+                        if (sj.length() > 0) {
+                            return "Custom Sneak(" + sj + ")";
+                        } else if (infantry.getCustomArmorDamageDivisor() != 1.0) {
+                            return "Custom";
+                        }
+                    }
+                }
+            } else if (entity.isSupportVehicle()
                   && (entity.hasBARArmor(0))) {
                 return "BAR: " + entity.getBARRating(0);
             } else if (!entity.hasPatchworkArmor()) {
@@ -1411,6 +1620,7 @@ public class SVGMassPrinter {
                     return "Standard Armor";
                 }
             }
+            return "";
         }
 
         private @Nullable String getStructureType(Entity entity) {
@@ -1426,12 +1636,7 @@ public class SVGMassPrinter {
     }
 
     protected static String formatRulesLevel(Entity entity, RecordSheetOptions options) {
-        SimpleTechLevel level;
-        if (options.useEraBaseProgression()) {
-            level = entity.getSimpleLevel(entity.getYear(), entity.isClan());
-        } else {
-            level = entity.getStaticTechLevel();
-        }
+        SimpleTechLevel level = entity.getStaticTechLevel();
         return level.toString().substring(0, 1)
               + level.toString().substring(1).toLowerCase();
     }
@@ -1504,7 +1709,7 @@ public class SVGMassPrinter {
               .parallel()
               .map(mekSummary -> {
 //                    if (!mekSummary.isBattleArmor()) return null;
-//                    if (mekSummary.getMulId() != 7370) return null;
+//                    if (mekSummary.getMulId() != 4669) return null;
 //                    logger.info("{}", mekSummary.getName());
               Entity entity;
               synchronized (loadEntityLock) {
@@ -1546,7 +1751,7 @@ public class SVGMassPrinter {
               try {
                   List<PrintRecordSheet> sheets = UnitPrintManager.createSheets(List.of(entity),
                         true,
-                        recordSheetOptions);
+                        recordSheetOptions, true);
                   if (sheets.isEmpty()) {
                       logger.error("No sheets generated for {}", mekSummary.getName());
                       return null;
@@ -1710,7 +1915,12 @@ public class SVGMassPrinter {
                     rowMap.put("name", eq.getName()); // Use full name
                     rowMap.put("shortName", eq.getShortName());
                     rowMap.put("level", eq.getStaticTechLevel().toString());
-                    rowMap.put("techBase", eq.getTechBase());
+                    TechBase techBase = eq.getTechBase();
+                    switch (techBase) {
+                        case IS -> rowMap.put("techBase", "IS");
+                        case CLAN -> rowMap.put("techBase", "Clan");
+                        case ALL -> rowMap.put("techBase", "All");
+                    }
                     rowMap.put("cost", eq.getBaseCost() == EquipmentType.COST_VARIABLE ? "variable" : eq.getBaseCost());
                     rowMap.put("bv", eq.getBaseBV() == EquipmentType.BV_VARIABLE ? "variable" : eq.getBaseBV());
                     rowMap.put("tonnage", eq.getBaseTonnage() == EquipmentType.TONNAGE_VARIABLE ? "variable" : eq.getBaseTonnage());
@@ -1741,6 +1951,8 @@ public class SVGMassPrinter {
                         rowMap.put("flags", flagStrings);
                         rowMap.put("rackSize", weapon.getRackSize());
                         rowMap.put("ammoType", weapon.getAmmoType().getName());
+                        rowMap.put("heat", weapon.getHeat());
+                        rowMap.put("damage", normalizeDamage(weapon));
                         rowMap.put("ranges", new int[] {
                               Math.max(weapon.getMinimumRange(), 0),
                               weapon.getShortRange(),
@@ -1847,7 +2059,7 @@ public class SVGMassPrinter {
 
             // Write with pretty printing
             try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + EQUIPMENT_FILE)) {
-                mapper.writerWithDefaultPrettyPrinter().writeValue(jsonWriter, rootJson);
+                mapper.writer().writeValue(jsonWriter, rootJson);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -1882,13 +2094,25 @@ public class SVGMassPrinter {
             rootJson2.put("equipment", equipmentJsonMap2);
 
             try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + EQUIPMENT_FILE2)) {
-                mapper.writerWithDefaultPrettyPrinter().writeValue(jsonWriter, rootJson2);
+                mapper.writer().writeValue(jsonWriter, rootJson2);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
         System.exit(0);
+    }
+
+    private static String normalizeDamage(WeaponType weapon) {
+        int dmg = weapon.getDamage();
+        if (weapon instanceof InfantryWeapon wi) {
+            return Double.toString(wi.getInfantryDamage());
+        }
+        if (dmg == DAMAGE_BY_CLUSTER_TABLE) return "cluster";
+        if (dmg == DAMAGE_VARIABLE) return "variable";
+        if (dmg == DAMAGE_SPECIAL) return "special";
+        if (dmg == DAMAGE_ARTILLERY) return "artillery";
+        return Integer.toString(dmg);
     }
 
     private static String filterQuirkDescription(String desc) {
@@ -1950,6 +2174,7 @@ public class SVGMassPrinter {
         recordSheetOptions.setRowShading(true);
         recordSheetOptions.setFancyPips(true);
         recordSheetOptions.setReferenceCharts(false);
+        recordSheetOptions.setEraBasedProgression(false);
         return recordSheetOptions;
     }
 

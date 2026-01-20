@@ -156,6 +156,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         ranges = setRanges();
     }
 
+    @Override
     public String getUniqueId() {
         final String name = this.mount.getType().getInternalName();
         final String location = this.mount.getEntity().getLocationAbbr(this.mount.getLocation());
@@ -334,6 +335,17 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                   .append((int) mount.getSize() * ((InfantryWeapon) mount.getType()).getShots())
                   .append(" shots]");
         }
+
+        if (mount.isOneShot()) {
+            if ((mount.getLinked() != null) && (mount.getLinked().getType() instanceof AmmoType at)) {
+                if (at.getBaseAmmo() != null) {
+                    name.append(" [")
+                          .append(at.getMutatorName().replace("(Clan) ", ""))
+                          .append("]");
+                }
+            }
+        }
+
         return name.toString().trim();
     }
 

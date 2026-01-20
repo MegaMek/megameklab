@@ -133,12 +133,12 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
             if (!mek.hasClaw(Mek.LOC_LEFT_ARM)) {
                 explicitZero = false;
-                if (hasLHand) {
-                    mod = 0;
-                } else if (hasLLowerActuator) {
-                    mod = 1;
-                } else {
-                    mod = 2;
+                mod = 0;
+                if (!hasLHand) {
+                    mod += 1;
+                }
+                if (!hasLLowerActuator) {
+                    mod += 2;
                 }
                 if (hasLArmAES) {
                     mod--;
@@ -149,12 +149,12 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
             if (!mek.hasClaw(Mek.LOC_RIGHT_ARM)) {
                 explicitZero = false;
-                if (hasRHand) {
-                    mod = 0;
-                } else if (hasRLowerActuator) {
-                    mod = 1;
-                } else {
-                    mod = 2;
+                mod = 0;
+                if (!hasRHand) {
+                    mod += 1;
+                }
+                if (!hasRLowerActuator) {
+                    mod += 2;
                 }
                 if (hasRArmAES) {
                     mod--;
