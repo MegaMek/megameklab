@@ -66,6 +66,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TooManyListenersException;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -85,6 +86,7 @@ import megamek.client.ui.dialogs.UnitEditorDialog;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
 import megamek.client.ui.dialogs.customMek.CustomMekDialog;
+import megamek.client.ui.dialogs.randomArmy.MMLForceBuilderRandomArmyDialog;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyErrors;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyUtility;
 import megamek.client.ui.util.UIUtil;
@@ -122,6 +124,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private JLabel totalBVLabel;
     private JScrollPane scrollPane;
     private final JPopupMenu rowPopupMenu = new JPopupMenu();
+
+    private MMLForceBuilderRandomArmyDialog randomArmyDialog;
 
     private final String mulFileName = null;
     private final Client client = UnitUtil.getDummyClient();
@@ -842,6 +846,20 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         });
 
         buttonPanel.add(loadFromCacheButton, BorderLayout.WEST);
+
+        var randomArmyButton = new JButton("Create...");
+        Consumer<List<Entity>> receiver = list -> {
+            warnOnInvalid(list);
+            addEntities(list);
+        };
+        randomArmyButton.addActionListener(
+              e -> {
+                  if (randomArmyDialog == null) {
+                      randomArmyDialog = new MMLForceBuilderRandomArmyDialog(this, receiver);
+                  }
+                  randomArmyDialog.setVisible(true);
+              });
+        buttonPanel.add(randomArmyButton, BorderLayout.WEST);
 
         bottomPanel.add(buttonPanel, BorderLayout.WEST);
 
