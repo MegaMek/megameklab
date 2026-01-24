@@ -5,6 +5,7 @@
 /*.ps
 /MegaMekLab.jar
 .DS_Store
+/.claude/
 /.gradle/
 /build/
 /out/
