@@ -66,6 +66,7 @@ import megamek.common.Configuration;
 import megamek.common.Player;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.game.Game;
+import megamek.common.interfaces.IEntityRemovalConditions;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Aero;
 import megamek.common.units.BTObject;
@@ -122,6 +123,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private final String mulFileName;
 
+    private final Game game = new Game();
+
     public PrintQueueDialog(JFrame parent, boolean printToPdf, List<? extends BTObject> units, boolean fromMul,
           String mulFileName) {
         super(parent,
@@ -137,6 +140,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         if (units != null) {
             this.units.addAll(units);
             refresh();
+            loadTransports();
         }
     }
 
@@ -295,6 +299,18 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     }
 
     private void refresh() {
+        for (Entity e : game.getEntitiesVector()) {
+            if (!units.contains(e)) {
+                game.removeEntity(e.getId(), IEntityRemovalConditions.REMOVE_UNKNOWN);
+            }
+        }
+
+        if (adjustedBvCheck.isSelected()) {
+            linkForce();
+        } else {
+            unlinkForce();
+        }
+
         List<String> nameList = units.stream().map(unit -> {
             String title = String.format(" %s %s", unit.generalName(), unit.specificName());
             if (fromMul && unit instanceof Entity) {
@@ -314,16 +330,29 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         recordSheetPanel.setEntities(units);
     }
 
+    private void loadTransports() {
+        for (Entity e : getEntities()) {
+            if (e.getTransportId() != Entity.NONE) {
+                var transporter = game.getEntity(e.getTransportId());
+                if (transporter != null && !transporter.getLoadedUnits().contains(e)) {
+                    transporter.load(e);
+                }
+            }
+        }
+        refresh();
+    }
+
     private void linkForce() {
-        Game g = new Game();
         Player p = new Player(1, "Nobody");
         for (Entity e : getEntities()) {
             if (e.getId() == -1) {
-                e.setId(g.getNextEntityId());
+                e.setId(game.getNextEntityId());
             }
             e.setOwner(p);
-            g.addEntity(e);
-            C3Util.wireC3(g, e);
+            if (e.getGame() != game) {
+                game.addEntity(e);
+            }
+            C3Util.wireC3(game, e);
         }
     }
 
@@ -331,6 +360,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         int id = 1;
         for (Entity e : getEntities()) {
             e.setOwner(new Player(id++, "Nobody"));
+            if (e.getGame() != game) {
+                game.addEntity(e);
+            }
         }
     }
 

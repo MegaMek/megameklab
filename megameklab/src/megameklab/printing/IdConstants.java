@@ -136,6 +136,7 @@ public interface IdConstants {
     String SHIELD_DA = "shieldDA";
     String TRACKS = "tracks";
     String WHEELS = "wheels";
+    String TOTAL_FUEL = "totalFuel";
 
     String CRITS = "crits_";
     String HEAVY_DUTY_GYRO_PIP = "gyro_hit_3";

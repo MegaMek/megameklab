@@ -39,6 +39,7 @@ import java.awt.Frame;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,15 +58,7 @@ import megamek.common.equipment.HandheldWeapon;
 import megamek.common.loaders.MULParser;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.options.GameOptions;
-import megamek.common.units.Aero;
-import megamek.common.units.BTObject;
-import megamek.common.units.Dropship;
-import megamek.common.units.Entity;
-import megamek.common.units.Infantry;
-import megamek.common.units.Jumpship;
-import megamek.common.units.Mek;
-import megamek.common.units.ProtoMek;
-import megamek.common.units.Tank;
+import megamek.common.units.*;
 import megamek.logging.MMLogger;
 import megameklab.printing.*;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
@@ -173,6 +166,9 @@ public class UnitPrintManager {
         int pageCount = 0;
         for (BTObject object : entities) {
             if (object instanceof Entity entity) {
+                if (entity.isPartOfFighterSquadron()) {
+                    continue;
+                }
                 Entity unit;
                 // assign base unit and override only if damage should be hidden and entity is damaged
                 if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
@@ -198,6 +194,10 @@ public class UnitPrintManager {
                     } else {
                         tank1 = (Tank) unit;
                     }
+                } else if (unit instanceof FighterSquadron squadron) {
+                    PrintSquadron ps = new PrintSquadron(squadron, pageCount, options);
+                    pageCount += ps.getPageCount();
+                    sheets.add(ps);
                 } else if (unit != null && unit.hasETypeFlag(Entity.ETYPE_AERO)) {
                     if (unit instanceof Jumpship) {
                         PrintCapitalShip pcs = new PrintCapitalShip((Jumpship) unit, pageCount, options);
