@@ -64,10 +64,13 @@ import megamek.client.ui.buttons.MMButton;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.Configuration;
 import megamek.common.Player;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.game.Game;
 import megamek.common.interfaces.IEntityRemovalConditions;
 import megamek.common.loaders.MekFileParser;
+import megamek.common.options.OptionsConstants;
 import megamek.common.units.Aero;
 import megamek.common.units.BTObject;
 import megamek.common.units.Entity;
@@ -136,6 +139,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
         this.fromMul = fromMul;
         this.mulFileName = mulFileName;
         recordSheetPanel.setFullAsyncMode(true);
+        setGameOptions();
         initialize();
         if (units != null) {
             this.units.addAll(units);
@@ -146,6 +150,14 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     public PrintQueueDialog(JFrame parent, boolean printToPdf) {
         this(parent, printToPdf, null, false, "");
+    }
+
+    private void setGameOptions() {
+        var options = game.getOptions();
+        var optTL =  options.getOption(OptionsConstants.ALLOWED_TECH_LEVEL);
+
+        optTL.setValue(TechConstants.T_SIMPLE_NAMES[TechConstants.T_SIMPLE_UNOFFICIAL]);
+
     }
 
     private static ImageIcon icon(String name) {

@@ -33,6 +33,7 @@
 
 package megameklab.printing;
 
+import megamek.common.MPCalculationSetting;
 import megamek.common.units.Entity;
 import megamek.common.units.FighterSquadron;
 
@@ -50,7 +51,8 @@ public class PrintSquadron extends PrintEntity {
         this.squadron = squadron;
         squadron.updateSensors();
         squadron.updateSkills();
-        squadron.updateWeaponGroups();
+        // applyBombs also calls updateWeaponGroups()
+        squadron.applyBombs();
         // We have to set a name here or else pilot data will be skipped
         squadron.getCrew().setName("IGNORED", 0);
     }
@@ -80,5 +82,21 @@ public class PrintSquadron extends PrintEntity {
         super.writeTextFields();
         setTextField(TEXT_SI, squadron.getOSI());
         setTextField(TOTAL_FUEL, squadron.getFuel());
+    }
+
+    @Override
+    protected String formatWalk() {
+        var baseSafeThrust = squadron.getWalkMP(MPCalculationSetting.BV_CALCULATION);
+        // Movement with bombs
+        var burdenedSafeThrust = squadron.getWalkMP(MPCalculationSetting.STANDARD);
+        return formatMovement(burdenedSafeThrust, baseSafeThrust);
+    }
+
+    @Override
+    protected String formatRun() {
+        var baseSafeThrust = squadron.getRunMP(MPCalculationSetting.BV_CALCULATION);
+        // Movement with bombs
+        var burdenedSafeThrust = squadron.getRunMP(MPCalculationSetting.STANDARD);
+        return formatMovement(burdenedSafeThrust, baseSafeThrust);
     }
 }
