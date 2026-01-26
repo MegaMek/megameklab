@@ -48,6 +48,11 @@ public class PrintSquadron extends PrintEntity {
     public PrintSquadron(FighterSquadron squadron, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.squadron = squadron;
+        squadron.updateSensors();
+        squadron.updateSkills();
+        squadron.updateWeaponGroups();
+        // We have to set a name here or else pilot data will be skipped
+        squadron.getCrew().setName("IGNORED", 0);
     }
 
     @Override
