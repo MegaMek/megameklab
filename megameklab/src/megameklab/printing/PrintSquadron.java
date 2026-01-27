@@ -34,8 +34,11 @@
 package megameklab.printing;
 
 import megamek.common.MPCalculationSetting;
+import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.FighterSquadron;
+
+import java.util.stream.Stream;
 
 public class PrintSquadron extends PrintEntity {
     private final FighterSquadron squadron;
@@ -82,6 +85,7 @@ public class PrintSquadron extends PrintEntity {
         super.writeTextFields();
         setTextField(TEXT_SI, squadron.getOSI());
         setTextField(TOTAL_FUEL, squadron.getFuel());
+        setTextField(HEAT_CAPACITY, formatHeat());
     }
 
     @Override
@@ -98,5 +102,24 @@ public class PrintSquadron extends PrintEntity {
         // Movement with bombs
         var burdenedSafeThrust = squadron.getRunMP(MPCalculationSetting.STANDARD);
         return formatMovement(burdenedSafeThrust, baseSafeThrust);
+    }
+
+    protected String formatHeat() {
+        var shs = fighters().filter(fighter -> fighter.getHeatType() == 0).mapToInt(AeroSpaceFighter::getHeatSinks).sum();
+        var dhs = fighters().filter(fighter -> fighter.getHeatType() == 1).mapToInt(AeroSpaceFighter::getHeatSinks).sum();
+
+        String label = "Heat Capacity (Current):\u00A0";
+
+        if (dhs == 0) {
+            return "%s %d".formatted(label, shs);
+        } else if (shs == 0) {
+            return "%s %d [%d doubles]".formatted(label, dhs * 2, dhs);
+        } else {
+            return "%s %d [%d SHS, %d DHS]".formatted(label, shs + dhs * 2, shs, dhs);
+        }
+    }
+
+    private Stream<AeroSpaceFighter> fighters() {
+        return squadron.getSubEntities().stream().map(AeroSpaceFighter.class::cast);
     }
 }

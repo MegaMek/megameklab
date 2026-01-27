@@ -197,6 +197,7 @@ public interface IdConstants {
     String BROADSIDES_HEAT = "broadsidesHeat";
     String AFT_SIDES_HEAT = "aftSidesHeat";
     String AFT_HEAT = "aftHeat";
+    String HEAT_CAPACITY = "heatCapacity";
 
     String ARMOR_KIT = "armor_kit";
     String ARMOR_DIVISOR = "armor_divisor";
