@@ -197,7 +197,7 @@ public class PrintSquadron extends PrintEntity {
         }
     }
 
-    public static final double PIP_SIZE = 4.5;
+    public static final double PIP_SIZE = 4.85;
     protected void drawArmorPips(SVGRectElement element, int pips, int cols) {
         Rectangle2D bbox = getRectBBox(element);
 
