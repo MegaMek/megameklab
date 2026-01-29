@@ -40,7 +40,6 @@ import megamek.common.units.SpaceStation;
 import megamek.common.units.UnitType;
 import megamek.common.units.Warship;
 import megamek.logging.MMLogger;
-import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
@@ -227,12 +226,13 @@ public class PrintCapitalShip extends PrintDropship {
             startX = bbox.getCenterX() - blockWidth * 0.5;
         }
         AtomicInteger remainingDamage = new AtomicInteger(damage);
-        printPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
-              IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, "structure", location);
+        PrintUtil.printCapitalPipBlock(startX, bbox.getY(), (SVGElement) svgRect.getParentNode(), pips,
+              IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage, "structure", location, getSVGDocument(),
+              getDamageFillColor(), PIPS_PER_ROW, MAX_PIP_ROWS);
         if (structure > pips) {
-            printPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
+            PrintUtil.printCapitalPipBlock(startX + blockWidth + IS_PIP_WIDTH, bbox.getY(), (SVGElement) svgRect.getParentNode(),
                   structure - pips, IS_PIP_WIDTH, IS_PIP_HEIGHT, FILL_WHITE, false, remainingDamage,
-                  "structure", location);
+                  "structure", location, getSVGDocument(), getDamageFillColor(), PIPS_PER_ROW, MAX_PIP_ROWS);
         }
     }
 
@@ -299,8 +299,9 @@ public class PrintCapitalShip extends PrintDropship {
         AtomicInteger remainingDamage = new AtomicInteger(damage);
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                armor = printPipBlock(xPosition, yPosition, (SVGElement) svgRect.getParentNode(),
-                      armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location);
+                armor = PrintUtil.printCapitalPipBlock(xPosition, yPosition, (SVGElement) svgRect.getParentNode(),
+                      armor, pipWidth, pipHeight, FILL_WHITE, true, remainingDamage, "armor", location,
+                      getSVGDocument(), getDamageFillColor(), PIPS_PER_ROW, MAX_PIP_ROWS);
                 remainingBlocks--;
                 xPosition += blockWidth;
             }
@@ -311,75 +312,6 @@ public class PrintCapitalShip extends PrintDropship {
                 xPosition += blockWidth / 2.0;
             }
         }
-    }
-
-    /**
-     * Helper function to print an armor pip block. Can print up to 100 points of armor. Any unprinted armor pips are
-     * returned.
-     *
-     * @param startX  The x coordinate of the top left of the block
-     * @param startY  The y coordinate of the top left of the block
-     * @param parent  The parent node of the bounding rectangle
-     * @param numPips The number of pips to print
-     * @param shadow  Whether to add a drop shadow
-     *
-     * @return The Y location of the end of the block
-     */
-    private int printPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
-          double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage,
-          String className, String location) {
-
-        final double shadowOffsetX = pipWidth * SHADOW_OFFSET;
-        final double shadowOffsetY = pipHeight * SHADOW_OFFSET;
-        double currX, currY;
-        currY = startY;
-        for (int row = 0; row < MAX_PIP_ROWS; row++) {
-            int numRowPips = Math.min(numPips, PIPS_PER_ROW);
-            // Adjust row start if it's not a complete row
-            currX = startX + ((((PIPS_PER_ROW - numRowPips) / 2f) * pipWidth) + 0.5);
-            for (int col = 0; col < numRowPips; col++) {
-                boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
-                if (shadow) {
-                    parent.appendChild(createPip(pipWidth, pipHeight, FILL_SHADOW, currX + shadowOffsetX,
-                          currY + shadowOffsetY, false, null, null));
-                }
-                final Element pip = createPip(pipWidth, pipHeight, isDamaged ? getDamageFillColor() : fillColor, currX,
-                      currY, true, className, location);
-                parent.appendChild(pip);
-
-                currX += pipWidth;
-                numPips--;
-                // Check to see if we're done
-                if (numPips <= 0) {
-                    return 0;
-                }
-            }
-            currY += pipHeight;
-        }
-        return numPips;
-    }
-
-    private Element createPip(double pipWidth, double pipHeight, String fillColor,
-          double currX, double currY, boolean stroke, String className, String location) {
-        Element box = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_RECT_TAG);
-        box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
-        box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
-        box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
-        box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
-        if (stroke) {
-            String classAttr = "pip square";
-            if (className != null && !className.isEmpty()) {
-                classAttr += " " + className;
-            }
-            box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
-            if (location != null && !location.isEmpty()) {
-                box.setAttributeNS(null, "loc", location);
-            }
-            box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, FILL_BLACK);
-            box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
-        }
-        box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
-        return box;
     }
 
     @Override

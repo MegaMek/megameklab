@@ -46,6 +46,12 @@ import megamek.common.weapons.attacks.SwarmAttack;
 import megamek.common.weapons.attacks.SwarmWeaponAttack;
 import megamek.common.weapons.infantry.rifle.InfantryRifleAutoRifleWeapon;
 import megameklab.util.UnitUtil;
+import org.apache.batik.util.SVGConstants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGElement;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class PrintUtil {
 
@@ -167,5 +173,81 @@ public final class PrintUtil {
               && (!(eq instanceof StopSwarmAttack))
               && (!(eq instanceof InfantryRifleAutoRifleWeapon))
               && (!(eq instanceof SwarmWeaponAttack));
+    }
+
+    static Element createCapitalPip(double pipWidth, double pipHeight, String fillColor,
+          double currX, double currY, boolean stroke, String className, String location, Document svgDocument) {
+        Element box = svgDocument.createElementNS(PrintRecordSheet.svgNS, SVGConstants.SVG_RECT_TAG);
+        box.setAttributeNS(null, SVGConstants.SVG_X_ATTRIBUTE, String.valueOf(currX));
+        box.setAttributeNS(null, SVGConstants.SVG_Y_ATTRIBUTE, String.valueOf(currY));
+        box.setAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE, String.valueOf(pipWidth));
+        box.setAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE, String.valueOf(pipHeight));
+        if (stroke) {
+            String classAttr = "pip square";
+            if (className != null && !className.isEmpty()) {
+                classAttr += " " + className;
+            }
+            box.setAttributeNS(null, SVGConstants.SVG_CLASS_ATTRIBUTE, classAttr);
+            if (location != null && !location.isEmpty()) {
+                box.setAttributeNS(null, "loc", location);
+            }
+            box.setAttributeNS(null, SVGConstants.SVG_STROKE_ATTRIBUTE, PrintRecordSheet.FILL_BLACK);
+            box.setAttributeNS(null, SVGConstants.SVG_STROKE_WIDTH_ATTRIBUTE, String.valueOf(0.5));
+        }
+        box.setAttributeNS(null, SVGConstants.SVG_FILL_ATTRIBUTE, fillColor);
+        return box;
+    }
+
+    /**
+     * Helper function to print an armor pip block. Can print up to 100 points of armor. Any unprinted armor pips are
+     * returned.
+     *
+     * @param svgDocument The document to draw the pips in
+     * @param damageFillColor The color to use for damaged pips
+     * @param pipsPerRow How many pips to draw per row
+     * @param maxPipRows How many rows of pips are allowed
+     * @param startX  The x coordinate of the top left of the block
+     * @param startY  The y coordinate of the top left of the block
+     * @param parent  The parent node of the bounding rectangle
+     * @param numPips The number of pips to print
+     * @param shadow  Whether to add a drop shadow
+     *
+     * @return The Y location of the end of the block
+     */
+    static int printCapitalPipBlock(double startX, double startY, SVGElement parent, int numPips, double pipWidth,
+          double pipHeight, String fillColor, boolean shadow, AtomicInteger remainingDamage,
+          String className, String location, Document svgDocument, String damageFillColor, int pipsPerRow,
+          int maxPipRows) {
+
+        final double shadowOffsetX = pipWidth * PrintCapitalShip.SHADOW_OFFSET;
+        final double shadowOffsetY = pipHeight * PrintCapitalShip.SHADOW_OFFSET;
+        double currX, currY;
+        currY = startY;
+        for (int row = 0; row < maxPipRows; row++) {
+            int numRowPips = Math.min(numPips, pipsPerRow);
+            // Adjust row start if it's not a complete row
+            currX = startX + ((((pipsPerRow - numRowPips) / 2f) * pipWidth) + 0.5);
+            for (int col = 0; col < numRowPips; col++) {
+                boolean isDamaged = (remainingDamage.decrementAndGet() >= 0);
+                if (shadow) {
+                    parent.appendChild(createCapitalPip(pipWidth, pipHeight, PrintRecordSheet.FILL_SHADOW, currX + shadowOffsetX,
+                          currY + shadowOffsetY, false, null, null, svgDocument));
+                }
+                final Element pip = createCapitalPip(pipWidth, pipHeight, isDamaged ?
+                            damageFillColor : fillColor, currX,
+                      currY, true, className, location,
+                      svgDocument);
+                parent.appendChild(pip);
+
+                currX += pipWidth;
+                numPips--;
+                // Check to see if we're done
+                if (numPips <= 0) {
+                    return 0;
+                }
+            }
+            currY += pipHeight;
+        }
+        return numPips;
     }
 }

@@ -93,6 +93,7 @@ public interface IdConstants {
     String ASF_PILOTING_SKILL = "asfPilotingSkill";
     String ASF_BLANK_GUNNERY_SKILL = "asfBlankGunnerySkill";
     String ASF_BLANK_PILOTING_SKILL = "asfBlankPilotingSkill";
+    String G_P_SKILL_TEXT = "gpSkills";
     String SPAS = "spas";
     String WARRIOR_DATA_SINGLE = "warriorDataSingle";
     String WARRIOR_DATA_DUAL = "warriorDataDual";
@@ -117,6 +118,7 @@ public interface IdConstants {
     String STRUCTURE_TYPE = "structureType";
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
+    String TEXT_ARMOR_AND_THRESHOLD = "armorThreshold";
     String TEXT_IS = "textIS_";
     String TEXT_SI = "textSI";
     String TEXT_SAIL = "textSail";

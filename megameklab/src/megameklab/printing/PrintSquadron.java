@@ -37,10 +37,19 @@ import megamek.common.MPCalculationSetting;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.FighterSquadron;
+import megamek.logging.MMLogger;
+import megameklab.util.UnitUtil;
+import org.w3c.dom.svg.SVGElement;
+import org.w3c.dom.svg.SVGRectElement;
 
+import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class PrintSquadron extends PrintEntity {
+    private final MMLogger logger = MMLogger.create(PrintSquadron.class);
+
     private final FighterSquadron squadron;
 
     /**
@@ -86,6 +95,30 @@ public class PrintSquadron extends PrintEntity {
         setTextField(TEXT_SI, squadron.getOSI());
         setTextField(TOTAL_FUEL, squadron.getFuel());
         setTextField(HEAT_CAPACITY, formatHeat());
+
+        for (int i = 0; i < squadron.getSubEntities().size(); i++) {
+            writeTextFieldsForFighter(i);
+        }
+    }
+
+    protected void writeTextFieldsForFighter(int i) {
+        var fighter = (AeroSpaceFighter) squadron.getSubEntities().get(i);
+
+        setTextField(TYPE, UnitUtil.getPrintName(fighter), i);
+
+        var crew = fighter.getCrew();
+        setTextField(G_P_SKILL_TEXT, "%d/%d".formatted(crew.getGunnery(), crew.getPiloting()), i);
+
+        setTextField(TOTAL_FUEL, fighter.getFuel(), i);
+        setTextField(HEAT_CAPACITY, formatHeatForFighter(fighter), i);
+        setTextField(TEXT_SI, "(%d)".formatted(fighter.getOSI()), i);
+        setTextField(TEXT_ARMOR_AND_THRESHOLD, "(%d/%d)".formatted(fighter.getCap0Armor(), fighter.getFatalThresh()), i);
+        setTextField(MP_WALK, formatWalkForFighter(fighter), i);
+        setTextField(MP_RUN, formatRunForFighter(fighter), i);
+    }
+
+    private void setTextField(String id, Object value, int fighter) {
+        setTextField("%s:%d".formatted(id, fighter), value.toString());
     }
 
     @Override
@@ -96,12 +129,20 @@ public class PrintSquadron extends PrintEntity {
         return formatMovement(burdenedSafeThrust, baseSafeThrust);
     }
 
+    protected String formatWalkForFighter(AeroSpaceFighter fighter) {
+        return formatMovement(fighter.getWalkMP(MPCalculationSetting.STANDARD), fighter.getWalkMP(MPCalculationSetting.BV_CALCULATION));
+    }
+
     @Override
     protected String formatRun() {
         var baseSafeThrust = squadron.getRunMP(MPCalculationSetting.BV_CALCULATION);
         // Movement with bombs
         var burdenedSafeThrust = squadron.getRunMP(MPCalculationSetting.STANDARD);
         return formatMovement(burdenedSafeThrust, baseSafeThrust);
+    }
+
+    protected String formatRunForFighter(AeroSpaceFighter fighter) {
+        return formatMovement(fighter.getRunMP(MPCalculationSetting.STANDARD), fighter.getRunMP(MPCalculationSetting.BV_CALCULATION));
     }
 
     protected String formatHeat() {
@@ -119,7 +160,64 @@ public class PrintSquadron extends PrintEntity {
         }
     }
 
+    protected String formatHeatForFighter(AeroSpaceFighter fighter) {
+        if (fighter.getHeatType() == 0) {
+            return Integer.toString(fighter.getHeatSinks());
+        } else {
+            return "%d [%d doubles]".formatted(fighter.getHeatSinks() * 2, fighter.getHeatSinks());
+        }
+    }
+
     private Stream<AeroSpaceFighter> fighters() {
         return squadron.getSubEntities().stream().map(AeroSpaceFighter.class::cast);
+    }
+
+    @Override
+    protected void drawArmor() {
+        for (int i = 0; i < squadron.getSubEntities().size(); i++) {
+            drawArmorForFighter(i, (AeroSpaceFighter) squadron.getSubEntities().get(i));
+        }
+    }
+
+    protected void drawArmorForFighter(int i, AeroSpaceFighter fighter) {
+        // SI
+        var element = getElementById("%s:%d".formatted(SI_PIPS, i));
+        if (element instanceof SVGRectElement rect) {
+            drawArmorPips(rect, fighter.getOSI(), 3);
+        } else {
+            logger.error("No SVGRectElement found with id {}:{}", SI_PIPS, i);
+        }
+
+        // Armor
+        element = getElementById("%s:%d".formatted(ARMOR_PIPS, i));
+        if (element instanceof SVGRectElement rect) {
+            drawArmorPips(rect, fighter.getCap0Armor(), 16);
+        } else {
+            logger.error("No SVGRectElement found with id {}:{}", ARMOR_PIPS, i);
+        }
+    }
+
+    public static final double PIP_SIZE = 4.5;
+    protected void drawArmorPips(SVGRectElement element, int pips, int cols) {
+        Rectangle2D bbox = getRectBBox(element);
+
+
+        PrintUtil.printCapitalPipBlock(
+              bbox.getX(),
+              bbox.getY(),
+              (SVGElement) element.getParentNode(),
+              pips,
+              PIP_SIZE,
+              PIP_SIZE,
+              FILL_WHITE,
+              true,
+              new AtomicInteger(0),
+              "structure",
+              "N/A",
+              getSVGDocument(),
+              getDamageFillColor(),
+              cols,
+   5
+        );
     }
 }
