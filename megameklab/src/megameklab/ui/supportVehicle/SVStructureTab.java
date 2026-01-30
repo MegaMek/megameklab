@@ -898,4 +898,27 @@ public class SVStructureTab extends ITab implements SVBuildListener {
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
+
+    @Override
+    public void dniCockpitModChanged(boolean hasMod) {
+        if (hasMod && !getSV().hasDNICockpitMod()) {
+            MiscType dniMod = (MiscType) EquipmentType.get("DNICockpitModification");
+            if (dniMod != null) {
+                try {
+                    getSV().addEquipment(dniMod, Entity.LOC_NONE);
+                } catch (Exception ignored) {
+                }
+            }
+        } else if (!hasMod && getSV().hasDNICockpitMod()) {
+            for (MiscMounted mounted : getSV().getMisc()) {
+                if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
+                    getSV().removeMisc(mounted.getType().getInternalName());
+                    break;
+                }
+            }
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
 }

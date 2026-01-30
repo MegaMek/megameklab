@@ -51,6 +51,7 @@ import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.Transporter;
@@ -897,6 +898,29 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void roleChanged(UnitRole role) {
         getEntity().setUnitRole(role);
         refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void dniCockpitModChanged(boolean hasMod) {
+        if (hasMod && !getTank().hasDNICockpitMod()) {
+            MiscType dniMod = (MiscType) EquipmentType.get("DNICockpitModification");
+            if (dniMod != null) {
+                try {
+                    getTank().addEquipment(dniMod, Entity.LOC_NONE);
+                } catch (Exception ignored) {
+                }
+            }
+        } else if (!hasMod && getTank().hasDNICockpitMod()) {
+            for (MiscMounted mounted : getTank().getMisc()) {
+                if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
+                    getTank().removeMisc(mounted.getType().getInternalName());
+                    break;
+                }
+            }
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
         refresh.refreshPreview();
     }
 }

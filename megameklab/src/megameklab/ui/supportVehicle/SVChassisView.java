@@ -125,6 +125,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnChassisSponsonPintleWt = new JSpinner(spnSponsonPintleWtModel);
     private final JComboBox<String> cbFireControl = new JComboBox<>();
     private final JSpinner spnFireConWt = new JSpinner(spnFireConWtModel);
+    private final JCheckBox chkDNICockpitMod = new JCheckBox();
 
     private final JPanel omniPanel = new JPanel();
 
@@ -284,6 +285,15 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         cbFireControl.setActionCommand(ACTION_FIRE_CONTROL);
         cbFireControl.addActionListener(this);
 
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 3;
+        chkDNICockpitMod.setText(resourceMap.getString("SVChassisView.chkDNICockpitMod.text"));
+        chkDNICockpitMod.setToolTipText(resourceMap.getString("SVChassisView.chkDNICockpitMod.tooltip"));
+        add(chkDNICockpitMod, gbc);
+        chkDNICockpitMod.setActionCommand(ACTION_DNI_COCKPIT);
+        chkDNICockpitMod.addActionListener(this);
+
         initOmniPanel(resourceMap);
         gbc.gridx = 0;
         gbc.gridy++;
@@ -405,6 +415,14 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private TechRating getEngineTechRating() {
         TechRating selected = (TechRating) cbEngineTechRating.getSelectedItem();
         return selected != null ? selected : TechRating.A;
+    }
+
+    public boolean hasDNICockpitMod() {
+        return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
+    }
+
+    public void setDNICockpitMod(boolean hasMod) {
+        chkDNICockpitMod.setSelected(hasMod);
     }
 
     /**
@@ -543,6 +561,10 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
               || chkPintleRear.isSelected()));
         spnFireConWt.setEnabled(entity.isOmni() && (cbFireControl.getSelectedIndex()
               > SVBuildListener.FIRE_CONTROL_NONE));
+
+        chkDNICockpitMod.removeActionListener(this);
+        chkDNICockpitMod.setSelected(entity.hasDNICockpitMod());
+        chkDNICockpitMod.addActionListener(this);
     }
 
     /**
@@ -558,6 +580,19 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         refreshTonnage();
         refreshTurrets();
         refreshSideTurrets();
+        refreshDNICockpitMod();
+    }
+
+    private void refreshDNICockpitMod() {
+        chkDNICockpitMod.removeActionListener(this);
+        EquipmentType dniEquipment = EquipmentType.get("DNICockpitModification");
+        boolean isLegal = (dniEquipment != null) && techManager.isLegal(dniEquipment);
+        chkDNICockpitMod.setVisible(isLegal);
+        if (!isLegal && chkDNICockpitMod.isSelected()) {
+            chkDNICockpitMod.setSelected(false);
+            listeners.forEach(l -> l.dniCockpitModChanged(false));
+        }
+        chkDNICockpitMod.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -698,6 +733,7 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
     private static final String ACTION_PINTLE_REAR = "pintleRear";
     private static final String ACTION_FIRE_CONTROL = "fireControl";
     private static final String ACTION_RESET_CHASSIS = "resetChassis";
+    private static final String ACTION_DNI_COCKPIT = "dniCockpit";
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -752,6 +788,9 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
                 break;
             case ACTION_RESET_CHASSIS:
                 listeners.forEach(SVBuildListener::resetChassis);
+                break;
+            case ACTION_DNI_COCKPIT:
+                listeners.forEach(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
                 break;
         }
     }

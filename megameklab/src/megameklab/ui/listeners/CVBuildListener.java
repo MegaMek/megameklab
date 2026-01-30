@@ -140,4 +140,11 @@ public interface CVBuildListener extends BuildListener {
      * @param seats The number of extra seats
      */
     void extraSeatsChanged(int seats);
+
+    /**
+     * Notify of a change in DNI Cockpit Modification status.
+     *
+     * @param hasMod Whether the vehicle has the DNI Cockpit Modification
+     */
+    void dniCockpitModChanged(boolean hasMod);
 }
