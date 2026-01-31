@@ -248,4 +248,6 @@ public interface IdConstants {
     String TORSO_WEAPON = "torsoWeapon_";
     String MAG_CLAMP_NOTE = "magClampNote";
     String MP_GROUND = "mpGround";
+
+    String FIGHTER_GROUP = "gFtr";
 }

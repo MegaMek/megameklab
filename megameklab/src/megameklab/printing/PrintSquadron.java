@@ -43,7 +43,7 @@ import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGRectElement;
 
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
+import java.awt.print.PageFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -96,13 +96,13 @@ public class PrintSquadron extends PrintEntity {
         setTextField(TOTAL_FUEL, squadron.getFuel());
         setTextField(HEAT_CAPACITY, formatHeat());
 
-        for (int i = 0; i < squadron.getSubEntities().size(); i++) {
+        for (int i = 0; i < numFighters(); i++) {
             writeTextFieldsForFighter(i);
         }
     }
 
     protected void writeTextFieldsForFighter(int i) {
-        var fighter = (AeroSpaceFighter) squadron.getSubEntities().get(i);
+        var fighter = fighter(i);
 
         setTextField(TYPE, UnitUtil.getPrintName(fighter), i);
 
@@ -172,10 +172,18 @@ public class PrintSquadron extends PrintEntity {
         return squadron.getSubEntities().stream().map(AeroSpaceFighter.class::cast);
     }
 
+    private AeroSpaceFighter fighter(int i) {
+        return (AeroSpaceFighter) squadron.getSubEntities().get(i);
+    }
+
+    private int numFighters() {
+        return squadron.getSubEntities().size();
+    }
+
     @Override
     protected void drawArmor() {
-        for (int i = 0; i < squadron.getSubEntities().size(); i++) {
-            drawArmorForFighter(i, (AeroSpaceFighter) squadron.getSubEntities().get(i));
+        for (int i = 0; i < numFighters(); i++) {
+            drawArmorForFighter(i, fighter(i));
         }
     }
 
@@ -219,5 +227,13 @@ public class PrintSquadron extends PrintEntity {
               cols,
    5
         );
+    }
+
+    @Override
+    protected void processImage(int pageNum, PageFormat pageFormat) {
+        super.processImage(pageNum, pageFormat);
+        for (int i = numFighters(); i <= 5; i++) {
+            hideElement("%s:%d".formatted(FIGHTER_GROUP, i), true);
+        }
     }
 }
