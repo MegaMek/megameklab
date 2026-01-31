@@ -37,6 +37,7 @@ import megamek.common.MPCalculationSetting;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.FighterSquadron;
+import megamek.common.units.IAero;
 import megamek.logging.MMLogger;
 import megameklab.util.UnitUtil;
 import org.w3c.dom.svg.SVGElement;
@@ -61,6 +62,9 @@ public class PrintSquadron extends PrintEntity {
     public PrintSquadron(FighterSquadron squadron, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.squadron = squadron;
+
+        fighters().forEach(IAero::updateWeaponGroups);
+
         squadron.updateSensors();
         squadron.updateSkills();
         // applyBombs also calls updateWeaponGroups()
