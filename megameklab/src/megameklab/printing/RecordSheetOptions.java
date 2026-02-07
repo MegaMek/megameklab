@@ -154,6 +154,7 @@ public class RecordSheetOptions {
     private ExplicitZeroModifierStyle explicitZeroModifier;
     private boolean extraPhysicals;
     private boolean fancyPips;
+    private boolean tacOpsVehicleEffectiveness;
 
     public RecordSheetOptions() {
         String paper = CConfig.getParam(CConfig.RS_PAPER_SIZE, PaperSize.US_LETTER.name());
@@ -193,6 +194,7 @@ public class RecordSheetOptions {
               ExplicitZeroModifierStyle.class, ExplicitZeroModifierStyle.DASH);
         this.extraPhysicals = CConfig.getBooleanParam(CConfig.RS_EXTRA_PHYSICALS);
         this.fancyPips = CConfig.getBooleanParam(CConfig.RS_FANCY_PIPS);
+        this.tacOpsVehicleEffectiveness = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_VEHICLE_EFFECTIVENESS);
     }
 
     public RecordSheetOptions(RecordSheetOptions options) {
@@ -222,6 +224,7 @@ public class RecordSheetOptions {
         explicitZeroModifier = options.explicitZeroModifier;
         extraPhysicals = options.extraPhysicals;
         fancyPips = options.fancyPips;
+        tacOpsVehicleEffectiveness = options.tacOpsVehicleEffectiveness;
     }
 
     public PaperSize getPaperSize() {
@@ -427,4 +430,12 @@ public class RecordSheetOptions {
     public void setFancyPips(boolean fancyPips) {
         this.fancyPips = fancyPips;
     }
+
+    public boolean TacOpsVehicleEffectiveness() { return tacOpsVehicleEffectiveness; }
+
+    public void setTacOpsVehicleEffectiveness(boolean tacOpsVehicleEffectiveness) {
+        this.tacOpsVehicleEffectiveness = true;
+        //this.tacOpsVehicleEffectiveness = tacOpsVehicleEffectiveness;
+    }
+
 }
