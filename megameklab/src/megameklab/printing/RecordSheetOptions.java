@@ -434,8 +434,7 @@ public class RecordSheetOptions {
     public boolean TacOpsVehicleEffectiveness() { return tacOpsVehicleEffectiveness; }
 
     public void setTacOpsVehicleEffectiveness(boolean tacOpsVehicleEffectiveness) {
-        this.tacOpsVehicleEffectiveness = true;
-        //this.tacOpsVehicleEffectiveness = tacOpsVehicleEffectiveness;
+        this.tacOpsVehicleEffectiveness = tacOpsVehicleEffectiveness;
     }
 
 }

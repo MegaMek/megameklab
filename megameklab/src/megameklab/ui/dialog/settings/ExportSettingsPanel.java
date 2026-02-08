@@ -377,7 +377,6 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(hitModPanel);
         innerGridPanel.add(intrinsicPhysicalsPanel);
         innerGridPanel.add(chkExtraPhysicals);
-        // innerGridPanel.add(chkTacOpsVehicleEffectiveness);
         innerGridPanel.add(explicitZeroModifierPanel);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
