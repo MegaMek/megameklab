@@ -5,8 +5,12 @@ on:
     branches: [ main ]
 
 jobs:
-  pr_build:
+  checkstyle:
     runs-on: ${{ matrix.os }}
+
+    outputs:
+      mmRepo: ${{ steps.find_mm.outputs.mmRepo }}
+      mmBranch: ${{ steps.find_mm.outputs.mmBranch }}
 
     strategy:
       matrix:
@@ -16,14 +20,45 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: "Check out MegaMek Lab"
+      - name: Checkout Data Repo
         uses: actions/checkout@v6
+        with:
+          repository: megamek/mm-data
+          path: mm-data
+
+      - name: Find the Right MegaMek Branch
+        id: find_mm
+        shell: bash {0}
+        run: |
+          git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
+          if [ "$?" == "0" ]
+          then
+            echo "mmRepo=${{ github.event.pull_request.head.repo.owner.login }}/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
+            echo "mmBranch=main" >> $GITHUB_OUTPUT
+          fi
+          exit 0
+
+      - name: Checkout MegaMek
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ steps.find_mm.outputs.mmRepo }}
+          ref: ${{ steps.find_mm.outputs.mmBranch }}
+          path: megamek
+
+      - name: Checking out MegaMekLab
+        uses: actions/checkout@v6
+        with:
+          path: megameklab
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
       - name: Checkstyle
-        run: ./gradlew checkstyleMain
+        working-directory: megameklab
+        run: ./gradlew checkstyleMain checkstyleTest
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v6

@@ -89,7 +89,7 @@ jobs:
 
       - name: Test All
         working-directory: megameklab
-        run: ./gradlew testAll --stacktrace --scan
+        run: ./gradlew testAll --stacktrace --scan -x checkstyleMain -x checkstyleTest
 
       - name: Upload Test Logs on Failure
         uses: actions/upload-artifact@v6
