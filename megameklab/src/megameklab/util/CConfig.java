@@ -156,6 +156,7 @@ public final class CConfig {
     public static final String RS_EXPLICIT_ZERO_MOD = "rs_explicit_zero_mod";
     public static final String RS_EXTRA_PHYSICALS = "rs_extra_physicals";
     public static final String RS_FANCY_PIPS = "rs_fancy_pips";
+    public static final String RS_TAC_OPS_VEHICLE_EFFECTIVENESS = "rs_tac_ops_vehicle_effectiveness";
 
     public static final String NAG_EQUIPMENT_CTRL_CLICK = "nag_equipment_ctrlclick";
     public static final String NAG_IMPORT_SETTINGS = "nag_import_settings";
