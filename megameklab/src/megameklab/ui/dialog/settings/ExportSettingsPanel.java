@@ -95,6 +95,7 @@ class ExportSettingsPanel extends JPanel {
     private final MMComboBox<RecordSheetOptions.ExplicitZeroModifierStyle> comboExplicitZeroModifier;
     private final JCheckBox chkExtraPhysicals = new JCheckBox();
     private final JCheckBox chkFancyPips = new JCheckBox();
+    private final JCheckBox chkTacOpsVehicleEffectiveness = new JCheckBox();
 
     ExportSettingsPanel() {
         ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Dialogs");
@@ -328,6 +329,10 @@ class ExportSettingsPanel extends JPanel {
             txtScale.setText("" + getDefaultScale());
         });
 
+        chkTacOpsVehicleEffectiveness.setText(resourceMap.getString("ConfigurationDialog.chkTacOpsVehicleEffectiveness.text"));
+        chkTacOpsVehicleEffectiveness.setToolTipText(resourceMap.getString("ConfigurationDialog.chkTacOpsVehicleEffectiveness.tooltip"));
+        chkTacOpsVehicleEffectiveness.setSelected(CConfig.getBooleanParam(CConfig.RS_TAC_OPS_VEHICLE_EFFECTIVENESS));
+
         JPanel scalePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         scalePanel.add(new JLabel(resourceMap.getString("ConfigurationDialog.cbRSScale.label")));
         scalePanel.add(Box.createHorizontalStrut(25));
@@ -375,11 +380,13 @@ class ExportSettingsPanel extends JPanel {
         innerGridPanel.add(explicitZeroModifierPanel);
         innerGridPanel.add(new JLabel(""));
         gridPanel.add(innerGridPanel);
+        gridPanel.add(chkTacOpsVehicleEffectiveness);
         gridPanel.add(mekNameLine);
         gridPanel.add(scalePanel);
 
+
         SpringUtilities.makeCompactGrid(innerGridPanel, 11, 2, 0, 0, 15, 6);
-        SpringUtilities.makeCompactGrid(gridPanel, 8, 1, 0, 0, 15, 6);
+        SpringUtilities.makeCompactGrid(gridPanel, 9, 1, 0, 0, 15, 6);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -451,6 +458,7 @@ class ExportSettingsPanel extends JPanel {
               Objects.requireNonNull(comboHeatScaleMarker.getSelectedItem()).name());
         recordSheetSettings.put(CConfig.RS_EXTRA_PHYSICALS, Boolean.toString(chkExtraPhysicals.isSelected()));
         recordSheetSettings.put(CConfig.RS_FANCY_PIPS, Boolean.toString(chkFancyPips.isSelected()));
+        recordSheetSettings.put(CConfig.RS_TAC_OPS_VEHICLE_EFFECTIVENESS, Boolean.toString(chkTacOpsVehicleEffectiveness.isSelected()));
         return recordSheetSettings;
     }
 
