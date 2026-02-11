@@ -45,8 +45,8 @@ import javax.swing.JCheckBox;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.equipment.MiscType;
+import megamek.common.interfaces.ITechManager;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.BABuildListener;
 
@@ -70,6 +70,8 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     private final JCheckBox chkJumpBooster = new JCheckBox();
     private final JCheckBox chkMechanicalJumpBooster = new JCheckBox();
     private final JCheckBox chkMyomerBooster = new JCheckBox();
+    private final JCheckBox chkDNICockpitMod = new JCheckBox();
+    private final JCheckBox chkEIInterface = new JCheckBox();
 
     private boolean ignoreEvents = false;
 
@@ -77,8 +79,13 @@ public class BAEnhancementView extends BuildView implements ActionListener {
     private final EquipmentType jumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_JUMP_BOOSTER);
     private final EquipmentType mechJumpBooster = EquipmentType.get(EquipmentTypeLookup.BA_MECHANICAL_JUMP_BOOSTER);
     private final EquipmentType myomerBooster = EquipmentType.get(EquipmentTypeLookup.BA_MYOMER_BOOSTER);
+    private final EquipmentType dniCockpitMod = EquipmentType.get("DNICockpitModification");
+    private final EquipmentType eiInterface = EquipmentType.get("EIInterface");
+
+    private ITechManager techManager;
 
     public BAEnhancementView(ITechManager techManager) {
+        this.techManager = techManager;
         initUI();
     }
 
@@ -114,6 +121,19 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         chkMyomerBooster.setToolTipText(resourceMap.getString("BAEnhancementView.chkMyomerBooster.tooltip"));
         add(chkMyomerBooster, gbc);
         chkMyomerBooster.addActionListener(this);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        chkDNICockpitMod.setText(resourceMap.getString("BAEnhancementView.chkDNICockpitMod.text"));
+        chkDNICockpitMod.setToolTipText(resourceMap.getString("BAEnhancementView.chkDNICockpitMod.tooltip"));
+        add(chkDNICockpitMod, gbc);
+        chkDNICockpitMod.addActionListener(this);
+
+        gbc.gridx++;
+        chkEIInterface.setText(resourceMap.getString("BAEnhancementView.chkEIInterface.text"));
+        chkEIInterface.setToolTipText(resourceMap.getString("BAEnhancementView.chkEIInterface.tooltip"));
+        add(chkEIInterface, gbc);
+        chkEIInterface.addActionListener(this);
     }
 
     public void setFromEntity(BattleArmor ba) {
@@ -122,6 +142,17 @@ public class BAEnhancementView extends BuildView implements ActionListener {
         chkJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_JUMP_BOOSTER));
         chkMechanicalJumpBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MECHANICAL_JUMP_BOOSTER));
         chkMyomerBooster.setSelected(ba.hasWorkingMisc(MiscType.F_MASC));
+
+        // DNI Cockpit Mod - IS only
+        boolean dniLegal = (dniCockpitMod != null) && techManager.isLegal(dniCockpitMod);
+        chkDNICockpitMod.setVisible(dniLegal);
+        chkDNICockpitMod.setSelected(dniLegal && ba.hasWorkingMisc(MiscType.F_DNI_COCKPIT_MOD));
+
+        // EI Interface - Clan only
+        boolean eiLegal = (eiInterface != null) && techManager.isLegal(eiInterface);
+        chkEIInterface.setVisible(eiLegal);
+        chkEIInterface.setSelected(eiLegal && ba.hasWorkingMisc(MiscType.F_EI_INTERFACE));
+
         ignoreEvents = false;
     }
 
@@ -138,6 +169,10 @@ public class BAEnhancementView extends BuildView implements ActionListener {
             listeners.forEach(l -> l.enhancementChanged(mechJumpBooster, chkMechanicalJumpBooster.isSelected()));
         } else if (e.getSource() == chkMyomerBooster) {
             listeners.forEach(l -> l.enhancementChanged(myomerBooster, chkMyomerBooster.isSelected()));
+        } else if (e.getSource() == chkDNICockpitMod) {
+            listeners.forEach(l -> l.enhancementChanged(dniCockpitMod, chkDNICockpitMod.isSelected()));
+        } else if (e.getSource() == chkEIInterface) {
+            listeners.forEach(l -> l.enhancementChanged(eiInterface, chkEIInterface.isSelected()));
         }
     }
 }

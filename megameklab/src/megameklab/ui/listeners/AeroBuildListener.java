@@ -73,4 +73,11 @@ public interface AeroBuildListener extends BuildListener {
      */
     void cargoSpaceChanged(BayData bayType, double fixed, double pod);
 
+    /**
+     * Notify of a change in DNI Cockpit Modification status.
+     *
+     * @param hasMod Whether the fighter has the DNI Cockpit Modification
+     */
+    void dniCockpitModChanged(boolean hasMod);
+
 }

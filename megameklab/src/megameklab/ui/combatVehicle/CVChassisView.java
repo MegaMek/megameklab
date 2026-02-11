@@ -55,6 +55,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.interfaces.ITechManager;
@@ -124,6 +125,7 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
     private final JSpinner spnChassisTurretWt = new JSpinner(spnTurretWtModel);
     private final JSpinner spnChassisTurret2Wt = new JSpinner(spnTurret2WtModel);
     private final JSpinner spnExtraSeats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JCheckBox chkDNICockpitMod = new JCheckBox();
 
     private final List<JComponent> omniComponents = new ArrayList<>();
 
@@ -266,6 +268,14 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         add(btnResetChassis, gbc);
         btnResetChassis.addActionListener(this);
         omniComponents.add(btnResetChassis);
+        gbc.gridy++;
+
+        chkDNICockpitMod.setText(resourceMap.getString("CVChassisView.chkDNICockpitMod.text"));
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        chkDNICockpitMod.setToolTipText(resourceMap.getString("CVChassisView.chkDNICockpitMod.tooltip"));
+        add(chkDNICockpitMod, gbc);
+        chkDNICockpitMod.addActionListener(this);
     }
 
     public void setFromEntity(Tank tank) {
@@ -297,6 +307,10 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         omniComponents.forEach(c -> c.setEnabled(chkOmni.isSelected()));
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
+
+        chkDNICockpitMod.removeActionListener(this);
+        chkDNICockpitMod.setSelected(tank.hasDNICockpitMod());
+        chkDNICockpitMod.addActionListener(this);
     }
 
     /**
@@ -314,10 +328,23 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.addActionListener(this);
         refreshEngine();
         refreshTurrets();
+        refreshDNICockpitMod();
 
         omniComponents.forEach(c -> c.setEnabled(chkOmni.isSelected()));
         spnChassisTurretWt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 0));
         spnChassisTurret2Wt.setEnabled(chkOmni.isSelected() && (cbTurrets.getSelectedIndex() > 1));
+    }
+
+    private void refreshDNICockpitMod() {
+        chkDNICockpitMod.removeActionListener(this);
+        EquipmentType dniEquipment = EquipmentType.get("DNICockpitModification");
+        boolean isLegal = (dniEquipment != null) && techManager.isLegal(dniEquipment);
+        chkDNICockpitMod.setVisible(isLegal);
+        if (!isLegal && chkDNICockpitMod.isSelected()) {
+            chkDNICockpitMod.setSelected(false);
+            listeners.forEach(l -> l.dniCockpitModChanged(false));
+        }
+        chkDNICockpitMod.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -489,6 +516,14 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         return Objects.requireNonNullElse((Integer) cbTurrets.getSelectedItem(), TURRET_NONE);
     }
 
+    public boolean hasDNICockpitMod() {
+        return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
+    }
+
+    public void setDNICockpitMod(boolean hasMod) {
+        chkDNICockpitMod.setSelected(hasMod);
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() == spnTonnage) {
@@ -520,6 +555,8 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.turretChanged(getTurretConfiguration()));
         } else if (e.getActionCommand().equals(CMD_RESET_CHASSIS)) {
             listeners.forEach(CVBuildListener::resetChassis);
+        } else if (e.getSource() == chkDNICockpitMod) {
+            listeners.forEach(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
         }
     }
 }

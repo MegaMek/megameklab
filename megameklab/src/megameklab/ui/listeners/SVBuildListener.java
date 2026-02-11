@@ -180,4 +180,11 @@ public interface SVBuildListener extends BuildListener {
      * @param turretWeight The weight of the sponson or pintle turrets.
      */
     void sponsonPintleBaseWtChanged(double turretWeight);
+
+    /**
+     * Notify of a change in DNI Cockpit Modification status.
+     *
+     * @param hasMod Whether the vehicle has the DNI Cockpit Modification
+     */
+    void dniCockpitModChanged(boolean hasMod);
 }

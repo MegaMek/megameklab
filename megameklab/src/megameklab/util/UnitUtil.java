@@ -1736,7 +1736,8 @@ public class UnitUtil {
     }
 
     /**
-     * check that the unit is valid
+     * Check that the unit is valid. When the "Use Game Year" setting is enabled, equipment intro
+     * dates are validated against the configured game year rather than the unit's intro year.
      *
      * @param unit The entity
      */

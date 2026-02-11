@@ -59,6 +59,12 @@ public interface MekBuildListener extends BuildListener {
 
     void fullHeadEjectChanged(boolean eject);
 
+    void dniCockpitModChanged(boolean hasMod);
+
+    void eiCockpitChanged(boolean hasEI);
+
+    void damageInterruptCircuitChanged(boolean hasDIC);
+
     void resetChassis();
 
 }

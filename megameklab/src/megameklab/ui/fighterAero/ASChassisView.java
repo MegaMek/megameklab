@@ -50,6 +50,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -93,6 +94,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     final private TechComboBox<Engine> cbEngine = new TechComboBox<>(e -> e.getEngineName().replaceAll("^\\d+ ", ""));
     final private CustomComboBox<Integer> cbCockpit = new CustomComboBox<>(Aero::getCockpitTypeString);
     final private JButton btnResetChassis = new JButton();
+    final private JCheckBox chkDNICockpitMod = new JCheckBox();
 
     private final ITechManager techManager;
     private boolean primitive = false;
@@ -184,8 +186,16 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         add(cbCockpit, gbc);
         cbCockpit.addActionListener(this);
 
-        gbc.gridx = 1;
+        chkDNICockpitMod.setText(resourceMap.getString("FighterChassisView.chkDNICockpitMod.text"));
+        gbc.gridx = 0;
         gbc.gridy = 5;
+        gbc.gridwidth = 4;
+        chkDNICockpitMod.setToolTipText(resourceMap.getString("FighterChassisView.chkDNICockpitMod.tooltip"));
+        add(chkDNICockpitMod, gbc);
+        chkDNICockpitMod.addActionListener(this);
+
+        gbc.gridx = 1;
+        gbc.gridy = 6;
         gbc.gridwidth = 3;
         btnResetChassis.setToolTipText(resourceMap.getString("FighterChassisView.btnResetChassis.tooltip"));
         add(btnResetChassis, gbc);
@@ -215,7 +225,18 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         cbFighterType.addActionListener(this);
         setEngine(aero.getEngine());
         setCockpitType(aero.getCockpitType());
+        chkDNICockpitMod.removeActionListener(this);
+        chkDNICockpitMod.setSelected(aero.hasDNICockpitMod());
+        chkDNICockpitMod.addActionListener(this);
         btnResetChassis.setEnabled(aero.isOmni());
+    }
+
+    public boolean hasDNICockpitMod() {
+        return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
+    }
+
+    public void setDNICockpitMod(boolean hasMod) {
+        chkDNICockpitMod.setSelected(hasMod);
     }
 
     public void setAsCustomization() {
@@ -235,10 +256,23 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         refreshFighterType();
         refreshEngine();
         refreshCockpit();
+        refreshDNICockpitMod();
 
         chkOmni.setEnabled(!isPrimitive()
               && techManager.isLegal(Entity.getOmniAdvancement()));
 
+    }
+
+    private void refreshDNICockpitMod() {
+        chkDNICockpitMod.removeActionListener(this);
+        EquipmentType dniEquipment = EquipmentType.get("DNICockpitModification");
+        boolean isLegal = (dniEquipment != null) && techManager.isLegal(dniEquipment);
+        chkDNICockpitMod.setVisible(isLegal);
+        if (!isLegal && chkDNICockpitMod.isSelected()) {
+            chkDNICockpitMod.setSelected(false);
+            listeners.forEach(l -> l.dniCockpitModChanged(false));
+        }
+        chkDNICockpitMod.addActionListener(this);
     }
 
     private void refreshTonnage() {
@@ -468,6 +502,8 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.cockpitChanged(getCockpitType()));
         } else if (e.getSource() == btnResetChassis) {
             listeners.forEach(AeroBuildListener::resetChassis);
+        } else if (e.getSource() == chkDNICockpitMod) {
+            listeners.forEach(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
         }
     }
 }
