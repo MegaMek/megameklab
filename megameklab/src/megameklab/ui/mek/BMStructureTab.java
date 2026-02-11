@@ -990,6 +990,78 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void dniCockpitModChanged(boolean hasMod) {
+        if (hasMod && !getMek().hasDNICockpitMod()) {
+            MiscType dniMod = (MiscType) EquipmentType.get("DNICockpitModification");
+            if (dniMod != null) {
+                try {
+                    getMek().addEquipment(dniMod, Entity.LOC_NONE);
+                } catch (Exception ignored) {
+                    // 0-crit equipment shouldn't fail to add
+                }
+            }
+        } else if (!hasMod && getMek().hasDNICockpitMod()) {
+            for (MiscMounted mounted : getMek().getMisc()) {
+                if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
+                    getMek().removeMisc(mounted.getType().getInternalName());
+                    break;
+                }
+            }
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void eiCockpitChanged(boolean hasEI) {
+        if (hasEI && !getMek().hasEiCockpit()) {
+            MiscType eiInterface = (MiscType) EquipmentType.get("EIInterface");
+            if (eiInterface != null) {
+                try {
+                    getMek().addEquipment(eiInterface, Entity.LOC_NONE);
+                } catch (Exception ignored) {
+                    // 0-crit equipment shouldn't fail to add
+                }
+            }
+        } else if (!hasEI && getMek().hasEiCockpit()) {
+            for (MiscMounted mounted : getMek().getMisc()) {
+                if (mounted.getType().hasFlag(MiscType.F_EI_INTERFACE)) {
+                    getMek().removeMisc(mounted.getType().getInternalName());
+                    break;
+                }
+            }
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void damageInterruptCircuitChanged(boolean hasDIC) {
+        if (hasDIC && !getMek().hasDamageInterruptCircuit()) {
+            MiscType dicMod = (MiscType) EquipmentType.get("DamageInterruptCircuit");
+            if (dicMod != null) {
+                try {
+                    getMek().addEquipment(dicMod, Entity.LOC_NONE);
+                } catch (Exception ignored) {
+                    // 0-crit equipment shouldn't fail to add
+                }
+            }
+        } else if (!hasDIC && getMek().hasDamageInterruptCircuit()) {
+            for (MiscMounted mounted : getMek().getMisc()) {
+                if (mounted.getType().hasFlag(MiscType.F_DAMAGE_INTERRUPT_CIRCUIT)) {
+                    getMek().removeMisc(mounted.getType().getInternalName());
+                    break;
+                }
+            }
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getMek());
         refresh.refreshAll();
