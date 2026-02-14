@@ -154,6 +154,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         hasApollo = hasLinkedEquipment(m, MiscType.F_APOLLO);
         hasCapacitor = hasLinkedEquipment(m, MiscType.F_PPC_CAPACITOR);
         ranges = setRanges();
+        if (m instanceof WeaponMounted wm && m.isWeaponGroup()) {
+            quantity = wm.getNWeapons();
+        }
     }
 
     @Override
@@ -769,6 +772,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         quantity++;
     }
 
+    public void incrementQty(int by) {
+        quantity += by;
+    }
+
     @Override
     public boolean indentMultiline() {
         return true;
@@ -790,5 +797,90 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             sb.append(quirk.getDisplayableName());
         }
         return sb.toString();
+    }
+
+    @Override
+    public String getSquadronRangeField(int row) {
+        if (isMML) {
+            return row == MML_LRM_ROW ? "Lng" : row == MML_SRM_ROW ? "Sht" : "";
+        }
+        if (isATM) {
+            return row == ATM_STANDARD_ROW ? "Med" : row == ATM_ER_ROW ? "Ext" : row == ATM_HE_ROW ? "Sht" : "";
+        }
+
+        if (row != 0) {
+            return "";
+        }
+
+        if (mount.getType() instanceof WeaponType wt) {
+            return switch(wt.getMaxRange()) {
+                case WeaponType.RANGE_SHORT -> "Sht";
+                case WeaponType.RANGE_MED -> "Med";
+                case WeaponType.RANGE_LONG -> "Lng";
+                case WeaponType.RANGE_EXT -> "Ext";
+                default -> DASH;
+            };
+        }
+
+        return DASH;
+    }
+
+    @Override
+    public String getSquadronDamageField(int row) {
+        if (isATM || isMML) {
+            return getShortField(row);
+        }
+
+        if (row != 0) {
+            return "";
+        }
+
+        // Since squadrons don't *really* use bays, the only weapons where we worry about more than one damage value
+        // is a VSP
+
+        var shortDamage = getShortField(row);
+        var medDamage = getMediumField(row);
+        var longDamage = getLongField(row);
+        var extremeDamage = getExtremeField(row);
+
+        if (medDamage.isBlank() || medDamage.equals(DASH)) {
+            return shortDamage;
+        }
+        if (longDamage.isBlank() || longDamage.equals(DASH)) {
+            if (shortDamage.equals(medDamage)) {
+                return shortDamage;
+            }
+            return "%s/%s".formatted(shortDamage, medDamage);
+        }
+        if (extremeDamage.isBlank() || extremeDamage.equals(DASH)) {
+            if (shortDamage.equals(medDamage) && medDamage.equals(longDamage)) {
+                return shortDamage;
+            }
+            return "%s/%s/%s".formatted(shortDamage, medDamage, longDamage);
+        }
+        if (shortDamage.equals(medDamage) && medDamage.equals(longDamage) && longDamage.equals(extremeDamage)) {
+            return shortDamage;
+        }
+        return "%s/%s/%s/%s".formatted(shortDamage, medDamage, longDamage, extremeDamage);
+    }
+
+    @Override
+    public String getSquadronTotalHeatField(int row) {
+        // What happens if a squadron has laser pulse modules? Ask CGL
+        if (row != 0) {
+            return "";
+        }
+
+        var heatPer = mount.getType().getHeat();
+
+        if (heatPer <= 0) {
+            return DASH;
+        }
+
+        if (hasInsulator) {
+            heatPer--;
+        }
+
+        return "%s/%d".formatted(LONG_UNDERSCORE, heatPer * quantity);
     }
 }

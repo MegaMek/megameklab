@@ -60,6 +60,8 @@ import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
+import megamek.common.equipment.WeaponType;
+import megamek.common.equipment.WeaponTypeFlag;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -119,7 +121,15 @@ public class InventoryWriter {
         SRV("SRV", 0.69),
         MRV("MRV", 0.77),
         LRV("LRV", 0.85),
-        ERV("ERV", 0.93);
+        ERV("ERV", 0.93),
+        SQUADRON_NAME("Weapon", 0.02),
+        SQUADRON_LOC("Loc", 0.49),
+        SQUADRON_QUANTITY("Cur#/Orig#", 0.57),
+        SQUADRON_DAMAGE("AV per", 0.75),
+        SQUADRON_HEAT_EACH("Heat Per, ", 0.85),
+        SQUADRON_HEAT_TOTAL("Rem/Total", 0.9),
+        SQUADRON_RANGE("Range", 0.95),
+        ;
 
         final String header;
         final double groundX;
@@ -154,7 +164,9 @@ public class InventoryWriter {
         }
 
         static Column[] colsFor(Entity en, boolean mergeInventoryAllowed) {
-            if (en.isAero()) {
+            if (en.isCapitalFighter()) {
+                return new Column[] { SQUADRON_NAME, SQUADRON_LOC, SQUADRON_QUANTITY, SQUADRON_DAMAGE, SQUADRON_HEAT_EACH, SQUADRON_HEAT_TOTAL, SQUADRON_RANGE };
+            } if (en.isAero()) {
                 if (en.tracksHeat() || en.isLargeCraft()) {
                     return new Column[] { QUANTITY, NAME, LOCATION, HEAT, SRV, MRV, LRV, ERV };
                 } else {
@@ -255,6 +267,8 @@ public class InventoryWriter {
               .map(t -> (Bay) t).filter(b -> !b.isQuarters()).collect(Collectors.toList());
         if (sheet.getEntity().usesWeaponBays()) {
             parseBays();
+        } else if (sheet.getEntity().isCapitalFighter()) {
+            parseSquadronEquipment();
         } else {
             parseEquipment();
         }
@@ -303,6 +317,37 @@ public class InventoryWriter {
         }
         for (int i = 0; i < Column.BAY_COLUMNS.length; i++) {
             bayColX[i] = viewX + viewWidth * Column.BAY_COLUMNS[i].aeroX;
+        }
+    }
+
+    private void parseSquadronEquipment() {
+        List<Mounted<?>> sortedMounted = sheet.getEntity().getEquipment();
+        for (Mounted<?> m : sortedMounted) {
+            if (m.getType() instanceof AmmoType) {
+                continue;
+            }
+            if (m.getType() instanceof WeaponType wt) {
+                if (wt.hasFlag(WeaponTypeFlag.INTERNAL_REPRESENTATION)) {
+                    continue;
+                }
+            }
+            if (!PrintUtil.isPrintableEquipment(m.getType(), sheet.getEntity(), sheet.options)) {
+                continue;
+            }
+            StandardInventoryEntry entry = new StandardInventoryEntry(m);
+
+            StandardInventoryEntry same =
+                  equipment.stream()
+                        .filter(e -> e instanceof StandardInventoryEntry)
+                        .map(e -> (StandardInventoryEntry) e)
+                        .filter(entry::equals)
+                        .findFirst()
+                        .orElse(null);
+            if (null == same) {
+                equipment.add(entry);
+            } else {
+                same.incrementQty(m.getNWeapons());
+            }
         }
     }
 
@@ -1067,6 +1112,7 @@ public class InventoryWriter {
                         case NAME:
                         case NAME_NO_QTY:
                         case BAY:
+                        case SQUADRON_NAME:
                             // Calculate the width of the name field to determine if wrapping is required.
                             // The following column is always location, which is centered, so we need
                             // to subtract half the width of that field as well, plus a bit of extra space.
@@ -1095,6 +1141,7 @@ public class InventoryWriter {
                             break;
                         case LOCATION:
                         case LOCATION_NO_HEAT:
+                        case SQUADRON_LOC:
                             sheet.addTextElement(rowGroup,
                                   colX[i],
                                   yPosition,
@@ -1108,6 +1155,7 @@ public class InventoryWriter {
                                   "location");
                             break;
                         case HEAT:
+                        case SQUADRON_HEAT_EACH:
                             sheet.addTextElement(rowGroup,
                                   colX[i],
                                   yPosition,
@@ -1120,6 +1168,32 @@ public class InventoryWriter {
                                   null,
                                   "heat");
                             break;
+                        case SQUADRON_HEAT_TOTAL:
+                            sheet.addTextElement(rowGroup,
+                                  colX[i],
+                                  yPosition,
+                                  line.getSquadronTotalHeatField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK,
+                                  null,
+                                  "total_heat");
+                            break;
+                        case SQUADRON_QUANTITY:
+                            sheet.addTextElement(rowGroup,
+                                  colX[i],
+                                  yPosition,
+                                  line.getSquadronQtyField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK,
+                                  null,
+                                  "quantity");
+                            break;
                         case DAMAGE:
                             final float rightPadding = (fontSize / 2);
                             lines = Math.max(lines, sheet.addMultilineTextElement(rowGroup, colX[i],
@@ -1127,6 +1201,19 @@ public class InventoryWriter {
                                   colX[i + 1] - colX[i] - rightPadding, lineHeight, line.getDamageField(row),
                                   fontSize, SVGConstants.SVG_START_VALUE, SVGConstants.SVG_NORMAL_VALUE, FILL_BLACK
                                   , "damage"));
+                            break;
+                        case SQUADRON_DAMAGE:
+                            sheet.addTextElement(rowGroup,
+                                  colX[i],
+                                  yPosition,
+                                  line.getSquadronDamageField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK,
+                                  null,
+                                  "damage");
                             break;
                         case MOD:
                             // RecordSheetOptions.HitModStyle.COLUMN
@@ -1141,6 +1228,19 @@ public class InventoryWriter {
                                   FILL_BLACK,
                                   null,
                                   "hitmod");
+                            break;
+                        case SQUADRON_RANGE:
+                            sheet.addTextElement(rowGroup,
+                                  colX[i],
+                                  yPosition,
+                                  line.getSquadronRangeField(row),
+                                  fontSize,
+                                  SVGConstants.SVG_MIDDLE_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  SVGConstants.SVG_NORMAL_VALUE,
+                                  FILL_BLACK,
+                                  null,
+                                  "range");
                             break;
                         case MIN:
                             sheet.addTextElement(rowGroup,

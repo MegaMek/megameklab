@@ -45,6 +45,7 @@ public interface InventoryEntry {
     String MINUS = "\u2212";
     String DAGGER = "\u2020";
     String DOUBLE_DAGGER = "\u2021";
+    String LONG_UNDERSCORE = "\uFF3F";
 
     /**
      * @return The number of rows this entry takes on the table. This does not consider text that is wrapped due to
@@ -186,5 +187,25 @@ public interface InventoryEntry {
      */
     default int aeroAVMod(WeaponType weapon, EquipmentType linkedBy, boolean bay) {
         return AeroAVModCalculator.calculateBonus(weapon, linkedBy, bay);
+    }
+
+    default String getSquadronQtyField(int row) {
+        var baseQty = getQuantityField(row);
+        if (baseQty.isBlank()) {
+            return "";
+        }
+        return LONG_UNDERSCORE + '/' + baseQty;
+    }
+
+    default String getSquadronRangeField(int row) {
+        return DASH;
+    }
+
+    default String getSquadronDamageField(int row) {
+        return DASH;
+    }
+
+    default String getSquadronTotalHeatField(int row) {
+        return DASH;
     }
 }

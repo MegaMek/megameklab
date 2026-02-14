@@ -240,4 +240,9 @@ public class PrintSquadron extends PrintEntity {
             hideElement("%s:%d".formatted(FIGHTER_GROUP, i), true);
         }
     }
+
+    @Override
+    protected boolean showHeatProfile() {
+        return false;
+    }
 }

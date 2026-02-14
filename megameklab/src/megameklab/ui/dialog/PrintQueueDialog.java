@@ -154,10 +154,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
     private void setGameOptions() {
         var options = game.getOptions();
-        var optTL =  options.getOption(OptionsConstants.ALLOWED_TECH_LEVEL);
-
-        optTL.setValue(TechConstants.T_SIMPLE_NAMES[TechConstants.T_SIMPLE_UNOFFICIAL]);
-
+        options.getOption(OptionsConstants.ALLOWED_TECH_LEVEL).setValue(TechConstants.T_SIMPLE_NAMES[TechConstants.T_SIMPLE_UNOFFICIAL]);
+        options.getOption(OptionsConstants.ADVANCED_AERO_RULES_STRATOPS_CAPITAL_FIGHTER).setValue(true);
     }
 
     private static ImageIcon icon(String name) {
