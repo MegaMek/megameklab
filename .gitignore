@@ -28,6 +28,8 @@
 /megameklab/mmconf/*.properties
 /megameklab/mmconf/*.properties.bak
 /megameklab/mmconf/clientsettings.xml
+/megameklab/mmconf/searches/*.json
+/megameklab/mmconf/recent-advanced-searches.json
 /megameklab/out/
 /megameklab/.classpath
 /megameklab/.project
