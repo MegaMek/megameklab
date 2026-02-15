@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -83,6 +83,12 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
           Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
           Engine.COMPACT_ENGINE, Engine.FISSION, Engine.COMBUSTION_ENGINE
     };
+
+    // see MML#2095, TO:AUE p.120 and TM p.215 (errata!)
+    private final static List<Integer> CF_ENGINE_TYPES = List.of(
+          Engine.NORMAL_ENGINE, Engine.XL_ENGINE, Engine.XXL_ENGINE, Engine.LIGHT_ENGINE,
+          Engine.FISSION, Engine.COMBUSTION_ENGINE);
+
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(20, 5, 100, 5);
     private String[] fighterTypeNames;
 
@@ -356,8 +362,7 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private boolean validCFEngine(Engine engine) {
-        return conventional && ((engine.getEngineType() == Engine.NORMAL_ENGINE)
-              || (engine.getEngineType() == Engine.COMBUSTION_ENGINE));
+        return conventional && CF_ENGINE_TYPES.contains(engine.getEngineType());
     }
 
     private boolean validASFEngine(Engine engine) {
