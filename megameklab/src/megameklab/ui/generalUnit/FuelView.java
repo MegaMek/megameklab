@@ -32,28 +32,29 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.enums.FuelType;
+import megamek.common.ui.SmallFontHelpTextLabel;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.FixedWingSupport;
 import megamek.common.units.Jumpship;
 import megamek.common.units.Tank;
-import megamek.common.units.Warship;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
 import megameklab.ui.listeners.BuildListener;
@@ -75,26 +76,22 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         listeners.remove(l);
     }
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
 
     private final SpinnerNumberModel spnFuelModel = new SpinnerNumberModel(0.0, 0.0, null, 0.5);
-    private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, 1000000, 1);
     private final JSpinner spnFuel = new JSpinner(spnFuelModel);
     private final JSpinner spnFuelCapacity = new JSpinner(spnFuelCapacityModel);
-    private final JLabel lblFuelPoints = new JLabel();
-    private final JLabel lblTurnsAtSafe = new JLabel();
-    private final JLabel lblTurnsAtMax = new JLabel();
-    private final JLabel lblBurnDays1G = new JLabel();
-    private final JLabel lblBurnDaysMax = new JLabel();
-    private final JLabel lblBurnDays1GText = new JLabel(resourceMap.getString("FuelView.lblBurnDays1G.text"));
-    private final JLabel lblBurnDaysMaxText = new JLabel(resourceMap.getString("FuelView.lblBurnDaysMax.text"));
+    private final JLabel lblFuelPoints = new JLabel("", SwingConstants.RIGHT);
+    private final JLabel gameTurnsInfo = new SmallFontHelpTextLabel(SwingConstants.CENTER);
+
+    private final JLabel burnDaysInfo = new SmallFontHelpTextLabel(SwingConstants.CENTER);
+
+    private final JLabel lblFuelType = new JLabel(I18N.getString("FuelView.cbFuelType.text"), SwingConstants.RIGHT);
     private final CustomComboBox<FuelType> cbFuelType = new CustomComboBox<>(
           new FuelType[] { FuelType.PETROCHEMICALS, FuelType.ALCOHOL, FuelType.NATURAL_GAS },
-          ft -> resourceMap.getString("FuelView.FuelType." + ft)
+          ft -> I18N.getString("FuelView.FuelType." + ft)
     );
-    private final Box panInfoTurns = Box.createHorizontalBox();
-    private final Box panBurnDays = Box.createHorizontalBox();
-    private final Box panFuelType = Box.createHorizontalBox();
 
     private boolean kgScale = false;
 
@@ -103,58 +100,38 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     }
 
     private void initUI() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
-        spnFuel.setToolTipText(resourceMap.getString("FuelView.spnFuel.tooltip"));
+        spnFuel.setToolTipText(I18N.getString("FuelView.spnFuel.tooltip"));
         spnFuel.addChangeListener(this);
-        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblFuelPoints.tooltip"));
+        spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblFuelPoints.tooltip"));
         spnFuelCapacity.addChangeListener(this);
-
-        Box fuelRangePanel = Box.createHorizontalBox();
-        fuelRangePanel.add(Box.createHorizontalStrut(10));
-        fuelRangePanel.add(new JLabel(resourceMap.getString("FuelView.spnFuel.text")));
-        fuelRangePanel.add(spnFuel);
-        fuelRangePanel.add(Box.createHorizontalStrut(10));
-        fuelRangePanel.add(lblFuelPoints);
-        fuelRangePanel.add(spnFuelCapacity);
-        fuelRangePanel.add(Box.createHorizontalStrut(10));
-        fuelRangePanel.setBorder(new EmptyBorder(0, 0, 10, 0));
-        add(fuelRangePanel);
-
-        lblTurnsAtSafe.setToolTipText(resourceMap.getString("FuelView.lblTurnsAtSafe.tooltip"));
-        lblTurnsAtMax.setToolTipText(resourceMap.getString("FuelView.lblTurnsAtMax.tooltip"));
-        panInfoTurns.add(Box.createHorizontalStrut(10));
-        panInfoTurns.add(new JLabel(resourceMap.getString("FuelView.lblTurnsAtSafe.text")));
-        panInfoTurns.add(lblTurnsAtSafe);
-        panInfoTurns.add(Box.createHorizontalStrut(10));
-        panInfoTurns.add(new JLabel(resourceMap.getString("FuelView.lblTurnsAtMax.text")));
-        panInfoTurns.add(lblTurnsAtMax);
-        panInfoTurns.add(Box.createHorizontalStrut(10));
-        panInfoTurns.setBorder(new EmptyBorder(0, 0, 10, 0));
-        add(panInfoTurns);
-
-        lblBurnDays1G.setToolTipText(resourceMap.getString("FuelView.lblBurnDays1G.tooltip"));
-        lblBurnDaysMax.setToolTipText(resourceMap.getString("FuelView.lblBurnDaysMax.tooltip"));
-        panBurnDays.add(Box.createHorizontalStrut(10));
-        panBurnDays.add(lblBurnDays1GText);
-        panBurnDays.add(lblBurnDays1G);
-        panBurnDays.add(Box.createHorizontalStrut(10));
-        panBurnDays.add(lblBurnDaysMaxText);
-        panBurnDays.add(lblBurnDaysMax);
-        panBurnDays.add(Box.createHorizontalStrut(10));
-        panBurnDays.setBorder(new EmptyBorder(0, 0, 10, 0));
-        add(panBurnDays);
-
+        gameTurnsInfo.setToolTipText(I18N.getString("FuelView.lblTurnsAtSafe.tooltip"));
         cbFuelType.setPrototypeDisplayValue(FuelType.PETROCHEMICALS);
-        cbFuelType.setToolTipText(resourceMap.getString("FuelView.cbFuelType.tooltip"));
+        cbFuelType.setToolTipText(I18N.getString("FuelView.cbFuelType.tooltip"));
         cbFuelType.addActionListener(this);
-        panFuelType.add(Box.createHorizontalStrut(10));
-        panFuelType.add(new JLabel(resourceMap.getString("FuelView.cbFuelType.text")));
-        panFuelType.add(cbFuelType);
-        panFuelType.add(Box.createHorizontalGlue());
-        panFuelType.add(Box.createHorizontalStrut(10));
-        panFuelType.setBorder(new EmptyBorder(0, 0, 10, 0));
-        add(panFuelType);
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = STANDARD_INSETS;
+        gbc.gridy = 0;
+
+        gbc.gridy++;
+        add(lblFuelType, gbc);
+        add(cbFuelType, gbc);
+
+        gbc.gridy++;
+        add(new JLabel(I18N.getString("FuelView.spnFuel.text"), SwingConstants.RIGHT), gbc);
+        add(spnFuel, gbc);
+
+        gbc.gridy++;
+        add(lblFuelPoints, gbc);
+        add(spnFuelCapacity, gbc);
+
+        gbc.gridwidth = 2;
+        gbc.gridy++;
+        add(gameTurnsInfo, gbc);
+        gbc.gridy++;
+        add(burnDaysInfo, gbc);
     }
 
     private int scaleMultiplier() {
@@ -183,19 +160,18 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     }
 
     private void setFromAero(Aero aero) {
-        lblFuelPoints.setText(resourceMap.getString("FuelView.lblFuelPoints.text"));
-        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblFuelPoints.tooltip"));
-        panInfoTurns.setVisible(true);
-        if ((aero instanceof FixedWingSupport) && (((FixedWingSupport) aero).kgPerFuelPoint() == 0)) {
-            panInfoTurns.setVisible(false);
+        lblFuelPoints.setText(I18N.getString("FuelView.lblFuelPoints.text"));
+        spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblFuelPoints.tooltip"));
+        gameTurnsInfo.setVisible(true);
+        if ((aero instanceof FixedWingSupport fixedWingSupport) && (fixedWingSupport.kgPerFuelPoint() == 0)) {
+            gameTurnsInfo.setVisible(false);
             spnFuel.setEnabled(false);
             spnFuelCapacity.setEnabled(false);
         } else {
-            int maxTurnsAtSafeThrust = maxTurnsAtSafeThrust(aero);
-            lblTurnsAtSafe.setText(maxTurnsAtSafeThrust > 0 ? maxTurnsAtSafeThrust + "" : "--");
-            int maxTurnsAtMaxThrust = maxTurnsAtMaxThrust(aero);
-            lblTurnsAtMax.setText(maxTurnsAtMaxThrust > 0 ? maxTurnsAtMaxThrust + "" : "--");
-            spnFuel.setEnabled(true);
+            gameTurnsInfo.setText(
+                  MessageFormat.format(I18N.getString("FuelView.lblTurns.text"),
+                        maxTurnsAtSafeThrust(aero),
+                        maxTurnsAtMaxThrust(aero)));
             spnFuel.setEnabled(true);
         }
 
@@ -212,27 +188,26 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         spnFuelCapacity.addChangeListener(this);
 
         if (aero.getStrategicFuelUse() > 0) {
-            lblBurnDays1G.setText(String.format("%3.2f", TestAero.calculateDaysAt1G(aero)));
-            lblBurnDaysMax.setText(String.format("%3.2f", TestAero.calculateDaysAtMax(aero)));
-            panBurnDays.setVisible(true);
-            if ((aero instanceof Jumpship) && !(aero instanceof Warship)) {
-                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDaysStationKeeping.text"));
-                lblBurnDaysMaxText.setVisible(false);
-                lblBurnDaysMax.setVisible(false);
+            burnDaysInfo.setVisible(true);
+            gameTurnsInfo.setVisible(false);
+            if ((aero instanceof Jumpship capitalCraft) && capitalCraft.hasStationKeepingDrive()) {
+                burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDaysStationKeeping.text"),
+                      TestAero.calculateDaysAt1G(aero)));
             } else {
-                lblBurnDays1GText.setText(resourceMap.getString("FuelView.lblBurnDays1G.text"));
-                lblBurnDaysMaxText.setVisible(true);
-                lblBurnDaysMax.setVisible(true);
+                burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDays.text"),
+                      TestAero.calculateDaysAt1G(aero), TestAero.calculateDaysAtMax(aero)));
             }
         } else {
-            panBurnDays.setVisible(false);
+            gameTurnsInfo.setVisible(true);
+            burnDaysInfo.setVisible(false);
         }
-        panFuelType.setVisible(false);
+        lblFuelType.setVisible(false);
+        cbFuelType.setVisible(false);
     }
 
     private void setFromTank(Tank tank) {
-        lblFuelPoints.setText(resourceMap.getString("FuelView.lblRange.text"));
-        spnFuelCapacity.setToolTipText(resourceMap.getString("FuelView.lblRange.tooltip"));
+        lblFuelPoints.setText(I18N.getString("FuelView.lblRange.text"));
+        spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblRange.tooltip"));
         spnFuel.setEnabled(tank.fuelTonnagePer100km() > 0);
         spnFuelCapacity.setEnabled(tank.fuelTonnagePer100km() > 0);
 
@@ -248,9 +223,10 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         cbFuelType.setSelectedItem(tank.getICEFuelType());
         cbFuelType.addActionListener(this);
 
-        panInfoTurns.setVisible(false);
-        panBurnDays.setVisible(false);
-        panFuelType.setVisible(tank.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE);
+        gameTurnsInfo.setVisible(false);
+        burnDaysInfo.setVisible(false);
+        lblFuelType.setVisible(tank.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE);
+        cbFuelType.setVisible(tank.getEngine().getEngineType() == Engine.COMBUSTION_ENGINE);
     }
 
     @Override

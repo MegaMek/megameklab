@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,6 +32,7 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -100,7 +101,7 @@ public class IconView extends BuildView {
         var outerIconButtonPanel = new JPanel();
         outerIconButtonPanel.add(iconButtonPanel);
 
-        JPanel iconPanel = new JPanel();
+        JPanel iconPanel = new JPanel(new GridBagLayout());
         iconPanel.add(entityImage);
 
         setLayout(new GridLayout(1, 2));
