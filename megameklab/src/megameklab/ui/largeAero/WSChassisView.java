@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -310,7 +310,9 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshSI() {
         int prev = spnSIModel.getNumber().intValue();
-        if ((baseType == TYPE_JUMPSHIP) || (baseType == TYPE_STATION)) {
+        if ((baseType == TYPE_JUMPSHIP) || (baseType == TYPE_STATION) || maxThrust == 0) {
+            // maxthrust == 0 means it is a WS with a station-keeping drive, s. SO:AA p.135 and
+            // https://battletech.com/forums/index.php?topic=37113.msg859523 (they use a fixed SI of 1)
             spnSI.setValue(1);
             spnSI.setEnabled(false);
         } else {

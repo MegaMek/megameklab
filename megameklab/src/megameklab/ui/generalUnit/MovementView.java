@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -50,6 +50,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.client.ui.util.DisplayTextField;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -59,13 +60,16 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.ui.SmallFontHelpTextLabel;
 import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.ConvFighter;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
+import megamek.common.units.Jumpship;
 import megamek.common.units.Mek;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.Tank;
+import megamek.common.units.Warship;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestMek;
@@ -79,6 +83,9 @@ import megameklab.ui.util.TechComboBox;
  * @author Neoancient
  */
 public class MovementView extends BuildView implements ActionListener, ChangeListener {
+
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(BuildListener l) {
@@ -107,13 +114,15 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JLabel lblJumpType = createLabel("lblJumpType", "");
 
     private final JTextField txtRunBase = new JTextField();
-    private final JTextField txtWalkFinal = new JTextField();
-    private final JTextField txtRunFinal = new JTextField();
-    private final JTextField txtJumpFinal = new JTextField();
-    // CHECKSTYLE IGNORE ForbiddenWords FOR 1 LINES
-    private final JLabel lblMekMechanicalJumpMP = new JLabel("Mech. J. Booster MP:");
+    private final JTextField txtWalkFinal = new DisplayTextField();
+    private final JTextField txtRunFinal = new DisplayTextField();
+    private final JTextField txtJumpFinal = new DisplayTextField();
+    private final JLabel lblMekMechanicalJumpMP = new JLabel(I18N.getString("MovementView.MMJB"));
     private final SpinnerNumberModel spnMekMechanicalJumpModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnMekMechanicalJumpMP = new JSpinner(spnMekMechanicalJumpModel);
+
+    private final JLabel wsStationKeepingInfo =
+          new SmallFontHelpTextLabel(I18N.getString("MovementView.stationKeepingInfo"));
 
     private final ITechManager techManager;
     private long etype;
@@ -128,93 +137,70 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-        walkNames = resourceMap.getString("MovementView.lblWalk.values").split(",");
-        runNames = resourceMap.getString("MovementView.lblRun.values").split(",");
-        jumpNames = resourceMap.getString("MovementView.lblJump.values").split(",");
+        walkNames = I18N.getString("MovementView.lblWalk.values").split(",");
+        runNames = I18N.getString("MovementView.lblRun.values").split(",");
+        jumpNames = I18N.getString("MovementView.lblJump.values").split(",");
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = STANDARD_INSETS;
 
-        gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("MovementView.lblBase.text")), gbc);
+        add(new JLabel());
+        add(new JLabel(I18N.getString("MovementView.lblBase.text")), gbc);
+        add(new JLabel(I18N.getString("MovementView.lblFinal.text")), gbc);
 
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("MovementView.lblFinal.text")), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridy++;
         add(lblWalk, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
-        spnWalk.setToolTipText(resourceMap.getString("MovementView.spnWalk.tooltip"));
+        spnWalk.setToolTipText(I18N.getString("MovementView.spnWalk.tooltip"));
         add(spnWalk, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        txtWalkFinal.setToolTipText(resourceMap.getString("MovementView.txtWalkFinal.tooltip"));
+        txtWalkFinal.setToolTipText(I18N.getString("MovementView.txtWalkFinal.tooltip"));
         add(txtWalkFinal, gbc);
         spnWalk.addChangeListener(this);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy++;
+        gbc.gridwidth = 3;
+        add(wsStationKeepingInfo, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridy++;
         add(lblRun, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        txtRunBase.setToolTipText(resourceMap.getString("MovementView.txtRunBase.tooltip"));
+        txtRunBase.setToolTipText(I18N.getString("MovementView.txtRunBase.tooltip"));
         add(txtRunBase, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        txtRunFinal.setToolTipText(resourceMap.getString("MovementView.txtRunFinal.tooltip"));
+        txtRunFinal.setToolTipText(I18N.getString("MovementView.txtRunFinal.tooltip"));
         add(txtRunFinal, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy++;
         add(lblJump, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        spnJump.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip"));
+        spnJump.setToolTipText(I18N.getString("MovementView.spnJump.tooltip"));
         add(spnJump, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.NONE;
-        txtJumpFinal.setToolTipText(resourceMap.getString("MovementView.txtJumpFinal.tooltip"));
+        txtJumpFinal.setToolTipText(I18N.getString("MovementView.txtJumpFinal.tooltip"));
         add(txtJumpFinal, gbc);
         spnJump.addChangeListener(this);
 
-        lblJumpType.setText(resourceMap.getString("MovementView.cbJumpType.text"));
-        cbJumpType.setNullValue(resourceMap.getString("MovementView.cbJumpType.null"));
-        gbc.gridx = 0;
-        gbc.gridy = 4;
+        lblJumpType.setText(I18N.getString("MovementView.cbJumpType.text"));
+        cbJumpType.setNullValue(I18N.getString("MovementView.cbJumpType.null"));
+        gbc.gridy++;
         add(lblJumpType, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        cbJumpType.setToolTipText(I18N.getString("MovementView.cbJumpType.tooltip"));
         gbc.gridwidth = 2;
-        cbJumpType.setToolTipText(resourceMap.getString("MovementView.cbJumpType.tooltip"));
         add(cbJumpType, gbc);
+        gbc.gridwidth = 1;
         cbJumpType.addActionListener(this);
         cbJumpType.setPrototypeDisplayValue(CB_SIZE_EQUIPMENT);
 
-        gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy++;
         add(lblMekMechanicalJumpMP, gbc);
-        gbc.gridx = 1;
-        spnMekMechanicalJumpMP.setToolTipText(resourceMap.getString("MovementView.spnJump.tooltip"));
+        spnMekMechanicalJumpMP.setToolTipText(I18N.getString("MovementView.spnJump.tooltip"));
         add(spnMekMechanicalJumpMP, gbc);
         spnMekMechanicalJumpMP.addChangeListener(this);
 
         txtWalkFinal.setEditable(false);
         txtWalkFinal.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRunBase.setEditable(false);
+        txtRunBase.setHorizontalAlignment(SwingConstants.RIGHT);
         txtRunFinal.setEditable(false);
         txtRunFinal.setHorizontalAlignment(SwingConstants.RIGHT);
         txtJumpFinal.setEditable(false);
@@ -240,10 +226,10 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         Integer maxJump = en.getOriginalWalkMP();
         if (cbJumpType.getModel().getSize() == 0) { // No legal jump jet tech for this unit type
             maxJump = 0;
-        } else if (en instanceof Mek) {
-            maxJump = TestMek.maxJumpMP((Mek) en);
-        } else if (en instanceof ProtoMek) {
-            maxJump = TestProtoMek.maxJumpMP((ProtoMek) en);
+        } else if (en instanceof Mek mek) {
+            maxJump = TestMek.maxJumpMP(mek);
+        } else if (en instanceof ProtoMek protoMek) {
+            maxJump = TestProtoMek.maxJumpMP(protoMek);
         }
         if (en.hasETypeFlag(Entity.ETYPE_TANK) && !en.isSupportVehicle() && !en.isTrailer()) {
             int minRating = 10 + Tank.getSuspensionFactor(en.getMovementMode(), en.getWeight());
@@ -259,43 +245,36 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
             if ((jumpType == Mek.JUMP_IMPROVED) || (jumpType == Mek.JUMP_PROTOTYPE_IMPROVED)) {
                 minWalk = 2;
             }
-        } else if (en instanceof BattleArmor) {
+        } else if (en instanceof BattleArmor battleArmor) {
             cbJumpType.removeActionListener(this);
-            maxWalk = TestBattleArmor.maxWalkMP((BattleArmor) en);
-            if (((BattleArmor) en).getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
+            maxWalk = TestBattleArmor.maxWalkMP(battleArmor);
+            if (battleArmor.getChassisType() == BattleArmor.CHASSIS_TYPE_QUAD) {
                 minWalk = 2;
             }
             cbJumpType.setSelectedItem(TestBattleArmor.BAMotiveSystems.getEquipment(en.getMovementMode()));
             if (en.getMovementMode() == EntityMovementMode.VTOL) {
-                maxJump = TestBattleArmor.maxVtolMP((BattleArmor) en);
+                maxJump = TestBattleArmor.maxVtolMP(battleArmor);
             } else if (en.getMovementMode() == EntityMovementMode.INF_UMU) {
-                maxJump = TestBattleArmor.maxUmuMP((BattleArmor) en);
+                maxJump = TestBattleArmor.maxUmuMP(battleArmor);
             } else {
-                maxJump = TestBattleArmor.maxJumpMP((BattleArmor) en);
+                maxJump = TestBattleArmor.maxJumpMP(battleArmor);
             }
             cbJumpType.addActionListener(this);
-        } else if (en instanceof ProtoMek) {
-            if (((ProtoMek) en).isGlider()) {
+        } else if (en instanceof ProtoMek protoMek) {
+            if (protoMek.isGlider()) {
                 minWalk = TestProtoMek.GLIDER_MIN_MP;
-            } else if (((ProtoMek) en).isQuad()) {
+            } else if (protoMek.isQuad()) {
                 minWalk = TestProtoMek.QUAD_MIN_MP;
             } else {
                 minWalk = 1;
             }
         } else if (en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-            minWalk = 0; // Station-keeping drive. Legal for warships, though unusual.
-        } else if (en instanceof ConvFighter asf) { // ConvFighter is a subclass of AeroSpaceFighter so should be checked first
-            if (asf.getWeight() <= 5) {
-                minWalk = 2;
-            } else {
-                minWalk = 1;
-            }
+            minWalk = 0; // Station-keeping drive, legal for warships, SO:AA p.135
+        } else if (en instanceof ConvFighter asf) {
+            // ConvFighter is a subclass of AeroSpaceFighter so must be checked first
+            minWalk = (asf.getWeight() <= 5) ? 2 : 1;
         } else if (en instanceof AeroSpaceFighter asf) {
-            if (asf.getWeight() <= 5) {
-                minWalk = 4;
-            } else {
-                minWalk = 3;
-            }
+            minWalk = (asf.getWeight() <= 5) ? 4 : 3;
         }
         // Trailers with no engine have a max speed of zero.
         if (en.isTrailer() && ((en.getEngine() == null)
@@ -385,6 +364,14 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         } else if (jump0 < minJump) {
             spnJump.setValue(spnJumpModel.getMinimum());
         }
+
+        if (en instanceof Jumpship jumpship) {
+            // no max thrust for station keeping drives, SO:AA p.135; a JumpShip instance can be a WarShip
+            lblRun.setEnabled(!jumpship.hasStationKeepingDrive());
+            txtRunBase.setEnabled(!jumpship.hasStationKeepingDrive());
+            txtRunFinal.setEnabled(!jumpship.hasStationKeepingDrive());
+        }
+        wsStationKeepingInfo.setVisible(en instanceof Warship);
     }
 
     public void refresh() {
@@ -462,8 +449,8 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
               .filter(m -> m.getType().hasFlag(MiscType.F_PARTIAL_WING)).findAny();
         if (partialWing.isPresent()) {
             int bonus = 2;
-            if (en instanceof Mek) {
-                bonus = ((Mek) en).getPartialWingJumpBonus(partialWing.get());
+            if (en instanceof Mek mek) {
+                bonus = mek.getPartialWingJumpBonus(partialWing.get());
             } else if (en instanceof BattleArmor) {
                 bonus = 1;
             }
