@@ -190,9 +190,24 @@ public class BMCriticalView extends IView {
                     }
                 }
 
+                // Collect 0-crit equipment assigned to this location (Clan CASE?)
+                List<Mounted<?>> zeroCritMounts = new ArrayList<>();
+                int normalCritCount = getMek().getNumberOfCriticalSlots(location);
+                for (Mounted<?> m : getMek().getEquipment()) {
+                    if (m.getLocation() == location
+                          && UnitUtil.getCritsUsed(m) == 0
+                          && !UnitUtil.isArmorOrStructure(m.getType())) {
+                        zeroCritMounts.add(m);
+                        // Encode as name::eqNum so CritListCellRenderer can look up the mount
+                        int eqNum = getMek().getEquipmentNum(m);
+                        critNames.add(m.getName() + "::" + eqNum);
+                    }
+                }
+
                 BAASBMDropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(
                       critNames,
                       location);
+                criticalSlotList.setZeroCritMounts(zeroCritMounts, normalCritCount);
                 if (mekPanels.containsKey(location)) {
                     mekPanels.get(location).add(criticalSlotList);
                     currentCritBlocks.add(criticalSlotList);

@@ -97,6 +97,7 @@ public final class CConfig {
     public static final String GUI_COLOR_SYSTEMS = "Systems";
     public static final String GUI_COLOR_EMPTY = "Empty";
     public static final String GUI_COLOR_NON_HITTABLE = "Non Hittable";
+    public static final String GUI_COLOR_ZERO_CRIT = "0 Critical Slots";
     public static final String GUI_FOREGROUND = "-Foreground";
     public static final String GUI_BACKGROUND = "-Background";
 
@@ -202,6 +203,8 @@ public final class CConfig {
         defaults.setProperty(MEK_AUTOFILL, Boolean.toString(true));
         defaults.setProperty(MEK_AUTO_SORT, Boolean.toString(true));
         defaults.setProperty(MEK_AUTO_COMPACT, Boolean.toString(true));
+        defaults.setProperty(GUI_COLOR_ZERO_CRIT + GUI_BACKGROUND, Integer.toString(new Color(200, 255, 255).getRGB()));
+        defaults.setProperty(GUI_COLOR_ZERO_CRIT + GUI_FOREGROUND, Integer.toString(Color.BLACK.getRGB()));
         defaults.setProperty(FILE_LAST_DIRECTORY, Configuration.unitsDir().toString());
         defaults.setProperty(FILE_CHOOSER_WINDOW, "");
         defaults.setProperty(MISC_STARTUP, MMLStartUp.SPLASH_SCREEN.name());

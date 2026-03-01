@@ -119,8 +119,8 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
         equipmentList.removeAllCrits();
         engineHeatSinkCount = UnitUtil.getCriticalFreeHeatSinks(getMek(), getMek().hasCompactHeatSinks());
         for (Mounted<?> mount : getMek().getMisc()) {
-            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount) && !(mount.getNumCriticalSlots()
-                  == 0)) {
+            if ((mount.getLocation() == Entity.LOC_NONE) && !isEngineHeatSink(mount)
+                  && !UnitUtil.isArmorOrStructure(mount.getType())) {
                 masterEquipmentList.add(mount);
             }
         }

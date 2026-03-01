@@ -39,6 +39,7 @@ import java.awt.Graphics2D;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -82,6 +83,10 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     private final boolean buildView;
     private boolean darkened = false;
     private final AbstractCriticalTransferHandler transferHandler;
+    /** 0-crit equipment assigned to this location, displayed as virtual slots beyond the normal crit count. */
+    private final List<Mounted<?>> zeroCritMounts = new ArrayList<>();
+    /** The number of normal (physical) critical slots in this location. */
+    private int normalCritCount;
 
     public BAASBMDropTargetCriticalList(List<E> vector, EntitySource eSource,
           RefreshListener refresh, boolean buildView,
@@ -107,6 +112,18 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
     public void setRefresh(RefreshListener refresh) {
         this.refresh = refresh;
         transferHandler.setRefresh(refresh);
+    }
+
+    /**
+     * Sets the 0-crit equipment displayed as virtual slots beyond the normal critical slot count.
+     *
+     * @param mounts         the list of 0-crit Mounted equipment for this location
+     * @param normalCritCount the number of normal (physical) critical slots
+     */
+    public void setZeroCritMounts(List<Mounted<?>> mounts, int normalCritCount) {
+        this.zeroCritMounts.clear();
+        this.zeroCritMounts.addAll(mounts);
+        this.normalCritCount = normalCritCount;
     }
 
     private void changeMountStatus(Mounted<?> eq, int location, boolean rear) {
@@ -458,6 +475,17 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             }
             return null;
         }
+
+        // Check for virtual slot (0-crit equipment like Clan CASE)
+        int selectedIndex = getSelectedIndex();
+        if (selectedIndex >= normalCritCount) {
+            int virtualIndex = selectedIndex - normalCritCount;
+            if (virtualIndex >= 0 && virtualIndex < zeroCritMounts.size()) {
+                return zeroCritMounts.get(virtualIndex);
+            }
+            return null;
+        }
+
         CriticalSlot crit = getCrit();
         try {
             if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
@@ -533,6 +561,13 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             return;
         }
 
+        // 0-crit virtual slot equipment (Clan CASE): no physical crit slots to clear,
+        // just unassign the location without calling postLoadInit (which would re-add it)
+        if (crit == null && mounted.getNumCriticalSlots() == 0) {
+            changeMountStatus(mounted, Entity.LOC_NONE, false);
+            return;
+        }
+
         UnitUtil.removeCriticalSlots(getUnit(), mounted);
         if (getUnit().isFighter() && mounted.getLocation() != Entity.LOC_NONE) {
             UnitUtil.compactCriticalSlots(getUnit(), mounted.getLocation());
@@ -547,7 +582,7 @@ public class BAASBMDropTargetCriticalList<E> extends JList<E> implements MouseLi
             LOGGER.error("", ex);
         }
 
-        if ((crit != null) && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)) {
+        if (crit == null || crit.getType() == CriticalSlot.TYPE_EQUIPMENT) {
             changeMountStatus(mounted, Entity.LOC_NONE, false);
         }
     }

@@ -88,6 +88,12 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
     private boolean addEquipmentMek(Mek mek, Mounted<?> eq, int slotNumber) throws LocationFullException {
         int neededCrits = UnitUtil.getCritsUsed(eq);
 
+        // 0-crit equipment (e.g. Clan CASE) doesn't need physical crit slots; just assign the location
+        if (neededCrits == 0) {
+            changeMountStatus(eq, location);
+            return true;
+        }
+
         if ((eq.getType().isSpreadable() || eq.isSplitable()) && (neededCrits > 1)) {
             if (addSplitLocationEquipment(mek, eq, slotNumber)) {
                 return true;
@@ -238,8 +244,13 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
-            if ((slotNumber < 0) || (slotNumber >= getUnit().getNumberOfCriticalSlots(location))) {
+            if (slotNumber < 0) {
                 return false;
+            }
+            // Clamp slot number to valid range; for 0-crit equipment the exact slot is irrelevant,
+            // and for normal equipment this allows dropping on the virtual slot area to still attempt placement
+            if (slotNumber >= getUnit().getNumberOfCriticalSlots(location)) {
+                slotNumber = Math.max(0, getUnit().getNumberOfCriticalSlots(location) - 1);
             }
 
             try {
