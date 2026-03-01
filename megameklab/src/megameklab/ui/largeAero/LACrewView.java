@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,8 +32,10 @@
  */
 package megameklab.ui.largeAero;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -42,11 +44,13 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.client.ui.util.DisplayTextField;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
@@ -63,6 +67,8 @@ import megameklab.ui.listeners.AeroVesselBuildListener;
 public class LACrewView extends BuildView implements ActionListener, ChangeListener {
     private final List<AeroVesselBuildListener> listeners = new CopyOnWriteArrayList<>();
 
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     public void addListener(AeroVesselBuildListener l) {
         listeners.add(l);
     }
@@ -72,15 +78,16 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     }
 
     private final JSpinner spnOfficers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    // A maximum of 9999 is used to give the spinners enough width
+    private final JSpinner spnBaseCrew = new JSpinner(new SpinnerNumberModel(1, 1, 9999, 1));
     private final JSpinner spnGunners = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
-    private final JLabel lblBayPersonnel = new JLabel();
+    private final DisplayTextField lblBayPersonnel = new DisplayTextField();
     private final JSpinner spnMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnBAMarines = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JLabel lblTotalCrew = new JLabel();
+    private final DisplayTextField lblTotalCrew = new DisplayTextField();
     private final JSpinner spnPassengers = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersStandard = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
-    private final JSpinner spnQuartersFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
+    private final JSpinner spnQuartersFirstClass = new JSpinner(new SpinnerNumberModel(0, 0, 9999, 1));
     private final JSpinner spnQuartersSecondClass = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnQuartersSteerage = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
     private final JSpinner spnLifeBoats = new JSpinner(new SpinnerNumberModel(0, 0, null, 1));
@@ -97,150 +104,118 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     }
 
     public void initUI() {
-        setLayout(new GridBagLayout());
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
+        JPanel leftPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = STANDARD_INSETS;
 
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap, "lblBaseCrew", "AerospaceCrewView.spnBaseCrew.text",
-              "AerospaceCrewView.spnBaseCrew.tooltip"), gbc);
-        gbc.gridx = 1;
-        add(spnBaseCrew, gbc);
-        spnBaseCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBaseCrew.tooltip"));
+        leftPanel.add(createLabel(I18N, "lblBaseCrew", "AerospaceCrewView.spnBaseCrew.text"), gbc);
+        leftPanel.add(spnBaseCrew, gbc);
         spnBaseCrew.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblGunners", "AerospaceCrewView.spnGunners.text",
-              "AerospaceCrewView.spnGunners.tooltip"), gbc);
-        gbc.gridx = 1;
-        add(spnGunners, gbc);
-        spnGunners.setToolTipText(resourceMap.getString("AerospaceCrewView.spnGunners.tooltip"));
+        leftPanel.add(createLabel(I18N, "lblGunners", "AerospaceCrewView.spnGunners.text"), gbc);
+        leftPanel.add(spnGunners, gbc);
         spnGunners.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblTotalCrew", "AerospaceCrewView.lblTotalCrew.text",
+        leftPanel.add(createLabel(I18N,
+              "lblTotalCrew",
+              "AerospaceCrewView.lblTotalCrew.text",
               "AerospaceCrewView.lblTotalCrew.tooltip"), gbc);
-        gbc.gridx = 1;
-        add(lblTotalCrew, gbc);
-        lblTotalCrew.setToolTipText(resourceMap.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
+        lblTotalCrew.setToolTipText(I18N.getString("AerospaceCrewView.lblTotalCrew.tooltip"));
+        leftPanel.add(lblTotalCrew, gbc);
         lblTotalCrew.setHorizontalAlignment(JLabel.RIGHT);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblOfficers", "AerospaceCrewView.spnOfficers.text",
-              "AerospaceCrewView.spnOfficers.tooltip"), gbc);
-        gbc.gridx = 1;
-        spnOfficers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnOfficers.tooltip"));
-        add(spnOfficers, gbc);
+        leftPanel.add(createLabel(I18N, "lblOfficers", "AerospaceCrewView.spnOfficers.text"), gbc);
+        leftPanel.add(spnOfficers, gbc);
         spnOfficers.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblBayPersonnel", "AerospaceCrewView.lblBayPersonnel.text",
-              "AerospaceCrewView.lblBayPersonnel.tooltip"), gbc);
-        gbc.gridx = 1;
-        add(lblBayPersonnel, gbc);
-        lblBayPersonnel.setToolTipText(resourceMap.getString("AerospaceCrewView.lblBayPersonnel.tooltip"));
+        leftPanel.add(createLabel(I18N, "lblBayPersonnel", "AerospaceCrewView.lblBayPersonnel.text"), gbc);
+        leftPanel.add(lblBayPersonnel, gbc);
         lblBayPersonnel.setHorizontalAlignment(JLabel.RIGHT);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblPassengers", "AerospaceCrewView.spnPassengers.text",
-              "AerospaceCrewView.spnPassengers.tooltip"), gbc);
-        gbc.gridx = 1;
-        spnPassengers.setToolTipText(resourceMap.getString("AerospaceCrewView.spnPassengers.tooltip"));
-        add(spnPassengers, gbc);
+        leftPanel.add(createLabel(I18N, "lblPassengers", "AerospaceCrewView.spnPassengers.text"), gbc);
+        leftPanel.add(spnPassengers, gbc);
         spnPassengers.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblMarines", "AerospaceCrewView.spnMarines.text",
-              "AerospaceCrewView.spnMarines.tooltip"), gbc);
-        gbc.gridx = 1;
-        spnMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnMarines.tooltip"));
-        add(spnMarines, gbc);
+        leftPanel.add(createLabel(I18N, "lblMarines", "AerospaceCrewView.spnMarines.text"), gbc);
+        leftPanel.add(spnMarines, gbc);
         spnMarines.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblBAMarines.setText(resourceMap.getString("AerospaceCrewView.spnBAMarines.text"));
-        add(lblBAMarines, gbc);
-        gbc.gridx = 1;
-        spnBAMarines.setToolTipText(resourceMap.getString("AerospaceCrewView.spnBAMarines.tooltip"));
-        add(spnBAMarines, gbc);
+        lblBAMarines.setText(I18N.getString("AerospaceCrewView.spnBAMarines.text"));
+        leftPanel.add(lblBAMarines, gbc);
+        leftPanel.add(spnBAMarines, gbc);
         spnBAMarines.addChangeListener(this);
 
-        gbc.gridx = 2;
+        JPanel rightPanel = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = STANDARD_INSETS;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        add(new JLabel(resourceMap.getString("AerospaceCrewView.lblQuarters.text")), gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        JLabel quartersHeader = new JLabel(I18N.getString("AerospaceCrewView.lblQuarters.text")) {
+            @Override
+            public Dimension getPreferredSize() {
+                // make the height align with the other text fields, so the whole grid aligns well
+                return new Dimension(super.getPreferredSize().width, lblBayPersonnel.getPreferredSize().height);
+            }
+        };
+        rightPanel.add(quartersHeader, gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblQuartersFirstClass", "AerospaceCrewView.spnQuartersFirstClass.text",
-              "AerospaceCrewView.spnQuartersFirstClass.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnQuartersFirstClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersFirstClass.tooltip"));
-        add(spnQuartersFirstClass, gbc);
+
+        gbc.gridy++;
+        rightPanel.add(createLabel(I18N, "lblQuartersFirstClass", "AerospaceCrewView.spnQuartersFirstClass.text"), gbc);
+        rightPanel.add(spnQuartersFirstClass, gbc);
         spnQuartersFirstClass.addChangeListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblQuartersStandard", "AerospaceCrewView.spnQuartersStandard.text",
-              "AerospaceCrewView.spnQuartersStandard.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnQuartersStandard.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersStandard.tooltip"));
-        add(spnQuartersStandard, gbc);
+        rightPanel.add(createLabel(I18N, "lblQuartersStandard", "AerospaceCrewView.spnQuartersStandard.text"), gbc);
+        rightPanel.add(spnQuartersStandard, gbc);
         spnQuartersStandard.addChangeListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblQuartersSecondClass", "AerospaceCrewView.spnQuartersSecondClass.text",
-              "AerospaceCrewView.spnQuartersSecondClass.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnQuartersSecondClass.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSecondClass.tooltip"));
-        add(spnQuartersSecondClass, gbc);
+        rightPanel.add(createLabel(I18N, "lblQuartersSecondClass", "AerospaceCrewView.spnQuartersSecondClass.text"),
+              gbc);
+        rightPanel.add(spnQuartersSecondClass, gbc);
         spnQuartersSecondClass.addChangeListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblQuartersSteerage", "AerospaceCrewView.spnQuartersSteerage.text",
-              "AerospaceCrewView.spnQuartersSteerage.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnQuartersSteerage.setToolTipText(resourceMap.getString("AerospaceCrewView.spnQuartersSteerage.tooltip"));
-        add(spnQuartersSteerage, gbc);
+        rightPanel.add(createLabel(I18N, "lblQuartersSteerage", "AerospaceCrewView.spnQuartersSteerage.text"), gbc);
+        rightPanel.add(spnQuartersSteerage, gbc);
         spnQuartersSteerage.addChangeListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        btnAssignQuarters.setText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.text"));
-        btnAssignQuarters.setToolTipText(resourceMap.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
-        add(btnAssignQuarters, gbc);
+        btnAssignQuarters.setText(I18N.getString("AerospaceCrewView.btnAssignQuarters.text"));
+        btnAssignQuarters.setToolTipText(I18N.getString("AerospaceCrewView.btnAssignQuarters.tooltip"));
+        rightPanel.add(btnAssignQuarters, gbc);
         btnAssignQuarters.addActionListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblLifeBoats", "AerospaceCrewView.spnLifeBoats.text",
-              "AerospaceCrewView.spnLifeBoats.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnLifeBoats.setToolTipText(resourceMap.getString("AerospaceCrewView.spnLifeBoats.tooltip"));
-        add(spnLifeBoats, gbc);
+        rightPanel.add(createLabel(I18N, "lblLifeBoats", "AerospaceCrewView.spnLifeBoats.text"), gbc);
+        rightPanel.add(spnLifeBoats, gbc);
         spnLifeBoats.addChangeListener(this);
 
-        gbc.gridx = 2;
         gbc.gridy++;
-        add(createLabel(resourceMap, "lblEscapePods", "AerospaceCrewView.spnEscapePods.text",
-              "AerospaceCrewView.spnEscapePods.tooltip"), gbc);
-        gbc.gridx = 3;
-        spnEscapePods.setToolTipText(resourceMap.getString("AerospaceCrewView.spnEscapePods.tooltip"));
-        add(spnEscapePods, gbc);
+        rightPanel.add(createLabel(I18N, "lblEscapePods", "AerospaceCrewView.spnEscapePods.text"), gbc);
+        rightPanel.add(spnEscapePods, gbc);
         spnEscapePods.addChangeListener(this);
+
+        setLayout(new GridLayout(1, 2, 10, 0));
+        add(leftPanel);
+        add(rightPanel);
     }
 
     public void setFromEntity(Aero aero) {

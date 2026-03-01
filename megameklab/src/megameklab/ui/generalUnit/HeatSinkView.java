@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,11 +32,12 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -46,9 +47,12 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.formdev.flatlaf.FlatClientProperties;
+import megamek.client.ui.util.DisplayTextField;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
@@ -78,46 +82,59 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
 
+    public static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     public static final int TYPE_SINGLE = 0;
     public static final int TYPE_DOUBLE_IS = 1;
     public static final int TYPE_DOUBLE_CLAN = 2;
     public static final int TYPE_COMPACT = 3;
-    public static final int TYPE_LASER = 4;
+    // UNUSED public static final int TYPE_LASER = 4;
     public static final int TYPE_PROTOTYPE = 5;
     public static final int TYPE_FREEZER = 6;
     // ASFs simply use an index and don't distinguish between IS and Clan
     public static final int TYPE_DOUBLE_AERO = 1;
     public static final int TYPE_PROTOTYPE_AERO = 2;
 
-    private static final String[] LOOKUP_NAMES = {
+    private static final List<String> LOOKUP_NAMES = List.of(
           EquipmentTypeLookup.SINGLE_HS, EquipmentTypeLookup.IS_DOUBLE_HS,
           EquipmentTypeLookup.CLAN_DOUBLE_HS, EquipmentTypeLookup.COMPACT_HS_1,
           EquipmentTypeLookup.LASER_HS, EquipmentTypeLookup.IS_DOUBLE_HS_PROTOTYPE,
-          EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER
-    };
-    private final List<EquipmentType> heatSinks;
+          EquipmentTypeLookup.IS_DOUBLE_HS_FREEZER);
+    private final List<EquipmentType> heatSinks = LOOKUP_NAMES.stream().map(EquipmentType::get).toList();
+
     private String[] MekDisplayNames;
     private String[] aeroDisplayNames;
 
     private final CustomComboBox<Integer> cbHSType = new CustomComboBox<>(this::getDisplayName);
     private final JSpinner spnCount = new JSpinner();
-    private final JLabel lblBaseCount = new JLabel();
+    private final JLabel lblBaseCount =
+          createLabel("omniBaseHS",
+                I18N.getString("HeatSinkView.spnBaseCount.text"),
+                I18N.getString("HeatSinkView.spnBaseCount.tooltip"));
     private final JSpinner spnBaseCount = new JSpinner();
-    private final JLabel lblPrototypeCount = new JLabel();
+    private final JLabel lblPrototypeCount =
+          createLabel("P-DoubleCount",
+                I18N.getString("HeatSinkView.spnPrototypeCount.text"),
+                I18N.getString("HeatSinkView.spnPrototypeCount.tooltip"));
     private final JSpinner spnPrototypeCount = new JSpinner();
-    private final JLabel lblCritFreeText = new JLabel();
-    private final JTextField lblCritFreeCount = new JTextField();
-    private final JLabel lblWeightFreeText = new JLabel();
-    private final JTextField lblWeightFreeCount = new JTextField();
-    private final JLabel lblTotalDissipationText = new JLabel();
-    private final JTextField lblTotalDissipationCount = new JTextField();
-    private final JLabel lblMaxHeatText = new JLabel();
-    private final JTextField lblMaxHeatCount = new JTextField();
-    private final JLabel lblRiscHeatSinkKit = new JLabel();
-    private final JCheckBox chkRiscHeatSinkKit = new JCheckBox();
+    private final JLabel protoInfo = new JLabel("4 single heat sinks");
+    private final JLabel lblCritFreeText = createLabel("critFree",
+          I18N.getString("HeatSinkView.lblCritFree.text"),
+          I18N.getString("HeatSinkView.lblCritFree.tooltip"));
+    private final DisplayTextField lblCritFreeCount = new DisplayTextField();
 
+    private final DisplayTextField lblWeightFreeCount = new DisplayTextField();
+    private final DisplayTextField lblTotalDissipationCount = new DisplayTextField();
+    private final DisplayTextField lblMaxHeatCount = new DisplayTextField();
+    private final JCheckBox chkRiscHeatSinkKit = new JCheckBox(I18N.getString("HeatSinkView.lblRiscHeatSinkKit.text")){
+        @Override
+        public Dimension getPreferredSize() {
+            // make the height align with the other text fields
+            return new Dimension(super.getPreferredSize().width, lblTotalDissipationCount.getPreferredSize().height);
+        }
+    };
 
-    private final SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, null, 1);
+    private final SpinnerNumberModel countModel = new SpinnerNumberModel(0, 0, 100000, 1);
     private final SpinnerNumberModel baseCountModel = new SpinnerNumberModel(0, 0, null, 1);
     private final SpinnerNumberModel prototypeCountModel = new SpinnerNumberModel(0, 0, null, 1);
 
@@ -128,116 +145,83 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
     public HeatSinkView(ITechManager techManager) {
         this.techManager = techManager;
-        heatSinks = new ArrayList<>();
-        for (String key : LOOKUP_NAMES) {
-            heatSinks.add(EquipmentType.get(key));
-        }
         initUI();
     }
 
     private void initUI() {
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-        MekDisplayNames = resourceMap.getString("HeatSinkView.mekNames.values").split(",");
-        aeroDisplayNames = resourceMap.getString("HeatSinkView.aeroNames.values").split(",");
+        MekDisplayNames = I18N.getString("HeatSinkView.mekNames.values").split(",");
+        aeroDisplayNames = I18N.getString("HeatSinkView.aeroNames.values").split(",");
+
+        cbHSType.setPrototypeDisplayValue(TYPE_PROTOTYPE);
+        spnCount.setModel(countModel);
+        lblCritFreeCount.setHorizontalAlignment(JTextField.RIGHT);
+        spnBaseCount.setModel(baseCountModel);
+        spnPrototypeCount.setModel(prototypeCountModel);
+        lblWeightFreeCount.setHorizontalAlignment(JTextField.RIGHT);
+        lblWeightFreeCount.setToolTipText(I18N.getString("HeatSinkView.lblWeightFree.tooltip"));
+        lblTotalDissipationCount.setHorizontalAlignment(JTextField.RIGHT);
+        lblMaxHeatCount.setHorizontalAlignment(JTextField.RIGHT);
+        chkRiscHeatSinkKit.setVisible(false);
+        chkRiscHeatSinkKit.addActionListener(this);
+        JLabel weightFreeLabel = createLabel("weightFree",
+              I18N.getString("HeatSinkView.lblWeightFree.text"),
+              I18N.getString("HeatSinkView.lblWeightFree.tooltip"));
+        spnPrototypeCount.setToolTipText(I18N.getString("HeatSinkView.spnPrototypeCount.tooltip"));
+        chkRiscHeatSinkKit.setToolTipText(I18N.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
+        lblCritFreeCount.setToolTipText(I18N.getString("HeatSinkView.lblCritFree.tooltip"));
+        protoInfo.putClientProperty(FlatClientProperties.STYLE_CLASS, "mini");
+        spnBaseCount.setToolTipText(I18N.getString("HeatSinkView.spnBaseCount.tooltip"));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = STANDARD_INSETS;
 
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        add(createLabel(resourceMap, "lblHSType", "HeatSinkView.cbHSType.text",
-              "HeatSinkView.cbHSType.tooltip"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 4;
-        cbHSType.setToolTipText(resourceMap.getString("HeatSinkView.cbHSType.tooltip"));
+        add(new JLabel(I18N.getString("HeatSinkView.cbHSType.text"), SwingConstants.RIGHT), gbc);
         add(cbHSType, gbc);
-        cbHSType.addActionListener(this);
 
-        spnCount.setModel(countModel);
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblCount", "HeatSinkView.spnCount.text",
-              "HeatSinkView.spnCount.tooltip"), gbc);
-        gbc.gridx = 1;
-        spnCount.setToolTipText(resourceMap.getString("HeatSinkView.spnCount.tooltip"));
+        add(new JLabel(I18N.getString("HeatSinkView.spnCount.text"), SwingConstants.RIGHT), gbc);
         add(spnCount, gbc);
-        spnCount.addChangeListener(this);
 
-        gbc.gridx = 2;
-        add(new JLabel("<html>&nbsp;</html>"), gbc);
-        gbc.gridx = 3;
-        lblCritFreeText.setText(resourceMap.getString("HeatSinkView.lblCritFree.text"));
+        gbc.gridy++;
         add(lblCritFreeText, gbc);
-        gbc.gridx = 4;
-        lblCritFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblCritFree.tooltip"));
-        lblCritFreeCount.setEditable(false);
-        lblCritFreeCount.setHorizontalAlignment(JTextField.RIGHT);
         add(lblCritFreeCount, gbc);
 
-        spnBaseCount.setModel(baseCountModel);
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblBaseCount.setText(resourceMap.getString("HeatSinkView.spnBaseCount.text"));
         add(lblBaseCount, gbc);
-        gbc.gridx = 1;
-        spnBaseCount.setToolTipText(resourceMap.getString("HeatSinkView.spnBaseCount.tooltip"));
         add(spnBaseCount, gbc);
-        spnBaseCount.addChangeListener(this);
 
-        spnPrototypeCount.setModel(prototypeCountModel);
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblPrototypeCount.setText(resourceMap.getString("HeatSinkView.spnPrototypeCount.text"));
         add(lblPrototypeCount, gbc);
-        gbc.gridx = 1;
-        spnPrototypeCount.setToolTipText(resourceMap.getString("HeatSinkView.spnPrototypeCount.tooltip"));
         add(spnPrototypeCount, gbc);
-        spnPrototypeCount.addChangeListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblWeightFreeText.setText(resourceMap.getString("HeatSinkView.lblWeightFree.text"));
-        add(lblWeightFreeText, gbc);
-        gbc.gridx = 1;
-        lblWeightFreeCount.setToolTipText(resourceMap.getString("HeatSinkView.lblWeightFree.tooltip"));
-        lblWeightFreeCount.setEditable(false);
-        lblWeightFreeCount.setHorizontalAlignment(JTextField.RIGHT);
+        add(new JLabel(), gbc);
+        add(protoInfo, gbc);
+
+        gbc.gridy++;
+        add(weightFreeLabel, gbc);
         add(lblWeightFreeCount, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblTotalDissipationText.setText(resourceMap.getString("HeatSinkView.lblTotalDissipation.text"));
-        add(lblTotalDissipationText, gbc);
-        gbc.gridx = 1;
-        lblTotalDissipationCount.setToolTipText(resourceMap.getString("HeatSinkView.lblTotalDissipation.tooltip"));
-        lblTotalDissipationCount.setEditable(false);
-        lblTotalDissipationCount.setHorizontalAlignment(JTextField.RIGHT);
+        add(new JLabel(I18N.getString("HeatSinkView.lblTotalDissipation.text"), SwingConstants.RIGHT), gbc);
         add(lblTotalDissipationCount, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblMaxHeatText.setText(resourceMap.getString("HeatSinkView.lblMaxHeat.text"));
-        add(lblMaxHeatText, gbc);
-        gbc.gridx = 1;
-        lblMaxHeatCount.setToolTipText(resourceMap.getString("HeatSinkView.lblMaxHeat.tooltip"));
-        lblMaxHeatCount.setEditable(false);
-        lblMaxHeatCount.setHorizontalAlignment(JTextField.RIGHT);
+        add(new JLabel(I18N.getString("HeatSinkView.lblMaxHeat.text"), SwingConstants.RIGHT), gbc);
         add(lblMaxHeatCount, gbc);
 
-
-        lblRiscHeatSinkKit.setText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.text"));
-        lblRiscHeatSinkKit.setToolTipText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
-        chkRiscHeatSinkKit.setToolTipText(resourceMap.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
-        lblRiscHeatSinkKit.setVisible(false);
-        chkRiscHeatSinkKit.setVisible(false);
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(lblRiscHeatSinkKit, gbc);
-        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
         add(chkRiscHeatSinkKit, gbc);
-        chkRiscHeatSinkKit.addActionListener(this);
 
+        spnCount.addChangeListener(this);
+        cbHSType.addActionListener(this);
+        spnBaseCount.addChangeListener(this);
+        spnPrototypeCount.addChangeListener(this);
     }
 
     private String getDisplayName(int index) {
@@ -246,7 +230,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
 
     private void showRiscKit(boolean show) {
         chkRiscHeatSinkKit.setVisible(show);
-        lblRiscHeatSinkKit.setVisible(show);
         if (!show) {
             chkRiscHeatSinkKit.setSelected(false);
         }
@@ -257,13 +240,11 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         isPrimitive = mek.isPrimitive();
         hasPrototypeDoubles = mek.hasWorkingMisc(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE);
         refresh();
-        // If there are prototype doubles, we want to skip any singles and select that
-        // as the base type.
+        // If there are prototype doubles, we want to skip any singles and select that as the base type.
         Optional<MiscType> hs = mek.getMisc().stream().map(Mounted::getType)
               .filter(et -> et.hasFlag(MiscType.F_IS_DOUBLE_HEAT_SINK_PROTOTYPE)).findAny();
         if (hs.isEmpty()) {
-            hs = mek.getMisc().stream().map(Mounted::getType)
-                  .filter(UnitUtil::isHeatSink).findAny();
+            hs = mek.getMisc().stream().map(Mounted::getType).filter(UnitUtil::isHeatSink).findAny();
         }
         if (hs.isPresent()) {
             if (hs.get().is(EquipmentTypeLookup.COMPACT_HS_2)) {
@@ -294,6 +275,10 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.setValue(totalSinks - mek.heatSinks(false));
         prototypeCountModel.setMaximum(totalSinks);
         prototypeCountModel.setMinimum(hasPrototypeDoubles ? 1 : 0);
+        protoInfo.setVisible(hasPrototypeDoubles);
+        protoInfo.setText(MessageFormat.format(I18N.getString("HeatSinkView.spnPrototypeCount.info"),
+              mek.heatSinks(false)));
+
         spnPrototypeCount.addChangeListener(this);
         lblCritFreeCount.setText(String.valueOf(UnitUtil.getCriticalFreeHeatSinks(mek, isCompact)));
         lblWeightFreeCount.setText(String.valueOf(mek.getEngine().getWeightFreeEngineHeatSinks()));
@@ -338,6 +323,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnBaseCount.setVisible(aero.isOmni());
         lblPrototypeCount.setVisible(false);
         spnPrototypeCount.setVisible(false);
+        protoInfo.setVisible(false);
         lblCritFreeText.setVisible(false);
         lblCritFreeCount.setVisible(false);
 
@@ -376,10 +362,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
     }
 
     public int getHeatSinkIndex() {
-        if (cbHSType.getSelectedItem() != null) {
-            return (Integer) cbHSType.getSelectedItem();
-        }
-        return 0;
+        return (cbHSType.getSelectedItem() instanceof Integer index) ? index : 0;
     }
 
     public void setHeatSinkIndex(int index) {
@@ -407,11 +390,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
      * @return The number of heat sinks out of the total that are prototype double heat sinks.
      */
     public int getPrototypeCount() {
-        if (hasPrototypeDoubles) {
-            return prototypeCountModel.getNumber().intValue();
-        } else {
-            return 0;
-        }
+        return hasPrototypeDoubles ? prototypeCountModel.getNumber().intValue() : 0;
     }
 
     @Override
@@ -442,5 +421,4 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.heatSinksChanged(getHeatSinkType(), getCount()));
         }
     }
-
 }

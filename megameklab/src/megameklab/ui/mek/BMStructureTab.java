@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -1152,6 +1152,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         refresh.refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
+        panHeat.setFromMek(getMek());
     }
 
     @Override
