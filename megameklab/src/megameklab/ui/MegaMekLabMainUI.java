@@ -52,8 +52,10 @@ import megamek.common.ui.EnhancedTabbedPane;
 import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.TabScrollPane;
 import megameklab.util.CConfig;
 import megameklab.util.UnitMemento;
 import megameklab.util.UnitUtil;
@@ -364,6 +366,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     public boolean saveUnitAs() {
         warnOnInvalid();
+        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(getEntity());
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
@@ -387,6 +390,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         } else {
             warnOnInvalid();
         }
+        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
@@ -408,6 +412,23 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         reattachAllTabs();
         return true;
+    }
+
+    /**
+     * Commits pending FluffTab text changes to the entity before saving. This ensures fields that still have focus are
+     * persisted even if focusLost has not fired.
+     */
+    private void commitFluffTabChanges() {
+        for (int i = 0; i < configPane.getTabCount(); i++) {
+            Component tabComponent = configPane.getComponentAt(i);
+            if (tabComponent instanceof TabScrollPane scrollPane) {
+                Component view = scrollPane.getViewport().getView();
+                if (view instanceof FluffTab fluffTab) {
+                    fluffTab.commitChanges();
+                    return;
+                }
+            }
+        }
     }
 
     public abstract void reloadTabs();
