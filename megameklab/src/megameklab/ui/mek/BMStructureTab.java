@@ -666,6 +666,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             if (!mixed && !clan && getMek().hasClanCaseEquipped()) {
                 UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
             }
+            // Clear Clan CASE opt-out when tech base no longer supports it
+            if (!clan && !mixed) {
+                getMek().clearClanCaseOptOut();
+            }
             getMek().setMixedTech(mixed);
             updateTechLevel();
         }
@@ -1074,20 +1078,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getMek());
         refresh.refreshAll();
-    }
-
-    @Override
-    public void clanCaseChanged(boolean useClanCase) {
-        if (useClanCase) {
-            // Add Clan CASE to all locations with explosive equipment
-            MekUtil.addClanCaseToExplosiveLocations(getMek());
-        } else {
-            // Remove all Clan CASE
-            UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
-        }
-        refresh.refreshBuild();
-        refresh.refreshStatus();
-        refresh.refreshPreview();
     }
 
     @Override

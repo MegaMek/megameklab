@@ -65,9 +65,6 @@ public interface MekBuildListener extends BuildListener {
 
     void damageInterruptCircuitChanged(boolean hasDIC);
 
-    default void clanCaseChanged(boolean useClanCase) {
-    }
-
     void resetChassis();
 
 }

@@ -1264,8 +1264,8 @@ public final class MekUtil {
 
     /**
      * For the given Mek, adds Clan CASE in every location that has potentially explosive equipment (this includes PPC
-     * Capacitors) and removes it from all other locations. Calls {@link Mek#addClanCase()}. This method does not check
-     * if other CASE types are already present on a location.
+     * Capacitors) and removes it from all other locations. Respects per-location opt-out.
+     * This method does not check if other CASE types are already present on a location.
      *
      * @param mek the mek to update
      */
@@ -1280,6 +1280,7 @@ public final class MekUtil {
     /**
      * Adds Clan CASE to all locations on the Mek that have explosive equipment and don't already have CASE or CASE II.
      * Unlike {@link Mek#addClanCase()}, this does not check tech base or existing Clan CASE presence.
+     * Respects per-location opt-out via {@link Mek#isClanCaseOptedOut(int)}.
      *
      * @param mek the mek to add Clan CASE to
      */
@@ -1287,6 +1288,10 @@ public final class MekUtil {
         EquipmentType clCase = EquipmentType.get(EquipmentTypeLookup.CLAN_CASE);
         for (int i = 0; i < mek.locations(); i++) {
             if (mek.locationHasCase(i) || mek.hasCASEII(i)) {
+                continue;
+            }
+            // Respect per-location opt-out
+            if (mek.isClanCaseOptedOut(i)) {
                 continue;
             }
             boolean explosiveFound = false;
