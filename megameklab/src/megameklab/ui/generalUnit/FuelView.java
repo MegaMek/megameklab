@@ -162,9 +162,12 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     private void setFromAero(Aero aero) {
         lblFuelPoints.setText(I18N.getString("FuelView.lblFuelPoints.text"));
         spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblFuelPoints.tooltip"));
-        gameTurnsInfo.setVisible(true);
+
+        gameTurnsInfo.setVisible(!((aero instanceof FixedWingSupport fixedWingSupport)
+              && (fixedWingSupport.kgPerFuelPoint() == 0))
+              && !((aero instanceof Jumpship capitalCraft) && capitalCraft.hasStationKeepingDrive()));
+
         if ((aero instanceof FixedWingSupport fixedWingSupport) && (fixedWingSupport.kgPerFuelPoint() == 0)) {
-            gameTurnsInfo.setVisible(false);
             spnFuel.setEnabled(false);
             spnFuelCapacity.setEnabled(false);
         } else {
@@ -189,16 +192,14 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
 
         if (aero.getStrategicFuelUse() > 0) {
             burnDaysInfo.setVisible(true);
-            gameTurnsInfo.setVisible(false);
             if ((aero instanceof Jumpship capitalCraft) && capitalCraft.hasStationKeepingDrive()) {
                 burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDaysStationKeeping.text"),
-                      TestAero.calculateDaysAt1G(aero)));
+                      TestAero.calculateDaysAtMax(aero)));
             } else {
                 burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDays.text"),
                       TestAero.calculateDaysAt1G(aero), TestAero.calculateDaysAtMax(aero)));
             }
         } else {
-            gameTurnsInfo.setVisible(true);
             burnDaysInfo.setVisible(false);
         }
         lblFuelType.setVisible(false);
