@@ -321,6 +321,13 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbRole.setSelectedItem(en.getRole());
         cbRole.addActionListener(this);
 
+        // Set faction from entity before refreshing visibility
+        cbFaction.removeActionListener(this);
+        if (en.getTechFaction() != Faction.NONE) {
+            cbFaction.setSelectedItem(en.getTechFaction());
+        }
+        cbFaction.addActionListener(this);
+
         refreshFaction();
     }
 
@@ -555,9 +562,13 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     private void refreshFaction() {
-        if (CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+        boolean showFaction = CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION);
+        // Also force visibility if a non-NONE faction is currently selected (e.g. loaded from file)
+        Faction currentFaction = (Faction) cbFaction.getSelectedItem();
+        boolean hasFaction = (currentFaction != null) && (currentFaction != Faction.NONE);
+        if (showFaction || hasFaction) {
             cbFaction.removeActionListener(this);
-            Faction prevFaction = (Faction) cbFaction.getSelectedItem();
+            Faction prevFaction = currentFaction;
             cbFaction.refresh(getTechIntroYear());
             cbFaction.setSelectedItem(prevFaction);
             cbFaction.addActionListener(this);
@@ -615,6 +626,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cbFaction) {
+            Faction selectedFaction = getTechFaction();
+            listeners.forEach(l -> l.factionChanged(selectedFaction));
             listeners.forEach(BuildListener::updateTechLevel);
             refreshTechBase();
         } else if (e.getSource() == cbTechBase) {

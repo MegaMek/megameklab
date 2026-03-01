@@ -42,6 +42,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import megamek.common.SimpleTechLevel;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.HandheldWeapon;
 import megamek.common.interfaces.ITechManager;
@@ -230,6 +231,11 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
         getEntity().setSource(source);
         refresh.refreshSummary();
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
     }
 
     @Override

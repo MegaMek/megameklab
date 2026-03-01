@@ -463,6 +463,11 @@ public class BAStructureTab extends ITab
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getBattleArmor().isClan()) || (mixed != getBattleArmor().isMixedTech())) {
             getBattleArmor().setMixedTech(mixed);

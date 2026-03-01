@@ -649,6 +649,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void mulIdChanged(int mulId) {
         getMek().setMulId(mulId);
         refresh.refreshSummary();
@@ -657,6 +662,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getMek().isClan()) || (mixed != getMek().isMixedTech())) {
+            // When switching away from mixed tech, remove Clan CASE from non-Clan units
+            if (!mixed && !clan && getMek().hasClanCaseEquipped()) {
+                UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+            }
             getMek().setMixedTech(mixed);
             updateTechLevel();
         }
@@ -1065,6 +1074,20 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void resetChassis() {
         UnitUtil.resetBaseChassis(getMek());
         refresh.refreshAll();
+    }
+
+    @Override
+    public void clanCaseChanged(boolean useClanCase) {
+        if (useClanCase) {
+            // Add Clan CASE to all locations with explosive equipment
+            MekUtil.addClanCaseToExplosiveLocations(getMek());
+        } else {
+            // Remove all Clan CASE
+            UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
     }
 
     @Override

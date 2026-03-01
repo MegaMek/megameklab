@@ -1270,9 +1270,40 @@ public final class MekUtil {
      * @param mek the mek to update
      */
     public static void updateClanCasePlacement(Mek mek) {
-        if (mek.isClan()) {
+        boolean hadClanCase = mek.isClan() || mek.hasClanCaseEquipped();
+        if (hadClanCase) {
             removeAllMounted(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
-            mek.addClanCase();
+            addClanCaseToExplosiveLocations(mek);
+        }
+    }
+
+    /**
+     * Adds Clan CASE to all locations on the Mek that have explosive equipment and don't already have CASE or CASE II.
+     * Unlike {@link Mek#addClanCase()}, this does not check tech base or existing Clan CASE presence.
+     *
+     * @param mek the mek to add Clan CASE to
+     */
+    public static void addClanCaseToExplosiveLocations(Mek mek) {
+        EquipmentType clCase = EquipmentType.get(EquipmentTypeLookup.CLAN_CASE);
+        for (int i = 0; i < mek.locations(); i++) {
+            if (mek.locationHasCase(i) || mek.hasCASEII(i)) {
+                continue;
+            }
+            boolean explosiveFound = false;
+            for (Mounted<?> m : mek.getEquipment()) {
+                if (m.getType().isExplosive(m, true)
+                      && ((m.getLocation() == i) || (m.getSecondLocation() == i))) {
+                    explosiveFound = true;
+                    break;
+                }
+            }
+            if (explosiveFound) {
+                try {
+                    mek.addEquipment(Mounted.createMounted(mek, clCase), i, false);
+                } catch (Exception ignored) {
+                    // 0-crit equipment shouldn't fail
+                }
+            }
         }
     }
 
