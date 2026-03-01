@@ -144,6 +144,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private JCheckBox chkDNICockpitMod = new JCheckBox();
     final private JCheckBox chkEICockpit = new JCheckBox();
     final private JCheckBox chkDamageInterruptCircuit = new JCheckBox();
+    final private JCheckBox chkClanCase = new JCheckBox();
     final private JButton btnResetChassis = new JButton();
 
     private ComboBoxModel<String> baseTypesModel;
@@ -343,9 +344,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.setToolTipText(resourceMap.getString("MekChassisView.chkDamageInterruptCircuit.tooltip"));
         chkDamageInterruptCircuit.addActionListener(this);
 
-        btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text"));
+        chkClanCase.setText(resourceMap.getString("MekChassisView.chkClanCase.text"));
         gbc.gridx = 1;
         gbc.gridy = 12;
+        gbc.gridwidth = 3;
+        add(chkClanCase, gbc);
+        chkClanCase.setToolTipText(resourceMap.getString("MekChassisView.chkClanCase.tooltip"));
+        chkClanCase.addActionListener(this);
+
+        btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text"));
+        gbc.gridx = 1;
+        gbc.gridy = 13;
         gbc.gridwidth = 3;
         add(btnResetChassis, gbc);
         btnResetChassis.setToolTipText(resourceMap.getString("MekChassisView.btnResetChassis.tooltip"));
@@ -417,6 +426,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         setDNICockpitMod(mek.hasDNICockpitMod());
         setEICockpit(mek.hasEiCockpit());
         setDamageInterruptCircuit(mek.hasDamageInterruptCircuit());
+        setClanCase(mek.hasClanCaseEquipped());
         btnResetChassis.setEnabled(mek.isOmni());
     }
 
@@ -457,6 +467,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         refreshDNICockpitMod();
         refreshEICockpit();
         refreshDamageInterruptCircuit();
+        refreshClanCase();
 
         chkOmni.removeActionListener(this);
         chkOmni.setEnabled(!isPrimitive()
@@ -710,6 +721,18 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.addActionListener(this);
     }
 
+    private void refreshClanCase() {
+        chkClanCase.removeActionListener(this);
+        // Only show for IS Mixed units. Clan Mixed units get Clan CASE automatically.
+        boolean isISMixed = techManager.useMixedTech() && !techManager.useClanTechBase();
+        chkClanCase.setVisible(isISMixed);
+        if (!isISMixed && chkClanCase.isSelected()) {
+            chkClanCase.setSelected(false);
+            listeners.forEach(l -> l.clanCaseChanged(false));
+        }
+        chkClanCase.addActionListener(this);
+    }
+
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.useMixedTech();
@@ -921,6 +944,14 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.setSelected(hasDIC);
     }
 
+    public boolean hasClanCase() {
+        return chkClanCase.isSelected() && chkClanCase.isVisible();
+    }
+
+    public void setClanCase(boolean useClanCase) {
+        chkClanCase.setSelected(useClanCase);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkOmni) {
@@ -946,6 +977,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.eiCockpitChanged(chkEICockpit.isSelected()));
         } else if (e.getSource() == chkDamageInterruptCircuit) {
             listeners.forEach(l -> l.damageInterruptCircuitChanged(chkDamageInterruptCircuit.isSelected()));
+        } else if (e.getSource() == chkClanCase) {
+            listeners.forEach(l -> l.clanCaseChanged(chkClanCase.isSelected()));
         } else if (e.getSource() == btnResetChassis) {
             listeners.forEach(MekBuildListener::resetChassis);
         }

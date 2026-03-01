@@ -1270,13 +1270,11 @@ public final class MekUtil {
      * @param mek the mek to update
      */
     public static void updateClanCasePlacement(Mek mek) {
-        // Only auto-manage Clan CASE for Clan tech base meks. On IS Mixed meks,
-        // Clan CASE is manually placed by the user via drag-and-drop.
-        if (!mek.isClan()) {
-            return;
+        boolean hadClanCase = mek.isClan() || mek.hasClanCaseEquipped();
+        if (hadClanCase) {
+            removeAllMounted(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+            addClanCaseToExplosiveLocations(mek);
         }
-        removeAllMounted(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
-        addClanCaseToExplosiveLocations(mek);
     }
 
     /**

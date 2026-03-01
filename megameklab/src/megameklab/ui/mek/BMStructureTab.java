@@ -1077,6 +1077,20 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void clanCaseChanged(boolean useClanCase) {
+        if (useClanCase) {
+            // Add Clan CASE to all locations with explosive equipment
+            MekUtil.addClanCaseToExplosiveLocations(getMek());
+        } else {
+            // Remove all Clan CASE
+            UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+        }
+        refresh.refreshBuild();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void heatSinksChanged(EquipmentType hsType, int count) {
         // if we have the same type of heat sink, then we should not remove the existing
         // heat sinks
