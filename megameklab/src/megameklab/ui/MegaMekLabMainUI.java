@@ -55,7 +55,6 @@ import megamek.logging.MMLogger;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
-import megameklab.ui.util.TabScrollPane;
 import megameklab.util.CConfig;
 import megameklab.util.UnitMemento;
 import megameklab.util.UnitUtil;
@@ -419,16 +418,19 @@ public abstract class MegaMekLabMainUI extends JPanel
      * persisted even if focusLost has not fired.
      */
     private void commitFluffTabChanges() {
-        for (int i = 0; i < configPane.getTabCount(); i++) {
-            Component tabComponent = configPane.getComponentAt(i);
-            if (tabComponent instanceof TabScrollPane scrollPane) {
-                Component view = scrollPane.getViewport().getView();
-                if (view instanceof FluffTab fluffTab) {
-                    fluffTab.commitChanges();
-                    return;
-                }
-            }
+        FluffTab fluffTab = getFluffTab();
+        if (fluffTab != null) {
+            fluffTab.commitChanges();
         }
+    }
+
+    /**
+     * Returns the FluffTab for this unit editor. Subclasses should override to return their fluffTab field.
+     *
+     * @return The FluffTab instance, or null if not available.
+     */
+    protected FluffTab getFluffTab() {
+        return null;
     }
 
     public abstract void reloadTabs();

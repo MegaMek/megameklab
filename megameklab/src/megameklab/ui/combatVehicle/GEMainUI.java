@@ -54,6 +54,11 @@ public class GEMainUI extends MegaMekLabMainUI {
     private GEEquipmentTab equipmentTab;
     private FluffTab fluffTab;
     private PreviewTab previewTab;
+
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
     private StatusBar statusbar;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 

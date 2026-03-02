@@ -53,6 +53,11 @@ public class HHWMainUI extends MegaMekLabMainUI {
     private HHWEquipmentTab equipmentTab;
     private FluffTab fluffTab;
     private PreviewTab previewTab;
+
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
     private HHWStatusBar statusbar;
 
     public HHWMainUI(Entity entity, String filename) {

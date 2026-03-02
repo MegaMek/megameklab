@@ -97,6 +97,7 @@ public class FluffTab extends ITab implements FocusListener {
     private final JScrollPane imgScrollPane = new JScrollPane(lblFluffImage);
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
+    private static final DateTimeFormatter FLUFF_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final int MAX_CONTENT_WIDTH = 1400;
     private static final int MAX_FLUFF_IMG_WIDTH = 300;
     private static final int MAX_FLUFF_IMG_HEIGHT = 300;
@@ -220,7 +221,7 @@ public class FluffTab extends ITab implements FocusListener {
         gbcDate.fill = GridBagConstraints.NONE;
         btnUpdateFluffDate.setText(resourceMap.getString("FluffTab.btnUpdateFluffDate"));
         btnUpdateFluffDate.addActionListener(evt -> {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String timestamp = LocalDateTime.now().format(FLUFF_DATE_FORMATTER);
             getFluff().setFluffDate(timestamp);
             txtFluffDate.setText(timestamp);
             if (refresh != null) {
@@ -587,17 +588,19 @@ public class FluffTab extends ITab implements FocusListener {
                 String text = textField.getText();
                 if (name != null && name.contains(":")) {
                     String[] fields = name.split(":");
-                    try {
-                        System system = System.parse(fields[0]);
-                        if (system != null) {
-                            if (TAG_MANUFACTURER.equals(fields[1])) {
-                                fluff.setSystemManufacturer(system, text);
-                            } else if (TAG_MODEL.equals(fields[1])) {
-                                fluff.setSystemModel(system, text);
+                    if (fields.length >= 2) {
+                        try {
+                            System system = System.parse(fields[0]);
+                            if (system != null) {
+                                if (TAG_MANUFACTURER.equals(fields[1])) {
+                                    fluff.setSystemManufacturer(system, text);
+                                } else if (TAG_MODEL.equals(fields[1])) {
+                                    fluff.setSystemModel(system, text);
+                                }
                             }
+                        } catch (IllegalArgumentException ex) {
+                            logger.warn("Invalid system name found in JTextField name: {}", name, ex);
                         }
-                    } catch (IllegalArgumentException ex) {
-                        logger.warn("Invalid system name found in JTextField name: {}", name, ex);
                     }
                 }
             } else if (component instanceof Container nestedContainer) {

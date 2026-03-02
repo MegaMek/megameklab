@@ -63,6 +63,11 @@ public class ASMainUI extends MegaMekLabMainUI {
     private ASBuildTab buildTab;
     private FluffTab fluffTab;
     private ASStatusBar statusbar;
+
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
