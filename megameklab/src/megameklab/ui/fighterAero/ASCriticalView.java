@@ -33,6 +33,7 @@
 package megameklab.ui.fighterAero;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -190,9 +191,24 @@ public class ASCriticalView extends IView {
                 critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
             }
 
-            critListFor(location).setListData(critNames);
-            critListFor(location).setVisibleRowCount(critNames.size());
-            critListFor(location).setName(location + "");
+            // Collect 0-crit equipment assigned to this location
+            int normalCritCount = critNames.size();
+            List<Mounted<?>> zeroCritMounts = new ArrayList<>();
+            for (Mounted<?> m : getAero().getEquipment()) {
+                if (m.getLocation() == location
+                      && UnitUtil.getCritsUsed(m) == 0
+                      && !UnitUtil.isArmorOrStructure(m.getType())) {
+                    zeroCritMounts.add(m);
+                    int eqNum = getAero().getEquipmentNum(m);
+                    critNames.add(m.getName() + "::" + eqNum);
+                }
+            }
+
+            BAASBMDropTargetCriticalList<String> critList = critListFor(location);
+            critList.setListData(critNames);
+            critList.setVisibleRowCount(critNames.size());
+            critList.setName(location + "");
+            critList.setZeroCritMounts(zeroCritMounts, normalCritCount);
 
             String usedCritText = "Weapons: " + numWeapons + " / " + availableSpace(location);
             if (location == Aero.LOC_NOSE) {
