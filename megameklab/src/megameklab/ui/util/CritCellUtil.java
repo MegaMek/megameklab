@@ -108,9 +108,6 @@ public final class CritCellUtil {
             if (mounted == null) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EMPTY));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_EMPTY));
-            } else if (mounted.getNumCriticalSlots() == 0) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_ZERO_CRIT));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_ZERO_CRIT));
             } else if (!mounted.getType().isHittable()) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NON_HITTABLE));

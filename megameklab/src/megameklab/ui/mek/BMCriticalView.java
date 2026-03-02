@@ -39,8 +39,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -236,6 +238,7 @@ public class BMCriticalView extends IView implements ActionListener {
 
             for (int location = 0; location < getMek().locations(); location++) {
                 Vector<String> critNames = new Vector<>(1, 1);
+                Set<Mounted<?>> critSlotMounts = new HashSet<>();
 
                 for (int slot = 0; slot < getMek().getNumberOfCriticalSlots(location); slot++) {
                     CriticalSlot cs = getMek().getCritical(location, slot);
@@ -250,6 +253,7 @@ public class BMCriticalView extends IView implements ActionListener {
                             getMek().setCritical(location, slot, null);
                             critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                         } else {
+                            critSlotMounts.add(m);
                             StringBuilder critName = new StringBuilder(m.getName());
                             if (m.isRearMounted()) {
                                 critName.append(" (R)");
@@ -267,6 +271,7 @@ public class BMCriticalView extends IView implements ActionListener {
                 int normalCritCount = getMek().getNumberOfCriticalSlots(location);
                 for (Mounted<?> m : getMek().getEquipment()) {
                     if (m.getLocation() == location
+                          && !critSlotMounts.contains(m)
                           && UnitUtil.getCritsUsed(m) == 0
                           && !UnitUtil.isArmorOrStructure(m.getType())) {
                         zeroCritMounts.add(m);

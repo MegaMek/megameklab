@@ -53,7 +53,6 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.UnitUtil;
 
 /**
  * The Crit Slots view for a Combat Vehicle (including VTOL)
@@ -206,17 +205,6 @@ public final class CVCriticalView extends IView {
                 if (critNames.isEmpty()) {
                     critNames.add(CritCellUtil.EMPTY_CRITICAL_CELL_TEXT);
                 }
-
-                // Collect 0-crit equipment assigned to this location
-                for (Mounted<?> m : getTank().getEquipment()) {
-                    if (m.getLocation() == location
-                          && UnitUtil.getCritsUsed(m) == 0
-                          && !UnitUtil.isArmorOrStructure(m.getType())) {
-                        int eqNum = getTank().getEquipmentNum(m);
-                        critNames.add(m.getName() + "::" + eqNum);
-                    }
-                }
-
                 DropTargetCriticalList<String> criticalSlotList = getCriticalSlotList(critNames, location);
                 if (isVTOL()) {
                     if (vtolLocations.containsKey(location)) {
