@@ -61,8 +61,9 @@ public class ColorSettingsPanel extends JPanel {
         addColorRow(CConfig.GUI_COLOR_AMMO);
         addColorRow(CConfig.GUI_COLOR_SYSTEMS);
         addColorRow(CConfig.GUI_COLOR_NON_HITTABLE);
+        addColorRow(CConfig.GUI_COLOR_ZERO_CRIT);
         addColorRow(CConfig.GUI_COLOR_EMPTY);
-        SpringUtilities.makeCompactGrid(gridPanel, 6, 4, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 7, 4, 0, 0, 15, 10);
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setBorder(new EmptyBorder(20, 30, 20, 30));
         add(gridPanel);
@@ -99,6 +100,7 @@ public class ColorSettingsPanel extends JPanel {
             case CConfig.GUI_COLOR_AMMO -> "AC/5 Ammo";
             case CConfig.GUI_COLOR_SYSTEMS -> "XL Engine";
             case CConfig.GUI_COLOR_NON_HITTABLE -> "Endo Steel";
+            case CConfig.GUI_COLOR_ZERO_CRIT -> "CASE (Clan)";
             default -> CritCellUtil.EMPTY_CRITICAL_CELL_TEXT;
         };
     }

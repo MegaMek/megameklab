@@ -62,6 +62,9 @@ public final class CritCellUtil {
     /** The height added to the text height of Crit Cells (padding) */
     public static final int CRITICAL_CELL_ADD_HEIGHT = 5;
 
+    /** The vertical padding (in pixels) inserted above the first virtual (0-crit) slot entry. */
+    public static final int ZERO_CRIT_SEPARATOR_HEIGHT = 4;
+
     public static final Color CRITICAL_CELL_BORDER_COLOR = Color.BLACK;
     public static final String EMPTY_CRITICAL_CELL_TEXT = "- Empty -";
 
@@ -105,6 +108,9 @@ public final class CritCellUtil {
             if (mounted == null) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EMPTY));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_EMPTY));
+            } else if (mounted.getNumCriticalSlots() == 0) {
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_ZERO_CRIT));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_ZERO_CRIT));
             } else if (!mounted.getType().isHittable()) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
