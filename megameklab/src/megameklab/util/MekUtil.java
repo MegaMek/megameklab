@@ -1263,9 +1263,9 @@ public final class MekUtil {
     }
 
     /**
-     * For the given Mek, adds Clan CASE in every location that has potentially explosive equipment (this includes PPC
-     * Capacitors) and removes it from all other locations. Respects per-location opt-out.
-     * This method does not check if other CASE types are already present on a location.
+     * For the given Mek, removes all existing Clan CASE and then re-adds it to every location that has potentially
+     * explosive equipment (this includes PPC Capacitors). Skips locations that already have (IS) CASE or CASE II.
+     * Respects per-location opt-out.
      *
      * @param mek the mek to update
      */

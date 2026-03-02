@@ -323,9 +323,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
         // Set faction from entity before refreshing visibility
         cbFaction.removeActionListener(this);
-        if (en.getTechFaction() != Faction.NONE) {
-            cbFaction.setSelectedItem(en.getTechFaction());
-        }
+        cbFaction.setSelectedItem(en.getTechFaction());
         cbFaction.addActionListener(this);
 
         refreshFaction();
@@ -375,7 +373,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     @Override
     public Faction getTechFaction() {
-        if (!CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION)) {
+        if (!cbFaction.isVisible()) {
             return Faction.NONE;
         }
         Faction selectedFaction = (Faction) cbFaction.getSelectedItem();
