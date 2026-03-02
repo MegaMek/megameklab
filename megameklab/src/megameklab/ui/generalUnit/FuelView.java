@@ -83,6 +83,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
     private final SpinnerNumberModel spnFuelCapacityModel = new SpinnerNumberModel(0, 0, 1000000, 1);
     private final JSpinner spnFuel = new JSpinner(spnFuelModel);
     private final JSpinner spnFuelCapacity = new JSpinner(spnFuelCapacityModel);
+    private final JLabel lblFuelMass = new JLabel(I18N.getString("FuelView.spnFuel.text"), SwingConstants.RIGHT);
     private final JLabel lblFuelPoints = new JLabel("", SwingConstants.RIGHT);
     private final JLabel gameTurnsInfo = new SmallFontHelpTextLabel(SwingConstants.CENTER);
 
@@ -121,7 +122,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         add(cbFuelType, gbc);
 
         gbc.gridy++;
-        add(new JLabel(I18N.getString("FuelView.spnFuel.text"), SwingConstants.RIGHT), gbc);
+        add(lblFuelMass, gbc);
         add(spnFuel, gbc);
 
         gbc.gridy++;
@@ -171,12 +172,17 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         if ((aero instanceof FixedWingSupport fixedWingSupport) && (fixedWingSupport.kgPerFuelPoint() == 0)) {
             spnFuel.setEnabled(false);
             spnFuelCapacity.setEnabled(false);
+            lblFuelPoints.setEnabled(false);
+            lblFuelMass.setEnabled(false);
         } else {
             gameTurnsInfo.setText(
                   MessageFormat.format(I18N.getString("FuelView.lblTurns.text"),
                         maxTurnsAtSafeThrust(aero),
                         maxTurnsAtMaxThrust(aero)));
             spnFuel.setEnabled(true);
+            spnFuelCapacity.setEnabled(true);
+            lblFuelPoints.setEnabled(true);
+            lblFuelMass.setEnabled(true);
         }
 
         spnFuel.removeChangeListener(this);
