@@ -54,6 +54,7 @@ import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.FixedWingSupport;
 import megamek.common.units.Jumpship;
+import megamek.common.units.SmallCraft;
 import megamek.common.units.Tank;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
@@ -164,8 +165,8 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblFuelPoints.tooltip"));
 
         gameTurnsInfo.setVisible(!((aero instanceof FixedWingSupport fixedWingSupport)
-              && (fixedWingSupport.kgPerFuelPoint() == 0))
-              && !((aero instanceof Jumpship capitalCraft) && capitalCraft.hasStationKeepingDrive()));
+              && (fixedWingSupport.kgPerFuelPoint() == 0)) // solar-powered
+              && !(aero instanceof Jumpship || aero instanceof SmallCraft)); // SO:AA p.32
 
         if ((aero instanceof FixedWingSupport fixedWingSupport) && (fixedWingSupport.kgPerFuelPoint() == 0)) {
             spnFuel.setEnabled(false);
@@ -180,6 +181,7 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
 
         spnFuel.removeChangeListener(this);
         spnFuelCapacity.removeChangeListener(this);
+
         spnFuelModel.setValue(aero.getFuelTonnage() * scaleMultiplier());
         spnFuelCapacityModel.setValue(aero.getFuel());
         if (kgScale) {
@@ -190,8 +192,8 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         spnFuel.addChangeListener(this);
         spnFuelCapacity.addChangeListener(this);
 
+        burnDaysInfo.setVisible(aero.getStrategicFuelUse() > 0);
         if (aero.getStrategicFuelUse() > 0) {
-            burnDaysInfo.setVisible(true);
             if ((aero instanceof Jumpship capitalCraft) && capitalCraft.hasStationKeepingDrive()) {
                 burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDaysStationKeeping.text"),
                       TestAero.calculateDaysAtMax(aero)));
@@ -199,8 +201,6 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
                 burnDaysInfo.setText(MessageFormat.format(I18N.getString("FuelView.lblBurnDays.text"),
                       TestAero.calculateDaysAt1G(aero), TestAero.calculateDaysAtMax(aero)));
             }
-        } else {
-            burnDaysInfo.setVisible(false);
         }
         lblFuelType.setVisible(false);
         cbFuelType.setVisible(false);
