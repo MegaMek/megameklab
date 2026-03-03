@@ -51,13 +51,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.formdev.flatlaf.FlatClientProperties;
 import megamek.client.ui.util.DisplayTextField;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.ui.SmallFontHelpTextLabel;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
@@ -117,7 +117,7 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
                 I18N.getString("HeatSinkView.spnPrototypeCount.text"),
                 I18N.getString("HeatSinkView.spnPrototypeCount.tooltip"));
     private final JSpinner spnPrototypeCount = new JSpinner();
-    private final JLabel protoInfo = new JLabel("4 single heat sinks");
+    private final JLabel protoInfo = new SmallFontHelpTextLabel(SwingConstants.CENTER);
     private final JLabel lblCritFreeText = createLabel("critFree",
           I18N.getString("HeatSinkView.lblCritFree.text"),
           I18N.getString("HeatSinkView.lblCritFree.tooltip"));
@@ -169,7 +169,6 @@ public class HeatSinkView extends BuildView implements ActionListener, ChangeLis
         spnPrototypeCount.setToolTipText(I18N.getString("HeatSinkView.spnPrototypeCount.tooltip"));
         chkRiscHeatSinkKit.setToolTipText(I18N.getString("HeatSinkView.lblRiscHeatSinkKit.tooltip"));
         lblCritFreeCount.setToolTipText(I18N.getString("HeatSinkView.lblCritFree.tooltip"));
-        protoInfo.putClientProperty(FlatClientProperties.STYLE_CLASS, "mini");
         spnBaseCount.setToolTipText(I18N.getString("HeatSinkView.spnBaseCount.tooltip"));
 
         setLayout(new GridBagLayout());
