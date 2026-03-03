@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -50,15 +50,7 @@ import javax.swing.UIManager;
 
 import megamek.common.equipment.ArmorType;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.units.Aero;
-import megamek.common.units.Entity;
-import megamek.common.units.EntityWeightClass;
-import megamek.common.units.Jumpship;
-import megamek.common.units.Mek;
-import megamek.common.units.ProtoMek;
-import megamek.common.units.SuperHeavyTank;
-import megamek.common.units.Tank;
-import megamek.common.units.VTOL;
+import megamek.common.units.*;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.ArmorLocationView.ArmorLocationListener;
@@ -225,8 +217,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
             final Integer maxArmor = UnitUtil.getMaxArmor(en, location);
             if (location < en.locations() && ((maxArmor == null) || (maxArmor > 0))) {
                 locView.setVisible(true);
-                locView.updateLocation(en.getLocationAbbr(location),
-                      en.hasRearArmor(location));
+                locView.updateLocation(en.getLocationAbbr(location), en.hasRearArmor(location));
                 locView.setMaxPoints(UnitUtil.getMaxArmor(en, location));
                 locView.setPoints(en.getArmor(location));
                 if (en.hasRearArmor(location)) {
@@ -234,9 +225,14 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                 } else {
                     locView.setPointsRear(0);
                 }
-                if (en.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)
-                      || en.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
-                    locView.setMinimum((int) (TestEntity.getSIBonusArmorPoints(en) / locationViews.size()));
+                if (en instanceof SmallCraft || en instanceof Jumpship) {
+                    double primitiveFactor = en.isPrimitive() ? 0.66 : 1;
+                    // As the SI bonus armor is multiplied by the primitive factor 0.66, primitive craft with little
+                    // armor tonnage may not be able to assign the bonus evenly per location, therefore the minimum
+                    // must be relaxed for those units, see IO:AE 3rd p.125 (Aquilla example calculation)
+                    locView.setMinimum((int) (TestEntity.getSIBonusArmorPoints(en)
+                          * primitiveFactor
+                          / locationViews.size()));
                 }
                 if (showPatchwork) {
                     double pointsPerTon = UnitUtil.getArmorPointsPerTon(en);
@@ -244,8 +240,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
                     if (en.hasRearArmor(location)) {
                         points += en.getArmor(location, true);
                     }
-                    locView.setToolTipText(String.format(tooltipFormat, pointsPerTon,
-                          points / pointsPerTon));
+                    locView.setToolTipText(String.format(tooltipFormat, pointsPerTon, points / pointsPerTon));
                 }
             } else {
                 locView.setVisible(false);
@@ -256,42 +251,44 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         int maxArmorPoints = UnitUtil.getMaximumArmorPoints(en);
         int raw = (int) (TestEntity.getRawArmorPoints(en, en.getLabArmorTonnage())
               + TestEntity.getSIBonusArmorPoints(en));
-        int currentPoints = en.getTotalOArmor();
-        int armorPoints;
-        if (showPatchwork) {
-            armorPoints = currentPoints;
-            raw = currentPoints;
-            btnAutoAllocate.setEnabled(false);
-        } else {
-            armorPoints = Math.min(raw, maxArmorPoints);
-            btnAutoAllocate.setEnabled(true);
+
+        // The primitive armor factor of 0.66 is multiplied as the last part of the calculation after adding the base
+        // SI bonus and the base rounded armor, see IO:AE 3rd p.125 (Aquilla example calculation)
+        if ((en instanceof SmallCraft || en instanceof Jumpship) && en.isPrimitive()) {
+            raw = (int) (0.66 * raw);
         }
-        int wastedPoints = Math.max(0, raw - armorPoints);
-        txtUnallocated.setText(Integer.toString(armorPoints - currentPoints));
-        txtAllocated.setText(String.valueOf(currentPoints));
-        if (armorPoints != currentPoints) {
+        int allocatedPoints = en.getTotalOArmor();
+        int availableArmorPoints;
+        if (showPatchwork) {
+            availableArmorPoints = allocatedPoints;
+            raw = allocatedPoints;
+        } else {
+            availableArmorPoints = Math.min(raw, maxArmorPoints);
+        }
+        btnAutoAllocate.setEnabled(!showPatchwork);
+        int wastedPoints = Math.max(0, raw - availableArmorPoints);
+        txtUnallocated.setText(Integer.toString(availableArmorPoints - allocatedPoints));
+        txtAllocated.setText(Integer.toString(allocatedPoints));
+        if (availableArmorPoints != allocatedPoints) {
             txtUnallocated.setForeground(Color.RED);
         } else {
             txtUnallocated.setForeground(UIManager.getColor("Label.foreground"));
         }
-        txtTotal.setText(String.valueOf(armorPoints));
+        txtTotal.setText(String.valueOf(availableArmorPoints));
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));
         txtWasted.setText(String.valueOf(wastedPoints));
         if (en.hasPatchworkArmor()) {
             txtPointsPerTon.setText("-");
         } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            txtPointsPerTon.setText(String.format("%d",
-                  (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
+            txtPointsPerTon.setText(String.format("%d", (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof ProtoMek) {
-            txtPointsPerTon.setText(String.format("%d",
-                  (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
+            txtPointsPerTon.setText(String.format("%d", (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
-            txtPointsPerTon.setText(String.format("%3.2f",
-                  UnitUtil.getArmorPointsPerTon(en)));
+            txtPointsPerTon.setText(String.format("%3.2f", UnitUtil.getArmorPointsPerTon(en)));
             lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
             txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }

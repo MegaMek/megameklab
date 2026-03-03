@@ -649,6 +649,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void mulIdChanged(int mulId) {
         getMek().setMulId(mulId);
         refresh.refreshSummary();
@@ -657,6 +662,14 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getMek().isClan()) || (mixed != getMek().isMixedTech())) {
+            // When switching away from mixed tech, remove Clan CASE from non-Clan units
+            if (!mixed && !clan && getMek().hasClanCaseEquipped()) {
+                UnitUtil.removeAllMounted(getMek(), EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
+            }
+            // Clear Clan CASE opt-out when tech base no longer supports it
+            if (!clan && !mixed) {
+                getMek().clearClanCaseOptOut();
+            }
             getMek().setMixedTech(mixed);
             updateTechLevel();
         }

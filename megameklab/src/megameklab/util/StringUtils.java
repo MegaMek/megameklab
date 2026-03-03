@@ -86,7 +86,7 @@ import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt15;
 import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt20;
 import megamek.common.weapons.missiles.innerSphere.thunderbolt.ISThunderbolt5;
 import megamek.common.weapons.missiles.rocketLauncher.RLWeapon;
-import megamek.common.weapons.missiles.thuunderbolt.ThunderboltWeapon;
+import megamek.common.weapons.missiles.thunderbolt.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megamek.common.weapons.mortars.innerSphere.ISVehicularGrenadeLauncher;
 import megamek.common.weapons.other.NarcWeapon;

@@ -281,6 +281,9 @@ public class BAASCriticalTransferHandler extends AbstractCriticalTransferHandler
                   CriticalTableModel.EQUIPMENT);
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
         } else if (component instanceof BAASBMDropTargetCriticalList<?> list) {
+            if (list.isVirtualSlotSelected()) {
+                return null;
+            }
             Mounted<?> mount = list.getMounted();
             if (mount != null) {
                 return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));

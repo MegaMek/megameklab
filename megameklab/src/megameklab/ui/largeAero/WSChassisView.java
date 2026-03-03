@@ -34,21 +34,24 @@ package megameklab.ui.largeAero;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.Entity;
@@ -65,6 +68,9 @@ import megameklab.ui.listeners.AdvancedAeroBuildListener;
  * @author Neoancient
  */
 public class WSChassisView extends BuildView implements ActionListener, ChangeListener {
+
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     private final List<AdvancedAeroBuildListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(AdvancedAeroBuildListener l) {
@@ -83,16 +89,18 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     private final SpinnerNumberModel spnTonnageModel = new SpinnerNumberModel(2000, 2000, null, 500);
     private final SpinnerNumberModel spnSIModel = new SpinnerNumberModel(1, 1, null, 1);
 
-    final private JSpinner spnTonnage = new JSpinner(spnTonnageModel);
-    final private JComboBox<String> cbBaseType = new JComboBox<>();
-    final private JLabel lblRange;
-    final private JSpinner spnRange = new JSpinner(new SpinnerNumberModel(15, 15, 30, 1));
-    final private JCheckBox chkLFBattery = new JCheckBox();
-    final private JCheckBox chkModular = new JCheckBox();
-    final private JCheckBox chkSail = new JCheckBox();
-    final private JCheckBox chkMilitary = new JCheckBox();
-    final private JSpinner spnSI = new JSpinner(spnSIModel);
-    final private ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
+    private final JSpinner spnTonnage = new JSpinner(spnTonnageModel);
+    private final JComboBox<String> cbBaseType = new JComboBox<>();
+    private final JLabel lblRange;
+    private final JSpinner spnRange = new JSpinner(new SpinnerNumberModel(15, 15, 30, 1));
+    private final JCheckBox chkLFBattery = new JCheckBox(I18N.getString("AdvAeroChassisView.chkLFBattery.text"));
+    private final JCheckBox chkModular = new JCheckBox(I18N.getString("AdvAeroChassisView.chkModular.text"));
+    private final JCheckBox chkSail = new JCheckBox(I18N.getString("AdvAeroChassisView.chkSail.text"));
+    private final JCheckBox chkMilitary = new JCheckBox(I18N.getString("AdvAeroChassisView.chkMilitary.text"));
+    private final JSpinner spnSI = new JSpinner(spnSIModel);
+
+    private final JLabel primitiveLabel = new JLabel(I18N.getString("AdvAeroChassisView.primitiveInfo.text"));
+    private final JLabel tonnageRangeLabel = new JLabel();
 
     private final ITechManager techManager;
     private int baseType;
@@ -103,104 +111,89 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
 
     public WSChassisView(ITechManager techManager) {
         this.techManager = techManager;
-        lblRange = createLabel("lblRange", "");
-        initUI();
-    }
 
-    public void initUI() {
+        lblRange = createLabel("lblRange", I18N.getString("AdvAeroChassisView.spnRange.text"));
+        spnTonnage.setToolTipText(I18N.getString("AdvAeroChassisView.spnTonnage.tooltip"));
+        chkSail.setToolTipText(I18N.getString("AdvAeroChassisView.chkSail.tooltip"));
+        cbBaseType.setToolTipText(I18N.getString("AdvAeroChassisView.cbBaseType.tooltip"));
+        primitiveLabel.putClientProperty(FlatClientProperties.STYLE_CLASS, "mini");
+        primitiveLabel.setEnabled(false);
+        primitiveLabel.setBorder(new EmptyBorder(0, 10, 4, 0));
+        primitiveLabel.setToolTipText(I18N.getString("AdvAeroChassisView.primitiveInfo.tooltip"));
+        tonnageRangeLabel.putClientProperty(FlatClientProperties.STYLE_CLASS, "mini");
+        tonnageRangeLabel.setEnabled(false);
+        tonnageRangeLabel.setBorder(new EmptyBorder(0, 10, 4, 0));
+        chkMilitary.setToolTipText(I18N.getString("AdvAeroChassisView.chkMilitary.tooltip"));
+        chkLFBattery.setToolTipText(I18N.getString("AdvAeroChassisView.chkLFBattery.tooltip"));
+        spnRange.setToolTipText(I18N.getString("AdvAeroChassisView.spnRange.tooltip"));
+        spnSI.setToolTipText(I18N.getString("AdvAeroChassisView.spnSI.tooltip"));
+        chkModular.setToolTipText(I18N.getString("AdvAeroChassisView.chkModular.tooltip"));
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        cbBaseType.setModel(new DefaultComboBoxModel<>(resourceMap.getString("AdvAeroChassisView.cbBaseType.values")
-              .split(",")));
+        String[] typeNames = I18N.getString("AdvAeroChassisView.cbBaseType.values").split(",");
+        cbBaseType.setModel(new DefaultComboBoxModel<>(typeNames));
 
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(5, 5, 5, 5);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblTonnage", "AdvAeroChassisView.spnTonnage.text",
-              "AdvAeroChassisView.spnTonnage.tooltip"), gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = STANDARD_INSETS;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        spnTonnage.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnTonnage.tooltip"));
-        add(spnTonnage, gbc);
-        spnTonnage.addChangeListener(this);
 
-        chkSail.setText(resourceMap.getString("AdvAeroChassisView.chkSail.text"));
-        gbc.gridx = 4;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 1;
-        chkSail.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkSail.tooltip"));
-        add(chkSail, gbc);
-        chkSail.addActionListener(this);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblBaseType", "AdvAeroChassisView.cbBaseType.text",
+        add(createLabel(I18N,
+              "lblBaseType",
+              "AdvAeroChassisView.cbBaseType.text",
               "AdvAeroChassisView.cbBaseType.tooltip"), gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        cbBaseType.setToolTipText(resourceMap.getString("AdvAeroChassisView.cbBaseType.tooltip"));
         add(cbBaseType, gbc);
-        cbBaseType.addActionListener(this);
 
-        chkMilitary.setText(resourceMap.getString("AdvAeroChassisView.chkMilitary.text"));
-        gbc.gridx = 4;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 1;
-        chkMilitary.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkMilitary.tooltip"));
-        add(chkMilitary, gbc);
-        chkMilitary.addActionListener(this);
+        gbc.gridy++;
+        add(new JLabel(), gbc);
+        add(primitiveLabel, gbc);
 
-        chkLFBattery.setText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.text"));
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 2;
-        chkLFBattery.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkLFBattery.tooltip"));
-        add(chkLFBattery, gbc);
-        chkLFBattery.addActionListener(this);
+        gbc.gridy++;
+        add(createLabel(I18N,
+              "lblTonnage",
+              "AdvAeroChassisView.spnTonnage.text",
+              "AdvAeroChassisView.spnTonnage.tooltip"), gbc);
+        add(spnTonnage, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        lblRange.setText(resourceMap.getString("AdvAeroChassisView.spnRange.text"));
-        gbc.gridwidth = 2;
-        add(lblRange, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
-        spnRange.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnRange.tooltip"));
-        add(spnRange, gbc);
-        spnRange.addChangeListener(this);
+        gbc.gridy++;
+        add(new JLabel(), gbc);
+        add(tonnageRangeLabel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        add(createLabel(resourceMap, "lblSI", "AdvAeroChassisView.spnSI.text",
-              "AdvAeroChassisView.spnSI.tooltip"), gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        spnSI.setToolTipText(resourceMap.getString("AdvAeroChassisView.spnSI.tooltip"));
+        gbc.gridy++;
+        add(createLabel(I18N, "lblSI", "AdvAeroChassisView.spnSI.text", "AdvAeroChassisView.spnSI.tooltip"), gbc);
         add(spnSI, gbc);
-        spnSI.addChangeListener(this);
 
-        chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
-        gbc.gridx = 4;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 1;
-        chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
+        gbc.gridy++;
+        add(Box.createVerticalStrut(4), gbc);
+
+        gbc.gridy++;
+        add(new JLabel(), gbc);
+        add(chkSail, gbc);
+
+        gbc.gridy++;
+        add(new JLabel(), gbc);
+        add(chkMilitary, gbc);
+
+        gbc.gridy++;
+        add(new JLabel(), gbc);
+        add(chkLFBattery, gbc);
+
+        gbc.gridy++;
+        add(lblRange, gbc);
+        add(spnRange, gbc);
+
+        gbc.gridy++;
+        add(new JLabel(), gbc);
         add(chkModular, gbc);
+
+        spnTonnage.addChangeListener(this);
+        chkSail.addActionListener(this);
+        cbBaseType.addActionListener(this);
+        chkMilitary.addActionListener(this);
+        chkLFBattery.addActionListener(this);
+        spnRange.addChangeListener(this);
+        spnSI.addChangeListener(this);
         chkModular.addActionListener(this);
     }
 
@@ -242,11 +235,11 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
               && ((SpaceStation) craft).isModularOrKFAdapter());
         chkModular.addActionListener(this);
 
-
         cbBaseType.removeActionListener(this);
         cbBaseType.setSelectedIndex(baseType);
         cbBaseType.addActionListener(this);
         cbBaseType.setEnabled(!craft.isPrimitive());
+        primitiveLabel.setVisible(craft.isPrimitive());
 
         spnSIModel.setValue(craft.getOSI());
         if (craft.isPrimitive()) {
@@ -266,6 +259,9 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
         }
         lblRange.setVisible(craft.isPrimitive());
         spnRange.setVisible(craft.isPrimitive());
+        tonnageRangeLabel.setText(MessageFormat.format(
+              I18N.getString("AdvAeroChassisView.tonnageRange"), minTonnage, maxTonnage));
+
     }
 
     public void setAsCustomization() {
@@ -276,23 +272,22 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
     public void refresh() {
         refreshTonnage();
         refreshSI();
-        chkLFBattery.setVisible((baseType != TYPE_STATION)
-              && techManager.isLegal(Jumpship.getLFBatteryTA()));
+        chkLFBattery.setVisible((baseType != TYPE_STATION) && techManager.isLegal(Jumpship.getLFBatteryTA()));
         chkMilitary.setVisible((baseType == TYPE_STATION));
         if (baseType == TYPE_STATION) {
             if ((getTonnage() <= SpaceStation.MODULAR_MINIMUM_WEIGHT)
                   && techManager.isLegal(SpaceStation.getKFAdapterTA())) {
-                chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.text"));
-                chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkKFAdapter.tooltip"));
+                chkModular.setText(I18N.getString("AdvAeroChassisView.chkKFAdapter.text"));
+                chkModular.setToolTipText(I18N.getString("AdvAeroChassisView.chkKFAdapter.tooltip"));
             } else if ((getTonnage() > SpaceStation.MODULAR_MINIMUM_WEIGHT)
                   && techManager.isLegal(SpaceStation.getModularTA())) {
-                chkModular.setText(resourceMap.getString("AdvAeroChassisView.chkModular.text"));
-                chkModular.setToolTipText(resourceMap.getString("AdvAeroChassisView.chkModular.tooltip"));
+                chkModular.setText(I18N.getString("AdvAeroChassisView.chkModular.text"));
+                chkModular.setToolTipText(I18N.getString("AdvAeroChassisView.chkModular.tooltip"));
             }
         }
-        chkModular.setVisible((baseType == TYPE_STATION)
-              && techManager.isLegal(getTonnage() <= 100000.0 ?
-              SpaceStation.getKFAdapterTA() : SpaceStation.getModularTA()));
+        chkModular.setVisible((baseType == TYPE_STATION) && techManager.isLegal(getTonnage() <= 100000.0
+              ? SpaceStation.getKFAdapterTA()
+              : SpaceStation.getModularTA()));
     }
 
     private void refreshTonnage() {
@@ -338,10 +333,6 @@ public class WSChassisView extends BuildView implements ActionListener, ChangeLi
 
     public boolean hasLFBattery() {
         return chkLFBattery.isSelected() && chkLFBattery.isEnabled();
-    }
-
-    public void setLFBattery(boolean battery) {
-        chkLFBattery.setSelected(battery);
     }
 
     public void setMaxThrust(int maxThrust) {
