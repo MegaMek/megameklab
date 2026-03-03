@@ -70,6 +70,11 @@ public class PMMainUI extends MegaMekLabMainUI {
     private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
+
     public PMMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);

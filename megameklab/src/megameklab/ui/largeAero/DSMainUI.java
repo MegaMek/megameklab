@@ -79,6 +79,11 @@ public class DSMainUI extends MegaMekLabMainUI {
     private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
+
     public DSMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);

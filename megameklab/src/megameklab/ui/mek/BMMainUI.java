@@ -67,6 +67,11 @@ public class BMMainUI extends MegaMekLabMainUI {
     private BMBuildTab buildTab;
     private FluffTab fluffTab;
     private BMStatusBar statusbar;
+
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
     private QuirksTab quirksTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 

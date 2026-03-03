@@ -52,6 +52,7 @@ import megamek.common.ui.EnhancedTabbedPane;
 import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
+import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.CConfig;
@@ -364,6 +365,7 @@ public abstract class MegaMekLabMainUI extends JPanel
 
     public boolean saveUnitAs() {
         warnOnInvalid();
+        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(getEntity());
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
@@ -387,6 +389,7 @@ public abstract class MegaMekLabMainUI extends JPanel
         } else {
             warnOnInvalid();
         }
+        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
@@ -408,6 +411,26 @@ public abstract class MegaMekLabMainUI extends JPanel
         }
         reattachAllTabs();
         return true;
+    }
+
+    /**
+     * Commits pending FluffTab text changes to the entity before saving. This ensures fields that still have focus are
+     * persisted even if focusLost has not fired.
+     */
+    private void commitFluffTabChanges() {
+        FluffTab fluffTab = getFluffTab();
+        if (fluffTab != null) {
+            fluffTab.commitChanges();
+        }
+    }
+
+    /**
+     * Returns the FluffTab for this unit editor. Subclasses should override to return their fluffTab field.
+     *
+     * @return The FluffTab instance, or null if not available.
+     */
+    protected FluffTab getFluffTab() {
+        return null;
     }
 
     public abstract void reloadTabs();
