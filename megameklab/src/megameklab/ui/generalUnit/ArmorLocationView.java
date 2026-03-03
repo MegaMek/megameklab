@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -34,6 +34,7 @@ package megameklab.ui.generalUnit;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -41,19 +42,24 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.common.annotations.Nullable;
+import megamek.common.ui.SmallFontHelpTextLabel;
 
 /**
- * Panel used to set armor value for a single location. Optionally used for rear location as well, and can be used to
- * set the armor type for units with patchwork armor.
+ * Panel used to allow the user to set the armor value for a single location, including the respective rear location for
+ * Meks.
  *
  * @author Neoancient
  */
-public class ArmorLocationView extends BuildView implements ChangeListener {
+class ArmorLocationView extends BuildView implements ChangeListener {
+
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     public interface ArmorLocationListener {
         void armorPointsChanged(int location, int front, int rear);
     }
@@ -72,44 +78,41 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     private final SpinnerNumberModel spnPointsRearModel = new SpinnerNumberModel(0, 0, null, 1);
     private final JSpinner spnPoints = new JSpinner(spnPointsModel);
     private final JSpinner spnPointsRear = new JSpinner(spnPointsRearModel);
-    private final JLabel lblRear = new JLabel();
-    private final JLabel lblMaxPoints = new JLabel();
+    private final JLabel lblRear = new JLabel(I18N.getString("ArmorLocationView.lblRear.text"));
+    private final JLabel lblMaxPoints = new SmallFontHelpTextLabel();
+    private final String maxFormat = I18N.getString("ArmorLocationView.lblMax.format");
 
     private final int location;
-    private final String maxFormat;
+
     private Integer maxPoints;
     private boolean hasRear = false;
+
+    private final TitledBorder border = BorderFactory.createTitledBorder(null, "",
+          TitledBorder.TOP,
+          TitledBorder.DEFAULT_POSITION);
 
     ArmorLocationView(int location) {
         this.location = location;
 
-        ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
-        lblRear.setText(resourceMap.getString("ArmorLocationView.lblRear.text"));
-        maxFormat = resourceMap.getString("ArmorLocationView.lblMax.format");
-        setBorder(BorderFactory.createTitledBorder(
-              null, "",
-              TitledBorder.TOP,
-              TitledBorder.DEFAULT_POSITION));
+        setBorder(border);
+        lblRear.setBorder(new EmptyBorder(4, 0, 0, 0));
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTH;
         gbc.gridx = 0;
-        gbc.gridy = 0;
         add(spnPoints, gbc);
-        gbc.gridy++;
         add(lblRear, gbc);
-        gbc.gridy++;
         add(spnPointsRear, gbc);
-        gbc.gridy++;
         gbc.weighty = 1.0;
         add(lblMaxPoints, gbc);
     }
 
     /**
      * Changes the location name in the title and whether it has a rear armor location.
-     *
      */
     public void updateLocation(String locName, boolean rear) {
-        ((TitledBorder) getBorder()).setTitle(locName);
+        border.setTitle(locName);
         hasRear = rear;
         lblRear.setVisible(rear);
         spnPointsRear.setVisible(rear);
@@ -128,7 +131,6 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * Sets the maximum number of armor points that can be assigned to this location. A value of null indicates that
      * there is no maximum.
-     *
      */
     public void setMaxPoints(@Nullable Integer max) {
         maxPoints = max;
@@ -138,7 +140,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
             lblMaxPoints.setVisible(false);
         } else {
             lblMaxPoints.setVisible(true);
-            lblMaxPoints.setText(String.format(maxFormat, max));
+            lblMaxPoints.setText(MessageFormat.format(maxFormat, max));
         }
     }
 
@@ -151,9 +153,8 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
 
     /**
      * Sets the number of points for this location. If the location has rear armor, this sets only the front.
-     *
      */
-    public void setPoints(int points) {
+    void setPoints(int points) {
         spnPoints.removeChangeListener(this);
         if (null == maxPoints) {
             spnPoints.setValue(points);
@@ -169,7 +170,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * @return The number of points of armor for this location (front).
      */
-    public int getPoints() {
+    int getPoints() {
         return spnPointsModel.getNumber().intValue();
     }
 
@@ -177,7 +178,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
      * Sets the number of points of armor for this location in the rear.
      *
      */
-    public void setPointsRear(int points) {
+    void setPointsRear(int points) {
         spnPointsRear.removeChangeListener(this);
         if (null == maxPoints) {
             spnPointsRear.setValue(points);
@@ -193,7 +194,7 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     /**
      * @return The number of points of rear armor in this location.
      */
-    public int getPointsRear() {
+    int getPointsRear() {
         return spnPointsRearModel.getNumber().intValue();
     }
 
@@ -201,5 +202,4 @@ public class ArmorLocationView extends BuildView implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         listeners.forEach(l -> l.armorPointsChanged(location, getPoints(), getPointsRear()));
     }
-
 }
