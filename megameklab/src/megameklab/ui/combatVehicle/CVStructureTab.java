@@ -342,6 +342,11 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getTank().isClan()) || (mixed != getTank().isMixedTech())) {
             getTank().setMixedTech(mixed);

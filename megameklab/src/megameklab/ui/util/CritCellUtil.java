@@ -62,6 +62,9 @@ public final class CritCellUtil {
     /** The height added to the text height of Crit Cells (padding) */
     public static final int CRITICAL_CELL_ADD_HEIGHT = 5;
 
+    /** The vertical padding (in pixels) inserted above the first virtual (0-crit) slot entry. */
+    public static final int ZERO_CRIT_SEPARATOR_HEIGHT = 4;
+
     public static final Color CRITICAL_CELL_BORDER_COLOR = Color.BLACK;
     public static final String EMPTY_CRITICAL_CELL_TEXT = "- Empty -";
 
