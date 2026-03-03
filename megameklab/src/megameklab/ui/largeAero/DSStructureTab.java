@@ -532,15 +532,19 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     @Override
     public void autoAllocateArmor() {
         // Ignore unarmored system-wide location
-        final int ARMOR_FACINGS = getSmallCraft().locations() - 1;
-        for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
+        final int armoredLocations = getSmallCraft().locations() - 1;
+        for (int loc = 0; loc < armoredLocations; loc++) {
             getSmallCraft().initializeArmor(0, loc);
         }
 
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) TestEntity.getSIBonusArmorPoints(getSmallCraft()) / ARMOR_FACINGS;
-        int points = TestEntity.getArmorPoints(getSmallCraft())
-              - bonusPerFacing * 4;
+        int freeSiArmor = TestEntity.getSIBonusArmorPoints(getSmallCraft());
+        if (getSmallCraft().isPrimitive()) {
+            freeSiArmor = (int) (freeSiArmor * 0.66);
+        }
+        int freeSiArmorPerFacing = freeSiArmor / armoredLocations;
+        // freeSiArmorPerFacing is added to each location; due to integer division, this may be less than freeSiArmor!
+        int points = TestEntity.getArmorPoints(getSmallCraft()) - freeSiArmorPerFacing * armoredLocations;
         int nose = (int) Math.floor(points * 0.3);
         int wing = (int) Math.floor(points * 0.25);
         int aft = (int) Math.floor(points * 0.2);
@@ -559,10 +563,10 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
                 wing++;
                 break;
         }
-        getSmallCraft().initializeArmor(nose + bonusPerFacing, Aero.LOC_NOSE);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_LEFT_WING);
-        getSmallCraft().initializeArmor(wing + bonusPerFacing, Aero.LOC_RIGHT_WING);
-        getSmallCraft().initializeArmor(aft + bonusPerFacing, Aero.LOC_AFT);
+        getSmallCraft().initializeArmor(nose + freeSiArmorPerFacing, Aero.LOC_NOSE);
+        getSmallCraft().initializeArmor(wing + freeSiArmorPerFacing, Aero.LOC_LEFT_WING);
+        getSmallCraft().initializeArmor(wing + freeSiArmorPerFacing, Aero.LOC_RIGHT_WING);
+        getSmallCraft().initializeArmor(aft + freeSiArmorPerFacing, Aero.LOC_AFT);
         getSmallCraft().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getSmallCraft());

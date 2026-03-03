@@ -480,6 +480,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         getJumpship().setSail(sail);
         refresh.refreshPreview();
         refresh.refreshStatus();
+        panSummary.refresh();
     }
 
     @Override
@@ -576,16 +577,20 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     @Override
     public void autoAllocateArmor() {
         // ignore unarmored system-wide location and warship broadsides
-        final int ARMOR_FACINGS = getJumpship() instanceof Warship ?
+        final int armorFacings = getJumpship() instanceof Warship ?
               getJumpship().locations() - 3 : getJumpship().locations() - 1;
-        for (int loc = 0; loc < ARMOR_FACINGS; loc++) {
+        for (int loc = 0; loc < armorFacings; loc++) {
             getJumpship().initializeArmor(0, loc);
         }
 
         // divide armor (in excess of bonus from SI) among positions, with more toward the front
-        int bonusPerFacing = (int) Math.floor(TestEntity.getSIBonusArmorPoints(getJumpship()) / ARMOR_FACINGS);
-        int points = TestEntity.getArmorPoints(getJumpship())
-              - bonusPerFacing * 6;
+        int freeSiArmor = TestEntity.getSIBonusArmorPoints(getJumpship());
+        if (getJumpship().isPrimitive()) {
+            freeSiArmor = (int) (freeSiArmor * 0.66);
+        }
+        int freeSiArmorPerFacing = freeSiArmor / armorFacings;
+        // freeSiArmorPerFacing is added to each location; due to integer division, this may be less than freeSiArmor!
+        int points = TestEntity.getArmorPoints(getJumpship()) - freeSiArmorPerFacing * armorFacings;
         int nose = (int) Math.floor(points * 0.22);
         int foreSides = (int) Math.floor(points * 0.18);
         int aftSides = (int) Math.floor(points * 0.16);
@@ -613,12 +618,12 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
                 foreSides++;
                 break;
         }
-        getJumpship().initializeArmor(nose + bonusPerFacing, Jumpship.LOC_NOSE);
-        getJumpship().initializeArmor(foreSides + bonusPerFacing, Jumpship.LOC_FRS);
-        getJumpship().initializeArmor(foreSides + bonusPerFacing, Jumpship.LOC_FLS);
-        getJumpship().initializeArmor(aftSides + bonusPerFacing, Jumpship.LOC_ARS);
-        getJumpship().initializeArmor(aftSides + bonusPerFacing, Jumpship.LOC_ALS);
-        getJumpship().initializeArmor(aft + bonusPerFacing, Jumpship.LOC_AFT);
+        getJumpship().initializeArmor(nose + freeSiArmorPerFacing, Jumpship.LOC_NOSE);
+        getJumpship().initializeArmor(foreSides + freeSiArmorPerFacing, Jumpship.LOC_FRS);
+        getJumpship().initializeArmor(foreSides + freeSiArmorPerFacing, Jumpship.LOC_FLS);
+        getJumpship().initializeArmor(aftSides + freeSiArmorPerFacing, Jumpship.LOC_ARS);
+        getJumpship().initializeArmor(aftSides + freeSiArmorPerFacing, Jumpship.LOC_ALS);
+        getJumpship().initializeArmor(aft + freeSiArmorPerFacing, Jumpship.LOC_AFT);
         getJumpship().autoSetThresh();
 
         panArmorAllocation.setFromEntity(getJumpship());
