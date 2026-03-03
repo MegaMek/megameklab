@@ -106,7 +106,8 @@ public class FuelView extends BuildView implements ActionListener, ChangeListene
         spnFuel.addChangeListener(this);
         spnFuelCapacity.setToolTipText(I18N.getString("FuelView.lblFuelPoints.tooltip"));
         spnFuelCapacity.addChangeListener(this);
-        gameTurnsInfo.setToolTipText(I18N.getString("FuelView.lblTurnsAtSafe.tooltip"));
+        gameTurnsInfo.setToolTipText(I18N.getString("FuelView.gameTurns.tooltip"));
+        burnDaysInfo.setToolTipText(I18N.getString("FuelView.burnDays.tooltip"));
         cbFuelType.setPrototypeDisplayValue(FuelType.PETROCHEMICALS);
         cbFuelType.setToolTipText(I18N.getString("FuelView.cbFuelType.tooltip"));
         cbFuelType.addActionListener(this);
