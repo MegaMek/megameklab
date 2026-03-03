@@ -381,6 +381,11 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getProtoMek().isClan()) || (mixed != getProtoMek().isMixedTech())) {
             getProtoMek().setMixedTech(mixed);

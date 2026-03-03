@@ -274,6 +274,11 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void mulIdChanged(int mulId) {
         getSmallCraft().setMulId(mulId);
         refresh.refreshSummary();

@@ -343,6 +343,10 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         if (component instanceof JTable table) {
             mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
         } else if (component instanceof BAASBMDropTargetCriticalList<?> list) {
+            /** Prevent 0-crit virtual slot equipment from being transferred */
+            if (list.isVirtualSlotSelected()) {
+                return null;
+            }
             mount = list.getMounted();
             location = list.getCritLocation();
         }

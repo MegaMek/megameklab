@@ -301,6 +301,11 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getSV().isClan()) || (mixed != getSV().isMixedTech())) {
             getSV().setMixedTech(mixed);

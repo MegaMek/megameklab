@@ -291,6 +291,11 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     }
 
     @Override
+    public void factionChanged(Faction faction) {
+        getEntity().setTechFaction(faction);
+    }
+
+    @Override
     public void techBaseChanged(boolean clan, boolean mixed) {
         if ((clan != getJumpship().isClan()) || (mixed != getJumpship().isMixedTech())) {
             getJumpship().setMixedTech(mixed);
