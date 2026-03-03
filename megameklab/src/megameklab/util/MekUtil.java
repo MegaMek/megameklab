@@ -1263,16 +1263,52 @@ public final class MekUtil {
     }
 
     /**
-     * For the given Mek, adds Clan CASE in every location that has potentially explosive equipment (this includes PPC
-     * Capacitors) and removes it from all other locations. Calls {@link Mek#addClanCase()}. This method does not check
-     * if other CASE types are already present on a location.
+     * For the given Mek, removes all existing Clan CASE and then re-adds it to every location that has potentially
+     * explosive equipment (this includes PPC Capacitors). Skips locations that already have (IS) CASE or CASE II.
+     * Respects per-location opt-out.
      *
      * @param mek the mek to update
      */
     public static void updateClanCasePlacement(Mek mek) {
-        if (mek.isClan()) {
+        boolean hadClanCase = mek.isClan() || mek.hasClanCaseEquipped();
+        if (hadClanCase) {
             removeAllMounted(mek, EquipmentType.get(EquipmentTypeLookup.CLAN_CASE));
-            mek.addClanCase();
+            addClanCaseToExplosiveLocations(mek);
+        }
+    }
+
+    /**
+     * Adds Clan CASE to all locations on the Mek that have explosive equipment and don't already have CASE or CASE II.
+     * Unlike {@link Mek#addClanCase()}, this does not check tech base or existing Clan CASE presence.
+     * Respects per-location opt-out via {@link Mek#isClanCaseOptedOut(int)}.
+     *
+     * @param mek the mek to add Clan CASE to
+     */
+    public static void addClanCaseToExplosiveLocations(Mek mek) {
+        EquipmentType clCase = EquipmentType.get(EquipmentTypeLookup.CLAN_CASE);
+        for (int i = 0; i < mek.locations(); i++) {
+            if (mek.locationHasCase(i) || mek.hasCASEII(i)) {
+                continue;
+            }
+            // Respect per-location opt-out
+            if (mek.isClanCaseOptedOut(i)) {
+                continue;
+            }
+            boolean explosiveFound = false;
+            for (Mounted<?> m : mek.getEquipment()) {
+                if (m.getType().isExplosive(m, true)
+                      && ((m.getLocation() == i) || (m.getSecondLocation() == i))) {
+                    explosiveFound = true;
+                    break;
+                }
+            }
+            if (explosiveFound) {
+                try {
+                    mek.addEquipment(Mounted.createMounted(mek, clCase), i, false);
+                } catch (Exception ignored) {
+                    // 0-crit equipment shouldn't fail
+                }
+            }
         }
     }
 

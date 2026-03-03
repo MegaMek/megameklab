@@ -59,6 +59,11 @@ public class CIMainUI extends MegaMekLabMainUI {
     FluffTab fluffTab;
     CIStatusBar statusbar;
 
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
+
     public CIMainUI(Entity entity, String filename) {
         super();
         setEntity(entity, filename);

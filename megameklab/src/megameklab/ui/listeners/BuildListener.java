@@ -33,6 +33,7 @@
 package megameklab.ui.listeners;
 
 import megamek.common.SimpleTechLevel;
+import megamek.common.enums.Faction;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.enums.FuelType;
 import megamek.common.units.UnitRole;
@@ -67,6 +68,9 @@ public interface BuildListener {
     void techLevelChanged(SimpleTechLevel techLevel);
 
     void roleChanged(UnitRole role);
+
+    default void factionChanged(Faction faction) {
+    }
 
     /**
      * Notifies of a change of the manually entered BV. When manualBV is 0 or less, the unit should be set to not use a

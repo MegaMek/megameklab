@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -232,7 +232,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
         } else {
-            cbArmorType.setEnabled(true);
+            cbArmorType.setEnabled(cbArmorType.getItemCount() >= 2);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
                   en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));

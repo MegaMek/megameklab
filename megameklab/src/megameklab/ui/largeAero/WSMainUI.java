@@ -75,7 +75,13 @@ public class WSMainUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private QuirksTab quirksTab;
     private StatusBar statusbar;
+    private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
+
+    @Override
+    protected FluffTab getFluffTab() {
+        return fluffTab;
+    }
 
     public WSMainUI(Entity entity, String filename) {
         super();
@@ -203,7 +209,7 @@ public class WSMainUI extends MegaMekLabMainUI {
         statusbar = new StatusBar(this);
         equipmentTab = new LAEquipmentTab(this);
         buildTab = new LABuildTab(this);
-        FluffTab fluffTab = new FluffTab(this);
+        fluffTab = new FluffTab(this);
         transportTab = new TransportTab(this);
         quirksTab = new QuirksTab(this);
         structureTab.addRefreshedListener(this);

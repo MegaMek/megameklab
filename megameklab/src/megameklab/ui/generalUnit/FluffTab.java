@@ -43,6 +43,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
@@ -77,6 +79,9 @@ public class FluffTab extends ITab implements FocusListener {
     private final JTextArea txtHistory = new JTextArea(5, 35);
     private final JTextArea txtNotes = new JTextArea(5, 35);
 
+    private final JTextField txtFluffDate = new JTextField(20);
+    private final JButton btnUpdateFluffDate = new JButton();
+
     private final JTextField txtManufacturer = new JTextField(12);
     private final JTextField txtPrimaryFactory = new JTextField(12);
     private final JTextField txtUse = new JTextField(12);
@@ -92,6 +97,7 @@ public class FluffTab extends ITab implements FocusListener {
     private final JScrollPane imgScrollPane = new JScrollPane(lblFluffImage);
     private static final String TAG_MANUFACTURER = "manufacturer";
     private static final String TAG_MODEL = "model";
+    private static final DateTimeFormatter FLUFF_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final int MAX_CONTENT_WIDTH = 1400;
     private static final int MAX_FLUFF_IMG_WIDTH = 300;
     private static final int MAX_FLUFF_IMG_HEIGHT = 300;
@@ -188,6 +194,42 @@ public class FluffTab extends ITab implements FocusListener {
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtHistory"), txtHistory);
         txtHistory.setText(getFluff().getHistory());
         txtHistory.setCaretPosition(0);
+
+        // Fluff Date row: Label + TextField + Update Button
+        gbcLeft.gridy++;
+        gbcLeft.weighty = 0.0;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+        JPanel fluffDatePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcDate = new GridBagConstraints();
+        gbcDate.gridy = 0;
+        gbcDate.insets = new Insets(2, 0, 2, 5);
+
+        gbcDate.gridx = 0;
+        gbcDate.weightx = 0.0;
+        gbcDate.fill = GridBagConstraints.NONE;
+        fluffDatePanel.add(new JLabel(resourceMap.getString("FluffTab.txtFluffDate")), gbcDate);
+
+        gbcDate.gridx = 1;
+        gbcDate.weightx = 1.0;
+        gbcDate.fill = GridBagConstraints.HORIZONTAL;
+        txtFluffDate.setEditable(false);
+        txtFluffDate.setText(getFluff().getFluffDate());
+        fluffDatePanel.add(txtFluffDate, gbcDate);
+
+        gbcDate.gridx = 2;
+        gbcDate.weightx = 0.0;
+        gbcDate.fill = GridBagConstraints.NONE;
+        btnUpdateFluffDate.setText(resourceMap.getString("FluffTab.btnUpdateFluffDate"));
+        btnUpdateFluffDate.addActionListener(evt -> {
+            String timestamp = LocalDateTime.now().format(FLUFF_DATE_FORMATTER);
+            getFluff().setFluffDate(timestamp);
+            txtFluffDate.setText(timestamp);
+            if (refresh != null) {
+                refresh.refreshPreview();
+            }
+        });
+        fluffDatePanel.add(btnUpdateFluffDate, gbcDate);
+        panLeft.add(fluffDatePanel, gbcLeft);
 
         addLabeledTextArea.accept(resourceMap.getString("FluffTab.txtNotes"), txtNotes);
         txtNotes.setText(getFluff().getNotes());
@@ -510,6 +552,63 @@ public class FluffTab extends ITab implements FocusListener {
         }
     }
 
+    /**
+     * Commits all pending text changes from the UI to the EntityFluff. This should be called before saving to ensure
+     * that fields still focused by the user are persisted, since focusLost may not have fired.
+     */
+    public void commitChanges() {
+        EntityFluff fluff = getFluff();
+        fluff.setCapabilities(txtCapabilities.getText());
+        fluff.setOverview(txtOverview.getText());
+        fluff.setDeployment(txtDeployment.getText());
+        fluff.setHistory(txtHistory.getText());
+        fluff.setNotes(txtNotes.getText());
+        fluff.setManufacturer(txtManufacturer.getText());
+        fluff.setPrimaryFactory(txtPrimaryFactory.getText());
+        fluff.setUse(txtUse.getText());
+        fluff.setLength(txtLength.getText());
+        fluff.setWidth(txtWidth.getText());
+        fluff.setHeight(txtHeight.getText());
+
+        // Commit system manufacturer/model fields
+        for (Component component : getComponents()) {
+            if (component instanceof JPanel panel) {
+                commitPanelTextFields(panel, fluff);
+            }
+        }
+    }
+
+    /**
+     * Helper method to recursively commit text field values from panels to EntityFluff.
+     */
+    private void commitPanelTextFields(Container container, EntityFluff fluff) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof JTextField textField) {
+                String name = textField.getName();
+                String text = textField.getText();
+                if (name != null && name.contains(":")) {
+                    String[] fields = name.split(":");
+                    if (fields.length >= 2) {
+                        try {
+                            System system = System.parse(fields[0]);
+                            if (system != null) {
+                                if (TAG_MANUFACTURER.equals(fields[1])) {
+                                    fluff.setSystemManufacturer(system, text);
+                                } else if (TAG_MODEL.equals(fields[1])) {
+                                    fluff.setSystemModel(system, text);
+                                }
+                            }
+                        } catch (IllegalArgumentException ex) {
+                            logger.warn("Invalid system name found in JTextField name: {}", name, ex);
+                        }
+                    }
+                }
+            } else if (component instanceof Container nestedContainer) {
+                commitPanelTextFields(nestedContainer, fluff);
+            }
+        }
+    }
+
     private void chooseFluffImage() {
         var imageChooser = new MMLFileChooser();
         int result = imageChooser.showOpenDialog(getParent());
@@ -643,6 +742,9 @@ public class FluffTab extends ITab implements FocusListener {
         txtDeployment.setCaretPosition(0);
         txtHistory.setCaretPosition(0);
         txtNotes.setCaretPosition(0);
+
+        // Update fluff date
+        txtFluffDate.setText(fluff.getFluffDate());
 
         // Update general text fields
         txtManufacturer.setText(fluff.getManufacturer());

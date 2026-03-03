@@ -117,7 +117,18 @@ public class CritListCellRenderer extends DefaultListCellRenderer {
         }
 
         int loc = getCritLocation();
-        if ((cs != null) &&
+        if (split.length > 2) {
+            // Virtual slot (0-crit equipment): add separator padding above the first virtual slot
+            boolean isFirstVirtual = true;
+            if (index > 0) {
+                Object prevValue = list.getModel().getElementAt(index - 1);
+                if (prevValue instanceof String prevStr && prevStr.split(":").length > 2) {
+                    isFirstVirtual = false;
+                }
+            }
+            int topPad = isFirstVirtual ? CritCellUtil.ZERO_CRIT_SEPARATOR_HEIGHT : 0;
+            setBorder(BorderFactory.createMatteBorder(topPad, 0, 0, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
+        } else if ((cs != null) &&
               UnitUtil.isLastCrit(unit, cs, index, loc) &&
               UnitUtil.isPreviousCriticalSlotEmpty(unit, index, loc)) {
             setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, CritCellUtil.CRITICAL_CELL_BORDER_COLOR));
