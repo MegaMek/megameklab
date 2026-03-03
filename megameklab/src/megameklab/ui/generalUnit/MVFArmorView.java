@@ -64,7 +64,7 @@ import megameklab.ui.util.TechComboBox;
 import megameklab.util.UnitUtil;
 
 /**
- * Panel for assigning armor type and tonnage for Meks, (combat) vehicles, and fighters.
+ * Panel for assigning armor type and tonnage for most heavy units.
  *
  * @author Neoancient
  */
@@ -231,6 +231,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             chkPatchwork.setSelected(true);
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
+
+            cbArmorType.setVisible(false);
+            spnTonnage.setVisible(false);
         } else {
             cbArmorType.setEnabled(cbArmorType.getItemCount() >= 2);
             tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
@@ -242,6 +245,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
             btnUseRemaining.setEnabled(true);
+            cbArmorType.setVisible(true);
+            spnTonnage.setVisible(true);
         }
         if (en.isSupportVehicle() && !en.hasPatchworkArmor()) {
             if (ArmorType.forEntity(en).hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)) {
