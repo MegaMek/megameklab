@@ -39,6 +39,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -53,6 +54,7 @@ import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.ui.SmallFontHelpTextLabel;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.EntityWeightClass;
@@ -79,6 +81,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         listeners.remove(l);
     }
 
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     private final static String CMD_MAXIMIZE = "MAXIMIZE";
     private final static String CMD_REMAINING = "REMAINING";
 
@@ -91,6 +95,13 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private final JButton btnMaximize = new JButton();
     private final JButton btnUseRemaining = new JButton();
     private final JLabel lblArmorTonnage = createLabel("lblArmorTonnage", "");
+    private final JLabel lblArmorType = createLabel(I18N,
+          "lblArmorType",
+          "ArmorView.cbArmorType.text",
+          "ArmorView.cbArmorType.tooltip");
+    private final JLabel patchworkInfo = new SmallFontHelpTextLabel("Armor weight is calculated "
+          + "from the "
+          + "assigned points");
 
     private final ITechManager techManager;
 
@@ -99,8 +110,6 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     private boolean primitive;
     private EntityMovementMode movementMode;
     private boolean svLimitedArmor;
-
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
 
     /**
      * Create the armor panel
@@ -123,72 +132,74 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     private void initUI(boolean supportVee) {
+        chkPatchwork.setText(I18N.getString("ArmorView.chkPatchwork.text"));
+        chkPatchwork.setToolTipText(I18N.getString("ArmorView.chkPatchwork.tooltip"));
+        cbArmorType.setToolTipText(I18N.getString("ArmorView.cbArmorType.tooltip"));
+        lblArmorTonnage.setText(I18N.getString("ArmorView.spnTonnage.text"));
+        spnTonnage.setToolTipText(I18N.getString("ArmorView.spnTonnage.tooltip"));
+        btnMaximize.setText(I18N.getString("ArmorView.btnMaximize.text"));
+        btnMaximize.setActionCommand(CMD_MAXIMIZE);
+        btnMaximize.setToolTipText(I18N.getString("ArmorView.btnMaximize.tooltip"));
+        btnUseRemaining.setText(I18N.getString("ArmorView.btnRemaining.text"));
+        btnUseRemaining.setActionCommand(CMD_REMAINING);
+        btnUseRemaining.setToolTipText(I18N.getString("ArmorView.btnRemaining.tooltip"));
+        cbSVTechRating.setToolTipText(I18N.getString("ArmorView.cbSVTechRating.tooltip"));
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = STANDARD_INSETS;
 
-        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        add(chkPatchwork, gbc);
+
+        gbc.gridy++;
+        add(Box.createVerticalStrut(4), gbc);
+
+        gbc.gridy++;
+        add(patchworkInfo, gbc);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        add(createLabel(resourceMap, "lblArmorType", "ArmorView.cbArmorType.text",
-              "ArmorView.cbArmorType.tooltip"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        cbArmorType.setToolTipText(resourceMap.getString("ArmorView.cbArmorType.tooltip"));
+        add(lblArmorType, gbc);
         add(cbArmorType, gbc);
-        cbArmorType.addActionListener(this);
 
         if (supportVee) {
             for (TechRating r : TechRating.values()) {
                 cbSVTechRating.addItem(r);
             }
-            gbc.gridx = 0;
             gbc.gridy++;
-            gbc.gridwidth = 1;
-            JLabel label = createLabel(resourceMap, "lblSVTechRating", "ArmorView.cbSVTechRating.text",
+            JLabel label = createLabel(I18N,
+                  "lblSVTechRating",
+                  "ArmorView.cbSVTechRating.text",
                   "ArmorView.cbSVTechRating.tooltip");
             add(label, gbc);
-            gbc.gridx = 1;
-            gbc.gridwidth = 2;
-            cbSVTechRating.setToolTipText(resourceMap.getString("ArmorView.cbSVTechRating.tooltip"));
             add(cbSVTechRating, gbc);
-            cbSVTechRating.addActionListener(this);
         }
 
-        gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 1;
-        lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text"));
         add(lblArmorTonnage, gbc);
-        gbc.gridx = 1;
-        spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip"));
         add(spnTonnage, gbc);
-        spnTonnage.addChangeListener(this);
 
-        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridy++;
-        gbc.gridwidth = 3;
-        chkPatchwork.setText(resourceMap.getString("ArmorView.chkPatchwork.text"));
-        chkPatchwork.setToolTipText(resourceMap.getString("ArmorView.chkPatchwork.tooltip"));
-        add(chkPatchwork, gbc);
-        chkPatchwork.addActionListener(this);
+        add(Box.createVerticalStrut(4), gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 3;
-        btnMaximize.setText(resourceMap.getString("ArmorView.btnMaximize.text"));
-        btnMaximize.setActionCommand(CMD_MAXIMIZE);
-        btnMaximize.setToolTipText(resourceMap.getString("ArmorView.btnMaximize.tooltip"));
         add(btnMaximize, gbc);
-        btnMaximize.addActionListener(this);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 3;
-        btnUseRemaining.setText(resourceMap.getString("ArmorView.btnRemaining.text"));
-        btnUseRemaining.setActionCommand(CMD_REMAINING);
-        btnUseRemaining.setToolTipText(resourceMap.getString("ArmorView.btnRemaining.tooltip"));
         add(btnUseRemaining, gbc);
+
+        chkPatchwork.addActionListener(this);
+        cbArmorType.addActionListener(this);
+        spnTonnage.addChangeListener(this);
+        btnMaximize.addActionListener(this);
         btnUseRemaining.addActionListener(this);
+        cbSVTechRating.addActionListener(this);
     }
 
     /**
@@ -220,11 +231,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         spnTonnage.removeChangeListener(this);
         chkPatchwork.removeActionListener(this);
         cbArmorType.setSelectedItem(ArmorType.forEntity(en));
-        if ((!ignoreEntityPatchwork && en.hasPatchworkArmor())
-              || (ignoreEntityPatchwork && isPatchwork())) {
+        if ((!ignoreEntityPatchwork && en.hasPatchworkArmor()) || (ignoreEntityPatchwork && isPatchwork())) {
             cbArmorType.setEnabled(false);
-            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                  en.getLabArmorTonnage()));
+            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en), en.getLabArmorTonnage()));
             factorModel.setValue(en.getTotalOArmor());
             spnTonnage.setEnabled(false);
             chkPatchwork.setVisible(true);
@@ -232,12 +241,16 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             btnMaximize.setEnabled(false);
             btnUseRemaining.setEnabled(false);
 
+            lblArmorType.setVisible(false);
             cbArmorType.setVisible(false);
+            lblArmorTonnage.setVisible(false);
             spnTonnage.setVisible(false);
+            btnMaximize.setVisible(false);
+            btnUseRemaining.setVisible(false);
+            patchworkInfo.setVisible(true);
         } else {
             cbArmorType.setEnabled(cbArmorType.getItemCount() >= 2);
-            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en),
-                  en.getLabArmorTonnage()));
+            tonnageModel.setValue(Math.min(UnitUtil.getMaximumArmorTonnage(en), en.getLabArmorTonnage()));
             tonnageModel.setMaximum(UnitUtil.getMaximumArmorTonnage(en));
             factorModel.setMaximum(UnitUtil.getMaximumArmorPoints(en));
             factorModel.setValue(Math.min(en.getLabTotalArmorPoints(), (Integer) factorModel.getMaximum()));
@@ -245,8 +258,14 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             chkPatchwork.setSelected(false);
             btnMaximize.setEnabled(true);
             btnUseRemaining.setEnabled(true);
+
+            lblArmorType.setVisible(true);
             cbArmorType.setVisible(true);
+            lblArmorTonnage.setVisible(true);
             spnTonnage.setVisible(true);
+            btnMaximize.setVisible(true);
+            btnUseRemaining.setVisible(true);
+            patchworkInfo.setVisible(false);
         }
         if (en.isSupportVehicle() && !en.hasPatchworkArmor()) {
             if (ArmorType.forEntity(en).hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)) {
@@ -259,12 +278,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             }
         }
         if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
-            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnFactor.text"));
-            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnFactor.tooltip"));
+            lblArmorTonnage.setText(I18N.getString("ArmorView.spnFactor.text"));
+            spnTonnage.setToolTipText(I18N.getString("ArmorView.spnFactor.tooltip"));
             spnTonnage.setModel(factorModel);
         } else {
-            lblArmorTonnage.setText(resourceMap.getString("ArmorView.spnTonnage.text"));
-            spnTonnage.setToolTipText(resourceMap.getString("ArmorView.spnTonnage.tooltip"));
+            lblArmorTonnage.setText(I18N.getString("ArmorView.spnTonnage.text"));
+            spnTonnage.setToolTipText(I18N.getString("ArmorView.spnTonnage.tooltip"));
             spnTonnage.setModel(tonnageModel);
         }
 
@@ -277,12 +296,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
         EquipmentType prev = (EquipmentType) cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
-        List<ArmorType> allArmors = TestEntity.legalArmorsFor(etype, industrial, primitive,
-              movementMode, techManager);
+        List<ArmorType> allArmors = TestEntity.legalArmorsFor(etype, industrial, primitive, movementMode, techManager);
         for (ArmorType armor : allArmors) {
             // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
-            if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
-                  && ((armor.getSVWeightPerPoint(getTechRating()) == 0.0)
+            if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR) && ((armor.getSVWeightPerPoint(getTechRating()) == 0.0)
                   || (svLimitedArmor && armor.getSVWeightPerPoint(getTechRating()) > 0.050))) {
                 continue;
             }
@@ -329,7 +346,8 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     /**
-     * @return Whether the patchwork checkbox is selected
+     * @return True when the patchwork checkbox is selected; this is not equivalent to the unit having patchwork
+     * armor (entity.hasPatchworkArmor()); it only has when it there are actually two different armor types installed.
      */
     public boolean isPatchwork() {
         return chkPatchwork.isSelected();
@@ -377,13 +395,12 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if ((e.getSource() == cbArmorType)
-              || ((e.getSource() == chkPatchwork) && !isPatchwork())) {
+        if ((e.getSource() == cbArmorType) || ((e.getSource() == chkPatchwork) && !isPatchwork())) {
             listeners.forEach(l -> l.armorTypeChanged(getArmorType(), getArmorTechConstant()));
         } else if (e.getSource() == chkPatchwork) {
             listeners.forEach(l -> l.armorTypeChanged(EquipmentType.T_ARMOR_PATCHWORK,
-                  Entity.getPatchworkArmorAdvancement().getTechLevel(techManager.getGameYear(),
-                        techManager.useClanTechBase())));
+                  Entity.getPatchworkArmorAdvancement()
+                        .getTechLevel(techManager.getGameYear(), techManager.useClanTechBase())));
         } else if (CMD_MAXIMIZE.equals(e.getActionCommand())) {
             listeners.forEach(ArmorAllocationListener::maximizeArmor);
         } else if (CMD_REMAINING.equals(e.getActionCommand())) {
@@ -392,5 +409,4 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             listeners.forEach(l -> l.armorTechRatingChanged(getTechRating()));
         }
     }
-
 }

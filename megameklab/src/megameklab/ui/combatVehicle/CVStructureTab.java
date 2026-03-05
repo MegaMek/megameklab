@@ -163,13 +163,13 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         leftPanel.add(panMovement);
         leftPanel.add(Box.createGlue());
 
-        midPanel.add(panArmor);
         midPanel.add(panTransport);
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
 
-        rightPanel.add(panArmorAllocation);
+        rightPanel.add(panArmor);
         rightPanel.add(panPatchwork);
+        rightPanel.add(panArmorAllocation);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;

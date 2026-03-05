@@ -158,13 +158,13 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
 
         midPanel.add(panMovement);
         midPanel.add(panFuel);
+        midPanel.add(panTransport);
         midPanel.add(panSummary);
         midPanel.add(Box.createHorizontalStrut(300));
 
         rightPanel.add(panArmor);
-        rightPanel.add(panTransport);
-        rightPanel.add(panArmorAllocation);
         rightPanel.add(panPatchwork);
+        rightPanel.add(panArmorAllocation);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -772,7 +772,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
             }
         }
         getAero().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getAero()));
-        panArmor.setFromEntity(getAero());
+        panArmor.setFromEntity(getAero(), true);
         panArmorAllocation.setFromEntity(getAero());
         refresh.refreshBuild();
         refresh.refreshPreview();

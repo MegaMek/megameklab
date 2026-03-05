@@ -176,9 +176,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
         rightPanel.add(panArmor);
         rightPanel.add(Box.createVerticalStrut(11));
-        rightPanel.add(panArmorAllocation);
-        rightPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panPatchwork);
+        rightPanel.add(Box.createVerticalStrut(11));
+        rightPanel.add(panArmorAllocation);
         rightPanel.add(Box.createVerticalGlue());
 
         GridBagConstraints gbc = new GridBagConstraints();
