@@ -761,6 +761,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
                   "Error", JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
+            panPatchwork.setFromEntity(getAero());
         } else {
             getAero().setArmorType(armor.getArmorType(), location);
             getAero().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));

@@ -1534,14 +1534,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             crits = (crits + 1) / 2;
         }
         if (getMek().getEmptyCriticalSlots(location) < crits) {
-            JOptionPane.showMessageDialog(
-                  null, armor.getName()
-                        + " does not fit in location "
-                        + getMek().getLocationName(location)
-                        + ". Resetting to Standard Armor in this location.",
+            JOptionPane.showMessageDialog(this,
+                  "%s does not fit in location %s. Resetting to Standard Armor in this location."
+                        .formatted(armor.getName(), getMek().getLocationName(location)),
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
-            UnitUtil.resetArmor(getMek(), location);
+            panPatchwork.setFromEntity(getMek());
         } else {
             getMek().setArmorType(armor.getArmorType(), location);
             getMek().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()), location);
