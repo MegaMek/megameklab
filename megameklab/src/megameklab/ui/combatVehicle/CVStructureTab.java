@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2009-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -163,13 +163,13 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         leftPanel.add(panMovement);
         leftPanel.add(Box.createGlue());
 
-        midPanel.add(panArmor);
         midPanel.add(panTransport);
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
 
-        rightPanel.add(panArmorAllocation);
+        rightPanel.add(panArmor);
         rightPanel.add(panPatchwork);
+        rightPanel.add(panArmorAllocation);
 
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -874,6 +874,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
+            panPatchwork.setFromEntity(getTank());
         } else {
             getTank().setArmorType(armor.getArmorType(), location);
             getTank().setArmorTechLevel(armor.getTechLevel(getTechManager().getGameYear(), armor.isClan()));
