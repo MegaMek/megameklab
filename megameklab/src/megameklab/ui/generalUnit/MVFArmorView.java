@@ -99,9 +99,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
           "lblArmorType",
           "ArmorView.cbArmorType.text",
           "ArmorView.cbArmorType.tooltip");
-    private final JLabel patchworkInfo = new SmallFontHelpTextLabel("Armor weight is calculated "
-          + "from the "
-          + "assigned points");
+    private final JLabel patchworkInfo = new SmallFontHelpTextLabel(I18N.getString("ArmorView.patchworkInfo"));
 
     private final ITechManager techManager;
 
