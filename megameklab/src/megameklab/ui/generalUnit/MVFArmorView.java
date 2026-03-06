@@ -344,8 +344,9 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     /**
-     * @return True when the patchwork checkbox is selected; this is not equivalent to the unit having patchwork
-     * armor (entity.hasPatchworkArmor()); it only has when it there are actually two different armor types installed.
+     * @return True when the patchwork checkbox is selected; this is not equivalent to the unit having patchwork armor;
+     *       entity.hasPatchworkArmor() only returns true when there are actually at least two different armor types
+     *       installed.
      */
     public boolean isPatchwork() {
         return chkPatchwork.isSelected();

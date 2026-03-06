@@ -152,7 +152,6 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     }
 
     private void initUI() {
-        txtUnallocated.setEditable(false);
         tooltipFormat = I18N.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
