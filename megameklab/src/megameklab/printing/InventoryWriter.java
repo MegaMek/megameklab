@@ -274,10 +274,10 @@ public class InventoryWriter {
         }
         fuelText = sheet.formatTacticalFuel();
         str = sheet.formatFeatures();
-        featuresText = str.isEmpty() ? str : "Features " + str;
+        featuresText = str.isEmpty() ? "" : "Features " + str;
         miscNotesText = sheet.formatMiscNotes();
         str = sheet.formatQuirks();
-        quirksText = str.isEmpty() ? str : "Quirks: " + str;
+        quirksText = str.isEmpty() ? "" : "Quirks: " + str;
     }
 
     public InventoryWriter(PrintEntity sheet, SVGRectElement svgRect) {

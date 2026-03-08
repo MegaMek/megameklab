@@ -79,6 +79,7 @@ import megamek.common.units.Mek;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitRole;
 import megamek.common.units.UnitType;
+import megamek.common.verifier.TestEntity;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
@@ -233,20 +234,17 @@ public abstract class PrintEntity extends PrintRecordSheet {
 
     /**
      * Converts a weight to a String, either in kg or tons as appropriate to the Entity, labeled with the measurement
-     * unit.
+     * unit (e.g. "1 ton", "3 tons", "2750 kg").
      *
      * @param weight The weight in tons
      *
      * @return The formatted weight with units
      */
     String formatWeight(double weight) {
-        if ((getEntity() instanceof BattleArmor)
-              || (getEntity() instanceof ProtoMek)
-              || getEntity().getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
+        if (TestEntity.usesKgStandard(getEntity())) {
             return DecimalFormat.getInstance().format(weight * 1000) + " kg";
         } else {
-            return DecimalFormat.getInstance().format(weight)
-                  + ((weight == 1) ? " ton)" : " tons");
+            return DecimalFormat.getInstance().format(weight) + ((weight == 1) ? " ton" : " tons");
         }
     }
 
