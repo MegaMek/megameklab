@@ -269,9 +269,10 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
     }
 
     public void refresh() {
-        EquipmentType prev = (EquipmentType) cbArmorType.getSelectedItem();
+        EquipmentType previousArmor = (EquipmentType) cbArmorType.getSelectedItem();
         cbArmorType.removeActionListener(this);
         cbArmorType.removeAllItems();
+        boolean previousArmorAllowed = false;
         List<ArmorType> allArmors = TestEntity.legalArmorsFor(etype, industrial, primitive,
               movementMode, techManager);
         for (ArmorType armor : allArmors) {
@@ -282,6 +283,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
                 continue;
             }
             cbArmorType.addItem(armor);
+            previousArmorAllowed |= armor == previousArmor;
         }
         if (((etype & (Entity.ETYPE_SMALL_CRAFT | Entity.ETYPE_JUMPSHIP)) == 0)
               && techManager.isLegal(Entity.getPatchworkArmorAdvancement())
@@ -291,16 +293,11 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             chkPatchwork.setVisible(false);
             chkPatchwork.setSelected(false);
         }
-        if ((null == prev) && (cbArmorType.getModel().getSize() > 0)) {
-            cbArmorType.setSelectedIndex(cbArmorType.getModel().getSize() - 1);
-        } else {
-            cbArmorType.setSelectedItem(prev);
-        }
-        cbArmorType.addActionListener(this);
-        /* If there was a type previously set and nothing is selected, the previous choice
-         * is not in the list. Select the first in the list after the listener is restored
-         * to make sure the Entity is updated. */
-        if ((null != prev) && (cbArmorType.getSelectedIndex() < 0) && (cbArmorType.getModel().getSize() > 0)) {
+        if (previousArmorAllowed) {
+            cbArmorType.setSelectedItem(previousArmor); // no event necessary, armor stays the same
+            cbArmorType.addActionListener(this);
+        } else if (cbArmorType.getModel().getSize() > 0) {
+            cbArmorType.addActionListener(this); // fire an event for changing to an allowed armor to update the unit
             cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
