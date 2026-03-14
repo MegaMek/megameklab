@@ -634,11 +634,6 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     }
 
     @Override
-    public void patchworkChanged(int location, ArmorType armor) {
-        // Cannot have patchwork armor
-    }
-
-    @Override
     public void baseCrewChanged(int nCrew) {
         getJumpship().setNCrew(nCrew + getJumpship().getNGunners() + getJumpship().getBayPersonnel());
         // May need to adjust number of officers

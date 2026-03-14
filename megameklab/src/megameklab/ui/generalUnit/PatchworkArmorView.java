@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -34,7 +34,6 @@ package megameklab.ui.generalUnit;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import megamek.common.equipment.ArmorType;
@@ -97,58 +97,63 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = STANDARD_INSETS;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, 5, 0, 5);
         for (int loc = 0; loc < MAX_LOC; loc++) {
-            JLabel label = new JLabel();
+            JLabel label = new JLabel("", SwingConstants.RIGHT);
             TechComboBox<ArmorType> combo = new TechComboBox<>(ArmorType::getName);
             combo.setActionCommand(Integer.toString(loc));
             combo.addActionListener(this);
+            combo.setPrototypeDisplayValue(ArmorType.of(ArmorType.T_ARMOR_ANTI_PENETRATIVE_ABLATION, false));
             labels.add(label);
             combos.add(combo);
-            gbc.gridx = 0;
-            gbc.anchor = GridBagConstraints.EAST;
             add(label, gbc);
-            gbc.gridx = 1;
-            gbc.anchor = GridBagConstraints.WEST;
             add(combo, gbc);
             gbc.gridy++;
         }
     }
 
     public void setFromEntity(Entity en) {
-        List<ArmorType> armors = TestEntity.legalArmorsFor(en.getEntityType(),
-              (en instanceof Mek) && ((Mek) en).isIndustrial(),
+        List<ArmorType> armors = TestEntity.legalArmorsFor(
+              en.getEntityType(),
+              (en instanceof Mek mek) && mek.isIndustrial(),
               en.isPrimitive(),
               en.getMovementMode(), techManager);
+
         ignoreEvents = true;
         for (int loc = 0; loc < combos.size(); loc++) {
-            if ((loc < en.locations())
-                  && !((en.hasETypeFlag(Entity.ETYPE_TANK) && (loc == Tank.LOC_BODY)))
-                  && !((en.hasETypeFlag(Entity.ETYPE_AERO) && (loc >= Aero.LOC_WINGS)))) {
-                labels.get(loc).setText(en.getLocationName(loc));
-                combos.get(loc).removeAllItems();
-                for (ArmorType armor : armors) {
-                    // Check whether SV armor exists at this tech rating or it requires the armored chassis mod.
-                    if (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
-                          && ((armor.getSVWeightPerPoint(en.getArmorTechRating()) == 0.0)
-                          || (!en.hasMisc(MiscType.F_ARMORED_CHASSIS)
-                          && armor.getSVWeightPerPoint(en.getArmorTechRating()) >= 0.050))) {
-                        continue;
-                    }
-                    combos.get(loc).addItem(armor);
-                }
-                combos.get(loc).setSelectedItem(ArmorType.forEntity(en, loc));
-                labels.get(loc).setVisible(true);
-                combos.get(loc).setVisible(true);
-                combos.get(loc).showTechBase(en.isMixedTech());
-            } else {
-                labels.get(loc).setVisible(false);
-                combos.get(loc).setVisible(false);
+            TechComboBox<ArmorType> comboForLocation = combos.get(loc);
+
+            boolean isValidLocation = isValidArmorLocation(loc, en);
+            comboForLocation.setVisible(isValidLocation);
+            labels.get(loc).setVisible(isValidLocation);
+            labels.get(loc).setText(en.getLocationName(loc) + ":");
+
+            if (isValidLocation) {
+                comboForLocation.removeAllItems();
+                armors.stream()
+                      .filter(armor -> !isArmorIneligible(armor, en))
+                      .forEach(comboForLocation::addItem);
+                comboForLocation.setSelectedItem(ArmorType.forEntity(en, loc));
+                comboForLocation.showTechBase(en.isMixedTech());
             }
         }
         ignoreEvents = false;
+    }
+
+    private boolean isValidArmorLocation(int location, Entity entity) {
+        return (location < entity.locations())
+              && !((entity.hasETypeFlag(Entity.ETYPE_TANK) && (location == Tank.LOC_BODY)))
+              && !((entity.hasETypeFlag(Entity.ETYPE_AERO) && (location >= Aero.LOC_WINGS)));
+    }
+
+    private boolean isArmorIneligible(ArmorType armor, Entity entity) {
+        // Check whether SV armor exists at this tech rating or it requires the armored chassis mod
+        return (armor.hasFlag(MiscType.F_SUPPORT_VEE_BAR_ARMOR)
+              && ((armor.getSVWeightPerPoint(entity.getArmorTechRating()) == 0.0)
+              || (!entity.hasMisc(MiscType.F_ARMORED_CHASSIS)
+              && armor.getSVWeightPerPoint(entity.getArmorTechRating()) >= 0.050)));
     }
 
     public ArmorType getArmor(int location) {
@@ -166,5 +171,4 @@ public class PatchworkArmorView extends BuildView implements ActionListener {
             listeners.forEach(l -> l.patchworkChanged(location, getArmor(location)));
         }
     }
-
 }

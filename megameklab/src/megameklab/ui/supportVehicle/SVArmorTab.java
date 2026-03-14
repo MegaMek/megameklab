@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -250,15 +250,14 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
 
         int crits = armor.getPatchworkSlotsMekSV();
         if (getEntity().getEmptyCriticalSlots(location) < crits) {
-            JOptionPane.showMessageDialog(
-                  null, armor.getName()
-                        + " does not fit in location "
-                        + getEntity().getLocationName(location)
-                        + ". Resetting to Standard Armor in this location.",
+            JOptionPane.showMessageDialog(this,
+                  "%s does not fit in location %s. Resetting to Standard Armor in this location."
+                        .formatted(armor.getName(), getEntity().getLocationName(location)),
                   "Error",
                   JOptionPane.INFORMATION_MESSAGE);
             getEntity().setArmorType(EquipmentType.T_ARMOR_STANDARD, location);
             getEntity().setArmorTechLevel(TechConstants.T_INTRO_BOX_SET);
+            panPatchwork.setFromEntity(getEntity());
         } else {
             getEntity().setArmorType(armor.getArmorType(), location);
             getEntity().setArmorTechLevel(armor.getTechLevel(techManager.getGameYear(), armor.isClan()));

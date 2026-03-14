@@ -577,11 +577,6 @@ public class DSStructureTab extends ITab implements DropshipBuildListener, Armor
     }
 
     @Override
-    public void patchworkChanged(int location, ArmorType armor) {
-        // Cannot have patchwork armor
-    }
-
-    @Override
     public void baseCrewChanged(int nCrew) {
         getSmallCraft().setNCrew(nCrew + getSmallCraft().getNGunners() + getSmallCraft().getBayPersonnel());
         // May need to adjust number of officers

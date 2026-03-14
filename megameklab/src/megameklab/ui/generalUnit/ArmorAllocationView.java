@@ -48,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import megamek.client.ui.util.DisplayTextField;
 import megamek.common.equipment.ArmorType;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.*;
@@ -121,18 +122,26 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
           { -1, Jumpship.LOC_AFT, -1 }
     };
 
+    private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+
     private final List<ArmorLocationView> locationViews = new ArrayList<>();
     private final JPanel panLocations = new JPanel();
-    private final JTextField txtUnallocated = new JTextField();
-    private final JTextField txtAllocated = new JTextField();
-    private final JTextField txtTotal = new JTextField();
-    private final JTextField txtMaxPossible = new JTextField();
-    private final JTextField txtWasted = new JTextField();
-    private final JTextField txtPointsPerTon = new JTextField();
-    private final JButton btnAutoAllocate = new JButton();
-    private final JLabel lblPointsPerTon = new JLabel("", SwingConstants.RIGHT);
+    private final JLabel lblUnallocated = new JLabel(I18N.getString("ArmorAllocationView.txtUnallocated.text"),
+          SwingConstants.RIGHT);
+    private final JTextField txtUnallocated = new DisplayTextField();
+    private final JTextField txtAllocated = new DisplayTextField();
+    private final JLabel lblTotal = new JLabel(I18N.getString("ArmorAllocationView.txtTotal.text"),
+          SwingConstants.RIGHT);
+    private final JTextField txtTotal = new DisplayTextField();
+    private final JTextField txtMaxPossible = new DisplayTextField();
+    private final JLabel lblWasted = new JLabel(I18N.getString("ArmorAllocationView.txtWasted.text"),
+          SwingConstants.RIGHT);
+    private final JTextField txtWasted = new DisplayTextField();
+    private final JTextField txtPointsPerTon = new DisplayTextField();
+    private final JButton btnAutoAllocate = new JButton(I18N.getString("ArmorAllocationView.btnAutoAllocate.text"));
+    private final JLabel lblPointsPerTon = new JLabel(I18N.getString("ArmorAllocationView.txtPointsPerTon.text"),
+          SwingConstants.RIGHT);
 
-    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private long entityType;
     private boolean showPatchwork = false;
     private String tooltipFormat;
@@ -143,69 +152,52 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     }
 
     private void initUI() {
-        tooltipFormat = resourceMap.getString("ArmorAllocationView.locationTooltip.format");
+        tooltipFormat = I18N.getString("ArmorAllocationView.locationTooltip.format");
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = STANDARD_INSETS;
 
         panLocations.setLayout(new GridBagLayout());
-        gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(panLocations, gbc);
+        gbc.gridwidth = 1;
 
         updateLayout();
         gbc.gridy++;
 
-        gbc.gridwidth = 1;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtUnallocated.text"), SwingConstants.RIGHT), gbc);
-        gbc.gridx = 1;
-        txtUnallocated.setEditable(false);
+        add(lblUnallocated, gbc);
         add(txtUnallocated, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc);
-        gbc.gridx = 1;
-        txtAllocated.setEditable(false);
+        add(new JLabel(I18N.getString("ArmorAllocationView.txtAllocated.text"), SwingConstants.RIGHT), gbc);
         add(txtAllocated, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtTotal.text"), SwingConstants.RIGHT), gbc);
-        gbc.gridx = 1;
-        txtTotal.setEditable(false);
+        add(lblTotal, gbc);
         add(txtTotal, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc);
-        gbc.gridx = 1;
-        txtMaxPossible.setEditable(false);
+        add(new JLabel(I18N.getString("ArmorAllocationView.txtMaxPossible.text"), SwingConstants.RIGHT), gbc);
         add(txtMaxPossible, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        add(new JLabel(resourceMap.getString("ArmorAllocationView.txtWasted.text"), SwingConstants.RIGHT), gbc);
-        gbc.gridx = 1;
-        txtWasted.setEditable(false);
+        add(lblWasted, gbc);
         add(txtWasted, gbc);
 
-        gbc.gridx = 0;
         gbc.gridy++;
-        lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
         add(lblPointsPerTon, gbc);
-        gbc.gridx = 1;
-        txtPointsPerTon.setEditable(false);
-        txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
+        txtPointsPerTon.setToolTipText(I18N.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         add(txtPointsPerTon, gbc);
 
-        btnAutoAllocate.setText(resourceMap.getString("ArmorAllocationView.btnAutoAllocate.text"));
-        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(Box.createVerticalStrut(18), gbc);
+        add(Box.createVerticalStrut(10), gbc);
+
         gbc.gridy++;
+        gbc.fill = GridBagConstraints.NONE;
         add(btnAutoAllocate, gbc);
         btnAutoAllocate.addActionListener(e -> listeners.forEach(ArmorAllocationListener::autoAllocateArmor));
     }
@@ -265,9 +257,15 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         } else {
             availableArmorPoints = Math.min(raw, maxArmorPoints);
         }
-        btnAutoAllocate.setEnabled(!showPatchwork);
+        btnAutoAllocate.setVisible(!showPatchwork);
+        txtPointsPerTon.setVisible(!showPatchwork);
+        lblPointsPerTon.setVisible(!showPatchwork);
         int wastedPoints = Math.max(0, raw - availableArmorPoints);
         txtUnallocated.setText(Integer.toString(availableArmorPoints - allocatedPoints));
+        lblUnallocated.setVisible(!showPatchwork);
+        txtUnallocated.setVisible(!showPatchwork);
+        lblTotal.setVisible(!showPatchwork);
+        txtTotal.setVisible(!showPatchwork);
         txtAllocated.setText(Integer.toString(allocatedPoints));
         if (availableArmorPoints != allocatedPoints) {
             txtUnallocated.setForeground(Color.RED);
@@ -277,30 +275,29 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         txtTotal.setText(String.valueOf(availableArmorPoints));
         txtMaxPossible.setText(String.valueOf(maxArmorPoints));
         txtWasted.setText(String.valueOf(wastedPoints));
+        lblWasted.setVisible(!showPatchwork);
+        txtWasted.setVisible(!showPatchwork);
         if (en.hasPatchworkArmor()) {
             txtPointsPerTon.setText("-");
         } else if (en.getWeightClass() == EntityWeightClass.WEIGHT_SMALL_SUPPORT) {
             txtPointsPerTon.setText(String.format("%d", (int) (TestSupportVehicle.armorWeightPerPoint(en) * 1000)));
-            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
-            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
+            lblPointsPerTon.setText(I18N.getString("ArmorAllocationView.txtKgPerPoint.text"));
+            txtPointsPerTon.setToolTipText(I18N.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else if (en instanceof ProtoMek) {
             txtPointsPerTon.setText(String.format("%d", (int) (ArmorType.forEntity(en).getWeightPerPoint() * 1000)));
-            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.text"));
-            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
+            lblPointsPerTon.setText(I18N.getString("ArmorAllocationView.txtKgPerPoint.text"));
+            txtPointsPerTon.setToolTipText(I18N.getString("ArmorAllocationView.txtKgPerPoint.tooltip"));
         } else {
             txtPointsPerTon.setText(String.format("%3.2f", UnitUtil.getArmorPointsPerTon(en)));
-            lblPointsPerTon.setText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.text"));
-            txtPointsPerTon.setToolTipText(resourceMap.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
+            lblPointsPerTon.setText(I18N.getString("ArmorAllocationView.txtPointsPerTon.text"));
+            txtPointsPerTon.setToolTipText(I18N.getString("ArmorAllocationView.txtPointsPerTon.tooltip"));
         }
     }
 
     private void updateLayout() {
         int[][] layout = getLayoutFromEntity();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         locationViews.clear();
         for (int[] ints : layout) {
