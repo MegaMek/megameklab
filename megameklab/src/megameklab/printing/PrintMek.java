@@ -66,10 +66,6 @@ import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
@@ -78,7 +74,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 import org.w3c.dom.svg.SVGPathElement;
 import org.w3c.dom.svg.SVGRectElement;
@@ -1176,4 +1171,28 @@ public class PrintMek extends PrintEntity {
         return mek.getGyroHits();
     }
 
+    @Override
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
+        boolean shiftedEngine = false;
+        if (hidRulesLevel || hidRole) {
+            if (hidRulesLevel && hidRole) {
+                shiftElement(LBL_ENGINE, LBL_RULES);
+                shiftElement(ENGINE_TYPE, RULES_LEVEL);
+            } else {
+                shiftElement(LBL_ENGINE, LBL_ROLE);
+                shiftElement(ENGINE_TYPE, ROLE);
+            }
+            shiftedEngine = true;
+
+
+            if (!hidRole) {
+                shiftElement(LBL_ROLE, LBL_RULES);
+                shiftElement(ROLE, RULES_LEVEL);
+            }
+        }
+
+        if (shiftedEngine) {
+            resizeInventoryForShiftedElement(ENGINE_TYPE);
+        }
+    }
 }

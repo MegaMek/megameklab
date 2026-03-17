@@ -68,15 +68,18 @@ public interface IdConstants {
     String MP_AIR_MEK_FLANK = "mpAirMekFlank";
     String LBL_VEE_MODE = "lblVeeMode";
     String MOVEMENT_TYPE = "movementType";
+    String LBL_ENGINE = "labelEngine";
     String ENGINE_TYPE = "engineType";
     String TONNAGE = "tonnage";
     String TECH_BASE = "techBase";
+    String LBL_RULES = "labelRules";
     String RULES_LEVEL = "rulesLevel";
     String COST = "cost";
     String BV = "bv";
     String LBL_ROLE = "labelRole";
     String ROLE = "role";
     String ERA_ICON = "eraIcon";
+    String G_INVENTORY_BOX = "gInventoryBox";
     String INVENTORY = "inventory";
 
     String CREW_NAME = "crewName";

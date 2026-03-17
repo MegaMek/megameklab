@@ -46,11 +46,9 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,12 +56,10 @@ import java.util.regex.Pattern;
 import megamek.client.generator.RandomNameGenerator;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.client.ui.util.UIUtil;
-import megamek.codeUtilities.StringUtility;
 import megamek.common.Configuration;
 import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
 import megamek.common.annotations.Nullable;
-import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.eras.Era;
 import megamek.common.eras.Eras;
@@ -76,15 +72,16 @@ import megamek.common.units.CrewType;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityWeightClass;
 import megamek.common.units.Mek;
-import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitRole;
 import megamek.common.units.UnitType;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.util.CConfig;
 import megameklab.util.RSScale;
 import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGGraphicsElement;
 import org.apache.batik.anim.dom.SVGLocatableSupport;
+import org.apache.batik.anim.dom.SVGOMTextElement;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -100,6 +97,7 @@ import org.w3c.dom.svg.SVGTextContentElement;
  * @author Neoancient
  */
 public abstract class PrintEntity extends PrintRecordSheet {
+    private static final MMLogger logger = MMLogger.create(PrintEntity.class);
 
     /**
      * Creates an SVG object for the record sheet
@@ -381,6 +379,50 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
     }
 
+    /**
+     * Moves an element by id from its current position to the position of another element.
+     * This only affects the x and y attributes; this method should not be used for elements affected by different
+     * inherited positions or transforms.
+     * @param id The id of the element to move
+     * @param idToMoveTo The id of the element to take the new position from
+     */
+    protected void shiftElement(String id, String idToMoveTo) {
+        Element element = getSVGDocument().getElementById(id);
+        if (element != null) {
+            Element elementToMoveTo = getSVGDocument().getElementById(idToMoveTo);
+            if (elementToMoveTo != null) {
+                element.setAttribute("x", elementToMoveTo.getAttribute("x"));
+                element.setAttribute("y", elementToMoveTo.getAttribute("y"));
+            }
+        }
+    }
+
+    /**
+     * Resize the Weapons & Equipment Inventory when unit data fields are moved out of the way
+     * (Used when the unit role or tech level is hidden).
+     * The supplied element parameter should have the height by which the inventory should be extended upward.
+     * @param shiftedElement The id of an element used for the height calculation, typically the element moved out of
+     *                      the way
+     */
+    protected void resizeInventoryForShiftedElement(String shiftedElement) {
+        // I suppose you could do something more clever to also take into account the margin above the text element
+        // and not just the size of the text element itself, but this is good enough
+        var textElement = (SVGOMTextElement) getElementById(shiftedElement);
+        var height = textElement.getBBox().getHeight();
+
+        var inventoryGroup = getElementById(G_INVENTORY_BOX);
+        if (inventoryGroup == null) {
+            logger.error("Could not find inventory group when adjusting for shifted engine");
+            return;
+        }
+        inventoryGroup.setAttribute("transform", "translate(0, %f)".formatted(-height));
+
+        var inventoryRect = getElementById(INVENTORY);
+        var inventoryHeight = Double.parseDouble(inventoryRect.getAttribute("height"));
+        inventoryHeight += height;
+        inventoryRect.setAttribute("height", "%f".formatted(inventoryHeight));
+    }
+
     protected void writeTextFields() {
         setTextField(TITLE, getRecordSheetTitle().toUpperCase());
         setTextField(TYPE, entityName());
@@ -395,7 +437,6 @@ public abstract class PrintEntity extends PrintRecordSheet {
             setTextField(TONNAGE, NumberFormat.getInstance().format((int) getEntity().getWeight()));
         }
         setTextField(TECH_BASE, formatTechBase());
-        setTextField(RULES_LEVEL, formatRulesLevel());
         setTextField(COST, formatCost());
         // If we're using a MUL to print generic sheets we also want to ignore any BV adjustments
         // for C3 networks or pilot skills.
@@ -414,12 +455,35 @@ public abstract class PrintEntity extends PrintRecordSheet {
         }
         setTextField(BV, bvValue);
         UnitRole role = getEntity().getRole();
+
+        // Here by optional Unit Info elements
+        // Unit Role and Tech Level are both independently optional,
+        // And if present may require other elements (namely the Engine Type) to be moved around them
+
+        boolean hidRulesLevel = false;
+        boolean hidRole = false;
+
+        boolean hasRulesLevel = getElementById(RULES_LEVEL) != null;
+
+        if (hasRulesLevel) {
+            if (!options.showTechLevel()) {
+                hideElement(LBL_RULES, true);
+                hideElement(RULES_LEVEL, true);
+                hidRulesLevel = true;
+            } else {
+                setTextField(RULES_LEVEL, formatRulesLevel());
+            }
+        }
+
         if (!options.showRole() || (role == UnitRole.UNDETERMINED)) {
             hideElement(LBL_ROLE, true);
             hideElement(ROLE, true);
+            hidRole = true;
         } else {
             setTextField(ROLE, role.toString());
         }
+
+        shiftOptionalDataFields(hidRulesLevel, hidRole);
 
         // If we need to fill in names of crew slots we will need to reposition blanks/name fields.
         // This will require building the graphics tree so we measure the elements.
@@ -502,6 +566,9 @@ public abstract class PrintEntity extends PrintRecordSheet {
                 }
             }
         }
+    }
+
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
     }
 
     private StringJoiner getSpaList() {
