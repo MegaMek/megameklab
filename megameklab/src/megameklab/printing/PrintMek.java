@@ -1173,7 +1173,38 @@ public class PrintMek extends PrintEntity {
 
     @Override
     protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
-        boolean shiftedEngine = false;
+        if (mek instanceof LandAirMek) {
+            if (hidRulesLevel) {
+                if (hidRole) {
+                    shiftElement(LBL_ENGINE, LBL_RULES);
+                    shiftElement(ENGINE_TYPE, RULES_LEVEL);
+                    resizeInventoryForShiftedElement(ENGINE_TYPE);
+                } else {
+                    shiftElement(LBL_ROLE, LBL_RULES);
+                    shiftElement(ROLE, RULES_LEVEL);
+                }
+            }
+            return;
+        }
+
+        if (mek instanceof QuadVee) {
+            if (hidRulesLevel) {
+                if (hidRole) {
+                    shiftElement(LBL_ENGINE, LBL_RULES);
+                    shiftElement(ENGINE_TYPE, RULES_LEVEL);
+                } else {
+                    shiftElement(LBL_ENGINE, LBL_ROLE);
+                    shiftElement(ENGINE_TYPE, ROLE);
+                    shiftElement(LBL_ROLE, LBL_RULES);
+                    shiftElement(ROLE, RULES_LEVEL);
+                }
+            } else if (hidRole) {
+                shiftElement(LBL_ENGINE, LBL_ROLE);
+                shiftElement(ENGINE_TYPE, ROLE);
+            }
+            return;
+        }
+
         if (hidRulesLevel || hidRole) {
             if (hidRulesLevel && hidRole) {
                 shiftElement(LBL_ENGINE, LBL_RULES);
@@ -1182,17 +1213,13 @@ public class PrintMek extends PrintEntity {
                 shiftElement(LBL_ENGINE, LBL_ROLE);
                 shiftElement(ENGINE_TYPE, ROLE);
             }
-            shiftedEngine = true;
+            resizeInventoryForShiftedElement(ENGINE_TYPE);
 
 
             if (!hidRole) {
                 shiftElement(LBL_ROLE, LBL_RULES);
                 shiftElement(ROLE, RULES_LEVEL);
             }
-        }
-
-        if (shiftedEngine) {
-            resizeInventoryForShiftedElement(ENGINE_TYPE);
         }
     }
 }
