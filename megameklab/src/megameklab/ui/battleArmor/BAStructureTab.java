@@ -244,7 +244,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
             updateTechLevel();
             if (clan) {
                 squadSizeChanged(5);
-            } else if (getBattleArmor().getTroopers() == 5) {
+            } else if (getBattleArmor().getSquadSize() == 5) {
                 squadSizeChanged(4);
             }
         }
@@ -392,7 +392,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
 
     @Override
     public void squadSizeChanged(int squadSize) {
-        if (squadSize != getBattleArmor().getTroopers()) {
+        if (squadSize != getBattleArmor().getSquadSize()) {
             // We need to resize several arrays. This clears out the critical slots, so
             // we're going to preserve them before refreshing and restore the data
             // afterward.
@@ -404,7 +404,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
                 }
             }
             int armor = getBattleArmor().getArmor(BattleArmor.LOC_TROOPER_1);
-            getBattleArmor().setTroopers(squadSize);
+            getBattleArmor().setSquadSize(squadSize);
             getBattleArmor().refreshLocations();
             for (int loc = 0; loc < Math.min(getBattleArmor().locations(), slots.length); loc++) {
                 for (int i = 0; i < slots[loc].length; i++) {
