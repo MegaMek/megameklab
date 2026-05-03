@@ -53,7 +53,7 @@ import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.WeaponType;
 import megamek.common.interfaces.ITechManager;
-import megamek.common.units.Infantry;
+import megamek.common.units.ConvInfantry;
 import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
 import megameklab.ui.EntitySource;
@@ -265,7 +265,7 @@ public class CIEquipmentView extends IView implements ActionListener {
             if (equip instanceof InfantryWeapon) {
                 InfantryUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
                 if (equip.hasFlag(WeaponType.F_TAG)) {
-                    getInfantry().setSpecializations(getInfantry().getSpecializations() | Infantry.TAG_TROOPS);
+                    getInfantry().setSpecializations(getInfantry().getSpecializations() | ConvInfantry.TAG_TROOPS);
                     getInfantry().setSecondaryWeaponsPerSquad(2);
                 } else if (isSecondary && (getInfantry().getSecondaryWeaponsPerSquad() == 0)) {
                     getInfantry().setSecondaryWeaponsPerSquad(1);

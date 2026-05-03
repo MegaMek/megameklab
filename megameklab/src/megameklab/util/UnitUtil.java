@@ -1519,7 +1519,7 @@ public class UnitUtil {
         } else if (unit.hasETypeFlag(Entity.ETYPE_BATTLEARMOR)) {
             testEntity = new TestBattleArmor((BattleArmor) unit, entityVerifier.baOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_INFANTRY)) {
-            testEntity = new TestInfantry((Infantry) unit, entityVerifier.infOption, null);
+            testEntity = new TestInfantry((ConvInfantry) unit, entityVerifier.infOption, null);
         } else if (unit.hasETypeFlag(Entity.ETYPE_HANDHELD_WEAPON)) {
             testEntity = new TestHandheldWeapon((HandheldWeapon) unit, entityVerifier.infOption, null);
         }
@@ -1843,7 +1843,7 @@ public class UnitUtil {
             UnitUtil.removeMounted(unit, m);
         }
 
-        if (unit instanceof Infantry pbi) {
+        if (unit instanceof ConvInfantry pbi) {
             if ((null != pbi.getPrimaryWeapon()) && !techManager.isLegal(pbi.getPrimaryWeapon())) {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon(pbi, (InfantryWeapon) EquipmentType.get("Infantry Auto Rifle"), false);
