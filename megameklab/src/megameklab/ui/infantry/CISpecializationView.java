@@ -52,7 +52,6 @@ import javax.swing.table.TableRowSorter;
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.TechAdvancement;
 import megamek.common.units.ConvInfantry;
-import megamek.common.units.Infantry;
 import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
@@ -176,7 +175,7 @@ public class CISpecializationView extends IView implements TableModelListener {
                 }
                 rows[i] = fields;
                 if ((ConvInfantry.COMBAT_ENGINEERS & spec) != 0) {
-                    specTAs[i] = Infantry.getCombatEngineerTA();
+                    specTAs[i] = ConvInfantry.getCombatEngineerTA();
                 } else if (ConvInfantry.MARINES == spec) {
                     specTAs[i] = ConvInfantry.getMarineTA();
                 } else if (ConvInfantry.MOUNTAIN_TROOPS == spec) {
