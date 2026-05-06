@@ -32,6 +32,7 @@
  */
 package megameklab.ui;
 
+import megamek.common.SimpleTechLevel;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 
@@ -89,6 +90,21 @@ public interface EntitySource {
      */
     default void createNewUnit(long entityType, Entity oldUnit) {
         createNewUnit(entityType, oldUnit.isPrimitive(), false, oldUnit);
+    }
+
+    default void copyUnitBasics(Entity newUnit, Entity oldUnit) {
+        int constructionIntroYear = newUnit.getConstructionTechAdvancement().getIntroductionDate();
+        newUnit.setChassis(oldUnit.getChassis());
+        newUnit.setModel(oldUnit.getModel());
+        newUnit.setYear(Math.max(oldUnit.getYear(), constructionIntroYear));
+        newUnit.setOriginalBuildYear(Math.max(oldUnit.getOriginalBuildYear(), constructionIntroYear));
+        newUnit.setSource(oldUnit.getSource());
+        newUnit.setPublished(oldUnit.getPublished());
+        newUnit.setManualBV(oldUnit.getManualBV());
+        SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
+              SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
+        newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+        newUnit.setMixedTech(oldUnit.isMixedTech());
     }
 
     /**

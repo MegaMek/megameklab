@@ -353,6 +353,13 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getAero().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

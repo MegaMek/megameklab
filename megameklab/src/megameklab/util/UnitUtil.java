@@ -413,8 +413,17 @@ public class UnitUtil {
      * @return Boolean if the tech level is legal for the passed unit
      */
     public static boolean isLegal(Entity unit, ITechnology tech) {
+        for (int techLevelYear : unit.getTechLevelYears()) {
+            if (isLegal(unit, tech, techLevelYear)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isLegal(Entity unit, ITechnology tech, int techLevelYear) {
         if (unit.isMixedTech()) {
-            if (!tech.isAvailableIn(unit.getTechLevelYear(), CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
+            if (!tech.isAvailableIn(techLevelYear, CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                 return false;
             }
         } else {
@@ -422,13 +431,13 @@ public class UnitUtil {
                 return false;
             }
 
-            if (!tech.isAvailableIn(unit.getTechLevelYear(),
+            if (!tech.isAvailableIn(techLevelYear,
                   unit.isClan(),
                   CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
                 return false;
             }
         }
-        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(unit.getTechLevelYear(), unit.isClan())) <=
+        return TechConstants.convertFromNormalToSimple(tech.getTechLevel(techLevelYear, unit.isClan())) <=
               TechConstants.convertFromNormalToSimple(unit.getTechLevel());
     }
 

@@ -351,6 +351,12 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getInfantry().setPublished(published);
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

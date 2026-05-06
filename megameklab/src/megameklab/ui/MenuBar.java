@@ -78,6 +78,7 @@ import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
+import megameklab.ui.dialog.SourcebookEditorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
 import megameklab.ui.util.OSUtil;
@@ -144,6 +145,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createUnitValidationMenu());
         add(createForceBuildMenu());
         add(createReportsMenu());
+        add(createDatabaseMenu());
         add(createHelpMenu());
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
@@ -231,7 +233,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.add(createSaveMenu());
         fileMenu.add(createExportMenu());
         fileMenu.add(createPrintMenu());
-        fileMenu.add(createRefreshMenu());
         fileMenu.add(createOptionsMenu());
 
         fileMenu.addSeparator();
@@ -702,26 +703,33 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return printMenu;
     }
 
-    /**
-     * @return the created Refresh menu
-     */
-    private JMenu createRefreshMenu() {
-        final JMenu refreshMenu = new JMenu(resources.getString("refreshMenu.text"));
-        refreshMenu.setName("refreshMenu");
-        refreshMenu.setMnemonic(KeyEvent.VK_F);
+    private JMenu createDatabaseMenu() {
+        final JMenu databaseMenu = new JMenu(resources.getString("databaseMenu.text"));
+        databaseMenu.setName("databaseMenu");
+        databaseMenu.setMnemonic(KeyEvent.VK_D);
 
         final JMenuItem miRefreshUnitCache = new JMenuItem(resources.getString("miRefreshUnitCache.text"));
         miRefreshUnitCache.setName("miRefreshUnitCache");
         miRefreshUnitCache.setMnemonic(KeyEvent.VK_U);
         miRefreshUnitCache.addActionListener(evt -> refreshUnitCache());
-        refreshMenu.add(miRefreshUnitCache);
+        databaseMenu.add(miRefreshUnitCache);
 
         final JMenuItem miRebuildUnitCache = new JMenuItem(resources.getString("miRebuildUnitCache.text"));
         miRebuildUnitCache.setName("miRebuildUnitCache");
         miRebuildUnitCache.addActionListener(evt -> rebuildUnitCache());
-        refreshMenu.add(miRebuildUnitCache);
+        databaseMenu.add(miRebuildUnitCache);
 
-        return refreshMenu;
+        if (CConfig.includeLicense()) {
+            databaseMenu.addSeparator();
+
+            final JMenuItem miSourcebooks = new JMenuItem(resources.getString("miSourcebooks.text"));
+            miSourcebooks.setName("miSourcebooks");
+            miSourcebooks.setMnemonic(KeyEvent.VK_S);
+            miSourcebooks.addActionListener(evt -> SourcebookEditorDialog.showDialog(owner.getFrame()));
+            databaseMenu.add(miSourcebooks);
+        }
+
+        return databaseMenu;
     }
 
     private void refreshUnitCache() {

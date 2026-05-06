@@ -341,6 +341,13 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getTank().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

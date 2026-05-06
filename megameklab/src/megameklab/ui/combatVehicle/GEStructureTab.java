@@ -220,6 +220,13 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getEntity().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

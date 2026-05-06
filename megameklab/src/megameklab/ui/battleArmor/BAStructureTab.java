@@ -233,6 +233,13 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getBattleArmor().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

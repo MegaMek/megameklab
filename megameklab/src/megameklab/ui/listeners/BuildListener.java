@@ -57,9 +57,15 @@ public interface BuildListener {
 
     void yearChanged(int year);
 
+    default void buildYearChanged(int buildYear) {
+    }
+
     void updateTechLevel();
 
     void sourceChanged(String source);
+
+    default void publishedChanged(String published) {
+    }
 
     void mulIdChanged(int mulId);
 

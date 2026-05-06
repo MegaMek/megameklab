@@ -381,6 +381,13 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getProtoMek().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }
