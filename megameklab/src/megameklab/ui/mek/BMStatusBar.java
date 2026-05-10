@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -40,7 +40,7 @@ import megameklab.util.MekUtil;
 
 public class BMStatusBar extends StatusBar {
 
-    private static final String HEAT_LABEL = "Heat: %d / %d";
+    private static final String HEAT_LABEL = "Est. Heat: %d / %d";
     private static final String SLOTS_LABEL = "Free Slots: %d / %d";
 
     private final JLabel slots = new JLabel();
