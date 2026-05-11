@@ -229,17 +229,10 @@ public class StatusBar extends ITab {
         }
         double heat = 0;
 
-        if (getEntity() instanceof Mek) {
-            if (getEntity().getOriginalJumpMP() > 0) {
-                if (getEntity().getJumpType() == Mek.JUMP_IMPROVED) {
-                    heat += Math.max(3, Math.ceil(getMek().getOriginalJumpMP() / 2.0f));
-                } else {
-                    heat += Math.max(3, getEntity().getOriginalJumpMP());
-                }
-                if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
-                    heat *= 2;
-                }
-            } else if (getEntity().getEngineType() == Engine.XXL_ENGINE) {
+        if (getEntity() instanceof Mek mek) {
+            if (mek.getOriginalJumpMP() > 0) {
+                heat += mek.getJumpHeat(mek.getOriginalJumpMP());
+            } else if (mek.getEngineType() == Engine.XXL_ENGINE) {
                 heat += 6;
             } else {
                 heat += 2;

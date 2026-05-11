@@ -40,7 +40,7 @@ import megameklab.util.MekUtil;
 
 public class BMStatusBar extends StatusBar {
 
-    private static final String HEAT_LABEL = "Heat: %d / %s";
+    private static final String HEAT_LABEL = "Est. Heat: %d / %s";
     private static final String SLOTS_LABEL = "Free Slots: %d / %d";
 
     private final JLabel slots = new JLabel();
