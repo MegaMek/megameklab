@@ -90,7 +90,7 @@ public class StatusBar extends ITab {
         this.parent = parent;
         formatter = new DecimalFormat();
 
-        JButton btnValidate = new JButton("Validate Unit");
+        JButton btnValidate = new JButton("Validate");
         ActionListener validationListener = e -> {
             if ((e.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
                 DebugEntity.copyEquipmentState(getEntity());
@@ -112,7 +112,7 @@ public class StatusBar extends ITab {
         invalid.setVisible(false);
 
         if (!getEntity().isConventionalInfantry()) {
-            JButton showEquipmentDatabase = new JButton("Equipment Database");
+            JButton showEquipmentDatabase = new JButton("Equipment");
             showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
             add(showEquipmentDatabase);
         }

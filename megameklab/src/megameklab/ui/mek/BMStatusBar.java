@@ -40,7 +40,7 @@ import megameklab.util.MekUtil;
 
 public class BMStatusBar extends StatusBar {
 
-    private static final String HEAT_LABEL = "Est. Heat: %d / %d";
+    private static final String HEAT_LABEL = "Est. Heat: %d / %s";
     private static final String SLOTS_LABEL = "Free Slots: %d / %d";
 
     private final JLabel slots = new JLabel();
@@ -66,9 +66,8 @@ public class BMStatusBar extends StatusBar {
     }
 
     public void refreshHeat() {
-        int heatCapacity = getMek().getHeatCapacity();
         long totalHeat = estimatedHeatGeneration();
-        heat.setText(String.format(HEAT_LABEL, totalHeat, heatCapacity));
+        heat.setText(String.format(HEAT_LABEL, totalHeat, getMek().formatHeat()));
         heat.setToolTipText("Estimated Total Heat Generated / Total Heat Dissipated");
     }
 }

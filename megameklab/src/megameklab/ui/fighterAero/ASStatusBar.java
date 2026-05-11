@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -38,7 +38,7 @@ import megameklab.ui.generalUnit.StatusBar;
 
 public class ASStatusBar extends StatusBar {
 
-    private static final String HEAT_LABEL = "Heat: %d / %d";
+    private static final String HEAT_LABEL = "Heat: %d / %s";
 
     private final JLabel heat = new JLabel();
 
@@ -53,9 +53,8 @@ public class ASStatusBar extends StatusBar {
     }
 
     public void refreshHeat() {
-        int heatCapacity = getAero().getHeatCapacity();
         long totalHeat = estimatedHeatGeneration();
-        heat.setText(String.format(HEAT_LABEL, totalHeat, heatCapacity));
+        heat.setText(String.format(HEAT_LABEL, totalHeat, getAero().formatHeat()));
         heat.setToolTipText("Estimated Total Heat Generated / Total Heat Dissipated");
         heat.setVisible(getEntity().tracksHeat());
     }
