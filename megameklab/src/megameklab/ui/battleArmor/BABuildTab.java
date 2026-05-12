@@ -101,7 +101,7 @@ public class BABuildTab extends ITab {
      */
     private void createCriticalViews() {
         critViews.clear();
-        for (int i = 0; i < (getBattleArmor()).getTroopers(); i++) {
+        for (int i = 0; i < (getBattleArmor()).getSquadSize(); i++) {
             critViews.add(new BACriticalView(eSource, i + 1, true, refresh));
             critPanel.add(critViews.get(i));
             critPanel.add(Box.createVerticalStrut(20));
@@ -110,7 +110,7 @@ public class BABuildTab extends ITab {
 
     public void refresh() {
         // We need to have a CritView for each trooper
-        if (critViews.size() != (getBattleArmor()).getTroopers()) {
+        if (critViews.size() != (getBattleArmor()).getSquadSize()) {
             critPanel.removeAll();
             createCriticalViews();
         }

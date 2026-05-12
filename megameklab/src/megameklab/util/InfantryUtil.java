@@ -43,6 +43,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.exceptions.LocationFullException;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Entity;
 import megamek.common.units.Infantry;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -51,11 +52,11 @@ import megamek.logging.MMLogger;
 public final class InfantryUtil {
     private static final MMLogger logger = MMLogger.create(InfantryUtil.class);
 
-    public static void replaceMainWeapon(Infantry unit, InfantryWeapon weapon, boolean secondary) {
+    public static void replaceMainWeapon(ConvInfantry unit, InfantryWeapon weapon, boolean secondary) {
         Mounted<?> existingInfantryMount = null;
         for (Mounted<?> m : unit.getWeaponList()) {
             if ((m.getType() instanceof InfantryWeapon)
-                  && (m.getLocation() == Infantry.LOC_INFANTRY)) {
+                  && (m.getLocation() == ConvInfantry.LOC_INFANTRY)) {
                 existingInfantryMount = m;
                 break;
             }
@@ -73,20 +74,20 @@ public final class InfantryUtil {
         // is TAG, in which case both are added.
         if (unit.getSecondaryWeapon() != null && unit.getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
             try {
-                unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
-                unit.addEquipment(unit.getSecondaryWeapon(), Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getPrimaryWeapon(), ConvInfantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getSecondaryWeapon(), ConvInfantry.LOC_INFANTRY);
             } catch (LocationFullException ignored) {
 
             }
         } else if ((unit.getSecondaryWeaponsPerSquad() < 2) || (null == unit.getSecondaryWeapon())) {
             try {
-                unit.addEquipment(unit.getPrimaryWeapon(), Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getPrimaryWeapon(), ConvInfantry.LOC_INFANTRY);
             } catch (LocationFullException ignored) {
 
             }
         } else {
             try {
-                unit.addEquipment(unit.getSecondaryWeapon(), Infantry.LOC_INFANTRY);
+                unit.addEquipment(unit.getSecondaryWeapon(), ConvInfantry.LOC_INFANTRY);
             } catch (LocationFullException ignored) {
 
             }
@@ -95,7 +96,7 @@ public final class InfantryUtil {
 
     public static void replaceFieldGun(Infantry unit, WeaponType fieldGun, int num) {
         List<Mounted<?>> toRemove = unit.getEquipment().stream()
-              .filter(m -> m.getLocation() == Infantry.LOC_FIELD_GUNS)
+              .filter(m -> m.getLocation() == ConvInfantry.LOC_FIELD_GUNS)
               .toList();
 
         for (Mounted<?> mounted : toRemove) {
@@ -128,9 +129,9 @@ public final class InfantryUtil {
 
             for (int i = 0; i < num; i++) {
                 try {
-                    unit.addEquipment(fieldGun, Infantry.LOC_FIELD_GUNS);
+                    unit.addEquipment(fieldGun, ConvInfantry.LOC_FIELD_GUNS);
                     if (ammo.isPresent()) {
-                        unit.addEquipment(ammo.get(), Infantry.LOC_FIELD_GUNS);
+                        unit.addEquipment(ammo.get(), ConvInfantry.LOC_FIELD_GUNS);
                     } else {
                         logger.error("Could not find ammo for field gun {}", fieldGun.getName());
                     }
@@ -145,7 +146,7 @@ public final class InfantryUtil {
         return weaponName.replace("Infantry ", "");
     }
 
-    public static void resetInfantryArmor(Infantry unit) {
+    public static void resetInfantryArmor(ConvInfantry unit) {
         unit.setArmorEncumbering(false);
         unit.setSpaceSuit(false);
         unit.setDEST(false);

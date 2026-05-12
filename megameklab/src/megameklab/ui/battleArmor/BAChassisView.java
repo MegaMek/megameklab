@@ -182,7 +182,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         chkExoskeleton.setEnabled(ba.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT);
 
         spnSquadSize.removeChangeListener(this);
-        spnSquadSize.setValue(ba.getTroopers());
+        spnSquadSize.setValue(ba.getSquadSize());
         spnSquadSize.addChangeListener(this);
 
         cbTurretType.removeActionListener(this);

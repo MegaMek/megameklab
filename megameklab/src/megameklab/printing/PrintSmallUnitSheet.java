@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.HandheldWeapon;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Entity;
 import megamek.common.units.Infantry;
 import megamek.common.units.ProtoMek;
@@ -133,8 +134,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     private PrintEntity getBlockFor(Entity entity, int index) {
         if (entity instanceof BattleArmor) {
             return new PrintBattleArmor((BattleArmor) entity, index, getFirstPage(), options);
-        } else if (entity instanceof Infantry) {
-            return new PrintInfantry((Infantry) entity, getFirstPage(), options);
+        } else if (entity instanceof ConvInfantry convInfantry) {
+            return new PrintInfantry(convInfantry, getFirstPage(), options);
         } else if (entity instanceof ProtoMek) {
             return new PrintProtoMek((ProtoMek) entity, getFirstPage(), index, options);
         } else if (entity instanceof HandheldWeapon) {

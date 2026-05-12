@@ -73,7 +73,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } else {
             try {
                 if (BattleArmorUtil.isBAMultiMount(equip)) {
-                    for (int t = 1; t <= getBattleArmor().getTroopers(); t++) {
+                    for (int t = 1; t <= getBattleArmor().getSquadSize(); t++) {
                         Mounted<?> mount = Mounted.createMounted(getBattleArmor(), equip);
                         mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                         getBattleArmor().addEquipment(mount, t, false);

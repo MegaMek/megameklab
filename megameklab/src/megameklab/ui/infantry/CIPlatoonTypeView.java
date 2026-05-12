@@ -50,6 +50,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.client.ui.util.DisplayTextField;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.Infantry;
 import megamek.common.units.InfantryMount;
@@ -159,7 +160,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         });
     }
 
-    void setFromEntity(Infantry inf) {
+    void setFromEntity(ConvInfantry inf) {
         specialization = inf.getSpecializations();
         isFieldGunner = inf.hasFieldWeapon();
         mount = inf.getMount();
@@ -202,7 +203,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
     }
 
     private boolean legalMotiveType(InfantryMotiveType motiveType) {
-        if ((specialization & (Infantry.MOUNTAIN_TROOPS | Infantry.PARATROOPS)) != 0) {
+        if ((specialization & (ConvInfantry.MOUNTAIN_TROOPS | ConvInfantry.PARATROOPS)) != 0) {
             return motiveType == InfantryMotiveType.FOOT;
         } else {
             return techManager.isLegal(Infantry.getMotiveTechAdvancement(motiveType.mode))
@@ -226,7 +227,7 @@ public class CIPlatoonTypeView extends BuildView implements ActionListener, Chan
         }
 
         int maxSize = TestInfantry.maxUnitSize(getMovementMode(), isAltMode(),
-              (specialization & (Infantry.COMBAT_ENGINEERS | Infantry.MOUNTAIN_TROOPS)) != 0, mount);
+              (specialization & (ConvInfantry.COMBAT_ENGINEERS | ConvInfantry.MOUNTAIN_TROOPS)) != 0, mount);
         int maxSquad = TestInfantry.maxSquadSize(getMovementMode(), isAltMode(), mount);
         spnNumSquads.removeChangeListener(this);
         spnSquadSize.removeChangeListener(this);

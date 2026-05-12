@@ -37,15 +37,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import megamek.common.battleArmor.BattleArmor;
-import megamek.common.units.Aero;
-import megamek.common.units.Entity;
-import megamek.common.units.Infantry;
-import megamek.common.units.Jumpship;
-import megamek.common.units.Mek;
-import megamek.common.units.ProtoMek;
-import megamek.common.units.SmallCraft;
-import megamek.common.units.Tank;
-import megamek.common.units.VTOL;
+import megamek.common.units.*;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.BuildListener;
 
@@ -90,8 +82,8 @@ public class ITab extends JPanel {
         return (BattleArmor) eSource.getEntity();
     }
 
-    public Infantry getInfantry() {
-        return (Infantry) eSource.getEntity();
+    public ConvInfantry getInfantry() {
+        return (ConvInfantry) eSource.getEntity();
     }
 
     public void buildYearChanged(int buildYear) {

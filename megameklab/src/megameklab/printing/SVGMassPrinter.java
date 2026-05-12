@@ -485,7 +485,7 @@ public class SVGMassPrinter {
         }
 
         private void parseComponents(HashMap<String, ExportInventoryEntry> list, Entity entity) {
-            if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
+            if (entity instanceof ConvInfantry inf) {
                 if (null != inf.getPrimaryWeapon()) {
                     InfantryWeapon primaryWeapon = inf.getPrimaryWeapon();
                     ExportInventoryEntry entry = new ExportInventoryEntry();
@@ -549,8 +549,8 @@ public class SVGMassPrinter {
                     if (wtype.hasFlag(WeaponTypeFlag.INTERNAL_REPRESENTATION)) {
                         continue;
                     }
-                    if ((entity instanceof Infantry inf) && !(entity instanceof BattleArmor)) {
-                        if (m.getLocation() == Infantry.LOC_INFANTRY) {
+                    if (entity instanceof ConvInfantry) {
+                        if (m.getLocation() == ConvInfantry.LOC_INFANTRY) {
                             continue; // Infantry weapons are handled separately at the beginning
                         }
                     }
@@ -1670,7 +1670,7 @@ public class SVGMassPrinter {
         }
 
         private String getArmorType(Entity entity) {
-            if (!entity.isBattleArmor() && entity instanceof Infantry infantry) {
+            if (entity instanceof ConvInfantry infantry) {
                 EquipmentType armor = infantry.getArmorKit();
                 if (armor != null) {
                     return armor.getName();

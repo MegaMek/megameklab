@@ -125,7 +125,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         newUnit.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
-        newUnit.setTroopers(4);
+        newUnit.setSquadSize(4);
         newUnit.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
         newUnit.autoSetInternal();
         for (int loc = 0; loc < newUnit.locations(); loc++) {

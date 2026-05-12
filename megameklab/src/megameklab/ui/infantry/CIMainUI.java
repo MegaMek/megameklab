@@ -37,6 +37,7 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Entity;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -102,7 +103,7 @@ public class CIMainUI extends MegaMekLabMainUI {
 
     @Override
     public void createNewUnit(long entityType, boolean isPrimitive, boolean isIndustrial, Entity oldEntity) {
-        Infantry newUnit = new Infantry();
+        ConvInfantry newUnit = new ConvInfantry();
         newUnit.setYear(3145);
         newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         newUnit.setArmorTechLevel(TechConstants.T_IS_TW_NON_BOX);
@@ -110,7 +111,7 @@ public class CIMainUI extends MegaMekLabMainUI {
         newUnit.setSquadSize(7);
         newUnit.setPrimaryWeapon((InfantryWeapon) EquipmentType.get("InfantryAssaultRifle"));
         try {
-            newUnit.addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), Infantry.LOC_INFANTRY);
+            newUnit.addEquipment(EquipmentType.get(EquipmentTypeLookup.INFANTRY_ASSAULT_RIFLE), ConvInfantry.LOC_INFANTRY);
         } catch (LocationFullException ex) {
             PopupMessages.showLocationFullError(this, EquipmentType.get("InfantryAssaultRifle").getName());
         }

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
 import megamek.common.units.Infantry;
@@ -87,13 +88,13 @@ class PrintSmallUnitSheetTest {
 
     @Test
     void fillsSheetCI() {
-        var entities = new ArrayList<>(List.of(new Infantry(), new Infantry()));
+        var entities = new ArrayList<>(List.of(new ConvInfantry(), new ConvInfantry()));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
-        entities.add(new Infantry());
+        entities.add(new ConvInfantry());
         assertFalse(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
-        entities.add(new Infantry());
+        entities.add(new ConvInfantry());
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, noTables));
         assertTrue(PrintSmallUnitSheet.fillsSheet(entities, yesTables));
     }
@@ -107,7 +108,7 @@ class PrintSmallUnitSheetTest {
 
     @Test
     void fillsSheetIllegal() {
-        var heterogeneousEntities = List.of(new Infantry(), new BattleArmor());
+        var heterogeneousEntities = List.of(new ConvInfantry(), new BattleArmor());
         assertThrows(IllegalArgumentException.class,
               () -> PrintSmallUnitSheet.fillsSheet(heterogeneousEntities, noTables));
 
