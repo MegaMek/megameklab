@@ -45,6 +45,8 @@ public interface MekBuildListener extends BuildListener {
 
     void omniChanged(boolean omni);
 
+    void frankenMekChanged(boolean frankenMek);
+
     void typeChanged(int baseType, int motiveType, long etype);
 
     void structureChanged(EquipmentType structure);

@@ -132,6 +132,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private JCheckBox chkOmni = new JCheckBox("Omni");
+    final private JCheckBox chkFrankenMek = new JCheckBox("FrankenMek");
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbMotiveType = new JComboBox<>();
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
@@ -219,6 +220,14 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
         chkOmni.addChangeListener(this);
+
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        chkFrankenMek.setText(resourceMap.getString("MekChassisView.chkFrankenMek.text"));
+        chkFrankenMek.setToolTipText(resourceMap.getString("MekChassisView.chkFrankenMek.tooltip"));
+        add(chkFrankenMek, gbc);
+        chkFrankenMek.setVisible(false);
+        chkFrankenMek.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -359,6 +368,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         refresh();
         setTonnage(mek.getWeight());
         setOmni(mek.isOmni());
+        setFrankenMek(mek.isFrankenMek());
         chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
               && techManager.isLegal(Entity.getOmniAdvancement()));
         cbBaseType.removeActionListener(this);
@@ -458,6 +468,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         refreshDNICockpitMod();
         refreshEICockpit();
         refreshDamageInterruptCircuit();
+        refreshFrankenMek();
 
         chkOmni.removeActionListener(this);
         chkOmni.setEnabled(!isPrimitive()
@@ -711,6 +722,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.addActionListener(this);
     }
 
+    private void refreshFrankenMek() {
+        chkFrankenMek.removeActionListener(this);
+        boolean isExperimental = techManager.getTechLevel() == SimpleTechLevel.EXPERIMENTAL;
+        chkFrankenMek.setVisible(isExperimental);
+        if (!isExperimental && chkFrankenMek.isSelected()) {
+            chkFrankenMek.setSelected(false);
+            listeners.forEach(l -> l.frankenMekChanged(false));
+        }
+        chkFrankenMek.addActionListener(this);
+    }
+
     public List<Engine> getAvailableEngines() {
         List<Engine> retVal = new ArrayList<>();
         boolean isMixed = techManager.useMixedTech();
@@ -764,6 +786,14 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     public void setOmni(boolean omni) {
         chkOmni.setSelected(omni);
+    }
+
+    public boolean isFrankenMek() {
+        return chkFrankenMek.isSelected() && chkFrankenMek.isVisible();
+    }
+
+    public void setFrankenMek(boolean frankenMek) {
+        chkFrankenMek.setSelected(frankenMek);
     }
 
     public int getBaseTypeIndex() {
@@ -931,6 +961,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkOmni) {
             listeners.forEach(l -> l.omniChanged(isOmni()));
+        } else if (e.getSource() == chkFrankenMek) {
+            listeners.forEach(l -> l.frankenMekChanged(isFrankenMek()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
         } else if (e.getSource() == cbStructure) {

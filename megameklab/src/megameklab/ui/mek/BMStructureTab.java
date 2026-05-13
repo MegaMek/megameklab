@@ -697,6 +697,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void updateTechLevel() {
         removeAllListeners();
         getMek().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        if (panBasicInfo.getTechLevel() != SimpleTechLevel.EXPERIMENTAL) {
+            getMek().setFrankenMek(false);
+        }
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
             panArmor.setPatchwork(false);
             armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
@@ -833,6 +836,12 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().getEngine().setBaseChassisHeatSinks(omni ? Math.max(0, panHeat.getBaseCount()) : -1);
         panHeat.setFromMek(getMek());
         MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void frankenMekChanged(boolean frankenMek) {
+        getMek().setFrankenMek(frankenMek);
         refresh.refreshPreview();
     }
 
