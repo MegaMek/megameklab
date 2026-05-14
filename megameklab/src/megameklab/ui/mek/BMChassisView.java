@@ -129,6 +129,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
           EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
+    private static final EquipmentType HYBRID_STRUCTURE = new DisplayOnlyStructure(
+                Mek.FRANKEN_MEK_STRUCTURE_HYBRID);
+
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private JCheckBox chkOmni = new JCheckBox("Omni");
@@ -176,6 +179,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     private String stdMotiveTooltip;
     private String lamMotiveTooltip;
     private String qvMotiveTooltip;
+
+    private static class DisplayOnlyStructure extends EquipmentType {
+        DisplayOnlyStructure(String name) {
+            this.name = name;
+            internalName = name;
+        }
+    }
 
     public BMChassisView(ITechManager techManager) {
         this.techManager = techManager;
@@ -407,8 +417,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         }
         cbBaseType.addActionListener(this);
         cbMotiveType.addActionListener(this);
-        setStructureType(EquipmentType.getStructureTypeName(mek.getStructureType(),
-              TechConstants.isClan(mek.getStructureTechLevel())));
+        setStructureType(mek.isFrankenMek() ? mek.getFrankenMekStructureDisplayName()
+            : EquipmentType.getStructureTypeName(mek.getStructureType(),
+            TechConstants.isClan(mek.getStructureTechLevel())));
         setEngine(mek.getEngine());
         setGyroType(mek.getGyroType());
         setCockpitType(mek.getCockpitType());
@@ -504,20 +515,34 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void refreshStructure() {
-        boolean isMixed = techManager.useMixedTech();
-        boolean isClan = techManager.useClanTechBase();
         cbStructure.removeActionListener(this);
+        if (isFrankenMek()) {
+            cbStructure.setEnabled(false);
+            cbStructure.addActionListener(this);
+            return;
+        }
+        cbStructure.setEnabled(true);
         EquipmentType prevStructure = (EquipmentType) cbStructure.getSelectedItem();
         cbStructure.removeAllItems();
-        cbStructure.showTechBase(isMixed);
-        // Primitive/retro can only use standard/industrial structure. Industrial can only use industrial
-        // at standard rules level. Super-heavies can only use standard.
+        List<EquipmentType> availableStructures = getAvailableStructures();
+        cbStructure.showTechBase(techManager.useMixedTech() || needsStructureTechBase(availableStructures));
+        availableStructures.forEach(cbStructure::addItem);
+        cbStructure.setSelectedItem(prevStructure);
+        cbStructure.addActionListener(this);
+        if (cbStructure.getSelectedIndex() < 0) {
+            cbStructure.setSelectedIndex(0);
+        }
+    }
+
+    public List<EquipmentType> getAvailableStructures() {
+        List<EquipmentType> availableStructures = new ArrayList<>();
+        boolean isClan = techManager.useClanTechBase();
         if (isIndustrial()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL, isClan);
-            cbStructure.addItem(EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.get(name));
         } else if (isPrimitive()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD, isClan);
-            cbStructure.addItem(EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.get(name));
         } else {
             int[] structureTypes = isSuperheavy() ?
                   SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
@@ -525,30 +550,32 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
-                if ((null != structure) && techManager.isLegal(structure)
-                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure.getNumCriticalSlots(null) == 0))) {
-                    cbStructure.addItem(structure);
-                }
+                addAvailableStructure(availableStructures, structure);
                 name = EquipmentType.getStructureTypeName(i, !isClan);
                 EquipmentType structure2 = EquipmentType.get(name);
-                if ((null != structure2) && (structure2 != structure)
-                      && techManager.isLegal(structure2)
-                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure2.getNumCriticalSlots(null) == 0))) {
-                    cbStructure.addItem(structure2);
-                    // If we are allowing the opposite tech base it may be because we are using mixed tech, but it
-                    // also may be that we are in the transitional early Clan stage when IS equipment is available
-                    // without a mixed base.
-                    cbStructure.showTechBase(true);
+                addAvailableStructure(availableStructures, structure2);
+            }
+        }
+        return availableStructures;
+    }
+
+    private void addAvailableStructure(List<EquipmentType> structures, EquipmentType structure) {
+        if ((structure != null) && !structures.contains(structure) && techManager.isLegal(structure)
+              && ((getBaseTypeIndex() != BASE_TYPE_LAM) || (structure.getNumCriticalSlots(null) == 0))) {
+            structures.add(structure);
+        }
+    }
+
+    private boolean needsStructureTechBase(List<EquipmentType> structures) {
+        for (int first = 0; first < structures.size(); first++) {
+            for (int second = first + 1; second < structures.size(); second++) {
+                if ((structures.get(first) != structures.get(second))
+                      && structures.get(first).getName().equals(structures.get(second).getName())) {
+                    return true;
                 }
             }
         }
-        cbStructure.setSelectedItem(prevStructure);
-        cbStructure.addActionListener(this);
-        if (cbStructure.getSelectedIndex() < 0) {
-            cbStructure.setSelectedIndex(0);
-        }
+        return false;
     }
 
     private void refreshEngine() {
@@ -836,8 +863,47 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setStructureType(String structureName) {
+        cbStructure.removeActionListener(this);
+        if (Mek.FRANKEN_MEK_STRUCTURE_HYBRID.equals(structureName)) {
+            if (!containsStructure(HYBRID_STRUCTURE)) {
+                cbStructure.addItem(HYBRID_STRUCTURE);
+            }
+            cbStructure.setSelectedItem(HYBRID_STRUCTURE);
+        } else {
+            EquipmentType structure = findStructure(structureName);
+            if ((structure != null) && !containsStructure(structure)) {
+                cbStructure.addItem(structure);
+            }
+            cbStructure.setSelectedItem(structure);
+        }
+        cbStructure.setEnabled(!isFrankenMek());
+        cbStructure.addActionListener(this);
+    }
+
+    private boolean containsStructure(EquipmentType structure) {
+        for (int index = 0; index < cbStructure.getItemCount(); index++) {
+            if (cbStructure.getItemAt(index) == structure) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private EquipmentType findStructure(String structureName) {
         EquipmentType structure = EquipmentType.get(structureName);
-        cbStructure.setSelectedItem(structure);
+        if (structure != null) {
+            return structure;
+        }
+        for (int index = 0; index < cbStructure.getItemCount(); index++) {
+            EquipmentType item = cbStructure.getItemAt(index);
+            if ((item != null) && item.getName().equals(structureName)) {
+                return item;
+            }
+        }
+        return getAvailableStructures().stream()
+              .filter(item -> item.getName().equals(structureName))
+              .findFirst()
+              .orElse(null);
     }
 
     public Engine getEngine() {
@@ -965,7 +1031,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             listeners.forEach(l -> l.frankenMekChanged(isFrankenMek()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
-        } else if (e.getSource() == cbStructure) {
+        } else if ((e.getSource() == cbStructure) && !isFrankenMek()) {
             listeners.forEach(l -> l.structureChanged(getStructure()));
         } else if (e.getSource() == cbEngine) {
             listeners.forEach(l -> l.engineChanged(getEngine()));
