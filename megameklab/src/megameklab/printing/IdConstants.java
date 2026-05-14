@@ -118,6 +118,7 @@ public interface IdConstants {
     String PATCHWORK = "patchwork";
     String TEXT_ARMOR = "textArmor_";
     String TEXT_IS = "textIS_";
+    String TEXT_IS_TYPE = "textIStype_"; // FrankenMeks can have each location with a different structure type
     String TEXT_SI = "textSI";
     String TEXT_SAIL = "textSail";
     String TEXT_KF_DRIVE = "textKFDrive";

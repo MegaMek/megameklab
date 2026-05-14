@@ -505,6 +505,29 @@ public class PrintMek extends PrintEntity {
         return doc.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
     }
 
+    /**
+     * Fills in the numeral values for armor and structure levels
+     */
+    @Override
+    void writeArmorStructureTextFields() {
+        final String FORMAT = "( %d )";
+        for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
+            String locationAbbr = mek.getLocationAbbr(loc);
+            setTextField(TEXT_ARMOR + locationAbbr,
+                String.format(FORMAT, getEntity().getOArmor(loc)));
+            setTextField(TEXT_IS + locationAbbr,
+                String.format(FORMAT, getEntity().getOInternal(loc)));
+
+            if (mek.isFrankenMek()) {
+                int structureType = mek.getFrankenMekStructureType(loc);
+                if (structureType != EquipmentType.T_STRUCTURE_STANDARD) {
+                    setTextField(TEXT_IS_TYPE + locationAbbr,
+                        EquipmentType.getStructureTypeAbbrev(structureType));
+                }
+            }
+        }
+    }
+
     // Mek armor and structure pips require special handling for rear armor and
     // superheavy head armor/IS
     @Override
