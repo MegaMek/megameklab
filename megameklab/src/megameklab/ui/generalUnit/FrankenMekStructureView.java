@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -67,6 +68,8 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
     private final List<StructureLocationView> locationViews = new ArrayList<>();
     private final Supplier<List<EquipmentType>> availableStructures;
     private final Supplier<int[][]> currentLayout;
+    private final IntSupplier minimumChassisTonnage;
+    private final IntSupplier maximumChassisTonnage;
     private final JPanel panLocations = new JPanel();
     private final JCheckBox chkMismatchedLegs = new JCheckBox(
           I18N.getString("FrankenMekStructureView.chkMismatchedLegs.text"));
@@ -74,9 +77,12 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
     private int[][] layout;
     private boolean ignoreEvents = false;
 
-    public FrankenMekStructureView(Supplier<List<EquipmentType>> availableStructures, Supplier<int[][]> currentLayout) {
+    public FrankenMekStructureView(Supplier<List<EquipmentType>> availableStructures, Supplier<int[][]> currentLayout,
+          IntSupplier minimumChassisTonnage, IntSupplier maximumChassisTonnage) {
         this.availableStructures = availableStructures;
         this.currentLayout = currentLayout;
+        this.minimumChassisTonnage = minimumChassisTonnage;
+        this.maximumChassisTonnage = maximumChassisTonnage;
         initUI();
     }
 
@@ -158,14 +164,15 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
                 continue;
             }
 
-            int chassisTonnage = (int) Math.ceil(mek.getWeight());
+            int currentTonnage = mek.getFrankenMekStructureTonnage(location);
+            int centerTorsoTonnage = mek.getFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO);
             SpinnerNumberModel model = locView.model;
-            model.setMinimum(mek.locationIsLeg(location) ? chassisTonnage : 10);
-            model.setMaximum(200);
+            model.setMinimum(getMinimumTonnage(mek, location, currentTonnage, centerTorsoTonnage));
+            model.setMaximum(getMaximumTonnage(location, currentTonnage));
             model.setStepSize(5);
-            locView.spinner.setEnabled(location != Mek.LOC_CENTER_TORSO);
+            locView.spinner.setEnabled(true);
             locView.updateLocation(mek.getLocationAbbr(location));
-            locView.model.setValue(mek.getFrankenMekStructureTonnage(location));
+            locView.model.setValue(currentTonnage);
 
             locView.combo.removeAllItems();
             locView.combo.showTechBase(mek.isMixedTech() || needsStructureTechBase(structures));
@@ -180,6 +187,21 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         }
         chkMismatchedLegs.setSelected(mek.hasMismatchedFrankenMekLegs());
         ignoreEvents = false;
+    }
+
+    private int getMinimumTonnage(Mek mek, int location, int currentTonnage, int centerTorsoTonnage) {
+        int minimumTonnage = 10;
+        if (location == Mek.LOC_CENTER_TORSO) {
+            minimumTonnage = minimumChassisTonnage.getAsInt();
+        } else if (mek.locationIsLeg(location)) {
+            minimumTonnage = centerTorsoTonnage;
+        }
+        return Math.min(currentTonnage, minimumTonnage);
+    }
+
+    private int getMaximumTonnage(int location, int currentTonnage) {
+        int maximumTonnage = location == Mek.LOC_CENTER_TORSO ? maximumChassisTonnage.getAsInt() : 200;
+        return Math.max(currentTonnage, maximumTonnage);
     }
 
     private boolean needsStructureTechBase(List<EquipmentType> structures) {

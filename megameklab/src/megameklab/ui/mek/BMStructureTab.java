@@ -124,7 +124,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MEK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panFrankenMekStructure = new FrankenMekStructureView(panChassis::getAvailableStructures,
-            panArmorAllocation::getCurrentLayout);
+            panArmorAllocation::getCurrentLayout, panChassis::getMinimumTonnage, panChassis::getMaximumTonnage);
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
               new UnitTypeSummaryItem(),
@@ -858,13 +858,28 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void tonnageChanged(double tonnage) {
+        tonnageChanged(tonnage, true);
+    }
+
+    private void tonnageChanged(double tonnage, boolean syncMatchingFrankenMekLocations) {
         if (!recalculateEngineRating(panMovement.getWalk(), tonnage)) {
             panChassis.setFromEntity(getMek());
+            panFrankenMekStructure.setFromEntity(getMek());
             return;
         }
         boolean changedSuperHeavyStatus = getMek().isSuperHeavy() != tonnage > 100;
+        int matchingFrankenMekTonnage = getMek().isFrankenMek() && syncMatchingFrankenMekLocations
+              ? getMek().getFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO)
+              : 0;
 
         getMek().setWeight(tonnage);
+        if (getMek().isFrankenMek()) {
+            if (syncMatchingFrankenMekLocations) {
+                getMek().syncMatchingFrankenMekStructureTonnageToChassis(matchingFrankenMekTonnage);
+            } else {
+                getMek().syncFrankenMekCenterTorsoTonnageToChassis();
+            }
+        }
 
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy, remove crits
@@ -901,6 +916,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
               .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
         getMek().setEngine(engine);
         getMek().autoSetInternal();
+        if (getMek().isFrankenMek()) {
+            clampFrankenMekArmorToStructureLimits();
+        }
         if (getMek().isSuperHeavy()) {
             getMek().setOriginalJumpMP(0);
         }
@@ -940,6 +958,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void frankenMekChanged(boolean frankenMek) {
         getMek().setFrankenMek(frankenMek);
+        if (frankenMek) {
+            getMek().syncFrankenMekStructureTonnageToChassis();
+        }
         refreshInternalStructureMounts();
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
@@ -953,7 +974,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void frankenMekStructureTonnageChanged(int location, int tonnage) {
-        getMek().setFrankenMekStructureTonnage(location, tonnage);
+        if (location == Mek.LOC_CENTER_TORSO) {
+            int chassisTonnage = panChassis.clampTonnage(tonnage);
+            panChassis.setTonnage(chassisTonnage);
+            tonnageChanged(chassisTonnage, false);
+            return;
+        }
+        getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
         panArmor.setFromEntity(getMek(), true);

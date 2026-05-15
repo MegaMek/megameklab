@@ -229,7 +229,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text"));
         chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
-        chkOmni.addChangeListener(this);
+        chkOmni.addActionListener(this);
 
         gbc.gridx = 3;
         gbc.gridy = 0;
@@ -490,20 +490,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void refreshTonnage() {
-        int min = 20;
-        int max = 100;
+        int min = getMinimumTonnage();
+        int max = getMaximumTonnage();
         spnTonnage.removeChangeListener(this);
-        if (getBaseTypeIndex() == BASE_TYPE_LAM) {
-            max = 55;
-        } else if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
-              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
-              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
-            max = 200;
-        }
-        if (techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
-              EntityWeightClass.WEIGHT_ULTRA_LIGHT))) {
-            min = 10;
-        }
         tonnageModel.setMinimum(min);
         tonnageModel.setMaximum(max);
         spnTonnage.addChangeListener(this);
@@ -804,7 +793,30 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setTonnage(double tonnage) {
+        spnTonnage.removeChangeListener(this);
         spnTonnage.setValue((int) Math.ceil(tonnage));
+        spnTonnage.addChangeListener(this);
+    }
+
+    public int clampTonnage(double tonnage) {
+        return Math.min(getMaximumTonnage(), Math.max(getMinimumTonnage(), (int) Math.ceil(tonnage)));
+    }
+
+    public int getMinimumTonnage() {
+        return techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
+              EntityWeightClass.WEIGHT_ULTRA_LIGHT)) ? 10 : 20;
+    }
+
+    public int getMaximumTonnage() {
+        if (getBaseTypeIndex() == BASE_TYPE_LAM) {
+            return 55;
+        }
+        if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
+              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
+              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
+            return 200;
+        }
+        return 100;
     }
 
     public boolean isOmni() {
