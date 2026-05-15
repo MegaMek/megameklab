@@ -47,9 +47,11 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -61,10 +63,17 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
+import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.loaders.MtfFile;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.TripodMek;
+import megamek.common.units.UnitType;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megameklab.ui.EntitySource;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.CriticalSlotsView;
@@ -123,6 +132,12 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
     private final Map<Integer, JPanel> casePanels = new HashMap<>();
     /** Per-location CASE combo boxes storing EquipmentType (null = None) */
     private final Map<Integer, JComboBox<EquipmentType>> caseComboBoxes = new HashMap<>();
+    /** Per-location donor import panels. */
+    private final Map<Integer, JPanel> donorPanels = new HashMap<>();
+    /** Per-location donor source buttons. */
+    private final Map<Integer, JButton> donorButtons = new HashMap<>();
+    /** Per-location donor source labels. */
+    private final Map<Integer, JLabel> donorLabels = new HashMap<>();
     /** Flag to suppress combo ActionEvents during programmatic updates */
     private boolean updatingCaseCombos = false;
 
@@ -153,6 +168,24 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             casePanel.add(combo);
             casePanel.setVisible(false);
             casePanels.put(loc, casePanel);
+
+            JButton donorButton = new JButton("Take From Unit...");
+            donorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            donorButton.setActionCommand("donor:" + loc);
+            donorButton.addActionListener(this);
+            donorButtons.put(loc, donorButton);
+
+            JLabel donorLabel = new JLabel();
+            donorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            donorLabels.put(loc, donorLabel);
+
+            JPanel donorPanel = new JPanel();
+            donorPanel.setLayout(new BoxLayout(donorPanel, BoxLayout.Y_AXIS));
+            donorPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+            donorPanel.add(donorButton);
+            donorPanel.add(donorLabel);
+            donorPanel.setVisible(false);
+            donorPanels.put(loc, donorPanel);
         }
 
         Box mainPanel = Box.createHorizontalBox();
@@ -178,33 +211,42 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         laAlignPanel.add(Box.createVerticalStrut(100));
         laAlignPanel.add(laPanel);
         laAlignPanel.add(casePanels.get(Mek.LOC_LEFT_ARM));
+        laAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_ARM));
         laAlignPanel.add(Box.createVerticalGlue());
 
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(ltPanel);
         leftAlignPanel.add(casePanels.get(Mek.LOC_LEFT_TORSO));
+        leftAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_TORSO));
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(llPanel);
         leftAlignPanel.add(casePanels.get(Mek.LOC_LEFT_LEG));
+        leftAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_LEG));
 
         centerAlignPanel.add(hdPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_HEAD));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_HEAD));
         centerAlignPanel.add(ctPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_CENTER_TORSO));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_CENTER_TORSO));
         centerAlignPanel.add(clPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_CENTER_LEG));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_CENTER_LEG));
         centerAlignPanel.add(Box.createVerticalStrut(75));
 
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rtPanel);
         rightAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_TORSO));
+        rightAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_TORSO));
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rlPanel);
         rightAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_LEG));
+        rightAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_LEG));
 
         raAlignPanel.add(Box.createVerticalStrut(100));
         raAlignPanel.add(raPanel);
         raAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_ARM));
+        raAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_ARM));
         raAlignPanel.add(Box.createVerticalGlue());
 
         mainPanel.add(laAlignPanel);
@@ -234,6 +276,11 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
         synchronized (getMek()) {
             clPanel.setVisible(getMek() instanceof TripodMek);
+            if (getMek().isFrankenMek()) {
+                for (int location = 0; location < getMek().locations(); location++) {
+                    getMek().unlinkFrankenMekLocationSourceIfChanged(location);
+                }
+            }
             setTitles();
 
             for (int location = 0; location < getMek().locations(); location++) {
@@ -299,6 +346,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             }
 
             refreshCaseDropdowns();
+            refreshDonorControls();
             validate();
         }
     }
@@ -405,6 +453,36 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         }
     }
 
+    private void refreshDonorControls() {
+        Mek mek = getMek();
+        boolean showDonorControls = mek.isFrankenMek();
+        for (Map.Entry<Integer, JPanel> entry : donorPanels.entrySet()) {
+            int location = entry.getKey();
+            JPanel donorPanel = entry.getValue();
+            JButton donorButton = donorButtons.get(location);
+            JLabel donorLabel = donorLabels.get(location);
+
+            if ((location == Mek.LOC_CENTER_LEG) && !(mek instanceof TripodMek)) {
+                donorPanel.setVisible(false);
+                continue;
+            }
+
+            donorLabel.setText(mek.getFrankenMekLocationSourceDisplayName(location).isBlank()
+                  ? ""
+                  : "Donor: " + mek.getFrankenMekLocationSourceDisplayName(location));
+
+            JComponent locPanel = mekPanels.get(location);
+            if (locPanel != null) {
+                int panelWidth = locPanel.getPreferredSize().width;
+                Dimension buttonSize = new Dimension(panelWidth, donorButton.getPreferredSize().height);
+                donorButton.setMaximumSize(buttonSize);
+                donorPanel.setMaximumSize(new Dimension(panelWidth, donorPanel.getPreferredSize().height));
+            }
+
+            donorPanel.setVisible(showDonorControls);
+        }
+    }
+
     /**
      * Returns all CASE-family equipment types, discovered via the F_CASE, F_CASEII, and F_CASEP
      * MiscType flags. Cached after first call.
@@ -459,6 +537,10 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
     @Override
     public void actionPerformed(ActionEvent e) {
         if (updatingCaseCombos) {
+            return;
+        }
+        if ((e.getActionCommand() != null) && e.getActionCommand().startsWith("donor:")) {
+            importDonorLocation(Integer.parseInt(e.getActionCommand().substring("donor:".length())));
             return;
         }
         // Handle CASE combo box changes
@@ -518,9 +600,48 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         updateClanCaseOptOut(mek, loc, selected);
 
         if (refresh != null) {
-            refresh.refreshBuild();
-            refresh.refreshStatus();
-            refresh.refreshPreview();
+            refresh.scheduleRefresh();
+        }
+    }
+
+    private void importDonorLocation(int location) {
+        Mek target = getMek();
+        if (!target.isFrankenMek()) {
+            return;
+        }
+
+        MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(null,
+              new UnitLoadingDialog(null), false, UnitType.MEK);
+        Entity selectedEntity = selector.getChosenEntity();
+        if (!(selectedEntity instanceof Mek donor)) {
+            return;
+        }
+        if (location >= donor.locations()) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  donor.getShortNameRaw() + " does not have a matching " + target.getLocationName(location) + ".",
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            target.setFrankenMekStructureType(location,
+                  donor.isFrankenMek() ? donor.getFrankenMekStructureType(location) : donor.getStructureType(),
+                  donor.isFrankenMek() ? donor.getFrankenMekStructureTechLevel(location) : donor.getStructureTechLevel());
+            target.setFrankenMekStructureTonnage(location,
+                  donor.isFrankenMek() ? donor.getFrankenMekStructureTonnage(location) : (int) Math.ceil(donor.getWeight()));
+            MtfFile.replaceLocationCriticalData(target, location, donor.getCriticalDataForLocation(location));
+            MekFileParser.postLoadInit(target);
+            target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
+            if (refresh != null) {
+                refresh.scheduleRefresh();
+            }
+        } catch (EntityLoadingException ex) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage(),
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
         }
     }
 

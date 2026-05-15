@@ -53,13 +53,17 @@ import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
+import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
+import megamek.common.units.UnitType;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
+    private static final int NO_UNIT_TYPE_RESTRICTION = -1;
+
     // region Variable Declarations
     private Entity chosenEntity;
     private ArrayList<Entity> chosenEntities;
@@ -68,6 +72,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private RecordSheetPreviewPanel recordSheetPanel;
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
+    private final int restrictedUnitType;
 
     // endregion Variable Declarations
 
@@ -79,9 +84,15 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      * @param multiselect       Set this to {@code true} to allow multiple units to be selected at once.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect) {
+        this(parent, unitLoadingDialog, multiselect, NO_UNIT_TYPE_RESTRICTION);
+    }
+
+    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect,
+          int restrictedUnitType) {
         super(parent, unitLoadingDialog, multiselect);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
+        this.restrictedUnitType = restrictedUnitType;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -114,6 +125,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         super(parent, unitLoadingDialog, true);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
+        restrictedUnitType = NO_UNIT_TYPE_RESTRICTION;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -141,6 +153,18 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         run();
         setVisible(true);
 
+    }
+
+    private boolean hasRestrictedUnitType() {
+        return restrictedUnitType != NO_UNIT_TYPE_RESTRICTION;
+    }
+
+    @Override
+    protected void configureUnitSelectionScope() {
+        comboUnitType.setEnabled(!hasRestrictedUnitType());
+        if (hasRestrictedUnitType()) {
+            comboUnitType.setSelectedItem(UnitType.getTypeDisplayableName(restrictedUnitType));
+        }
     }
 
     private void setupDoubleClickListener() {
@@ -294,6 +318,12 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             chosenEntities = new ArrayList<>();
         }
         return chosenEntities;
+    }
+
+    @Override
+    protected boolean matchesUnitSelectionScope(MekSummary unit) {
+        return !hasRestrictedUnitType()
+              || UnitType.getTypeName(restrictedUnitType).equals(unit.getUnitType());
     }
 
     @Override
