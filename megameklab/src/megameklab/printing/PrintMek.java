@@ -511,6 +511,7 @@ public class PrintMek extends PrintEntity {
     @Override
     void writeArmorStructureTextFields() {
         final String FORMAT = "( %d )";
+        boolean hasHybridFrankenMekStructure = mek.hasHybridFrankenMekStructure();
         for (int loc = firstArmorLocation(); loc < getEntity().locations(); loc++) {
             String locationAbbr = mek.getLocationAbbr(loc);
             setTextField(TEXT_ARMOR + locationAbbr,
@@ -518,7 +519,7 @@ public class PrintMek extends PrintEntity {
             setTextField(TEXT_IS + locationAbbr,
                 String.format(FORMAT, getEntity().getOInternal(loc)));
 
-            if (mek.isFrankenMek()) {
+            if (hasHybridFrankenMekStructure) {
                 int structureType = mek.getFrankenMekStructureType(loc);
                 if (structureType != EquipmentType.T_STRUCTURE_STANDARD) {
                     setTextField(TEXT_IS_TYPE + locationAbbr,
