@@ -978,9 +978,11 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             int chassisTonnage = panChassis.clampTonnage(tonnage);
             panChassis.setTonnage(chassisTonnage);
             tonnageChanged(chassisTonnage, false);
+            refreshInternalStructureMounts();
             return;
         }
         getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
+        refreshInternalStructureMounts();
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
         panArmor.setFromEntity(getMek(), true);
