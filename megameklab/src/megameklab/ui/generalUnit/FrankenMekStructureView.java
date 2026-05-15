@@ -33,6 +33,7 @@
 package megameklab.ui.generalUnit;
 
 import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -255,7 +256,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         private final int location;
         private final SpinnerNumberModel model = new SpinnerNumberModel(20, 10, 200, 5);
         private final JSpinner spinner = new JSpinner(model);
-        private final JLabel lblTons = new JLabel("tons");
+        private final JLabel lblTonnage = new JLabel("Tonnage: ");
         private final TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
         private final JLabel lblPips = new JLabel();
         private final TitledBorder border = BorderFactory.createTitledBorder(null, "",
@@ -266,19 +267,23 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             this.location = location;
             setBorder(border);
             setLayout(new GridBagLayout());
+
+            JPanel panTonnage = new JPanel(new FlowLayout(FlowLayout.CENTER, STANDARD_INSETS.left, 0));
+            panTonnage.setOpaque(false);
+            panTonnage.add(lblTonnage);
+            panTonnage.add(spinner);
+
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = STANDARD_INSETS;
-            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            add(spinner, gbc);
-
-            gbc.gridx++;
-            add(lblTons, gbc);
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            add(panTonnage, gbc);
 
             gbc.gridx = 0;
             gbc.gridy++;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.anchor = GridBagConstraints.CENTER;
             combo.setPrototypeDisplayValue(EquipmentType.get(EquipmentType.getStructureTypeName(
                   EquipmentType.T_STRUCTURE_ENDO_COMPOSITE, true)));
             add(combo, gbc);
