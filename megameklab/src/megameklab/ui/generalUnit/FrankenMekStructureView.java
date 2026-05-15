@@ -32,6 +32,7 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -46,6 +47,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -173,6 +175,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             locView.spinner.setEnabled(true);
             locView.updateLocation(mek.getLocationAbbr(location));
             locView.model.setValue(currentTonnage);
+            locView.updatePips(mek.getFrankenMekInternalForLocation(location));
 
             locView.combo.removeAllItems();
             locView.combo.showTechBase(mek.isMixedTech() || needsStructureTechBase(structures));
@@ -252,7 +255,9 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         private final int location;
         private final SpinnerNumberModel model = new SpinnerNumberModel(20, 10, 200, 5);
         private final JSpinner spinner = new JSpinner(model);
+        private final JLabel lblTons = new JLabel("tons");
         private final TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
+        private final JLabel lblPips = new JLabel();
         private final TitledBorder border = BorderFactory.createTitledBorder(null, "",
               TitledBorder.TOP,
               TitledBorder.DEFAULT_POSITION);
@@ -268,14 +273,27 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             gbc.gridy = 0;
             add(spinner, gbc);
 
+            gbc.gridx++;
+            add(lblTons, gbc);
+
+            gbc.gridx = 0;
             gbc.gridy++;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
             combo.setPrototypeDisplayValue(EquipmentType.get(EquipmentType.getStructureTypeName(
                   EquipmentType.T_STRUCTURE_ENDO_COMPOSITE, true)));
             add(combo, gbc);
+
+            gbc.gridy++;
+            lblPips.setFont(lblPips.getFont().deriveFont(Font.BOLD));
+            add(lblPips, gbc);
         }
 
         private void updateLocation(String locName) {
             border.setTitle(locName);
+        }
+
+        private void updatePips(int pips) {
+            lblPips.setText(Integer.toString(pips)+ " points");
         }
     }
 }
