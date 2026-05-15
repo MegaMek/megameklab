@@ -966,7 +966,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panFrankenMekStructure.setFromEntity(getMek());
         panArmor.setFromEntity(getMek(), true);
         panArmorAllocation.setFromEntity(getMek());
-        panChassis.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
         refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -985,7 +985,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panFrankenMekStructure.setFromEntity(getMek());
         panArmor.setFromEntity(getMek(), true);
         panArmorAllocation.setFromEntity(getMek());
-        panChassis.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
         refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();
@@ -1048,7 +1048,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().setFrankenMekStructureType(location, structure);
         refreshFrankenMekInternalStructureMounts(location);
         panFrankenMekStructure.setFromEntity(getMek());
-        panChassis.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
         refreshSummary();
         refresh.refreshBuild();
         refresh.refreshPreview();

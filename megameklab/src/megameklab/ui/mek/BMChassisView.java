@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -159,6 +160,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     private boolean primitive = false;
     private int engineRating = 20;
+    private boolean suppressListenerNotifications = false;
 
     private static final int[] GENERAL_COCKPITS = {
           Mek.COCKPIT_STANDARD, Mek.COCKPIT_SMALL, Mek.COCKPIT_COMMAND_CONSOLE,
@@ -373,73 +375,91 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setFromEntity(Mek mek) {
-        primitive = mek.isPrimitive();
-        engineRating = mek.getEngine().getRating();
-        refresh();
-        setTonnage(mek.getWeight());
-        setOmni(mek.isOmni());
-        setFrankenMek(mek.isFrankenMek());
-        chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
-              && techManager.isLegal(Entity.getOmniAdvancement()));
-        cbBaseType.removeActionListener(this);
-        cbMotiveType.removeActionListener(this);
-        if (primitive) {
-            cbBaseType.setModel(primitiveTypesModel);
-        } else {
-            cbBaseType.setModel(baseTypesModel);
-        }
-        if (mek instanceof LandAirMek) {
-            chkOmni.setEnabled(false);
-            setBaseTypeIndex(BASE_TYPE_LAM);
-            cbMotiveType.setModel(lamTypesModel);
-            setMotiveTypeIndex(((LandAirMek) mek).getLAMType());
-            cbMotiveType.setToolTipText(lamMotiveTooltip);
-        } else if (mek instanceof QuadVee) {
-            setBaseTypeIndex(BASE_TYPE_QUADVEE);
-            cbMotiveType.setModel(qvTypesModel);
-            setMotiveTypeIndex(((QuadVee) mek).getMotiveType());
-            cbMotiveType.setToolTipText(qvMotiveTooltip);
-        } else {
-            setBaseTypeIndex(mek.isIndustrial() ? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
+        boolean previousSuppression = suppressListenerNotifications;
+        suppressListenerNotifications = true;
+        try {
+            primitive = mek.isPrimitive();
+            engineRating = mek.getEngine().getRating();
+            refresh();
+            setTonnage(mek.getWeight());
+            setOmni(mek.isOmni());
+            setFrankenMek(mek.isFrankenMek());
+            chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
+                  && techManager.isLegal(Entity.getOmniAdvancement()));
+            cbBaseType.removeActionListener(this);
+            cbMotiveType.removeActionListener(this);
             if (primitive) {
-                cbMotiveType.setModel(primitiveMotiveTypesModel);
+                cbBaseType.setModel(primitiveTypesModel);
             } else {
-                cbMotiveType.setModel(standardTypesModel);
+                cbBaseType.setModel(baseTypesModel);
             }
-            if ((mek.getEntityType() & Entity.ETYPE_TRIPOD_MEK) != 0) {
-                setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
-            } else if ((mek.getEntityType() & Entity.ETYPE_QUAD_MEK) != 0) {
-                setMotiveTypeIndex(MOTIVE_TYPE_QUAD);
+            if (mek instanceof LandAirMek) {
+                chkOmni.setEnabled(false);
+                setBaseTypeIndex(BASE_TYPE_LAM);
+                cbMotiveType.setModel(lamTypesModel);
+                setMotiveTypeIndex(((LandAirMek) mek).getLAMType());
+                cbMotiveType.setToolTipText(lamMotiveTooltip);
+            } else if (mek instanceof QuadVee) {
+                setBaseTypeIndex(BASE_TYPE_QUADVEE);
+                cbMotiveType.setModel(qvTypesModel);
+                setMotiveTypeIndex(((QuadVee) mek).getMotiveType());
+                cbMotiveType.setToolTipText(qvMotiveTooltip);
             } else {
-                setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
+                setBaseTypeIndex(mek.isIndustrial() ? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
+                if (primitive) {
+                    cbMotiveType.setModel(primitiveMotiveTypesModel);
+                } else {
+                    cbMotiveType.setModel(standardTypesModel);
+                }
+                if ((mek.getEntityType() & Entity.ETYPE_TRIPOD_MEK) != 0) {
+                    setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
+                } else if ((mek.getEntityType() & Entity.ETYPE_QUAD_MEK) != 0) {
+                    setMotiveTypeIndex(MOTIVE_TYPE_QUAD);
+                } else {
+                    setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
+                }
+                cbMotiveType.setToolTipText(stdMotiveTooltip);
             }
-            cbMotiveType.setToolTipText(stdMotiveTooltip);
+            cbBaseType.addActionListener(this);
+            cbMotiveType.addActionListener(this);
+            setStructureType(mek.isFrankenMek() ? mek.getFrankenMekStructureDisplayName()
+                : EquipmentType.getStructureTypeName(mek.getStructureType(),
+                TechConstants.isClan(mek.getStructureTechLevel())));
+            setEngine(mek.getEngine());
+            setGyroType(mek.getGyroType());
+            setCockpitType(mek.getCockpitType());
+            // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
+            // the list for the first matching.
+            Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
+                  .filter(et -> (et.hasFlag(MiscType.F_MASC) && !et.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
+                        || et.hasFlag(MiscType.F_TSM)
+                        || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                        || et.hasFlag(MiscType.F_SCM)).findFirst();
+            if (enh.isPresent()) {
+                setEnhancement(enh.get());
+            } else {
+                setEnhancement(null);
+            }
+            setFullHeadEject(mek.hasFullHeadEject());
+            setDNICockpitMod(mek.hasDNICockpitMod());
+            setEICockpit(mek.hasEiCockpit());
+            setDamageInterruptCircuit(mek.hasDamageInterruptCircuit());
+            btnResetChassis.setEnabled(mek.isOmni());
+        } finally {
+            suppressListenerNotifications = previousSuppression;
         }
-        cbBaseType.addActionListener(this);
-        cbMotiveType.addActionListener(this);
-        setStructureType(mek.isFrankenMek() ? mek.getFrankenMekStructureDisplayName()
-            : EquipmentType.getStructureTypeName(mek.getStructureType(),
-            TechConstants.isClan(mek.getStructureTechLevel())));
-        setEngine(mek.getEngine());
-        setGyroType(mek.getGyroType());
-        setCockpitType(mek.getCockpitType());
-        // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
-        // the list for the first matching.
-        Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
-              .filter(et -> (et.hasFlag(MiscType.F_MASC) && !et.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
-                    || et.hasFlag(MiscType.F_TSM)
-                    || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || et.hasFlag(MiscType.F_SCM)).findFirst();
-        if (enh.isPresent()) {
-            setEnhancement(enh.get());
-        } else {
-            setEnhancement(null);
+    }
+
+    public void refreshFrankenMekState(Mek mek) {
+        boolean previousSuppression = suppressListenerNotifications;
+        suppressListenerNotifications = true;
+        try {
+            setFrankenMek(mek.isFrankenMek());
+            refreshStructure();
+            setStructureType(mek.getFrankenMekStructureDisplayName());
+        } finally {
+            suppressListenerNotifications = previousSuppression;
         }
-        setFullHeadEject(mek.hasFullHeadEject());
-        setDNICockpitMod(mek.hasDNICockpitMod());
-        setEICockpit(mek.hasEiCockpit());
-        setDamageInterruptCircuit(mek.hasDamageInterruptCircuit());
-        btnResetChassis.setEnabled(mek.isOmni());
     }
 
     public void setAsCustomization() {
@@ -709,7 +729,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDNICockpitMod.setVisible(isLegal);
         if (!isLegal && chkDNICockpitMod.isSelected()) {
             chkDNICockpitMod.setSelected(false);
-            listeners.forEach(l -> l.dniCockpitModChanged(false));
+            notifyListeners(l -> l.dniCockpitModChanged(false));
         }
         chkDNICockpitMod.addActionListener(this);
     }
@@ -721,7 +741,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkEICockpit.setVisible(isLegal);
         if (!isLegal && chkEICockpit.isSelected()) {
             chkEICockpit.setSelected(false);
-            listeners.forEach(l -> l.eiCockpitChanged(false));
+            notifyListeners(l -> l.eiCockpitChanged(false));
         }
         chkEICockpit.addActionListener(this);
     }
@@ -733,7 +753,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.setVisible(isLegal);
         if (!isLegal && chkDamageInterruptCircuit.isSelected()) {
             chkDamageInterruptCircuit.setSelected(false);
-            listeners.forEach(l -> l.damageInterruptCircuitChanged(false));
+            notifyListeners(l -> l.damageInterruptCircuitChanged(false));
         }
         chkDamageInterruptCircuit.addActionListener(this);
     }
@@ -744,9 +764,16 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkFrankenMek.setVisible(isExperimental);
         if (!isExperimental && chkFrankenMek.isSelected()) {
             chkFrankenMek.setSelected(false);
-            listeners.forEach(l -> l.frankenMekChanged(false));
+            notifyListeners(l -> l.frankenMekChanged(false));
         }
         chkFrankenMek.addActionListener(this);
+    }
+
+    private void notifyListeners(Consumer<MekBuildListener> notifier) {
+        if (suppressListenerNotifications) {
+            return;
+        }
+        listeners.forEach(notifier);
     }
 
     public List<Engine> getAvailableEngines() {
@@ -1043,49 +1070,55 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (suppressListenerNotifications) {
+            return;
+        }
         if (e.getSource() == chkOmni) {
             if (chkOmni.isSelected() && chkFrankenMek.isSelected()) {
                 setFrankenMek(false);
-                listeners.forEach(l -> l.frankenMekChanged(false));
+                notifyListeners(l -> l.frankenMekChanged(false));
             }
-            listeners.forEach(l -> l.omniChanged(isOmni()));
+            notifyListeners(l -> l.omniChanged(isOmni()));
         } else if (e.getSource() == chkFrankenMek) {
             if (chkFrankenMek.isSelected() && chkOmni.isSelected()) {
                 setOmni(false);
-                listeners.forEach(l -> l.omniChanged(false));
+                notifyListeners(l -> l.omniChanged(false));
             }
-            listeners.forEach(l -> l.frankenMekChanged(isFrankenMek()));
+            notifyListeners(l -> l.frankenMekChanged(isFrankenMek()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
-            listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
+            notifyListeners(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
         } else if ((e.getSource() == cbStructure) && !isFrankenMek()) {
-            listeners.forEach(l -> l.structureChanged(getStructure()));
+            notifyListeners(l -> l.structureChanged(getStructure()));
         } else if (e.getSource() == cbEngine) {
-            listeners.forEach(l -> l.engineChanged(getEngine()));
+            notifyListeners(l -> l.engineChanged(getEngine()));
         } else if (e.getSource() == cbGyro) {
-            listeners.forEach(l -> l.gyroChanged(getGyroType()));
+            notifyListeners(l -> l.gyroChanged(getGyroType()));
         } else if (e.getSource() == cbCockpit) {
-            listeners.forEach(l -> l.cockpitChanged(getCockpitType()));
+            notifyListeners(l -> l.cockpitChanged(getCockpitType()));
             refreshFullHeadEject();
         } else if (e.getSource() == cbEnhancement) {
-            listeners.forEach(l -> l.enhancementChanged(getEnhancement()));
+            notifyListeners(l -> l.enhancementChanged(getEnhancement()));
         } else if (e.getSource() == chkFullHeadEject) {
-            listeners.forEach(l -> l.fullHeadEjectChanged(chkFullHeadEject.isSelected()));
+            notifyListeners(l -> l.fullHeadEjectChanged(chkFullHeadEject.isSelected()));
         } else if (e.getSource() == chkDNICockpitMod) {
-            listeners.forEach(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
+            notifyListeners(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
         } else if (e.getSource() == chkEICockpit) {
-            listeners.forEach(l -> l.eiCockpitChanged(chkEICockpit.isSelected()));
+            notifyListeners(l -> l.eiCockpitChanged(chkEICockpit.isSelected()));
         } else if (e.getSource() == chkDamageInterruptCircuit) {
-            listeners.forEach(l -> l.damageInterruptCircuitChanged(chkDamageInterruptCircuit.isSelected()));
+            notifyListeners(l -> l.damageInterruptCircuitChanged(chkDamageInterruptCircuit.isSelected()));
         } else if (e.getSource() == btnResetChassis) {
-            listeners.forEach(MekBuildListener::resetChassis);
+            notifyListeners(MekBuildListener::resetChassis);
         }
         refresh();
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
+        if (suppressListenerNotifications) {
+            return;
+        }
         if (e.getSource() == spnTonnage) {
-            listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+            notifyListeners(l -> l.tonnageChanged(getTonnage()));
         }
         // Change from standard to superheavy or reverse will cause the structure tab to call setEntity()
         // and so cause a refresh
