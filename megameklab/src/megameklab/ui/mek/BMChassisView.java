@@ -813,6 +813,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     public void setOmni(boolean omni) {
         chkOmni.setSelected(omni);
+        if (omni) {
+            chkFrankenMek.setSelected(false);
+        }
     }
 
     public boolean isFrankenMek() {
@@ -821,6 +824,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     public void setFrankenMek(boolean frankenMek) {
         chkFrankenMek.setSelected(frankenMek);
+        if (frankenMek) {
+            chkOmni.setSelected(false);
+        }
     }
 
     public int getBaseTypeIndex() {
@@ -1026,8 +1032,16 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == chkOmni) {
+            if (chkOmni.isSelected() && chkFrankenMek.isSelected()) {
+                setFrankenMek(false);
+                listeners.forEach(l -> l.frankenMekChanged(false));
+            }
             listeners.forEach(l -> l.omniChanged(isOmni()));
         } else if (e.getSource() == chkFrankenMek) {
+            if (chkFrankenMek.isSelected() && chkOmni.isSelected()) {
+                setOmni(false);
+                listeners.forEach(l -> l.omniChanged(false));
+            }
             listeners.forEach(l -> l.frankenMekChanged(isFrankenMek()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
