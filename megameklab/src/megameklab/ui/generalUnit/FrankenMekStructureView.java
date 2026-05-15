@@ -171,7 +171,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             int centerTorsoTonnage = mek.getFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO);
             SpinnerNumberModel model = locView.model;
             model.setMinimum(getMinimumTonnage(mek, location, currentTonnage, centerTorsoTonnage));
-            model.setMaximum(getMaximumTonnage(location, currentTonnage));
+            model.setMaximum(getMaximumTonnage(mek, location, currentTonnage));
             model.setStepSize(5);
             locView.spinner.setEnabled(true);
             locView.updateLocation(mek.getLocationAbbr(location));
@@ -203,8 +203,10 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         return Math.min(currentTonnage, minimumTonnage);
     }
 
-    private int getMaximumTonnage(int location, int currentTonnage) {
-        int maximumTonnage = location == Mek.LOC_CENTER_TORSO ? maximumChassisTonnage.getAsInt() : 200;
+    private int getMaximumTonnage(Mek mek, int location, int currentTonnage) {
+        int maximumTonnage = location == Mek.LOC_CENTER_TORSO
+              ? maximumChassisTonnage.getAsInt()
+              : mek.getMaximumFrankenMekStructureTonnageForConstruction(location);
         return Math.max(currentTonnage, maximumTonnage);
     }
 
