@@ -63,8 +63,9 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.loaders.MekFileParser;
+import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.TripodMek;
@@ -609,7 +610,8 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         }
 
         MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(null,
-              new UnitLoadingDialog(null), false, UnitType.MEK);
+              new UnitLoadingDialog(null), false, UnitType.MEK,
+              unit -> matchesFrankenMekDonorLocationFilter(target, location, unit));
         Entity selectedEntity = selector.getChosenEntity();
         if (!(selectedEntity instanceof Mek donor)) {
             return;
@@ -620,13 +622,22 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int donorLocationTonnage = UnitUtil.getFrankenMekDonorLocationTonnage(donor, location);
+        String invalidReason = UnitUtil.getFrankenMekDonorLocationInvalidReason(target, location,
+              donorLocationTonnage);
+        if (invalidReason != null) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  donor.getShortNameRaw() + " cannot be used for " + target.getLocationName(location) + ".\n"
+                        + invalidReason,
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try {
             target.setFrankenMekStructureType(location,
                   donor.isFrankenMek() ? donor.getFrankenMekStructureType(location) : donor.getStructureType(),
                   donor.isFrankenMek() ? donor.getFrankenMekStructureTechLevel(location) : donor.getStructureTechLevel());
-            target.setFrankenMekStructureTonnage(location,
-                  donor.isFrankenMek() ? donor.getFrankenMekStructureTonnage(location) : (int) Math.ceil(donor.getWeight()));
+            target.setFrankenMekStructureTonnage(location, donorLocationTonnage);
             target.applyFrankenMekDonorLocationArmor(location, donor);
             UnitUtil.replaceLocationEquipmentFromDonor(target, donor, location);
             MekFileParser.postLoadInit(target);
@@ -639,6 +650,11 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean matchesFrankenMekDonorLocationFilter(Mek target, int location, MekSummary unit) {
+        int donorTonnage = (int) Math.ceil(unit.getTons());
+        return UnitUtil.getFrankenMekDonorLocationInvalidReason(target, location, donorTonnage) == null;
     }
 
     /**

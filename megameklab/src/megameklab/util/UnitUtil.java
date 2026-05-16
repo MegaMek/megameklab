@@ -1627,27 +1627,60 @@ public class UnitUtil {
         addFallbackFrankenMekStructureCriticals(target, location, donorEquipment);
     }
 
+    public static int getFrankenMekDonorLocationTonnage(Mek donor, int location) {
+        return donor.isFrankenMek()
+              ? donor.getFrankenMekStructureTonnage(location)
+              : (int) Math.ceil(donor.getWeight());
+    }
+
+    public static @Nullable String getFrankenMekDonorLocationInvalidReason(Mek target, int location,
+          int donorTonnage) {
+        if (!target.isFrankenMek()) {
+            return null;
+        }
+        int centerTorsoTonnage = target.getFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO);
+        if (target.locationIsLeg(location) && (donorTonnage < centerTorsoTonnage)) {
+            return "Legs cannot be lighter than the center torso (donor leg " + donorTonnage
+                  + " tons, CT " + centerTorsoTonnage + " tons).";
+        }
+        if ((location != Mek.LOC_CENTER_TORSO) && (centerTorsoTonnage <= 100) && (donorTonnage > 100)) {
+            return "Super-heavy parts cannot be installed when the center torso is not Super-heavy.";
+        }
+        return null;
+    }
+
     private static List<LocationEquipmentCopy> collectLocationEquipmentCopies(Mek source, int location) {
-        Map<Mounted<?>, LocationEquipmentCopy> equipmentCopies = new LinkedHashMap<>();
+        List<LocationEquipmentCopy> equipmentCopies = new ArrayList<>();
+        Map<Mounted<?>, Integer> groupedCopyIndexes = new LinkedHashMap<>();
         for (int slot = 0; slot < source.getNumberOfCriticalSlots(location); slot++) {
             CriticalSlot criticalSlot = source.getCritical(location, slot);
             if ((criticalSlot == null) || (criticalSlot.getType() != CriticalSlot.TYPE_EQUIPMENT)) {
                 continue;
             }
-            collectLocationEquipmentCopy(equipmentCopies, criticalSlot.getMount());
-            collectLocationEquipmentCopy(equipmentCopies, criticalSlot.getMount2());
+            collectLocationEquipmentCopy(equipmentCopies, groupedCopyIndexes, criticalSlot.getMount());
+            collectLocationEquipmentCopy(equipmentCopies, groupedCopyIndexes, criticalSlot.getMount2());
         }
-        return new ArrayList<>(equipmentCopies.values());
+        return equipmentCopies;
     }
 
-    private static void collectLocationEquipmentCopy(Map<Mounted<?>, LocationEquipmentCopy> equipmentCopies,
-          @Nullable Mounted<?> mounted) {
+    private static void collectLocationEquipmentCopy(List<LocationEquipmentCopy> equipmentCopies,
+          Map<Mounted<?>, Integer> groupedCopyIndexes, @Nullable Mounted<?> mounted) {
         if (mounted == null) {
             return;
         }
-        LocationEquipmentCopy existingCopy = equipmentCopies.get(mounted);
-        int criticalSlots = (existingCopy == null) ? 1 : existingCopy.criticalSlots() + 1;
-        equipmentCopies.put(mounted, new LocationEquipmentCopy(mounted, criticalSlots, mounted.isRearMounted()));
+        if (UnitUtil.isArmorOrStructure(mounted.getType())) {
+            equipmentCopies.add(new LocationEquipmentCopy(mounted, 1, mounted.isRearMounted()));
+            return;
+        }
+        Integer existingCopyIndex = groupedCopyIndexes.get(mounted);
+        if (existingCopyIndex == null) {
+            groupedCopyIndexes.put(mounted, equipmentCopies.size());
+            equipmentCopies.add(new LocationEquipmentCopy(mounted, 1, mounted.isRearMounted()));
+            return;
+        }
+        LocationEquipmentCopy existingCopy = equipmentCopies.get(existingCopyIndex);
+        equipmentCopies.set(existingCopyIndex, new LocationEquipmentCopy(mounted, existingCopy.criticalSlots() + 1,
+              mounted.isRearMounted()));
     }
 
     private static void deleteLocationEquipment(Mek target, int location) {

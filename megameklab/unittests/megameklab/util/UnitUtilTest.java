@@ -35,6 +35,8 @@ package megameklab.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import megamek.common.CriticalSlot;
@@ -160,6 +162,20 @@ class UnitUtilTest {
     }
 
     @Test
+    void donorLocationCopyPreservesSeparateArmorCriticalSlots() throws Exception {
+        EquipmentType reactiveArmor = EquipmentType.get("IS Reactive");
+        Mek target = newTestMek();
+        Mek donor = newTestMek();
+        Mounted<?> armorMount = donor.addEquipment(reactiveArmor, Mek.LOC_LEFT_TORSO);
+        donor.addCritical(Mek.LOC_LEFT_TORSO, new CriticalSlot(armorMount));
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_LEFT_TORSO);
+
+        assertEquals(2, countEquipment(target, reactiveArmor, Mek.LOC_LEFT_TORSO));
+        assertEquals(2, target.getNumberOfCriticalSlots(reactiveArmor, Mek.LOC_LEFT_TORSO));
+    }
+
+    @Test
     void donorLocationCopyPreservesSeparateRepeatedComponents() throws Exception {
         EquipmentType doubleHeatSink = EquipmentType.get(EquipmentTypeLookup.CLAN_DOUBLE_HS);
         Mek target = newTestMek();
@@ -222,5 +238,29 @@ class UnitUtilTest {
         assertEquals(engineSlots, countSystemCriticalSlots(target, Mek.LOC_LEFT_TORSO, Mek.SYSTEM_ENGINE));
         assertEquals(0, countEquipment(target, mediumLaser, Mek.LOC_LEFT_TORSO));
         assertEquals(1, countEquipment(target, largeLaser, Mek.LOC_LEFT_TORSO));
+    }
+
+    @Test
+    void frankenMekDonorLocationRejectsLegsLighterThanCenterTorso() {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO, 80);
+
+        assertNotNull(UnitUtil.getFrankenMekDonorLocationInvalidReason(target, Mek.LOC_RIGHT_LEG, 75));
+        assertNull(UnitUtil.getFrankenMekDonorLocationInvalidReason(target, Mek.LOC_RIGHT_LEG, 80));
+    }
+
+    @Test
+    void frankenMekDonorLocationRejectsSuperHeavyPartsWhenCenterTorsoIsNotSuperHeavy() {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO, 100);
+
+        assertNotNull(UnitUtil.getFrankenMekDonorLocationInvalidReason(target, Mek.LOC_RIGHT_ARM, 105));
+        assertNull(UnitUtil.getFrankenMekDonorLocationInvalidReason(target, Mek.LOC_CENTER_TORSO, 105));
+
+        target.setFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO, 105);
+
+        assertNull(UnitUtil.getFrankenMekDonorLocationInvalidReason(target, Mek.LOC_RIGHT_ARM, 105));
     }
 }
