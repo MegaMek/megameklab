@@ -151,7 +151,8 @@ public final class CritCellUtil {
                 name = "[DWP] " + mounted.getLinked().getName();
             } else if (mounted.is(EquipmentTypeLookup.BA_APM) && mounted.getLinked() != null) {
                 name = "[APM] " + mounted.getLinked().getName();
-            } else if (mounted.getType().hasFlag(MiscType.F_AP_MOUNT) && mounted.getLinked() != null) {
+            } else if ((mounted.getType() instanceof MiscType miscType) && miscType.hasFlag(MiscType.F_AP_MOUNT)
+                  && (mounted.getLinked() != null)) {
                 // armored gloves may also act as an APM, TM p.171
                 name += " (attached " + mounted.getLinked().getName() + ")";
             }
