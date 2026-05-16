@@ -34,6 +34,8 @@ package megameklab.ui.mek;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import megamek.common.CriticalSlot;
@@ -91,6 +94,8 @@ import megameklab.util.UnitUtil;
 public class BMCriticalView extends IView implements ActionListener, CriticalSlotsView {
 
     private static final String CASE_NONE_LABEL = "No CASE";
+    private static final int DONOR_LABEL_BOTTOM_MARGIN = 6;
+    private static final int DONOR_LABEL_TEXT_HORIZONTAL_PADDING = 4;
 
     /** All CASE-family equipment types, built once from F_CASE / F_CASEII / F_CASEP flags. */
     private static List<EquipmentType> allCaseTypes;
@@ -176,6 +181,9 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
             JLabel donorLabel = new JLabel();
             donorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            donorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            donorLabel.setVerticalAlignment(SwingConstants.TOP);
+            donorLabel.setVisible(false);
             donorLabels.put(loc, donorLabel);
 
             JPanel donorPanel = new JPanel();
@@ -183,6 +191,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             donorPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
             donorPanel.add(donorButton);
             donorPanel.add(donorLabel);
+            donorPanel.add(Box.createVerticalStrut(DONOR_LABEL_BOTTOM_MARGIN));
             donorPanel.setVisible(false);
             donorPanels.put(loc, donorPanel);
         }
@@ -466,20 +475,107 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                 continue;
             }
 
-            donorLabel.setText(mek.getFrankenMekLocationSourceDisplayName(location).isBlank()
-                  ? ""
-                  : "Donor: " + mek.getFrankenMekLocationSourceDisplayName(location));
-
             JComponent locPanel = mekPanels.get(location);
             if (locPanel != null) {
                 int panelWidth = locPanel.getPreferredSize().width;
-                Dimension buttonSize = new Dimension(panelWidth, donorButton.getPreferredSize().height);
+                Insets donorPanelInsets = donorPanel.getInsets();
+                int donorContentWidth = Math.max(1,
+                      panelWidth - donorPanelInsets.left - donorPanelInsets.right);
+                Dimension buttonSize = new Dimension(donorContentWidth, donorButton.getPreferredSize().height);
                 donorButton.setMaximumSize(buttonSize);
+                updateDonorLabel(donorLabel, mek.getFrankenMekLocationSourceDisplayName(location), donorContentWidth);
                 donorPanel.setMaximumSize(new Dimension(panelWidth, donorPanel.getPreferredSize().height));
             }
 
             donorPanel.setVisible(showDonorControls);
         }
+    }
+
+    private void updateDonorLabel(JLabel donorLabel, String donorSource, int panelWidth) {
+        donorLabel.setMinimumSize(null);
+        donorLabel.setPreferredSize(null);
+        donorLabel.setMaximumSize(null);
+
+        int labelWidth = Math.max(1, panelWidth);
+        int textWidth = Math.max(1, labelWidth - (DONOR_LABEL_TEXT_HORIZONTAL_PADDING * 2));
+        boolean hasDonor = !donorSource.isBlank();
+        donorLabel.setText(hasDonor
+              ? getDonorLabelHtml(donorLabel, donorSource, textWidth)
+              : "");
+        donorLabel.setVisible(hasDonor);
+        donorLabel.setToolTipText(hasDonor ? donorSource : null);
+        Dimension preferredSize = donorLabel.getPreferredSize();
+        Dimension labelSize = new Dimension(labelWidth, preferredSize.height);
+        donorLabel.setMinimumSize(labelSize);
+        donorLabel.setPreferredSize(labelSize);
+        donorLabel.setMaximumSize(labelSize);
+    }
+
+    private String getDonorLabelHtml(JLabel donorLabel, String donorSource, int textWidth) {
+        StringBuilder html = new StringBuilder("<html><center>Donor:");
+        for (String line : wrapDonorSource(donorLabel, donorSource, textWidth)) {
+            html.append("<br>").append(escapeHtml(line));
+        }
+        return html.append("</center></html>").toString();
+    }
+
+    private List<String> wrapDonorSource(JLabel donorLabel, String donorSource, int textWidth) {
+        FontMetrics fontMetrics = donorLabel.getFontMetrics(donorLabel.getFont());
+        List<String> lines = new ArrayList<>();
+        StringBuilder currentLine = new StringBuilder();
+        for (String word : donorSource.split(" ")) {
+            if (word.isEmpty()) {
+                continue;
+            }
+
+            appendWrappedWord(lines, currentLine, word, fontMetrics, textWidth);
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+        }
+        return lines;
+    }
+
+    private void appendWrappedWord(List<String> lines, StringBuilder currentLine, String word,
+          FontMetrics fontMetrics, int textWidth) {
+        String candidate = (currentLine.length() == 0) ? word : currentLine + " " + word;
+        if (fontMetrics.stringWidth(candidate) <= textWidth) {
+            currentLine.setLength(0);
+            currentLine.append(candidate);
+            return;
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+            currentLine.setLength(0);
+        }
+
+        appendWordChunks(lines, currentLine, word, fontMetrics, textWidth);
+    }
+
+    private void appendWordChunks(List<String> lines, StringBuilder currentLine, String word,
+          FontMetrics fontMetrics, int textWidth) {
+        String remainingWord = word;
+        while (fontMetrics.stringWidth(remainingWord) > textWidth) {
+            int splitIndex = findSplitIndex(remainingWord, fontMetrics, textWidth);
+            lines.add(remainingWord.substring(0, splitIndex));
+            remainingWord = remainingWord.substring(splitIndex);
+        }
+        currentLine.append(remainingWord);
+    }
+
+    private int findSplitIndex(String text, FontMetrics fontMetrics, int textWidth) {
+        int splitIndex = 1;
+        while ((splitIndex < text.length())
+              && (fontMetrics.stringWidth(text.substring(0, splitIndex + 1)) <= textWidth)) {
+            splitIndex++;
+        }
+        return splitIndex;
+    }
+
+    private String escapeHtml(String text) {
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     /**
