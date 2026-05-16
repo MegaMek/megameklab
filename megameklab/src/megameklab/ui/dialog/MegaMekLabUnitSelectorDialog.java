@@ -41,6 +41,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import javax.swing.*;
@@ -64,7 +65,7 @@ import megameklab.util.UnitUtil;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private static final int NO_UNIT_TYPE_RESTRICTION = -1;
-    private static final Predicate<MekSummary> NO_UNIT_FILTER = unit -> true;
+    private static final Predicate<MekSummary> NO_UNIT_FILTER = Objects::nonNull;
 
     // region Variable Declarations
     private Entity chosenEntity;
@@ -75,7 +76,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
     private final int restrictedUnitType;
-    private final Predicate<MekSummary> unitFilter;
 
     // endregion Variable Declarations
 
@@ -101,7 +101,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
         this.restrictedUnitType = restrictedUnitType;
-        this.unitFilter = (unitFilter == null) ? NO_UNIT_FILTER : unitFilter;
+        setUnitSelectionScopeFilter(createUnitSelectionScopeFilter(restrictedUnitType, unitFilter));
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -135,7 +135,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
         restrictedUnitType = NO_UNIT_TYPE_RESTRICTION;
-        unitFilter = NO_UNIT_FILTER;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -167,6 +166,16 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     private boolean hasRestrictedUnitType() {
         return restrictedUnitType != NO_UNIT_TYPE_RESTRICTION;
+    }
+
+    private static Predicate<MekSummary> createUnitSelectionScopeFilter(int restrictedUnitType,
+          Predicate<MekSummary> unitFilter) {
+        Predicate<MekSummary> filter = NO_UNIT_FILTER;
+        if (restrictedUnitType != NO_UNIT_TYPE_RESTRICTION) {
+            String restrictedUnitTypeName = UnitType.getTypeName(restrictedUnitType);
+            filter = filter.and(unit -> restrictedUnitTypeName.equals(unit.getUnitType()));
+        }
+        return (unitFilter == null) ? filter : filter.and(unitFilter);
     }
 
     @Override
@@ -328,13 +337,6 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             chosenEntities = new ArrayList<>();
         }
         return chosenEntities;
-    }
-
-    @Override
-    protected boolean matchesUnitSelectionScope(MekSummary unit) {
-        return (!hasRestrictedUnitType()
-              || UnitType.getTypeName(restrictedUnitType).equals(unit.getUnitType()))
-              && unitFilter.test(unit);
     }
 
     @Override
