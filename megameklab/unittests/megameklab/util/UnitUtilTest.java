@@ -33,14 +33,21 @@
 
 package megameklab.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import megamek.common.CriticalSlot;
 import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
 import megamek.common.enums.TechBase;
+import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechnology;
 import megamek.common.units.BipedMek;
+import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
@@ -48,6 +55,32 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(value = InitializeTypes.class)
 class UnitUtilTest {
+
+    private static Mek newTestMek() {
+        Mek mek = new BipedMek();
+        mek.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        mek.setWeight(25.0);
+        mek.setEngine(new Engine(100, Engine.NORMAL_ENGINE, 0));
+        return mek;
+    }
+
+    private static long countEquipment(Mek mek, EquipmentType equipmentType, int location) {
+        return mek.getEquipment().stream()
+              .filter(mounted -> equipmentType.equals(mounted.getType()) && (mounted.getLocation() == location))
+              .count();
+    }
+
+    private static long countSystemCriticalSlots(Mek mek, int location, int systemIndex) {
+        long count = 0;
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(location); slot++) {
+            CriticalSlot criticalSlot = mek.getCritical(location, slot);
+            if ((criticalSlot != null) && (criticalSlot.getType() == CriticalSlot.TYPE_SYSTEM)
+                  && (criticalSlot.getIndex() == systemIndex)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     @Test
     void isLegalUsesOriginalBuildYear() {
@@ -69,5 +102,125 @@ class UnitUtilTest {
         assertTrue(UnitUtil.isLegal(mek, lostech));
         assertTrue(UnitUtil.isLegal(mek, currenttech));
         assertFalse(UnitUtil.isLegal(mek, futuretech));
+    }
+
+    @Test
+    void donorLocationCopyDeletesTargetEquipmentAndAddsFallbackStructure() throws Exception {
+        EquipmentType endoSteel = EquipmentType.get(
+              EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_ENDO_STEEL, false));
+        EquipmentType mediumLaser = EquipmentType.get("Medium Laser");
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setFrankenMekStructureType(Mek.LOC_RIGHT_ARM, endoSteel);
+        Mounted<?> oldMount = target.addEquipment(mediumLaser, Mek.LOC_RIGHT_ARM);
+
+        Mek donor = newTestMek();
+        donor.addEquipment(mediumLaser, Mek.LOC_RIGHT_ARM);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertFalse(target.getEquipment().contains(oldMount));
+        assertEquals(1, countEquipment(target, mediumLaser, Mek.LOC_RIGHT_ARM));
+        assertEquals(2, target.getNumberOfCriticalSlots(endoSteel, Mek.LOC_RIGHT_ARM));
+    }
+
+    @Test
+    void donorLocationCopyMovesFallbackStructureSlotsToUnallocatedWhenLocationIsFull() throws Exception {
+        EquipmentType endoSteel = EquipmentType.get(
+              EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_ENDO_STEEL, false));
+        EquipmentType mediumLaser = EquipmentType.get("Medium Laser");
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setFrankenMekStructureType(Mek.LOC_RIGHT_ARM, endoSteel);
+
+        Mek donor = newTestMek();
+        int donorEquipmentSlots = donor.getEmptyCriticalSlots(Mek.LOC_RIGHT_ARM);
+        for (int slot = 0; slot < donorEquipmentSlots; slot++) {
+            donor.addEquipment(mediumLaser, Mek.LOC_RIGHT_ARM);
+        }
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertEquals(donorEquipmentSlots, countEquipment(target, mediumLaser, Mek.LOC_RIGHT_ARM));
+        assertEquals(0, target.getNumberOfCriticalSlots(endoSteel, Mek.LOC_RIGHT_ARM));
+        assertEquals(2, countEquipment(target, endoSteel, Entity.LOC_NONE));
+    }
+
+    @Test
+    void donorLocationCopyDoesNotDuplicateRepeatedMultiSlotEquipment() throws Exception {
+        EquipmentType largeLaser = EquipmentType.get("Large Laser");
+        Mek target = newTestMek();
+        Mek donor = newTestMek();
+        donor.addEquipment(largeLaser, Mek.LOC_RIGHT_ARM);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertEquals(1, countEquipment(target, largeLaser, Mek.LOC_RIGHT_ARM));
+        assertEquals(2, target.getNumberOfCriticalSlots(largeLaser, Mek.LOC_RIGHT_ARM));
+    }
+
+    @Test
+    void donorLocationCopyPreservesSeparateRepeatedComponents() throws Exception {
+        EquipmentType doubleHeatSink = EquipmentType.get(EquipmentTypeLookup.CLAN_DOUBLE_HS);
+        Mek target = newTestMek();
+        Mek donor = newTestMek();
+        donor.addEquipment(doubleHeatSink, Mek.LOC_RIGHT_ARM);
+        donor.addEquipment(doubleHeatSink, Mek.LOC_RIGHT_ARM);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertEquals(2, countEquipment(target, doubleHeatSink, Mek.LOC_RIGHT_ARM));
+        assertEquals(4, target.getNumberOfCriticalSlots(doubleHeatSink, Mek.LOC_RIGHT_ARM));
+    }
+
+    @Test
+    void donorLocationCopyPreservesRearMountedStatus() throws Exception {
+        EquipmentType mediumLaser = EquipmentType.get("Medium Laser");
+        Mek target = newTestMek();
+        Mek donor = newTestMek();
+        donor.addEquipment(mediumLaser, Mek.LOC_RIGHT_TORSO, true);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_TORSO);
+
+        assertTrue(target.getEquipment().stream()
+              .anyMatch(mounted -> mediumLaser.equals(mounted.getType())
+                    && (mounted.getLocation() == Mek.LOC_RIGHT_TORSO) && mounted.isRearMounted()));
+    }
+
+    @Test
+    void donorLocationCopyMovesWholeComponentToUnallocatedWhenItCannotFit() throws Exception {
+        EquipmentType autocannon = EquipmentType.get("Autocannon/20");
+        Mek target = newTestMek();
+        target.setEngine(new Engine(300, Engine.XL_ENGINE, 0));
+        target.addEngineCrits();
+
+        Mek donor = newTestMek();
+        donor.addEquipment(autocannon, Mek.LOC_LEFT_TORSO);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_LEFT_TORSO);
+
+        assertEquals(0, countEquipment(target, autocannon, Mek.LOC_LEFT_TORSO));
+        assertEquals(0, target.getNumberOfCriticalSlots(autocannon, Mek.LOC_LEFT_TORSO));
+        assertEquals(1, countEquipment(target, autocannon, Entity.LOC_NONE));
+    }
+
+    @Test
+    void donorLocationCopyKeepsSystemCriticalSlotsInTargetLocation() throws Exception {
+        EquipmentType mediumLaser = EquipmentType.get("Medium Laser");
+        EquipmentType largeLaser = EquipmentType.get("Large Laser");
+        Mek target = newTestMek();
+        target.setEngine(new Engine(300, Engine.XL_ENGINE, 0));
+        target.addEngineCrits();
+        long engineSlots = countSystemCriticalSlots(target, Mek.LOC_LEFT_TORSO, Mek.SYSTEM_ENGINE);
+        target.addEquipment(mediumLaser, Mek.LOC_LEFT_TORSO);
+
+        Mek donor = newTestMek();
+        donor.addEquipment(largeLaser, Mek.LOC_LEFT_TORSO);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_LEFT_TORSO);
+
+        assertEquals(engineSlots, countSystemCriticalSlots(target, Mek.LOC_LEFT_TORSO, Mek.SYSTEM_ENGINE));
+        assertEquals(0, countEquipment(target, mediumLaser, Mek.LOC_LEFT_TORSO));
+        assertEquals(1, countEquipment(target, largeLaser, Mek.LOC_LEFT_TORSO));
     }
 }

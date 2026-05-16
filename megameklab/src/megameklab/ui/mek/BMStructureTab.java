@@ -139,12 +139,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
               new MyomerEnhancementSummaryItem(),
               new OtherSummaryItem());
 
-        if (getMek().hasPatchworkArmor()) {
-            panArmorAllocation.showPatchwork(true);
-        } else {
-            panPatchwork.setVisible(false);
-        }
-
         panBasicInfo.setFromEntity(getMek());
         panChassis.setFromEntity(getMek());
         clampFrankenMekArmorToStructureLimits();
@@ -153,6 +147,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setFromMek(getMek());
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
         panFrankenMekStructure.setFromEntity(getMek());
         iconView.setFromEntity(getMek());
 
@@ -223,12 +218,21 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.setFromEntity(getMek());
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
         panFrankenMekStructure.setFromEntity(getMek());
         panLAMFuel.setFromEntity(getMek());
         panLAMFuel.setVisible(getMek() instanceof LandAirMek);
         panSummary.refresh();
         iconView.setFromEntity(getMek());
         addAllListeners();
+    }
+
+    private void refreshPatchworkArmorControls() {
+        boolean patchworkArmor = getMek().hasPatchworkArmor();
+        panArmorAllocation.showPatchwork(patchworkArmor);
+        panPatchwork.setVisible(patchworkArmor);
+        panPatchwork.revalidate();
+        panPatchwork.repaint();
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -842,6 +846,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor.refresh();
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
         panFrankenMekStructure.setFromEntity(getMek());
         refresh.refreshBuild();
         addAllListeners();
@@ -1792,6 +1797,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMek()));
         panArmor.setFromEntity(getMek());
         panArmorAllocation.setFromEntity(getMek());
+        panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshSummary();

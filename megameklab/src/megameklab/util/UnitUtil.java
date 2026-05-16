@@ -41,8 +41,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -96,6 +99,8 @@ import megameklab.ui.PopupMessages;
 
 public class UnitUtil {
     private static final MMLogger LOGGER = MMLogger.create(UnitUtil.class);
+
+    private record LocationEquipmentCopy(Mounted<?> mounted, int criticalSlots, boolean rearMounted) {}
 
     private static Font rsFont = null;
     private static Font rsBoldFont = null;
@@ -1610,6 +1615,159 @@ public class UnitUtil {
      */
     public static void copyLocationEquipment(Entity entity, int fromLoc, int toLoc) throws LocationFullException {
         copyLocationEquipment(entity, fromLoc, toLoc, true, true);
+    }
+
+    public static void replaceLocationEquipmentFromDonor(Mek target, Mek donor, int location)
+          throws LocationFullException {
+        List<LocationEquipmentCopy> donorEquipment = collectLocationEquipmentCopies(donor, location);
+        deleteLocationEquipment(target, location);
+        for (LocationEquipmentCopy equipmentCopy : donorEquipment) {
+            addLocationEquipmentCopy(target, location, equipmentCopy);
+        }
+        addFallbackFrankenMekStructureCriticals(target, location, donorEquipment);
+    }
+
+    private static List<LocationEquipmentCopy> collectLocationEquipmentCopies(Mek source, int location) {
+        Map<Mounted<?>, LocationEquipmentCopy> equipmentCopies = new LinkedHashMap<>();
+        for (int slot = 0; slot < source.getNumberOfCriticalSlots(location); slot++) {
+            CriticalSlot criticalSlot = source.getCritical(location, slot);
+            if ((criticalSlot == null) || (criticalSlot.getType() != CriticalSlot.TYPE_EQUIPMENT)) {
+                continue;
+            }
+            collectLocationEquipmentCopy(equipmentCopies, criticalSlot.getMount());
+            collectLocationEquipmentCopy(equipmentCopies, criticalSlot.getMount2());
+        }
+        return new ArrayList<>(equipmentCopies.values());
+    }
+
+    private static void collectLocationEquipmentCopy(Map<Mounted<?>, LocationEquipmentCopy> equipmentCopies,
+          @Nullable Mounted<?> mounted) {
+        if (mounted == null) {
+            return;
+        }
+        LocationEquipmentCopy existingCopy = equipmentCopies.get(mounted);
+        int criticalSlots = (existingCopy == null) ? 1 : existingCopy.criticalSlots() + 1;
+        equipmentCopies.put(mounted, new LocationEquipmentCopy(mounted, criticalSlots, mounted.isRearMounted()));
+    }
+
+    private static void deleteLocationEquipment(Mek target, int location) {
+        Set<Mounted<?>> mountedEquipment = new LinkedHashSet<>();
+        for (int slot = 0; slot < target.getNumberOfCriticalSlots(location); slot++) {
+            CriticalSlot criticalSlot = target.getCritical(location, slot);
+            if ((criticalSlot == null) || (criticalSlot.getType() != CriticalSlot.TYPE_EQUIPMENT)) {
+                continue;
+            }
+            if (criticalSlot.getMount() != null) {
+                mountedEquipment.add(criticalSlot.getMount());
+            }
+            if (criticalSlot.getMount2() != null) {
+                mountedEquipment.add(criticalSlot.getMount2());
+            }
+        }
+        for (Mounted<?> mounted : new ArrayList<>(target.getEquipment())) {
+            if ((mounted.getLocation() == location) || (mounted.getSecondLocation() == location)) {
+                mountedEquipment.add(mounted);
+            }
+        }
+        for (Mounted<?> mounted : mountedEquipment) {
+            deleteLocationEquipment(target, mounted, location);
+        }
+    }
+
+    private static void deleteLocationEquipment(Mek target, Mounted<?> mounted, int location) {
+        if (!mounted.getType().isSpreadable()) {
+            removeMounted(target, mounted);
+            return;
+        }
+
+        removeCriticalSlots(target, mounted, location);
+        List<Integer> remainingLocations = mounted.allLocations();
+        if (remainingLocations.isEmpty()) {
+            removeMounted(target, mounted);
+        } else if (mounted.getLocation() == location) {
+            changeMountStatus(target, mounted, remainingLocations.get(0), Entity.LOC_NONE, mounted.isRearMounted());
+        }
+    }
+
+    private static void addLocationEquipmentCopy(Mek target, int location, LocationEquipmentCopy equipmentCopy)
+          throws LocationFullException {
+        Mounted<?> mounted = copyMounted(target, equipmentCopy.mounted());
+        int criticalSlots = getCriticalSlotsForLocationCopy(target, mounted, equipmentCopy.criticalSlots());
+        addMountedOrUnallocated(target, mounted, location, criticalSlots, equipmentCopy.rearMounted());
+    }
+
+    private static Mounted<?> copyMounted(Entity target, Mounted<?> source) {
+        Mounted<?> copy = Mounted.createMounted(target, source.getType());
+        copy.setArmored(source.isArmored());
+        copy.setBaMountLoc(source.getBaMountLoc());
+        copy.setFacing(source.getFacing());
+        copy.setMekTurretMounted(source.isMekTurretMounted());
+        copy.setOmniPodMounted(source.isOmniPodMounted());
+        copy.setOriginalShots(source.getOriginalShots());
+        copy.setShotsLeft(source.getBaseShotsLeft());
+        copy.setSize(source.getSize());
+        return copy;
+    }
+
+    private static int getCriticalSlotsForLocationCopy(Mek target, Mounted<?> mounted, int sourceCriticalSlots) {
+        int criticalSlots = mounted.getType().isSpreadable() ? sourceCriticalSlots : mounted.getNumCriticalSlots();
+        if (!mounted.getType().isSpreadable() && target.isSuperHeavy()) {
+            criticalSlots = (int) Math.ceil(criticalSlots / 2.0);
+        }
+        return Math.max(1, criticalSlots);
+    }
+
+    private static void addMountedOrUnallocated(Mek target, Mounted<?> mounted, int location, int criticalSlots,
+          boolean rearMounted)
+          throws LocationFullException {
+        if (target.getEmptyCriticalSlots(location) < criticalSlots) {
+            target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
+            removeHiddenAmmo(mounted);
+            return;
+        }
+
+        try {
+            target.addEquipment(mounted, location, rearMounted);
+            for (int slot = getCriticalSlotsAddedByDefault(target, mounted); slot < criticalSlots; slot++) {
+                if (!target.addCritical(location, new CriticalSlot(mounted))) {
+                    removeCriticalSlots(target, mounted);
+                    changeMountStatus(target, mounted, Entity.LOC_NONE, Entity.LOC_NONE, rearMounted);
+                    removeHiddenAmmo(mounted);
+                    return;
+                }
+            }
+            removeHiddenAmmo(mounted);
+        } catch (LocationFullException ex) {
+            target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
+            removeHiddenAmmo(mounted);
+        }
+    }
+
+    private static int getCriticalSlotsAddedByDefault(Mek target, Mounted<?> mounted) {
+        if (mounted.getType().isSpreadable() || mounted.isSplitable()) {
+            return 1;
+        }
+        int criticalSlots = mounted.getNumCriticalSlots();
+        if (target.isSuperHeavy()) {
+            criticalSlots = (int) Math.ceil(criticalSlots / 2.0);
+        }
+        return Math.max(1, criticalSlots);
+    }
+
+    private static void addFallbackFrankenMekStructureCriticals(Mek target, int location,
+          List<LocationEquipmentCopy> copiedEquipment) throws LocationFullException {
+        if (!target.isFrankenMek()) {
+            return;
+        }
+        EquipmentType structure = target.getFrankenMekStructureEquipment(location);
+        int fallbackSlots = target.getFrankenMekStructureCriticalSlots(location);
+        if ((structure == null) || (fallbackSlots <= 0)
+              || copiedEquipment.stream().anyMatch(copy -> structure.equals(copy.mounted().getType()))) {
+            return;
+        }
+        for (int slot = 0; slot < fallbackSlots; slot++) {
+            addMountedOrUnallocated(target, Mounted.createMounted(target, structure), location, 1, false);
+        }
     }
 
     /**

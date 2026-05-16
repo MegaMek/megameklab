@@ -63,9 +63,7 @@ import megamek.common.annotations.Nullable;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
-import megamek.common.loaders.MtfFile;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
@@ -91,7 +89,7 @@ import megameklab.util.UnitUtil;
  */
 public class BMCriticalView extends IView implements ActionListener, CriticalSlotsView {
 
-    private static final String CASE_NONE_LABEL = "None";
+    private static final String CASE_NONE_LABEL = "No CASE";
 
     /** All CASE-family equipment types, built once from F_CASE / F_CASEII / F_CASEP flags. */
     private static List<EquipmentType> allCaseTypes;
@@ -629,15 +627,13 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   donor.isFrankenMek() ? donor.getFrankenMekStructureTechLevel(location) : donor.getStructureTechLevel());
             target.setFrankenMekStructureTonnage(location,
                   donor.isFrankenMek() ? donor.getFrankenMekStructureTonnage(location) : (int) Math.ceil(donor.getWeight()));
-            MtfFile.replaceLocationCriticalData(target, location, donor.getCriticalDataForLocation(location));
+            target.applyFrankenMekDonorLocationArmor(location, donor);
+            UnitUtil.replaceLocationEquipmentFromDonor(target, donor, location);
             MekFileParser.postLoadInit(target);
             target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
-        } catch (EntityLoadingException ex) {
-            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage(),
-                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
