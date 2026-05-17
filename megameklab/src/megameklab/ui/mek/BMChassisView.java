@@ -54,6 +54,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megamek.common.annotations.Nullable;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -898,8 +899,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbMotiveType.setSelectedIndex(index);
     }
 
-    public EquipmentType getStructure() {
-        return (EquipmentType) cbStructure.getSelectedItem();
+    public @Nullable EquipmentType getStructure() {
+        EquipmentType selectedStructure = (EquipmentType) cbStructure.getSelectedItem();
+        return (selectedStructure == HYBRID_STRUCTURE) ? null : selectedStructure;
     }
 
     @Deprecated(since = "0.51.0", forRemoval = true)
@@ -1088,7 +1090,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             notifyListeners(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
         } else if ((e.getSource() == cbStructure) && !isFrankenMek()) {
-            notifyListeners(l -> l.structureChanged(getStructure()));
+            EquipmentType structure = getStructure();
+            if (structure != null) {
+                notifyListeners(l -> l.structureChanged(structure));
+            }
         } else if (e.getSource() == cbEngine) {
             notifyListeners(l -> l.engineChanged(getEngine()));
         } else if (e.getSource() == cbGyro) {

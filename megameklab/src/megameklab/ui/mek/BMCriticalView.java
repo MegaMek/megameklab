@@ -64,10 +64,12 @@ import javax.swing.SwingUtilities;
 
 import megamek.common.CriticalSlot;
 import megamek.common.annotations.Nullable;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
@@ -97,6 +99,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
     private static final MMLogger LOGGER = MMLogger.create(BMCriticalView.class);
     private static final String CASE_NONE_LABEL = "No CASE";
+    private static final String DONOR_ACTION_PREFIX = "donor:";
     private static final int DONOR_LABEL_BOTTOM_MARGIN = 6;
     private static final int DONOR_LABEL_TEXT_HORIZONTAL_PADDING = 4;
 
@@ -178,7 +181,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
             JButton donorButton = new JButton("Take From Unit...");
             donorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            donorButton.setActionCommand("donor:" + loc);
+            donorButton.setActionCommand(DONOR_ACTION_PREFIX + loc);
             donorButton.addActionListener(this);
             donorButtons.put(loc, donorButton);
 
@@ -467,6 +470,11 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
     private void refreshDonorControls() {
         Mek mek = getMek();
         boolean showDonorControls = mek.isFrankenMek();
+        if (!showDonorControls) {
+            donorPanels.values().stream().filter(JPanel::isVisible).forEach(panel -> panel.setVisible(false));
+            return;
+        }
+
         for (Map.Entry<Integer, JPanel> entry : donorPanels.entrySet()) {
             int location = entry.getKey();
             JPanel donorPanel = entry.getValue();
@@ -490,7 +498,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                 donorPanel.setMaximumSize(new Dimension(panelWidth, donorPanel.getPreferredSize().height));
             }
 
-            donorPanel.setVisible(showDonorControls);
+            donorPanel.setVisible(true);
         }
     }
 
@@ -637,14 +645,19 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         if (updatingCaseCombos) {
             return;
         }
-        if ((e.getActionCommand() != null) && e.getActionCommand().startsWith("donor:")) {
-            importDonorLocation(Integer.parseInt(e.getActionCommand().substring("donor:".length())));
+        String actionCommand = e.getActionCommand();
+        if ((actionCommand != null) && actionCommand.startsWith(DONOR_ACTION_PREFIX)) {
+            try {
+                importDonorLocation(Integer.parseInt(actionCommand.substring(DONOR_ACTION_PREFIX.length())));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex, "Invalid donor location action command: {}", actionCommand);
+            }
             return;
         }
         // Handle CASE combo box changes
         int loc;
         try {
-            loc = Integer.parseInt(e.getActionCommand());
+            loc = Integer.parseInt(actionCommand);
         } catch (NumberFormatException ex) {
             return;
         }
@@ -708,8 +721,8 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             return;
         }
 
-          JFrame ownerFrame = getOwnerFrame();
-          MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
+            JFrame ownerFrame = getOwnerFrame();
+            MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
               new UnitLoadingDialog(ownerFrame), false, UnitType.MEK,
               unit -> matchesFrankenMekDonorLocationFilter(target, location, unit));
         Entity selectedEntity = selector.getChosenEntity();
@@ -745,7 +758,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
-        } catch (Exception ex) {
+        } catch (LocationFullException | EntityLoadingException ex) {
             LOGGER.error(ex, "Unable to import {} from {}.", target.getLocationName(location), donor.getShortNameRaw());
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
