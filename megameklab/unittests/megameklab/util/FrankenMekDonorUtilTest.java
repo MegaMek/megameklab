@@ -432,4 +432,36 @@ class FrankenMekDonorUtilTest {
 
         assertNull(FrankenMekDonorUtil.getDonorLocationInvalidReason(target, Mek.LOC_RIGHT_ARM, 105));
     }
+
+    @Test
+    void mismatchedLegsFollowDonorDisplayNames() {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+
+        target.linkFrankenMekLocationToSource(Mek.LOC_RIGHT_LEG, "Archer XYZ");
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+
+        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Archer XYZ");
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertFalse(target.hasMismatchedFrankenMekLegs());
+
+        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Catapult ABC");
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+    }
+
+    @Test
+    void mismatchedLegsClearWhenAllLegDonorDisplayNamesAreBlank() {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+
+        target.setMismatchedFrankenMekLegs(true);
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertFalse(target.hasMismatchedFrankenMekLegs());
+    }
 }

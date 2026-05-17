@@ -142,6 +142,23 @@ public final class FrankenMekDonorUtil {
         return null;
     }
 
+    public static void updateMismatchedLegsFromDonorSources(Mek mek) {
+        String firstLegDonor = null;
+        for (int location = 0; location < mek.locations(); location++) {
+            if (!mek.locationIsLeg(location)) {
+                continue;
+            }
+            String legDonor = mek.getFrankenMekLocationSourceDisplayName(location);
+            if (firstLegDonor == null) {
+                firstLegDonor = legDonor;
+            } else if (!firstLegDonor.equals(legDonor)) {
+                mek.setMismatchedFrankenMekLegs(true);
+                return;
+            }
+        }
+        mek.setMismatchedFrankenMekLegs(false);
+    }
+
     private static void updateTechBaseForDonorLocation(Mek target, Mek donor, int location) {
         boolean donorLocationClan = isDonorLocationClan(donor, location);
         if (location == Mek.LOC_CENTER_TORSO) {
