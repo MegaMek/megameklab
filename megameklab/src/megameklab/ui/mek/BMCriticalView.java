@@ -758,6 +758,9 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                 target.setYear(donorYear);
             }
             target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
+            if (target.locationIsLeg(location)) {
+                updateMismatchedFrankenMekLegsFromDonorSources(target);
+            }
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
@@ -768,6 +771,23 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void updateMismatchedFrankenMekLegsFromDonorSources(Mek mek) {
+        String firstLegDonor = null;
+        for (int location = 0; location < mek.locations(); location++) {
+            if (!mek.locationIsLeg(location)) {
+                continue;
+            }
+            String legDonor = mek.getFrankenMekLocationSourceDisplayName(location);
+            if (firstLegDonor == null) {
+                firstLegDonor = legDonor;
+            } else if (!firstLegDonor.equals(legDonor)) {
+                mek.setMismatchedFrankenMekLegs(true);
+                return;
+            }
+        }
+        mek.setMismatchedFrankenMekLegs(false);
     }
 
     private boolean confirmDonorIntroYearUpdate(Mek target, Mek donor, int donorYear) {
