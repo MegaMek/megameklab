@@ -75,6 +75,7 @@ import megamek.common.units.Mek;
 import megamek.common.units.TripodMek;
 import megamek.common.units.UnitType;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
@@ -94,6 +95,7 @@ import megameklab.util.UnitUtil;
  */
 public class BMCriticalView extends IView implements ActionListener, CriticalSlotsView {
 
+    private static final MMLogger LOGGER = MMLogger.create(BMCriticalView.class);
     private static final String CASE_NONE_LABEL = "No CASE";
     private static final int DONOR_LABEL_BOTTOM_MARGIN = 6;
     private static final int DONOR_LABEL_TEXT_HORIZONTAL_PADDING = 4;
@@ -744,6 +746,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                 refresh.scheduleRefresh();
             }
         } catch (Exception ex) {
+            LOGGER.error(ex, "Unable to import {} from {}.", target.getLocationName(location), donor.getShortNameRaw());
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
