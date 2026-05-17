@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import megamek.common.CriticalSlot;
@@ -82,6 +83,13 @@ class FrankenMekDonorUtilTest {
         return mek.getEquipment().stream()
               .filter(mounted -> equipmentType.equals(mounted.getType()) && (mounted.getLocation() == location))
               .count();
+    }
+
+    private static Mounted<?> findEquipment(Mek mek, EquipmentType equipmentType, int location) {
+        return mek.getEquipment().stream()
+              .filter(mounted -> equipmentType.equals(mounted.getType()) && (mounted.getLocation() == location))
+              .findFirst()
+              .orElse(null);
     }
 
     private static long countSystemCriticalSlots(Mek mek, int location, int systemIndex) {
@@ -243,6 +251,26 @@ class FrankenMekDonorUtilTest {
         assertTrue(target.getEquipment().stream()
               .anyMatch(mounted -> mediumLaser.equals(mounted.getType())
                     && (mounted.getLocation() == Mek.LOC_RIGHT_TORSO) && mounted.isRearMounted()));
+    }
+
+    @Test
+    void donorLocationCopyPreservesCopiedEquipmentLinks() throws Exception {
+        EquipmentType ppc = EquipmentType.get("PPC");
+        EquipmentType ppcCapacitor = EquipmentType.get("PPC Capacitor");
+        Mek target = newTestMek();
+        Mek donor = newTestMek();
+        Mounted<?> donorPpc = donor.addEquipment(ppc, Mek.LOC_RIGHT_ARM);
+        Mounted<?> donorCapacitor = donor.addEquipment(ppcCapacitor, Mek.LOC_RIGHT_ARM);
+        donorCapacitor.setLinked(donorPpc);
+
+        FrankenMekDonorUtil.replaceLocationEquipment(target, donor, Mek.LOC_RIGHT_ARM);
+
+        Mounted<?> copiedPpc = findEquipment(target, ppc, Mek.LOC_RIGHT_ARM);
+        Mounted<?> copiedCapacitor = findEquipment(target, ppcCapacitor, Mek.LOC_RIGHT_ARM);
+        assertNotNull(copiedPpc);
+        assertNotNull(copiedCapacitor);
+        assertSame(copiedPpc, copiedCapacitor.getLinked());
+        assertSame(copiedCapacitor, copiedPpc.getLinkedBy());
     }
 
     @Test

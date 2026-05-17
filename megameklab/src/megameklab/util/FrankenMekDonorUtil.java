@@ -53,8 +53,10 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
+import megamek.logging.MMLogger;
 
 public final class FrankenMekDonorUtil {
+    private static final MMLogger LOGGER = MMLogger.create(FrankenMekDonorUtil.class);
 
     private record LocationEquipmentCopy(Mounted<?> mounted, int criticalSlots, boolean rearMounted) {}
 
@@ -93,11 +95,13 @@ public final class FrankenMekDonorUtil {
     public static void replaceLocationEquipment(Mek target, Mek donor, int location)
           throws LocationFullException {
         List<LocationEquipmentCopy> donorEquipment = collectLocationEquipmentCopies(donor, location);
+        Map<Mounted<?>, Mounted<?>> copiedEquipment = new LinkedHashMap<>();
         deleteLocationEquipment(target, location);
         copyLocationSystems(target, donor, location);
         for (LocationEquipmentCopy equipmentCopy : donorEquipment) {
-            addLocationEquipmentCopy(target, location, equipmentCopy);
+            addLocationEquipmentCopy(target, location, equipmentCopy, copiedEquipment);
         }
+        restoreCopiedEquipmentLinks(copiedEquipment);
         addFallbackFrankenMekStructureCriticals(target, location, donorEquipment);
     }
 
@@ -525,11 +529,29 @@ public final class FrankenMekDonorUtil {
         }
     }
 
-    private static void addLocationEquipmentCopy(Mek target, int location, LocationEquipmentCopy equipmentCopy)
+    private static void addLocationEquipmentCopy(Mek target, int location, LocationEquipmentCopy equipmentCopy,
+          Map<Mounted<?>, Mounted<?>> copiedEquipment)
           throws LocationFullException {
         Mounted<?> mounted = copyMounted(target, equipmentCopy.mounted());
+        copiedEquipment.put(equipmentCopy.mounted(), mounted);
         int criticalSlots = getCriticalSlotsForLocationCopy(target, mounted, equipmentCopy.criticalSlots());
         addMountedOrUnallocated(target, mounted, location, criticalSlots, equipmentCopy.rearMounted());
+    }
+
+    private static void restoreCopiedEquipmentLinks(Map<Mounted<?>, Mounted<?>> copiedEquipment) {
+        for (Map.Entry<Mounted<?>, Mounted<?>> equipmentCopy : copiedEquipment.entrySet()) {
+            Mounted<?> source = equipmentCopy.getKey();
+            Mounted<?> linkedCopy = copiedEquipment.get(source.getLinked());
+            if (linkedCopy == null) {
+                continue;
+            }
+            Mounted<?> copied = equipmentCopy.getValue();
+            if (source.getLinked().getCrossLinkedBy() == source) {
+                copied.setCrossLinked(linkedCopy);
+            } else {
+                copied.setLinked(linkedCopy);
+            }
+        }
     }
 
     private static Mounted<?> copyMounted(Entity target, Mounted<?> source) {
@@ -558,6 +580,8 @@ public final class FrankenMekDonorUtil {
           throws LocationFullException {
         if (target.getEmptyCriticalSlots(location) < criticalSlots) {
             // The copied equipment exists, but there is not enough room to place all of its crits in this location.
+            LOGGER.warn("Not enough critical slots in {} for {} ({} required); moving copied equipment to unallocated.",
+                  target.getLocationName(location), mounted.getName(), criticalSlots);
             target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
             UnitUtil.removeHiddenAmmo(mounted);
             return;
@@ -568,12 +592,17 @@ public final class FrankenMekDonorUtil {
             target.addEquipment(mounted, location, rearMounted);
             for (int slot = getCriticalSlotsAddedByDefault(target, mounted); slot < criticalSlots; slot++) {
                 if (!target.addCritical(location, new CriticalSlot(mounted))) {
+                    LOGGER.warn("Could not add all donor critical slots for {} in {}; "
+                              + "moving copied equipment to unallocated.",
+                          mounted.getName(), target.getLocationName(location));
                     moveMountedOrAddToUnallocated(target, mounted, rearMounted);
                     return;
                 }
             }
             UnitUtil.removeHiddenAmmo(mounted);
         } catch (LocationFullException ex) {
+            LOGGER.warn(ex, "Unable to place {} in {}; moving copied equipment to unallocated.", mounted.getName(),
+                  target.getLocationName(location));
             moveMountedOrAddToUnallocated(target, mounted, rearMounted);
         }
     }
