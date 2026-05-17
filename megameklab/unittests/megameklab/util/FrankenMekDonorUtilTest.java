@@ -97,6 +97,58 @@ class FrankenMekDonorUtilTest {
     }
 
     @Test
+    void importClanCenterTorsoChangesInnerSphereTargetToClanMixed() throws Exception {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        Mek donor = newTestMek();
+        donor.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+
+        FrankenMekDonorUtil.importLocation(target, donor, Mek.LOC_CENTER_TORSO);
+
+        assertTrue(target.isClan());
+        assertTrue(target.isMixedTech());
+    }
+
+    @Test
+    void importInnerSphereCenterTorsoChangesClanTargetToInnerSphereMixed() throws Exception {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+        Mek donor = newTestMek();
+
+        FrankenMekDonorUtil.importLocation(target, donor, Mek.LOC_CENTER_TORSO);
+
+        assertFalse(target.isClan());
+        assertTrue(target.isMixedTech());
+    }
+
+    @Test
+    void importClanNonCenterLocationKeepsInnerSphereBaseAndMakesMixed() throws Exception {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        Mek donor = newTestMek();
+        donor.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+
+        FrankenMekDonorUtil.importLocation(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertFalse(target.isClan());
+        assertTrue(target.isMixedTech());
+    }
+
+    @Test
+    void importInnerSphereNonCenterLocationKeepsClanBaseAndMakesMixed() throws Exception {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+        target.setTechLevel(TechConstants.T_CLAN_EXPERIMENTAL);
+        Mek donor = newTestMek();
+
+        FrankenMekDonorUtil.importLocation(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertTrue(target.isClan());
+        assertTrue(target.isMixedTech());
+    }
+
+    @Test
     void donorLocationCopyDeletesTargetEquipmentAndAddsFallbackStructure() throws Exception {
         EquipmentType endoSteel = EquipmentType.get(
               EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_ENDO_STEEL, false));

@@ -735,8 +735,9 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
             return;
         }
-                int donorLocationTonnage = FrankenMekDonorUtil.getDonorLocationTonnage(donor, location);
-                String invalidReason = FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location,
+
+        int donorLocationTonnage = FrankenMekDonorUtil.getDonorLocationTonnage(donor, location);
+        String invalidReason = FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location,
               donorLocationTonnage);
         if (invalidReason != null) {
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
@@ -745,14 +746,23 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int originalYear = target.getYear();
+        int donorYear = donor.getYear();
+        if ((donorYear > originalYear) && !confirmDonorIntroYearUpdate(target, donor, donorYear)) {
+            return;
+        }
 
         try {
             FrankenMekDonorUtil.importLocation(target, donor, location);
+            if (donorYear > originalYear) {
+                target.setYear(donorYear);
+            }
             target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
             if (refresh != null) {
                 refresh.scheduleRefresh();
             }
         } catch (LocationFullException | EntityLoadingException ex) {
+            target.setYear(originalYear);
             LOGGER.error(ex, "Unable to import {} from {}.", target.getLocationName(location), donor.getShortNameRaw());
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
@@ -760,11 +770,24 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         }
     }
 
+    private boolean confirmDonorIntroYearUpdate(Mek target, Mek donor, int donorYear) {
+        int choice = JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(this),
+              donor.getShortNameRaw() + " has intro year " + donorYear + ", which is later than "
+                    + target.getShortNameRaw() + "'s intro year " + target.getYear() + ".\n"
+                    + "Importing this location will update the unit intro year to " + donorYear + ".\n\n"
+                    + "Continue?",
+              "Update Intro Year", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        return choice == JOptionPane.YES_OPTION;
+    }
+
     private @Nullable JFrame getOwnerFrame() {
         return SwingUtilities.getWindowAncestor(this) instanceof JFrame frame ? frame : null;
     }
 
     private boolean matchesFrankenMekDonorLocationFilter(Mek target, int location, MekSummary unit) {
+        if (unit.getYear() > target.getYear()) {
+            return false;
+        }
         int donorTonnage = (int) Math.ceil(unit.getTons());
         return FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location, donorTonnage) == null;
     }

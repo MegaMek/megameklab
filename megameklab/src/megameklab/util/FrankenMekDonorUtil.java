@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 
 import megamek.common.CriticalSlot;
+import megamek.common.SimpleTechLevel;
+import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -73,6 +75,7 @@ public final class FrankenMekDonorUtil {
               donor.isFrankenMek() ? donor.getFrankenMekStructureType(location) : donor.getStructureType(),
               donor.isFrankenMek() ? donor.getFrankenMekStructureTechLevel(location) : donor.getStructureTechLevel());
         target.setFrankenMekStructureTonnage(location, donorLocationTonnage);
+        updateTechBaseForDonorLocation(target, donor, location);
         target.applyFrankenMekDonorLocationArmor(location, donor);
         replaceLocationEquipment(target, donor, location);
         MekFileParser.postLoadInit(target);
@@ -133,6 +136,30 @@ public final class FrankenMekDonorUtil {
             return "Super-heavy parts cannot be installed on a center torso that is not Super-heavy.";
         }
         return null;
+    }
+
+    private static void updateTechBaseForDonorLocation(Mek target, Mek donor, int location) {
+        boolean donorLocationClan = isDonorLocationClan(donor, location);
+        if (location == Mek.LOC_CENTER_TORSO) {
+            if (target.isClan() != donorLocationClan) {
+                setTechBase(target, donorLocationClan, true);
+            }
+        } else if (!target.isMixedTech() && (target.isClan() != donorLocationClan)) {
+            target.setMixedTech(true);
+        }
+    }
+
+    private static boolean isDonorLocationClan(Mek donor, int location) {
+        if (donor.isFrankenMek() && (location < donor.locations())) {
+            return TechConstants.isClan(donor.getFrankenMekStructureTechLevel(location));
+        }
+        return donor.isClan();
+    }
+
+    private static void setTechBase(Mek target, boolean clan, boolean mixed) {
+        SimpleTechLevel simpleTechLevel = SimpleTechLevel.convertCompoundToSimple(target.getTechLevel());
+        target.setTechLevel(simpleTechLevel.getCompoundTechLevel(clan));
+        target.setMixedTech(mixed);
     }
 
     private static void copyLocationSystems(Mek target, Mek donor, int location) {
