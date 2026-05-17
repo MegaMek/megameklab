@@ -67,6 +67,7 @@ import megamek.common.units.EntityWeightClass;
 import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadVee;
+import megamek.logging.MMLogger;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -78,6 +79,8 @@ import megameklab.ui.util.TechComboBox;
  * @author Neoancient
  */
 public class BMChassisView extends BuildView implements ActionListener, ChangeListener {
+    private static final MMLogger LOGGER = MMLogger.create(BMChassisView.class);
+
     List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(MekBuildListener l) {
@@ -918,10 +921,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             cbStructure.setSelectedItem(HYBRID_STRUCTURE);
         } else {
             EquipmentType structure = findStructure(structureName);
+            if (structure == null) {
+                structure = getFallbackStructure();
+                LOGGER.warn("Could not find structure type '{}'; using '{}' instead.", structureName,
+                      structure == null ? "no fallback structure" : structure.getName());
+            }
             if ((structure != null) && !containsStructure(structure)) {
                 cbStructure.addItem(structure);
             }
-            cbStructure.setSelectedItem(structure);
+            if (structure != null) {
+                cbStructure.setSelectedItem(structure);
+            }
         }
         cbStructure.setEnabled(!isFrankenMek());
         cbStructure.addActionListener(this);
@@ -936,7 +946,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         return false;
     }
 
-    private EquipmentType findStructure(String structureName) {
+    private @Nullable EquipmentType findStructure(String structureName) {
+        if (structureName == null) {
+            return null;
+        }
         EquipmentType structure = EquipmentType.get(structureName);
         if (structure != null) {
             return structure;
@@ -951,6 +964,19 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
               .filter(item -> item.getName().equals(structureName))
               .findFirst()
               .orElse(null);
+    }
+
+    private @Nullable EquipmentType getFallbackStructure() {
+        EquipmentType selectedStructure = getStructure();
+        if (selectedStructure != null) {
+            return selectedStructure;
+        }
+        List<EquipmentType> availableStructures = getAvailableStructures();
+        if (!availableStructures.isEmpty()) {
+            return availableStructures.get(0);
+        }
+        return EquipmentType.get(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD,
+              techManager.useClanTechBase()));
     }
 
     public Engine getEngine() {
