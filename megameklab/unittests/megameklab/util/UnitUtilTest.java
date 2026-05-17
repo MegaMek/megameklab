@@ -47,6 +47,7 @@ import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.interfaces.ITechnology;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
@@ -57,6 +58,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(value = InitializeTypes.class)
 class UnitUtilTest {
+
+    private static class PartiallyAddingMek extends BipedMek {
+        private boolean failNextLocationAdd = true;
+
+        @Override
+        public void addEquipment(Mounted<?> mounted, int location, boolean rearMounted) throws LocationFullException {
+            if (failNextLocationAdd && (location != Entity.LOC_NONE)) {
+                failNextLocationAdd = false;
+                super.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
+                throw new LocationFullException("forced partial add");
+            }
+            super.addEquipment(mounted, location, rearMounted);
+        }
+    }
 
     private static Mek newTestMek() {
         Mek mek = new BipedMek();
@@ -218,6 +233,24 @@ class UnitUtilTest {
         assertEquals(0, countEquipment(target, autocannon, Mek.LOC_LEFT_TORSO));
         assertEquals(0, target.getNumberOfCriticalSlots(autocannon, Mek.LOC_LEFT_TORSO));
         assertEquals(1, countEquipment(target, autocannon, Entity.LOC_NONE));
+    }
+
+    @Test
+    void donorLocationCopyDoesNotDuplicatePartiallyAddedUnallocatedEquipment() throws Exception {
+        EquipmentType mediumLaser = EquipmentType.get("Medium Laser");
+        Mek target = new PartiallyAddingMek();
+        target.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        target.setWeight(25.0);
+        target.setEngine(new Engine(100, Engine.NORMAL_ENGINE, 0));
+
+        Mek donor = newTestMek();
+        donor.addEquipment(mediumLaser, Mek.LOC_RIGHT_ARM);
+
+        UnitUtil.replaceLocationEquipmentFromDonor(target, donor, Mek.LOC_RIGHT_ARM);
+
+        assertEquals(0, countEquipment(target, mediumLaser, Mek.LOC_RIGHT_ARM));
+        assertEquals(1, countEquipment(target, mediumLaser, Entity.LOC_NONE));
+        assertEquals(1, target.getEquipment().stream().filter(mounted -> mediumLaser.equals(mounted.getType())).count());
     }
 
     @Test

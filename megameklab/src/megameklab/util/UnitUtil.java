@@ -1754,26 +1754,40 @@ public class UnitUtil {
           boolean rearMounted)
           throws LocationFullException {
         if (target.getEmptyCriticalSlots(location) < criticalSlots) {
+            // The copied equipment exists, but there is not enough room to place all of its crits in this location.
             target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
             removeHiddenAmmo(mounted);
             return;
         }
 
         try {
+            // There is enough visible space, but addEquipment/addCritical can still reject the placement.
             target.addEquipment(mounted, location, rearMounted);
             for (int slot = getCriticalSlotsAddedByDefault(target, mounted); slot < criticalSlots; slot++) {
                 if (!target.addCritical(location, new CriticalSlot(mounted))) {
-                    removeCriticalSlots(target, mounted);
-                    changeMountStatus(target, mounted, Entity.LOC_NONE, Entity.LOC_NONE, rearMounted);
-                    removeHiddenAmmo(mounted);
+                    moveMountedOrAddToUnallocated(target, mounted, rearMounted);
                     return;
                 }
             }
             removeHiddenAmmo(mounted);
         } catch (LocationFullException ex) {
-            target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
-            removeHiddenAmmo(mounted);
+            moveMountedOrAddToUnallocated(target, mounted, rearMounted);
         }
+    }
+
+    private static void moveMountedOrAddToUnallocated(Mek target, Mounted<?> mounted, boolean rearMounted)
+          throws LocationFullException {
+        // Failed critical placement may leave some crit slots behind; always clear those before falling back.
+        removeCriticalSlots(target, mounted);
+        if (target.getEquipment().contains(mounted)) {
+            // addEquipment may have already inserted the mount before failing, so move that instance instead of adding
+            // the same Mounted<?> to the equipment list again.
+            changeMountStatus(target, mounted, Entity.LOC_NONE, Entity.LOC_NONE, rearMounted);
+        } else {
+            // No partial add happened; this is the first time the mount enters the target entity.
+            target.addEquipment(mounted, Entity.LOC_NONE, rearMounted);
+        }
+        removeHiddenAmmo(mounted);
     }
 
     private static int getCriticalSlotsAddedByDefault(Mek target, Mounted<?> mounted) {
