@@ -53,6 +53,7 @@ import javax.swing.JButton;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -705,8 +706,9 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             return;
         }
 
-        MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(null,
-              new UnitLoadingDialog(null), false, UnitType.MEK,
+          JFrame ownerFrame = getOwnerFrame();
+          MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
+              new UnitLoadingDialog(ownerFrame), false, UnitType.MEK,
               unit -> matchesFrankenMekDonorLocationFilter(target, location, unit));
         Entity selectedEntity = selector.getChosenEntity();
         if (!(selectedEntity instanceof Mek donor)) {
@@ -746,6 +748,10 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private @Nullable JFrame getOwnerFrame() {
+        return SwingUtilities.getWindowAncestor(this) instanceof JFrame frame ? frame : null;
     }
 
     private boolean matchesFrankenMekDonorLocationFilter(Mek target, int location, MekSummary unit) {
