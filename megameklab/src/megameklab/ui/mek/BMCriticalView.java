@@ -70,7 +70,6 @@ import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.loaders.EntityLoadingException;
-import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
@@ -85,6 +84,7 @@ import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.CriticalSlotsView;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.FrankenMekDonorUtil;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
@@ -721,8 +721,8 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             return;
         }
 
-            JFrame ownerFrame = getOwnerFrame();
-            MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
+        JFrame ownerFrame = getOwnerFrame();
+        MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
               new UnitLoadingDialog(ownerFrame), false, UnitType.MEK,
               unit -> matchesFrankenMekDonorLocationFilter(target, location, unit));
         Entity selectedEntity = selector.getChosenEntity();
@@ -735,8 +735,8 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                   "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        int donorLocationTonnage = UnitUtil.getFrankenMekDonorLocationTonnage(donor, location);
-        String invalidReason = UnitUtil.getFrankenMekDonorLocationInvalidReason(target, location,
+                int donorLocationTonnage = FrankenMekDonorUtil.getDonorLocationTonnage(donor, location);
+                String invalidReason = FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location,
               donorLocationTonnage);
         if (invalidReason != null) {
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
@@ -747,13 +747,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         }
 
         try {
-            target.setFrankenMekStructureType(location,
-                  donor.isFrankenMek() ? donor.getFrankenMekStructureType(location) : donor.getStructureType(),
-                  donor.isFrankenMek() ? donor.getFrankenMekStructureTechLevel(location) : donor.getStructureTechLevel());
-            target.setFrankenMekStructureTonnage(location, donorLocationTonnage);
-            target.applyFrankenMekDonorLocationArmor(location, donor);
-            UnitUtil.replaceLocationEquipmentFromDonor(target, donor, location);
-            MekFileParser.postLoadInit(target);
+            FrankenMekDonorUtil.importLocation(target, donor, location);
             target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
             if (refresh != null) {
                 refresh.scheduleRefresh();
@@ -772,7 +766,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
     private boolean matchesFrankenMekDonorLocationFilter(Mek target, int location, MekSummary unit) {
         int donorTonnage = (int) Math.ceil(unit.getTons());
-        return UnitUtil.getFrankenMekDonorLocationInvalidReason(target, location, donorTonnage) == null;
+        return FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location, donorTonnage) == null;
     }
 
     /**
