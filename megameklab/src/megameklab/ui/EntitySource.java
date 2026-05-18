@@ -32,12 +32,14 @@
  */
 package megameklab.ui;
 
+import megamek.common.SimpleTechLevel;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 
 /**
- * In order to track when changes are made to the unit, we will have one ultimate holder of the Entity instance, and
- * pass that around. That way, when the Entity is accessed, we can set a dirty flag so we know changes were made.
+ * The EntitySource provides access to the unit, i.e. the current Entity instance, that is being edited. It is important
+ * not to store the specific Entity instance as certain changes (e.g. changing between ASF and CF or between normal BM
+ * and superheavy) require creating a new Entity subclass object and discarding the previous.
  *
  * @author nwalczak
  */
@@ -88,6 +90,21 @@ public interface EntitySource {
      */
     default void createNewUnit(long entityType, Entity oldUnit) {
         createNewUnit(entityType, oldUnit.isPrimitive(), false, oldUnit);
+    }
+
+    default void copyUnitBasics(Entity newUnit, Entity oldUnit) {
+        int constructionIntroYear = newUnit.getConstructionTechAdvancement().getIntroductionDate();
+        newUnit.setChassis(oldUnit.getChassis());
+        newUnit.setModel(oldUnit.getModel());
+        newUnit.setYear(Math.max(oldUnit.getYear(), constructionIntroYear));
+        newUnit.setOriginalBuildYear(Math.max(oldUnit.getOriginalBuildYear(), constructionIntroYear));
+        newUnit.setSource(oldUnit.getSource());
+        newUnit.setPublished(oldUnit.getPublished());
+        newUnit.setManualBV(oldUnit.getManualBV());
+        SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
+              SimpleTechLevel.convertCompoundToSimple(oldUnit.getTechLevel()));
+        newUnit.setTechLevel(lvl.getCompoundTechLevel(oldUnit.isClan()));
+        newUnit.setMixedTech(oldUnit.isMixedTech());
     }
 
     /**

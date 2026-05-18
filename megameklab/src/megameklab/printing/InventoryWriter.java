@@ -367,8 +367,8 @@ public class InventoryWriter {
                   && (m.getNumCriticalSlots() > 0)
                   && (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE)
                   && !(
-                        m.getLinkedBy() != null && m.getLinkedBy().getType().hasFlag(MiscTypeFlag.F_DETACHABLE_WEAPON_PACK)
-                  )
+                  m.getLinkedBy() != null && m.getLinkedBy().getType().hasFlag(MiscTypeFlag.F_DETACHABLE_WEAPON_PACK)
+            )
             ) {
                 continue;
             }
@@ -421,7 +421,7 @@ public class InventoryWriter {
             }
             if (!physicalEntries.isEmpty()) {
                 if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT)) {
-                    physicalEntries.add(0, new IntrinsicPhysicalInventoryEntry.HeaderEntry());
+                    physicalEntries.addFirst(new IntrinsicPhysicalInventoryEntry.HeaderEntry());
                 }
                 equipment.addAll(physicalEntries);
             }
@@ -1455,19 +1455,22 @@ public class InventoryWriter {
 
     private static double getCapacity(Bay b) {
         double capacity = b.getCapacity();
-        if (b instanceof BattleArmorBay) {
-            if (b.isClan()) {
-                capacity *= 5;
-            } else if (((BattleArmorBay) b).isComStar()) {
-                capacity *= 6;
-            } else {
-                capacity *= 4;
+        switch (b) {
+            case BattleArmorBay battleArmorBay -> {
+                if (b.isClan()) {
+                    capacity *= 5;
+                } else if (battleArmorBay.isComStar()) {
+                    capacity *= 6;
+                } else {
+                    capacity *= 4;
+                }
             }
-        } else if (b instanceof InfantryBay) {
-            // Divide total weight by weight required by platoon to get platoon capacity
-            capacity /= ((InfantryBay) b).getPlatoonType().getWeight();
-        } else if (b instanceof ProtoMekBay) {
-            capacity *= 5;
+            case InfantryBay infantryBay ->
+                // Divide total weight by weight required by platoon to get platoon capacity
+                  capacity /= infantryBay.getPlatoonType().getWeight();
+            case ProtoMekBay ignored -> capacity *= 5;
+            default -> {
+            }
         }
         return capacity;
     }

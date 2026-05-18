@@ -491,18 +491,20 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private void populatePopupMenu(List<Entity> selectedEntities) {
         rowPopupMenu.removeAll();
 
+        Entity selectedEntity = selectedEntities.getFirst();
+
         // --- Open Editor ---
         JMenuItem viewItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.openEditor.text"));
         Font currentFont = viewItem.getFont();
         viewItem.setFont(currentFont.deriveFont(Font.BOLD));
         viewItem.setMnemonic(KeyEvent.VK_O);
-        viewItem.addActionListener(e -> openEntityInEditor(selectedEntities.get(0)));
+        viewItem.addActionListener(e -> openEntityInEditor(selectedEntity));
         rowPopupMenu.add(viewItem);
 
         // --- Edit Pilot/Equipment/Ammo ---
         JMenuItem editItem = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editPilotEquip.text"));
         editItem.setMnemonic(KeyEvent.VK_E);
-        editItem.addActionListener(e -> openEntityConfiguration(selectedEntities.get(0)));
+        editItem.addActionListener(e -> openEntityConfiguration(selectedEntity));
         rowPopupMenu.add(editItem);
 
 
@@ -510,11 +512,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JMenuItem editDamage = new JMenuItem(menuResources.getString("ForceBuildUI.popup.editDamage.text"));
         editDamage.setMnemonic(KeyEvent.VK_D);
         editDamage.addActionListener(e -> {
-            Entity entity = selectedEntities.get(0);
-            UnitEditorDialog med = new UnitEditorDialog(null, entity);
+            UnitEditorDialog med = new UnitEditorDialog(null, selectedEntity);
             med.setVisible(true);
             med.dispose();
-            MegaMekLabTabbedUI.refreshEntity(entity);
+            MegaMekLabTabbedUI.refreshEntity(selectedEntity);
         });
         rowPopupMenu.add(editDamage);
 
@@ -526,7 +527,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
               "ForceBuildUI.popup.BVBreakdown.text"));
         miCurrentUnitBVBreakdown.setName("miCurrentUnitBVBreakdown");
         miCurrentUnitBVBreakdown.setMnemonic(KeyEvent.VK_U);
-        miCurrentUnitBVBreakdown.addActionListener(evt -> new BVDisplayDialog(null, selectedEntities.get(0)).setVisible(
+        miCurrentUnitBVBreakdown.addActionListener(evt -> new BVDisplayDialog(null, selectedEntity).setVisible(
               true));
         rowPopupMenu.add(miCurrentUnitBVBreakdown);
 
@@ -1126,7 +1127,7 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         fileChooser.setFileFilter(filter);
         fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
               mulFileName :
-              forceList.get(0).getShortName() + " etc." + CG_FILEPATH_MUL));
+              forceList.getFirst().getShortName() + " etc." + CG_FILEPATH_MUL));
 
         if (!(fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) ||
               fileChooser.getSelectedFile() == null) {

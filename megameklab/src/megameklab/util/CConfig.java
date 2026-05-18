@@ -387,6 +387,7 @@ public final class CConfig {
      * @param key   the name of the parameter
      * @param value the value to set the parameter to
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public static <E extends Enum<E>> void setEnumParam(String key, E value) {
         setParam(key, value.name());
     }
@@ -453,7 +454,7 @@ public final class CConfig {
         List<String> recentFiles = getRecentFiles();
         List<String> recentFilesWithoutDuplicates = recentFiles.stream().distinct().collect(Collectors.toList());
         recentFilesWithoutDuplicates.removeIf(f -> f.equalsIgnoreCase(newFile));
-        recentFilesWithoutDuplicates.add(0, newFile);
+        recentFilesWithoutDuplicates.addFirst(newFile);
         setRecentFiles(recentFilesWithoutDuplicates);
         CConfig.saveConfig();
     }
@@ -530,6 +531,7 @@ public final class CConfig {
         return getWindowPosition(settingForMainUi(mainUi));
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public static Optional<Dimension> getNamedWindowSize(String name) {
         return getWindowSize(name);
     }
@@ -538,6 +540,7 @@ public final class CConfig {
         writeWindowSettings(settingForMainUi(mainUi), (Component) mainUi);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public static void writeNamedWindowSize(String name, Window component) {
         writeWindowSettings(name, component);
     }
@@ -587,8 +590,8 @@ public final class CConfig {
             int sizeX = Integer.parseInt(values[2]);
             int sizeY = Integer.parseInt(values[3]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int clampedWidth = Math.max(50, Math.min(sizeX, screen.width)); // 50 minimum width
-            int clampedHeight = Math.max(50, Math.min(sizeY, screen.height)); // 50 minimum height
+            int clampedWidth = Math.clamp(sizeX, 50, screen.width); // 50 minimum width
+            int clampedHeight = Math.clamp(sizeY, 50, screen.height); // 50 minimum height
             return Optional.of(new Dimension(clampedWidth, clampedHeight));
         } catch (Exception e) {
             return Optional.empty();
@@ -605,8 +608,8 @@ public final class CConfig {
             int posX = Integer.parseInt(values[0]);
             int posY = Integer.parseInt(values[1]);
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            int clampedX = Math.max(0, Math.min(posX, screen.width - 100)); // -100 to avoid the right edge
-            int clampedY = Math.max(0, Math.min(posY, screen.height - 100)); // -100 to avoid the taskbar
+            int clampedX = Math.clamp(posX, 0, screen.width - 100); // -100 to avoid the right edge
+            int clampedY = Math.clamp(posY, 0, screen.height - 100); // -100 to avoid the taskbar
             return Optional.of(new Point(clampedX, clampedY));
         } catch (Exception e) {
             return Optional.empty();

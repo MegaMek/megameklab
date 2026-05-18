@@ -39,6 +39,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
@@ -71,32 +72,26 @@ public class Renderer extends DefaultTableCellRenderer {
 
         Mounted<?> mount = criticalTableModel.getCrits().get(row);
         if ((criticalTableModel.unit instanceof BattleArmor) && column == CriticalTableModel.NAME) {
-            String modifier = "";
+            String text = c.getText();
             if (mount.getType() instanceof AmmoType) {
-                modifier += " (" + mount.getBaseShotsLeft() + ")";
+                text += " (" + mount.getBaseShotsLeft() + ")";
             }
             if (mount.getLocation() != BattleArmor.LOC_SQUAD) {
-                modifier += " (Personal)";
-            } else {
-                modifier += " (Squad)";
-            }
-            if (mount.isDWPMounted()) {
-                modifier += " (DWP)";
+                text += " (Personal)";
             }
             if (mount.isSquadSupportWeapon()) {
-                modifier += " (Squad Support Weapon)";
+                text += " (Squad Support Weapon)";
             }
-            if ((mount.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                  || mount.getType().hasFlag(MiscType.F_AP_MOUNT))
-                  && mount.getLinked() != null) {
-                modifier += " (attached " + mount.getLinked().getName()
-                      + ")";
+            if (mount.is(EquipmentTypeLookup.BA_DWP) && mount.getLinked() != null) {
+                text = "[DWP] " + mount.getLinked().getName();
             }
-            if (mount.getType().hasFlag(WeaponType.F_INFANTRY) &&
-                  mount.getLinkedBy() == null) {
-                modifier += "*";
+            if (mount.getType().hasFlag(MiscType.F_AP_MOUNT) && mount.getLinked() != null) {
+                text += " (attached " + mount.getLinked().getName() + ")";
             }
-            c.setText(c.getText() + modifier);
+            if (mount.getType().hasFlag(WeaponType.F_INFANTRY) && mount.getLinkedBy() == null) {
+                text += "*";
+            }
+            c.setText(text);
         } else if ((column == CriticalTableModel.NAME) && criticalTableModel.unit.hasETypeFlag(Entity.ETYPE_PROTOMEK)
               && (mount.getType() instanceof AmmoType)) {
             c.setText(c.getText() + " (" + mount.getBaseShotsLeft() + ")");

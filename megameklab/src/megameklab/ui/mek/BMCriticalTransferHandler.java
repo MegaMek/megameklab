@@ -64,6 +64,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.AbstractCriticalTransferHandler;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
+import megameklab.ui.util.CriticalSlotsView;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.MekUtil;
@@ -78,9 +79,9 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
     private static final MMLogger logger = MMLogger.create(BMCriticalTransferHandler.class);
 
     private int location = -1;
-    private final BMCriticalView parentView;
+    private final CriticalSlotsView parentView;
 
-    public BMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh, BMCriticalView parentView) {
+    public BMCriticalTransferHandler(EntitySource eSource, RefreshListener refresh, CriticalSlotsView parentView) {
         super(eSource, refresh);
         this.parentView = parentView;
     }
@@ -198,7 +199,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
                 return false;
 
             } else if (secondLocationsList.size() == 1) {
-                secondLocation = secondLocationsList.get(0);
+                secondLocation = secondLocationsList.getFirst();
 
             } else {
                 Vector<String> locations = new Vector<>();
@@ -234,7 +235,7 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
             return false;
         }
 
-        if (info.getComponent() instanceof BAASBMDropTargetCriticalList<?> list) {
+        if (info.getComponent() instanceof BAASBMDropTargetCriticalList list) {
             location = Integer.parseInt(list.getName());
             Transferable t = info.getTransferable();
             int slotNumber = list.getDropLocation().getIndex();
@@ -342,12 +343,12 @@ public class BMCriticalTransferHandler extends AbstractCriticalTransferHandler {
         int location = Entity.LOC_NONE;
         if (component instanceof JTable table) {
             mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
-        } else if (component instanceof BAASBMDropTargetCriticalList<?> list) {
-            /** Prevent 0-crit virtual slot equipment from being transferred */
+        } else if (component instanceof BAASBMDropTargetCriticalList list) {
+            /* Prevent 0-crit virtual slot equipment from being transferred */
             if (list.isVirtualSlotSelected()) {
                 return null;
             }
-            mount = list.getMounted();
+            mount = list.getSelectedMounted();
             location = list.getCritLocation();
         }
         if (mount != null) {

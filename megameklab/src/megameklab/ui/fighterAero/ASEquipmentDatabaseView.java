@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2021-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -75,7 +75,7 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
                 Mounted<?> mount = Mounted.createMounted(getAero(), equip);
                 UnitUtil.setVariableSizeMiscTypeMinimumSize(mount);
                 int location = (equip instanceof AmmoType) ? Aero.LOC_FUSELAGE : Aero.LOC_NONE;
-                getAero().addEquipment(mount, location, false);
+                getAero().addEquipment(mount, location);
                 UnitUtil.removeHiddenAmmo(mount);
             } catch (LocationFullException ignored) {
                 // location maximum is currently checked in menus and drag n drop
@@ -87,5 +87,4 @@ class ASEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
     protected Collection<Integer> getVisibleTableColumns(boolean tableMode) {
         return tableMode ? statsColumns : fluffColumns;
     }
-
 }

@@ -237,10 +237,12 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         btnResetChassis.setEnabled(aero.isOmni());
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasDNICockpitMod() {
         return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setDNICockpitMod(boolean hasMod) {
         chkDNICockpitMod.setSelected(hasMod);
     }
@@ -420,10 +422,12 @@ public class ASChassisView extends BuildView implements ActionListener, ChangeLi
         return chkVSTOL.isSelected();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setVSTOL(boolean vstol) {
         chkOmni.setSelected(vstol);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public int getFighterType() {
         Object value = cbFighterType.getSelectedItem();
 

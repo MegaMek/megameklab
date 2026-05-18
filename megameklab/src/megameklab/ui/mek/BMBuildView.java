@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -110,7 +110,7 @@ public class BMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        transferHandler.addRefreshListener(l);
+        transferHandler.setRefresh(l);
         refresh = l;
     }
 

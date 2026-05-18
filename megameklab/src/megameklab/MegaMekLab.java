@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -47,6 +47,7 @@ import megamek.MMLoggingConstants;
 import megamek.MegaMek;
 import megamek.SuiteConstants;
 import megamek.client.ui.clientGUI.GUIPreferences;
+import megamek.client.ui.dialogs.LicensingDialog;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.client.ui.util.UIUtil;
 import megamek.common.equipment.EquipmentType;
@@ -74,6 +75,7 @@ public class MegaMekLab {
     private static boolean noStartup;
 
     public static void main(String... args) {
+        MegaMek.setOriginProject(MMLConstants.PROJECT_NAME);
         boolean multiInstanceMode = hasArgument(args, "--multi");
         noStartup = hasArgument(args, "--no-startup");
         // Filter out already read args
@@ -253,6 +255,12 @@ public class MegaMekLab {
             }
             case RESTORE_TABS -> UiLoader.restoreTabbedUi();
             default -> StartupGUI.getInstance().setVisible(true);
+        }
+
+        // Show licensing/welcome dialog after startup screen is visible
+        if (!noStartup) {
+            LicensingDialog.showIfNeeded(null,
+                  "Welcome to " + MMLConstants.PROJECT_NAME + " " + MMLConstants.VERSION);
         }
     }
 

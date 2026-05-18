@@ -54,13 +54,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.TechAdvancement;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
-import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Tank;
-import megamek.common.TechAdvancement;
 import megamek.common.units.VTOL;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.generalUnit.BuildView;
@@ -516,10 +516,12 @@ public class CVChassisView extends BuildView implements ActionListener, ChangeLi
         return Objects.requireNonNullElse((Integer) cbTurrets.getSelectedItem(), TURRET_NONE);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasDNICockpitMod() {
         return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setDNICockpitMod(boolean hasMod) {
         chkDNICockpitMod.setSelected(hasMod);
     }

@@ -158,16 +158,7 @@ public class ASMainUI extends MegaMekLabMainUI {
             newUnit.setChassis("New");
             newUnit.setModel("Aero");
         } else {
-            newUnit.setChassis(oldEntity.getChassis());
-            newUnit.setModel(oldEntity.getModel());
-            newUnit.setYear(Math.max(oldEntity.getYear(),
-                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
-            newUnit.setSource(oldEntity.getSource());
-            newUnit.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
-                  SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            newUnit.setMixedTech(oldEntity.isMixedTech());
+            copyUnitBasics(newUnit, oldEntity);
         }
         setEntity(newUnit, "");
         forceDirtyUntilNextSave();

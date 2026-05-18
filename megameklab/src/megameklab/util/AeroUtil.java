@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -43,7 +43,9 @@ import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Aero;
+import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Dropship;
 import megamek.common.units.Entity;
 import megamek.common.units.SmallCraft;
@@ -231,10 +233,10 @@ public final class AeroUtil {
 
     /**
      * Adjusts the number of quarters of each to match the crew and passenger needs. If no quarters are already
-     * assigned, this will put all officers in officer/first class cabins, enlisted crew in standard crew quarters, and
-     * passengers in second class cabins. If there are already more officer/first class cabins assigned than there are
-     * officers, the extra will be used as first class passenger cabins. Any steerage quarters will be assigned first to
-     * marines, then to passengers, then to remaining enlisted.
+     * assigned, this will put all officers in officer/first class cabins, enlisted crew in standard crew quarters,
+     * and passengers in second class cabins. If there are already more officer/first class cabins assigned than
+     * there are officers, the extra will be used as first class passenger cabins. Any steerage quarters will be
+     * assigned first to marines, then to passengers, then to remaining enlisted.
      *
      * @param aero The vessel to assign quarters for.
      */
@@ -333,6 +335,50 @@ public final class AeroUtil {
         List<Mounted<?>> weaponGroups = new ArrayList<>(unit.getWeaponGroupList());
         for (Mounted<?> group : weaponGroups) {
             UnitUtil.removeMounted(unit, group);
+        }
+    }
+
+    public static void moveOrAddEquipmentOnFighter(AeroSpaceFighter aero, Mounted<?> mounted, int location)
+          throws LocationFullException {
+
+        try {
+            // clean up slots of a previous location, if any
+            UnitUtil.removeCriticalSlots(aero, mounted);
+            if (mounted.getLocation() != Entity.LOC_NONE) {
+                UnitUtil.compactCriticalSlots(aero, mounted.getLocation());
+            }
+            // even if the mounted is already part of the unit, crit slots need to be created
+            UnitUtil.addMounted(aero, mounted, location, false);
+            // update links
+            UnitUtil.changeMountStatus(aero, mounted, location, Entity.LOC_NONE, false);
+            removeClanCASE(aero);
+            aero.addClanCase();
+        } catch (LocationFullException e) {
+            // make sure the equipment is in a well-defined state (unallocated)
+            UnitUtil.changeMountStatus(aero, mounted, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            throw e;
+        }
+    }
+
+    public static void removeClanCASE(AeroSpaceFighter aero) {
+        if (aero.isClan()) {
+            EquipmentType clCase = EquipmentType.get(EquipmentTypeLookup.CLAN_CASE);
+            UnitUtil.removeAllMounted(aero, clCase);
+        }
+    }
+
+    /**
+     * Removes all critical slots for the given fighter, unallocating all equipment (i.e., placing it into
+     * Entity.LOC_NONE) with the exception of certain equipment that has a fixed location such as Ammo.
+     */
+    public static void removeAllCriticalSlotsFromFighter(AeroSpaceFighter aero) {
+        for (Mounted<?> mount : aero.getEquipment()) {
+            if (!mount.isWeaponGroup()
+                  && TestAero.eqRequiresLocation(mount.getType(), true)
+                  && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
+                UnitUtil.removeCriticalSlots(aero, mount);
+                UnitUtil.changeMountStatus(aero, mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            }
         }
     }
 

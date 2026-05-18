@@ -322,6 +322,7 @@ public class MVFArmorView extends BuildView implements ActionListener, ChangeLis
             cbArmorType.setSelectedIndex(0);
         }
         cbArmorType.showTechBase(techManager.useMixedTech());
+        cbArmorType.setEnabled(cbArmorType.getItemCount() >= 2);
     }
 
     /**

@@ -342,6 +342,7 @@ public class RecordSheetOptions {
         this.heatProfile = heatProfile;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setTacOpsHeat(boolean tacOpsHeat) {
         this.tacOpsHeat = tacOpsHeat;
     }
@@ -366,6 +367,7 @@ public class RecordSheetOptions {
         this.alternateArmorGrouping = alternateArmorGrouping;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setFrameless(boolean frameless) {
         this.frameless = frameless;
     }
@@ -442,8 +444,9 @@ public class RecordSheetOptions {
         this.fancyPips = fancyPips;
     }
 
-    public boolean TacOpsVehicleEffectiveness() { return tacOpsVehicleEffectiveness; }
+    public boolean TacOpsVehicleEffectiveness() {return tacOpsVehicleEffectiveness;}
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setTacOpsVehicleEffectiveness(boolean tacOpsVehicleEffectiveness) {
         this.tacOpsVehicleEffectiveness = tacOpsVehicleEffectiveness;
     }

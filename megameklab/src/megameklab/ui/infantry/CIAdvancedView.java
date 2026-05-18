@@ -50,7 +50,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.options.IOption;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.PilotOptions;
-import megamek.common.units.Infantry;
+import megamek.common.units.ConvInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.generalUnit.StandardBuildLabel;
@@ -121,9 +121,9 @@ public class CIAdvancedView extends IView {
             txtSpecializations.setText("None");
         } else {
             StringJoiner sj = new StringJoiner(LIST_ITEM_SEPARATOR + "<br>");
-            for (int i = 0; i < Infantry.NUM_SPECIALIZATIONS; i++) {
+            for (int i = 0; i < ConvInfantry.NUM_SPECIALIZATIONS; i++) {
                 if (getInfantry().hasSpecialization(1 << i)) {
-                    sj.add(Infantry.getSpecializationName(1 << i));
+                    sj.add(ConvInfantry.getSpecializationName(1 << i));
                 }
             }
             txtSpecializations.setText(sj.toString());
@@ -132,7 +132,7 @@ public class CIAdvancedView extends IView {
 
     private void updateAugments() {
         StringJoiner sj = new StringJoiner(LIST_ITEM_SEPARATOR + "<br>");
-        Infantry infantry = getInfantry();
+        ConvInfantry infantry = getInfantry();
         for (Enumeration<IOption> e = infantry.getCrew().getOptions(PilotOptions.MD_ADVANTAGES);
               e.hasMoreElements(); ) {
             IOption opt = e.nextElement();
@@ -165,14 +165,14 @@ public class CIAdvancedView extends IView {
     /**
      * Gets regular prosthetic enhancement details (slot 1 and 2 only).
      */
-    private String getRegularProstheticDetails(Infantry infantry) {
+    private String getRegularProstheticDetails(ConvInfantry infantry) {
         StringBuilder details = new StringBuilder();
         if (infantry.hasProstheticEnhancement1()) {
             ProstheticEnhancementType type1 = infantry.getProstheticEnhancement1();
             details.append(type1.getDisplayName()).append(" x").append(infantry.getProstheticEnhancement1Count());
         }
         if (infantry.hasProstheticEnhancement2()) {
-            if (details.length() > 0) {
+            if (!details.isEmpty()) {
                 details.append(", ");
             }
             ProstheticEnhancementType type2 = infantry.getProstheticEnhancement2();
@@ -184,14 +184,14 @@ public class CIAdvancedView extends IView {
     /**
      * Gets extraneous limb details (pair 1 and 2 only).
      */
-    private String getExtraneousLimbDetails(Infantry infantry) {
+    private String getExtraneousLimbDetails(ConvInfantry infantry) {
         StringBuilder details = new StringBuilder();
         if (infantry.hasExtraneousPair1()) {
             ProstheticEnhancementType pair1Type = infantry.getExtraneousPair1();
             details.append(pair1Type.getDisplayName()).append(" x2");
         }
         if (infantry.hasExtraneousPair2()) {
-            if (details.length() > 0) {
+            if (!details.isEmpty()) {
                 details.append(", ");
             }
             ProstheticEnhancementType pair2Type = infantry.getExtraneousPair2();

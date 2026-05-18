@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,29 +32,22 @@
  */
 package megameklab.ui.battleArmor;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
-import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.enums.Faction;
 import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
-import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
@@ -64,7 +57,6 @@ import megamek.common.units.EntityWeightClass;
 import megamek.common.units.UnitRole;
 import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestBattleArmor;
-import megamek.common.verifier.TestBattleArmor.BAManipulator;
 import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
@@ -72,24 +64,20 @@ import megameklab.ui.generalUnit.BAProtoArmorView;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MovementView;
-import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.BABuildListener;
-import megameklab.ui.util.CustomComboBox;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.UnitUtil;
 
 /**
  * @author jtighe (torren@users.sourceforge.net)
  */
-public class BAStructureTab extends ITab
-      implements ActionListener, ChangeListener, BABuildListener, ArmorAllocationListener {
+public class BAStructureTab extends ITab implements BABuildListener, ArmorAllocationListener {
     private static final MMLogger logger = MMLogger.create(BAStructureTab.class);
 
     private RefreshListener refresh;
-
-    Dimension labelSize = new Dimension(60, 25);
 
     private BasicInfoView panBasicInfo;
     private BAChassisView panChassis;
@@ -97,20 +85,7 @@ public class BAStructureTab extends ITab
     private BAProtoArmorView panArmor;
     private BAEnhancementView panEnhancements;
     private IconView iconView;
-
-    // Manipulator Panel
-    private final CustomComboBox<String> leftManipulatorSelect = new CustomComboBox<>(this::manipulatorDisplayName);
-    private final CustomComboBox<String> rightManipulatorSelect = new CustomComboBox<>(this::manipulatorDisplayName);
-
-    private final SpinnerNumberModel spnLeftManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
-          0.5);
-    private final SpinnerNumberModel spnRightManipulatorSizeModel = new SpinnerNumberModel(0.5, 0.5, Double.MAX_VALUE,
-          0.5);
-    private final JSpinner spnLeftManipulatorSize = new JSpinner(spnLeftManipulatorSizeModel);
-    private final JSpinner spnRightManipulatorSize = new JSpinner(spnRightManipulatorSizeModel);
-    private final JLabel lblSize = createLabel("Size:", new Dimension(40, 25));
-
-    private PreviewTab previewTab;
+    private BAManipulatorView panManipulator;
 
     public BAStructureTab(EntitySource eSource) {
         super(eSource);
@@ -119,100 +94,52 @@ public class BAStructureTab extends ITab
     }
 
     public void setUpPanels() {
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-
-        previewTab = new PreviewTab(eSource);
         panBasicInfo = new BasicInfoView(getBattleArmor().getConstructionTechAdvancement());
         panChassis = new BAChassisView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmor = new BAProtoArmorView(panBasicInfo);
         iconView = new IconView();
-        JPanel manipulatorPanel = new JPanel(new GridBagLayout());
         panEnhancements = new BAEnhancementView(panBasicInfo);
-        GridBagConstraints gbc = new GridBagConstraints();
-        Dimension comboSize = new Dimension(180, 25);
-        Dimension spinnerSize = new Dimension(60, 25);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.NONE;
-        manipulatorPanel.add(createLabel("Left Arm:", labelSize), gbc);
-        gbc.gridy = 1;
-        manipulatorPanel.add(createLabel("Right Arm:", labelSize), gbc);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        manipulatorPanel.add(leftManipulatorSelect, gbc);
-        gbc.gridx = 2;
-        manipulatorPanel.add(lblSize, gbc);
-        gbc.gridx = 3;
-        manipulatorPanel.add(spnLeftManipulatorSize, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        manipulatorPanel.add(rightManipulatorSelect, gbc);
-        gbc.gridx = 3;
-        manipulatorPanel.add(spnRightManipulatorSize, gbc);
-
-        setFieldSize(leftManipulatorSelect, comboSize);
-        setFieldSize(rightManipulatorSelect, comboSize);
-        setFieldSize(spnLeftManipulatorSize, spinnerSize);
-        setFieldSize(spnRightManipulatorSize, spinnerSize);
+        panManipulator = new BAManipulatorView(eSource, panBasicInfo);
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
-        manipulatorPanel.setBorder(BorderFactory.createTitledBorder("Manipulators"));
+        panManipulator.setBorder(BorderFactory.createTitledBorder("Manipulators"));
         panEnhancements.setBorder(BorderFactory.createTitledBorder("Enhancements"));
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        Box leftPanel = Box.createVerticalBox();
+        Box midPanel = Box.createVerticalBox();
+        Box rightPanel = Box.createVerticalBox();
 
         leftPanel.add(panBasicInfo);
         leftPanel.add(iconView);
-        leftPanel.add(panChassis);
-        leftPanel.add(panMovement);
-        leftPanel.add(panArmor);
-        leftPanel.add(panEnhancements);
-        leftPanel.add(manipulatorPanel);
-        leftPanel.add(Box.createVerticalGlue());
 
-        // Right panel setup
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setPreferredSize(new Dimension(400, 1));
-        rightPanel.add(previewTab, BorderLayout.CENTER);
+        midPanel.add(panChassis);
+        midPanel.add(panArmor);
+        midPanel.add(panMovement);
 
-        setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 5, 0, 5);
-        gbc.gridx = 0;
+        rightPanel.add(panEnhancements);
+        rightPanel.add(panManipulator);
+
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = java.awt.GridBagConstraints.VERTICAL;
+        gbc.anchor = GridBagConstraints.NORTH;
         gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.weightx = 0.0;
-        gbc.weighty = 1.0;
         add(leftPanel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;  // Fill both horizontally and vertically
-        gbc.weightx = 1.0;                         // Expand to fill horizontal space
-        gbc.weighty = 1.0;                         // Expand to fill vertical space
-        gbc.insets = new Insets(0, 0, 0, 0);
+        add(midPanel, gbc);
         add(rightPanel, gbc);
+        // add a row that will take up vertical space to top-align the content
+        gbc.gridy++;
+        gbc.weighty = 1;
+        add(Box.createVerticalGlue(), gbc);
     }
 
-    public JLabel createLabel(String text, Dimension maxSize) {
-        JLabel label = new JLabel(text, SwingConstants.RIGHT);
-        setFieldSize(label, maxSize);
-        return label;
-    }
-
-    @Override
-    public void setFieldSize(JComponent box, Dimension maxSize) {
-        box.setPreferredSize(maxSize);
-        box.setMaximumSize(maxSize);
-        box.setMinimumSize(maxSize);
+    public JLabel createLabel(String text) {
+        return new JLabel(text, SwingConstants.RIGHT);
     }
 
     public void refresh() {
@@ -222,74 +149,18 @@ public class BAStructureTab extends ITab
         panArmor.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
         iconView.setFromEntity(getEntity());
+        panManipulator.setFromEntity();
 
         removeAllListeners();
-
-        // Manipulators
-        leftManipulatorSelect.removeAllItems();
-        rightManipulatorSelect.removeAllItems();
-        leftManipulatorSelect.addItem(BattleArmor.MANIPULATOR_TYPE_STRINGS[BattleArmor.MANIPULATOR_NONE]);
-        rightManipulatorSelect.addItem(BattleArmor.MANIPULATOR_TYPE_STRINGS[BattleArmor.MANIPULATOR_NONE]);
-        for (BAManipulator manipulator : BAManipulator.values()) {
-            EquipmentType et = EquipmentType.get(manipulator.internalName);
-            if ((null != et) && getTechManager().isLegal(et)) {
-                leftManipulatorSelect.addItem(et.getName());
-                rightManipulatorSelect.addItem(et.getName());
-            }
-        }
-        BAManipulator manipulator = BAManipulator.getManipulator(getBattleArmor().getLeftManipulatorName());
-
-        if (manipulator != null) {
-            leftManipulatorSelect.setSelectedItem(BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
-        }
-
-        manipulator = BAManipulator.getManipulator(getBattleArmor().getRightManipulatorName());
-
-        if (manipulator != null) {
-            rightManipulatorSelect.setSelectedItem(BattleArmor.MANIPULATOR_NAME_STRINGS[manipulator.type]);
-
-            refreshManipulatorSizes(BattleArmor.MOUNT_LOC_LEFT_ARM,
-                  spnLeftManipulatorSize,
-                  spnLeftManipulatorSizeModel);
-            // For variable-sized pair-mounted manipulators, we'll only use one spinner
-            spnRightManipulatorSize.setEnabled(!manipulator.pairMounted);
-            refreshManipulatorSizes(BattleArmor.MOUNT_LOC_RIGHT_ARM,
-                  spnRightManipulatorSize,
-                  spnRightManipulatorSizeModel);
-            lblSize.setVisible(spnLeftManipulatorSize.isVisible() || spnRightManipulatorSize.isVisible());
-        }
-
         refreshPreview();
-
         addAllListeners();
-    }
-
-    /**
-     * Sets values for the size control if the manipulator has a variable size; otherwise hides it.
-     *
-     * @param mountLoc The mount location
-     * @param spinner  The spinner to show/hide
-     * @param model    The spinner's number model
-     */
-    private void refreshManipulatorSizes(int mountLoc, JSpinner spinner, SpinnerNumberModel model) {
-        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
-              .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
-              .findFirst();
-        if (mounted.isPresent() && mounted.get().getType().isVariableSize()) {
-            model.setValue(mounted.get().getSize());
-            model.setStepSize(mounted.get().getType().variableStepSize());
-            model.setMinimum(mounted.get().getType().variableStepSize());
-            spinner.setVisible(true);
-        } else {
-            spinner.setVisible(false);
-        }
     }
 
     public ITechManager getTechManager() {
         return panBasicInfo;
     }
 
-    /*
+    /**
      * Used by MekHQ to set the tech faction for custom refits.
      */
     public void setTechFaction(Faction techFaction) {
@@ -297,11 +168,6 @@ public class BAStructureTab extends ITab
     }
 
     public void addAllListeners() {
-        leftManipulatorSelect.addActionListener(this);
-        rightManipulatorSelect.addActionListener(this);
-        spnLeftManipulatorSize.addChangeListener(this);
-        spnRightManipulatorSize.addChangeListener(this);
-
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
         panMovement.addListener(this);
@@ -310,11 +176,6 @@ public class BAStructureTab extends ITab
     }
 
     public void removeAllListeners() {
-        leftManipulatorSelect.removeActionListener(this);
-        rightManipulatorSelect.removeActionListener(this);
-        spnLeftManipulatorSize.removeChangeListener(this);
-        spnRightManipulatorSize.removeChangeListener(this);
-
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
         panMovement.removeListener(this);
@@ -324,100 +185,7 @@ public class BAStructureTab extends ITab
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        removeAllListeners();
-        if (e.getSource() instanceof JComboBox) {
-            if (e.getSource().equals(leftManipulatorSelect) || e.getSource().equals(rightManipulatorSelect)) {
-                String name = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
-                setManipulator(BAManipulator.getManipulator(name),
-                      e.getSource().equals(leftManipulatorSelect) ? BattleArmor.MOUNT_LOC_LEFT_ARM
-                            : BattleArmor.MOUNT_LOC_RIGHT_ARM,
-                      true);
-            }
-        }
-        refresh.refreshAll();
-    }
-
-    private void setManipulator(BAManipulator manipulator, int mountLoc, boolean checkPaired) {
-        MiscMounted current = getManipulator(mountLoc);
-        if (current != null) {
-            UnitUtil.removeMounted(getBattleArmor(), current);
-        }
-        if (manipulator != BAManipulator.NONE) {
-            MiscMounted newMount = new MiscMounted(getBattleArmor(),
-                  (MiscType) EquipmentType.get(manipulator.internalName));
-            newMount.setBaMountLoc(mountLoc);
-            try {
-                getBattleArmor().addEquipment(newMount, BattleArmor.LOC_SQUAD, false);
-            } catch (LocationFullException ex) {
-                logger.error("Could not mount {}", manipulator, ex);
-            }
-        }
-        if (checkPaired) {
-            int otherArm = mountLoc == (BattleArmor.MOUNT_LOC_LEFT_ARM) ? BattleArmor.MOUNT_LOC_RIGHT_ARM
-                  : BattleArmor.MOUNT_LOC_LEFT_ARM;
-            if (manipulator.pairMounted) {
-                setManipulator(manipulator, otherArm, false);
-            } else if ((current != null) && isPairedManipulator(current.getType())) {
-                MiscMounted toRemove = getManipulator(otherArm);
-                if (toRemove != null) {
-                    UnitUtil.removeMounted(getBattleArmor(), toRemove);
-                }
-            }
-        }
-        refresh.refreshSummary();
-        refresh.refreshPreview();
-    }
-
-    private @Nullable MiscMounted getManipulator(int mountLoc) {
-        return getBattleArmor().getMisc().stream()
-              .filter(m -> (m.getBaMountLoc() == mountLoc) && m.getType().hasFlag(MiscType.F_BA_MANIPULATOR))
-              .findFirst().orElse(null);
-    }
-
-    private boolean isPairedManipulator(EquipmentType eq) {
-        BAManipulator manipulator = BAManipulator.getManipulator(eq.getInternalName());
-        if (manipulator != null) {
-            return manipulator.pairMounted;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent evt) {
-        if (evt.getSource() == spnLeftManipulatorSize) {
-            setManipulatorSize(BattleArmor.MOUNT_LOC_LEFT_ARM, spnLeftManipulatorSizeModel.getNumber().doubleValue());
-            String leftManipulatorName = getBattleArmor().getLeftManipulatorName();
-            BAManipulator manipulator = BAManipulator.getManipulator(leftManipulatorName);
-            if (manipulator != null && manipulator.pairMounted) {
-                spnRightManipulatorSizeModel.setValue(spnLeftManipulatorSizeModel.getValue());
-            }
-        } else if (evt.getSource() == spnRightManipulatorSize) {
-            setManipulatorSize(BattleArmor.MOUNT_LOC_RIGHT_ARM, spnRightManipulatorSizeModel.getNumber().doubleValue());
-        }
-        refresh.refreshAll();
-    }
-
-    private void setManipulatorSize(int mountLoc, double size) {
-        Optional<MiscMounted> mounted = getBattleArmor().getMisc().stream()
-              .filter(m -> m.getType().hasFlag(MiscType.F_BA_MANIPULATOR) && (m.getBaMountLoc() == mountLoc))
-              .findFirst();
-        mounted.ifPresent(value -> value.setSize(size));
-    }
-
-    /**
-     * Extracts the actual name of the manipulator from the full equipment name
-     */
-    private String manipulatorDisplayName(String name) {
-        int start = name.indexOf("[");
-        if (start > 0) {
-            return name.substring(start + 1).replace("]", "");
-        }
-        return name;
+        panManipulator.addRefreshedListener(l);
     }
 
     public void setAsCustomization() {
@@ -425,7 +193,9 @@ public class BAStructureTab extends ITab
     }
 
     public void refreshPreview() {
-        previewTab.refresh();
+        if (refresh != null) {
+            refresh.refreshPreview();
+        }
     }
 
     @Override
@@ -463,6 +233,13 @@ public class BAStructureTab extends ITab
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getBattleArmor().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }
@@ -474,7 +251,7 @@ public class BAStructureTab extends ITab
             updateTechLevel();
             if (clan) {
                 squadSizeChanged(5);
-            } else if (getBattleArmor().getTroopers() == 5) {
+            } else if (getBattleArmor().getSquadSize() == 5) {
                 squadSizeChanged(4);
             }
         }
@@ -572,12 +349,14 @@ public class BAStructureTab extends ITab
     @Override
     public void chassisTypeChanged(int chassisType) {
         getBattleArmor().setChassisType(chassisType);
-        UnitUtil.removeAllCriticalSlotsFrom(getBattleArmor(),
+        BattleArmorUtil.removeManipulatorEquipment(getBattleArmor());
+        BattleArmorUtil.removeAllCriticalSlotsFrom(getBattleArmor(),
               List.of(BattleArmor.MOUNT_LOC_LEFT_ARM, BattleArmor.MOUNT_LOC_RIGHT_ARM, BattleArmor.MOUNT_LOC_TURRET));
         panBasicInfo.setFromEntity(getBattleArmor());
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());
         panEnhancements.setFromEntity(getBattleArmor());
+        panManipulator.setFromEntity();
         refreshPreview();
         refresh.refreshStatus();
         refresh.refreshBuild();
@@ -620,7 +399,7 @@ public class BAStructureTab extends ITab
 
     @Override
     public void squadSizeChanged(int squadSize) {
-        if (squadSize != getBattleArmor().getTroopers()) {
+        if (squadSize != getBattleArmor().getSquadSize()) {
             // We need to resize several arrays. This clears out the critical slots, so
             // we're going to preserve them before refreshing and restore the data
             // afterward.
@@ -632,7 +411,7 @@ public class BAStructureTab extends ITab
                 }
             }
             int armor = getBattleArmor().getArmor(BattleArmor.LOC_TROOPER_1);
-            getBattleArmor().setTroopers(squadSize);
+            getBattleArmor().setSquadSize(squadSize);
             getBattleArmor().refreshLocations();
             for (int loc = 0; loc < Math.min(getBattleArmor().locations(), slots.length); loc++) {
                 for (int i = 0; i < slots[loc].length; i++) {
@@ -757,7 +536,7 @@ public class BAStructureTab extends ITab
         double remainingTonnage = TestEntity.floor(
               totalTonnage - currentTonnage, Ceil.KILO);
         int points = (int) TestEntity.getRawArmorPoints(getBattleArmor(), remainingTonnage);
-        int maxArmor = MathUtility.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
+        int maxArmor = Math.clamp(getBattleArmor().getMaximumArmorPoints(), 0,
               points + getBattleArmor().getOArmor(BattleArmor.LOC_TROOPER_1));
         armorFactorChanged(maxArmor);
         panArmor.removeListener(this);

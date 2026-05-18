@@ -53,6 +53,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.units.Entity;
 import megamek.common.weapons.Weapon;
 import megameklab.ui.EntitySource;
+import megameklab.ui.util.CriticalSlotsView;
 import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
@@ -79,7 +80,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
 
     CriticalTransferHandler cth;
 
-    public PMBuildView(EntitySource eSource, RefreshListener refresh) {
+    public PMBuildView(EntitySource eSource, RefreshListener refresh, CriticalSlotsView criticalSlotsView) {
         super(eSource);
 
         JPanel mainPanel = new JPanel();
@@ -88,7 +89,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(eSource, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh, criticalSlotsView);
         equipmentTable.setTransferHandler(cth);
         equipmentTable.setIntercellSpacing(new Dimension(0, 0));
         equipmentTable.setShowGrid(false);
@@ -113,7 +114,7 @@ public class PMBuildView extends IView implements ActionListener, MouseListener 
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        cth.addRefreshListener(l);
+        cth.setRefresh(l);
     }
 
     private void loadEquipmentTable() {

@@ -73,7 +73,7 @@ public class MMLFileDropTransferHandler extends TransferHandler {
                 return true;
             }
 
-            var file = files.get(0);
+            var file = files.getFirst();
             var name = file.getName();
 
             if (name.toLowerCase().endsWith(".mtf") || name.toLowerCase().endsWith(".blk")) {

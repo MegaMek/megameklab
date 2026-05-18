@@ -381,6 +381,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     /**
      * Fixes the lack of unit in font-size attributes in the SVG document.
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private void fixFontSize() {
         if (getSVGDocument() == null) {
             return;
@@ -512,6 +513,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @return An SVG document for one page of the print job
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat) {
         return loadTemplate(pageIndex, pageFormat, false);
     }
@@ -1136,6 +1138,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     // Format String for writing a curve to a path definition attribute
     private final static String FMT_LINE = " l %f %f";
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     protected Element createPip(double x, double y, double radius, double strokeWidth) {
         return createPip(x, y, radius, strokeWidth, PipType.CIRCLE, FILL_WHITE, null, null, false);
     }
@@ -1202,16 +1205,16 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
                 //    RegularPolygon[{x + r, y + r}, r, 5]]]][[1]]
                 var r = radius;
                 var s5 = Math.sqrt(5);
-                var a = Math.sqrt(5d/8 - s5/8);
+                var a = Math.sqrt(5d / 8 - s5 / 8);
                 var b = Math.sqrt(2 * (5 + s5));
                 var c = Math.sqrt(10 - 2 * s5);
                 String d = ("M %f %f" + " L %f %f".repeat(5)).formatted(
-                      0.25 * (4 + c) * r + x, -((5 * r)/(-5 + s5)) + y,
+                      0.25 * (4 + c) * r + x, -((5 * r) / (-5 + s5)) + y,
                       r - a * r + x, 0.25 * (5 + s5) * r + y,
                       -0.25 * (-4 + b) * r + x, -0.25 * (-5 + s5) * r + y,
                       r + x, y,
                       0.25 * (4 + b) * r + x, -0.25 * (-5 + s5) * r + y,
-                      0.25 * (4 + c) * r + x, -((5 * r)/(-5 + s5)) + y
+                      0.25 * (4 + c) * r + x, -((5 * r) / (-5 + s5)) + y
                 );
 
                 path.setAttribute(SVGConstants.SVG_D_ATTRIBUTE, d);

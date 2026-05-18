@@ -43,8 +43,9 @@ import java.util.stream.Collectors;
 
 import megamek.client.ui.util.FluffImageHelper;
 import megamek.common.battleArmor.BattleArmor;
-import megamek.common.units.Entity;
 import megamek.common.equipment.HandheldWeapon;
+import megamek.common.units.ConvInfantry;
+import megamek.common.units.Entity;
 import megamek.common.units.Infantry;
 import megamek.common.units.ProtoMek;
 import megamek.common.units.UnitType;
@@ -133,8 +134,8 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     private PrintEntity getBlockFor(Entity entity, int index) {
         if (entity instanceof BattleArmor) {
             return new PrintBattleArmor((BattleArmor) entity, index, getFirstPage(), options);
-        } else if (entity instanceof Infantry) {
-            return new PrintInfantry((Infantry) entity, getFirstPage(), options);
+        } else if (entity instanceof ConvInfantry convInfantry) {
+            return new PrintInfantry(convInfantry, getFirstPage(), options);
         } else if (entity instanceof ProtoMek) {
             return new PrintProtoMek((ProtoMek) entity, getFirstPage(), index, options);
         } else if (entity instanceof HandheldWeapon) {
@@ -146,17 +147,18 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
-        if (entities.get(0) instanceof BattleArmor) {
+        Entity entity = entities.getFirst();
+        if (entity instanceof BattleArmor) {
             return "battle_armor_default.svg";
-        } else if (entities.get(0) instanceof Infantry) {
+        } else if (entity instanceof Infantry) {
             if (entities.size() < 4) {
                 return "conventional_infantry_tables.svg";
             } else {
                 return "conventional_infantry_default.svg";
             }
-        } else if (entities.get(0) instanceof HandheldWeapon) {
+        } else if (entity instanceof HandheldWeapon) {
             return "handheld_weapon_default.svg";
-        } else if (entities.get(0) instanceof ProtoMek) {
+        } else if (entity instanceof ProtoMek) {
             return "protomek_default.svg";
         }
         return "";
@@ -169,13 +171,13 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
     }
 
     private void drawFluffImage() {
-        Entity unit = entities.get(0);
+        Entity unit = entities.getFirst();
         if (!unit.isProtoMek() && !unit.isInfantry() && !unit.isHandheldWeapon()) {
             return;
         }
         if (entities.size() > 1) {
             for (int i = 1; i < entities.size(); i++) {
-                if (!entities.get(i).getChassis().equals(entities.get(0).getChassis())) {
+                if (!entities.get(i).getChassis().equals(unit.getChassis())) {
                     return;
                 }
             }
@@ -199,12 +201,13 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
 
     @Override
     protected List<ReferenceTable> getRightSideReferenceTables() {
+        Entity entity = entities.getFirst();
         List<ReferenceTable> list = new ArrayList<>();
-        list.add(new GroundToHitMods(this, entities.get(0)));
+        list.add(new GroundToHitMods(this, entity));
         list.add(new MovementCost(this, entities));
-        if (entities.get(0) instanceof ProtoMek) {
+        if (entity instanceof ProtoMek) {
             list.add(new ProtoMekSpecialHitLocation(this));
-        } else if (entities.get(0).isConventionalInfantry()) {
+        } else if (entity.isConventionalInfantry()) {
             list.add(new AntiMekAttackTable(this));
             list.add(new SwarmAttackHitLocation(this));
         }
@@ -223,7 +226,7 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
             printBottomTable(clusterTable, pageFormat);
         } else {
             printBottomTable(new GroundMovementRecord(this, false,
-                  entities.get(0) instanceof ProtoMek), pageFormat);
+                  entities.getFirst() instanceof ProtoMek), pageFormat);
         }
     }
 
@@ -278,16 +281,20 @@ public class PrintSmallUnitSheet extends PrintRecordSheet {
         if (numTypes > 1) {
             throw new IllegalArgumentException("Heterogeneous unit types are not supported");
         }
-        if ((entities.get(0) instanceof BattleArmor) || (entities.get(0) instanceof ProtoMek)) {
+
+        Entity entity = entities.getFirst();
+
+        if ((entity instanceof BattleArmor) || (entity instanceof ProtoMek)) {
             return entities.size() > (4 - desiredExtraEmptySlots);
         }
-        if (entities.get(0) instanceof Infantry) {
+        if (entity instanceof Infantry) {
             return entities.size() > ((options.showReferenceCharts() ? 2 : 3) - desiredExtraEmptySlots);
         }
-        if (entities.get(0) instanceof HandheldWeapon) {
+        if (entity instanceof HandheldWeapon) {
             int fillSize = 0;
-            for (Entity entity : entities) {
-                final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) entity, 0,
+            for (Entity weaponEntity : entities) {
+                final PrintHandheldWeapon printHandheldWeapon = new PrintHandheldWeapon((HandheldWeapon) weaponEntity,
+                      0,
                       null);
                 fillSize += printHandheldWeapon.isLargeLayout() ? 2 : 1;
             }

@@ -325,6 +325,7 @@ public abstract class MegaMekLabMainUI extends JPanel
     /**
      * Clears the undo and redo history stacks.
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void clearUndoRedoHistory() {
         undoStack.clear();
         redoStack.clear();

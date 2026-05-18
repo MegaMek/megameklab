@@ -39,6 +39,7 @@ import java.util.List;
 
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.exceptions.LocationFullException;
@@ -72,7 +73,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
         } else {
             try {
                 if (BattleArmorUtil.isBAMultiMount(equip)) {
-                    for (int t = 1; t <= getBattleArmor().getTroopers(); t++) {
+                    for (int t = 1; t <= getBattleArmor().getSquadSize(); t++) {
                         Mounted<?> mount = Mounted.createMounted(getBattleArmor(), equip);
                         mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
                         getBattleArmor().addEquipment(mount, t, false);
@@ -95,6 +96,7 @@ class BAEquipmentDatabaseView extends AbstractEquipmentDatabaseView {
               || equipment.hasFlag(MiscType.F_PARTIAL_WING)
               || equipment.hasFlag(MiscType.F_JUMP_BOOSTER)
               || equipment.hasFlag(MiscType.F_MECHANICAL_JUMP_BOOSTER)
+              || equipment.is(EquipmentTypeLookup.BA_MODULAR_EQUIPMENT_ADAPTOR)
               || UnitUtil.isJumpJet(equipment))) {
             return false;
         }

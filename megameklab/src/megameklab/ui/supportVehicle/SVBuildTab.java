@@ -131,9 +131,11 @@ public class SVBuildTab extends ITab implements ActionListener {
         for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getTank().locations(); location++) {
                 try {
-                    getTank().addEquipment(mount, location, false);
-                    UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
-                    break;
+                    if (UnitUtil.isValidLocation(getTank(), mount.getType(), location)) {
+                        getTank().addEquipment(mount, location, false);
+                        UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
+                        break;
+                    }
                 } catch (Exception ex) {
                     logger.error("", ex);
                 }

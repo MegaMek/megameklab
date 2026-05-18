@@ -301,6 +301,12 @@ public class SVStructureTab extends ITab implements SVBuildListener {
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getSV().setPublished(published);
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

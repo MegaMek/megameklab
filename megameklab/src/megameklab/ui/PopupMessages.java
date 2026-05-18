@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -33,19 +33,24 @@
 package megameklab.ui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import megamek.client.ui.util.UIUtil;
 import megamek.common.units.Entity;
 
 /**
  * This class contains static methods that each show a commonly used popup message, such as the "unit is invalid"
- * warning or common errors. The parent frame should ideally be not null.
+ * warning or common errors. The parent frame should ideally be not null. When in doubt, use Swing's utility method, see
+ * below, where any component can be supplied to find a suitable frame for a popup message, and pass the result to the
+ * methods herein.
+ *
+ * @see javax.swing.SwingUtilities#getWindowAncestor(Component)
  */
+@SuppressWarnings("unused") // utility class
 public final class PopupMessages {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.PopupMessages");
@@ -71,7 +76,7 @@ public final class PopupMessages {
     }
 
     public static void showInvalidLocationInfo(Component parent, String equipmentName, String locationName) {
-        showErrorMessage(parent, String.format(resources.getString("invalidLocation"), equipmentName, locationName));
+        showInfoMessage(parent, String.format(resources.getString("invalidLocation"), equipmentName, locationName));
     }
 
     public static void showFileReadError(Component parent, String fileName, String errorMessage) {
@@ -83,11 +88,11 @@ public final class PopupMessages {
     }
 
     public static void showLocationFullError(Component parent, String equipmentName) {
-        showErrorMessage(parent, String.format(resources.getString("locationFull"), equipmentName));
+        showInfoMessage(parent, String.format(resources.getString("locationFull"), equipmentName));
     }
 
     public static void showLocationFullError(Component parent) {
-        showErrorMessage(parent, String.format(resources.getString("locationFull"), "equipment"));
+        showInfoMessage(parent, String.format(resources.getString("locationFull"), "equipment"));
     }
 
     public static void showUnitInvalidWarning(Component parent) {
@@ -157,7 +162,7 @@ public final class PopupMessages {
             JScrollPane scrollPane = new JScrollPane(textArea);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize(new Dimension(600, 500));
+            scrollPane.setPreferredSize(UIUtil.scaleForGUI(600, 500));
             return scrollPane;
         }
     }

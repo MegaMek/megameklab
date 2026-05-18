@@ -41,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.common.annotations.Nullable;
-import megamek.common.loaders.BLKFile;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.logging.MMLogger;

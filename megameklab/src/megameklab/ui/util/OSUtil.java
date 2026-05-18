@@ -85,6 +85,7 @@ public class OSUtil {
     /**
      * @return true if the current operating system is Linux
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public static boolean isLinux() {
         return OS.LINUX.equals(getOS());
     }

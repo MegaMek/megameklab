@@ -53,6 +53,7 @@ import megamek.client.ui.util.DisplayTextField;
 import megamek.common.SimpleTechLevel;
 import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.Infantry;
 import megamek.common.verifier.TestInfantry;
@@ -177,7 +178,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         add(antiMekPanel, gbc);
     }
 
-    public void setFromEntity(Infantry inf) {
+    public void setFromEntity(ConvInfantry inf) {
         if (inf.getPrimaryWeapon() != null) {
             txtPrimary.setText(InfantryUtil.trimInfantryWeaponNames(inf.getPrimaryWeapon().getName()));
         } else {
@@ -193,7 +194,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
         cbNumSecondary.removeActionListener(this);
         cbNumSecondary.removeAllItems();
         cbNumSecondary.addItem(0);
-        if (inf.hasSpecialization(Infantry.TAG_TROOPS)) {
+        if (inf.hasSpecialization(ConvInfantry.TAG_TROOPS)) {
             cbNumSecondary.addItem(2);
         } else {
             for (int i = 1; i <= TestInfantry.maxSecondaryWeapons(inf); i++) {
@@ -219,7 +220,7 @@ public class CIWeaponView extends BuildView implements ActionListener {
             List<Mounted<?>> fieldGuns = inf.originalFieldWeapons();
             cbNumGuns.setSelectedIndex(fieldGuns.size());
             cbNumGuns.addActionListener(this);
-            txtGuns.setText(fieldGuns.get(0).getName());
+            txtGuns.setText(fieldGuns.getFirst().getName());
         }
 
         if (techManager.getTechLevel().ordinal() >= SimpleTechLevel.ADVANCED.ordinal()) {

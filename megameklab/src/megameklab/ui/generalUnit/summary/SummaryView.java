@@ -76,6 +76,7 @@ public class SummaryView extends IView {
      * @param showCrits    When false, the crits column is hidden
      * @param summaryItems The SummaryItems to show
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public SummaryView(EntitySource entitySource, boolean showCrits, SummaryItem... summaryItems) {
         super(entitySource);
         initialize(showCrits, Arrays.asList(summaryItems));

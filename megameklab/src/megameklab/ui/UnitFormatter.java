@@ -49,6 +49,7 @@ class UnitFormatter {
         return MessageFormat.format(ForceBuildUI.getDialogResources().getString(key), args);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     static boolean dotSpacer(StringBuilder current, boolean firstElement) {
         if (!firstElement) {
             current.append(DOT_SPACER);

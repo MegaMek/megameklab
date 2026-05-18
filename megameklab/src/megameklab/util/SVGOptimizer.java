@@ -504,6 +504,7 @@ public class SVGOptimizer {
         return formatted;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private static void simplifyTransforms(Element element) {
         if (element.hasAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE)) {
             String transform = element.getAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE);
@@ -633,6 +634,7 @@ public class SVGOptimizer {
         return sb.toString().replaceAll("\\s+", " ").trim();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private static void roundTransformValues(Element element) {
         if (element.hasAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE)) {
             String transform = element.getAttribute(SVGConstants.SVG_TRANSFORM_ATTRIBUTE);
@@ -920,6 +922,7 @@ public class SVGOptimizer {
         }
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private static void removeUnusedIds(Document doc, Set<String> referencedIds) {
         NodeList all = doc.getElementsByTagName("*");
         for (int i = 0; i < all.getLength(); i++) {
@@ -1169,6 +1172,7 @@ public class SVGOptimizer {
         return name1.compareTo(name2);
     };
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private static void sortAttributes(Node node) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element) node;
@@ -1215,6 +1219,7 @@ public class SVGOptimizer {
         }
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private static void convertShapesToPaths(Element element) {
         // Create a list of child elements to iterate over, to avoid issues with modification
         List<Element> childElements = new ArrayList<>();

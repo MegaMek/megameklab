@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -42,6 +42,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -131,7 +132,7 @@ public class BMBuildTab extends ITab {
         unallocatedList.add(resetButton);
 
         Box buttonPanel = Box.createHorizontalBox();
-        buttonPanel.setBackground(UIUtil.alternateTableBGColor());
+        buttonPanel.setBackground(UIManager.getColor("Table.background"));
         buttonPanel.setOpaque(true);
         buttonPanel.setBorder(BorderFactory.createCompoundBorder(
               new LineBorder(getBackground(), 10),

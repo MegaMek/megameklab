@@ -82,6 +82,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private JPanel negativeQuirksPanel;
     private JPanel weaponQuirksPanel;
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private record GroupInfo(String title, List<DialogOptionComponentYPanel> quirks) {
     }
 
@@ -166,18 +167,18 @@ public class QuirksTab extends ITab implements DialogOptionListener {
 
         // Create nested split panes for three-way horizontal split
         JSplitPane leftSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            positiveScrollPane, negativeScrollPane);
+              positiveScrollPane, negativeScrollPane);
         leftSplitPane.setResizeWeight(0.5);
 
         JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            leftSplitPane, weaponScrollPane);
+              leftSplitPane, weaponScrollPane);
         mainSplitPane.setResizeWeight(0.67);
 
         // Add the split pane to the main panel
         setLayout(new GridBagLayout());
         add(mainSplitPane, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
-            GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-            new Insets(0, 0, 0, 0), 0, 0));
+              GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+              new Insets(0, 0, 0, 0), 0, 0));
 
         validate();
         repaint();
@@ -407,6 +408,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     /**
      * Gets the width of the visible area (viewport or panel itself).
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private int getVisibleContainerWidth() {
         Container parent = getParent();
         if (parent instanceof JViewport) {
@@ -421,8 +423,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
      */
     private int calculateAvailableWidthInPanel(JPanel panel) {
         Container scrollPaneParent = panel.getParent();
-        if (scrollPaneParent instanceof JViewport) {
-            JViewport viewport = (JViewport) scrollPaneParent;
+        if (scrollPaneParent instanceof JViewport viewport) {
             int viewportWidth = viewport.getWidth();
             Insets panelInsets = panel.getInsets();
             return viewportWidth - panelInsets.left - panelInsets.right;

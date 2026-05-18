@@ -208,6 +208,7 @@ public class PMChassisView extends BuildView implements ActionListener, ChangeLi
         cbMotiveType.setEnabled(false);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean isUltraHeavy() {
         return getTonnage() > TestProtoMek.MAX_STD_TONNAGE;
     }

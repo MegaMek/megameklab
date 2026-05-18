@@ -47,7 +47,6 @@ import megamek.common.equipment.HandheldWeapon;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Entity;
-import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.Element;
@@ -392,7 +391,7 @@ public class PrintHandheldWeapon extends PrintEntity {
                 actualLabelHeight = LABEL_DEFAULT_FONT_SIZE;
             }
         } else {
-            headerLabel.setTextContent("Ammo (%d):".formatted(pipsList.get(0).getValue()));
+            headerLabel.setTextContent("Ammo (%d):".formatted(pipsList.getFirst().getValue()));
         }
 
         // Find Optimal Pip Radius
@@ -687,7 +686,7 @@ public class PrintHandheldWeapon extends PrintEntity {
 
         // bestRadius now holds the largest value tested that fit.
         if (bestRadius >= PIP_MIN_RADIUS - SEARCH_TOLERANCE) {
-            return Math.min(PIP_RADIUS, Math.max(PIP_MIN_RADIUS, bestRadius));
+            return Math.clamp(bestRadius, PIP_MIN_RADIUS, PIP_RADIUS);
         } else {
             return 0;
         }

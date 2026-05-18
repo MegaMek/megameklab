@@ -382,7 +382,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         // If the first entity has no game, we link them all to a game. This is needed for C3 links.
         boolean forcedLink = false;
-        if (entities.get(0).getGame() == null) {
+        if (entities.getFirst().getGame() == null) {
             forcedLink = true;
             linkForce();
         }
@@ -394,7 +394,7 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
             fileChooser.setFileFilter(filter);
             fileChooser.setSelectedFile(new File(Strings.isNotBlank(mulFileName) ?
                   mulFileName :
-                  entities.get(0).getShortName() + " etc." + CG_FILEPATH_MUL));
+                  entities.getFirst().getShortName() + " etc." + CG_FILEPATH_MUL));
 
             if (!(fileChooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) ||
                   fileChooser.getSelectedFile() == null) {
@@ -520,8 +520,8 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
 
         for (var list : List.of(ba, ci, cv, mek, proto, aero, others)) {
             list.sort(Comparator.comparing(Entity::isClan).reversed()
-                        .thenComparingDouble(Entity::getWeight)
-                        .thenComparing(UnitUtil::getPrintName));
+                  .thenComparingDouble(Entity::getWeight)
+                  .thenComparing(UnitUtil::getPrintName));
         }
 
         units.clear();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -192,8 +192,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
                 if (weaponType.getMinimumRange() > 0) {
                     r[RangeType.RANGE_MINIMUM] = CConfig.formatScale(weaponType.getMinimumRange(), false);
                 }
-                if ((weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.LRM_TORPEDO)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
+                if (weaponType.getAmmoType() != null && weaponType.getAmmoType().isTorpedo()) {
                     r[RangeType.RANGE_SHORT] = CConfig.formatScale(weaponType.getWShortRange(), false);
                     if (weaponType.getWMediumRange() > weaponType.getWShortRange()) {
                         r[RangeType.RANGE_MEDIUM] = CConfig.formatScale(weaponType.getWMediumRange(), false);
@@ -316,8 +315,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         if (mount instanceof WeaponMounted && mount.getEntity().isBattleArmor()) {
             if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_BODY) {
                 name.append(" (Body)");
-            } else
-            if (!mount.isMekTurretMounted() && mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
+            } else if (!mount.isMekTurretMounted() && mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
                 name.append(" (T)");
             }
         }
@@ -422,10 +420,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
      *
      * @return The abbreviated location string
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private String formatMekLocations(List<Integer> locations) {
         if (locations.stream().allMatch(l -> mount.getEntity().locationIsLeg(l))) {
             if ((mount.getEntity().entityIsQuad() && (locations.size() == 4))
-                   || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
+                  || ((mount.getEntity() instanceof TripodMek) && (locations.size() == 3))) {
                 return "Legs";
             }
         } else if (locations.stream().allMatch(l -> ((Mek) mount.getEntity()).locationIsTorso(l))) {

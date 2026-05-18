@@ -136,7 +136,7 @@ public interface InventoryEntry {
      */
     default String getModField(int row) {
         return getModField(row, false);
-    };
+    }
 
     /**
      * @param row The row index within the entry

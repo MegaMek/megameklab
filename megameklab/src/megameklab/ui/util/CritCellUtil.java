@@ -42,12 +42,12 @@ import javax.swing.border.TitledBorder;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentTypeLookup;
-import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.units.Entity;
 import megameklab.ui.EquipmentToolTip;
+import megameklab.util.BattleArmorUtil;
 import megameklab.util.CConfig;
 import megameklab.util.UnitUtil;
 
@@ -108,15 +108,17 @@ public final class CritCellUtil {
             if (mounted == null) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EMPTY));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_EMPTY));
-            } else if (!mounted.getType().isHittable()) {
-                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
-                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
-            } else if (mounted.getType() instanceof WeaponType) {
+            } else if (mounted.getType() instanceof WeaponType
+                  || BattleArmorUtil.isFilledWeaponMount(mounted)) {
+                // Armored gloves, DWP and APM can only mount weapons and, when not empty, should look like a weapon
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_WEAPONS));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_WEAPONS));
             } else if (mounted.getType() instanceof AmmoType) {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_AMMO));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_AMMO));
+            } else if (!mounted.getType().isHittable()) {
+                cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
+                cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_NON_HITTABLE));
             } else {
                 cell.setBackground(CConfig.getBackgroundColor(CConfig.GUI_COLOR_EQUIPMENT));
                 cell.setForeground(CConfig.getForegroundColor(CConfig.GUI_COLOR_EQUIPMENT));
@@ -145,10 +147,12 @@ public final class CritCellUtil {
                     cell.setFont(cell.getFont().deriveFont(Font.ITALIC));
                 }
             }
-            if (mounted instanceof MiscMounted
-                  && (mounted.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK) || mounted.getType()
-                  .hasFlag(MiscType.F_AP_MOUNT))
-                  && mounted.getLinked() != null) {
+            if (mounted.is(EquipmentTypeLookup.BA_DWP) && mounted.getLinked() != null) {
+                name = "[DWP] " + mounted.getLinked().getName();
+            } else if (mounted.is(EquipmentTypeLookup.BA_APM) && mounted.getLinked() != null) {
+                name = "[APM] " + mounted.getLinked().getName();
+            } else if (mounted.getType().hasFlag(MiscType.F_AP_MOUNT) && mounted.getLinked() != null) {
+                // armored gloves may also act as an APM, TM p.171
                 name += " (attached " + mounted.getLinked().getName() + ")";
             }
 

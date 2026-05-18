@@ -1,6 +1,53 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.12
+0.50.13
+
+0.50.12 (2026-03-28 2100 UTC)
+## What's Changed
+* Add Prosthetic Enhancement UI for Conventional Infantry (IO p.84) by @HammerGS in https://github.com/MegaMek/megameklab/pull/2101
+* Add UI Support for Prosthetic Limbs, Extraneous (Enhanced) for Conventional Infantry (IO p.84) by @HammerGS in https://github.com/MegaMek/megameklab/pull/2102
+* subtype flags merged with flags + fixes by @exeea in https://github.com/MegaMek/megameklab/pull/2088
+* Add Augmentation View Validation and UX Improvements by @HammerGS in https://github.com/MegaMek/megameklab/pull/2109
+* Fix NullPointerException in BayWeaponCriticalTree when refresh listener is null by @HammerGS in https://github.com/MegaMek/megameklab/pull/2104
+* PR: Update `milestoneReleases.yml` to reflect 0.50.11 being a Milestone release by @psikomonkie in https://github.com/MegaMek/megameklab/pull/2110
+* Add missing override annotations by @SJuliez in https://github.com/MegaMek/megameklab/pull/2114
+* Resolving a few CodeQL warnings by @SJuliez in https://github.com/MegaMek/megameklab/pull/2115
+* Include stealth armor heat in heat profile by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2118
+* fixed punch hitmod with missing hand and lower actuator. by @exeea in https://github.com/MegaMek/megameklab/pull/2117
+* Print ammo kind loaded into OS/I-OS launchers by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2119
+* dpt calc with ammo and configurable sustained turns by @exeea in https://github.com/MegaMek/megameklab/pull/2120
+* Updated Gradle to 9.3.0 by @rjhancock in https://github.com/MegaMek/megameklab/pull/2122
+* Random army dialog for the force builder by @SJuliez in https://github.com/MegaMek/megameklab/pull/2123
+* Added Checkstyle GitHub Actions by @rjhancock in https://github.com/MegaMek/megameklab/pull/2124
+* Adjustments to ensure check style compliance. by @rjhancock in https://github.com/MegaMek/megameklab/pull/2131
+* Apply Vehicle Effectiveness Rules from TacOps:AR by @bliebeg in https://github.com/MegaMek/megameklab/pull/2129
+* Implement DNI, EI Interface, and Damage Interrupt Circuit UI by @HammerGS in https://github.com/MegaMek/megameklab/pull/2128
+* Issue 2095 Allow more engine types for CF by @SJuliez in https://github.com/MegaMek/megameklab/pull/2137
+* Issue #2130 - Show Bomb Rack in MML Equipment Database by @SJuliez in https://github.com/MegaMek/megameklab/pull/2136
+* Issue #2134 - Fix duplicate heat from RISC Pulse module in StatusBar heat by @SJuliez in https://github.com/MegaMek/megameklab/pull/2135
+* Gitignore update by @SJuliez in https://github.com/MegaMek/megameklab/pull/2132
+* Bump actions/upload-artifact from 6 to 7 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2141
+* Issue 2094 - Warship SI by @SJuliez in https://github.com/MegaMek/megameklab/pull/2142
+* Issue #2112 GUI maintenance by @SJuliez in https://github.com/MegaMek/megameklab/pull/2139
+* Bump com.fasterxml.jackson.core:jackson-core from 2.20.1 to 2.21.1 in /megameklab in the gradle group across 1 directory by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2143
+* Case selector by @exeea in https://github.com/MegaMek/megameklab/pull/2145
+* Issue #2105 Primitive aerospace armor (yet again) by @SJuliez in https://github.com/MegaMek/megameklab/pull/2140
+* Add Fluff Date UI and fix FluffTab persistence on save by @HammerGS in https://github.com/MegaMek/megameklab/pull/2146
+* Small GUI changes by @SJuliez in https://github.com/MegaMek/megameklab/pull/2147
+* Issue MML2052 remove extra ")" by @SJuliez in https://github.com/MegaMek/megameklab/pull/2151
+* Issue MML2126 fix fallback to allowed armor type by @SJuliez in https://github.com/MegaMek/megameklab/pull/2152
+* Patchwork work by @SJuliez in https://github.com/MegaMek/megameklab/pull/2149
+* MML#1449 remove bays by @SJuliez in https://github.com/MegaMek/megameklab/pull/2156
+* Issues 2107 2108 1418, Aero and other crits, dnd by @SJuliez in https://github.com/MegaMek/megameklab/pull/2155
+* Bump actions/deploy-pages from 4 to 5 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2162
+* Bump gradle/actions from 5 to 6 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2159
+* Issue #1990, Crits on BA by @SJuliez in https://github.com/MegaMek/megameklab/pull/2161
+* Bump codecov/codecov-action from 5 to 6 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2163
+
+## New Contributors
+* @bliebeg made their first contribution in https://github.com/MegaMek/megameklab/pull/2129
+
+**Full Changelog**: https://github.com/MegaMek/megameklab/compare/v0.50.11...v0.50.12
 
 0.50.11 (2025-12-30 1900 UTC)
 * Added Testing against Java 25 LTS by @rjhancock in https://github.com/MegaMek/megameklab/pull/2078

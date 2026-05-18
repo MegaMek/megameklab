@@ -372,18 +372,18 @@ public class UnitPrintManager {
 
         if (loadedUnits.size() > 1) {
             String name;
-            if (loadedUnits.get(0) instanceof Entity) {
-                name = ((Entity) loadedUnits.get(0)).getShortNameRaw();
+            if (loadedUnits.getFirst() instanceof Entity) {
+                name = ((Entity) loadedUnits.getFirst()).getShortNameRaw();
             } else {
-                name = loadedUnits.get(0).generalName();
+                name = loadedUnits.getFirst().generalName();
             }
             masterPrintJob.setJobName(name + " etc");
         } else if (!loadedUnits.isEmpty()) {
             String name;
-            if (loadedUnits.get(0) instanceof Entity) {
-                name = ((Entity) loadedUnits.get(0)).getShortNameRaw();
+            if (loadedUnits.getFirst() instanceof Entity) {
+                name = ((Entity) loadedUnits.getFirst()).getShortNameRaw();
             } else {
-                name = loadedUnits.get(0).generalName();
+                name = loadedUnits.getFirst().generalName();
             }
             masterPrintJob.setJobName(name);
         }

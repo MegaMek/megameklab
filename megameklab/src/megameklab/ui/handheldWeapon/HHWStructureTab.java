@@ -234,6 +234,13 @@ public class HHWStructureTab extends ITab implements HHWBuildListener, BuildList
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getEntity().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }

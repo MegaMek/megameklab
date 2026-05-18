@@ -117,7 +117,7 @@ public class AeroBayTransferHandler extends TransferHandler {
                 // and add it there. A weapon dropped on an illegal bay will create a new one and non-bay equipment
                 // will be added at the top level regardless of the drop location.
                 // Non-weapon bay equipment cannot be dropped on an illegal bay.
-                final Mounted<?> mount = eqList.get(0);
+                final Mounted<?> mount = eqList.getFirst();
                 if (mount.getType() instanceof BayWeapon) {
                     tree.addBay((WeaponMounted) mount);
                 } else if ((mount instanceof AmmoMounted ammo)

@@ -417,10 +417,12 @@ public class SVChassisView extends BuildView implements ActionListener, ChangeLi
         return selected != null ? selected : TechRating.A;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasDNICockpitMod() {
         return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setDNICockpitMod(boolean hasMod) {
         chkDNICockpitMod.setSelected(hasMod);
     }

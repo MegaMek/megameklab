@@ -36,7 +36,6 @@ import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JDialog;
 
-import megamek.common.SimpleTechLevel;
 import megamek.common.enums.TechRating;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
@@ -241,16 +240,7 @@ public class SVMainUI extends MegaMekLabMainUI {
             newUnit.setArmorTechRating(TechRating.D);
             newUnit.setOriginalWalkMP(1);
         } else {
-            newUnit.setChassis(oldEntity.getChassis());
-            newUnit.setModel(oldEntity.getModel());
-            newUnit.setYear(Math.max(oldEntity.getYear(),
-                  newUnit.getConstructionTechAdvancement().getIntroductionDate()));
-            newUnit.setSource(oldEntity.getSource());
-            newUnit.setManualBV(oldEntity.getManualBV());
-            SimpleTechLevel lvl = SimpleTechLevel.max(newUnit.getStaticTechLevel(),
-                  SimpleTechLevel.convertCompoundToSimple(oldEntity.getTechLevel()));
-            newUnit.setTechLevel(lvl.getCompoundTechLevel(oldEntity.isClan()));
-            newUnit.setMixedTech(oldEntity.isMixedTech());
+            copyUnitBasics(newUnit, oldEntity);
             newUnit.setMovementMode(oldEntity.getMovementMode());
             newUnit.setStructuralTechRating(oldEntity.getStructuralTechRating());
             newUnit.setArmorTechRating(oldEntity.getArmorTechRating());

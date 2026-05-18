@@ -71,7 +71,7 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
         this.eSource = eSource;
         this.refresh = refresh;
         this.buildView = buildView;
-        setCellRenderer(new CritListCellRenderer(eSource.getEntity(), buildView));
+        setCellRenderer(new CritListCellRenderer(eSource, buildView));
         addMouseListener(this);
         setTransferHandler(new CriticalTransferHandler(eSource, refresh));
     }

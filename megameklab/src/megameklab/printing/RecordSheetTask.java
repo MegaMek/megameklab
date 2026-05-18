@@ -130,7 +130,7 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
     @Override
     protected void process(List<Integer> chunks) {
         if (!chunks.isEmpty()) {
-            popup.progressBar.setValue(chunks.get(chunks.size() - 1));
+            popup.progressBar.setValue(chunks.getLast());
         }
     }
 

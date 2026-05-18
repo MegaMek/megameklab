@@ -260,7 +260,7 @@ public class PrintMek extends PrintEntity {
                           "shield DC",
                           loc,
                           false
-                          );
+                    );
                 }
                 element = getSVGDocument().getElementById(SHIELD_DA + loc);
                 if (null != element) {
@@ -438,7 +438,8 @@ public class PrintMek extends PrintEntity {
             if (importedNode instanceof SVGElement el) {
                 if (options.fancyPips() && el instanceof SVGPathElement oldPip) {
                     el = (SVGElement) makeFancy(oldPip, structure, type);
-                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE, oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
+                    el.setAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE,
+                          oldPip.getAttribute(SVGConstants.SVG_CLASS_ATTRIBUTE));
                     el.setAttribute("loc", oldPip.getAttribute("loc"));
                     if (oldPip.hasAttribute("rear")) {
                         el.setAttribute("rear", oldPip.getAttribute("rear"));
@@ -520,7 +521,7 @@ public class PrintMek extends PrintEntity {
                       "armor",
                       mek.getLocationAbbr(loc),
                       false
-                      );
+                );
             }
             if (!structComplete) {
                 if ((loc == Mek.LOC_HEAD)) {
@@ -574,7 +575,7 @@ public class PrintMek extends PrintEntity {
                           "armor",
                           mek.getLocationAbbr(loc),
                           true
-                          );
+                    );
 
                 }
             }
@@ -594,6 +595,7 @@ public class PrintMek extends PrintEntity {
 
 
     public static final String[] PRESERVED_PIP_ATTRIBUTES = { "id", "loc", "rear", "class" };
+
     private Element makeFancy(SVGPathElement oldPip, boolean structure, int type) {
         var parent = oldPip.getParentNode();
         var bounds = oldPip.getBBox();
@@ -919,7 +921,7 @@ public class PrintMek extends PrintEntity {
             baseRun--;
             fullRun--;
         }
-        return formatMovement(baseRun, fullRun);
+        return formatMovement(Math.max(0, baseRun), Math.max(0, fullRun));
     }
 
     private String formatQuadVeeFlank() {

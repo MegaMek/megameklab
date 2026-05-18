@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -39,7 +39,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import megamek.common.equipment.Mounted;
@@ -47,7 +46,6 @@ import megamek.common.units.Entity;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.ui.util.SpringLayoutHelper;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
@@ -82,7 +80,7 @@ public class PMBuildTab extends ITab implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 
         critView = new PMCriticalView(eSource, refresh);
-        buildView = new PMBuildView(eSource, refresh);
+        buildView = new PMBuildView(eSource, refresh, critView);
 
         mainPanel.add(buildView);
 
@@ -98,20 +96,6 @@ public class PMBuildTab extends ITab implements ActionListener {
         this.add(critView);
         this.add(mainPanel);
         refresh();
-    }
-
-    public JPanel availableCritsPanel() {
-        JPanel masterPanel = new JPanel(new SpringLayout());
-        Dimension maxSize = new Dimension();
-
-        masterPanel.add(buildView);
-
-        SpringLayoutHelper.setupSpringGrid(masterPanel, 1);
-        maxSize.setSize(300, 5);
-        masterPanel.setPreferredSize(maxSize);
-        masterPanel.setMinimumSize(maxSize);
-        masterPanel.setMaximumSize(maxSize);
-        return masterPanel;
     }
 
     public void refresh() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2011-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -32,7 +32,7 @@
  */
 package megameklab.ui;
 
-import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -49,6 +49,8 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import megamek.client.ui.CopySystemDataAction;
+import megamek.client.ui.ShowBugReportDialogAction;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
@@ -76,6 +78,7 @@ import megameklab.MMLConstants;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
+import megameklab.ui.dialog.SourcebookEditorDialog;
 import megameklab.ui.dialog.UiLoader;
 import megameklab.ui.dialog.settings.SettingsDialog;
 import megameklab.ui.util.OSUtil;
@@ -142,6 +145,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createUnitValidationMenu());
         add(createForceBuildMenu());
         add(createReportsMenu());
+        add(createDatabaseMenu());
         add(createHelpMenu());
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
@@ -229,7 +233,6 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         fileMenu.add(createSaveMenu());
         fileMenu.add(createExportMenu());
         fileMenu.add(createPrintMenu());
-        fileMenu.add(createRefreshMenu());
         fileMenu.add(createOptionsMenu());
 
         fileMenu.addSeparator();
@@ -700,21 +703,49 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         return printMenu;
     }
 
-    /**
-     * @return the created Refresh menu
-     */
-    private JMenu createRefreshMenu() {
-        final JMenu refreshMenu = new JMenu(resources.getString("refreshMenu.text"));
-        refreshMenu.setName("refreshMenu");
-        refreshMenu.setMnemonic(KeyEvent.VK_F);
+    private JMenu createDatabaseMenu() {
+        final JMenu databaseMenu = new JMenu(resources.getString("databaseMenu.text"));
+        databaseMenu.setName("databaseMenu");
+        databaseMenu.setMnemonic(KeyEvent.VK_D);
 
         final JMenuItem miRefreshUnitCache = new JMenuItem(resources.getString("miRefreshUnitCache.text"));
         miRefreshUnitCache.setName("miRefreshUnitCache");
         miRefreshUnitCache.setMnemonic(KeyEvent.VK_U);
-        miRefreshUnitCache.addActionListener(evt -> MekSummaryCache.refreshUnitData(false));
-        refreshMenu.add(miRefreshUnitCache);
+        miRefreshUnitCache.addActionListener(evt -> refreshUnitCache());
+        databaseMenu.add(miRefreshUnitCache);
 
-        return refreshMenu;
+        final JMenuItem miRebuildUnitCache = new JMenuItem(resources.getString("miRebuildUnitCache.text"));
+        miRebuildUnitCache.setName("miRebuildUnitCache");
+        miRebuildUnitCache.addActionListener(evt -> rebuildUnitCache());
+        databaseMenu.add(miRebuildUnitCache);
+
+        if (CConfig.includeLicense()) {
+            databaseMenu.addSeparator();
+
+            final JMenuItem miSourcebooks = new JMenuItem(resources.getString("miSourcebooks.text"));
+            miSourcebooks.setName("miSourcebooks");
+            miSourcebooks.setMnemonic(KeyEvent.VK_S);
+            miSourcebooks.addActionListener(evt -> SourcebookEditorDialog.showDialog(owner.getFrame()));
+            databaseMenu.add(miSourcebooks);
+        }
+
+        return databaseMenu;
+    }
+
+    private void refreshUnitCache() {
+        MekSummaryCache mekSummaryCache = MekSummaryCache.getInstance();
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame(), mekSummaryCache,
+              resources.getString("miRefreshUnitCache.text"), !mekSummaryCache.isLoading());
+        MekSummaryCache.refreshUnitData(false);
+        unitLoadingDialog.setVisible(true);
+    }
+
+    private void rebuildUnitCache() {
+        MekSummaryCache mekSummaryCache = MekSummaryCache.getInstance();
+        UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(owner.getFrame(), mekSummaryCache,
+              resources.getString("miRebuildUnitCache.text"), !mekSummaryCache.isLoading());
+        MekSummaryCache.rebuildUnitData(false);
+        unitLoadingDialog.setVisible(true);
     }
 
     /**
@@ -1117,17 +1148,43 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miResetWindowPos.addActionListener(evt -> CConfig.resetWindowPositions());
         helpMenu.add(miResetWindowPos);
 
-        final JMenuItem miAbout = new JMenuItem(resources.getString("miAbout.text"));
-        miAbout.setName("miAbout");
-        miAbout.setMnemonic(KeyEvent.VK_A);
-        miAbout.addActionListener(evt -> aboutAction());
-        helpMenu.add(miAbout);
+        // On Mac, handle the auto-added MegaMekLab menu items
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+                desktop.setAboutHandler(ev -> aboutAction());
+            }
+            if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+                desktop.setQuitHandler((e, response) -> {
+                    boolean canQuit = owner.exit();
+                    if (canQuit) {
+                        response.performQuit();
+                    } else {
+                        response.cancelQuit();
+                    }
+                });
+            }
+        }
 
         final JMenuItem miRecordSheetImages = new JMenuItem(resources.getString("miRecordSheetImages.text"));
         miRecordSheetImages.setName("miRecordSheetImages");
         miRecordSheetImages.setMnemonic(KeyEvent.VK_R);
         miRecordSheetImages.addActionListener(evt -> recordSheetImagesAction());
         helpMenu.add(miRecordSheetImages);
+
+        helpMenu.addSeparator();
+
+        CopySystemDataAction copySystemDataAction = new CopySystemDataAction(MMLConstants.PROJECT_NAME);
+        helpMenu.add(new ShowBugReportDialogAction(owner.getFrame(), copySystemDataAction));
+        helpMenu.add(copySystemDataAction);
+
+        helpMenu.addSeparator();
+
+        final JMenuItem miAbout = new JMenuItem(resources.getString("miAbout.text"));
+        miAbout.setName("miAbout");
+        miAbout.setMnemonic(KeyEvent.VK_A);
+        miAbout.addActionListener(evt -> aboutAction());
+        helpMenu.add(miAbout);
 
         return helpMenu;
     }
@@ -1262,52 +1319,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     // Show data about MegaMekLab
     private void aboutAction() {
-        // make the dialog
-        JDialog dlg = new JDialog(owner.getFrame(), resources.getString("menu.help.about.title"));
-
-        // set up the contents
-        JPanel child = new JPanel();
-        child.setLayout(new BoxLayout(child, BoxLayout.Y_AXIS));
-        child.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // set the text up.
-        JLabel version = new JLabel(String.format(resources.getString("menu.help.about.version.format"),
-              MMLConstants.VERSION));
-        JEditorPane body = new JEditorPane();
-        body.setContentType("text/html");
-        body.setEditable(false);
-        body.setOpaque(false);
-        body.setText(resources.getString("menu.help.about.text"));
-
-        body.addHyperlinkListener(e -> {
-            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
-                if (java.awt.Desktop.isDesktopSupported()) {
-                    try {
-                        java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (Exception ex) {
-                        logger.error(ex, "Could not open link: {}", e.getURL());
-                    }
-                }
-            }
-        });
-
-        // center everything
-        version.setAlignmentX(Component.CENTER_ALIGNMENT);
-        body.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // add to child panel
-        child.add(new JLabel("\n"));
-        child.add(version);
-        child.add(new JLabel("\n"));
-        child.add(body);
-
-        // then add child panel to the content pane.
-        dlg.getContentPane().add(child);
-        dlg.setLocationRelativeTo(owner.getFrame());
-        dlg.setModal(true);
-        dlg.setResizable(false);
-        dlg.pack();
-        dlg.setVisible(true);
+        new MMLAboutDialog(owner.getFrame()).show();
     }
 
     // Show how to create fluff images for Record Sheets

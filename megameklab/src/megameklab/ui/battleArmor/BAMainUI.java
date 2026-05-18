@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2010-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -47,6 +47,7 @@ import megamek.common.TechConstants;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.FluffTab;
+import megameklab.ui.generalUnit.PreviewTab;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
 
@@ -57,6 +58,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     private BAEquipmentTab equipTab;
     private FluffTab fluffTab;
     private BAStatusBar statusbar;
+    private PreviewTab previewTab;
 
     @Override
     protected FluffTab getFluffTab() {
@@ -87,6 +89,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         quirksTab = new QuirksTab(this);
         statusbar = new BAStatusBar(this);
         buildTab = new BABuildTab(this);
+        previewTab = new PreviewTab(this);
         structureTab.addRefreshedListener(this);
         equipTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
@@ -99,6 +102,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         configPane.addTab("Assign Criticals", new TabScrollPane(buildTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        configPane.addTab("Preview", previewTab);
 
         add(configPane, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
@@ -121,7 +125,7 @@ public class BAMainUI extends MegaMekLabMainUI {
         newUnit.setTechLevel(TechConstants.T_IS_TW_NON_BOX);
         newUnit.setStructureType(EquipmentType.T_STRUCTURE_STANDARD);
         newUnit.setWeightClass(EntityWeightClass.WEIGHT_LIGHT);
-        newUnit.setTroopers(4);
+        newUnit.setSquadSize(4);
         newUnit.setChassisType(BattleArmor.CHASSIS_TYPE_BIPED);
         newUnit.autoSetInternal();
         for (int loc = 0; loc < newUnit.locations(); loc++) {
@@ -188,7 +192,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     @Override
     public void refreshPreview() {
         super.refreshPreview();
-        structureTab.refreshPreview();
+        previewTab.refresh();
     }
 
     @Override
@@ -200,6 +204,7 @@ public class BAMainUI extends MegaMekLabMainUI {
     public void refreshEquipmentTable() {
         super.refreshEquipmentTable();
         equipTab.refreshTable();
+        equipTab.refresh();
         floatingEquipmentDatabase.refresh();
     }
 

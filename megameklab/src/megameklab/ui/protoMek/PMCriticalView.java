@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2018-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -44,17 +44,17 @@ import megamek.common.units.ProtoMek;
 import megamek.common.verifier.TestProtoMek;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.CritCellUtil;
+import megameklab.ui.util.CriticalSlotsView;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.ProtoMekMountList;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.ProtoMekUtil;
+import megameklab.util.UnitUtil;
 
 /**
  * The Crit Slots view for a ProtoMek
- *
- * @author neoancient
- * @author Simon (Juliez)
  */
-public class PMCriticalView extends IView {
+public class PMCriticalView extends IView implements CriticalSlotsView {
 
     private final Box mainGunPanel = Box.createVerticalBox();
     private final Box leftArmPanel = Box.createVerticalBox();
@@ -92,32 +92,32 @@ public class PMCriticalView extends IView {
         rightWeight.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
         mainGunPanel.setBorder(CritCellUtil.locationBorder("Main Gun"));
-        mainGunList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_MAIN_GUN);
+        mainGunList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_MAIN_GUN, this);
         mainGunPanel.add(mainGunList);
         mainGunPanel.add(mainGunSpace);
 
         leftArmPanel.setBorder(CritCellUtil.locationBorder("Left Arm"));
-        leftList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_LEFT_ARM);
+        leftList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_LEFT_ARM, this);
         leftArmPanel.add(leftList);
         leftArmPanel.add(leftSpace);
         leftArmPanel.add(leftWeight);
 
         Box torsoPanel = Box.createVerticalBox();
         torsoPanel.setBorder(CritCellUtil.locationBorder("Torso"));
-        torsoList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_TORSO);
+        torsoList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_TORSO, this);
         torsoPanel.add(torsoList);
         torsoPanel.add(torsoSpace);
         torsoPanel.add(torsoWeight);
 
         rightArmPanel.setBorder(CritCellUtil.locationBorder("Right Arm"));
-        rightList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_RIGHT_ARM);
+        rightList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_RIGHT_ARM, this);
         rightArmPanel.add(rightList);
         rightArmPanel.add(rightSpace);
         rightArmPanel.add(rightWeight);
 
         Box bodyPanel = Box.createVerticalBox();
         bodyPanel.setBorder(CritCellUtil.locationBorder("General"));
-        bodyList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_BODY);
+        bodyList = new ProtoMekMountList(eSource, refresh, ProtoMek.LOC_BODY, this);
         bodyPanel.add(bodyList);
 
         leftPanel.add(leftArmPanel);
@@ -192,4 +192,40 @@ public class PMCriticalView extends IView {
         }
     }
 
+    @Override
+    public void markUnavailableLocations(int location) {
+        mainGunList.setDarkened(location != ProtoMek.LOC_MAIN_GUN);
+        torsoList.setDarkened(location != ProtoMek.LOC_TORSO);
+        leftList.setDarkened(location != ProtoMek.LOC_LEFT_ARM);
+        rightList.setDarkened(location != ProtoMek.LOC_RIGHT_ARM);
+        bodyList.setDarkened(location != ProtoMek.LOC_BODY);
+    }
+
+    @Override
+    public void markUnavailableLocations(Mounted<?> equipment) {
+        for (int location = 0; location < getProtoMek().locations(); location++) {
+            boolean isUnavailable = !UnitUtil.isValidLocation(getProtoMek(), equipment.getType(), location)
+                  || !ProtoMekUtil.protoMekHasRoom(getProtoMek(), location, equipment);
+            listForLocation(location).setDarkened(isUnavailable);
+        }
+    }
+
+    @Override
+    public void unMarkAllLocations() {
+        mainGunList.setDarkened(false);
+        torsoList.setDarkened(false);
+        leftList.setDarkened(false);
+        rightList.setDarkened(false);
+        bodyList.setDarkened(false);
+    }
+
+    private ProtoMekMountList listForLocation(int location) {
+        return switch (location) {
+            case ProtoMek.LOC_TORSO -> torsoList;
+            case ProtoMek.LOC_LEFT_ARM -> leftList;
+            case ProtoMek.LOC_RIGHT_ARM -> rightList;
+            case ProtoMek.LOC_BODY -> bodyList;
+            default -> mainGunList;
+        };
+    }
 }

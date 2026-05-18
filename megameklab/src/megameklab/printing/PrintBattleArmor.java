@@ -136,7 +136,7 @@ public class PrintBattleArmor extends PrintEntity {
         final String armorName = EquipmentType.getArmorTypeName(battleArmor.getArmorType(BattleArmor.LOC_SQUAD));
         setTextField(ARMOR_TYPE, armorName.replace("BA ", ""));
         for (int i = 0; i < 6; i++) {
-            if (i < battleArmor.getTroopers()) {
+            if (i < battleArmor.getSquadSize()) {
                 Element element = getSVGDocument().getElementById(PIPS + i);
                 if (element instanceof SVGRectElement) {
                     Rectangle2D bbox = getRectBBox((SVGRectElement) element);
@@ -223,7 +223,7 @@ public class PrintBattleArmor extends PrintEntity {
      * 6 Troopers: Level I (ComStar, Word of Blake)
      */
     private String squadName() {
-        return switch (battleArmor.getTroopers()) {
+        return switch (battleArmor.getSquadSize()) {
             case 1 -> "SUIT";
             case 3 -> "UN";
             case 5 -> "POINT";

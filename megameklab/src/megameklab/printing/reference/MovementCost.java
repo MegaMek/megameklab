@@ -97,7 +97,7 @@ public class MovementCost extends ReferenceTable {
         setColumnAnchor(1, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(2, SVGConstants.SVG_START_VALUE);
         setColumnAnchor(4, SVGConstants.SVG_END_VALUE);
-        this.entity = entities.get(0);
+        this.entity = entities.getFirst();
         addSmallUnitMods(entities);
     }
 

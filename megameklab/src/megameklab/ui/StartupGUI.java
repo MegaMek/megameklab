@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2019-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -39,6 +39,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.VolatileImage;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.swing.JFrame;
@@ -253,10 +254,11 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         };
         splashPanel.setPreferredSize(splashPanelPreferredSize);
 
-        JLabel labVersion = new JLabel(resourceMap.getString("version.text") + MMLConstants.VERSION, JLabel.CENTER);
-        labVersion.setPreferredSize(new Dimension(250, 15));
+        JLabel labVersion = new JLabel(MessageFormat.format(resourceMap.getString("version.text"),
+              MMLConstants.VERSION),
+              JLabel.CENTER);
         if (!skinSpec.fontColors.isEmpty()) {
-            labVersion.setForeground(skinSpec.fontColors.get(0));
+            labVersion.setForeground(skinSpec.fontColors.getFirst());
         }
 
         MegaMekButton btnLoadUnit = new MegaMekButton(resourceMap.getString("btnLoadUnit.text"),

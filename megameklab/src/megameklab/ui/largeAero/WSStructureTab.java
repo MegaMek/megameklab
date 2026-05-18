@@ -42,10 +42,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.SimpleTechLevel;
 import megamek.common.enums.Faction;
-import megamek.common.equipment.ArmorType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
@@ -284,8 +282,23 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
     }
 
     @Override
+    public void buildYearChanged(int buildYear) {
+        super.buildYearChanged(buildYear);
+        panChassis.refresh();
+        panSummary.refresh();
+        panHeat.setFromAero(getJumpship());
+    }
+
+    @Override
     public void sourceChanged(String source) {
         getJumpship().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void publishedChanged(String published) {
+        getJumpship().setPublished(published);
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
@@ -396,7 +409,7 @@ public class WSStructureTab extends ITab implements AdvancedAeroBuildListener, A
         double remainingTonnage = TestEntity.floor(
               totalTonnage - currentTonnage, Ceil.HALF_TON);
 
-        double maxArmor = MathUtility.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
+        double maxArmor = Math.clamp(getJumpship().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getJumpship()));
         getJumpship().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

@@ -340,7 +340,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         gbc.gridy = 11;
         gbc.gridwidth = 3;
         add(chkDamageInterruptCircuit, gbc);
-        chkDamageInterruptCircuit.setToolTipText(resourceMap.getString("MekChassisView.chkDamageInterruptCircuit.tooltip"));
+        chkDamageInterruptCircuit.setToolTipText(resourceMap.getString(
+              "MekChassisView.chkDamageInterruptCircuit.tooltip"));
         chkDamageInterruptCircuit.addActionListener(this);
 
         btnResetChassis.setText(resourceMap.getString("MekChassisView.btnResetChassis.text"));
@@ -799,6 +800,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         return (EquipmentType) cbStructure.getSelectedItem();
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setStructureType(EquipmentType structure) {
         cbStructure.setSelectedItem(structure);
     }
@@ -889,6 +891,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbEnhancement.setSelectedItem(enhancement);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasFullHeadEject() {
         return chkFullHeadEject.isSelected() && chkFullHeadEject.isEnabled();
     }
@@ -897,6 +900,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkFullHeadEject.setSelected(eject);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasDNICockpitMod() {
         return chkDNICockpitMod.isSelected() && chkDNICockpitMod.isEnabled();
     }
@@ -905,6 +909,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDNICockpitMod.setSelected(hasMod);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasEICockpit() {
         return chkEICockpit.isSelected() && chkEICockpit.isEnabled();
     }
@@ -913,6 +918,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkEICockpit.setSelected(hasEI);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean hasDamageInterruptCircuit() {
         return chkDamageInterruptCircuit.isSelected() && chkDamageInterruptCircuit.isEnabled();
     }

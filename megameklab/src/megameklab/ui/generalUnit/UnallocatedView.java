@@ -111,7 +111,7 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        cth.addRefreshListener(l);
+        cth.setRefresh(l);
     }
 
     private void loadEquipmentTable() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2011-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -33,10 +33,7 @@
 
 package megameklab.ui.util;
 
-import static megamek.client.ui.util.UIUtil.alternateTableBGColor;
-
 import java.awt.Component;
-import java.awt.Dimension;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -44,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -80,7 +76,6 @@ import megameklab.util.InfantryUtil;
  */
 public class EquipmentTableModel extends AbstractTableModel {
 
-    public final static int ROW_HEIGHT_PADDING = 6;
     public final static String VARIABLE = "variable";
 
     public final static int COL_NAME = 0;
@@ -173,13 +168,6 @@ public class EquipmentTableModel extends AbstractTableModel {
             case COL_TON, COL_CRIT, COL_MEDIUM_RANGE -> 5;
             default -> 30;
         };
-    }
-
-    private int getAlignment(int col) {
-        if (col == COL_NAME) {
-            return SwingConstants.LEFT;
-        }
-        return SwingConstants.CENTER;
     }
 
     public Comparator<?> getSorter(int col) {
@@ -339,6 +327,10 @@ public class EquipmentTableModel extends AbstractTableModel {
                 if (weaponType instanceof InfantryWeapon) {
                     return ((InfantryWeapon) weaponType).getInfantryRange() + "";
                 }
+                if (weaponType.getAmmoType() != null && weaponType.getAmmoType().isTorpedo()) {
+                    return weaponType.getWShortRange() + "/" + weaponType.getWMediumRange()
+                          + "/" + weaponType.getWLongRange();
+                }
                 return weaponType.getShortRange() + "/" + weaponType.getMediumRange()
                       + "/" + weaponType.getLongRange();
             } else {
@@ -477,32 +469,38 @@ public class EquipmentTableModel extends AbstractTableModel {
                   + weaponType.getDamage(weaponType.getMediumRange()) + "/"
                   + weaponType.getDamage(weaponType.getLongRange());
         } else if (weaponType.getDamage() == WeaponType.DAMAGE_BY_CLUSTER_TABLE) {
-            if (weaponType instanceof HAGWeapon) {
-                return weaponType.getRackSize() + "";
-            } else if (weaponType instanceof MekMortarWeapon) {
-                return "Special";
-            } else if (weaponType instanceof MissileWeapon) {
-                int dmg;
-                if (weaponType instanceof ThunderboltWeapon) {
-                    return switch (weaponType.getAmmoType()) {
-                        case TBOLT_5 -> "5";
-                        case TBOLT_10 -> "10";
-                        case TBOLT_15 -> "15";
-                        case TBOLT_20 -> "20";
-                        default -> "0";
-                    };
-                } else if ((weaponType instanceof ATMWeapon)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_PRIMITIVE)
-                      || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
-                    dmg = 2;
-                } else {
-                    dmg = 1;
+            switch (weaponType) {
+                case HAGWeapon ignored -> {
+                    return weaponType.getRackSize() + "";
                 }
-                return dmg + "/msl";
+                case MekMortarWeapon ignored -> {
+                    return "Special";
+                }
+                case MissileWeapon ignored -> {
+                    int dmg;
+                    if (weaponType instanceof ThunderboltWeapon) {
+                        return switch (weaponType.getAmmoType()) {
+                            case TBOLT_5 -> "5";
+                            case TBOLT_10 -> "10";
+                            case TBOLT_15 -> "15";
+                            case TBOLT_20 -> "20";
+                            default -> "0";
+                        };
+                    } else if ((weaponType instanceof ATMWeapon)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_IMP)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_PRIMITIVE)
+                          || (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_TORPEDO)) {
+                        dmg = 2;
+                    } else {
+                        dmg = 1;
+                    }
+                    return dmg + "/msl";
+                }
+                default -> {
+                }
             }
             return "Cluster";
         } else if (weaponType.getDamage() == WeaponType.DAMAGE_ARTILLERY) {
@@ -517,40 +515,30 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     public EquipmentTableModel.Renderer getRenderer() {
-        return new EquipmentTableModel.Renderer();
+        return new Renderer(this);
     }
 
-    public class Renderer extends DefaultTableCellRenderer {
+    public static class Renderer extends DefaultTableCellRenderer {
 
-        @Override
-        public Component getTableCellRendererComponent(JTable table,
-              Object value, boolean isSelected, boolean hasFocus, int row,
-              int column) {
-            int actualCol = table.convertColumnIndexToModel(column);
-            int actualRow = table.convertRowIndexToModel(row);
-            EquipmentType etype = ((EquipmentTableModel) table.getModel()).getType(actualRow);
-            if (column == COL_NAME) {
-                // Reinstate the real name, as the value will be the sorting-optimized name
-                value = InfantryUtil.trimInfantryWeaponNames(etype.getName());
-            }
-            super.getTableCellRendererComponent(table, value, isSelected,
-                  hasFocus, row, column);
-            setHorizontalAlignment(getAlignment(actualCol));
-            if (null != techManager && !techManager.isLegal(etype)) {
-                setForeground(UIManager.getColor("Label.disabledForeground"));
-            } else {
-                setForeground(UIManager.getColor("Label.foreground"));
-            }
-            if (!isSelected) {
-                setBackground(((row % 2) != 0) ? alternateTableBGColor() : table.getBackground());
-            }
-            return this;
+        private final EquipmentTableModel tableModel;
+
+        public Renderer(EquipmentTableModel tableModel) {
+            this.tableModel = tableModel;
         }
 
         @Override
-        public Dimension getPreferredSize() {
-            Dimension superPreferredSize = super.getPreferredSize();
-            return new Dimension(superPreferredSize.width, superPreferredSize.height + ROW_HEIGHT_PADDING);
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+              boolean hasFocus, int row, int column) {
+
+            if (column == COL_NAME) {
+                // Reinstate the real name, as the value will be the sorting-optimized name
+                int actualRow = table.convertRowIndexToModel(row);
+                EquipmentType etype = tableModel.getType(actualRow);
+                value = InfantryUtil.trimInfantryWeaponNames(etype.getName());
+            }
+            int actualCol = table.convertColumnIndexToModel(column);
+            setHorizontalAlignment((actualCol == COL_NAME) ? SwingConstants.LEFT : SwingConstants.CENTER);
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
 

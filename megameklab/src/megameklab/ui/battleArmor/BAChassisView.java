@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -118,6 +118,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
               "BAChassisView.cbWeightClass.tooltip"), gbc);
         gbc.gridx = 1;
         cbWeightClass.setToolTipText(resourceMap.getString("BAChassisView.cbWeightClass.tooltip"));
+        cbWeightClass.setPrototypeDisplayValue(0);
         add(cbWeightClass, gbc);
         cbWeightClass.addActionListener(this);
 
@@ -181,7 +182,7 @@ public class BAChassisView extends BuildView implements ActionListener, ChangeLi
         chkExoskeleton.setEnabled(ba.getWeightClass() == EntityWeightClass.WEIGHT_ULTRA_LIGHT);
 
         spnSquadSize.removeChangeListener(this);
-        spnSquadSize.setValue(ba.getTroopers());
+        spnSquadSize.setValue(ba.getSquadSize());
         spnSquadSize.addChangeListener(this);
 
         cbTurretType.removeActionListener(this);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -53,8 +53,9 @@ import javax.swing.table.TableColumn;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
-import megamek.common.equipment.WeaponType;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.Aero;
+import megamek.common.units.AeroSpaceFighter;
 import megamek.common.units.Entity;
 import megamek.common.verifier.TestAero;
 import megamek.common.weapons.Weapon;
@@ -64,6 +65,7 @@ import megameklab.ui.util.CriticalTableModel;
 import megameklab.ui.util.CriticalTransferHandler;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.AeroUtil;
 import megameklab.util.StringUtils;
 import megameklab.util.UnitUtil;
 
@@ -88,14 +90,17 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
 
     CriticalTransferHandler cth;
 
-    public ASBuildView(EntitySource eSource, RefreshListener refresh) {
+    private RefreshListener refreshListener;
+
+    public ASBuildView(EntitySource eSource, RefreshListener refresh, ASCriticalView critView) {
         super(eSource);
+        refreshListener = refresh;
 
         equipmentList = new CriticalTableModel(getAero(), CriticalTableModel.BUILD_TABLE);
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        cth = new CriticalTransferHandler(eSource, refresh);
+        cth = new CriticalTransferHandler(eSource, refresh, critView);
         equipmentTable.setTransferHandler(cth);
         TableColumn column;
         for (int i = 0; i < equipmentList.getColumnCount(); i++) {
@@ -126,7 +131,8 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     public void addRefreshedListener(RefreshListener l) {
-        cth.addRefreshListener(l);
+        refreshListener = l;
+        cth.setRefresh(l);
     }
 
     private void loadEquipmentTable() {
@@ -275,19 +281,13 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    public void mouseClicked(MouseEvent e) { }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) { }
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) { }
 
     @Override
     public void mousePressed(MouseEvent evt) {
@@ -304,30 +304,17 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
             String[] locNames = getAero().getLocationNames();
             // A list of the valid locations we can add the selected eq to
             ArrayList<Integer> validLocs = new ArrayList<>();
-            // The number of possible locations, Aero's have LOC_WINGS and LOC_FUSELAGE,
-            // which we
+            // The number of possible locations, Aeros have LOC_WINGS and LOC_FUSELAGE, which we
             // want to ignore for now, hence -2
             int numLocs = getAero().locations() - 2;
             // If it's a weapon, there are restrictions
-            if (eq.getType() instanceof WeaponType) {
-                int[] availSpace = TestAero.availableSpace(getAero());
-
-                if (availSpace != null) {
-                    int[] numWeapons = new int[availSpace.length];
-
-                    for (Mounted<?> m : getAero().getWeaponList()) {
-                        if (m.getLocation() != Aero.LOC_NONE) {
-                            numWeapons[m.getLocation()]++;
-                        }
-                    }
-
-                    for (int loc = 0; loc < numLocs; loc++) {
-                        if ((numWeapons[loc] + 1) < availSpace[loc]) {
-                            validLocs.add(loc);
-                        }
+            if (TestAero.usesWeaponSlot(getAero(), eq.getType())) {
+                int[] availSpace = TestAero.freeWeaponSlots(getAero());
+                for (int loc = 0; loc < availSpace.length; loc++) {
+                    if ((availSpace[loc] >= 1)) {
+                        validLocs.add(loc);
                     }
                 }
-                // If it's not a weapon there are no space requirements
             } else {
                 for (int loc = 0; loc < numLocs; loc++) {
                     validLocs.add(loc);
@@ -344,7 +331,7 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
                     item = new JMenuItem("Add to " + locNames[location]);
 
                     final int loc = location;
-                    item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
+                    item.addActionListener(evt2 -> addEquipment(loc, eq));
                     popup.add(item);
                 }
             }
@@ -353,27 +340,15 @@ public class ASBuildView extends IView implements ActionListener, MouseListener 
     }
 
     @Override
-    public void mouseReleased(MouseEvent evt) {
+    public void mouseReleased(MouseEvent evt) { }
 
-    }
-
-    /**
-     * When the user right-clicks on the equipment table, a context menu is generated that his menu items for each
-     * possible location that is clicked. When the location is clicked, this is the method that adds the selected
-     * equipment to the desired location.
-     *
-     */
-    private void jMenuLoadComponent_actionPerformed(int location, int selectedRow) {
-        Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(selectedRow,
-              CriticalTableModel.EQUIPMENT);
+    private void addEquipment(int location, Mounted<?> mounted) {
         try {
-            getAero().addEquipment(eq, location, false);
-        } catch (Exception ex) {
-            logger.error("", ex);
+            AeroUtil.moveOrAddEquipmentOnFighter((AeroSpaceFighter) getAero(), mounted, location);
+            refreshListener.scheduleRefresh();
+        } catch (LocationFullException e) {
+            // on Aero, this is currently not actually thrown; the popup menu should prevent this
+            logger.error("Unexpected LocationFullException", e);
         }
-        UnitUtil.changeMountStatus(getAero(), eq, location, -1, false);
-
-        // go back up to grandparent build tab and fire a full refresh.
-        ((ASBuildTab) getParent().getParent()).refreshAll();
     }
 }

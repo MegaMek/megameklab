@@ -149,7 +149,7 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
     public boolean canCombine(WeaponBayText other) {
         // Check for opposing sides
         return loc.size() == 1
-              && checkOpposingSide(loc.get(0), other.loc.get(0), rear, other.rear)
+              && checkOpposingSide(loc.getFirst(), other.loc.getFirst(), rear, other.rear)
               && weapons.equals(other.weapons)
               && ammunitionMatch(other) && augmentations.equals(other.augmentations);
     }
@@ -294,8 +294,8 @@ public class WeaponBayText implements Comparable<WeaponBayText> {
      */
     @Override
     public int compareTo(WeaponBayText o) {
-        int v1 = getLocWeight(loc.get(0));
-        int v2 = getLocWeight(o.loc.get(0));
+        int v1 = getLocWeight(loc.getFirst());
+        int v2 = getLocWeight(o.loc.getFirst());
         return v1 - v2;
     }
 

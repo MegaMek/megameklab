@@ -47,7 +47,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
@@ -259,6 +258,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         return true;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void removeSystemCrits(int systemType) {
         for (int loc = 0; loc < getAero().locations(); loc++) {
             for (int slot = 0; slot < getAero().getNumberOfCriticalSlots(loc); slot++) {
@@ -348,6 +348,13 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void sourceChanged(String source) {
         getAero().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void publishedChanged(String published) {
+        getAero().setPublished(published);
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
@@ -504,7 +511,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         double totalTonnage = getAero().getWeight();
         double remainingTonnage = TestEntity.floor(totalTonnage - currentTonnage, Ceil.HALF_TON);
 
-        double maxArmor = MathUtility.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
+        double maxArmor = Math.clamp(getAero().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getAero()));
         getAero().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

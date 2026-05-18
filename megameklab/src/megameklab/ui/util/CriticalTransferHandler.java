@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -35,42 +35,31 @@ package megameklab.ui.util;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.TransferHandler;
 
 import megamek.common.CriticalSlot;
-import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.Mounted;
-import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.PopupMessages;
-import megameklab.ui.mek.BMCriticalView;
 import megameklab.util.ProtoMekUtil;
 import megameklab.util.UnitUtil;
 
-public class CriticalTransferHandler extends TransferHandler {
+public class CriticalTransferHandler extends AbstractCriticalTransferHandler {
     private static final MMLogger logger = MMLogger.create(CriticalTransferHandler.class);
 
-    private final EntitySource eSource;
-    private RefreshListener refresh;
-    private final BMCriticalView critView;
+    private final CriticalSlotsView critView;
 
-    public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh, BMCriticalView critView) {
-        this.eSource = eSource;
-        this.refresh = refresh;
+    public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh, CriticalSlotsView critView) {
+        super(eSource, refresh);
         this.critView = critView;
     }
 
     public CriticalTransferHandler(EntitySource eSource, RefreshListener refresh) {
-        this.eSource = eSource;
-        this.refresh = refresh;
-        this.critView = null;
+        this(eSource, refresh, null);
     }
 
     @Override
@@ -95,7 +84,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 if (!getUnit().addCritical(location, new CriticalSlot(mount))) {
                     PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
-                    changeMountStatus(mount, location, false);
+                    changeMountStatus(mount, location);
                 }
             } catch (Exception ex) {
                 logger.error("", ex);
@@ -117,7 +106,7 @@ public class CriticalTransferHandler extends TransferHandler {
                 if (!ProtoMekUtil.protoMekHasRoom(list.getProtoMek(), location, mount)) {
                     PopupMessages.showLocationFullError(null, mount.getName());
                 } else {
-                    changeMountStatus(mount, location, false);
+                    changeMountStatus(mount, location);
                 }
             } catch (Exception ex) {
                 logger.error("", ex);
@@ -126,94 +115,38 @@ public class CriticalTransferHandler extends TransferHandler {
             return true;
         } else if ((info.getComponent() instanceof JTable)
               || (info.getComponent() instanceof JScrollPane)) {
-            try {
-                Transferable t = info.getTransferable();
-                Mounted<?> mount = getUnit().getEquipment(Integer.parseInt((String) t
-                      .getTransferData(DataFlavor.stringFlavor)));
-
-                if (getUnit() instanceof BattleArmor) {
-                    mount.setBaMountLoc(BattleArmor.MOUNT_LOC_NONE);
-                } else {
-                    UnitUtil.removeCriticalSlots(getUnit(), mount);
-                    if (getUnit().isFighter() && mount.getLocation() != Entity.LOC_NONE) {
-                        UnitUtil.compactCriticalSlots(getUnit(), mount.getLocation());
-                    }
-                    changeMountStatus(mount, Entity.LOC_NONE, false);
-                }
-            } catch (Exception ex) {
-                logger.error("", ex);
-            }
-            return true;
+            return doImport(getMountedFromTransferable(info.getTransferable()), info.getComponent());
         }
         return false;
     }
 
     @Override
     public boolean canImport(TransferSupport info) {
-        // Check for String flavor
-        if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return false;
-        }
-        // check if the dragged mounted should be transferable
-        Mounted<?> mounted = null;
-        try {
-            mounted = getUnit().getEquipment(Integer
-                  .parseInt((String) info.getTransferable().getTransferData(
-                        DataFlavor.stringFlavor)));
-        } catch (NumberFormatException | UnsupportedFlavorException | IOException e) {
-            logger.error("", e);
-        }
-        // not actually dragged a Mounted? not transferable
-        if (mounted == null) {
-            return false;
-        }
-        // stuff that has a fixed location is also not transferable
-        return !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType());
+        Mounted<?> mounted = getMountedFromTransferable(info.getTransferable());
+        return isDraggable(mounted) && info.isDrop();
     }
 
     @Override
     protected Transferable createTransferable(JComponent component) {
+        Mounted<?> mount = null;
         if (component instanceof JTable table) {
-            Mounted<?> mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(),
-                  CriticalTableModel.EQUIPMENT);
+            mount = (Mounted<?>) table.getModel().getValueAt(table.getSelectedRow(), CriticalTableModel.EQUIPMENT);
+        } else if (component instanceof ProtoMekMountList protoMekMountList) {
+            mount = protoMekMountList.getMounted();
+            if (mount == null
+                  || UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                  || mount.getType() instanceof AmmoType) {
+                return null;
+            }
+        }
+        if (mount != null) {
             if (critView != null) {
                 critView.markUnavailableLocations(mount);
             }
             return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-        } else if (component instanceof ProtoMekMountList) {
-            Mounted<?> mount = ((ProtoMekMountList) component).getMounted();
-            if (!UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                  && !(mount.getType() instanceof AmmoType)) {
-                return new StringSelection(Integer.toString(getUnit().getEquipmentNum(mount)));
-            }
+        } else {
+            return null;
         }
-        return null;
-    }
-
-    @Override
-    public int getSourceActions(JComponent c) {
-        return TransferHandler.LINK;
-    }
-
-    private void changeMountStatus(Mounted<?> eq, int location, boolean rear) {
-        changeMountStatus(eq, location, -1, rear);
-    }
-
-    private void changeMountStatus(Mounted<?> eq, int location, int secondaryLocation, boolean rear) {
-
-        UnitUtil.changeMountStatus(getUnit(), eq, location, secondaryLocation, rear);
-
-        if (refresh != null) {
-            refresh.refreshAll();
-        }
-    }
-
-    public void addRefreshListener(RefreshListener r) {
-        refresh = r;
-    }
-
-    public Entity getUnit() {
-        return eSource.getEntity();
     }
 
     @Override

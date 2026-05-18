@@ -230,6 +230,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
      *
      * @return True if the given editor is the currently selected tab, false otherwise.
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean isTabEditorSelected(MegaMekLabMainUI editor) {
         Component tab = tabs.getTabComponentAt(tabs.getSelectedIndex());
         if (tab instanceof CloseableTab closeableTab) {

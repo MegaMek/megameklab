@@ -213,6 +213,7 @@ class ArmorPipLayout {
      * @param fill            The color to use for the inside of the pip
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
           PipType pipType, double strokeWidth,
           String fill, boolean alternateMethod) {
@@ -230,6 +231,7 @@ class ArmorPipLayout {
      * @param pipType         The shape of pip to add
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount,
           PipType pipType, boolean alternateMethod) {
         addPips(sheet,
@@ -252,6 +254,7 @@ class ArmorPipLayout {
      * @param pipCount        The number of armor or structure pips to add
      * @param alternateMethod If the armor pips should be attempted to be grouped in 5s
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     static void addPips(PrintRecordSheet sheet, Element group, int pipCount, boolean alternateMethod) {
         addPips(sheet, group, pipCount, PipType.CIRCLE, PrintRecordSheet.DEFAULT_PIP_STROKE,
               PrintRecordSheet.FILL_WHITE, 0, alternateMethod);
@@ -733,7 +736,7 @@ class ArmorPipLayout {
         // possible.
         // If the rows shift in a way that the pips cannot fit within the grid, shift
         // the center.
-        double centerX = rows.get(0).centerX();
+        double centerX = rows.getFirst().centerX();
         // The offset needed to center the pip in the cell.
         double xPadding = dx * 0.5 - radius;
         AtomicInteger remainingDamageCounter = new AtomicInteger(damage);

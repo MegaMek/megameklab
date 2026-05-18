@@ -44,9 +44,9 @@ import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
-import megamek.common.units.Infantry;
 import megamek.common.weapons.artillery.ArtilleryCannonWeapon;
 import megamek.common.weapons.artillery.ArtilleryWeapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -60,7 +60,7 @@ import org.w3c.dom.svg.SVGRectElement;
  */
 public class PrintInfantry extends PrintEntity {
 
-    private final Infantry infantry;
+    private final ConvInfantry infantry;
 
     /**
      * Creates an SVG object for the record sheet
@@ -69,7 +69,7 @@ public class PrintInfantry extends PrintEntity {
      * @param startPage The print job page number for this sheet
      * @param options   Overrides the global options for which elements are printed
      */
-    public PrintInfantry(Infantry infantry, int startPage, RecordSheetOptions options) {
+    public PrintInfantry(ConvInfantry infantry, int startPage, RecordSheetOptions options) {
         super(startPage, options);
         this.infantry = infantry;
     }
@@ -274,38 +274,38 @@ public class PrintInfantry extends PrintEntity {
               && infantry.getSecondaryWeapon().hasFlag(WeaponType.F_INF_AA))) {
             sj.add("May attack airborne targets that attack their hex.");
         }
-        if (infantry.hasSpecialization(Infantry.BRIDGE_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.BRIDGE_ENGINEERS)) {
             sj.add("Bridge-building equipment");
         }
-        if (infantry.hasSpecialization(Infantry.DEMO_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.DEMO_ENGINEERS)) {
             sj.add("Equipped with demolition gear.");
         }
-        if (infantry.hasSpecialization(Infantry.FIRE_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.FIRE_ENGINEERS)) {
             sj.add("Firefighting equipment.");
         }
-        if (infantry.hasSpecialization(Infantry.MINE_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.MINE_ENGINEERS)) {
             sj.add("Minesweeper equipment");
         }
-        if (infantry.hasSpecialization(Infantry.TRENCH_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.TRENCH_ENGINEERS)) {
             sj.add("Trench/Fieldwork equipment");
         }
-        if (infantry.hasSpecialization(Infantry.MARINES)) {
+        if (infantry.hasSpecialization(ConvInfantry.MARINES)) {
             sj.add("No penalties for vacuum or zero-G");
         }
-        if (infantry.hasSpecialization(Infantry.MOUNTAIN_TROOPS)) {
+        if (infantry.hasSpecialization(ConvInfantry.MOUNTAIN_TROOPS)) {
             sj.add(
                   "Mountain climbing equipment. Unit can traverse 3 levels per hex. Unit is immune to the effects of Thin Atmosphere.");
         }
-        if (infantry.hasSpecialization(Infantry.PARAMEDICS)) {
+        if (infantry.hasSpecialization(ConvInfantry.PARAMEDICS)) {
             sj.add("Paramedic equipment.");
         }
-        if (infantry.hasSpecialization(Infantry.PARATROOPS)) {
+        if (infantry.hasSpecialization(ConvInfantry.PARATROOPS)) {
             sj.add("May use Atmospheric Drops rules.");
         }
-        if (infantry.hasSpecialization(Infantry.SENSOR_ENGINEERS)) {
+        if (infantry.hasSpecialization(ConvInfantry.SENSOR_ENGINEERS)) {
             sj.add("Surveillance and communication equipment");
         }
-        if (infantry.hasSpecialization(Infantry.TAG_TROOPS)) {
+        if (infantry.hasSpecialization(ConvInfantry.TAG_TROOPS)) {
             sj.add("Equipped with TAG (Range 3/6/9)");
         }
         if (infantry.isXCT()) {
@@ -361,7 +361,7 @@ public class PrintInfantry extends PrintEntity {
         int numShots = 0;
         WeaponType gun = null;
         for (Mounted<?> m : infantry.getEquipment()) {
-            if (m.getLocation() == Infantry.LOC_FIELD_GUNS) {
+            if (m.getLocation() == ConvInfantry.LOC_FIELD_GUNS) {
                 if (m.getType() instanceof WeaponType) {
                     gun = (WeaponType) m.getType();
                     numGuns++;
@@ -524,7 +524,7 @@ public class PrintInfantry extends PrintEntity {
 
     private String formatGroundMP() {
         int walk = infantry.getWalkMP();
-        if (walk == 0) {
+        if (infantry.hasMinimalGroundMP()) {
             return "0*";
         } else {
             return formatMovement(walk);

@@ -49,7 +49,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.CriticalSlot;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
@@ -649,6 +648,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getMek().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }
@@ -1220,7 +1226,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         double remainingTonnage = TestEntity.floor(
               totalTonnage - currentTonnage, Ceil.HALF_TON);
 
-        double maxArmor = MathUtility.clamp(getMek().getArmorWeight() + remainingTonnage, 0,
+        double maxArmor = Math.clamp(getMek().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getMek()));
         getMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
@@ -1269,7 +1275,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                   .filter(m -> jumpJet.equals(m.getType()))
                   .collect(Collectors.toList());
             while (jjs.size() > jumpMP) {
-                UnitUtil.removeMounted(getMek(), jjs.remove(jjs.size() - 1));
+                UnitUtil.removeMounted(getMek(), jjs.removeLast());
             }
             while (jumpMP > jjs.size()) {
                 try {

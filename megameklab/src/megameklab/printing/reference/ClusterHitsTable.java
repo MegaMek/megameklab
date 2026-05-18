@@ -74,7 +74,7 @@ public class ClusterHitsTable extends ReferenceTable {
         for (Entity en : entities) {
             calculateClusterSizes(en);
         }
-        addTable(entities.get(0));
+        addTable(entities.getFirst());
     }
 
     public Set<Integer> getSizes() {

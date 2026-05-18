@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -55,9 +55,11 @@ import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
+import megamek.common.equipment.MiscMounted;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.WeaponType;
+import megamek.common.units.BaConstructionUtil;
 import megamek.common.verifier.TestBattleArmor;
 import megamek.common.weapons.Weapon;
 import megamek.common.weapons.infantry.InfantryWeapon;
@@ -83,6 +85,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
     private static final MMLogger logger = MMLogger.create(BABuildView.class);
 
     private final CriticalTableModel equipmentList;
+    private final CriticalTransferHandler transferHandler;
 
     public List<Mounted<?>> getEquipment() {
         return equipmentList.getCrits();
@@ -101,8 +104,8 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
 
         equipmentTable.setModel(equipmentList);
         equipmentTable.setDragEnabled(true);
-        CriticalTransferHandler cth = new CriticalTransferHandler(eSource, null);
-        equipmentTable.setTransferHandler(cth);
+        transferHandler = new CriticalTransferHandler(eSource, null);
+        equipmentTable.setTransferHandler(transferHandler);
 
         equipmentList.initColumnSizes(equipmentTable);
         TableColumn column;
@@ -120,7 +123,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
         equipmentScroll.setViewportView(equipmentTable);
         equipmentScroll.setMinimumSize(new Dimension(450, 450));
         equipmentScroll.setPreferredSize(new Dimension(450, 450));
-        equipmentScroll.setTransferHandler(cth);
+        equipmentScroll.setTransferHandler(transferHandler);
 
         mainPanel.add(equipmentScroll);
         equipmentTable.addMouseListener(this);
@@ -132,6 +135,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
     }
 
     public void addRefreshedListener(RefreshListener l) {
+        transferHandler.setRefresh(l);
     }
 
     private void loadEquipmentTable() {
@@ -276,6 +280,9 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             JPopupMenu popup = new JPopupMenu();
             JMenuItem item;
 
+            boolean hasDWP = getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK);
+            boolean hasAPM = getBattleArmor().hasWorkingMisc(MiscType.F_AP_MOUNT);
+
             final int selectedRow = equipmentTable.rowAtPoint(e.getPoint());
             final Mounted<?> eq = (Mounted<?>) equipmentTable.getModel().getValueAt(
                   selectedRow, CriticalTableModel.EQUIPMENT);
@@ -290,15 +297,12 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 }
             }
 
-            if (eq.getLocation() == BattleArmor.LOC_SQUAD
-                  && !(eq.getType() instanceof InfantryWeapon)) {
+            if (eq.getLocation() == BattleArmor.LOC_SQUAD && !(eq.getType() instanceof InfantryWeapon)) {
                 // Add a menu item for each potential location
                 for (Integer location : validLocs) {
                     if (UnitUtil.isValidLocation(getBattleArmor(), eq.getType(), location)) {
                         item = new JMenuItem("Add to " + locNames[location]);
-
-                        final int loc = location;
-                        item.addActionListener(evt -> mountEquipmentInLocation(loc, selectedRow));
+                        item.addActionListener(evt -> mountEquipmentInLocation(location, selectedRow));
                         popup.add(item);
                     }
                 }
@@ -390,8 +394,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 item = new JMenuItem("Remove squad support weapon mount");
                 item.addActionListener(evt -> {
                     eq.setSquadSupportWeapon(false);
-                    // Can't have squad support weapon ammo with no
-                    // squad support weapon
+                    // Can't have squad support weapon ammo with no squad support weapon
                     for (Mounted<?> ammo : getBattleArmor().getAmmo()) {
                         ammo.setSquadSupportWeapon(false);
                     }
@@ -401,50 +404,37 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
             }
 
             // See if we should allow linking this to a DWP
-            if (getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
-                  && !eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                  && (!eq.getType().hasFlag(WeaponType.F_MISSILE) || eq.is(EquipmentTypeLookup.IS_BA_TUBE_ARTY))
-                  && !(eq.getType() instanceof AmmoType)
-                  && !eq.isDWPMounted()) {
-                for (Mounted<?> m : getBattleArmor().getMisc()) {
-                    // If this isn't a DWP, or it's a full DWP, skip
-                    if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                          || m.getLinked() != null) {
-                        continue;
-                    }
+            if (eq.getType().canBeMountedOnBaDwp() && hasDWP) {
+                for (final MiscMounted misc : getBattleArmor().getMisc()) {
+                    // only allow mounting on allocated DWP to avoid unallocated equipment with links to other stuff
+                    if (misc.is(EquipmentTypeLookup.BA_DWP)
+                          && misc.getLinked() == null
+                          && misc.getBaMountLoc() != BattleArmor.MOUNT_LOC_NONE) {
 
-                    String locName;
-                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
-                        locName = "None";
-                    } else {
-                        locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                        // misc is an allocated and empty (i.e., available) DWP
+                        String locName = BattleArmor.MOUNT_LOC_NAMES[misc.getBaMountLoc()];
+                        item = new JMenuItem("Mount in " + misc.getName() + " (" + locName + ")");
+                        item.addActionListener(evt -> {
+                            BattleArmorUtil.mountOnDwp(eq, misc);
+                            ((BABuildTab) getParent().getParent()).refreshAll();
+                        });
+                        popup.add(item);
                     }
-                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
-                    final Mounted<?> dwp = m;
-                    item.addActionListener(evt -> {
-                        eq.setLinked(dwp);
-                        dwp.setLinked(eq);
-                        eq.setDWPMounted(true);
-                        ((BABuildTab) getParent().getParent()).refreshAll();
-                    });
-                    popup.add(item);
                 }
             }
 
             // Should we allow mounting Ammo in a DWP?
-            if ((eq.getType() instanceof AmmoType)
-                  && getBattleArmor().hasWorkingMisc(MiscType.F_DETACHABLE_WEAPON_PACK)
-                  && !eq.isDWPMounted()) {
-                for (final Mounted<?> m : getBattleArmor().getMisc()) {
+            if ((eq.getType() instanceof AmmoType) && hasDWP && !eq.isDWPMounted()) {
+                for (Mounted<?> misc : getBattleArmor().getMisc()) {
                     // If this isn't a DWP, skip
-                    if (!m.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
+                    if (!misc.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)) {
                         continue;
                     }
                     // We only want to enable the menu item if the DWP has a
                     // mounted weapon, and we clicked on a valid ammo type
                     boolean enabled = false;
-                    if (m.getLinked() != null) {
-                        EquipmentType equipmentType = m.getLinked().getType();
+                    if (misc.getLinked() != null) {
+                        EquipmentType equipmentType = misc.getLinked().getType();
                         if (equipmentType instanceof WeaponType weaponType) {
                             if (AmmoType.isAmmoValid(eq, weaponType)) {
                                 enabled = true;
@@ -452,16 +442,16 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         }
                     }
                     String locName;
-                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
+                    if (misc.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
                         locName = "None";
                     } else {
-                        locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
+                        locName = BattleArmor.MOUNT_LOC_NAMES[misc.getBaMountLoc()];
                     }
-                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
+                    item = new JMenuItem("Mount in " + misc.getName() + " (" + locName + ")");
                     item.setToolTipText("Ammo can only be mounted in a DWP with a valid weapon.");
                     item.setEnabled(enabled);
                     item.addActionListener(evt -> {
-                        m.getLinked().setLinked(eq);
+                        misc.getLinked().setLinked(eq);
                         eq.setDWPMounted(true);
                         ((BABuildTab) getParent().getParent()).refreshAll();
                     });
@@ -469,95 +459,41 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 }
             }
 
-            // Right-clicked on a DWP that has an attached weapon
-            if (eq.getType().hasFlag(MiscType.F_DETACHABLE_WEAPON_PACK)
-                  && eq.getLinked() != null) {
-                item = new JMenuItem("Remove attached weapon");
-                item.addActionListener(evt -> {
-                    Mounted<?> attached = eq.getLinked();
-                    attached.setDWPMounted(false);
-                    eq.setLinked(null);
-                    eq.setLinkedBy(null);
-                    attached.setLinked(null);
-                    attached.setLinkedBy(null);
-                    // Remove any attached ammo
-                    for (Mounted<?> ammo : getBattleArmor().getAmmo()) {
-                        if (attached.equals(ammo.getLinkedBy())) {
-                            ammo.setDWPMounted(false);
-                            ammo.setLinked(null);
-                            ammo.setLinkedBy(null);
-                        }
-                    }
-                    ((BABuildTab) getParent().getParent()).refreshAll();
-                });
-                popup.add(item);
-            }
-
             // See if we should allow linking this to an AP Mount
-            if (getBattleArmor().hasWorkingMisc(MiscType.F_AP_MOUNT)
-                  && eq.getType().hasFlag(WeaponType.F_INFANTRY)
-                  && !eq.isAPMMounted()) {
-                for (Mounted<?> m : getBattleArmor().getMisc()) {
-                    // If this isn't an AP Mount, or it's a full AP Mount, skip
-                    if (!m.getType().hasFlag(MiscType.F_AP_MOUNT)
-                          || m.getLinked() != null) {
+            if (hasAPM && eq.getType().hasFlag(WeaponType.F_INFANTRY) && !eq.isAPMMounted()) {
+                for (Mounted<?> misc : getBattleArmor().getMisc()) {
+                    // If this isn't an allocated AP Mount, or it's a full AP Mount, skip
+                    if (!misc.getType().hasFlag(MiscType.F_AP_MOUNT) || misc.getLinked() != null
+                          || misc.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
                         continue;
                     }
 
-                    // Armored gloves can only carry 1 additional weapon,
-                    // regardless of the number of gloves
-                    if (m.getType().hasFlag(MiscType.F_ARMORED_GLOVE)) {
+                    // Armored gloves can only carry 1 additional weapon, regardless of the number of gloves, TM p.171
+                    if (misc.getType().hasFlag(MiscType.F_ARMORED_GLOVE)) {
                         boolean hasUsedGlove = false;
                         for (Mounted<?> m2 : getBattleArmor().getMisc()) {
-                            if (m2.getType().hasFlag(MiscType.F_ARMORED_GLOVE)
-                                  && (m2.getLinked() != null)) {
+                            if (m2.getType().hasFlag(MiscType.F_ARMORED_GLOVE) && (m2.getLinked() != null)) {
                                 hasUsedGlove = true;
                             }
                         }
                         if (hasUsedGlove) {
                             continue;
                         }
-                    }
-
-                    // Only armored gloves can carry infantry support weapons
-                    if (!m.getType().hasFlag(MiscType.F_ARMORED_GLOVE)
-                          && eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
+                    } else if (eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
+                        // Only armored gloves can carry infantry support weapons
                         continue;
                     }
 
-                    String locName;
-                    if (m.getBaMountLoc() == BattleArmor.MOUNT_LOC_NONE) {
-                        locName = "None";
-                    } else {
-                        locName = BattleArmor.MOUNT_LOC_NAMES[m.getBaMountLoc()];
-                    }
-                    item = new JMenuItem("Mount in " + m.getName() + " (" + locName + ")");
-                    final Mounted<?> apm = m;
+                    String locName = BattleArmor.MOUNT_LOC_NAMES[misc.getBaMountLoc()];
+                    item = new JMenuItem("Mount in " + misc.getName() + " (" + locName + ")");
                     item.addActionListener(evt -> {
-                        eq.setLinked(apm);
-                        apm.setLinked(eq);
-                        eq.setAPMMounted(true);
+                        BaConstructionUtil.mountOnApm(eq, misc);
                         ((BABuildTab) getParent().getParent()).refreshAll();
                     });
                     popup.add(item);
                 }
             }
 
-            // Right-clicked on an AP Mount that has an attached weapon
-            if (eq.getType().hasFlag(MiscType.F_AP_MOUNT)
-                  && eq.getLinked() != null) {
-                item = new JMenuItem("Remove attached weapon");
-                item.addActionListener(evt -> {
-                    Mounted<?> attached = eq.getLinked();
-                    attached.setAPMMounted(false);
-                    eq.setLinked(null);
-                    eq.setLinkedBy(null);
-                    attached.setLinked(null);
-                    attached.setLinkedBy(null);
-                    ((BABuildTab) getParent().getParent()).refreshAll();
-                });
-                popup.add(item);
-            }
             popup.show(equipmentTable, e.getX(), e.getY());
         }
     }

@@ -37,6 +37,7 @@ import megamek.common.event.MMEvent;
 /**
  * An event triggered after the MMLOptions are changed. The event handlers cannot modify these options.
  */
+@Deprecated(since = "0.51.0", forRemoval = true)
 public class MMLOptionsChangedEvent extends MMEvent {
     // region Constructors
     public MMLOptionsChangedEvent() {

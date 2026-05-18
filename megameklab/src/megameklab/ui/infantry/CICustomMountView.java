@@ -46,8 +46,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.EntityMovementMode;
-import megamek.common.units.Infantry;
 import megamek.common.units.InfantryMount;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BuildView;
@@ -249,8 +249,8 @@ public class CICustomMountView extends BuildView implements ChangeListener {
         );
     }
 
-    private Infantry getInfantry() {
-        return (Infantry) entitySource.getEntity();
+    private ConvInfantry getInfantry() {
+        return (ConvInfantry) entitySource.getEntity();
     }
 
     @Override

@@ -327,8 +327,8 @@ public class CIAugmentationView extends IView implements ActionListener {
     }
 
     /**
-     * Updates the extraneous limbs panel visibility and values.
-     * Per IO p.85, if wings are installed, only one pair of extraneous limbs is allowed.
+     * Updates the extraneous limbs panel visibility and values. Per IO p.85, if wings are installed, only one pair of
+     * extraneous limbs is allowed.
      */
     private void refreshExtraneousPanel() {
         boolean hasExtraneous = getInfantry().hasAbility(OptionsConstants.MD_PL_EXTRA_LIMBS);
@@ -393,6 +393,7 @@ public class CIAugmentationView extends IView implements ActionListener {
     /**
      * Clears all prosthetic enhancement data and resets UI controls.
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private void clearAllProstheticData() {
         getInfantry().setProstheticEnhancement1(null);
         getInfantry().setProstheticEnhancement1Count(0);
@@ -410,6 +411,7 @@ public class CIAugmentationView extends IView implements ActionListener {
     /**
      * Clears all extraneous limb data and resets UI controls.
      */
+    @Deprecated(since = "0.51.0", forRemoval = true)
     private void clearAllExtraneousData() {
         getInfantry().setExtraneousPair1(null);
         getInfantry().setExtraneousPair2(null);

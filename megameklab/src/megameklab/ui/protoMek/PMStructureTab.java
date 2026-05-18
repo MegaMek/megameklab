@@ -50,7 +50,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.enums.Faction;
@@ -247,6 +246,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         return panChassis.getMotiveType() == PMChassisView.MOTIVE_TYPE_QUAD;
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public boolean isGlider() {
         return panChassis.getMotiveType() == PMChassisView.MOTIVE_TYPE_GLIDER;
     }
@@ -376,6 +376,13 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
     @Override
     public void sourceChanged(String source) {
         getProtoMek().setSource(source);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void publishedChanged(String published) {
+        getProtoMek().setPublished(published);
         refresh.refreshSummary();
         refresh.refreshPreview();
     }
@@ -538,7 +545,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         // We can only use remaining tonnage equal to whole points of armor.
         remainingTonnage = (int) TestEntity.getRawArmorPoints(getProtoMek(), remainingTonnage)
               * ArmorType.forEntity(getProtoMek()).getWeightPerPoint();
-        double maxArmor = MathUtility.clamp(getProtoMek().getLabArmorTonnage() + remainingTonnage, 0,
+        double maxArmor = Math.clamp(getProtoMek().getLabArmorTonnage() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getProtoMek()));
         getProtoMek().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);
@@ -585,7 +592,7 @@ public class PMStructureTab extends ITab implements ProtoMekBuildListener, Armor
         }
 
         while (jjs.size() > jumpMP) {
-            UnitUtil.removeMounted(getProtoMek(), jjs.remove(jjs.size() - 1));
+            UnitUtil.removeMounted(getProtoMek(), jjs.removeLast());
         }
 
         while (jumpMP > jjs.size()) {

@@ -83,8 +83,8 @@ import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.GraphicsNode;
 
 /**
- * Simply fills itself with the record sheet for the given unit. Uses background rendering for
- *       performance, rendering each page independently.
+ * Simply fills itself with the record sheet for the given unit. Uses background rendering for performance, rendering
+ * each page independently.
  */
 public class RecordSheetPreviewPanel extends JPanel {
     private static final MMLogger logger = MMLogger.create(RecordSheetPreviewPanel.class);
@@ -93,7 +93,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
         @Override
-        public Thread newThread(Runnable runnable) {
+        public Thread newThread(@Nonnull Runnable runnable) {
             Thread t = new Thread(runnable, "RecordSheetRenderer-" + threadNumber.getAndIncrement());
             t.setDaemon(true); // Allow JVM exit even if rendering threads are active
             t.setPriority(Thread.MIN_PRIORITY + 1); // Render at lower priority
@@ -441,7 +441,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             double scroll = e.getPreciseWheelRotation();
             double newZoom = zoomFactor * Math.pow(1.0 - ZOOM_STEP, scroll);
 
-            newZoom = Math.max(minFitZoom, Math.min(MAX_ZOOM, newZoom));
+            newZoom = Math.clamp(newZoom, minFitZoom, MAX_ZOOM);
 
             if (Math.abs(oldZoom - newZoom) > 0.001) {
                 double zoomRatio = newZoom / oldZoom;
@@ -552,7 +552,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             return centerOffset - leftmostX;
         }
 
-        return Math.min(maxPanX, Math.max(minPanX, panX));
+        return Math.clamp(panX, minPanX, maxPanX);
     }
 
     /**
@@ -583,7 +583,7 @@ public class RecordSheetPreviewPanel extends JPanel {
             return (getHeight() - maxPageHeight) / 2.0;
         }
 
-        return Math.min(maxPanY, Math.max(minPanY, panY));
+        return Math.clamp(panY, minPanY, maxPanY);
     }
 
     /**
@@ -1072,6 +1072,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         });
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void resetView() {
         scheduleResetView();
     }
@@ -1106,10 +1107,10 @@ public class RecordSheetPreviewPanel extends JPanel {
         double totalContentWidth = 0;
         double maxContentHeight = 0;
         if (!sheetPages.isEmpty()) {
-            SheetPageInfo lastPage = sheetPages.get(sheetPages.size() - 1);
+            SheetPageInfo lastPage = sheetPages.getLast();
             totalContentWidth = (lastPage.layoutPosition.x + lastPage.baseWidthPx) * zoomFactor;
             // We assume all pages have the same height for simplicity
-            maxContentHeight = sheetPages.get(0).baseHeightPx * zoomFactor;
+            maxContentHeight = sheetPages.getFirst().baseHeightPx * zoomFactor;
         }
 
         // Center horizontally and vertically, ensure 1st page is visible
@@ -1140,7 +1141,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         PaperSize pz = options.getPaperSize();
         double maxBaseHeight;
         if (!sheetPages.isEmpty()) {
-            SheetPageInfo firstPage = sheetPages.get(0);
+            SheetPageInfo firstPage = sheetPages.getFirst();
             maxBaseHeight = firstPage.baseHeightPx;
         } else {
             // Fallback if pages somehow not populated yet
@@ -1598,7 +1599,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         if (hVisible) {
             int max = (int) Math.ceil(contentWidth - w);
             int value = (int) Math.round(-panOffset.getX());
-            value = Math.max(hScrollBar.getMinimum(), Math.min(max, value));
+            value = Math.clamp(value, hScrollBar.getMinimum(), max);
             adjustingHScrollBar = true;
             hScrollBar.setMaximum(max + hScrollBar.getVisibleAmount());
             hScrollBar.setVisibleAmount(w);
@@ -1609,7 +1610,7 @@ public class RecordSheetPreviewPanel extends JPanel {
         if (vVisible) {
             int max = (int) Math.ceil(contentHeight - h);
             int value = (int) Math.round(-panOffset.getY());
-            value = Math.max(vScrollBar.getMinimum(), Math.min(max, value));
+            value = Math.clamp(value, vScrollBar.getMinimum(), max);
             adjustingVScrollBar = true;
             vScrollBar.setMaximum(max + vScrollBar.getVisibleAmount());
             vScrollBar.setVisibleAmount(h);

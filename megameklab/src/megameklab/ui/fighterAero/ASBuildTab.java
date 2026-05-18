@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -33,73 +33,55 @@
 
 package megameklab.ui.fighterAero;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import megamek.common.equipment.Mounted;
-import megamek.common.units.Entity;
-import megamek.common.verifier.TestAero;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
 public class ASBuildTab extends ITab implements ActionListener {
+
     private RefreshListener refresh = null;
     private final ASCriticalView critView;
-
-    public ASBuildView getBuildView() {
-        return buildView;
-    }
-
     private final ASBuildView buildView;
-
     private final JButton resetButton = new JButton("Reset");
-
     private final String RESET_COMMAND = "resetButtonCommand";
 
     public ASBuildTab(EntitySource eSource) {
         super(eSource);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridBagLayout());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-        GridBagConstraints gbc = new GridBagConstraints();
 
         critView = new ASCriticalView(eSource, refresh);
-        buildView = new ASBuildView(eSource, refresh);
-
-        resetButton.setMnemonic('R');
+        buildView = new ASBuildView(eSource, refresh, critView);
         resetButton.setActionCommand(RESET_COMMAND);
-        buttonPanel.add(resetButton);
 
+        JPanel unallocatedEquipmentBlock = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
         gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        mainPanel.add(buildView, gbc);
-        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        unallocatedEquipmentBlock.add(buildView, gbc);
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weighty = 0.0;
-        mainPanel.add(buttonPanel, gbc);
-        this.add(critView);
-        this.add(mainPanel);
+        gbc.weighty = 0;
+        unallocatedEquipmentBlock.add(resetButton, gbc);
+
+        setLayout(new BorderLayout(5, 5));
+        add(critView, BorderLayout.CENTER);
+        add(unallocatedEquipmentBlock, BorderLayout.EAST);
+
         refresh();
     }
 
     public void refresh() {
         removeAllActionListeners();
         critView.refresh();
-        critView.validate();
         buildView.refresh();
         addAllActionListeners();
     }
@@ -111,19 +93,10 @@ public class ASBuildTab extends ITab implements ActionListener {
         }
     }
 
-
     private void resetCrits() {
-        for (Mounted<?> mount : getAero().getEquipment()) {
-            if (!mount.isWeaponGroup() && TestAero.eqRequiresLocation(mount.getType(), true)
-                  && !UnitUtil.isFixedLocationSpreadEquipment(mount.getType())) {
-                UnitUtil.removeCriticalSlots(getAero(), mount);
-                UnitUtil.changeMountStatus(getAero(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-            }
-        }
-
+        UnitUtil.removeAllCriticalSlots(getAero());
         refresh.scheduleRefresh();
     }
-
 
     public void removeAllActionListeners() {
         resetButton.removeActionListener(this);
@@ -145,4 +118,7 @@ public class ASBuildTab extends ITab implements ActionListener {
         }
     }
 
+    public ASBuildView getBuildView() {
+        return buildView;
+    }
 }

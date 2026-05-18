@@ -43,7 +43,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import megamek.codeUtilities.MathUtility;
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.bays.Bay;
@@ -342,6 +341,13 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     }
 
     @Override
+    public void publishedChanged(String published) {
+        getTank().setPublished(published);
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+    }
+
+    @Override
     public void factionChanged(Faction faction) {
         getEntity().setTechFaction(faction);
     }
@@ -526,7 +532,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         double remainingTonnage = TestEntity.floor(
               totalTonnage - currentTonnage, Ceil.HALF_TON);
 
-        double maxArmor = MathUtility.clamp(getTank().getArmorWeight() + remainingTonnage, 0,
+        double maxArmor = Math.clamp(getTank().getArmorWeight() + remainingTonnage, 0,
               UnitUtil.getMaximumArmorTonnage(getTank()));
         getTank().setArmorTonnage(maxArmor);
         panArmor.removeListener(this);

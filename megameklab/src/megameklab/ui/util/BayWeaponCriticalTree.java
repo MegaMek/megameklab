@@ -231,8 +231,8 @@ public class BayWeaponCriticalTree extends JTree {
     }
 
     /**
-     * Safely triggers a full refresh of all UI components.
-     * Guards against null refresh listener which can occur during initialization.
+     * Safely triggers a full refresh of all UI components. Guards against null refresh listener which can occur during
+     * initialization.
      */
     private void safeRefreshAll() {
         if (refresh != null) {
@@ -620,6 +620,7 @@ public class BayWeaponCriticalTree extends JTree {
             return name;
         }
 
+        @Deprecated(since = "0.51.0", forRemoval = true)
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(this);
@@ -699,6 +700,7 @@ public class BayWeaponCriticalTree extends JTree {
         }
 
         @Override
+        @Deprecated(since = "0.51.0", forRemoval = true)
         public String getTooltip() {
             StringBuilder sb = new StringBuilder("<html>");
             sb.append(this);

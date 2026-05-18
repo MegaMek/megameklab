@@ -80,7 +80,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
 
     @Override
     public String getUniqueId() {
-        return "bay_"+String.valueOf(index);
+        return "bay_" + index;
     }
 
     private void processBay() {
@@ -185,7 +185,7 @@ public class WeaponBayInventoryEntry implements InventoryEntry {
             StringBuilder nameString = new StringBuilder(weaponType.getShortName());
             if (bay.weaponAmmo.containsKey(weaponType)) {
                 List<Mounted<?>> ammoList = bay.weaponAmmo.get(weaponType);
-                Mounted<?> ammo = ammoList.get(0);
+                Mounted<?> ammo = ammoList.getFirst();
                 if (weaponType.getAmmoType() == AmmoType.AmmoTypeEnum.AR10) {
                     nameString.append(" (");
 

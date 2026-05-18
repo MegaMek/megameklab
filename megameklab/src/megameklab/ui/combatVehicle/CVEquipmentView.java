@@ -62,6 +62,7 @@ import megameklab.util.StringUtils;
 import megameklab.util.TankUtil;
 import megameklab.util.UnitUtil;
 
+@Deprecated(since = "0.51.0", forRemoval = true)
 public class CVEquipmentView extends IView implements ActionListener {
     private static final MMLogger logger = MMLogger.create(CVEquipmentView.class);
 
@@ -225,36 +226,39 @@ public class CVEquipmentView extends IView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(ADD_COMMAND)) {
-            EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
-            Mounted<?> mount = null;
-            boolean isMisc = equip instanceof MiscType;
-            if (isMisc && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
-                if (!UnitUtil.hasTargComp(getTank())) {
-                    mount = UnitUtil.updateTC(getTank(), equip);
+        switch (e.getActionCommand()) {
+            case ADD_COMMAND -> {
+                EquipmentType equip = (EquipmentType) equipmentCombo.getSelectedItem();
+                Mounted<?> mount = null;
+                boolean isMisc = equip instanceof MiscType;
+                if (isMisc && equip.hasFlag(MiscType.F_TARGETING_COMPUTER)) {
+                    if (!UnitUtil.hasTargComp(getTank())) {
+                        mount = UnitUtil.updateTC(getTank(), equip);
+                    }
+                } else {
+                    try {
+                        mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
+                    } catch (Exception ex) {
+                        logger.error("", ex);
+                    }
                 }
-            } else {
-                try {
-                    mount = getTank().addEquipment(equip, Entity.LOC_NONE, false);
-                } catch (Exception ex) {
-                    logger.error("", ex);
-                }
+                equipmentList.addCrit(mount);
             }
-            equipmentList.addCrit(mount);
-        } else if (e.getActionCommand().equals(REMOVE_COMMAND)) {
-            int startRow = equipmentTable.getSelectedRow();
-            int count = equipmentTable.getSelectedRowCount();
+            case REMOVE_COMMAND -> {
+                int startRow = equipmentTable.getSelectedRow();
+                int count = equipmentTable.getSelectedRowCount();
 
-            for (; count > 0; count--) {
-                if (startRow > -1) {
-                    equipmentList.removeMounted(startRow);
-                    equipmentList.removeCrit(startRow);
+                for (; count > 0; count--) {
+                    if (startRow > -1) {
+                        equipmentList.removeMounted(startRow);
+                        equipmentList.removeCrit(startRow);
+                    }
                 }
             }
-        } else if (e.getActionCommand().equals(REMOVE_ALL_COMMAND)) {
-            removeAllEquipment();
-        } else {
-            return;
+            case REMOVE_ALL_COMMAND -> removeAllEquipment();
+            default -> {
+                return;
+            }
         }
         fireTableRefresh();
     }

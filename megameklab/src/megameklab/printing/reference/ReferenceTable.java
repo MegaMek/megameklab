@@ -101,6 +101,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         data.add(new ArrayList<>(row));
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setDefaultAnchor(String defaultAnchor) {
         this.defaultAnchor = defaultAnchor;
     }
@@ -109,6 +110,7 @@ public abstract class ReferenceTable extends ReferenceTableBase {
         this.anchor.put(column, anchor);
     }
 
+    @Deprecated(since = "0.51.0", forRemoval = true)
     public void setColumnWeight(int column, String weight) {
         fontWeight.put(column, weight);
     }
@@ -179,13 +181,13 @@ public abstract class ReferenceTable extends ReferenceTableBase {
 
             boolean sectionHeader = false;
             boolean noShade = false;
-            if (!row.isEmpty() && row.get(0).startsWith(SECTION_HEADER)) {
+            if (!row.isEmpty() && row.getFirst().startsWith(SECTION_HEADER)) {
                 sectionHeader = true;
-                row.set(0, row.get(0).replace(SECTION_HEADER, ""));
+                row.set(0, row.getFirst().replace(SECTION_HEADER, ""));
             }
-            if (!row.isEmpty() && row.get(0).startsWith(NO_SHADE)) {
+            if (!row.isEmpty() && row.getFirst().startsWith(NO_SHADE)) {
                 noShade = true;
-                row.set(0, row.get(0).replace(NO_SHADE, ""));
+                row.set(0, row.getFirst().replace(NO_SHADE, ""));
             }
 
             if (sectionHeader || noShade) {

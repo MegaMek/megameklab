@@ -54,6 +54,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import com.formdev.flatlaf.ui.FlatTextBorder;
+import megamek.common.units.ConvInfantry;
 import megamek.common.units.Infantry;
 import megamek.common.units.InfantryMount;
 import megameklab.ui.EntitySource;
@@ -193,7 +194,7 @@ public class CIMountView extends IView implements ActionListener {
                 InfantryMount newMount = selectedMount(selected);
                 if ((getInfantry().getMount() != null) && (getInfantry().getMount().movementMode().isSubmarine())
                       && ((newMount == null) || !newMount.movementMode().isSubmarine())) {
-                    getInfantry().setSpecializations(getInfantry().getSpecializations() & ~Infantry.SCUBA);
+                    getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.SCUBA);
                 }
                 getInfantry().setMount(selectedMount(selected));
             } else {
