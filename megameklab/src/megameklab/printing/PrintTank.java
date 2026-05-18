@@ -49,8 +49,6 @@ import megamek.common.equipment.Transporter;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.units.InfantryCompartment;
-import megamek.common.units.LandAirMek;
-import megamek.common.units.QuadVee;
 import megamek.common.units.SupportTank;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
