@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -129,9 +130,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
           EquipmentType.T_STRUCTURE_ENDO_COMPOSITE
     };
 
+    private static final EquipmentType HYBRID_STRUCTURE = new DisplayOnlyStructure(
+                Mek.FRANKEN_MEK_STRUCTURE_HYBRID);
+
     final private SpinnerNumberModel tonnageModel = new SpinnerNumberModel(20, 20, 100, 5);
     final private JSpinner spnTonnage = new JSpinner(tonnageModel);
     final private JCheckBox chkOmni = new JCheckBox("Omni");
+    final private JCheckBox chkFrankenMek = new JCheckBox("FrankenMek");
     final private JComboBox<String> cbBaseType = new JComboBox<>();
     final private JComboBox<String> cbMotiveType = new JComboBox<>();
     final private TechComboBox<EquipmentType> cbStructure = new TechComboBox<>(EquipmentType::getName);
@@ -155,6 +160,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     private boolean primitive = false;
     private int engineRating = 20;
+    private boolean suppressListenerNotifications = false;
 
     private static final int[] GENERAL_COCKPITS = {
           Mek.COCKPIT_STANDARD, Mek.COCKPIT_SMALL, Mek.COCKPIT_COMMAND_CONSOLE,
@@ -175,6 +181,13 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     private String stdMotiveTooltip;
     private String lamMotiveTooltip;
     private String qvMotiveTooltip;
+
+    private static class DisplayOnlyStructure extends EquipmentType {
+        DisplayOnlyStructure(String name) {
+            this.name = name;
+            internalName = name;
+        }
+    }
 
     public BMChassisView(ITechManager techManager) {
         this.techManager = techManager;
@@ -218,7 +231,15 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkOmni.setText(resourceMap.getString("MekChassisView.chkOmni.text"));
         chkOmni.setToolTipText(resourceMap.getString("MekChassisView.chkOmni.tooltip"));
         add(chkOmni, gbc);
-        chkOmni.addChangeListener(this);
+        chkOmni.addActionListener(this);
+
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        chkFrankenMek.setText(resourceMap.getString("MekChassisView.chkFrankenMek.text"));
+        chkFrankenMek.setToolTipText(resourceMap.getString("MekChassisView.chkFrankenMek.tooltip"));
+        add(chkFrankenMek, gbc);
+        chkFrankenMek.setVisible(false);
+        chkFrankenMek.addActionListener(this);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -354,71 +375,91 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setFromEntity(Mek mek) {
-        primitive = mek.isPrimitive();
-        engineRating = mek.getEngine().getRating();
-        refresh();
-        setTonnage(mek.getWeight());
-        setOmni(mek.isOmni());
-        chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
-              && techManager.isLegal(Entity.getOmniAdvancement()));
-        cbBaseType.removeActionListener(this);
-        cbMotiveType.removeActionListener(this);
-        if (primitive) {
-            cbBaseType.setModel(primitiveTypesModel);
-        } else {
-            cbBaseType.setModel(baseTypesModel);
-        }
-        if (mek instanceof LandAirMek) {
-            chkOmni.setEnabled(false);
-            setBaseTypeIndex(BASE_TYPE_LAM);
-            cbMotiveType.setModel(lamTypesModel);
-            setMotiveTypeIndex(((LandAirMek) mek).getLAMType());
-            cbMotiveType.setToolTipText(lamMotiveTooltip);
-        } else if (mek instanceof QuadVee) {
-            setBaseTypeIndex(BASE_TYPE_QUADVEE);
-            cbMotiveType.setModel(qvTypesModel);
-            setMotiveTypeIndex(((QuadVee) mek).getMotiveType());
-            cbMotiveType.setToolTipText(qvMotiveTooltip);
-        } else {
-            setBaseTypeIndex(mek.isIndustrial() ? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
+        boolean previousSuppression = suppressListenerNotifications;
+        suppressListenerNotifications = true;
+        try {
+            primitive = mek.isPrimitive();
+            engineRating = mek.getEngine().getRating();
+            refresh();
+            setTonnage(mek.getWeight());
+            setOmni(mek.isOmni());
+            setFrankenMek(mek.isFrankenMek());
+            chkOmni.setEnabled(!mek.isPrimitive() && !mek.isIndustrial()
+                  && techManager.isLegal(Entity.getOmniAdvancement()));
+            cbBaseType.removeActionListener(this);
+            cbMotiveType.removeActionListener(this);
             if (primitive) {
-                cbMotiveType.setModel(primitiveMotiveTypesModel);
+                cbBaseType.setModel(primitiveTypesModel);
             } else {
-                cbMotiveType.setModel(standardTypesModel);
+                cbBaseType.setModel(baseTypesModel);
             }
-            if ((mek.getEntityType() & Entity.ETYPE_TRIPOD_MEK) != 0) {
-                setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
-            } else if ((mek.getEntityType() & Entity.ETYPE_QUAD_MEK) != 0) {
-                setMotiveTypeIndex(MOTIVE_TYPE_QUAD);
+            if (mek instanceof LandAirMek) {
+                chkOmni.setEnabled(false);
+                setBaseTypeIndex(BASE_TYPE_LAM);
+                cbMotiveType.setModel(lamTypesModel);
+                setMotiveTypeIndex(((LandAirMek) mek).getLAMType());
+                cbMotiveType.setToolTipText(lamMotiveTooltip);
+            } else if (mek instanceof QuadVee) {
+                setBaseTypeIndex(BASE_TYPE_QUADVEE);
+                cbMotiveType.setModel(qvTypesModel);
+                setMotiveTypeIndex(((QuadVee) mek).getMotiveType());
+                cbMotiveType.setToolTipText(qvMotiveTooltip);
             } else {
-                setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
+                setBaseTypeIndex(mek.isIndustrial() ? BASE_TYPE_INDUSTRIAL : BASE_TYPE_STANDARD);
+                if (primitive) {
+                    cbMotiveType.setModel(primitiveMotiveTypesModel);
+                } else {
+                    cbMotiveType.setModel(standardTypesModel);
+                }
+                if ((mek.getEntityType() & Entity.ETYPE_TRIPOD_MEK) != 0) {
+                    setMotiveTypeIndex(MOTIVE_TYPE_TRIPOD);
+                } else if ((mek.getEntityType() & Entity.ETYPE_QUAD_MEK) != 0) {
+                    setMotiveTypeIndex(MOTIVE_TYPE_QUAD);
+                } else {
+                    setMotiveTypeIndex(MOTIVE_TYPE_BIPED);
+                }
+                cbMotiveType.setToolTipText(stdMotiveTooltip);
             }
-            cbMotiveType.setToolTipText(stdMotiveTooltip);
+            cbBaseType.addActionListener(this);
+            cbMotiveType.addActionListener(this);
+            setStructureType(mek.isFrankenMek() ? mek.getFrankenMekStructureDisplayName()
+                : EquipmentType.getStructureTypeName(mek.getStructureType(),
+                TechConstants.isClan(mek.getStructureTechLevel())));
+            setEngine(mek.getEngine());
+            setGyroType(mek.getGyroType());
+            setCockpitType(mek.getCockpitType());
+            // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
+            // the list for the first matching.
+            Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
+                  .filter(et -> (et.hasFlag(MiscType.F_MASC) && !et.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
+                        || et.hasFlag(MiscType.F_TSM)
+                        || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
+                        || et.hasFlag(MiscType.F_SCM)).findFirst();
+            if (enh.isPresent()) {
+                setEnhancement(enh.get());
+            } else {
+                setEnhancement(null);
+            }
+            setFullHeadEject(mek.hasFullHeadEject());
+            setDNICockpitMod(mek.hasDNICockpitMod());
+            setEICockpit(mek.hasEiCockpit());
+            setDamageInterruptCircuit(mek.hasDamageInterruptCircuit());
+            btnResetChassis.setEnabled(mek.isOmni());
+        } finally {
+            suppressListenerNotifications = previousSuppression;
         }
-        cbBaseType.addActionListener(this);
-        cbMotiveType.addActionListener(this);
-        setStructureType(EquipmentType.getStructureTypeName(mek.getStructureType(),
-              TechConstants.isClan(mek.getStructureTechLevel())));
-        setEngine(mek.getEngine());
-        setGyroType(mek.getGyroType());
-        setCockpitType(mek.getCockpitType());
-        // A simple hasWorkingMisc() will not tell us whether we have IS or Clan MASC, so we need to search
-        // the list for the first matching.
-        Optional<MiscType> enh = mek.getMisc().stream().map(Mounted::getType)
-              .filter(et -> (et.hasFlag(MiscType.F_MASC) && !et.hasFlag(MiscTypeFlag.S_SUPERCHARGER))
-                    || et.hasFlag(MiscType.F_TSM)
-                    || et.hasFlag(MiscType.F_INDUSTRIAL_TSM)
-                    || et.hasFlag(MiscType.F_SCM)).findFirst();
-        if (enh.isPresent()) {
-            setEnhancement(enh.get());
-        } else {
-            setEnhancement(null);
+    }
+
+    public void refreshFrankenMekState(Mek mek) {
+        boolean previousSuppression = suppressListenerNotifications;
+        suppressListenerNotifications = true;
+        try {
+            setFrankenMek(mek.isFrankenMek());
+            refreshStructure();
+            setStructureType(mek.getFrankenMekStructureDisplayName());
+        } finally {
+            suppressListenerNotifications = previousSuppression;
         }
-        setFullHeadEject(mek.hasFullHeadEject());
-        setDNICockpitMod(mek.hasDNICockpitMod());
-        setEICockpit(mek.hasEiCockpit());
-        setDamageInterruptCircuit(mek.hasDamageInterruptCircuit());
-        btnResetChassis.setEnabled(mek.isOmni());
     }
 
     public void setAsCustomization() {
@@ -458,6 +499,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         refreshDNICockpitMod();
         refreshEICockpit();
         refreshDamageInterruptCircuit();
+        refreshFrankenMek();
 
         chkOmni.removeActionListener(this);
         chkOmni.setEnabled(!isPrimitive()
@@ -468,20 +510,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void refreshTonnage() {
-        int min = 20;
-        int max = 100;
+        int min = getMinimumTonnage();
+        int max = getMaximumTonnage();
         spnTonnage.removeChangeListener(this);
-        if (getBaseTypeIndex() == BASE_TYPE_LAM) {
-            max = 55;
-        } else if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
-              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
-              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
-            max = 200;
-        }
-        if (techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
-              EntityWeightClass.WEIGHT_ULTRA_LIGHT))) {
-            min = 10;
-        }
         tonnageModel.setMinimum(min);
         tonnageModel.setMaximum(max);
         spnTonnage.addChangeListener(this);
@@ -493,20 +524,34 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     private void refreshStructure() {
-        boolean isMixed = techManager.useMixedTech();
-        boolean isClan = techManager.useClanTechBase();
         cbStructure.removeActionListener(this);
+        if (isFrankenMek()) {
+            cbStructure.setEnabled(false);
+            cbStructure.addActionListener(this);
+            return;
+        }
+        cbStructure.setEnabled(true);
         EquipmentType prevStructure = (EquipmentType) cbStructure.getSelectedItem();
         cbStructure.removeAllItems();
-        cbStructure.showTechBase(isMixed);
-        // Primitive/retro can only use standard/industrial structure. Industrial can only use industrial
-        // at standard rules level. Super-heavies can only use standard.
+        List<EquipmentType> availableStructures = getAvailableStructures();
+        cbStructure.showTechBase(techManager.useMixedTech() || needsStructureTechBase(availableStructures));
+        availableStructures.forEach(cbStructure::addItem);
+        cbStructure.setSelectedItem(prevStructure);
+        cbStructure.addActionListener(this);
+        if (cbStructure.getSelectedIndex() < 0) {
+            cbStructure.setSelectedIndex(0);
+        }
+    }
+
+    public List<EquipmentType> getAvailableStructures() {
+        List<EquipmentType> availableStructures = new ArrayList<>();
+        boolean isClan = techManager.useClanTechBase();
         if (isIndustrial()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL, isClan);
-            cbStructure.addItem(EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.get(name));
         } else if (isPrimitive()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD, isClan);
-            cbStructure.addItem(EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.get(name));
         } else {
             int[] structureTypes = isSuperheavy() ?
                   SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
@@ -514,30 +559,32 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
                 String name = EquipmentType.getStructureTypeName(i, isClan);
                 EquipmentType structure = EquipmentType.get(name);
                 // LAMs cannot use bulky structure
-                if ((null != structure) && techManager.isLegal(structure)
-                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure.getNumCriticalSlots(null) == 0))) {
-                    cbStructure.addItem(structure);
-                }
+                addAvailableStructure(availableStructures, structure);
                 name = EquipmentType.getStructureTypeName(i, !isClan);
                 EquipmentType structure2 = EquipmentType.get(name);
-                if ((null != structure2) && (structure2 != structure)
-                      && techManager.isLegal(structure2)
-                      && ((getBaseTypeIndex() != BASE_TYPE_LAM)
-                      || (structure2.getNumCriticalSlots(null) == 0))) {
-                    cbStructure.addItem(structure2);
-                    // If we are allowing the opposite tech base it may be because we are using mixed tech, but it
-                    // also may be that we are in the transitional early Clan stage when IS equipment is available
-                    // without a mixed base.
-                    cbStructure.showTechBase(true);
+                addAvailableStructure(availableStructures, structure2);
+            }
+        }
+        return availableStructures;
+    }
+
+    private void addAvailableStructure(List<EquipmentType> structures, EquipmentType structure) {
+        if ((structure != null) && !structures.contains(structure) && techManager.isLegal(structure)
+              && ((getBaseTypeIndex() != BASE_TYPE_LAM) || (structure.getNumCriticalSlots(null) == 0))) {
+            structures.add(structure);
+        }
+    }
+
+    private boolean needsStructureTechBase(List<EquipmentType> structures) {
+        for (int first = 0; first < structures.size(); first++) {
+            for (int second = first + 1; second < structures.size(); second++) {
+                if ((structures.get(first) != structures.get(second))
+                      && structures.get(first).getName().equals(structures.get(second).getName())) {
+                    return true;
                 }
             }
         }
-        cbStructure.setSelectedItem(prevStructure);
-        cbStructure.addActionListener(this);
-        if (cbStructure.getSelectedIndex() < 0) {
-            cbStructure.setSelectedIndex(0);
-        }
+        return false;
     }
 
     private void refreshEngine() {
@@ -682,7 +729,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDNICockpitMod.setVisible(isLegal);
         if (!isLegal && chkDNICockpitMod.isSelected()) {
             chkDNICockpitMod.setSelected(false);
-            listeners.forEach(l -> l.dniCockpitModChanged(false));
+            notifyListeners(l -> l.dniCockpitModChanged(false));
         }
         chkDNICockpitMod.addActionListener(this);
     }
@@ -694,7 +741,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkEICockpit.setVisible(isLegal);
         if (!isLegal && chkEICockpit.isSelected()) {
             chkEICockpit.setSelected(false);
-            listeners.forEach(l -> l.eiCockpitChanged(false));
+            notifyListeners(l -> l.eiCockpitChanged(false));
         }
         chkEICockpit.addActionListener(this);
     }
@@ -706,9 +753,27 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         chkDamageInterruptCircuit.setVisible(isLegal);
         if (!isLegal && chkDamageInterruptCircuit.isSelected()) {
             chkDamageInterruptCircuit.setSelected(false);
-            listeners.forEach(l -> l.damageInterruptCircuitChanged(false));
+            notifyListeners(l -> l.damageInterruptCircuitChanged(false));
         }
         chkDamageInterruptCircuit.addActionListener(this);
+    }
+
+    private void refreshFrankenMek() {
+        chkFrankenMek.removeActionListener(this);
+        boolean isExperimental = techManager.getTechLevel() == SimpleTechLevel.EXPERIMENTAL;
+        chkFrankenMek.setVisible(isExperimental);
+        if (!isExperimental && chkFrankenMek.isSelected()) {
+            chkFrankenMek.setSelected(false);
+            notifyListeners(l -> l.frankenMekChanged(false));
+        }
+        chkFrankenMek.addActionListener(this);
+    }
+
+    private void notifyListeners(Consumer<MekBuildListener> notifier) {
+        if (suppressListenerNotifications) {
+            return;
+        }
+        listeners.forEach(notifier);
     }
 
     public List<Engine> getAvailableEngines() {
@@ -755,7 +820,30 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setTonnage(double tonnage) {
+        spnTonnage.removeChangeListener(this);
         spnTonnage.setValue((int) Math.ceil(tonnage));
+        spnTonnage.addChangeListener(this);
+    }
+
+    public int clampTonnage(double tonnage) {
+        return Math.min(getMaximumTonnage(), Math.max(getMinimumTonnage(), (int) Math.ceil(tonnage)));
+    }
+
+    public int getMinimumTonnage() {
+        return techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
+              EntityWeightClass.WEIGHT_ULTRA_LIGHT)) ? 10 : 20;
+    }
+
+    public int getMaximumTonnage() {
+        if (getBaseTypeIndex() == BASE_TYPE_LAM) {
+            return 55;
+        }
+        if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
+              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
+              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
+            return 200;
+        }
+        return 100;
     }
 
     public boolean isOmni() {
@@ -764,6 +852,20 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     public void setOmni(boolean omni) {
         chkOmni.setSelected(omni);
+        if (omni) {
+            chkFrankenMek.setSelected(false);
+        }
+    }
+
+    public boolean isFrankenMek() {
+        return chkFrankenMek.isSelected() && chkFrankenMek.isVisible();
+    }
+
+    public void setFrankenMek(boolean frankenMek) {
+        chkFrankenMek.setSelected(frankenMek);
+        if (frankenMek) {
+            chkOmni.setSelected(false);
+        }
     }
 
     public int getBaseTypeIndex() {
@@ -806,8 +908,47 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public void setStructureType(String structureName) {
+        cbStructure.removeActionListener(this);
+        if (Mek.FRANKEN_MEK_STRUCTURE_HYBRID.equals(structureName)) {
+            if (!containsStructure(HYBRID_STRUCTURE)) {
+                cbStructure.addItem(HYBRID_STRUCTURE);
+            }
+            cbStructure.setSelectedItem(HYBRID_STRUCTURE);
+        } else {
+            EquipmentType structure = findStructure(structureName);
+            if ((structure != null) && !containsStructure(structure)) {
+                cbStructure.addItem(structure);
+            }
+            cbStructure.setSelectedItem(structure);
+        }
+        cbStructure.setEnabled(!isFrankenMek());
+        cbStructure.addActionListener(this);
+    }
+
+    private boolean containsStructure(EquipmentType structure) {
+        for (int index = 0; index < cbStructure.getItemCount(); index++) {
+            if (cbStructure.getItemAt(index) == structure) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private EquipmentType findStructure(String structureName) {
         EquipmentType structure = EquipmentType.get(structureName);
-        cbStructure.setSelectedItem(structure);
+        if (structure != null) {
+            return structure;
+        }
+        for (int index = 0; index < cbStructure.getItemCount(); index++) {
+            EquipmentType item = cbStructure.getItemAt(index);
+            if ((item != null) && item.getName().equals(structureName)) {
+                return item;
+            }
+        }
+        return getAvailableStructures().stream()
+              .filter(item -> item.getName().equals(structureName))
+              .findFirst()
+              .orElse(null);
     }
 
     public Engine getEngine() {
@@ -929,39 +1070,55 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (suppressListenerNotifications) {
+            return;
+        }
         if (e.getSource() == chkOmni) {
-            listeners.forEach(l -> l.omniChanged(isOmni()));
+            if (chkOmni.isSelected() && chkFrankenMek.isSelected()) {
+                setFrankenMek(false);
+                notifyListeners(l -> l.frankenMekChanged(false));
+            }
+            notifyListeners(l -> l.omniChanged(isOmni()));
+        } else if (e.getSource() == chkFrankenMek) {
+            if (chkFrankenMek.isSelected() && chkOmni.isSelected()) {
+                setOmni(false);
+                notifyListeners(l -> l.omniChanged(false));
+            }
+            notifyListeners(l -> l.frankenMekChanged(isFrankenMek()));
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
-            listeners.forEach(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
-        } else if (e.getSource() == cbStructure) {
-            listeners.forEach(l -> l.structureChanged(getStructure()));
+            notifyListeners(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
+        } else if ((e.getSource() == cbStructure) && !isFrankenMek()) {
+            notifyListeners(l -> l.structureChanged(getStructure()));
         } else if (e.getSource() == cbEngine) {
-            listeners.forEach(l -> l.engineChanged(getEngine()));
+            notifyListeners(l -> l.engineChanged(getEngine()));
         } else if (e.getSource() == cbGyro) {
-            listeners.forEach(l -> l.gyroChanged(getGyroType()));
+            notifyListeners(l -> l.gyroChanged(getGyroType()));
         } else if (e.getSource() == cbCockpit) {
-            listeners.forEach(l -> l.cockpitChanged(getCockpitType()));
+            notifyListeners(l -> l.cockpitChanged(getCockpitType()));
             refreshFullHeadEject();
         } else if (e.getSource() == cbEnhancement) {
-            listeners.forEach(l -> l.enhancementChanged(getEnhancement()));
+            notifyListeners(l -> l.enhancementChanged(getEnhancement()));
         } else if (e.getSource() == chkFullHeadEject) {
-            listeners.forEach(l -> l.fullHeadEjectChanged(chkFullHeadEject.isSelected()));
+            notifyListeners(l -> l.fullHeadEjectChanged(chkFullHeadEject.isSelected()));
         } else if (e.getSource() == chkDNICockpitMod) {
-            listeners.forEach(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
+            notifyListeners(l -> l.dniCockpitModChanged(chkDNICockpitMod.isSelected()));
         } else if (e.getSource() == chkEICockpit) {
-            listeners.forEach(l -> l.eiCockpitChanged(chkEICockpit.isSelected()));
+            notifyListeners(l -> l.eiCockpitChanged(chkEICockpit.isSelected()));
         } else if (e.getSource() == chkDamageInterruptCircuit) {
-            listeners.forEach(l -> l.damageInterruptCircuitChanged(chkDamageInterruptCircuit.isSelected()));
+            notifyListeners(l -> l.damageInterruptCircuitChanged(chkDamageInterruptCircuit.isSelected()));
         } else if (e.getSource() == btnResetChassis) {
-            listeners.forEach(MekBuildListener::resetChassis);
+            notifyListeners(MekBuildListener::resetChassis);
         }
         refresh();
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
+        if (suppressListenerNotifications) {
+            return;
+        }
         if (e.getSource() == spnTonnage) {
-            listeners.forEach(l -> l.tonnageChanged(getTonnage()));
+            notifyListeners(l -> l.tonnageChanged(getTonnage()));
         }
         // Change from standard to superheavy or reverse will cause the structure tab to call setEntity()
         // and so cause a refresh

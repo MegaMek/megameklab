@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -33,8 +33,12 @@
 package megameklab.ui.generalUnit.summary;
 
 import megamek.common.TechConstants;
+import megamek.common.enums.AvailabilityValue;
+import megamek.common.enums.Era;
+import megamek.common.enums.TechRating;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.units.Entity;
+import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megameklab.util.UnitUtil;
 
@@ -49,6 +53,11 @@ public class StructureSummaryItem extends AbstractSummaryItem {
     public void refresh(Entity entity) {
         TestEntity testEntity = UnitUtil.getEntityVerifier(entity);
         weightLabel.setText(formatWeight(testEntity.getWeightStructure(), entity));
+        if ((entity instanceof Mek mek) && mek.isFrankenMek() && mek.hasHybridFrankenMekStructure()) {
+            availabilityLabel.setText(getMergedFrankenMekAvailability(mek));
+            critLabel.setText("");
+            return;
+        }
         int type = entity.getStructureType();
         if ((type >= 0) && (type < EquipmentType.structureNames.length)) {
             String structName = EquipmentType.getStructureTypeName(type,
@@ -60,5 +69,41 @@ public class StructureSummaryItem extends AbstractSummaryItem {
             availabilityLabel.setText("");
             critLabel.setText("");
         }
+    }
+
+    private String getMergedFrankenMekAvailability(Mek mek) {
+        TechRating techRating = TechRating.A;
+        AvailabilityValue starLeagueAvailability = AvailabilityValue.A;
+        AvailabilityValue successionWarsAvailability = AvailabilityValue.A;
+        AvailabilityValue clanAvailability = AvailabilityValue.A;
+        AvailabilityValue darkAgesAvailability = AvailabilityValue.A;
+
+        for (int location = 0; location < mek.locations(); location++) {
+            EquipmentType structureType = mek.getFrankenMekStructureEquipment(location);
+            if (structureType == null) {
+                continue;
+            }
+            techRating = worst(techRating, structureType.getTechRating());
+            starLeagueAvailability = worst(starLeagueAvailability,
+                  structureType.calcEraAvailability(Era.SL, mek.isClan()));
+            successionWarsAvailability = worst(successionWarsAvailability,
+                  structureType.calcEraAvailability(Era.SW, mek.isClan()));
+            clanAvailability = worst(clanAvailability,
+                  structureType.calcEraAvailability(Era.CLAN, mek.isClan()));
+            darkAgesAvailability = worst(darkAgesAvailability,
+                  structureType.calcEraAvailability(Era.DA, mek.isClan()));
+        }
+
+        return techRating.getName() + "/" + starLeagueAvailability.getName() + "-"
+              + successionWarsAvailability.getName() + "-" + clanAvailability.getName() + "-"
+              + darkAgesAvailability.getName();
+    }
+
+    private TechRating worst(TechRating first, TechRating second) {
+        return first.getIndex() >= second.getIndex() ? first : second;
+    }
+
+    private AvailabilityValue worst(AvailabilityValue first, AvailabilityValue second) {
+        return first.getIndex() >= second.getIndex() ? first : second;
     }
 }
