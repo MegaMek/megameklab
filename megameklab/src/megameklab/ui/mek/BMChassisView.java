@@ -54,6 +54,7 @@ import javax.swing.event.ChangeListener;
 
 import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
+import megamek.common.annotations.Nullable;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.EquipmentTypeLookup;
@@ -66,6 +67,7 @@ import megamek.common.units.EntityWeightClass;
 import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadVee;
+import megamek.logging.MMLogger;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.CustomComboBox;
@@ -77,6 +79,8 @@ import megameklab.ui.util.TechComboBox;
  * @author Neoancient
  */
 public class BMChassisView extends BuildView implements ActionListener, ChangeListener {
+    private static final MMLogger LOGGER = MMLogger.create(BMChassisView.class);
+
     List<MekBuildListener> listeners = new CopyOnWriteArrayList<>();
 
     public void addListener(MekBuildListener l) {
@@ -898,8 +902,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         cbMotiveType.setSelectedIndex(index);
     }
 
-    public EquipmentType getStructure() {
-        return (EquipmentType) cbStructure.getSelectedItem();
+    public @Nullable EquipmentType getStructure() {
+        EquipmentType selectedStructure = (EquipmentType) cbStructure.getSelectedItem();
+        return (selectedStructure == HYBRID_STRUCTURE) ? null : selectedStructure;
     }
 
     @Deprecated(since = "0.51.0", forRemoval = true)
@@ -916,10 +921,17 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             cbStructure.setSelectedItem(HYBRID_STRUCTURE);
         } else {
             EquipmentType structure = findStructure(structureName);
+            if (structure == null) {
+                structure = getFallbackStructure();
+                LOGGER.warn("Could not find structure type '{}'; using '{}' instead.", structureName,
+                      structure == null ? "no fallback structure" : structure.getName());
+            }
             if ((structure != null) && !containsStructure(structure)) {
                 cbStructure.addItem(structure);
             }
-            cbStructure.setSelectedItem(structure);
+            if (structure != null) {
+                cbStructure.setSelectedItem(structure);
+            }
         }
         cbStructure.setEnabled(!isFrankenMek());
         cbStructure.addActionListener(this);
@@ -934,7 +946,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         return false;
     }
 
-    private EquipmentType findStructure(String structureName) {
+    private @Nullable EquipmentType findStructure(String structureName) {
+        if (structureName == null) {
+            return null;
+        }
         EquipmentType structure = EquipmentType.get(structureName);
         if (structure != null) {
             return structure;
@@ -949,6 +964,19 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
               .filter(item -> item.getName().equals(structureName))
               .findFirst()
               .orElse(null);
+    }
+
+    private @Nullable EquipmentType getFallbackStructure() {
+        EquipmentType selectedStructure = getStructure();
+        if (selectedStructure != null) {
+            return selectedStructure;
+        }
+        List<EquipmentType> availableStructures = getAvailableStructures();
+        if (!availableStructures.isEmpty()) {
+            return availableStructures.get(0);
+        }
+        return EquipmentType.get(EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD,
+              techManager.useClanTechBase()));
     }
 
     public Engine getEngine() {
@@ -1088,7 +1116,10 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         } else if ((e.getSource() == cbBaseType) || (e.getSource() == cbMotiveType)) {
             notifyListeners(l -> l.typeChanged(getBaseTypeIndex(), getMotiveTypeIndex(), getEntityType()));
         } else if ((e.getSource() == cbStructure) && !isFrankenMek()) {
-            notifyListeners(l -> l.structureChanged(getStructure()));
+            EquipmentType structure = getStructure();
+            if (structure != null) {
+                notifyListeners(l -> l.structureChanged(structure));
+            }
         } else if (e.getSource() == cbEngine) {
             notifyListeners(l -> l.engineChanged(getEngine()));
         } else if (e.getSource() == cbGyro) {

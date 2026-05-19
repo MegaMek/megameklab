@@ -34,6 +34,8 @@ package megameklab.ui.mek;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -47,29 +49,42 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import megamek.common.CriticalSlot;
 import megamek.common.annotations.Nullable;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.interfaces.ITechManager;
+import megamek.common.loaders.EntityLoadingException;
+import megamek.common.loaders.MekSummary;
+import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.TripodMek;
+import megamek.common.units.UnitType;
+import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
+import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.BAASBMDropTargetCriticalList;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.CriticalSlotsView;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.FrankenMekDonorUtil;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
@@ -82,7 +97,11 @@ import megameklab.util.UnitUtil;
  */
 public class BMCriticalView extends IView implements ActionListener, CriticalSlotsView {
 
-    private static final String CASE_NONE_LABEL = "None";
+    private static final MMLogger LOGGER = MMLogger.create(BMCriticalView.class);
+    private static final String CASE_NONE_LABEL = "No CASE";
+    private static final String DONOR_ACTION_PREFIX = "donor:";
+    private static final int DONOR_LABEL_BOTTOM_MARGIN = 6;
+    private static final int DONOR_LABEL_TEXT_HORIZONTAL_PADDING = 4;
 
     /** All CASE-family equipment types, built once from F_CASE / F_CASEII / F_CASEP flags. */
     private static List<EquipmentType> allCaseTypes;
@@ -123,6 +142,12 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
     private final Map<Integer, JPanel> casePanels = new HashMap<>();
     /** Per-location CASE combo boxes storing EquipmentType (null = None) */
     private final Map<Integer, JComboBox<EquipmentType>> caseComboBoxes = new HashMap<>();
+    /** Per-location donor import panels. */
+    private final Map<Integer, JPanel> donorPanels = new HashMap<>();
+    /** Per-location donor source buttons. */
+    private final Map<Integer, JButton> donorButtons = new HashMap<>();
+    /** Per-location donor source labels. */
+    private final Map<Integer, JLabel> donorLabels = new HashMap<>();
     /** Flag to suppress combo ActionEvents during programmatic updates */
     private boolean updatingCaseCombos = false;
 
@@ -153,6 +178,28 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             casePanel.add(combo);
             casePanel.setVisible(false);
             casePanels.put(loc, casePanel);
+
+            JButton donorButton = new JButton("Take From Unit...");
+            donorButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            donorButton.setActionCommand(DONOR_ACTION_PREFIX + loc);
+            donorButton.addActionListener(this);
+            donorButtons.put(loc, donorButton);
+
+            JLabel donorLabel = new JLabel();
+            donorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            donorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            donorLabel.setVerticalAlignment(SwingConstants.TOP);
+            donorLabel.setVisible(false);
+            donorLabels.put(loc, donorLabel);
+
+            JPanel donorPanel = new JPanel();
+            donorPanel.setLayout(new BoxLayout(donorPanel, BoxLayout.Y_AXIS));
+            donorPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+            donorPanel.add(donorButton);
+            donorPanel.add(donorLabel);
+            donorPanel.add(Box.createVerticalStrut(DONOR_LABEL_BOTTOM_MARGIN));
+            donorPanel.setVisible(false);
+            donorPanels.put(loc, donorPanel);
         }
 
         Box mainPanel = Box.createHorizontalBox();
@@ -178,33 +225,42 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         laAlignPanel.add(Box.createVerticalStrut(100));
         laAlignPanel.add(laPanel);
         laAlignPanel.add(casePanels.get(Mek.LOC_LEFT_ARM));
+        laAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_ARM));
         laAlignPanel.add(Box.createVerticalGlue());
 
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(ltPanel);
         leftAlignPanel.add(casePanels.get(Mek.LOC_LEFT_TORSO));
+        leftAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_TORSO));
         leftAlignPanel.add(Box.createVerticalStrut(50));
         leftAlignPanel.add(llPanel);
         leftAlignPanel.add(casePanels.get(Mek.LOC_LEFT_LEG));
+        leftAlignPanel.add(donorPanels.get(Mek.LOC_LEFT_LEG));
 
         centerAlignPanel.add(hdPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_HEAD));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_HEAD));
         centerAlignPanel.add(ctPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_CENTER_TORSO));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_CENTER_TORSO));
         centerAlignPanel.add(clPanel);
         centerAlignPanel.add(casePanels.get(Mek.LOC_CENTER_LEG));
+        centerAlignPanel.add(donorPanels.get(Mek.LOC_CENTER_LEG));
         centerAlignPanel.add(Box.createVerticalStrut(75));
 
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rtPanel);
         rightAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_TORSO));
+        rightAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_TORSO));
         rightAlignPanel.add(Box.createVerticalStrut(50));
         rightAlignPanel.add(rlPanel);
         rightAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_LEG));
+        rightAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_LEG));
 
         raAlignPanel.add(Box.createVerticalStrut(100));
         raAlignPanel.add(raPanel);
         raAlignPanel.add(casePanels.get(Mek.LOC_RIGHT_ARM));
+        raAlignPanel.add(donorPanels.get(Mek.LOC_RIGHT_ARM));
         raAlignPanel.add(Box.createVerticalGlue());
 
         mainPanel.add(laAlignPanel);
@@ -234,6 +290,11 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
 
         synchronized (getMek()) {
             clPanel.setVisible(getMek() instanceof TripodMek);
+            if (getMek().isFrankenMek()) {
+                for (int location = 0; location < getMek().locations(); location++) {
+                    getMek().unlinkFrankenMekLocationSourceIfChanged(location);
+                }
+            }
             setTitles();
 
             for (int location = 0; location < getMek().locations(); location++) {
@@ -299,6 +360,7 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
             }
 
             refreshCaseDropdowns();
+            refreshDonorControls();
             validate();
         }
     }
@@ -405,6 +467,128 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         }
     }
 
+    private void refreshDonorControls() {
+        Mek mek = getMek();
+        boolean showDonorControls = mek.isFrankenMek();
+        if (!showDonorControls) {
+            donorPanels.values().stream().filter(JPanel::isVisible).forEach(panel -> panel.setVisible(false));
+            return;
+        }
+
+        for (Map.Entry<Integer, JPanel> entry : donorPanels.entrySet()) {
+            int location = entry.getKey();
+            JPanel donorPanel = entry.getValue();
+            JButton donorButton = donorButtons.get(location);
+            JLabel donorLabel = donorLabels.get(location);
+
+            if ((location == Mek.LOC_CENTER_LEG) && !(mek instanceof TripodMek)) {
+                donorPanel.setVisible(false);
+                continue;
+            }
+
+            JComponent locPanel = mekPanels.get(location);
+            if (locPanel != null) {
+                int panelWidth = locPanel.getPreferredSize().width;
+                Insets donorPanelInsets = donorPanel.getInsets();
+                int donorContentWidth = Math.max(1,
+                      panelWidth - donorPanelInsets.left - donorPanelInsets.right);
+                Dimension buttonSize = new Dimension(donorContentWidth, donorButton.getPreferredSize().height);
+                donorButton.setMaximumSize(buttonSize);
+                updateDonorLabel(donorLabel, mek.getFrankenMekLocationSourceDisplayName(location), donorContentWidth);
+                donorPanel.setMaximumSize(new Dimension(panelWidth, donorPanel.getPreferredSize().height));
+            }
+
+            donorPanel.setVisible(true);
+        }
+    }
+
+    private void updateDonorLabel(JLabel donorLabel, String donorSource, int panelWidth) {
+        donorLabel.setMinimumSize(null);
+        donorLabel.setPreferredSize(null);
+        donorLabel.setMaximumSize(null);
+
+        int labelWidth = Math.max(1, panelWidth);
+        int textWidth = Math.max(1, labelWidth - (DONOR_LABEL_TEXT_HORIZONTAL_PADDING * 2));
+        boolean hasDonor = !donorSource.isBlank();
+        donorLabel.setText(hasDonor
+              ? getDonorLabelHtml(donorLabel, donorSource, textWidth)
+              : "");
+        donorLabel.setVisible(hasDonor);
+        donorLabel.setToolTipText(hasDonor ? donorSource : null);
+        Dimension preferredSize = donorLabel.getPreferredSize();
+        Dimension labelSize = new Dimension(labelWidth, preferredSize.height);
+        donorLabel.setMinimumSize(labelSize);
+        donorLabel.setPreferredSize(labelSize);
+        donorLabel.setMaximumSize(labelSize);
+    }
+
+    private String getDonorLabelHtml(JLabel donorLabel, String donorSource, int textWidth) {
+        StringBuilder html = new StringBuilder("<html><center>Donor:");
+        for (String line : wrapDonorSource(donorLabel, donorSource, textWidth)) {
+            html.append("<br>").append(escapeHtml(line));
+        }
+        return html.append("</center></html>").toString();
+    }
+
+    private List<String> wrapDonorSource(JLabel donorLabel, String donorSource, int textWidth) {
+        FontMetrics fontMetrics = donorLabel.getFontMetrics(donorLabel.getFont());
+        List<String> lines = new ArrayList<>();
+        StringBuilder currentLine = new StringBuilder();
+        for (String word : donorSource.split(" ")) {
+            if (word.isEmpty()) {
+                continue;
+            }
+
+            appendWrappedWord(lines, currentLine, word, fontMetrics, textWidth);
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+        }
+        return lines;
+    }
+
+    private void appendWrappedWord(List<String> lines, StringBuilder currentLine, String word,
+          FontMetrics fontMetrics, int textWidth) {
+        String candidate = (currentLine.length() == 0) ? word : currentLine + " " + word;
+        if (fontMetrics.stringWidth(candidate) <= textWidth) {
+            currentLine.setLength(0);
+            currentLine.append(candidate);
+            return;
+        }
+
+        if (currentLine.length() > 0) {
+            lines.add(currentLine.toString());
+            currentLine.setLength(0);
+        }
+
+        appendWordChunks(lines, currentLine, word, fontMetrics, textWidth);
+    }
+
+    private void appendWordChunks(List<String> lines, StringBuilder currentLine, String word,
+          FontMetrics fontMetrics, int textWidth) {
+        String remainingWord = word;
+        while (fontMetrics.stringWidth(remainingWord) > textWidth) {
+            int splitIndex = findSplitIndex(remainingWord, fontMetrics, textWidth);
+            lines.add(remainingWord.substring(0, splitIndex));
+            remainingWord = remainingWord.substring(splitIndex);
+        }
+        currentLine.append(remainingWord);
+    }
+
+    private int findSplitIndex(String text, FontMetrics fontMetrics, int textWidth) {
+        int splitIndex = 1;
+        while ((splitIndex < text.length())
+              && (fontMetrics.stringWidth(text.substring(0, splitIndex + 1)) <= textWidth)) {
+            splitIndex++;
+        }
+        return splitIndex;
+    }
+
+    private String escapeHtml(String text) {
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
     /**
      * Returns all CASE-family equipment types, discovered via the F_CASE, F_CASEII, and F_CASEP
      * MiscType flags. Cached after first call.
@@ -461,10 +645,19 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         if (updatingCaseCombos) {
             return;
         }
+        String actionCommand = e.getActionCommand();
+        if ((actionCommand != null) && actionCommand.startsWith(DONOR_ACTION_PREFIX)) {
+            try {
+                importDonorLocation(Integer.parseInt(actionCommand.substring(DONOR_ACTION_PREFIX.length())));
+            } catch (NumberFormatException ex) {
+                LOGGER.error(ex, "Invalid donor location action command: {}", actionCommand);
+            }
+            return;
+        }
         // Handle CASE combo box changes
         int loc;
         try {
-            loc = Integer.parseInt(e.getActionCommand());
+            loc = Integer.parseInt(actionCommand);
         } catch (NumberFormatException ex) {
             return;
         }
@@ -518,10 +711,88 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
         updateClanCaseOptOut(mek, loc, selected);
 
         if (refresh != null) {
-            refresh.refreshBuild();
-            refresh.refreshStatus();
-            refresh.refreshPreview();
+            refresh.scheduleRefresh();
         }
+    }
+
+    private void importDonorLocation(int location) {
+        Mek target = getMek();
+        if (!target.isFrankenMek()) {
+            return;
+        }
+
+        JFrame ownerFrame = getOwnerFrame();
+        MegaMekLabUnitSelectorDialog selector = new MegaMekLabUnitSelectorDialog(ownerFrame,
+              new UnitLoadingDialog(ownerFrame), false, UnitType.MEK,
+              unit -> matchesFrankenMekDonorLocationFilter(target, location, unit));
+        Entity selectedEntity = selector.getChosenEntity();
+        if (!(selectedEntity instanceof Mek donor)) {
+            return;
+        }
+        if (location >= donor.locations()) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  donor.getShortNameRaw() + " does not have a matching " + target.getLocationName(location) + ".",
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int donorLocationTonnage = FrankenMekDonorUtil.getDonorLocationTonnage(donor, location);
+        String invalidReason = FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location,
+              donorLocationTonnage);
+        if (invalidReason != null) {
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  donor.getShortNameRaw() + " cannot be used for " + target.getLocationName(location) + ".\n"
+                        + invalidReason,
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int originalYear = target.getYear();
+        int donorYear = donor.getYear();
+        if ((donorYear > originalYear) && !confirmDonorIntroYearUpdate(target, donor, donorYear)) {
+            return;
+        }
+
+        try {
+            FrankenMekDonorUtil.importLocation(target, donor, location);
+            if (donorYear > originalYear) {
+                target.setYear(donorYear);
+            }
+            target.linkFrankenMekLocationToSource(location, donor.getShortNameRaw());
+            if (target.locationIsLeg(location)) {
+                FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+            }
+            if (refresh != null) {
+                refresh.scheduleRefresh();
+            }
+        } catch (LocationFullException | EntityLoadingException ex) {
+            target.setYear(originalYear);
+            LOGGER.error(ex, "Unable to import {} from {}.", target.getLocationName(location), donor.getShortNameRaw());
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),
+                  "Unable to import " + target.getLocationName(location) + " from " + donor.getShortNameRaw() + ".",
+                  "Cannot Import Location", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private boolean confirmDonorIntroYearUpdate(Mek target, Mek donor, int donorYear) {
+        int choice = JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(this),
+              donor.getShortNameRaw() + " has intro year " + donorYear + ", which is later than "
+                    + target.getShortNameRaw() + "'s intro year " + target.getYear() + ".\n"
+                    + "Importing this location will update the unit intro year to " + donorYear + ".\n\n"
+                    + "Continue?",
+              "Update Intro Year", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        return choice == JOptionPane.YES_OPTION;
+    }
+
+    private @Nullable JFrame getOwnerFrame() {
+        return SwingUtilities.getWindowAncestor(this) instanceof JFrame frame ? frame : null;
+    }
+
+    private boolean matchesFrankenMekDonorLocationFilter(Mek target, int location, MekSummary unit) {
+        if (unit.getYear() > target.getYear()) {
+            return false;
+        }
+        int donorTonnage = (int) Math.ceil(unit.getTons());
+        return FrankenMekDonorUtil.getDonorLocationInvalidReason(target, location, donorTonnage) == null;
     }
 
     /**

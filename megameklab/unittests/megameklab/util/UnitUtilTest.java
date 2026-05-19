@@ -70,4 +70,16 @@ class UnitUtilTest {
         assertTrue(UnitUtil.isLegal(mek, currenttech));
         assertFalse(UnitUtil.isLegal(mek, futuretech));
     }
+
+    @Test
+    void isLegalIgnoresExtinctionForFrankenMeks() {
+        ITechnology lostech = new TechAdvancement(TechBase.IS)
+              .setISAdvancement(2500, 2600, 2700, 3025, ITechnology.DATE_NONE);
+        Mek mek = new BipedMek();
+        mek.setYear(3050);
+        mek.setTechLevel(TechConstants.T_IS_EXPERIMENTAL);
+        mek.setFrankenMek(true);
+
+        assertTrue(UnitUtil.isLegal(mek, lostech));
+    }
 }

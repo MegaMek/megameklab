@@ -41,7 +41,9 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.swing.*;
 
 import megamek.client.ui.Messages;
@@ -53,13 +55,18 @@ import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
 import megamek.common.TechConstants;
 import megamek.common.icons.Camouflage;
+import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
+import megamek.common.units.UnitType;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
 
 public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
+    private static final int NO_UNIT_TYPE_RESTRICTION = -1;
+    private static final Predicate<MekSummary> NO_UNIT_FILTER = Objects::nonNull;
+
     // region Variable Declarations
     private Entity chosenEntity;
     private ArrayList<Entity> chosenEntities;
@@ -68,6 +75,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private RecordSheetPreviewPanel recordSheetPanel;
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
+    private final int restrictedUnitType;
 
     // endregion Variable Declarations
 
@@ -79,9 +87,21 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      * @param multiselect       Set this to {@code true} to allow multiple units to be selected at once.
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect) {
+        this(parent, unitLoadingDialog, multiselect, NO_UNIT_TYPE_RESTRICTION, NO_UNIT_FILTER);
+    }
+
+    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect,
+          int restrictedUnitType) {
+        this(parent, unitLoadingDialog, multiselect, restrictedUnitType, NO_UNIT_FILTER);
+    }
+
+    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog, boolean multiselect,
+          int restrictedUnitType, Predicate<MekSummary> unitFilter) {
         super(parent, unitLoadingDialog, multiselect);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = false;
+        this.restrictedUnitType = restrictedUnitType;
+        setUnitSelectionScopeFilter(createUnitSelectionScopeFilter(restrictedUnitType, unitFilter));
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -114,6 +134,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         super(parent, unitLoadingDialog, true);
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
+        restrictedUnitType = NO_UNIT_TYPE_RESTRICTION;
         eraBasedTechLevel = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
         if (CConfig.getBooleanParam(CConfig.TECH_USE_YEAR)) {
             allowedYear = CConfig.getIntParam(CConfig.TECH_YEAR);
@@ -141,6 +162,28 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         run();
         setVisible(true);
 
+    }
+
+    private boolean hasRestrictedUnitType() {
+        return restrictedUnitType != NO_UNIT_TYPE_RESTRICTION;
+    }
+
+    private static Predicate<MekSummary> createUnitSelectionScopeFilter(int restrictedUnitType,
+          Predicate<MekSummary> unitFilter) {
+        Predicate<MekSummary> filter = NO_UNIT_FILTER;
+        if (restrictedUnitType != NO_UNIT_TYPE_RESTRICTION) {
+            String restrictedUnitTypeName = UnitType.getTypeName(restrictedUnitType);
+            filter = filter.and(unit -> restrictedUnitTypeName.equals(unit.getUnitType()));
+        }
+        return (unitFilter == null) ? filter : filter.and(unitFilter);
+    }
+
+    @Override
+    protected void configureUnitSelectionScope() {
+        comboUnitType.setEnabled(!hasRestrictedUnitType());
+        if (hasRestrictedUnitType()) {
+            comboUnitType.setSelectedItem(UnitType.getTypeDisplayableName(restrictedUnitType));
+        }
     }
 
     private void setupDoubleClickListener() {

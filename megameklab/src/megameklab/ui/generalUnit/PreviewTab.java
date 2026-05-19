@@ -72,6 +72,7 @@ public class PreviewTab extends ITab {
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private final EnhancedTabbedPane panPreview;
     private final Timer refreshTimer = new Timer(REFRESH_DEBOUNCE_DELAY_MS, e -> performUpdate());
+    private boolean refreshPending;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
@@ -186,16 +187,19 @@ public class PreviewTab extends ITab {
     }
 
     private void performUpdate() {
-        if (isVisible()) {
-            update();
+        if (!isVisible()) {
+            refreshPending = true;
+            return;
         }
+        refreshPending = false;
+        update();
     }
 
     private void scheduleUpdate() {
-        if (!isVisible()) {
-            return;
+        refreshPending = true;
+        if (isVisible()) {
+            refreshTimer.restart();
         }
-        refreshTimer.restart();
     }
 
     public void refresh() {
@@ -215,8 +219,12 @@ public class PreviewTab extends ITab {
     ComponentListener refreshOnShow = new ComponentAdapter() {
         @Override
         public void componentShown(ComponentEvent e) {
-            refreshTimer.stop();
-            update();
+            if (refreshPending) {
+                scheduleUpdate();
+            } else {
+                refreshTimer.stop();
+                update();
+            }
         }
     };
 }

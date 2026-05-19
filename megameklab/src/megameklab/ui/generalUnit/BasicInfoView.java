@@ -146,6 +146,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private int prevBuildYear = -1;
     private String sourceAbbreviation = "";
     private String publishedAbbreviation = "";
+    private Entity currentEntity;
     // endregion Variable Declarations
 
     // region Constructors
@@ -351,6 +352,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     public void setFromEntity(Entity en) {
         boolean useTP = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
+        currentEntity = en;
         baseTA = en.getConstructionTechAdvancement();
         txtYear.setMinimum(Math.max(baseTA.getIntroductionDate(useClanTechBase()), ITechnology.DATE_PS));
         refreshTechBase();
@@ -817,7 +819,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     @Override
     public boolean showExtinct() {
-        return CConfig.getBooleanParam(CConfig.TECH_EXTINCT);
+        return CConfig.getBooleanParam(CConfig.TECH_EXTINCT)
+              || ((currentEntity instanceof Mek mek) && mek.isFrankenMek());
     }
 
     /**

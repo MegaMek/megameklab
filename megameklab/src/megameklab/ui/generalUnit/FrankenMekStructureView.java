@@ -258,7 +258,8 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         private final int location;
         private final SpinnerNumberModel model = new SpinnerNumberModel(20, 10, 200, 5);
         private final JSpinner spinner = new JSpinner(model);
-        private final JLabel lblTonnage = new JLabel("Tonnage: ");
+          private final JLabel lblTonnage = new JLabel(I18N.getString(
+              "MekChassisView.spnTonnage.text") + " ");
         private final TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
         private final JLabel lblPips = new JLabel();
         private final TitledBorder border = BorderFactory.createTitledBorder(null, "",
@@ -300,7 +301,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         }
 
         private void updatePips(int pips) {
-            lblPips.setText(Integer.toString(pips)+ " points");
+            lblPips.setText(Integer.toString(pips) + ((pips == 1) ? " point" : " points"));
         }
     }
 }
