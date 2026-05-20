@@ -799,7 +799,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void updateTechLevel() {
         removeAllListeners();
         getMek().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        if (panBasicInfo.getTechLevel() != SimpleTechLevel.EXPERIMENTAL) {
+        boolean isExperimentalOrUnofficial = panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0;
+        if (!isExperimentalOrUnofficial) {
             getMek().setFrankenMek(false);
         }
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
