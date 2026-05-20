@@ -59,6 +59,8 @@ public final class FrankenMekDonorUtil {
     private static final MMLogger LOGGER = MMLogger.create(FrankenMekDonorUtil.class);
 
     private record LocationEquipmentCopy(Mounted<?> mounted, int criticalSlots, boolean rearMounted) {}
+    private record LegMismatchKey(String displayName, String metadata, int tonnage, int structureType,
+          int structureTechLevel) {}
 
     /**
      * Imports one FrankenMek donor location into the target, including structure data, armor, equipment, and any
@@ -119,6 +121,27 @@ public final class FrankenMekDonorUtil {
               : (int) Math.ceil(donor.getWeight());
     }
 
+    public static String getDonorSourceDisplayName(Mek donor) {
+        return sanitizeDonorSourceValue(donor.getFullChassis());
+    }
+
+    public static String getDonorSourceMetadata(Mek donor) {
+        return getDonorSourceMetadata(donor, Entity.LOC_NONE);
+    }
+
+    public static String getDonorSourceMetadata(Mek donor, int location) {
+        if (isDonorLocationIndustrial(donor, location)) {
+            return "IndustrialMek";
+        }
+        return donor.isOmni() ? "OmniMek" : "BattleMek";
+    }
+
+    private static boolean isDonorLocationIndustrial(Mek donor, int location) {
+        return donor.isFrankenMek() && (location >= 0) && (location < donor.locations())
+              ? donor.getFrankenMekStructureType(location) == EquipmentType.T_STRUCTURE_INDUSTRIAL
+              : donor.isIndustrial();
+    }
+
     /**
      * Validates whether the donor location tonnage can be installed in the target FrankenMek location.
      *
@@ -143,20 +166,28 @@ public final class FrankenMekDonorUtil {
     }
 
     public static void updateMismatchedLegsFromDonorSources(Mek mek) {
-        String firstLegDonor = null;
+        LegMismatchKey firstLeg = null;
         for (int location = 0; location < mek.locations(); location++) {
             if (!mek.locationIsLeg(location)) {
                 continue;
             }
-            String legDonor = mek.getFrankenMekLocationSourceDisplayName(location);
-            if (firstLegDonor == null) {
-                firstLegDonor = legDonor;
-            } else if (!firstLegDonor.equals(legDonor)) {
+            LegMismatchKey leg = new LegMismatchKey(
+                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceDisplayName(location)),
+                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceMetadata(location)),
+                  mek.getFrankenMekStructureTonnage(location), mek.getFrankenMekStructureType(location),
+                  mek.getFrankenMekStructureTechLevel(location));
+            if (firstLeg == null) {
+                firstLeg = leg;
+            } else if (!firstLeg.equals(leg)) {
                 mek.setMismatchedFrankenMekLegs(true);
                 return;
             }
         }
         mek.setMismatchedFrankenMekLegs(false);
+    }
+
+    private static String sanitizeDonorSourceValue(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private static void updateTechBaseForDonorLocation(Mek target, Mek donor, int location) {
