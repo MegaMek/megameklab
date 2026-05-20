@@ -87,6 +87,7 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.FrankenMekDonorUtil;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
@@ -988,6 +989,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             return;
         }
         getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
+        if (getMek().locationIsLeg(location)) {
+            FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(getMek());
+        }
         refreshInternalStructureMounts();
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
@@ -1054,6 +1058,9 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void frankenMekStructureTypeChanged(int location, EquipmentType structure) {
         getMek().setFrankenMekStructureType(location, structure);
+        if (getMek().locationIsLeg(location)) {
+            FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(getMek());
+        }
         refreshFrankenMekInternalStructureMounts(location);
         panFrankenMekStructure.setFromEntity(getMek());
         panChassis.refreshFrankenMekState(getMek());

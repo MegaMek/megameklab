@@ -434,21 +434,93 @@ class FrankenMekDonorUtilTest {
     }
 
     @Test
-    void mismatchedLegsFollowDonorDisplayNames() {
+    void donorSourceDisplayNameUsesChassisAndClanName() {
+        Mek donor = newTestMek();
+        donor.setChassis("Mad Cat");
+        donor.setClanChassisName("Timber Wolf");
+        donor.setModel("Prime");
+
+        assertEquals("Mad Cat (Timber Wolf)", FrankenMekDonorUtil.getDonorSourceDisplayName(donor));
+    }
+
+    @Test
+    void donorSourceTypeIdentifiesOmniAndMekSubtype() {
+        Mek donor = newTestMek();
+
+        assertEquals("BattleMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+
+        donor.setOmni(true);
+
+        assertEquals("OmniMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+
+        donor.setOmni(false);
+        donor.setStructureType(EquipmentType.T_STRUCTURE_INDUSTRIAL);
+
+        assertEquals("IndustrialMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+
+        Mek frankenDonor = newTestMek();
+        frankenDonor.setFrankenMek(true);
+        frankenDonor.setFrankenMekStructureType(Mek.LOC_RIGHT_LEG, EquipmentType.T_STRUCTURE_INDUSTRIAL,
+              TechConstants.T_IS_EXPERIMENTAL);
+        assertEquals("IndustrialMek",
+              FrankenMekDonorUtil.getDonorSourceType(frankenDonor, Mek.LOC_RIGHT_LEG));
+    }
+
+    @Test
+    void mismatchedLegsFollowDonorDisplayNamesAndMetadata() {
         Mek target = newTestMek();
         target.setFrankenMek(true);
 
-        target.linkFrankenMekLocationToSource(Mek.LOC_RIGHT_LEG, "Archer XYZ");
+        target.linkFrankenMekLocationToSource(Mek.LOC_RIGHT_LEG, "Archer", "BattleMek");
         FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
 
         assertTrue(target.hasMismatchedFrankenMekLegs());
 
-        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Archer XYZ");
+        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Archer", "BattleMek");
         FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
 
         assertFalse(target.hasMismatchedFrankenMekLegs());
 
-        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Catapult ABC");
+        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Archer", "OmniMek");
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+
+        target.linkFrankenMekLocationToSource(Mek.LOC_LEFT_LEG, "Catapult", "BattleMek");
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+    }
+
+    @Test
+    void mismatchedLegsFollowTonnageAndStructure() {
+        Mek target = newTestMek();
+        target.setFrankenMek(true);
+
+        target.setFrankenMekStructureTonnage(Mek.LOC_LEFT_LEG, 30);
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+
+        target.setFrankenMekStructureTonnage(Mek.LOC_RIGHT_LEG, 30);
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertFalse(target.hasMismatchedFrankenMekLegs());
+
+        target.setFrankenMekStructureType(Mek.LOC_LEFT_LEG, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+              TechConstants.T_IS_EXPERIMENTAL);
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertTrue(target.hasMismatchedFrankenMekLegs());
+
+        target.setFrankenMekStructureType(Mek.LOC_RIGHT_LEG, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+              TechConstants.T_IS_EXPERIMENTAL);
+        FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
+
+        assertFalse(target.hasMismatchedFrankenMekLegs());
+
+        target.setFrankenMekStructureType(Mek.LOC_RIGHT_LEG, EquipmentType.T_STRUCTURE_ENDO_STEEL,
+              TechConstants.T_CLAN_EXPERIMENTAL);
         FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
 
         assertTrue(target.hasMismatchedFrankenMekLegs());
