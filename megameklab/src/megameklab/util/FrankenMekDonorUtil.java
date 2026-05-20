@@ -173,7 +173,7 @@ public final class FrankenMekDonorUtil {
             }
             LegMismatchKey leg = new LegMismatchKey(
                   sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceDisplayName(location)),
-                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceMetadata(location)),
+                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceType(location)),
                   mek.getFrankenMekStructureTonnage(location), mek.getFrankenMekStructureType(location),
                   mek.getFrankenMekStructureTechLevel(location));
             if (firstLeg == null) {
