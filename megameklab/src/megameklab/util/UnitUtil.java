@@ -422,8 +422,10 @@ public class UnitUtil {
     }
 
     private static boolean isLegal(Entity unit, ITechnology tech, int techLevelYear) {
+        boolean ignoreExtinction = CConfig.getBooleanParam(CConfig.TECH_EXTINCT)
+              || ((unit instanceof Mek mek) && mek.isFrankenMek());
         if (unit.isMixedTech()) {
-            if (!tech.isAvailableIn(techLevelYear, CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
+            if (!tech.isAvailableIn(techLevelYear, ignoreExtinction)) {
                 return false;
             }
         } else {
@@ -431,9 +433,7 @@ public class UnitUtil {
                 return false;
             }
 
-            if (!tech.isAvailableIn(techLevelYear,
-                  unit.isClan(),
-                  CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
+            if (!tech.isAvailableIn(techLevelYear, unit.isClan(), ignoreExtinction)) {
                 return false;
             }
         }

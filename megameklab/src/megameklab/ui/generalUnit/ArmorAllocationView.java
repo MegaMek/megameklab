@@ -295,7 +295,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
     }
 
     private void updateLayout() {
-        int[][] layout = getLayoutFromEntity();
+        int[][] layout = getCurrentLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -318,7 +318,7 @@ public class ArmorAllocationView extends BuildView implements ArmorLocationListe
         }
     }
 
-    private int[][] getLayoutFromEntity() {
+    public int[][] getCurrentLayout() {
         int[][] layout;
         if ((entityType & Entity.ETYPE_MEK) != 0) {
             layout = MEK_LAYOUT;

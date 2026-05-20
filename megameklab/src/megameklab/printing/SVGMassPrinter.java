@@ -134,7 +134,7 @@ import static megamek.common.equipment.WeaponType.DAMAGE_VARIABLE;
  */
 public class SVGMassPrinter {
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
-    private final static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private final static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private final static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private final static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private final static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
@@ -148,24 +148,24 @@ public class SVGMassPrinter {
     private static final String UNIT_FLUFF_FILE = "units-fluff.json";
     private static final String EQUIPMENT_FILE = "equipment2.json";
     private static final String ROOT_FOLDER = "../../svgexport";
-        private static final String LICENSE_HEADER = """
-            # MegaMek Data (C) %s by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
-            # To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
-            #
-            # NOTICE: The MegaMek organization is a non-profit group of volunteers
-            # creating free software for the BattleTech community.
-            #
-            # MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
-            # of The Topps Company, Inc. All Rights Reserved.
-            #
-            # Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
-            # InMediaRes Productions, LLC.
-            #
-            # MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
-            # Microsoft's "Game Content Usage Rules"
-            # <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
-            # affiliated with Microsoft.
-            """.formatted(Calendar.getInstance().get(Calendar.YEAR));
+    private static final String LICENSE_HEADER = """
+        # MegaMek Data (C) %s by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+        # To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+        #
+        # NOTICE: The MegaMek organization is a non-profit group of volunteers
+        # creating free software for the BattleTech community.
+        #
+        # MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+        # of The Topps Company, Inc. All Rights Reserved.
+        #
+        # Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+        # InMediaRes Productions, LLC.
+        #
+        # MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
+        # Microsoft's "Game Content Usage Rules"
+        # <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+        # affiliated with Microsoft.
+        """.formatted(Calendar.getInstance().get(Calendar.YEAR));
     private static final int DEFAULT_MARGINS = 0; // Default margins for the page
     private final static RATGenerator RAT_GENERATOR = RATGenerator.getInstance();
     private final static MekTileset tileset = MMStaticDirectoryManager.getMekTileset();
@@ -1084,6 +1084,9 @@ public class SVGMassPrinter {
                 }
                 if (mek.hasRiscHeatSinkOverrideKit()) {
                     feats.add(Mek.RISC_HEAT_SINK_OVERRIDE_KIT);
+                }
+                if (mek.isFrankenMek()) {
+                    feats.add("FrankenMek");
                 }
             }
             // Chassis modifications (for support vehicles and tanks)

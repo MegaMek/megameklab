@@ -41,6 +41,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.List;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
@@ -61,6 +62,7 @@ import megameklab.util.CConfig;
 
 public class PreviewTab extends ITab {
     private static final MMLogger LOGGER = MMLogger.create(PreviewTab.class);
+    private static final int REFRESH_DEBOUNCE_DELAY_MS = 100;
 
     private final ConfigurableMekViewPanel panelMekView = new ConfigurableMekViewPanel();
     private final EntityReadoutPanel panelTROView = new EntityReadoutPanel();
@@ -69,10 +71,13 @@ public class PreviewTab extends ITab {
     private final AvailabilityPanel factionPanel = new AvailabilityPanel();
     private final String tabIndexSettingName = "PreviewTab.panPreview.selectedIndex";
     private final EnhancedTabbedPane panPreview;
+    private final Timer refreshTimer = new Timer(REFRESH_DEBOUNCE_DELAY_MS, e -> performUpdate());
+    private boolean refreshPending;
 
     public PreviewTab(EntitySource eSource) {
         super(eSource);
         setLayout(new BorderLayout());
+        refreshTimer.setRepeats(false);
         panelMekView.setMinimumSize(new Dimension(400, panelMekView.getMinimumSize().height));
         panelTROView.setMinimumSize(new Dimension(400, panelTROView.getMinimumSize().height));
         rsPanel.setMinZoom(1.0f);
@@ -181,17 +186,32 @@ public class PreviewTab extends ITab {
         }
     }
 
+    private void performUpdate() {
+        if (!isVisible()) {
+            refreshPending = true;
+            return;
+        }
+        refreshPending = false;
+        update();
+    }
+
+    private void scheduleUpdate() {
+        refreshPending = true;
+        if (isVisible()) {
+            refreshTimer.restart();
+        }
+    }
+
     public void refresh() {
         // This active refresh is needed for the few cases where the unit can be changed
         // when the preview is
         // active, e.g. setting the fluff image.
-        if (isVisible()) {
-            update();
-        }
+        scheduleUpdate();
     }
 
     @Override
     public void removeNotify() {
+        refreshTimer.stop();
         panPreview.reattachAllTabs();
         super.removeNotify();
     }
@@ -199,7 +219,12 @@ public class PreviewTab extends ITab {
     ComponentListener refreshOnShow = new ComponentAdapter() {
         @Override
         public void componentShown(ComponentEvent e) {
-            update();
+            if (refreshPending) {
+                scheduleUpdate();
+            } else {
+                refreshTimer.stop();
+                update();
+            }
         }
     };
 }

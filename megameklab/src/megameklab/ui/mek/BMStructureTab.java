@@ -76,6 +76,7 @@ import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BasicInfoView;
+import megameklab.ui.generalUnit.FrankenMekStructureView;
 import megameklab.ui.generalUnit.HeatSinkView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MVFArmorView;
@@ -101,6 +102,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     private HeatSinkView panHeat;
     private ArmorAllocationView panArmorAllocation;
     private PatchworkArmorView panPatchwork;
+    private FrankenMekStructureView panFrankenMekStructure;
     private IconView iconView;
 
     RefreshListener refresh = null;
@@ -121,6 +123,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panLAMFuel = new BMLAMFuelView(eSource);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_MEK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
+        panFrankenMekStructure = new FrankenMekStructureView(panChassis::getAvailableStructures,
+            panArmorAllocation::getCurrentLayout, panChassis::getMinimumTonnage, panChassis::getMaximumTonnage);
         iconView = new IconView();
         panSummary = new SummaryView(eSource,
               new UnitTypeSummaryItem(),
@@ -135,19 +139,16 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
               new MyomerEnhancementSummaryItem(),
               new OtherSummaryItem());
 
-        if (getMek().hasPatchworkArmor()) {
-            panArmorAllocation.showPatchwork(true);
-        } else {
-            panPatchwork.setVisible(false);
-        }
-
         panBasicInfo.setFromEntity(getMek());
         panChassis.setFromEntity(getMek());
+        clampFrankenMekArmorToStructureLimits();
         panArmor.setFromEntity(getMek());
         panMovement.setFromEntity(getMek());
         panHeat.setFromMek(getMek());
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
+        panFrankenMekStructure.setFromEntity(getMek());
         iconView.setFromEntity(getMek());
 
         JPanel leftPanel = new JPanel();
@@ -178,6 +179,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panArmorAllocation);
+        rightPanel.add(Box.createVerticalStrut(11));
+        rightPanel.add(panFrankenMekStructure);
         rightPanel.add(Box.createVerticalGlue());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -202,22 +205,34 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
+        panFrankenMekStructure.setBorder(BorderFactory.createTitledBorder("FrankenMek Structure"));
     }
 
     public void refresh() {
         removeAllListeners();
         panBasicInfo.setFromEntity(getMek());
         panChassis.setFromEntity(getMek());
+        clampFrankenMekArmorToStructureLimits();
         panArmor.setFromEntity(getMek());
         panHeat.setFromMek(getMek());
         panMovement.setFromEntity(getMek());
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
+        panFrankenMekStructure.setFromEntity(getMek());
         panLAMFuel.setFromEntity(getMek());
         panLAMFuel.setVisible(getMek() instanceof LandAirMek);
         panSummary.refresh();
         iconView.setFromEntity(getMek());
         addAllListeners();
+    }
+
+    private void refreshPatchworkArmorControls() {
+        boolean patchworkArmor = getMek().hasPatchworkArmor();
+        panArmorAllocation.showPatchwork(patchworkArmor);
+        panPatchwork.setVisible(patchworkArmor);
+        panPatchwork.revalidate();
+        panPatchwork.repaint();
     }
 
     public JLabel createLabel(String text, Dimension maxSize) {
@@ -469,6 +484,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.removeListener(this);
         panArmorAllocation.removeListener(this);
         panPatchwork.removeListener(this);
+        panFrankenMekStructure.removeListener(this);
         panLAMFuel.removeListener(this);
     }
 
@@ -480,6 +496,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panMovement.addListener(this);
         panArmorAllocation.addListener(this);
         panPatchwork.addListener(this);
+        panFrankenMekStructure.addListener(this);
         panLAMFuel.addListener(this);
     }
 
@@ -504,6 +521,91 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             } catch (Exception ex) {
                 LOGGER.error("", ex);
             }
+        }
+    }
+
+    private EquipmentType getCurrentStructureEquipment() {
+        String structureName = EquipmentType.getStructureTypeName(getMek().getStructureType(),
+              TechConstants.isClan(getMek().getStructureTechLevel()));
+        return EquipmentType.get(structureName);
+    }
+
+    private void removeInternalStructureMounts() {
+        int structureType = getMek().getStructureType();
+        int structureTechLevel = getMek().getStructureTechLevel();
+        UnitUtil.removeISorArmorMounts(getMek(), true);
+        getMek().setStructureType(structureType);
+        getMek().setStructureTechLevel(structureTechLevel);
+    }
+
+    private void refreshFrankenMekInternalStructureMounts(int location) {
+        if (!getMek().isFrankenMek()) {
+            return;
+        }
+        removeInternalStructureCrits(location);
+        removeUnusedInternalStructureMounts();
+
+        EquipmentType structure = getMek().getFrankenMekStructureEquipment(location);
+        int fallbackSlots = getMek().getFrankenMekStructureCriticalSlots(location);
+        if ((structure == null) || (fallbackSlots <= 0)) {
+            return;
+        }
+        for (int slot = 0; slot < fallbackSlots; slot++) {
+            try {
+                getMek().addEquipment(Mounted.createMounted(getMek(), structure), location, false);
+            } catch (LocationFullException ex) {
+                LOGGER.error("Could not add FrankenMek internal structure crit to {}",
+                      getMek().getLocationName(location), ex);
+            }
+        }
+    }
+
+    private void removeInternalStructureCrits(int location) {
+        for (int slot = 0; slot < getMek().getNumberOfCriticalSlots(location); slot++) {
+            if (isInternalStructureCritical(getMek().getCritical(location, slot))) {
+                getMek().setCritical(location, slot, null);
+            }
+        }
+    }
+
+    private boolean isInternalStructureCritical(@Nullable CriticalSlot criticalSlot) {
+        if (criticalSlot == null) {
+            return false;
+        }
+        EquipmentType equipmentType = getMek().getEquipmentType(criticalSlot);
+        return (equipmentType != null) && EquipmentType.isStructureType(equipmentType);
+    }
+
+    private void removeUnusedInternalStructureMounts() {
+        getMek().getEquipment().removeIf(this::isUnusedInternalStructureMount);
+        getMek().getMisc().removeIf(this::isUnusedInternalStructureMount);
+    }
+
+    private boolean isUnusedInternalStructureMount(Mounted<?> mounted) {
+        return (mounted != null) && EquipmentType.isStructureType(mounted.getType()) && !hasCriticalSlot(mounted);
+    }
+
+    private boolean hasCriticalSlot(Mounted<?> mounted) {
+        for (int location = 0; location < getMek().locations(); location++) {
+            for (int slot = 0; slot < getMek().getNumberOfCriticalSlots(location); slot++) {
+                CriticalSlot criticalSlot = getMek().getCritical(location, slot);
+                if ((criticalSlot != null)
+                      && (mounted.equals(criticalSlot.getMount()) || mounted.equals(criticalSlot.getMount2()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void refreshInternalStructureMounts() {
+        if (getMek().isFrankenMek()) {
+            return;
+        }
+        EquipmentType currentStructure = getCurrentStructureEquipment();
+        removeInternalStructureMounts();
+        if (currentStructure != null) {
+            createISMounts(currentStructure);
         }
     }
 
@@ -697,6 +799,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     public void updateTechLevel() {
         removeAllListeners();
         getMek().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        boolean isExperimentalOrUnofficial = panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0;
+        if (!isExperimentalOrUnofficial) {
+            getMek().setFrankenMek(false);
+        }
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
             panArmor.setPatchwork(false);
             armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
@@ -741,6 +847,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor.refresh();
         panArmorAllocation.setFromEntity(getMek());
         panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
+        panFrankenMekStructure.setFromEntity(getMek());
         refresh.refreshBuild();
         addAllListeners();
         panMovement.refresh();
@@ -756,13 +864,28 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void tonnageChanged(double tonnage) {
+        tonnageChanged(tonnage, true);
+    }
+
+    private void tonnageChanged(double tonnage, boolean syncMatchingFrankenMekLocations) {
         if (!recalculateEngineRating(panMovement.getWalk(), tonnage)) {
             panChassis.setFromEntity(getMek());
+            panFrankenMekStructure.setFromEntity(getMek());
             return;
         }
         boolean changedSuperHeavyStatus = getMek().isSuperHeavy() != tonnage > 100;
+        int matchingFrankenMekTonnage = getMek().isFrankenMek() && syncMatchingFrankenMekLocations
+              ? getMek().getFrankenMekStructureTonnage(Mek.LOC_CENTER_TORSO)
+              : 0;
 
         getMek().setWeight(tonnage);
+        if (getMek().isFrankenMek()) {
+            if (syncMatchingFrankenMekLocations) {
+                getMek().syncMatchingFrankenMekStructureTonnageToChassis(matchingFrankenMekTonnage);
+            } else {
+                getMek().syncFrankenMekCenterTorsoTonnageToChassis();
+            }
+        }
 
         if (changedSuperHeavyStatus) {
             // if we switch from being superheavy to not being superheavy, remove crits
@@ -799,12 +922,15 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
               .getBaseChassisHeatSinks(getMek().hasCompactHeatSinks()));
         getMek().setEngine(engine);
         getMek().autoSetInternal();
+        if (getMek().isFrankenMek()) {
+            clampFrankenMekArmorToStructureLimits();
+        }
         if (getMek().isSuperHeavy()) {
             getMek().setOriginalJumpMP(0);
         }
         if (changedSuperHeavyStatus) {
             // Internal structure crits may change
-            UnitUtil.removeISorArmorMounts(getMek(), true);
+            refreshInternalStructureMounts();
 
             // The number of critical slots that the armor should take up may have changed.
             // You might notice this doesn't handle patchwork armor.
@@ -817,7 +943,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
                 createArmorMountsAndSetArmorType(at, aTechLevel);
             }
 
-            createISMounts(panChassis.getStructure());
             resetSystemCrits();
             panMovement.setFromEntity(getMek());
         }
@@ -834,6 +959,115 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panHeat.setFromMek(getMek());
         MekUtil.updateAutoSinks(getMek(), getMek().hasCompactHeatSinks());
         refresh.refreshPreview();
+    }
+
+    @Override
+    public void frankenMekChanged(boolean frankenMek) {
+        getMek().setFrankenMek(frankenMek);
+        if (frankenMek) {
+            getMek().syncFrankenMekStructureTonnageToChassis();
+        }
+        refreshInternalStructureMounts();
+        clampFrankenMekArmorToStructureLimits();
+        panFrankenMekStructure.setFromEntity(getMek());
+        panArmor.setFromEntity(getMek(), true);
+        panArmorAllocation.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
+        refreshSummary();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+    }
+
+    @Override
+    public void frankenMekStructureTonnageChanged(int location, int tonnage) {
+        if (location == Mek.LOC_CENTER_TORSO) {
+            int chassisTonnage = panChassis.clampTonnage(tonnage);
+            panChassis.setTonnage(chassisTonnage);
+            tonnageChanged(chassisTonnage, false);
+            refreshInternalStructureMounts();
+            return;
+        }
+        getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
+        refreshInternalStructureMounts();
+        clampFrankenMekArmorToStructureLimits();
+        panFrankenMekStructure.setFromEntity(getMek());
+        panArmor.setFromEntity(getMek(), true);
+        panArmorAllocation.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
+        refreshSummary();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    private void clampFrankenMekArmorToStructureLimits() {
+        if (!getMek().isFrankenMek()) {
+            return;
+        }
+        boolean armorChanged = false;
+        for (int location = 0; location < getMek().locations(); location++) {
+            Integer maxArmor = UnitUtil.getMaxArmor(getMek(), location);
+            if (maxArmor == null) {
+                continue;
+            }
+            int frontArmor = Math.max(0, getMek().getOArmor(location));
+            int rearArmor = getMek().hasRearArmor(location) ? Math.max(0, getMek().getOArmor(location, true)) : 0;
+            if (frontArmor + rearArmor <= maxArmor) {
+                continue;
+            }
+
+            int[] clampedArmor = clampArmorLocation(frontArmor, rearArmor, maxArmor,
+                getMek().hasRearArmor(location));
+            int clampedFrontArmor = clampedArmor[0];
+            int clampedRearArmor = clampedArmor[1];
+            if (frontArmor != clampedFrontArmor) {
+                getMek().initializeArmor(clampedFrontArmor, location);
+                armorChanged = true;
+            }
+            if (getMek().hasRearArmor(location) && (rearArmor != clampedRearArmor)) {
+                getMek().initializeRearArmor(clampedRearArmor, location);
+                armorChanged = true;
+            }
+        }
+        if (armorChanged && getMek().hasPatchworkArmor()) {
+            getMek().setArmorTonnage(getMek().getArmorWeight());
+        }
+    }
+
+    private int[] clampArmorLocation(int frontArmor, int rearArmor, int maxArmor, boolean hasRearArmor) {
+        if (!hasRearArmor) {
+            return new int[] { Math.min(frontArmor, maxArmor), 0 };
+        }
+        int excessArmor = frontArmor + rearArmor - maxArmor;
+        int smallerReduction = excessArmor / 2;
+        int largerReduction = excessArmor - smallerReduction;
+        int frontReduction = frontArmor >= rearArmor ? largerReduction : smallerReduction;
+        int rearReduction = rearArmor > frontArmor ? largerReduction : smallerReduction;
+
+        int clampedFrontArmor = frontArmor - Math.min(frontArmor, frontReduction);
+        rearReduction += Math.max(0, frontReduction - frontArmor);
+        int clampedRearArmor = rearArmor - Math.min(rearArmor, rearReduction);
+        clampedFrontArmor = Math.max(0, clampedFrontArmor - Math.max(0, rearReduction - rearArmor));
+        return new int[] { clampedFrontArmor, clampedRearArmor };
+    }
+
+    @Override
+    public void frankenMekStructureTypeChanged(int location, EquipmentType structure) {
+        getMek().setFrankenMekStructureType(location, structure);
+        refreshFrankenMekInternalStructureMounts(location);
+        panFrankenMekStructure.setFromEntity(getMek());
+        panChassis.refreshFrankenMekState(getMek());
+        refreshSummary();
+        refresh.refreshBuild();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
+    }
+
+    @Override
+    public void frankenMekMismatchedLegsChanged(boolean mismatchedLegs) {
+        getMek().setMismatchedFrankenMekLegs(mismatchedLegs);
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
@@ -900,6 +1134,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     @Override
     public void structureChanged(EquipmentType structure) {
+        if (getMek().isFrankenMek()) {
+            panChassis.setFromEntity(getMek());
+            return;
+        }
         UnitUtil.removeISorArmorMounts(getMek(), true);
         createISMounts(structure);
         refreshSummary();
@@ -1560,6 +1798,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         getMek().setArmorTonnage(panArmorAllocation.getTotalArmorWeight(getMek()));
         panArmor.setFromEntity(getMek());
         panArmorAllocation.setFromEntity(getMek());
+        panPatchwork.setFromEntity(getMek());
+        refreshPatchworkArmorControls();
         refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshSummary();
