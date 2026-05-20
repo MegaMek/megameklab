@@ -381,4 +381,11 @@ public class PrintDropship extends PrintAero {
         }
     }
 
+    @Override
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
+        if (hidRulesLevel && !hidRole) {
+            shiftElement(LBL_ROLE, LBL_RULES);
+            shiftElement(ROLE, RULES_LEVEL);
+        }
+    }
 }

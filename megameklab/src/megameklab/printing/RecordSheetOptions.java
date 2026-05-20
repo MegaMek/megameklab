@@ -136,6 +136,7 @@ public class RecordSheetOptions {
     private boolean pilotData;
     private boolean eraIcon;
     private boolean role;
+    private boolean showTechLevel;
     private boolean heatProfile;
     private boolean tacOpsHeat;
     private boolean eraBasedProgression;
@@ -171,6 +172,7 @@ public class RecordSheetOptions {
         this.pilotData = CConfig.getBooleanParam(CConfig.RS_SHOW_PILOT_DATA);
         this.eraIcon = CConfig.getBooleanParam(CConfig.RS_SHOW_ERA);
         this.role = CConfig.getBooleanParam(CConfig.RS_SHOW_ROLE);
+        this.showTechLevel = CConfig.getBooleanParam(CConfig.RS_SHOW_TECH_LEVEL);
         this.heatProfile = CConfig.getBooleanParam(CConfig.RS_HEAT_PROFILE);
         this.tacOpsHeat = CConfig.getBooleanParam(CConfig.RS_TAC_OPS_HEAT);
         this.eraBasedProgression = CConfig.getBooleanParam(CConfig.TECH_PROGRESSION);
@@ -206,6 +208,7 @@ public class RecordSheetOptions {
         pilotData = options.pilotData;
         eraIcon = options.eraIcon;
         role = options.role;
+        showTechLevel = options.showTechLevel;
         heatProfile = options.heatProfile;
         tacOpsHeat = options.tacOpsHeat;
         eraBasedProgression = options.eraBasedProgression;
@@ -257,6 +260,10 @@ public class RecordSheetOptions {
 
     public boolean showRole() {
         return role;
+    }
+
+    public boolean showTechLevel() {
+        return showTechLevel;
     }
 
     public boolean showHeatProfile() {
@@ -325,6 +332,10 @@ public class RecordSheetOptions {
 
     public void setRole(boolean role) {
         this.role = role;
+    }
+
+    public void setShowTechLevel(boolean showTechLevel) {
+        this.showTechLevel = showTechLevel;
     }
 
     public void setHeatProfile(boolean heatProfile) {
