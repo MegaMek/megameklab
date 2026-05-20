@@ -764,9 +764,9 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
 
     private void refreshFrankenMek() {
         chkFrankenMek.removeActionListener(this);
-        boolean isExperimental = techManager.getTechLevel() == SimpleTechLevel.EXPERIMENTAL;
-        chkFrankenMek.setVisible(isExperimental);
-        if (!isExperimental && chkFrankenMek.isSelected()) {
+        boolean isExperimentalOrUnofficial = techManager.getTechLevel().compareTo(SimpleTechLevel.EXPERIMENTAL) >= 0;
+        chkFrankenMek.setVisible(isExperimentalOrUnofficial);
+        if (!isExperimentalOrUnofficial && chkFrankenMek.isSelected()) {
             chkFrankenMek.setSelected(false);
             notifyListeners(l -> l.frankenMekChanged(false));
         }
