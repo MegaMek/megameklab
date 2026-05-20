@@ -758,8 +758,8 @@ public class BMCriticalView extends IView implements ActionListener, CriticalSlo
                 target.setYear(donorYear);
             }
             String donorDisplayName = FrankenMekDonorUtil.getDonorSourceDisplayName(donor);
-            String donorMetadata = FrankenMekDonorUtil.getDonorSourceMetadata(donor, location);
-            target.linkFrankenMekLocationToSource(location, donorDisplayName, donorMetadata);
+            String donorType = FrankenMekDonorUtil.getDonorSourceType(donor, location);
+            target.linkFrankenMekLocationToSource(location, donorDisplayName, donorType);
             if (target.locationIsLeg(location)) {
                 FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(target);
             }

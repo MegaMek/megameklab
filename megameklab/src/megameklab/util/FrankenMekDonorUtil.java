@@ -125,11 +125,11 @@ public final class FrankenMekDonorUtil {
         return sanitizeDonorSourceValue(donor.getFullChassis());
     }
 
-    public static String getDonorSourceMetadata(Mek donor) {
-        return getDonorSourceMetadata(donor, Entity.LOC_NONE);
+    public static String getDonorSourceType(Mek donor) {
+        return getDonorSourceType(donor, Entity.LOC_NONE);
     }
 
-    public static String getDonorSourceMetadata(Mek donor, int location) {
+    public static String getDonorSourceType(Mek donor, int location) {
         if (isDonorLocationIndustrial(donor, location)) {
             return "IndustrialMek";
         }
