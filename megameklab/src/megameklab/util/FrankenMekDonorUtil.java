@@ -59,8 +59,6 @@ public final class FrankenMekDonorUtil {
     private static final MMLogger LOGGER = MMLogger.create(FrankenMekDonorUtil.class);
 
     private record LocationEquipmentCopy(Mounted<?> mounted, int criticalSlots, boolean rearMounted) {}
-    private record LegMismatchKey(String displayName, String metadata, int tonnage, int structureType,
-          int structureTechLevel) {}
 
     /**
      * Imports one FrankenMek donor location into the target, including structure data, armor, equipment, and any
