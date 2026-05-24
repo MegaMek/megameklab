@@ -180,8 +180,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         rightPanel.add(panPatchwork);
         rightPanel.add(Box.createVerticalStrut(11));
         rightPanel.add(panArmorAllocation);
-        rightPanel.add(Box.createVerticalStrut(11));
-        rightPanel.add(panFrankenMekStructure);
         rightPanel.add(Box.createVerticalGlue());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -206,7 +204,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
         panPatchwork.setBorder(BorderFactory.createTitledBorder("Patchwork Armor"));
-        panFrankenMekStructure.setBorder(BorderFactory.createTitledBorder("FrankenMek Structure"));
     }
 
     public void refresh() {
@@ -503,6 +500,10 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+    }
+
+    public FrankenMekStructureView getFrankenMekStructureView() {
+        return panFrankenMekStructure;
     }
 
     private void createISMounts(EquipmentType structure) {
@@ -989,9 +990,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
             return;
         }
         getMek().setFrankenMekStructureTonnageForConstruction(location, tonnage);
-        if (getMek().locationIsLeg(location)) {
-            FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(getMek());
-        }
         refreshInternalStructureMounts();
         clampFrankenMekArmorToStructureLimits();
         panFrankenMekStructure.setFromEntity(getMek());
@@ -1058,9 +1056,6 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void frankenMekStructureTypeChanged(int location, EquipmentType structure) {
         getMek().setFrankenMekStructureType(location, structure);
-        if (getMek().locationIsLeg(location)) {
-            FrankenMekDonorUtil.updateMismatchedLegsFromDonorSources(getMek());
-        }
         refreshFrankenMekInternalStructureMounts(location);
         panFrankenMekStructure.setFromEntity(getMek());
         panChassis.refreshFrankenMekState(getMek());
@@ -1071,8 +1066,28 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     }
 
     @Override
-    public void frankenMekMismatchedLegsChanged(boolean mismatchedLegs) {
-        getMek().setMismatchedFrankenMekLegs(mismatchedLegs);
+    public void frankenMekLocationSourceChanged(int location, String sourceDisplayName, String sourceType) {
+        String sanitizedDisplayName = sourceDisplayName == null ? "" : sourceDisplayName.trim();
+        String sanitizedType = sourceType == null ? "" : sourceType.trim();
+        if (sanitizedType.isBlank()) {
+            sanitizedType = "BattleMek";
+        }
+
+        if (sanitizedDisplayName.isBlank()) {
+            if (getMek().getFrankenMekLocationSourceDisplayName(location).isBlank()) {
+                return;
+            }
+            getMek().clearFrankenMekLocationSource(location);
+        } else {
+            if (sanitizedDisplayName.equals(getMek().getFrankenMekLocationSourceDisplayName(location))
+                  && sanitizedType.equals(getMek().getFrankenMekLocationSourceType(location))) {
+                return;
+            }
+            getMek().linkFrankenMekLocationToSource(location, sanitizedDisplayName, sanitizedType);
+        }
+        panFrankenMekStructure.setFromEntity(getMek());
+        refreshSummary();
+        refresh.refreshBuild();
         refresh.refreshPreview();
         refresh.refreshStatus();
     }

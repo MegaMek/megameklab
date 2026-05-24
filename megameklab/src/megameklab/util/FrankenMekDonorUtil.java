@@ -165,27 +165,6 @@ public final class FrankenMekDonorUtil {
         return null;
     }
 
-    public static void updateMismatchedLegsFromDonorSources(Mek mek) {
-        LegMismatchKey firstLeg = null;
-        for (int location = 0; location < mek.locations(); location++) {
-            if (!mek.locationIsLeg(location)) {
-                continue;
-            }
-            LegMismatchKey leg = new LegMismatchKey(
-                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceDisplayName(location)),
-                  sanitizeDonorSourceValue(mek.getFrankenMekLocationSourceType(location)),
-                  mek.getFrankenMekStructureTonnage(location), mek.getFrankenMekStructureType(location),
-                  mek.getFrankenMekStructureTechLevel(location));
-            if (firstLeg == null) {
-                firstLeg = leg;
-            } else if (!firstLeg.equals(leg)) {
-                mek.setMismatchedFrankenMekLegs(true);
-                return;
-            }
-        }
-        mek.setMismatchedFrankenMekLegs(false);
-    }
-
     private static String sanitizeDonorSourceValue(String value) {
         return value == null ? "" : value.trim();
     }

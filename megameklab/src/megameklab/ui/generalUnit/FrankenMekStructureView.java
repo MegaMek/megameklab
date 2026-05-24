@@ -33,11 +33,13 @@
 package megameklab.ui.generalUnit;
 
 import java.awt.Font;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -48,10 +50,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -64,8 +70,12 @@ import megameklab.ui.util.TechComboBox;
 /**
  * View for FrankenMek structure allocation and type selection.
  */
-public class FrankenMekStructureView extends BuildView implements ActionListener, ChangeListener {
+public class FrankenMekStructureView extends BuildView implements ActionListener, ChangeListener, FocusListener {
     private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
+    private static final String DEFAULT_DONOR_SOURCE_TYPE = "BattleMek";
+    private static final String[] DONOR_SOURCE_TYPES = {
+          DEFAULT_DONOR_SOURCE_TYPE, "OmniMek", "IndustrialMek"
+    };
 
     private final List<ArmorAllocationListener> listeners = new CopyOnWriteArrayList<>();
     private final List<StructureLocationView> locationViews = new ArrayList<>();
@@ -113,7 +123,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         chkMismatchedLegs.setToolTipText(I18N.getString("FrankenMekStructureView.chkMismatchedLegs.tooltip"));
-        chkMismatchedLegs.addActionListener(this);
+        chkMismatchedLegs.setEnabled(false);
         add(chkMismatchedLegs, gbc);
     }
 
@@ -139,6 +149,9 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
                     panRow.add(locView);
                     locView.spinner.addChangeListener(this);
                     locView.combo.addActionListener(this);
+                    locView.txtDonorSource.addActionListener(this);
+                    locView.txtDonorSource.addFocusListener(this);
+                    locView.cbDonorSourceType.addActionListener(this);
                 } else {
                     panRow.add(Box.createHorizontalGlue());
                 }
@@ -188,6 +201,9 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
                 locView.combo.addItem(selected);
             }
             locView.combo.setSelectedItem(selected);
+            locView.txtDonorSource.setText(mek.getFrankenMekLocationSourceDisplayName(location));
+            locView.cbDonorSourceType.setSelectedItem(getSelectableDonorSourceType(
+                mek.getFrankenMekLocationSourceType(location)));
         }
         chkMismatchedLegs.setSelected(mek.hasMismatchedFrankenMekLegs());
         ignoreEvents = false;
@@ -222,13 +238,18 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         return false;
     }
 
+    private String getSelectableDonorSourceType(String donorSourceType) {
+        for (String sourceType : DONOR_SOURCE_TYPES) {
+            if (sourceType.equals(donorSourceType)) {
+                return sourceType;
+            }
+        }
+        return DEFAULT_DONOR_SOURCE_TYPE;
+    }
+
     @Override
     public void actionPerformed(ActionEvent event) {
         if (ignoreEvents) {
-            return;
-        }
-        if (event.getSource() == chkMismatchedLegs) {
-            listeners.forEach(listener -> listener.frankenMekMismatchedLegsChanged(chkMismatchedLegs.isSelected()));
             return;
         }
         for (StructureLocationView locView : locationViews) {
@@ -237,7 +258,18 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
                 listeners.forEach(listener -> listener.frankenMekStructureTypeChanged(locView.location, structure));
                 return;
             }
+            if ((event.getSource() == locView.txtDonorSource)
+                  || (event.getSource() == locView.cbDonorSourceType)) {
+                notifyFrankenMekLocationSourceChanged(locView);
+                return;
+            }
         }
+    }
+
+    private void notifyFrankenMekLocationSourceChanged(StructureLocationView locView) {
+        String donorSourceType = (String) locView.cbDonorSourceType.getSelectedItem();
+        listeners.forEach(listener -> listener.frankenMekLocationSourceChanged(locView.location,
+              locView.txtDonorSource.getText(), donorSourceType));
     }
 
     @Override
@@ -254,13 +286,38 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
         }
     }
 
+    @Override
+    public void focusGained(FocusEvent event) {
+    }
+
+    @Override
+    public void focusLost(FocusEvent event) {
+        if (ignoreEvents) {
+            return;
+        }
+        for (StructureLocationView locView : locationViews) {
+            if (event.getSource() == locView.txtDonorSource) {
+                notifyFrankenMekLocationSourceChanged(locView);
+                return;
+            }
+        }
+    }
+
     private static class StructureLocationView extends JPanel {
+        private static final Insets LOCATION_ROW_INSETS = new Insets(1, 4, 2, 4);
+
         private final int location;
         private final SpinnerNumberModel model = new SpinnerNumberModel(20, 10, 200, 5);
         private final JSpinner spinner = new JSpinner(model);
-          private final JLabel lblTonnage = new JLabel(I18N.getString(
-              "MekChassisView.spnTonnage.text") + " ");
+        private final JLabel lblTonnage = new JLabel(I18N.getString(
+              "MekChassisView.spnTonnage.text") + " ", SwingConstants.RIGHT);
         private final TechComboBox<EquipmentType> combo = new TechComboBox<>(EquipmentType::getName);
+        private final JLabel lblDonorSource = new JLabel(I18N.getString(
+              "FrankenMekStructureView.lblDonorSource.text") + " ", SwingConstants.RIGHT);
+        private final JTextField txtDonorSource = new JTextField(12);
+        private final JLabel lblDonorSourceType = new JLabel(I18N.getString(
+              "FrankenMekStructureView.lblDonorSourceType.text") + " ", SwingConstants.RIGHT);
+        private final JComboBox<String> cbDonorSourceType = new JComboBox<>(DONOR_SOURCE_TYPES);
         private final JLabel lblPips = new JLabel();
         private final TitledBorder border = BorderFactory.createTitledBorder(null, "",
               TitledBorder.TOP,
@@ -271,29 +328,56 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             setBorder(border);
             setLayout(new GridBagLayout());
 
-            JPanel panTonnage = new JPanel(new FlowLayout(FlowLayout.CENTER, STANDARD_INSETS.left, 0));
-            panTonnage.setOpaque(false);
-            panTonnage.add(lblTonnage);
-            panTonnage.add(spinner);
-
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = STANDARD_INSETS;
-            gbc.anchor = GridBagConstraints.CENTER;
-            gbc.gridx = 0;
+            gbc.insets = LOCATION_ROW_INSETS;
             gbc.gridy = 0;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
-            add(panTonnage, gbc);
+            addLabeledControl(gbc, lblTonnage, spinner, false);
 
-            gbc.gridx = 0;
-            gbc.gridy++;
-            gbc.anchor = GridBagConstraints.CENTER;
             combo.setPrototypeDisplayValue(EquipmentType.get(EquipmentType.getStructureTypeName(
                   EquipmentType.T_STRUCTURE_ENDO_COMPOSITE, true)));
-            add(combo, gbc);
+            addUnlabeledControl(gbc, combo);
 
-            gbc.gridy++;
+            txtDonorSource.setToolTipText(I18N.getString("FrankenMekStructureView.txtDonorSource.tooltip"));
+            addLabeledControl(gbc, lblDonorSource, txtDonorSource, true);
+
+            cbDonorSourceType.setPrototypeDisplayValue("IndustrialMek");
+            cbDonorSourceType.setToolTipText(I18N.getString(
+                "FrankenMekStructureView.cbDonorSourceType.tooltip"));
+            addLabeledControl(gbc, lblDonorSourceType, cbDonorSourceType, true);
+
             lblPips.setFont(lblPips.getFont().deriveFont(Font.BOLD));
+            gbc.gridx = 0;
+            gbc.gridwidth = 2;
+            gbc.weightx = 0.0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.CENTER;
             add(lblPips, gbc);
+        }
+
+        private void addLabeledControl(GridBagConstraints gbc, JLabel label, JComponent control, boolean fillControl) {
+            gbc.gridx = 0;
+            gbc.gridwidth = 1;
+            gbc.weightx = 0.0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.EAST;
+            add(label, gbc);
+
+            gbc.gridx = 1;
+            gbc.weightx = 1.0;
+            gbc.fill = fillControl ? GridBagConstraints.HORIZONTAL : GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.WEST;
+            add(control, gbc);
+            gbc.gridy++;
+        }
+
+        private void addUnlabeledControl(GridBagConstraints gbc, JComponent control) {
+            gbc.gridx = 1;
+            gbc.gridwidth = 1;
+            gbc.weightx = 1.0;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.anchor = GridBagConstraints.WEST;
+            add(control, gbc);
+            gbc.gridy++;
         }
 
         private void updateLocation(String locName) {
