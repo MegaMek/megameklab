@@ -447,23 +447,23 @@ class FrankenMekDonorUtilTest {
     void donorSourceTypeIdentifiesOmniAndMekSubtype() {
         Mek donor = newTestMek();
 
-        assertEquals("BattleMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+        assertEquals("BattleMek", FrankenMekDonorUtil.getDonorSourceType(donor, Mek.LOC_LEFT_ARM));
 
         donor.setOmni(true);
 
-        assertEquals("OmniMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+        assertEquals("OmniMek", FrankenMekDonorUtil.getDonorSourceType(donor, Mek.LOC_LEFT_ARM));
 
         donor.setOmni(false);
         donor.setStructureType(EquipmentType.T_STRUCTURE_INDUSTRIAL);
 
-        assertEquals("IndustrialMek", FrankenMekDonorUtil.getDonorSourceType(donor));
+        assertEquals("IndustrialMek", FrankenMekDonorUtil.getDonorSourceType(donor, Mek.LOC_LEFT_ARM));
 
         Mek frankenDonor = newTestMek();
         frankenDonor.setFrankenMek(true);
-        frankenDonor.setFrankenMekStructureType(Mek.LOC_RIGHT_LEG, EquipmentType.T_STRUCTURE_INDUSTRIAL,
-              TechConstants.T_IS_EXPERIMENTAL);
-        assertEquals("IndustrialMek",
-              FrankenMekDonorUtil.getDonorSourceType(frankenDonor, Mek.LOC_RIGHT_LEG));
+        frankenDonor.setFrankenMekStructureType(Mek.LOC_RIGHT_LEG, EquipmentType.T_STRUCTURE_INDUSTRIAL, TechConstants.T_IS_EXPERIMENTAL);
+        frankenDonor.linkFrankenMekLocationToSource(Mek.LOC_RIGHT_LEG, "Archer", "  BattleMek  ");
+
+        assertEquals("BattleMek", FrankenMekDonorUtil.getDonorSourceType(frankenDonor, Mek.LOC_RIGHT_LEG));
     }
 
     @Test

@@ -119,25 +119,33 @@ public final class FrankenMekDonorUtil {
               : (int) Math.ceil(donor.getWeight());
     }
 
+    /**
+     * Gets the donor chassis display name stored for a FrankenMek location. The value is trimmed, and a {@code null}
+     * chassis is returned as an empty string.
+     *
+     * @param donor The unit donating the body section
+     * @return The sanitized donor chassis display name
+     */
     public static String getDonorSourceDisplayName(Mek donor) {
         return sanitizeDonorSourceValue(donor.getFullChassis());
     }
 
-    public static String getDonorSourceType(Mek donor) {
-        return getDonorSourceType(donor, Entity.LOC_NONE);
-    }
-
+    /**
+     * Gets the type of the donor. For FrankenMek donors the location is important and the
+     * donor type of that FrankenMek location is returned (pass-through)..
+     *
+     * @param donor    The unit donating the body section
+     * @param location The donor location index, or {@link Entity#LOC_NONE} to use the whole donor unit
+     * @return The donor type for the donated body section
+     */
     public static String getDonorSourceType(Mek donor, int location) {
-        if (isDonorLocationIndustrial(donor, location)) {
+        if (donor.isFrankenMek() && (location >= 0) && (location < donor.locations())) {
+            return sanitizeDonorSourceValue(donor.getFrankenMekLocationSourceType(location));
+        }
+        if (donor.isIndustrial()) {
             return "IndustrialMek";
         }
         return donor.isOmni() ? "OmniMek" : "BattleMek";
-    }
-
-    private static boolean isDonorLocationIndustrial(Mek donor, int location) {
-        return donor.isFrankenMek() && (location >= 0) && (location < donor.locations())
-              ? donor.getFrankenMekStructureType(location) == EquipmentType.T_STRUCTURE_INDUSTRIAL
-              : donor.isIndustrial();
     }
 
     /**

@@ -87,7 +87,6 @@ import megameklab.ui.listeners.ArmorAllocationListener;
 import megameklab.ui.listeners.MekBuildListener;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
-import megameklab.util.FrankenMekDonorUtil;
 import megameklab.util.MekUtil;
 import megameklab.util.UnitUtil;
 
