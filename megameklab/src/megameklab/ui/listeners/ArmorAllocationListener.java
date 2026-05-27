@@ -146,7 +146,7 @@ public interface ArmorAllocationListener {
 
     }
 
-    default void frankenMekMismatchedLegsChanged(boolean mismatchedLegs) {
+    default void frankenMekLocationSourceChanged(int location, String sourceDisplayName, String sourceType) {
 
     }
 

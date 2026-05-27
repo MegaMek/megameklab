@@ -59,8 +59,10 @@ import megameklab.ui.util.TabScrollPane;
 import megameklab.util.MekUtil;
 
 public class BMMainUI extends MegaMekLabMainUI {
+    private static final String FRANKEN_MEK_STRUCTURE_TAB_TITLE = "FrankenMek Structure";
 
     private BMStructureTab structureTab;
+    private TabScrollPane frankenMekStructureTab;
     private AbstractEquipmentTab equipmentTab;
     private PreviewTab previewTab;
     private BMBuildTab buildTab;
@@ -91,6 +93,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         removeAll();
 
         structureTab = new BMStructureTab(this);
+        frankenMekStructureTab = new TabScrollPane(structureTab.getFrankenMekStructureView());
         previewTab = new PreviewTab(this);
         statusbar = new BMStatusBar(this);
         equipmentTab = new BMEquipmentTab(this);
@@ -123,6 +126,23 @@ public class BMMainUI extends MegaMekLabMainUI {
 
         refreshAll();
         validate();
+    }
+
+    private void syncFrankenMekStructureTab() {
+        if (frankenMekStructureTab == null) {
+            return;
+        }
+        boolean showTab = ((Mek) getEntity()).isFrankenMek();
+        boolean tabShown = configPane.containsTab(frankenMekStructureTab);
+        if (showTab == tabShown) {
+            return;
+        }
+        if (showTab) {
+            configPane.insertTab(FRANKEN_MEK_STRUCTURE_TAB_TITLE, null, frankenMekStructureTab, null,
+                  Math.min(1, configPane.getTabCount()));
+        } else {
+            configPane.removeTab(frankenMekStructureTab);
+        }
     }
 
     @Override
@@ -206,6 +226,7 @@ public class BMMainUI extends MegaMekLabMainUI {
         super.refreshAll();
         statusbar.refresh();
         structureTab.refresh();
+        syncFrankenMekStructureTab();
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
@@ -224,6 +245,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     public void refreshBuild() {
         super.refreshBuild();
         buildTab.refresh();
+        syncFrankenMekStructureTab();
     }
 
     @Override
@@ -253,6 +275,7 @@ public class BMMainUI extends MegaMekLabMainUI {
     public void refreshStructure() {
         super.refreshStructure();
         structureTab.refresh();
+        syncFrankenMekStructureTab();
     }
 
     @Override
