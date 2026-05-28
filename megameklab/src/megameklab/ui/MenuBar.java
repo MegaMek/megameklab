@@ -45,6 +45,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -810,32 +811,59 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     private @Nullable JMenuItem createCConfigMenuItem(final String recentFileName, final int fileNumber) {
-        File recent = new File(recentFileName);
+        String fileName = recentFileName;
+        String entryName = null;
+        if (recentFileName.contains(CConfig.RECENT_ENTRY_DELIMITER)) {
+            String[] parts = recentFileName.split(Pattern.quote(CConfig.RECENT_ENTRY_DELIMITER));
+            fileName = parts[0];
+            if (parts.length > 1) {
+                entryName = parts[1];
+            }
+        }
+
+        File recent = new File(fileName);
+        String displayName = recent.getName();
+        if (entryName != null) {
+            int lastSlash = Math.max(entryName.lastIndexOf('/'), entryName.lastIndexOf('\\'));
+            if (lastSlash != -1) {
+                displayName = entryName.substring(lastSlash + 1);
+            } else {
+                displayName = entryName;
+            }
+        }
+
         String path = recent.getParent();
         String mmlDirectory = System.getProperty("user.dir");
-        if (recentFileName.startsWith(mmlDirectory)) {
+        if (fileName.startsWith(mmlDirectory)) {
             path = path.substring(mmlDirectory.length());
             if (path.length() > 40) {
                 path = path.substring(0, 40) + "...";
             }
         }
 
-        final JMenuItem miCConfig = getMiCConfig(fileNumber, recent, path);
+        final JMenuItem miCConfig = getMiCConfig(fileNumber, displayName, path);
         miCConfig.setName("miCConfig");
         miCConfig.addActionListener(evt -> loadUnitFromFile(fileNumber));
         miCConfig.setMnemonic(48 + fileNumber); // the number itself, i.e. 1, 2, 3 etc.
+
+        String tooltip = fileName;
+        if (entryName != null) {
+            tooltip += " (" + entryName + ")";
+        }
+        miCConfig.setToolTipText(tooltip);
+
         return miCConfig;
     }
 
-    private static JMenuItem getMiCConfig(int fileNumber, File recent, String path) {
+    private static JMenuItem getMiCConfig(int fileNumber, String displayName, String path) {
         String content;
         if (OSUtil.isMac()) {
-            content = "%d. %s ".formatted(fileNumber, recent.getName()) + "(" + path + ")";
+            content = "%d. %s ".formatted(fileNumber, displayName) + "(" + path + ")";
         } else {
             String html = "<HTML><HEAD><STYLE>%s</STYLE></HEAD><BODY>%s</BODY></HTML>";
             String style = ".small { font-size:smaller; color:gray; }";
             content = html.formatted(style, "<NOBR>%d. %s<BR>".formatted(fileNumber,
-                  recent.getName()) + UIUtil.spanCSS("small", path));
+                  displayName) + UIUtil.spanCSS("small", path));
         }
 
         return new JMenuItem(content);
@@ -1441,26 +1469,46 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
     }
 
     public void loadUnitFromFile(int fileNumber) {
-        File unitFile;
+        String recentFileName;
         if (fileNumber > 0) {
-            String recentFileName = CConfig.getRecentFile(fileNumber);
+            recentFileName = CConfig.getRecentFile(fileNumber);
             if (recentFileName.isBlank()) {
                 return;
             }
-            unitFile = new File(recentFileName);
         } else {
-            unitFile = chooseUnitFileToLoad();
+            File unitFile = chooseUnitFileToLoad();
             if (unitFile == null) {
                 return;
             }
+            recentFileName = unitFile.toString();
         }
 
-        loadFile(unitFile);
+        loadFile(recentFileName);
+    }
+
+    public void loadFile(String unitFileName) {
+        File unitFile;
+        String entryName = null;
+
+        if (unitFileName.contains(CConfig.RECENT_ENTRY_DELIMITER)) {
+            String[] parts = unitFileName.split(Pattern.quote(CConfig.RECENT_ENTRY_DELIMITER));
+            unitFile = new File(parts[0]);
+            if (parts.length > 1) {
+                entryName = parts[1];
+            }
+        } else {
+            unitFile = new File(unitFileName);
+        }
+        loadFile(unitFile, entryName);
     }
 
     public void loadFile(File unitFile) {
+        loadFile(unitFile, null);
+    }
+
+    public void loadFile(File unitFile, String entryName) {
         try {
-            Entity loadedUnit = new MekFileParser(unitFile).getEntity();
+            Entity loadedUnit = new MekFileParser(unitFile, entryName).getEntity();
 
             if (loadedUnit == null) {
                 throw new Exception();
@@ -1468,7 +1516,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
             warnOnInvalid(loadedUnit);
 
-            newRecentUnit(unitFile.toString());
+            newRecentUnit(unitFile.toString(), entryName);
             if (owner instanceof MegaMekLabTabbedUI tabbedUi) {
                 tabbedUi.addUnit(loadedUnit, unitFile.toString(), true);
                 refresh();
@@ -1488,8 +1536,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
      *
      * @param latestUnit The filename of the new most recent unit.
      */
-    private void newRecentUnit(String latestUnit) {
-        CConfig.setMostRecentFile(latestUnit);
+    private void newRecentUnit(String latestUnit, String entryName) {
+        CConfig.setMostRecentFile(latestUnit, entryName);
         createFileMenu();
     }
 
