@@ -37,6 +37,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.enums.MiscTypeFlag;
 import megamek.common.units.Entity;
 import megamek.common.units.LandAirMek;
@@ -76,6 +77,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         if (entity instanceof ProtoMek protoMek) {
             int dmg;
             var weight = protoMek.getWeight();
+            // TW p.187, IO:AE p.94
             if (weight <= 5) {
                 dmg = 1;
             } else if (weight <= 9) {
@@ -91,8 +93,12 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 }
             }
 
-            if (protoMek.hasMisc(MiscTypeFlag.F_PROTOMEK_MELEE)) {
+            if (protoMek.hasMisc(EquipmentTypeLookup.PROTOMEK_MELEE)) {
+                // TO:AUE p. 149
                 dmg += (int) Math.ceil(weight / 5);
+            } else if (protoMek.hasMisc(EquipmentTypeLookup.PROTOMEK_QUAD_MELEE)) {
+                // IO:AE p.94
+                dmg += 2 * (int) Math.ceil(weight / 5);
             }
 
             return new ArrayList<>(List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
