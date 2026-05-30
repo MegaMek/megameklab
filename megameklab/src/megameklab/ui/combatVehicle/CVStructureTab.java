@@ -926,7 +926,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         } else if (!hasMod && getTank().hasDNICockpitMod()) {
             for (MiscMounted mounted : getTank().getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
-                    getTank().removeMisc(mounted.getType().getInternalName());
+                    getTank().removeMisc(mounted.getName());
                     break;
                 }
             }

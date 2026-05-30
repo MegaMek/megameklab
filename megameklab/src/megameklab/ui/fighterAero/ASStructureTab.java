@@ -816,7 +816,7 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
         } else if (!hasMod && getAero().hasDNICockpitMod()) {
             for (MiscMounted mounted : getAero().getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
-                    getAero().removeMisc(mounted.getType().getInternalName());
+                    getAero().removeMisc(mounted.getName());
                     break;
                 }
             }

@@ -1281,7 +1281,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (!hasMod && getMek().hasDNICockpitMod()) {
             for (MiscMounted mounted : getMek().getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_DNI_COCKPIT_MOD)) {
-                    getMek().removeMisc(mounted.getType().getInternalName());
+                    getMek().removeMisc(mounted.getName());
                     break;
                 }
             }
@@ -1305,7 +1305,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (!hasEI && getMek().hasEiCockpit()) {
             for (MiscMounted mounted : getMek().getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_EI_INTERFACE)) {
-                    getMek().removeMisc(mounted.getType().getInternalName());
+                    getMek().removeMisc(mounted.getName());
                     break;
                 }
             }
@@ -1329,7 +1329,7 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
         } else if (!hasDIC && getMek().hasDamageInterruptCircuit()) {
             for (MiscMounted mounted : getMek().getMisc()) {
                 if (mounted.getType().hasFlag(MiscType.F_DAMAGE_INTERRUPT_CIRCUIT)) {
-                    getMek().removeMisc(mounted.getType().getInternalName());
+                    getMek().removeMisc(mounted.getName());
                     break;
                 }
             }
