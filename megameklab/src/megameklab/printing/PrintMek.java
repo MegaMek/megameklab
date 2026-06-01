@@ -1218,4 +1218,55 @@ public class PrintMek extends PrintEntity {
         return mek.getGyroHits();
     }
 
+    @Override
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
+        if (mek instanceof LandAirMek) {
+            if (hidRulesLevel) {
+                if (hidRole) {
+                    shiftElement(LBL_ENGINE, LBL_RULES);
+                    shiftElement(ENGINE_TYPE, RULES_LEVEL);
+                    resizeInventoryForShiftedElement(ENGINE_TYPE);
+                } else {
+                    shiftElement(LBL_ROLE, LBL_RULES);
+                    shiftElement(ROLE, RULES_LEVEL);
+                }
+            }
+            return;
+        }
+
+        if (mek instanceof QuadVee) {
+            if (hidRulesLevel) {
+                if (hidRole) {
+                    shiftElement(LBL_ENGINE, LBL_RULES);
+                    shiftElement(ENGINE_TYPE, RULES_LEVEL);
+                } else {
+                    shiftElement(LBL_ENGINE, LBL_ROLE);
+                    shiftElement(ENGINE_TYPE, ROLE);
+                    shiftElement(LBL_ROLE, LBL_RULES);
+                    shiftElement(ROLE, RULES_LEVEL);
+                }
+            } else if (hidRole) {
+                shiftElement(LBL_ENGINE, LBL_ROLE);
+                shiftElement(ENGINE_TYPE, ROLE);
+            }
+            return;
+        }
+
+        if (hidRulesLevel || hidRole) {
+            if (hidRulesLevel && hidRole) {
+                shiftElement(LBL_ENGINE, LBL_RULES);
+                shiftElement(ENGINE_TYPE, RULES_LEVEL);
+            } else {
+                shiftElement(LBL_ENGINE, LBL_ROLE);
+                shiftElement(ENGINE_TYPE, ROLE);
+            }
+            resizeInventoryForShiftedElement(ENGINE_TYPE);
+
+
+            if (!hidRole) {
+                shiftElement(LBL_ROLE, LBL_RULES);
+                shiftElement(ROLE, RULES_LEVEL);
+            }
+        }
+    }
 }

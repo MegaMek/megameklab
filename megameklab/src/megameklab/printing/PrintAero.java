@@ -404,4 +404,27 @@ public class PrintAero extends PrintEntity {
         }
         return collarDamage;
     }
+
+    @Override
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
+        if (aero instanceof SmallCraft) {
+            if (hidRulesLevel && !hidRole) {
+                shiftElement(LBL_ROLE, LBL_RULES);
+                shiftElement(ROLE, RULES_LEVEL);
+            }
+
+            if (hidRulesLevel || hidRole) {
+                resizeInventoryForShiftedElement(TECH_BASE);
+            }
+        } else {
+            if (hidRulesLevel && !hidRole) {
+                shiftElement(LBL_ROLE, LBL_RULES);
+                shiftElement(ROLE, RULES_LEVEL);
+            } else if (hidRole && hidRulesLevel) {
+                shiftElement(LBL_ENGINE, LBL_RULES);
+                shiftElement(ENGINE_TYPE, RULES_LEVEL);
+                resizeInventoryForShiftedElement(ENGINE_TYPE);
+            }
+        }
+    }
 }

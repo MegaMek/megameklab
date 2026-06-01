@@ -138,6 +138,7 @@ public final class CConfig {
     public static final String RS_SHOW_PILOT_DATA = "rs_show_pilot_data";
     public static final String RS_SHOW_ERA = "rs_show_era";
     public static final String RS_SHOW_ROLE = "rs_show_role";
+    public static final String RS_SHOW_TECH_LEVEL = "rs_show_tech_level";
     public static final String RS_HEAT_PROFILE = "rs_heat_profile";
     public static final String RS_TAC_OPS_HEAT = "rs_tac_ops_heat";
     public static final String RS_REFERENCE = "rs_reference";
@@ -191,6 +192,7 @@ public final class CConfig {
         defaults.setProperty(RS_SHOW_QUIRKS, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ERA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_ROLE, Boolean.toString(true));
+        defaults.setProperty(RS_SHOW_TECH_LEVEL, Boolean.toString(false));
         defaults.setProperty(RS_SHOW_PILOT_DATA, Boolean.toString(true));
         defaults.setProperty(RS_SHOW_C3BV, Boolean.toString(false));
         defaults.setProperty(RS_SCALE_FACTOR, "1");

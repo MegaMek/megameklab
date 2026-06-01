@@ -386,4 +386,14 @@ public class PrintCapitalShip extends PrintDropship {
     public boolean supportsAlternateArmorGrouping() {
         return false;
     }
+
+    @Override
+    protected void shiftOptionalDataFields(boolean hidRulesLevel, boolean hidRole) {
+        super.shiftOptionalDataFields(hidRulesLevel, hidRole);
+        if (ship.isJumpShip() || ship.isSpaceStation()) {
+            if (hidRulesLevel || hidRole) {
+                resizeInventoryForShiftedElement(TECH_BASE);
+            }
+        }
+    }
 }
