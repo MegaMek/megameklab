@@ -92,6 +92,7 @@ public class UnitMemento {
             if (entity == null) {
                 return null;
             }
+            UnitUtil.updateLoadedUnit(entity);
             if (getArmorTonnage() >= 0) {
                 entity.setArmorTonnage(getArmorTonnage());
             }
