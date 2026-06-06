@@ -1,6 +1,35 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
-0.50.13
+0.51.0 (2026-06-06 1600 UTC) - First version requiring Java 21
+## What's Changed
+* MML#2166 refresh armor selector fix by @SJuliez in https://github.com/MegaMek/megameklab/pull/2168
+* BA construction and manipulators by @SJuliez in https://github.com/MegaMek/megameklab/pull/2167
+* Add licensing acknowledgment dialog on startup and update About dialog by @HammerGS in https://github.com/MegaMek/megameklab/pull/2169
+* rebuild cache button by @exeea in https://github.com/MegaMek/megameklab/pull/2170
+* Bump org.apache.logging.log4j:log4j-core from 2.25.3 to 2.25.4 in /megameklab in the gradle group across 1 directory by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2171
+* Adding NLRT, MML part by @SJuliez in https://github.com/MegaMek/megameklab/pull/2177
+* Dependency Update by @rjhancock in https://github.com/MegaMek/megameklab/pull/2178
+* MML #2087 skip invalid locations for autofill on CV/SV by @SJuliez in https://github.com/MegaMek/megameklab/pull/2175
+* Use automatic alternate table row coloring by @SJuliez in https://github.com/MegaMek/megameklab/pull/2174
+* Bump actions/upload-pages-artifact from 4 to 5 by @dependabot[bot] in https://github.com/MegaMek/megameklab/pull/2173
+* Issue #2157 Show Screen Launcher in equipment by @SJuliez in https://github.com/MegaMek/megameklab/pull/2172
+* J21 Language updates. by @rjhancock in https://github.com/MegaMek/megameklab/pull/2179
+* Brought CodeQL updates from MM to MML by @rjhancock in https://github.com/MegaMek/megameklab/pull/2182
+* added support to multi-sources by @exeea in https://github.com/MegaMek/megameklab/pull/2185
+* Main menu / Mac issues by @SJuliez in https://github.com/MegaMek/megameklab/pull/2181
+* Sourcebooks and retrofit original year by @exeea in https://github.com/MegaMek/megameklab/pull/2188
+* Issue 2191: Show actual RHS heat sink ability by @SJuliez in https://github.com/MegaMek/megameklab/pull/2193
+* MML#2192 improve mek total generated heat display with better JJ heat by @SJuliez in https://github.com/MegaMek/megameklab/pull/2194
+* BA/CI separation (MM#8257) by @SJuliez in https://github.com/MegaMek/megameklab/pull/2190
+* FrankenMek support by @exeea in https://github.com/MegaMek/megameklab/pull/2195
+* Frankenmek support (part 2) by @exeea in https://github.com/MegaMek/megameklab/pull/2197
+* frankenmek also on techlevel unofficial by @exeea in https://github.com/MegaMek/megameklab/pull/2202
+* FrankenMek leg-mismatch fix by @exeea in https://github.com/MegaMek/megameklab/pull/2200
+* MML #2125 allow loading recent units from cache and ZIPs by @SJuliez in https://github.com/MegaMek/megameklab/pull/2203
+* MML #2205 record sheet damage calculation for PM frenzy by @SJuliez in https://github.com/MegaMek/megameklab/pull/2206
+* Fix DNI, EI, and DIC cockpit mods cannot be removed by @HammerGS in https://github.com/MegaMek/megameklab/pull/2208
+* Add option to hide rules level in record sheets by @pavelbraginskiy in https://github.com/MegaMek/megameklab/pull/2199
+* fix structure slots on undo/redo by @exeea in https://github.com/MegaMek/megameklab/pull/2210
 
 0.50.12 (2026-03-28 2100 UTC)
 ## What's Changed
