@@ -1,5 +1,7 @@
 MEGAMEKLAB VERSION HISTORY:
 ----------------
+0.51.01
+
 0.51.0 (2026-06-06 1600 UTC) - First version requiring Java 21
 ## What's Changed
 * MML#2166 refresh armor selector fix by @SJuliez in https://github.com/MegaMek/megameklab/pull/2168
