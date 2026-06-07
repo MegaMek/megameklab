@@ -851,21 +851,32 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             return defaultTooltip;
         }
 
-        StringBuilder tooltip = new StringBuilder("<html><table>");
+        List<RoleScore> roleScores = new ArrayList<>();
         for (int roleIndex = 0; roleIndex < cbRole.getItemCount(); roleIndex++) {
             UnitRole role = cbRole.getItemAt(roleIndex);
             if (role == UnitRole.UNDETERMINED) {
                 continue;
             }
-            tooltip.append("<tr><td>")
-                  .append(html(role.toString()))
-                  .append("</td><td align='right'>&nbsp;&nbsp;")
-                  .append(String.format(Locale.ROOT, "%.2f", role.roleScore(element)))
-                  .append("</td></tr>");
+            roleScores.add(new RoleScore(role, role.roleScore(element)));
+        }
+        roleScores.sort((left, right) -> Double.compare(right.score(), left.score()));
+
+        double bestScore = roleScores.isEmpty() ? Double.NEGATIVE_INFINITY : roleScores.get(0).score();
+
+        StringBuilder tooltip = new StringBuilder("<html><table>");
+        for (RoleScore roleScore : roleScores) {
+            boolean winner = roleScore.score() == bestScore;
+            tooltip.append(winner ? "<tr><td><b>" : "<tr><td>")
+                  .append(html(roleScore.role().toString()))
+                  .append(winner ? "</b></td><td align='right'><b>&nbsp;&nbsp;" : "</td><td align='right'>&nbsp;&nbsp;")
+                  .append(String.format(Locale.ROOT, "%.2f", roleScore.score()))
+                  .append(winner ? "</b></td></tr>" : "</td></tr>");
         }
         tooltip.append("</table></html>");
         return tooltip.toString();
     }
+
+    private record RoleScore(UnitRole role, double score) {}
 
     private static String html(String text) {
         return text.replace("&", "&amp;")
