@@ -52,6 +52,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -135,6 +136,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JComboBox<String> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     private final MMComboBox<UnitRole> cbRole = new MMComboBox<>("Role Combo");
+    private final JCheckBox chkManualRole = new JCheckBox();
     private final JLabel lblMulId = createLabel("lblMulId", "");
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton(new MulLinkIcon());
@@ -329,8 +331,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
               "BasicInfoView.txtRole.tooltip"), gbc);
         gbc.gridx = 1;
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
-        add(cbRole, gbc);
+        chkManualRole.setText(resourceMap.getString("BasicInfoView.chkManualRole.text"));
+        chkManualRole.setToolTipText(resourceMap.getString("BasicInfoView.chkManualRole.tooltip"));
+        var rolePanel = Box.createHorizontalBox();
+        rolePanel.add(cbRole);
+        rolePanel.add(chkManualRole);
+        add(rolePanel, gbc);
         cbRole.addActionListener(this);
+        chkManualRole.addActionListener(this);
         cbRole.setPrototypeDisplayValue(UnitRole.ATTACK_FIGHTER);
         // Show the role UNDETERMINED as an empty selection to differentiate it from NONE
         // UNDETERMINED means that no role at all will be saved to the unit
@@ -377,14 +385,18 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbTechLevel.addActionListener(this);
         setManualBV(en.getManualBV());
         cbRole.removeActionListener(this);
+        chkManualRole.removeActionListener(this);
         cbRole.removeAllItems();
         for (UnitRole role : UnitRole.values()) {
             if (role.isAvailableTo(en)) {
                 cbRole.addItem(role);
             }
         }
-        cbRole.setSelectedItem(en.getRole());
+        chkManualRole.setSelected(en.hasRoleOverride());
+        cbRole.setSelectedItem(chkManualRole.isSelected() ? en.getRoleOverride() : en.getRole());
+        cbRole.setEnabled(chkManualRole.isSelected());
         cbRole.addActionListener(this);
+        chkManualRole.addActionListener(this);
 
         // Set faction from entity before refreshing visibility
         cbFaction.removeActionListener(this);
@@ -800,11 +812,31 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             refreshTechLevel();
         } else if (e.getSource() == cbTechLevel) {
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
+        } else if (e.getSource() == chkManualRole) {
+            updateManualRoleOverride();
         } else if (e.getSource() == cbRole) {
-            UnitRole newRole = (cbRole.getSelectedItem() == null) ? UnitRole.UNDETERMINED : cbRole.getSelectedItem();
-            listeners.forEach(l -> l.roleChanged(newRole));
+            if (chkManualRole.isSelected()) {
+                listeners.forEach(l -> l.roleChanged(selectedRole()));
+            }
         }
         listeners.forEach(BuildListener::refreshSummary);
+    }
+
+    private UnitRole selectedRole() {
+        return (cbRole.getSelectedItem() == null) ? UnitRole.UNDETERMINED : cbRole.getSelectedItem();
+    }
+
+    private void updateManualRoleOverride() {
+        boolean manualRole = chkManualRole.isSelected();
+        cbRole.setEnabled(manualRole);
+        if (manualRole) {
+            listeners.forEach(l -> l.roleChanged(selectedRole()));
+        } else {
+            listeners.forEach(l -> l.roleChanged(UnitRole.UNDETERMINED));
+            cbRole.removeActionListener(this);
+            cbRole.setSelectedItem((currentEntity == null) ? UnitRole.UNDETERMINED : currentEntity.getRole());
+            cbRole.addActionListener(this);
+        }
     }
 
     @Override
