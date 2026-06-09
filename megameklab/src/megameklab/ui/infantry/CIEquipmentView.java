@@ -69,13 +69,16 @@ public class CIEquipmentView extends IView implements ActionListener {
     private static final int T_ARCHAIC = 0;
     private static final int T_PERSONAL = 1;
     private static final int T_SUPPORT = 2;
-    private static final int T_WEAPON = 3;
-    private static final int T_NUM = 4;
+    private static final int T_DISPOSABLE = 3;
+    private static final int T_WEAPON = 4;
+    private static final int T_NUM = 5;
 
     private RefreshListener refresh;
 
     private final JButton addPrimaryButton = new JButton("Add Primary");
     private final JButton addSecondaryButton = new JButton("Add Secondary");
+    private final JButton addDisposableButton = new JButton("Add Disposable");
+    private final JButton removeDisposableButton = new JButton("Remove Disposable");
     private final JComboBox<String> choiceType = new JComboBox<>();
     private final JTextField txtFilter = new JTextField(12);
 
@@ -90,6 +93,8 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private final String ADD_PRIMARY_COMMAND = "ADD_PRIMARY";
     private final String ADD_SECONDARY_COMMAND = "ADD_SECONDARY";
+    private final String ADD_DISPOSABLE_COMMAND = "ADD_DISPOSABLE";
+    private final String REMOVE_DISPOSABLE_COMMAND = "REMOVE_DISPOSABLE";
 
     public static String getTypeName(int type) {
         return switch (type) {
@@ -97,6 +102,7 @@ public class CIEquipmentView extends IView implements ActionListener {
             case T_ARCHAIC -> "Archaic Weapons";
             case T_PERSONAL -> "Personal Weapons";
             case T_SUPPORT -> "Support Weapons";
+            case T_DISPOSABLE -> "Disposable Weapons";
             default -> "?";
         };
     }
@@ -139,6 +145,9 @@ public class CIEquipmentView extends IView implements ActionListener {
             addSecondaryButton.setEnabled((null != equipmentType)
                   && eSource.getTechManager().isLegal(equipmentType)
                   && (TestInfantry.maxSecondaryWeapons(getInfantry()) > 0));
+            addDisposableButton.setEnabled((null != equipmentType)
+                  && eSource.getTechManager().isLegal(equipmentType)
+                  && equipmentType.hasFlag(WeaponType.F_INF_DISPOSABLE));
         };
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
@@ -196,9 +205,11 @@ public class CIEquipmentView extends IView implements ActionListener {
         viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
+        JPanel btnPanel = new JPanel(new GridLayout(0, 3));
         btnPanel.add(addPrimaryButton);
         btnPanel.add(addSecondaryButton);
+        btnPanel.add(addDisposableButton);
+        btnPanel.add(removeDisposableButton);
 
         // layout
         JPanel databasePanel = new JPanel(new GridBagLayout());
@@ -235,46 +246,70 @@ public class CIEquipmentView extends IView implements ActionListener {
         removeAllListeners();
         filterEquipment();
         addSecondaryButton.setEnabled(TestInfantry.maxSecondaryWeapons(getInfantry()) > 0);
+        removeDisposableButton.setEnabled(getInfantry().hasDisposableWeapon());
         addAllListeners();
     }
 
     private void removeAllListeners() {
         addPrimaryButton.removeActionListener(this);
         addSecondaryButton.removeActionListener(this);
+        addDisposableButton.removeActionListener(this);
+        removeDisposableButton.removeActionListener(this);
     }
 
     private void addAllListeners() {
         addPrimaryButton.addActionListener(this);
         addSecondaryButton.addActionListener(this);
+        addDisposableButton.addActionListener(this);
+        removeDisposableButton.addActionListener(this);
         addPrimaryButton.setActionCommand(ADD_PRIMARY_COMMAND);
         addSecondaryButton.setActionCommand(ADD_SECONDARY_COMMAND);
+        addDisposableButton.setActionCommand(ADD_DISPOSABLE_COMMAND);
+        removeDisposableButton.setActionCommand(REMOVE_DISPOSABLE_COMMAND);
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getActionCommand().equals(ADD_PRIMARY_COMMAND) ||
-              evt.getActionCommand().equals(ADD_SECONDARY_COMMAND)) {
-            boolean isSecondary = evt.getActionCommand().equals(ADD_SECONDARY_COMMAND);
-            int view = masterEquipmentTable.getSelectedRow();
-            if (view < 0) {
-                // selection got filtered away
+        switch (evt.getActionCommand()) {
+            case ADD_PRIMARY_COMMAND, ADD_SECONDARY_COMMAND ->
+                  addMainWeapon(evt.getActionCommand().equals(ADD_SECONDARY_COMMAND));
+            case ADD_DISPOSABLE_COMMAND -> addDisposableWeapon();
+            case REMOVE_DISPOSABLE_COMMAND -> getInfantry().equipDisposableWeapon(null);
+            default -> {
                 return;
             }
-            int selected = masterEquipmentTable.convertRowIndexToModel(view);
-            EquipmentType equip = masterEquipmentList.getType(selected);
-            if (equip instanceof InfantryWeapon) {
-                InfantryUtil.replaceMainWeapon(getInfantry(), (InfantryWeapon) equip, isSecondary);
-                if (equip.hasFlag(WeaponType.F_TAG)) {
-                    getInfantry().setSpecializations(getInfantry().getSpecializations() | ConvInfantry.TAG_TROOPS);
-                    getInfantry().setSecondaryWeaponsPerSquad(2);
-                } else if (isSecondary && (getInfantry().getSecondaryWeaponsPerSquad() == 0)) {
-                    getInfantry().setSecondaryWeaponsPerSquad(1);
-                }
-            }
-        } else {
-            return;
         }
         refresh.refreshAll();
+    }
+
+    /**
+     * @return the currently selected weapon in the table, or null if none / filtered away
+     */
+    private EquipmentType selectedEquipment() {
+        int view = masterEquipmentTable.getSelectedRow();
+        if (view < 0) {
+            return null;
+        }
+        return masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(view));
+    }
+
+    private void addMainWeapon(boolean isSecondary) {
+        if (selectedEquipment() instanceof InfantryWeapon weapon) {
+            InfantryUtil.replaceMainWeapon(getInfantry(), weapon, isSecondary);
+            if (weapon.hasFlag(WeaponType.F_TAG)) {
+                getInfantry().setSpecializations(getInfantry().getSpecializations() | ConvInfantry.TAG_TROOPS);
+                getInfantry().setSecondaryWeaponsPerSquad(2);
+            } else if (isSecondary && (getInfantry().getSecondaryWeaponsPerSquad() == 0)) {
+                getInfantry().setSecondaryWeaponsPerSquad(1);
+            }
+        }
+    }
+
+    private void addDisposableWeapon() {
+        if ((selectedEquipment() instanceof InfantryWeapon weapon)
+              && weapon.hasFlag(WeaponType.F_INF_DISPOSABLE)) {
+            getInfantry().equipDisposableWeapon(weapon);
+        }
     }
 
     private void filterEquipment() {
@@ -296,6 +331,7 @@ public class CIEquipmentView extends IView implements ActionListener {
                       && !etype.hasFlag(WeaponType.F_INF_ARCHAIC)
                       && !etype.hasFlag(WeaponType.F_INF_SUPPORT))
                       || ((nType == T_SUPPORT) && etype.hasFlag(WeaponType.F_INF_SUPPORT))
+                      || ((nType == T_DISPOSABLE) && etype.hasFlag(WeaponType.F_INF_DISPOSABLE))
                 ) {
                     if (null != eSource.getTechManager()
                           && !eSource.getTechManager().isLegal(etype)
