@@ -255,6 +255,8 @@ public class CIWeaponView extends BuildView implements ActionListener {
         } else {
             txtDisposable.setText(noneMsg);
         }
+        // Disposable Weapons (TO:AR p.106) are Advanced; only editable at Advanced tech level or higher.
+        txtDisposable.setEnabled(techManager.getTechLevel().ordinal() >= SimpleTechLevel.ADVANCED.ordinal());
     }
 
     private int selectedFieldGunCount() {
