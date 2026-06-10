@@ -73,7 +73,6 @@ public class CIEquipmentView extends IView implements ActionListener {
     private static final int T_SUPPORT = 2;
     private static final int T_DISPOSABLE = 3;
     private static final int T_WEAPON = 4;
-    private static final int T_NUM = 5;
 
     private RefreshListener refresh;
 
@@ -312,7 +311,8 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     private void addDisposableWeapon() {
         if ((selectedEquipment() instanceof InfantryWeapon weapon)
-              && weapon.hasFlag(WeaponType.F_INF_DISPOSABLE)) {
+              && weapon.hasFlag(WeaponType.F_INF_DISPOSABLE)
+              && eSource.getTechManager().isLegal(weapon)) {
             getInfantry().equipDisposableWeapon(weapon);
         }
     }
