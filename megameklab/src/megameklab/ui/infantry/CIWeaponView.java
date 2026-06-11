@@ -89,7 +89,10 @@ public class CIWeaponView extends BuildView implements ActionListener {
     private final JComboBox<Integer> cbNumGuns = new JComboBox<>();
     private final JCheckBox chkAntiMek = new JCheckBox();
 
-    /** Disposable Weapon (TO:AR p.106): read-only display, set from the weapon table like primary/secondary. */
+    /**
+     * Disposable Weapon (TO:AuE p.116, Corrected Sixth Printing): read-only display, set from the weapon table like
+     * primary/secondary.
+     */
     private final DisplayTextField txtDisposable = new DisplayTextField(WidthControlComponent.TEXT_FIELD_COLUMNS);
 
     private final ITechManager techManager;
@@ -255,7 +258,8 @@ public class CIWeaponView extends BuildView implements ActionListener {
         } else {
             txtDisposable.setText(noneMsg);
         }
-        // Disposable Weapons (TO:AR p.106) are Advanced; only editable at Advanced tech level or higher.
+        // Disposable Weapons (TO:AuE p.116, Corrected Sixth Printing) are Advanced; only editable at Advanced tech
+        // level or higher.
         txtDisposable.setEnabled(techManager.getTechLevel().ordinal() >= SimpleTechLevel.ADVANCED.ordinal());
     }
 

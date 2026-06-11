@@ -353,8 +353,8 @@ public class CIEquipmentView extends IView implements ActionListener {
 
     /**
      * Enables the Add Disposable button whenever the game is at Advanced tech level or higher, where the Disposable
-     * Weapon rule (TO:AR p.106) is available. Unlike Add Primary/Secondary, this does not require a selection; the
-     * action is a no-op unless a Disposable Weapon is actually selected.
+     * Weapon rule (TO:AuE p.116, Corrected Sixth Printing) is available. Unlike Add Primary/Secondary, this does not
+     * require a selection; the action is a no-op unless a Disposable Weapon is actually selected.
      */
     private void updateAddDisposableButton() {
         addDisposableButton.setEnabled(isDisposableTechLevel());
