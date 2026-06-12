@@ -479,8 +479,10 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         if (hasUsedGlove) {
                             continue;
                         }
-                    } else if (eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)) {
-                        // Only armored gloves can carry infantry support weapons
+                    } else if (eq.getType().hasFlag(WeaponType.F_INF_SUPPORT)
+                          && !eq.getType().hasFlag(WeaponType.F_INF_DISPOSABLE)) {
+                        // Only armored gloves can carry infantry support weapons; Disposable Weapons (TO:AuE p.116,
+                        // Corrected Sixth Printing) are an exception and may be carried in a standard AP mount.
                         continue;
                     }
 
