@@ -106,6 +106,7 @@ import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.dialog.PrintQueueDialog;
 import megameklab.util.CConfig;
+import megameklab.util.MULManager;
 import megameklab.util.UnitUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -826,8 +827,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         mulExportButton.addActionListener(e -> exportAsMul());
         buttonPanel.add(mulExportButton, BorderLayout.WEST);
 
+        // Load MUL
+        Icon loadMulIcon = UIManager.getIcon("Tree.openIcon");
+        JButton loadMulButton = new JButton(loadMulIcon);
+        loadMulButton.setToolTipText(menuResources.getString("miLoadForceFromFile.text"));
+        loadMulButton.setFocusable(false);
+        loadMulButton.addActionListener(e -> loadForceFromFile());
+        buttonPanel.add(loadMulButton, BorderLayout.WEST);
+
         // Load from Cache
-        Icon openIcon = UIManager.getIcon("Tree.openIcon");
+        Icon openIcon = UIManager.getIcon("FileChooser.detailsViewIcon");
         JButton loadFromCacheButton = new JButton(openIcon);
         loadFromCacheButton.setToolTipText(dialogResources.getString("ForceBuildDialog.loadFromCache.toolTipText"));
         loadFromCacheButton.setFocusable(false);
@@ -960,6 +969,23 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             return;
         }
         addEntity(loadedUnit);
+    }
+
+    public void loadForceFromFile() {
+        loadForceFromFile(this);
+    }
+
+    public static void loadForceFromFile(JFrame owner) {
+        MMLFileChooser loadMulFileChooser = new MMLFileChooser();
+        loadMulFileChooser.setDialogTitle(Messages.getString("ClientGUI.openUnitListFileDialog.title"));
+        loadMulFileChooser.setFileFilter(new FileNameExtensionFilter(Messages.getString("ClientGUI.descriptionMULFiles"),
+              CG_FILEPATH_MUL));
+        loadMulFileChooser.setCurrentDirectory(new File(CConfig.getParam(CConfig.FILE_LAST_DIRECTORY)));
+        int result = loadMulFileChooser.showOpenDialog(owner);
+        if ((result != JFileChooser.APPROVE_OPTION) || (loadMulFileChooser.getSelectedFile() == null)) {
+            return;
+        }
+        MULManager.loadForceFromMUL(loadMulFileChooser.getSelectedFile());
     }
 
     private void warnOnInvalid(List<Entity> entity) {
