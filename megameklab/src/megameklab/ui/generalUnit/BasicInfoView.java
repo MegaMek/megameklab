@@ -446,14 +446,14 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
      * Returns the intro year value
      * @return
      */
-    public int getIntroYear() {
+    private int getIntroYear() {
         return txtYear.getIntVal();
     }
 
     /**
      * Returns the build year value, or -1 if the field is empty (meaning "use intro year").
      */
-    public int getBuildYear() {
+    private int getBuildYear() {
         if (txtBuildYear.getText().isBlank()) {
             return -1;
         }
