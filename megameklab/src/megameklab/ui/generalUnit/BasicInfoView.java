@@ -428,7 +428,12 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     @Override
     public int getTechIntroYear() {
-        return txtYear.getIntVal();
+        final int buildYear = getBuildYear();
+        final int introYear = txtYear.getIntVal();
+        if (buildYear > introYear) {
+            return buildYear;
+        }
+        return introYear;
     }
 
     public void setYear(int year) {
@@ -438,9 +443,17 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     }
 
     /**
+     * Returns the intro year value
+     * @return
+     */
+    private int getIntroYear() {
+        return txtYear.getIntVal();
+    }
+
+    /**
      * Returns the build year value, or -1 if the field is empty (meaning "use intro year").
      */
-    public int getBuildYear() {
+    private int getBuildYear() {
         if (txtBuildYear.getText().isBlank()) {
             return -1;
         }
@@ -470,7 +483,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
      */
     private void updateBuildYearPlaceholder() {
         txtBuildYear.putClientProperty("JTextField.placeholderText",
-              String.valueOf(getTechIntroYear()));
+              String.valueOf(getIntroYear()));
     }
 
     @Override
@@ -745,7 +758,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     @Override
     public void focusGained(FocusEvent e) {
         if (e.getSource().equals(txtYear)) {
-            prevYear = getTechIntroYear();
+            prevYear = getIntroYear();
         } else if (e.getSource().equals(txtBuildYear)) {
             prevBuildYear = getBuildYear();
         }
