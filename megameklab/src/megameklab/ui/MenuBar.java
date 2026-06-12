@@ -1053,6 +1053,12 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miViewForce.addActionListener(evt -> viewForce());
         forceMenu.add(miViewForce);
 
+        final JMenuItem miLoadForceFromFile = new JMenuItem(resources.getString("miLoadForceFromFile.text"));
+        miLoadForceFromFile.setName("miLoadForceFromFile");
+        miLoadForceFromFile.setMnemonic(KeyEvent.VK_L);
+        miLoadForceFromFile.addActionListener(evt -> loadForceFromFile());
+        forceMenu.add(miLoadForceFromFile);
+
         refreshForceMenu();
 
         return forceMenu;
@@ -1618,6 +1624,10 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     public void viewForce() {
         ForceBuildUI.showWindow();
+    }
+
+    public void loadForceFromFile() {
+        ForceBuildUI.loadForceFromFile(owner.getFrame());
     }
 
     public void addUnitToForce(Entity entity) {
