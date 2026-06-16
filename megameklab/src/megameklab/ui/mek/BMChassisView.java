@@ -552,20 +552,20 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
         boolean isClan = techManager.useClanTechBase();
         if (isIndustrial()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_INDUSTRIAL, isClan);
-            addAvailableStructure(availableStructures, EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.getStructureFromName(name));
         } else if (isPrimitive()) {
             String name = EquipmentType.getStructureTypeName(EquipmentType.T_STRUCTURE_STANDARD, isClan);
-            addAvailableStructure(availableStructures, EquipmentType.get(name));
+            addAvailableStructure(availableStructures, EquipmentType.getStructureFromName(name));
         } else {
             int[] structureTypes = isSuperheavy() ?
                   SUPERHEAVY_STRUCTURE_TYPES : STRUCTURE_TYPES;
             for (int i : structureTypes) {
                 String name = EquipmentType.getStructureTypeName(i, isClan);
-                EquipmentType structure = EquipmentType.get(name);
+                EquipmentType structure = EquipmentType.getStructureFromName(name);
                 // LAMs cannot use bulky structure
                 addAvailableStructure(availableStructures, structure);
                 name = EquipmentType.getStructureTypeName(i, !isClan);
-                EquipmentType structure2 = EquipmentType.get(name);
+                EquipmentType structure2 = EquipmentType.getStructureFromName(name);
                 addAvailableStructure(availableStructures, structure2);
             }
         }
