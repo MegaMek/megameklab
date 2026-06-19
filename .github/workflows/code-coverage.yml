@@ -19,17 +19,17 @@ jobs:
 
     steps:
       - name: Checkout Data Repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: megamek/mm-data
           path: mm-data
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           path: megameklab
 
       - name: Checkout MegaMek
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: MegaMek/megamek
           path: megamek
