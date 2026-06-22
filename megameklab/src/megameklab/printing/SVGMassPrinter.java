@@ -521,6 +521,31 @@ public class SVGMassPrinter {
                 }
             }
 
+        if (entity instanceof Mek mek) {
+            if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM)) {
+                ExportInventoryEntry entry = new ExportInventoryEntry();
+                entry.id = "hand";
+                entry.n = mek.getSystemName(Mek.ACTUATOR_HAND);
+                entry.t = "S";
+                entry.q = 1;
+                entry.p = Mek.LOC_LEFT_ARM;
+                entry.l = "LA";
+                entry.c = "1";
+                list.put("LA:hand", entry);
+            }
+            if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM)) {
+                ExportInventoryEntry entry = new ExportInventoryEntry();
+                entry.id = "hand";
+                entry.n = mek.getSystemName(Mek.ACTUATOR_HAND);
+                entry.t = "S";
+                entry.q = 1;
+                entry.p = Mek.LOC_RIGHT_ARM;
+                entry.l = "RA";
+                entry.c = "1";
+                list.put("RA:hand", entry);
+            }
+        }
+
             List<Mounted<?>> mountedList = entity.getEquipment();
             for (Mounted<?> m : mountedList) {
                 if (m.isWeaponGroup()) {
