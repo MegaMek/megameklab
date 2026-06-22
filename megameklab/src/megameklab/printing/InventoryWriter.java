@@ -206,6 +206,7 @@ public class InventoryWriter {
     private final boolean mergeInventoryAllowed;
     private final RecordSheetOptions.HitModStyle includeHitMod;
     private final RecordSheetOptions.IntrinsicPhysicalAttacksStyle includeIntrinsicPhysicals;
+    private final boolean hasFooterPhysicalEntries;
 
     /**
      * Creates a new instance, determines column positions, and parses equipment.
@@ -255,6 +256,8 @@ public class InventoryWriter {
         } else {
             parseEquipment();
         }
+        hasFooterPhysicalEntries = includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)
+              && equipment.stream().anyMatch(entry -> entry instanceof IntrinsicPhysicalInventoryEntry);
         String str;
         if (!sheet.getEntity().isHandheldWeapon()) {
             str = ammo.entrySet().stream()
@@ -645,7 +648,13 @@ public class InventoryWriter {
     private double calcLinePadding(float fontSize) {
         // The heat profile is printed above a bottom-anchored footer. Reserve a small gap without pretending there is
         // another full equipment row.
-        return sheet.showHeatProfile() && (footerLines(fontSize) > 0) ? HEAT_PROFILE_FOOTER_PADDING_LINES : 0;
+        return sheet.showHeatProfile() && hasFooterContent() ? HEAT_PROFILE_FOOTER_PADDING_LINES : 0;
+    }
+
+    private boolean hasFooterContent() {
+        // This is only a yes/no check for padding, so do not recalculate wrapped footer lines here.
+        return hasFooterPhysicalEntries || !ammoText.isEmpty() || !fuelText.isEmpty() || !featuresText.isEmpty()
+              || !miscNotesText.isEmpty() || !quirksText.isEmpty();
     }
 
     static private final float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
@@ -890,7 +899,7 @@ public class InventoryWriter {
 
     private List<InventoryEntry> footerPhysicalEntries() {
         // These rows are printed inside writeFooterBlock, so footerLines() must reserve space for them there.
-        if (includeIntrinsicPhysicals.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER)) {
+        if (hasFooterPhysicalEntries) {
             return equipment.stream()
                   .filter(entry -> entry instanceof IntrinsicPhysicalInventoryEntry)
                   .toList();
