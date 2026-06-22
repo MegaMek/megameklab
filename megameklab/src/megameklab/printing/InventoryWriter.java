@@ -97,10 +97,6 @@ public class InventoryWriter {
     private static final float MIN_FONT_SIZE = 4.5f;
     private static final float QUIRKS_FONT_SCALING = 0.9f;
     private static final float FOOTER_TEXT_WIDTH_RATIO = 0.95f;
-    /**
-        * Absolute floor for line spacing. The scaler also raises this per font size so text does not overlap.
-     */
-    public static final float MIN_LINE_SPACING = 0.7f;
 
     enum Column {
         QUANTITY("#", 0.025),
@@ -655,7 +651,7 @@ public class InventoryWriter {
     static private final float INITIAL_LINE_SPACING = 1.2f; // the initial line spacing factor
     static private final float LINE_SPACING_REDUCTION_STEP = 0.01f; // tiny spacing steps avoid visual jumps
     static private final float FONT_SIZE_REDUCTION_STEP = 0.05f; // small steps keep font changes visually smooth
-    static private final float MIN_LINE_HEIGHT_TO_FONT_SIZE = 1.05f;
+    static private final float MIN_LINE_HEIGHT_TO_FONT_SIZE = 0.93f;
     static private final float MAX_LINE_HEIGHT_TO_FONT_SIZE = 1.35f;
 
     /**
@@ -702,7 +698,7 @@ public class InventoryWriter {
 
     private float minLineSpacing(float fontSize, float fontHeight) {
         // One font size needs at least about one font-size of baseline distance. Convert that real distance to a factor.
-        return Math.max(MIN_LINE_SPACING, (fontSize * MIN_LINE_HEIGHT_TO_FONT_SIZE) / fontHeight);
+        return fontSize * MIN_LINE_HEIGHT_TO_FONT_SIZE / fontHeight;
     }
 
     private float maxLineSpacing(float fontSize, float fontHeight, float minLineSpacing) {
