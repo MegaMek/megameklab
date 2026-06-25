@@ -221,8 +221,14 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private static void configureInnerScroll(JScrollPane scrollPane) {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.addMouseWheelListener(event -> {
+            // Use precise rotation: high-resolution wheels and trackpads can report 0 from getWheelRotation()
+            // while still producing a non-zero precise value, which would misread the scroll direction.
+            double wheelRotation = event.getPreciseWheelRotation();
+            if (wheelRotation == 0.0) {
+                return;
+            }
             JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
-            boolean scrollingUp = event.getWheelRotation() < 0;
+            boolean scrollingUp = wheelRotation < 0;
             boolean canScroll = verticalBar.isVisible() && (scrollingUp
                   ? verticalBar.getValue() > verticalBar.getMinimum()
                   : verticalBar.getValue() + verticalBar.getVisibleAmount() < verticalBar.getMaximum());
