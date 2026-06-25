@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -53,9 +53,11 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import megamek.client.ui.clientGUI.DialogOptionListener;
 import megamek.client.ui.panels.DialogOptionComponentYPanel;
@@ -160,10 +162,13 @@ public class QuirksTab extends ITab implements DialogOptionListener {
         // Wrap panels in scroll panes
         JScrollPane positiveScrollPane = new JScrollPane(positiveQuirksPanel);
         positiveScrollPane.setBorder(null);
+        configureInnerScroll(positiveScrollPane);
         JScrollPane negativeScrollPane = new JScrollPane(negativeQuirksPanel);
         negativeScrollPane.setBorder(null);
+        configureInnerScroll(negativeScrollPane);
         JScrollPane weaponScrollPane = new JScrollPane(weaponQuirksContainer);
         weaponScrollPane.setBorder(null);
+        configureInnerScroll(weaponScrollPane);
 
         // Create nested split panes for three-way horizontal split
         JSplitPane leftSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -203,6 +208,32 @@ public class QuirksTab extends ITab implements DialogOptionListener {
                 }
             });
         }
+    }
+
+    /**
+     * Sets a usable wheel step on an inner quirk scroll pane and forwards the wheel event to the enclosing tab scroll
+     * pane when this pane cannot scroll further in the wheel's direction.
+     *
+     * <p>The quirk lists sit in inner scroll panes nested inside the outer tab scroll pane. By default an inner scroll
+     * pane swallows mouse-wheel events over its content even when it has nothing left to scroll, so the outer tab never
+     * scrolls. Forwarding at the scroll limit lets the wheel work no matter where the cursor sits.</p>
+     */
+    private static void configureInnerScroll(JScrollPane scrollPane) {
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.addMouseWheelListener(event -> {
+            JScrollBar verticalBar = scrollPane.getVerticalScrollBar();
+            boolean scrollingUp = event.getWheelRotation() < 0;
+            boolean canScroll = verticalBar.isVisible() && (scrollingUp
+                  ? verticalBar.getValue() > verticalBar.getMinimum()
+                  : verticalBar.getValue() + verticalBar.getVisibleAmount() < verticalBar.getMaximum());
+            if (!canScroll) {
+                JScrollPane outerScrollPane = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class,
+                      scrollPane);
+                if (outerScrollPane != null) {
+                    outerScrollPane.dispatchEvent(SwingUtilities.convertMouseEvent(scrollPane, event, outerScrollPane));
+                }
+            }
+        });
     }
 
     /**
