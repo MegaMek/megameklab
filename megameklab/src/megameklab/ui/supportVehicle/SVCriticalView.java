@@ -37,23 +37,28 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import megamek.client.ui.util.UIUtil.FixedYPanel;
 import megamek.common.CriticalSlot;
 import megamek.common.annotations.Nullable;
 import megamek.common.equipment.Mounted;
+import megamek.common.exceptions.LocationFullException;
 import megamek.common.units.FixedWingSupport;
 import megamek.common.units.SuperHeavyTank;
 import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
 import megameklab.ui.EntitySource;
+import megameklab.ui.PopupMessages;
 import megameklab.ui.util.CritCellUtil;
 import megameklab.ui.util.DropTargetCriticalList;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.UnitUtil;
 
 /**
  * The Crit Slots view for a Support Vehicle (all motive types)
@@ -62,6 +67,10 @@ import megameklab.ui.util.RefreshListener;
  * @author Simon (Juliez)
  */
 public class SVCriticalView extends IView {
+    private final Box chassisPanel = Box.createVerticalBox();
+    private final Box fixedWingLeftPanel = Box.createVerticalBox();
+    private final Box fixedWingChassisPanel = Box.createVerticalBox();
+    private final Box fixedWingRightPanel = Box.createVerticalBox();
 
     private final JPanel leftPanel = new JPanel();
     private final JPanel rightPanel = new JPanel();
@@ -71,15 +80,22 @@ public class SVCriticalView extends IView {
     private final JPanel rearLeftPanel = new JPanel();
     private final JPanel rearRightPanel = new JPanel();
     private final JPanel middlePanel2 = new JPanel();
+    private final JPanel leftWingCrits = new JPanel();
+    private final JPanel rightWingCrits = new JPanel();
+    private final JPanel nosePanel = new JPanel();
+    private final JPanel aftPanel = new JPanel();
+    private final JPanel fixedWingBodyPanel = new JPanel();
     private final JPanel turretPanel = new FixedYPanel();
     private final JPanel dualTurretPanel = new FixedYPanel();
     private final JPanel rotorPanel = new FixedYPanel();
+
     private RefreshListener refresh;
 
-    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, frontPanel,
-          FixedWingSupport.LOC_LEFT_WING, leftPanel,
-          FixedWingSupport.LOC_RIGHT_WING, rightPanel, FixedWingSupport.LOC_BODY, bodyPanel, FixedWingSupport.LOC_AFT,
-          rearPanel);
+    private final Map<Integer, JComponent> aeroLocations = Map.of(FixedWingSupport.LOC_NOSE, nosePanel,
+          FixedWingSupport.LOC_LEFT_WING, leftWingCrits,
+          FixedWingSupport.LOC_RIGHT_WING, rightWingCrits,
+          FixedWingSupport.LOC_BODY, fixedWingBodyPanel,
+          FixedWingSupport.LOC_AFT, aftPanel);
 
     private final Map<Integer, JComponent> vtolLocations = Map.of(Tank.LOC_FRONT, frontPanel, Tank.LOC_LEFT, leftPanel,
           Tank.LOC_RIGHT, rightPanel, Tank.LOC_BODY, bodyPanel, Tank.LOC_REAR, rearPanel, VTOL.LOC_ROTOR, rotorPanel,
@@ -100,6 +116,11 @@ public class SVCriticalView extends IView {
         super(eSource);
         this.refresh = refresh;
 
+        Box leftWingPanel = Box.createVerticalBox();
+        Box rightWingPanel = Box.createVerticalBox();
+        JButton btnCopyLW = new JButton("Copy from Left Wing");
+        JButton btnCopyRW = new JButton("Copy from Right Wing");
+
         frontPanel.setBorder(CritCellUtil.locationBorderNoLine("Front"));
         leftPanel.setBorder(CritCellUtil.locationBorderNoLine("Left Side"));
         bodyPanel.setBorder(CritCellUtil.locationBorderNoLine("Body"));
@@ -107,6 +128,11 @@ public class SVCriticalView extends IView {
         rearLeftPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear Left Side"));
         rearRightPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear Right Side"));
         rearPanel.setBorder(CritCellUtil.locationBorderNoLine("Rear"));
+        nosePanel.setBorder(CritCellUtil.locationBorder("Nose"));
+        leftWingPanel.setBorder(CritCellUtil.locationBorder("Left Wing"));
+        fixedWingBodyPanel.setBorder(CritCellUtil.locationBorder("Body"));
+        rightWingPanel.setBorder(CritCellUtil.locationBorder("Right Wing"));
+        aftPanel.setBorder(CritCellUtil.locationBorder("Aft"));
         rotorPanel.setBorder(CritCellUtil.locationBorderNoLine("Rotor"));
         dualTurretPanel.setBorder(CritCellUtil.locationBorderNoLine("Front Turret"));
 
@@ -128,11 +154,35 @@ public class SVCriticalView extends IView {
         bottomPanel.add(rearPanel);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
-        Box chassisPanel = Box.createVerticalBox();
         chassisPanel.add(topPanel);
         chassisPanel.add(middlePanel);
         chassisPanel.add(middlePanel2);
         chassisPanel.add(bottomPanel);
+
+        btnCopyRW.putClientProperty(FlatClientProperties.STYLE_CLASS, "small");
+        btnCopyLW.putClientProperty(FlatClientProperties.STYLE_CLASS, "small");
+
+        leftWingPanel.add(leftWingCrits);
+        leftWingPanel.add(btnCopyRW);
+        rightWingPanel.add(rightWingCrits);
+        rightWingPanel.add(btnCopyLW);
+
+        btnCopyLW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        btnCopyRW.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        btnCopyLW.addActionListener(ev -> copyLocation(FixedWingSupport.LOC_LEFT_WING, FixedWingSupport.LOC_RIGHT_WING));
+        btnCopyRW.addActionListener(ev -> copyLocation(FixedWingSupport.LOC_RIGHT_WING, FixedWingSupport.LOC_LEFT_WING));
+
+        fixedWingLeftPanel.add(Box.createVerticalGlue());
+        fixedWingLeftPanel.add(leftWingPanel);
+        fixedWingLeftPanel.add(Box.createVerticalGlue());
+
+        fixedWingChassisPanel.add(nosePanel);
+        fixedWingChassisPanel.add(fixedWingBodyPanel);
+        fixedWingChassisPanel.add(aftPanel);
+
+        fixedWingRightPanel.add(Box.createVerticalGlue());
+        fixedWingRightPanel.add(rightWingPanel);
+        fixedWingRightPanel.add(Box.createVerticalGlue());
 
         Box fullTurretPanel = Box.createVerticalBox();
         fullTurretPanel.add(dualTurretPanel);
@@ -143,6 +193,9 @@ public class SVCriticalView extends IView {
 
         Box mainPanel = Box.createHorizontalBox();
         mainPanel.add(chassisPanel);
+        mainPanel.add(fixedWingLeftPanel);
+        mainPanel.add(fixedWingChassisPanel);
+        mainPanel.add(fixedWingRightPanel);
         mainPanel.add(fullTurretPanel);
         add(mainPanel);
     }
@@ -153,16 +206,32 @@ public class SVCriticalView extends IView {
 
     public void refresh() {
         leftPanel.removeAll();
+        leftWingCrits.removeAll();
         rightPanel.removeAll();
+        rightWingCrits.removeAll();
         bodyPanel.removeAll();
+        fixedWingBodyPanel.removeAll();
         frontPanel.removeAll();
+        nosePanel.removeAll();
         rearPanel.removeAll();
+        aftPanel.removeAll();
         turretPanel.removeAll();
         dualTurretPanel.removeAll();
         rearLeftPanel.removeAll();
         rearRightPanel.removeAll();
         rotorPanel.removeAll();
 
+        if (getEntity().isFixedWingSupport()) {
+            chassisPanel.setVisible(false);
+            fixedWingLeftPanel.setVisible(true);
+            fixedWingChassisPanel.setVisible(true);
+            fixedWingRightPanel.setVisible(true);
+        } else {
+            chassisPanel.setVisible(true);
+            fixedWingLeftPanel.setVisible(false);
+            fixedWingChassisPanel.setVisible(false);
+            fixedWingRightPanel.setVisible(false);
+        }
         rotorPanel.setVisible(isVTOL());
         turretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoTurret());
         dualTurretPanel.setVisible((getEntity() instanceof Tank) && !getTank().hasNoDualTurret());
@@ -248,5 +317,14 @@ public class SVCriticalView extends IView {
         } else {
             return tankLocations.get(location);
         }
+    }
+
+    private void copyLocation(int from, int to) {
+        try {
+            UnitUtil.copyLocationEquipment(getAero(), from, to);
+        } catch (LocationFullException ex) {
+            PopupMessages.showLocationFullError(null);
+        }
+        refresh.scheduleRefresh();
     }
 }

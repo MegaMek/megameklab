@@ -104,6 +104,7 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     public void refresh() {
+        autoFillButton.setVisible(!getEntity().isFixedWingSupport());
         removeAllActionListeners();
         critView.refresh();
         unallocatedView.refresh();
@@ -145,23 +146,27 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getTank().getEquipment()) {
-            // Fixed shouldn't be removed
-            if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
-                  || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
-                continue;
+        if (getEntity().isAero()) {
+            UnitUtil.removeAllCriticalSlots(getAero());
+        } else {
+            for (Mounted<?> mount : getTank().getEquipment()) {
+                // Fixed shouldn't be removed
+                if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
+                      || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
+                      || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
+                    continue;
+                }
+                UnitUtil.removeCriticalSlots(getTank(), mount);
+                UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
             }
-            UnitUtil.removeCriticalSlots(getTank(), mount);
-            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
-        }
-        // Check linking after you remove everything.
-        try {
-            MekFileParser.postLoadInit(getTank());
-        } catch (EntityLoadingException ele) {
-            // do nothing.
-        } catch (Exception ex) {
-            logger.error(ex, "");
+            // Check linking after you remove everything.
+            try {
+                MekFileParser.postLoadInit(getTank());
+            } catch (EntityLoadingException ele) {
+                // do nothing.
+            } catch (Exception ex) {
+                logger.error(ex, "");
+            }
         }
 
         refresh.refreshAll();

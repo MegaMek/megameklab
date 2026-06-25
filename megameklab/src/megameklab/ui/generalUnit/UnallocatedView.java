@@ -265,7 +265,9 @@ public class UnallocatedView extends IView implements ActionListener, MouseListe
             String[] locations = getEntity().getLocationNames();
 
             for (int location = 0; location < getEntity().locations(); location++) {
-                if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
+                // Exclude Wings from Fixed Wing Support
+                if ((!getEntity().isFixedWingSupport() || location != 4) && UnitUtil.isValidLocation(getEntity(),
+                      mount.getType(), location)) {
                     item = new JMenuItem("Add to " + locations[location]);
                     final int loc = location;
                     item.addActionListener(evt2 -> jMenuLoadComponent_actionPerformed(loc, selectedRow));
