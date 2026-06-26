@@ -48,6 +48,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
+import megamek.common.units.FixedWingSupport;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
@@ -131,7 +132,9 @@ public class SVBuildTab extends ITab implements ActionListener {
         for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
             for (int location = 0; location < getEntity().locations(); location++) {
                 try {
-                    if (UnitUtil.isValidLocation(getEntity(), mount.getType(), location)) {
+                    if ((!getEntity().isFixedWingSupport() || location != FixedWingSupport.LOC_WINGS) && UnitUtil.isValidLocation(getEntity(),
+                          mount.getType(),
+                          location)) {
                         getEntity().addEquipment(mount, location, false);
                         UnitUtil.changeMountStatus(getEntity(), mount, location, Entity.LOC_NONE, false);
                         break;
