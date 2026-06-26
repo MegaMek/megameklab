@@ -48,6 +48,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
+import megamek.common.units.FixedWingSupport;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.UnallocatedView;
@@ -129,11 +130,13 @@ public class SVBuildTab extends ITab implements ActionListener {
 
     private void autoFillCrits() {
         for (Mounted<?> mount : unallocatedView.getTableModel().getCrits()) {
-            for (int location = 0; location < getTank().locations(); location++) {
+            for (int location = 0; location < getEntity().locations(); location++) {
                 try {
-                    if (UnitUtil.isValidLocation(getTank(), mount.getType(), location)) {
-                        getTank().addEquipment(mount, location, false);
-                        UnitUtil.changeMountStatus(getTank(), mount, location, Entity.LOC_NONE, false);
+                    if ((!getEntity().isFixedWingSupport() || location != FixedWingSupport.LOC_WINGS) && UnitUtil.isValidLocation(getEntity(),
+                          mount.getType(),
+                          location)) {
+                        getEntity().addEquipment(mount, location, false);
+                        UnitUtil.changeMountStatus(getEntity(), mount, location, Entity.LOC_NONE, false);
                         break;
                     }
                 } catch (Exception ex) {
@@ -145,15 +148,17 @@ public class SVBuildTab extends ITab implements ActionListener {
     }
 
     private void resetCrits() {
-        for (Mounted<?> mount : getTank().getEquipment()) {
+        for (Mounted<?> mount : getEntity().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
-                  || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
+                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET)
+                  || mount.is(EquipmentTypeLookup.MAST_MOUNT)
+                  || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))
+            ) {
                 continue;
             }
-            UnitUtil.removeCriticalSlots(getTank(), mount);
-            UnitUtil.changeMountStatus(getTank(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
+            UnitUtil.removeCriticalSlots(getEntity(), mount);
+            UnitUtil.changeMountStatus(getEntity(), mount, Entity.LOC_NONE, Entity.LOC_NONE, false);
         }
         // Check linking after you remove everything.
         try {
