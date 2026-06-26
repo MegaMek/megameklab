@@ -33,6 +33,7 @@
 package megameklab.ui.supportVehicle;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -80,8 +81,18 @@ public class SVCriticalView extends IView {
     private final JPanel rearLeftPanel = new JPanel();
     private final JPanel rearRightPanel = new JPanel();
     private final JPanel middlePanel2 = new JPanel();
-    private final JPanel leftWingCrits = new JPanel();
-    private final JPanel rightWingCrits = new JPanel();
+    private final JPanel leftWingCrits = new JPanel() {
+        @Override
+        public Dimension getMaximumSize() {
+            return new Dimension(getPreferredSize().width, getPreferredSize().height);
+        }
+    };
+    private final JPanel rightWingCrits = new JPanel() {
+        @Override
+        public Dimension getMaximumSize() {
+            return new Dimension(getPreferredSize().width, getPreferredSize().height);
+        }
+    };
     private final JPanel nosePanel = new JPanel();
     private final JPanel aftPanel = new JPanel();
     private final JPanel fixedWingBodyPanel = new JPanel();
