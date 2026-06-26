@@ -148,8 +148,12 @@ public class SVBuildTab extends ITab implements ActionListener {
         for (Mounted<?> mount : getTank().getEquipment()) {
             // Fixed shouldn't be removed
             if (UnitUtil.isFixedLocationSpreadEquipment(mount.getType())
-                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET) || mount.is(EquipmentTypeLookup.MAST_MOUNT)
-                  || ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION))) {
+                  || mount.is(EquipmentTypeLookup.PINTLE_TURRET)
+                  || mount.is(EquipmentTypeLookup.MAST_MOUNT)
+                  || ((mount instanceof MiscMounted)
+                  && (mount.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+                  || mount.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+                  || mount.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)))) {
                 continue;
             }
             UnitUtil.removeCriticalSlots(getTank(), mount);
