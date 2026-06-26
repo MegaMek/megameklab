@@ -305,7 +305,10 @@ public class DropTargetCriticalList<E> extends JList<E> implements MouseListener
     private boolean isRemovable(@Nullable Mounted<?> mounted) {
         return (mounted != null) && !UnitUtil.isFixedLocationSpreadEquipment(mounted.getType())
               && !mounted.is(EquipmentTypeLookup.PINTLE_TURRET)
-              && !((mounted instanceof MiscMounted) && mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION));
+              && !((mounted instanceof MiscMounted)
+              && (mounted.getType().hasFlag(MiscType.F_CHASSIS_MODIFICATION)
+              || mounted.getType().hasFlag(MiscType.F_BASIC_FIRE_CONTROL)
+              || mounted.getType().hasFlag(MiscType.F_ADVANCED_FIRE_CONTROL)));
     }
 
     private boolean isDeletable(@Nullable Mounted<?> mounted) {
