@@ -154,7 +154,7 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         return "";
     }
 
-    private static class TankTables extends PrintRecordSheet {
+    private class TankTables extends PrintRecordSheet {
 
         TankTables(RecordSheetOptions options) {
             super(0, options);
@@ -162,11 +162,27 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
 
         @Override
         protected String getSVGFileName(int pageNumber) {
-            // Check if Vehicle Effectiveness Rules are enabled
-            if(this.options.TacOpsVehicleEffectiveness()){
-                return "tables_tank_tacops_vehicle_effectiveness_rules.svg";
+            if (tank1.isSupportVehicle() && tank1.getWeightClassName().replaceAll(" .*", "").equals("Large")) {
+                // Check if Vehicle Effectiveness Rules are enabled
+                if(this.options.TacOpsVehicleEffectiveness()){
+                    return "tables_tank_support_tacops_vehicle_effectiveness_rules.svg";
+                } else {
+                    return "tables_tank_support.svg";
+                }
+            } else if (tank1.isSuperHeavy()) {
+                // Check if Vehicle Effectiveness Rules are enabled
+                if(this.options.TacOpsVehicleEffectiveness()){
+                    return "tables_tank_superheavy_tacops_vehicle_effectiveness_rules.svg";
+                } else {
+                    return "tables_tank_superheavy.svg";
+                }
             } else {
-                return "tables_tank.svg";
+                // Check if Vehicle Effectiveness Rules are enabled
+                if(this.options.TacOpsVehicleEffectiveness()){
+                    return "tables_tank_tacops_vehicle_effectiveness_rules.svg";
+                } else {
+                    return "tables_tank.svg";
+                }
             }
         }
 
