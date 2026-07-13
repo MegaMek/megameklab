@@ -164,21 +164,21 @@ public class PrintCompositeTankSheet extends PrintRecordSheet {
         protected String getSVGFileName(int pageNumber) {
             if (tank1.isSupportVehicle() && tank1.getWeightClassName().replaceAll(" .*", "").equals("Large")) {
                 // Check if Vehicle Effectiveness Rules are enabled
-                if(this.options.TacOpsVehicleEffectiveness()){
+                if (this.options.TacOpsVehicleEffectiveness()) {
                     return "tables_tank_support_tacops_vehicle_effectiveness_rules.svg";
                 } else {
                     return "tables_tank_support.svg";
                 }
             } else if (tank1.isSuperHeavy()) {
                 // Check if Vehicle Effectiveness Rules are enabled
-                if(this.options.TacOpsVehicleEffectiveness()){
+                if (this.options.TacOpsVehicleEffectiveness()) {
                     return "tables_tank_superheavy_tacops_vehicle_effectiveness_rules.svg";
                 } else {
                     return "tables_tank_superheavy.svg";
                 }
             } else {
                 // Check if Vehicle Effectiveness Rules are enabled
-                if(this.options.TacOpsVehicleEffectiveness()){
+                if (this.options.TacOpsVehicleEffectiveness()) {
                     return "tables_tank_tacops_vehicle_effectiveness_rules.svg";
                 } else {
                     return "tables_tank.svg";
