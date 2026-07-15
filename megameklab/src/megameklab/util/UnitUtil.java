@@ -44,9 +44,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import megamek.SuiteConstants;
 import megamek.client.Client;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.CriticalSlot;
@@ -55,6 +57,8 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megamek.common.battlefieldSupport.BattlefieldSupportAssetYaml;
 import megamek.common.enums.TechBase;
 import megamek.common.equipment.*;
 import megamek.common.equipment.enums.MiscTypeFlag;
@@ -1936,6 +1940,8 @@ public class UnitUtil {
     public static long getEditorTypeForEntity(Entity newUnit) {
         if ((newUnit == null) || (newUnit instanceof Mek)) {
             return Entity.ETYPE_MEK;
+        } else if (newUnit instanceof BattlefieldSupportAsset) {
+            return Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET;
         } else if (newUnit.isSupportVehicle()) {
             return Entity.ETYPE_SUPPORT_TANK;
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
@@ -1974,7 +1980,17 @@ public class UnitUtil {
         }
         try {
             String unitAsString;
-            if (entity instanceof Mek) {
+            if (entity instanceof BattlefieldSupportAsset asset) {
+                // Assets serialize to the .bfs YAML format. The datestamp header (analogous to the MTF/BLK first
+                // line) is a YAML comment, so it is prepended here and honors includeGeneratorHeader rather than
+                // being stripped afterwards like the Mek/BLK header below.
+                String yaml = BattlefieldSupportAssetYaml.toYaml(asset.toAssetData());
+                if (includeGeneratorHeader) {
+                    return "# Saved from version " + SuiteConstants.VERSION + " on " + LocalDate.now()
+                          + java.lang.System.lineSeparator() + yaml;
+                }
+                return yaml;
+            } else if (entity instanceof Mek) {
                 unitAsString = ((Mek) entity).getMtf();
             } else {
                 BuildingBlock blk = BLKFile.getBlock(entity);

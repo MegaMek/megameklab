@@ -37,11 +37,13 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
@@ -73,8 +75,12 @@ public class MegaMekLabFileSaver {
           """.formatted(Calendar.getInstance().get(Calendar.YEAR));
 
 
+    private static final MMLogger STATIC_LOGGER = MMLogger.create(MegaMekLabFileSaver.class);
+
     private final MMLFileChooser saveUnitFileChooser = new MMLFileChooser();
     private final MMLogger logger;
+    /** The UUID conflict choice from the most recent save that hit a conflict, so a linked sidecar can follow it. */
+    private PopupMessages.UnitFileUUIDChoice lastUuidConflictChoice;
 
     public MegaMekLabFileSaver(MMLogger mainLogger, String dialogTitle) {
         logger = mainLogger;
@@ -92,6 +98,9 @@ public class MegaMekLabFileSaver {
     public static String createUnitFilename(Entity entity) {
         String fileName = (entity.getChassis() + ' ' + entity.getModel()).trim();
         fileName = fileName.replaceAll("[/\\\\<>:\"|?*]", "_");
+        if (entity instanceof BattlefieldSupportAsset) {
+            return fileName + ".bfs";
+        }
         return fileName + ((entity instanceof Mek) ? ".mtf" : ".blk");
     }
 
@@ -102,8 +111,8 @@ public class MegaMekLabFileSaver {
      */
     public String saveUnit(JFrame ownerFrame, FileNameManager fileNameManager, Entity entity) {
         String filePathName = fileNameManager.getFileName();
-        // For safety, save automatically only to .mtf or .blk files, otherwise ask
-        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk"))
+        // For safety, save automatically only to .mtf, .blk or .bfs files, otherwise ask
+        if (!(filePathName.endsWith(".mtf") || filePathName.endsWith(".blk") || filePathName.endsWith(".bfs"))
               || !new File(filePathName).exists()
               || fileNameManager.hasEntityNameChanged()) {
             File selectedFile = chooseSaveFile(ownerFrame, entity);
@@ -142,6 +151,27 @@ public class MegaMekLabFileSaver {
     }
 
     private boolean prepareUnitFileUUID(JFrame ownerFrame, File saveFile, Entity entity) {
+        lastUuidConflictChoice = resolveUnitFileUUID(saveFile, entity,
+              (currentUnit, targetUnit) -> PopupMessages.showUnitFileUUIDConflict(ownerFrame, currentUnit, targetUnit));
+        return lastUuidConflictChoice != PopupMessages.UnitFileUUIDChoice.CANCEL;
+    }
+
+    /**
+     * Resolves and applies the unit-file UUID to {@code entity} for a save to {@code saveFile}, following the standard
+     * rules: adopt an overwritten file's UUID when the names match; keep the UUID when the unit already matches that
+     * UUID or its name is unchanged; on a name/UUID conflict against an existing file defer to {@code conflictResolver};
+     * otherwise regenerate (a renamed/new unit).
+     *
+     * @param saveFile         the file the unit is about to be saved to
+     * @param entity           the unit whose UUID is resolved (and mutated)
+     * @param conflictResolver invoked (with the current unit and the existing target unit) only when a name/UUID
+     *                         conflict must be resolved
+     *
+     * @return the choice used to resolve a conflict (for reuse by a linked sidecar), or {@code null} when no conflict
+     *       arose; a returned {@link PopupMessages.UnitFileUUIDChoice#CANCEL} means the save should abort
+     */
+    static PopupMessages.UnitFileUUIDChoice resolveUnitFileUUID(File saveFile, Entity entity,
+          BiFunction<Entity, Entity, PopupMessages.UnitFileUUIDChoice> conflictResolver) {
         Entity targetUnit = readExistingUnit(saveFile);
         if (hasOriginalUnitIdentity(targetUnit)) {
             String targetUUID = targetUnit.getOriginalUnitFileUUID();
@@ -149,43 +179,69 @@ public class MegaMekLabFileSaver {
                   && Objects.equals(entity.getModel(), targetUnit.getOriginalModel());
             if (namesMatch) {
                 entity.setUnitFileUUID(targetUUID);
-                return true;
+                return null;
             }
 
             if (Objects.equals(entity.getUnitFileUUID(), targetUUID)) {
-                return true;
+                return null;
             }
 
             if (hasOriginalUnitIdentity(entity)) {
-                PopupMessages.UnitFileUUIDChoice choice = PopupMessages.showUnitFileUUIDConflict(
-                      ownerFrame, entity, targetUnit);
+                PopupMessages.UnitFileUUIDChoice choice = conflictResolver.apply(entity, targetUnit);
                 if (choice == PopupMessages.UnitFileUUIDChoice.TARGET) {
                     entity.setUnitFileUUID(targetUUID);
-                } else if (choice == PopupMessages.UnitFileUUIDChoice.CANCEL) {
-                    return false;
                 }
-                return true;
+                return choice;
             }
         }
 
         if (hasOriginalUnitIdentity(entity)
               && Objects.equals(entity.getChassis(), entity.getOriginalChassis())
               && Objects.equals(entity.getModel(), entity.getOriginalModel())) {
-            return true;
+            return null;
         }
 
         entity.regenerateUnitFileUUID();
-        return true;
+        return null;
     }
 
-    private @Nullable Entity readExistingUnit(File file) {
+    /**
+     * Resolves and applies the unit-file UUID to a linked Battlefield Support Asset about to be written to its sidecar
+     * {@code sidecarFile}, using the <em>same</em> rules as the base unit (see
+     * {@link #resolveUnitFileUUID(File, Entity, BiFunction)}). A name/UUID conflict is resolved non-interactively with
+     * {@code baseConflictChoice} — the choice the user already made for the base unit — so the asset follows the base's
+     * decision without a second prompt; when the base made no conflict choice, the asset keeps its current UUID on a
+     * conflict. This keeps the asset's own UUID lifecycle in lockstep with its base unit (e.g. both regenerate when the
+     * unit is renamed to a new file, so no two assets share a UUID).
+     *
+     * @param sidecarFile        the {@code .bfs} file the asset is about to be written to
+     * @param asset              the asset whose UUID is resolved (and mutated)
+     * @param baseConflictChoice the conflict choice made for the base unit, or {@code null} if there was no conflict
+     */
+    public static void prepareLinkedAssetUnitFileUUID(File sidecarFile, BattlefieldSupportAsset asset,
+          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) {
+        PopupMessages.UnitFileUUIDChoice effective =
+              (baseConflictChoice == null) ? PopupMessages.UnitFileUUIDChoice.CURRENT : baseConflictChoice;
+        resolveUnitFileUUID(sidecarFile, asset, (currentUnit, targetUnit) -> effective);
+    }
+
+    /**
+     * @return the conflict choice made during the most recent {@link #saveUnit}/{@link #saveUnitAs} that resolved a
+     *       unit-file UUID conflict, or {@code null} if the last save had no conflict. Used so a linked asset sidecar
+     *       can follow the base unit's UUID decision.
+     */
+    public @Nullable PopupMessages.UnitFileUUIDChoice getLastUnitFileUUIDConflictChoice() {
+        return lastUuidConflictChoice;
+    }
+
+    private static @Nullable Entity readExistingUnit(File file) {
         if (!file.isFile()) {
             return null;
         }
         try {
             return new MekFileParser(file).getEntity();
         } catch (Exception ex) {
-            logger.warn("Unable to read existing unit file {} before Save As.", file, ex);
+            STATIC_LOGGER.warn("Unable to read existing unit file {} before Save As.", file, ex);
             return null;
         }
     }
@@ -199,7 +255,9 @@ public class MegaMekLabFileSaver {
 
     // Replace owner class with EntitySource... somehow.
     private @Nullable File chooseSaveFile(JFrame ownerFrame, Entity entity) {
-        if (entity instanceof Mek) {
+        if (entity instanceof BattlefieldSupportAsset) {
+            saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Asset files", "bfs"));
+        } else if (entity instanceof Mek) {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Mek files", "mtf"));
         } else {
             saveUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files", "blk"));
@@ -218,13 +276,7 @@ public class MegaMekLabFileSaver {
             return null;
         }
         try {
-            try (FileOutputStream fos = new FileOutputStream(file);
-                  PrintStream ps = new PrintStream(fos)) {
-                if (CConfig.includeLicense()) {
-                    ps.println(LICENSE_HEADER);
-                }
-                ps.println(UnitUtil.saveUnitToString(entity, true));
-            }
+            writeUnitToFile(file, entity);
         } catch (Exception ex) {
             PopupMessages.showFileWriteError(ownerFrame, ex.getMessage());
             logger.error("", ex);
@@ -237,5 +289,24 @@ public class MegaMekLabFileSaver {
             logger.error("Unable to show unit saved message", ex);
         }
         return file.toString();
+    }
+
+    /**
+     * Writes the given unit to the given file (including the license header when configured), with no dialogs. Used
+     * both by the interactive save and by linked Battlefield Support Asset sidecar writing.
+     *
+     * @param file   the destination file
+     * @param entity the unit to write
+     *
+     * @throws java.io.IOException if the file cannot be written
+     */
+    public static void writeUnitToFile(File file, Entity entity) throws java.io.IOException {
+        try (FileOutputStream fos = new FileOutputStream(file);
+              PrintStream ps = new PrintStream(fos)) {
+            if (CConfig.includeLicense()) {
+                ps.println(LICENSE_HEADER);
+            }
+            ps.println(UnitUtil.saveUnitToString(entity, true));
+        }
     }
 }

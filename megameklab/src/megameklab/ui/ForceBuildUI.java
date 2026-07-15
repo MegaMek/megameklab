@@ -40,6 +40,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -90,6 +91,7 @@ import megamek.client.ui.dialogs.randomArmy.MMLForceBuilderRandomArmyDialog;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyErrors;
 import megamek.client.ui.panels.phaseDisplay.lobby.LobbyUtility;
 import megamek.client.ui.util.UIUtil;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.game.Game;
 import megamek.common.interfaces.IEntityRemovalConditions;
 import megamek.common.loaders.MekFileParser;
@@ -124,6 +126,13 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private DefaultTableModel tableModel;
     private JLabel totalBVLabel;
     private JScrollPane scrollPane;
+    /** The BFS checkmark column (hidden when the force has no assets). */
+    private TableColumn bfsColumn;
+    /** The BV column, whose header switches between "BV" and "BV/BSP". */
+    private TableColumn bvColumn;
+    /** Toggle shown only when assets are present: false = BV for all; true = BSP (in parens) for assets. */
+    private JToggleButton bvBspToggle;
+    private boolean showBspForAssets;
     private final JPopupMenu rowPopupMenu = new JPopupMenu();
 
     private MMLForceBuilderRandomArmyDialog randomArmyDialog;
@@ -132,10 +141,21 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     private final Client client = UnitUtil.getDummyClient();
 
     private static final int COL_REMOVE = 0;
-    private static final int COL_NAME = 1;
-    private static final int COL_GUNNERY = 2;
-    private static final int COL_PILOTING = 3;
-    private static final int COL_BV = 4;
+    private static final int COL_BFS = 1;
+    private static final int COL_NAME = 2;
+    private static final int COL_GUNNERY = 3;
+    private static final int COL_PILOTING = 4;
+    private static final int COL_BV = 5;
+
+    /** Labels for the Regular/Veteran choice shown in the Gunnery column for Battlefield Support Asset rows. */
+    private static final String ASSET_REGULAR = Messages.getString("MekSelectorDialog.AssetSkill.Regular");
+    private static final String ASSET_VETERAN = Messages.getString("MekSelectorDialog.AssetSkill.Veteran");
+
+    /** Dark-yellow color used to distinguish Battlefield Support Asset names in the force list. */
+    private static final String ASSET_NAME_COLOR = "#E8C84A";
+    private static final Color ASSET_COLOR = Color.decode(ASSET_NAME_COLOR);
+    /** Checkmark shown in the BFS column for Battlefield Support Asset rows. */
+    private static final String BFS_CHECK = "\u2714";
 
     static final String LMP_C3DISCONNECT = "C3DISCONNECT";
     static final String LMP_C3CONNECT = "C3CONNECT";
@@ -392,11 +412,94 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     }
 
     private void updateTotalBVLabelOnly() {
+        updateTotalLabel();
+    }
+
+    /**
+     * Updates the total label. In BV mode it shows the summed BV of the whole force (assets count as their BV). In
+     * BSP mode assets are excluded from the BV sum and their BSP is summed separately, e.g. "Total BV: 1200    BSP: 45".
+     */
+    private void updateTotalLabel() {
         int totalBV = 0;
+        int totalBSP = 0;
         for (Entity entity : forceList) {
-            totalBV += entity.calculateBattleValue();
+            if (showBspForAssets && (entity instanceof BattlefieldSupportAsset asset)) {
+                totalBSP += asset.getEffectiveBsp();
+            } else {
+                totalBV += entity.calculateBattleValue();
+            }
         }
-        totalBVLabel.setText("Total BV: " + totalBV);
+        totalBVLabel.setText(showBspForAssets
+              ? ("Total BV: " + totalBV + "    BSP: " + totalBSP)
+              : ("Total BV: " + totalBV));
+    }
+
+    /** @return the checkmark shown in the BFS column for asset rows, or an empty string for standard units. */
+    private static String bfsCell(Entity entity) {
+        return (entity instanceof BattlefieldSupportAsset) ? BFS_CHECK : "";
+    }
+
+    /** @return the Name-column HTML for the entity; asset names are shown in a dark-yellow colour. */
+    private static String nameCell(Entity entity) {
+        if (entity instanceof BattlefieldSupportAsset) {
+            return "<HTML><NOBR><FONT COLOR=" + ASSET_NAME_COLOR + '>' + entity.getShortNameRaw() + "</FONT>";
+        }
+        return UnitFormatter.getCell(entity);
+    }
+
+    /**
+     * Shows the BFS checkmark column and the BV/BSP toggle only when the force contains at least one asset, and forces
+     * BV mode when there are none. Called after every rebuild.
+     */
+    private void updateAssetColumns() {
+        boolean hasAssets = forceList.stream().anyMatch(e -> e instanceof BattlefieldSupportAsset);
+        setColumnVisible(bfsColumn, hasAssets);
+        if (bvBspToggle != null) {
+            bvBspToggle.setVisible(hasAssets);
+            if (!hasAssets && showBspForAssets) {
+                showBspForAssets = false;
+                bvBspToggle.setSelected(false);
+            }
+        }
+        updateBvColumnHeader();
+    }
+
+    private void updateBvColumnHeader() {
+        if (bvColumn != null) {
+            bvColumn.setHeaderValue(showBspForAssets ? "BV/BSP" : "BV");
+            if (entityTable.getTableHeader() != null) {
+                entityTable.getTableHeader().repaint();
+            }
+        }
+    }
+
+    /**
+     * Grows the window width just enough to hold the bottom controls when they no longer fit (e.g. after the BV/BSP
+     * toggle lengthens the total). Only ever widens - it never shrinks the window or changes the height, so it does not
+     * undo a manual resize.
+     */
+    private void ensureWidthForControls() {
+        revalidate();
+        int preferredWidth = getPreferredSize().width;
+        if (getWidth() < preferredWidth) {
+            setSize(preferredWidth, getHeight());
+        }
+    }
+
+    /** Collapses a fixed-width column to zero width when hidden, restoring a small width when shown. */
+    private static void setColumnVisible(TableColumn column, boolean visible) {
+        if (column == null) {
+            return;
+        }
+        if (visible) {
+            column.setMaxWidth(50);
+            column.setMinWidth(20);
+            column.setPreferredWidth(40);
+        } else {
+            column.setMinWidth(0);
+            column.setMaxWidth(0);
+            column.setPreferredWidth(0);
+        }
     }
 
     /**
@@ -409,8 +512,94 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         }
     }
 
+    /** @return true if the force row at the given index holds a Battlefield Support Asset. */
+    private boolean isAssetRow(int row) {
+        return (row >= 0) && (row < forceList.size()) && (forceList.get(row) instanceof BattlefieldSupportAsset);
+    }
+
+    /**
+     * Renders a skill cell. Standard units show the numeric Gunnery/Piloting skill; Battlefield Support Asset rows
+     * show "Regular"/"Veteran" in the Gunnery cell and leave the Piloting cell blank (assets have no piloting skill).
+     */
+    private class SkillCellRenderer extends DefaultTableCellRenderer {
+        private final int columnKind;
+
+        SkillCellRenderer(int columnKind) {
+            this.columnKind = columnKind;
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+              boolean hasFocus, int row, int column) {
+            Object display = value;
+            if (isAssetRow(row)) {
+                BattlefieldSupportAsset asset = (BattlefieldSupportAsset) forceList.get(row);
+                display = (columnKind == COL_GUNNERY) ? (asset.isVeteranCrew() ? ASSET_VETERAN : ASSET_REGULAR) : "";
+            }
+            return super.getTableCellRendererComponent(table, display, isSelected, hasFocus, row, column);
+        }
+    }
+
+    /**
+     * Cell editor for the Gunnery column: a 0-8 skill combo for standard units, or a Regular/Veteran combo for
+     * Battlefield Support Asset rows (Regular only when the asset has no Veteran variant). The same combo is reused
+     * with a per-row model so {@link DefaultCellEditor}'s commit-on-select behavior is preserved.
+     */
+    private class GunneryCellEditor extends DefaultCellEditor {
+        private final JComboBox<Object> combo;
+
+        @SuppressWarnings("unchecked")
+        GunneryCellEditor() {
+            super(new JComboBox<>());
+            combo = (JComboBox<Object>) getComponent();
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+              int column) {
+            if (isAssetRow(row)) {
+                BattlefieldSupportAsset asset = (BattlefieldSupportAsset) forceList.get(row);
+                combo.setModel(new DefaultComboBoxModel<>(asset.hasVeteranProfile()
+                      ? new Object[] { ASSET_REGULAR, ASSET_VETERAN }
+                      : new Object[] { ASSET_REGULAR }));
+                value = asset.isVeteranCrew() ? ASSET_VETERAN : ASSET_REGULAR;
+            } else {
+                combo.setModel(new DefaultComboBoxModel<Object>(SKILL_LEVELS));
+            }
+            return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+        }
+    }
+
+    /**
+     * Renders the BV column. Standard rows show the numeric BV; when the BV/BSP toggle is on, asset rows instead show
+     * their BSP cost in parentheses, e.g. "(17)".
+     */
+    private class BvCellRenderer extends DefaultTableCellRenderer {
+        BvCellRenderer() {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+              boolean hasFocus, int row, int column) {
+            Object display = value;
+            boolean bspCell = showBspForAssets && isAssetRow(row);
+            if (bspCell) {
+                BattlefieldSupportAsset asset = (BattlefieldSupportAsset) forceList.get(row);
+                display = "(" + asset.getEffectiveBsp() + ")";
+            }
+            Component comp = super.getTableCellRendererComponent(table, display, isSelected, hasFocus, row, column);
+            // Show the BSP cost in the asset yellow (BSP mode only); the super call restores the default colour for
+            // BV-mode and standard rows, and selection keeps its own foreground for legibility.
+            if (bspCell && !isSelected) {
+                comp.setForeground(ASSET_COLOR);
+            }
+            return comp;
+        }
+    }
+
     private void refreshTableContent() {
-        int totalBV = 0;
         for (int i = 0; i < forceList.size(); i++) {
             Entity entity = forceList.get(i);
             int bv = entity.calculateBattleValue();
@@ -421,16 +610,17 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             if (gSkill >= 0) {
                 gunnery = gSkill;
             }
-            if (pSkill >= 0) {
+            if ((pSkill >= 0) && !(entity instanceof BattlefieldSupportAsset)) {
                 piloting = pSkill;
             }
-            tableModel.setValueAt(UnitFormatter.getCell(entity), i, COL_NAME);
+            tableModel.setValueAt(bfsCell(entity), i, COL_BFS);
+            tableModel.setValueAt(nameCell(entity), i, COL_NAME);
             tableModel.setValueAt(gunnery, i, COL_GUNNERY);
             tableModel.setValueAt(piloting, i, COL_PILOTING);
             tableModel.setValueAt(bv, i, COL_BV);
-            totalBV += bv;
         }
-        totalBVLabel.setText("Total BV: " + totalBV);
+        updateTotalLabel();
+        updateAssetColumns();
     }
 
     void rebuildTable() {
@@ -439,7 +629,6 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         // Clear existing rows
         tableModel.setRowCount(0);
 
-        int totalBV = 0;
         for (Entity entity : forceList) {
             int bv = entity.calculateBattleValue();
             Integer gunnery = null;
@@ -450,16 +639,16 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
             if (gSkill >= 0) {
                 gunnery = gSkill;
             }
-            if (pSkill >= 0) {
+            if ((pSkill >= 0) && !(entity instanceof BattlefieldSupportAsset)) {
                 piloting = pSkill;
             }
 
             tableModel.addRow(new Object[] { UIManager.getIcon("InternalFrame.closeIcon"),
-                                             UnitFormatter.getCell(entity), gunnery, piloting, bv });
-            totalBV += bv;
+                                             bfsCell(entity), nameCell(entity), gunnery, piloting, bv });
         }
 
-        totalBVLabel.setText("Total BV: " + totalBV);
+        updateTotalLabel();
+        updateAssetColumns();
         if (selectedRow >= 0 && selectedRow < tableModel.getRowCount()) {
             entityTable.setRowSelectionInterval(selectedRow, selectedRow);
         }
@@ -575,11 +764,18 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
         centerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        String[] columnNames = { "", "Name", "Gunnery", "Piloting", "BV" };
+        String[] columnNames = { "", "BFS", "Name", "Gunnery", "Piloting", "BV" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == COL_REMOVE || column == COL_GUNNERY || column == COL_PILOTING;
+                if (column == COL_REMOVE || column == COL_GUNNERY) {
+                    return true;
+                }
+                if (column == COL_PILOTING) {
+                    // Assets have no piloting skill; their row shows only a Regular/Veteran choice in the Gunnery cell.
+                    return !isAssetRow(row);
+                }
+                return false;
             }
 
             @Override
@@ -602,8 +798,15 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                     Entity entity = forceList.get(row);
                     boolean needsBvUpdate = false;
 
-                    // Only attempt cast if it's a skill column
-                    if (column == COL_GUNNERY || column == COL_PILOTING) {
+                    if (entity instanceof BattlefieldSupportAsset asset && column == COL_GUNNERY) {
+                        // Asset rows carry a Regular/Veteran choice (backed by the crew Gunnery skill) rather than a
+                        // 0-8 gunnery value; store the resulting gunnery so the cell stays an Integer.
+                        if (aValue instanceof String level) {
+                            asset.setVeteranCrew(ASSET_VETERAN.equals(level));
+                            needsBvUpdate = true;
+                        }
+                        super.setValueAt(asset.getCrew().getGunnery(), row, column);
+                    } else if (column == COL_GUNNERY || column == COL_PILOTING) {
                         if (aValue instanceof Integer skillValue) {
                             if (column == COL_GUNNERY) {
                                 entity.getCrew().setGunnery(skillValue, entity.getCrew().getCrewType().getGunnerPos());
@@ -612,8 +815,10 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
                             }
                             needsBvUpdate = true;
                         }
+                        super.setValueAt(aValue, row, column);
+                    } else {
+                        super.setValueAt(aValue, row, column);
                     }
-                    super.setValueAt(aValue, row, column);
 
                     if (needsBvUpdate) {
                         int newBv = entity.calculateBattleValue();
@@ -695,15 +900,21 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         removeColumn.setCellRenderer(new ButtonRenderer());
         removeColumn.setCellEditor(new ButtonEditor(this));
 
+        // BFS Column - a dark-yellow checkmark marking asset rows; hidden (zero width) when the force has no assets.
+        bfsColumn = columnModel.getColumn(COL_BFS);
+        DefaultTableCellRenderer bfsRenderer = new DefaultTableCellRenderer();
+        bfsRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        bfsRenderer.setForeground(ASSET_COLOR);
+        bfsColumn.setCellRenderer(bfsRenderer);
+
         // Name Column
         TableColumn nameColumn = columnModel.getColumn(COL_NAME);
         nameColumn.setPreferredWidth(250);
         nameColumn.setMinWidth(200);
 
-        // Gunnery Column
+        // Gunnery Column - shows a 0-8 skill for normal units and a Regular/Veteran choice for asset rows.
         TableColumn gunneryColumn = columnModel.getColumn(COL_GUNNERY);
-        JComboBox<Integer> gunneryComboBox = new JComboBox<>(SKILL_LEVELS);
-        gunneryColumn.setCellEditor(new DefaultCellEditor(gunneryComboBox));
+        gunneryColumn.setCellEditor(new GunneryCellEditor());
         gunneryColumn.setPreferredWidth(70);
         gunneryColumn.setMinWidth(50);
 
@@ -714,17 +925,15 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         pilotingColumn.setPreferredWidth(70);
         pilotingColumn.setMinWidth(50);
 
-        // BV Column
-        TableColumn bvColumn = columnModel.getColumn(COL_BV);
+        // BV Column - header switches to "BV/BSP" and asset rows show BSP in parentheses when the toggle is on.
+        bvColumn = columnModel.getColumn(COL_BV);
         bvColumn.setPreferredWidth(70);
         bvColumn.setMinWidth(50);
 
-        // Right-align values
-        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-        rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-        bvColumn.setCellRenderer(rightRenderer);
-        gunneryColumn.setCellRenderer(rightRenderer);
-        pilotingColumn.setCellRenderer(rightRenderer);
+        // Asset rows render the Gunnery cell as Regular/Veteran and leave Piloting blank.
+        bvColumn.setCellRenderer(new BvCellRenderer());
+        gunneryColumn.setCellRenderer(new SkillCellRenderer(COL_GUNNERY));
+        pilotingColumn.setCellRenderer(new SkillCellRenderer(COL_PILOTING));
 
         scrollPane = new JScrollPane(entityTable);
         final Border originalOuterBorder = scrollPane.getBorder();
@@ -873,10 +1082,26 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
 
         bottomPanel.add(buttonPanel, BorderLayout.WEST);
 
+        // BV/BSP toggle (shown only when the force has assets) plus the running total, right-aligned.
+        bvBspToggle = new JToggleButton(Messages.getString("MekSelectorDialog.ToggleAssetCost"));
+        bvBspToggle.setToolTipText(Messages.getString("MekSelectorDialog.ToggleAssetCost.ToolTip"));
+        bvBspToggle.setVisible(false);
+        bvBspToggle.addActionListener(e -> {
+            showBspForAssets = bvBspToggle.isSelected();
+            updateBvColumnHeader();
+            updateTotalLabel();
+            entityTable.repaint();
+            ensureWidthForControls();
+        });
+
         // Total BV Label
         totalBVLabel = new JLabel("Total BV: 0", SwingConstants.RIGHT);
         totalBVLabel.setBorder(new EmptyBorder(0, 0, 0, 10));
-        bottomPanel.add(totalBVLabel, BorderLayout.EAST);
+
+        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        totalPanel.add(bvBspToggle);
+        totalPanel.add(totalBVLabel);
+        bottomPanel.add(totalPanel, BorderLayout.EAST);
 
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -929,12 +1154,41 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
         rebuildTable();
     }
 
+    /**
+     * Applies the unit selector's current Skills settings to freshly selected entities before they are added to the
+     * force: Gunnery/Piloting for standard units, or the Regular/Veteran choice for Battlefield Support Assets. This is
+     * force-builder-only behavior (the print queue deliberately does not carry skills).
+     */
+    private void applySelectorSkills(MegaMekLabUnitSelectorDialog dialog, List<Entity> entities) {
+        if (entities == null) {
+            return;
+        }
+        int gunnery = dialog.getSelectedGunnery();
+        int piloting = dialog.getSelectedPiloting();
+        boolean veteran = dialog.isVeteranAssetSkillSelected();
+        for (Entity entity : entities) {
+            if (entity == null) {
+                continue;
+            }
+            if (entity.getCrew() == null) {
+                entity.setCrew(new Crew(entity.defaultCrewType()));
+            }
+            if (entity instanceof BattlefieldSupportAsset asset) {
+                asset.setVeteranCrew(veteran);
+            } else {
+                entity.getCrew().setGunnery(gunnery, entity.getCrew().getCrewType().getGunnerPos());
+                entity.getCrew().setPiloting(piloting, entity.getCrew().getCrewType().getPilotPos());
+            }
+        }
+    }
+
     public void selectAndLoadUnitFromCache() {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(null);
         unitLoadingDialog.setVisible(true);
         MegaMekLabUnitSelectorDialog viewer = new MegaMekLabUnitSelectorDialog(null, unitLoadingDialog, dialog -> {
             List<Entity> selectedEntities = dialog.getChosenEntities();
             warnOnInvalid(selectedEntities);
+            applySelectorSkills(dialog, selectedEntities);
             addEntities(selectedEntities);
         });
         try {

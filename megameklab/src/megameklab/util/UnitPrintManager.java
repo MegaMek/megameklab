@@ -53,6 +53,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.HandheldWeapon;
 import megamek.common.loaders.MULParser;
 import megamek.common.loaders.MekFileParser;
@@ -167,6 +168,7 @@ public class UnitPrintManager {
         List<BattleArmor> baList = new ArrayList<>();
         List<ProtoMek> protoList = new ArrayList<>();
         List<HandheldWeapon> hhwList = new ArrayList<>();
+        List<BattlefieldSupportAsset> bfsList = new ArrayList<>();
         List<BTObject> unprintable = new ArrayList<>();
         Tank tank1 = null;
 
@@ -254,6 +256,16 @@ public class UnitPrintManager {
                         sheets.add(prs);
                         hhwList = new ArrayList<>();
                     }
+                } else if (unit instanceof BattlefieldSupportAsset) {
+                    // Assets tile onto card sheets (one multi-page sheet per run of assets); flush at page breaks and
+                    // end, or immediately when printing one unit per sheet.
+                    bfsList.add((BattlefieldSupportAsset) unit);
+                    if (singlePrint) {
+                        PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        bfsList = new ArrayList<>();
+                    }
                 } else {
                     unprintable.add(unit);
                 }
@@ -282,6 +294,12 @@ public class UnitPrintManager {
                         pageCount += prs.getPageCount();
                         sheets.add(prs);
                         hhwList = new ArrayList<>();
+                    }
+                    if (!bfsList.isEmpty()) {
+                        PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+                        pageCount += prs.getPageCount();
+                        sheets.add(prs);
+                        bfsList = new ArrayList<>();
                     }
                     if (null != tank1) {
                         sheets.add(new PrintCompositeTankSheet(tank1, null, pageCount++, options));
@@ -318,6 +336,11 @@ public class UnitPrintManager {
         }
         if (!hhwList.isEmpty()) {
             sheets.add(new PrintSmallUnitSheet(hhwList, pageCount++, options));
+        }
+        if (!bfsList.isEmpty()) {
+            PrintRecordSheet prs = new PrintBattlefieldSupportCardSheet(bfsList, pageCount, options);
+            pageCount += prs.getPageCount();
+            sheets.add(prs);
         }
         return sheets;
     }
@@ -426,7 +449,7 @@ public class UnitPrintManager {
         jFileChooser.setDialogTitle("Print Unit File");
         jFileChooser.setMultiSelectionEnabled(true);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Unit Files", "blk", "mtf", "bfs");
 
         // Add a filter for mul files
         jFileChooser.setFileFilter(filter);

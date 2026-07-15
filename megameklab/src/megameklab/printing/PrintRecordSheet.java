@@ -150,9 +150,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
     }
 
     /**
-     * @return The page number of the first page of this record sheet within the book.
+     * @return The page number of the first page of this record sheet within the book. Callers pass an absolute
+     *       (book-wide) page index to {@link #createDocument(int, PageFormat, boolean)}; add this offset to a
+     *       zero-based page index within the sheet to obtain that absolute index.
      */
-    protected final int getFirstPage() {
+    public final int getFirstPage() {
         return firstPage;
     }
 

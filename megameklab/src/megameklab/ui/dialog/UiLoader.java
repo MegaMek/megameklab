@@ -43,11 +43,14 @@ import javax.swing.SwingUtilities;
 
 import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.StartupGUI;
 import megameklab.ui.battleArmor.BAMainUI;
+import megameklab.ui.battlefieldSupport.BFSLinkedOpen;
+import megameklab.ui.battlefieldSupport.BFSMainUI;
 import megameklab.ui.combatVehicle.CVMainUI;
 import megameklab.ui.combatVehicle.GEMainUI;
 import megameklab.ui.fighterAero.ASMainUI;
@@ -226,18 +229,62 @@ public class UiLoader {
             return new HHWMainUI();
         } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
             return new GEMainUI();
+        } else if (type == Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET) {
+            return new BFSMainUI();
         } else {
             return new BMMainUI(primitive, industrial);
         }
     }
 
     /**
-     * @return The correct MainUI for an Entity
+     * @return The correct MainUI for an Entity. When a base unit that has a linked Battlefield Support Asset (a
+     *       co-located {@code .bfs} sidecar or a cache-linked asset) is opened, the returned editor has the asset
+     *       injected; when a {@code .bfs} that links to a base unit is opened, the base unit's editor is returned with
+     *       the asset injected. A standalone asset opens the asset editor.
      */
     public static MegaMekLabMainUI getUI(Entity entity, String filename) {
         if (entity == null) {
             throw new IllegalArgumentException("Entity cannot be null");
         }
+        long type = UnitUtil.getEditorTypeForEntity(entity);
+        if (type == Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET) {
+            // A .bfs was opened: open the combined base editor when the asset links to a base unit, else standalone.
+            BattlefieldSupportAsset asset = (BattlefieldSupportAsset) entity;
+            BFSLinkedOpen.LoadedLink base = BFSLinkedOpen.findLinkedBaseForAsset(asset, filename);
+            if (base != null) {
+                MegaMekLabMainUI ui = constructUI(base.entity(), base.filePath());
+                ui.adoptLinkedBattlefieldSupportAsset(asset, filename);
+                return ui;
+            }
+            return constructUI(entity, filename);
+        }
+
+        MegaMekLabMainUI ui = constructUI(entity, filename);
+        if (ui.canHoldLinkedBattlefieldSupportAsset()) {
+            BFSLinkedOpen.LoadedLink asset = BFSLinkedOpen.findLinkedAssetForBase(entity, filename);
+            if (asset != null) {
+                ui.adoptLinkedBattlefieldSupportAsset((BattlefieldSupportAsset) asset.entity(), asset.filePath());
+            }
+        }
+        return ui;
+    }
+
+    /**
+     * Builds the editor for an already-loaded unit <em>without</em> auto-loading a linked Battlefield Support Asset
+     * from disk. Used by tab-state (session) restore, which authoritatively supplies the asset (including its
+     * enabled/disabled state and any unsaved edits) itself, so re-deriving it from disk would be wrong.
+     *
+     * @param entity   the base unit (or a standalone asset)
+     * @param filename the unit's file name
+     *
+     * @return the editor, with no linked asset injected
+     */
+    public static MegaMekLabMainUI getUIWithoutLinkedAsset(Entity entity, String filename) {
+        return constructUI(entity, filename);
+    }
+
+    /** @return the editor for an Entity of its type, with no linked-asset handling. */
+    private static MegaMekLabMainUI constructUI(Entity entity, String filename) {
         long type = UnitUtil.getEditorTypeForEntity(entity);
         if (type == Entity.ETYPE_TANK) {
             return new CVMainUI(entity, filename);
@@ -259,6 +306,8 @@ public class UiLoader {
             return new HHWMainUI(entity, filename);
         } else if (type == Entity.ETYPE_GUN_EMPLACEMENT) {
             return new GEMainUI(entity, filename);
+        } else if (type == Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET) {
+            return new BFSMainUI(entity, filename);
         } else {
             return new BMMainUI(entity, filename);
         }

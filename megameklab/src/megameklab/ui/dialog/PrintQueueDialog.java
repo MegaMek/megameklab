@@ -66,6 +66,7 @@ import megamek.common.Configuration;
 import megamek.common.Player;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.game.Game;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Aero;
 import megamek.common.units.BTObject;
@@ -297,6 +298,9 @@ public class PrintQueueDialog extends AbstractMMLButtonDialog {
     private void refresh() {
         List<String> nameList = units.stream().map(unit -> {
             String title = String.format(" %s %s", unit.generalName(), unit.specificName());
+            if (unit instanceof BattlefieldSupportAsset) {
+                title += " " + resources.getString("PrintQueueDialog.assetTag");
+            }
             if (fromMul && unit instanceof Entity) {
                 var crew = ((Entity) unit).getCrew();
                 if (!crew.getName().startsWith(RandomNameGenerator.UNNAMED)) {
