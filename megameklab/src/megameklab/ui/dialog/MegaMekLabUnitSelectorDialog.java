@@ -57,12 +57,12 @@ import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
 import megamek.common.TechConstants;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
-import megamek.common.icons.Camouflage;
 import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
 import megamek.common.units.UnitType;
 import megameklab.ui.generalUnit.BattlefieldSupportCardListPanel;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
+import megameklab.ui.util.PreviewCamouflage;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -426,7 +426,8 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         if (selectedEntity != null) {
             // Update unit image first (existing code)
             Image base = MMStaticDirectoryManager.getMekTileset().imageFor(selectedEntity);
-            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
+            EntityImage entityImage = EntityImage.createIcon(base, PreviewCamouflage.of(PlayerColour.GOLD),
+                  selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
         }

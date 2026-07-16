@@ -57,6 +57,7 @@ import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.PreviewCamouflage;
 
 /**
  * This view displays the icon that the unit will use in MM and MHQ and allows selecting a different icon from file or
@@ -67,8 +68,8 @@ import megameklab.ui.util.RefreshListener;
 public class IconView extends BuildView {
     private static final MMLogger logger = MMLogger.create(IconView.class);
 
-    private static final Camouflage CAMO_MEKSET = Camouflage.of(PlayerColour.GRAY);
-    private static final Camouflage CAMO_EMBEDDED = Camouflage.of(PlayerColour.GOLD);
+    private static final Camouflage CAMO_MEKSET = PreviewCamouflage.of(PlayerColour.GRAY);
+    private static final Camouflage CAMO_EMBEDDED = PreviewCamouflage.of(PlayerColour.GOLD);
 
     private final EntityImagePanel entityImage = new EntityImagePanel(null, null);
     private final JButton fileIconButton = new JButton("Choose file");

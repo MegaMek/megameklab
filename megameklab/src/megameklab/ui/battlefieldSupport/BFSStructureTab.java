@@ -98,6 +98,7 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 import megameklab.ui.generalUnit.SourceView;
 import megameklab.ui.util.ITab;
 import megameklab.ui.util.IntRangeTextField;
+import megameklab.ui.util.PreviewCamouflage;
 import megameklab.ui.util.RefreshListener;
 
 /**
@@ -120,8 +121,8 @@ public class BFSStructureTab extends ITab {
 
     private static final BFSAssetType[] ASSET_TYPES = BFSAssetType.values();
 
-    private static final Camouflage CAMO_MEKSET = Camouflage.of(PlayerColour.GRAY);
-    private static final Camouflage CAMO_EMBEDDED = Camouflage.of(PlayerColour.GOLD);
+    private static final Camouflage CAMO_MEKSET = PreviewCamouflage.of(PlayerColour.GRAY);
+    private static final Camouflage CAMO_EMBEDDED = PreviewCamouflage.of(PlayerColour.GOLD);
 
     private RefreshListener refresh;
     private boolean loading;
