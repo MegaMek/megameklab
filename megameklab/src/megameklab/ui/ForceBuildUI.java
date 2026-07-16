@@ -442,7 +442,8 @@ public class ForceBuildUI extends JFrame implements ListSelectionListener, Actio
     /** @return the Name-column HTML for the entity; asset names are shown in a dark-yellow colour. */
     private static String nameCell(Entity entity) {
         if (entity instanceof BattlefieldSupportAsset) {
-            return "<HTML><NOBR><FONT COLOR=" + ASSET_NAME_COLOR + '>' + entity.getShortNameRaw() + "</FONT>";
+            return "<HTML><NOBR><FONT COLOR=\"" + ASSET_NAME_COLOR + "\">" + entity.getShortNameRaw()
+                  + "</FONT></NOBR></HTML>";
         }
         return UnitFormatter.getCell(entity);
     }

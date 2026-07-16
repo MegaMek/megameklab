@@ -181,9 +181,9 @@ public class BFSStructureTab extends ITab {
 
     /**
      * Constructs an asset tab. When {@code assetSource} is non-null the tab operates in <em>linked</em> mode: it edits
-     * that source's asset carrier (belonging to a base unit), hides the base-derived identity/type/mode controls, and
-     * shows an enable checkbox. When {@code assetSource} is {@code null} it operates in standalone mode, editing the
-     * editor's sole entity as the asset.
+     * that source's asset carrier (belonging to a base unit) and hides the base-derived identity/type/mode controls.
+     * The base unit's Structure tab controls whether the linked Asset tab is enabled. When {@code assetSource} is
+     * {@code null} this tab operates in standalone mode, editing the editor's sole entity as the asset.
      *
      * @param eSource     the entity source (the editor); in linked mode {@code getEntity()} is the base unit
      * @param assetSource the linked-asset source, or {@code null} for a standalone asset editor

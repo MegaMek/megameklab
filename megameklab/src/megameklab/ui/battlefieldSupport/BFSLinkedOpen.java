@@ -144,7 +144,7 @@ public final class BFSLinkedOpen {
             }
             return new LoadedLink(entity, filePath);
         } catch (Exception ex) {
-            logger.error(ex, "Failed to load linked unit file {}", file);
+            logger.error(ex, "Failed to load linked unit file %s".formatted(file));
             return null;
         }
     }

@@ -337,9 +337,13 @@ public class TabUtil {
         try {
             FileUtils.copyFile(assetTmp, assetFile);
             Entity entity = new MekFileParser(assetFile).getEntity();
-            return (entity instanceof BattlefieldSupportAsset asset) ? asset : null;
+            if (entity instanceof BattlefieldSupportAsset asset) {
+                UnitUtil.updateLoadedUnit(asset);
+                return asset;
+            }
+            return null;
         } catch (Exception e) {
-            LOGGER.warn(e, "Could not restore linked asset tab state from {}", assetTmpPath);
+            LOGGER.warn(e, "Could not restore linked asset tab state from %s".formatted(assetTmpPath));
             return null;
         } finally {
             if (assetFile.exists() && !assetFile.delete()) {

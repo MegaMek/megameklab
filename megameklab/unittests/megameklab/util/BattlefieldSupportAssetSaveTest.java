@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import megamek.common.battlefieldSupport.BFSAssetType;
@@ -42,6 +42,7 @@ import megamek.common.units.EntityMovementMode;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Verifies that {@link UnitUtil#saveUnitToString} serializes a {@link BattlefieldSupportAsset} to the {@code .bfs} YAML
@@ -49,6 +50,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(value = InitializeTypes.class)
 class BattlefieldSupportAssetSaveTest {
+
+    @TempDir
+    Path temporaryDirectory;
 
     private static BattlefieldSupportAsset sampleAsset() {
         BattlefieldSupportAsset asset = new BattlefieldSupportAsset();
@@ -90,12 +94,11 @@ class BattlefieldSupportAssetSaveTest {
         assertTrue(headerless.startsWith("uuid:"), "headerless save should start with the uuid field");
         assertTrue(headerless.contains("chassis:"));
 
-        File file = File.createTempFile("bfs-save-test", ".bfs");
-        file.deleteOnExit();
-        Files.writeString(file.toPath(), saved, StandardCharsets.UTF_8);
+        Path file = temporaryDirectory.resolve("asset.bfs");
+        Files.writeString(file, saved, StandardCharsets.UTF_8);
 
         BattlefieldSupportAsset restored = assertInstanceOf(BattlefieldSupportAsset.class,
-              new MekFileParser(file).getEntity());
+              new MekFileParser(file.toFile()).getEntity());
 
         assertEquals(original.getChassis(), restored.getChassis());
         assertEquals(original.getModel(), restored.getModel());
