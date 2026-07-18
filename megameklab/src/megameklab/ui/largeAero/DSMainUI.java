@@ -55,6 +55,8 @@ import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
 import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
+import megameklab.util.CConfig;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.generalUnit.StatusBar;
 import megameklab.ui.generalUnit.TransportTab;
@@ -76,6 +78,7 @@ public class DSMainUI extends MegaMekLabMainUI {
     private TransportTab transportTab;
     private StatusBar statusbar;
     private QuirksTab quirksTab;
+    private AvailabilityTab availabilityTab;
     private FluffTab fluffTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
@@ -197,6 +200,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         buildTab = new LABuildTab(this);
         transportTab = new TransportTab(this);
         quirksTab = new QuirksTab(this);
+        availabilityTab = new AvailabilityTab(this);
         fluffTab = new FluffTab(this);
         structureTab.addRefreshedListener(this);
         equipmentTab.addRefreshedListener(this);
@@ -205,6 +209,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         statusbar.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         quirksTab.addRefreshedListener(this);
+        availabilityTab.addRefreshedListener(this);
 
         configPane.addTab("Structure/Armor", new TabScrollPane(structureTab));
         configPane.addTab("Equipment", equipmentTab);
@@ -212,6 +217,9 @@ public class DSMainUI extends MegaMekLabMainUI {
         configPane.addTab("Transport Bays", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        if (CConfig.showAvailabilityTab()) {
+            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+        }
         configPane.addTab("Preview", previewTab);
         configPane.addTab("Analysis", analysisTab);
 
@@ -237,6 +245,7 @@ public class DSMainUI extends MegaMekLabMainUI {
         equipmentTab.refresh();
         buildTab.refresh();
         quirksTab.refresh();
+        availabilityTab.refresh();
         fluffTab.refresh();
         previewTab.refresh();
         analysisTab.refresh();

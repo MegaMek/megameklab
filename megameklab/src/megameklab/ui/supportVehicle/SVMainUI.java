@@ -59,6 +59,8 @@ import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
 import megameklab.ui.generalUnit.PreviewTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
+import megameklab.util.CConfig;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.generalUnit.TransportTab;
 import megameklab.ui.util.TabScrollPane;
@@ -86,6 +88,7 @@ public class SVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         return fluffTab;
     }
     private QuirksTab quirksTab;
+    private AvailabilityTab availabilityTab;
     private FloatingEquipmentDatabaseDialog floatingEquipmentDatabase;
 
     public SVMainUI(Entity entity, String filename) {
@@ -112,6 +115,7 @@ public class SVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         transportTab = new TransportTab(this);
         fluffTab = new FluffTab(this);
         quirksTab = new QuirksTab(this);
+        availabilityTab = new AvailabilityTab(this);
         structureTab.addRefreshedListener(this);
         bfsTab = new BFSStructureTab(this, assetSupport);
         bfsTab.addRefreshedListener(this);
@@ -122,6 +126,7 @@ public class SVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         transportTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         quirksTab.addRefreshedListener(this);
+        availabilityTab.addRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         previewTab = new PreviewTab(this);
@@ -134,6 +139,9 @@ public class SVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         configPane.addTab("Transport", new TabScrollPane(transportTab));
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
         configPane.addTab("Quirks", new TabScrollPane(quirksTab, quirksTab.refreshOnShow));
+        if (CConfig.showAvailabilityTab()) {
+            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+        }
         configPane.addTab("Preview", previewTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.
         BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
@@ -164,6 +172,7 @@ public class SVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         transportTab.refresh();
         statusbar.refresh();
         quirksTab.refresh();
+        availabilityTab.refresh();
         fluffTab.refresh();
         previewTab.refresh();
         if (bfsTab != null) {

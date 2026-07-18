@@ -55,6 +55,8 @@ import megameklab.ui.battlefieldSupport.BFSAssetSource;
 import megameklab.ui.battlefieldSupport.BFSLinkedAssetSupport;
 import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.battlefieldSupport.BFSStructureTab;
+import megameklab.ui.generalUnit.AvailabilityTab;
+import megameklab.util.CConfig;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.generalUnit.AnalysisTab;
 import megameklab.ui.generalUnit.PreviewTab;
@@ -66,6 +68,7 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
     PreviewTab previewTab;
     AnalysisTab analysisTab;
     FluffTab fluffTab;
+    AvailabilityTab availabilityTab;
     CIStatusBar statusbar;
     private BFSStructureTab bfsTab;
     private java.awt.Component bfsTabScroll;
@@ -95,6 +98,7 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         statusbar = new CIStatusBar(this);
         structureTab = new CIStructureTab(this);
         fluffTab = new FluffTab(this);
+        availabilityTab = new AvailabilityTab(this);
         previewTab = new PreviewTab(this);
         analysisTab = new AnalysisTab(this);
 
@@ -102,11 +106,15 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         bfsTab = new BFSStructureTab(this, assetSupport);
         bfsTab.addRefreshedListener(this);
         bfsTabScroll = new TabScrollPane(bfsTab);
+        availabilityTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
         statusbar.addRefreshedListener(this);
 
         configPane.addTab("Build", structureTab);
         configPane.addTab("Fluff", new TabScrollPane(fluffTab));
+        if (CConfig.showAvailabilityTab()) {
+            configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
+        }
         configPane.addTab("Preview", previewTab);
         // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.
         BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
@@ -147,6 +155,7 @@ public class CIMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
         statusbar.refresh();
         structureTab.refresh();
         fluffTab.refresh();
+        availabilityTab.refresh();
         previewTab.refresh();
         if (bfsTab != null) {
             bfsTab.refresh();
