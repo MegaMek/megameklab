@@ -327,7 +327,7 @@ public class CIFieldGunTableView extends IView implements ActionListener {
      * Creates a small info panel. Has a dismiss button that will prevent it from being shown again.
      */
     private JComponent getUserInfoPanel() {
-        JPanel userInfoPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        Box userInfoPanel = Box.createHorizontalBox();
         userInfoPanel.setOpaque(false);
         JButton gotItButton = new JButton("Got it!");
         gotItButton.setForeground(UIUtil.uiYellow());
@@ -336,11 +336,19 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK, Boolean.toString(false));
             CConfig.saveConfig();
         });
-        var userInfoText = new JLabel("Note: Ctrl-Click a filter to add it to the selected filters.");
+        JLabel userInfoText = new JLabel("<html>Note: Ctrl-Click a filter to add it to the selected filters.</html>") {
+            @Override
+            public Dimension getMaximumSize()
+            {
+                return getPreferredSize();
+            }
+        };
         userInfoText.setForeground(UIUtil.uiYellow());
         userInfoPanel.add(userInfoText);
-        userInfoPanel.add(Box.createHorizontalStrut(15));
+        userInfoPanel.add(Box.createHorizontalStrut(5));
         userInfoPanel.add(gotItButton);
+        userInfoPanel.add(Box.createHorizontalGlue());
+        userInfoPanel.setBorder(new EmptyBorder(4, 5, 0, 0));
         return userInfoPanel;
     }
 
@@ -359,7 +367,6 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             }
         });
 
-        buttonPanel.add(new JLabel("Show: "));
         showToggles.forEach(button -> {
             button.addActionListener(this::toggleEquipment);
             buttonPanel.add(button);
@@ -367,13 +374,18 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         showAllButton.addActionListener(e -> showAllEquipment());
         buttonPanel.add(showAllButton);
 
-        var showTogglesPanel = Box.createVerticalBox();
+        var buttonAndInfoPanel = Box.createVerticalBox();
         if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK)) {
-            showTogglesPanel.add(getUserInfoPanel());
+            buttonAndInfoPanel.add(getUserInfoPanel());
         }
-        showTogglesPanel.add(buttonPanel);
+        buttonAndInfoPanel.add(buttonPanel);
+
+        var showTogglesPanel = Box.createHorizontalBox();
+        showTogglesPanel.add(new JLabel("Show: "));
+        showTogglesPanel.add(buttonAndInfoPanel);
         showTogglesPanel.setBackground(UIManager.getColor("Table.background"));
         showTogglesPanel.setOpaque(true);
+        showTogglesPanel.setBorder(new EmptyBorder(0, 4, 0, 4));
         return showTogglesPanel;
     }
 
@@ -392,14 +404,15 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             }
         });
 
-        buttonPanel.add(new JLabel("Hide: "));
         hideUnavailableButton.addActionListener(e -> filterEquipment());
         buttonPanel.add(hideUnavailableButton);
 
         var hideTogglesPanel = Box.createHorizontalBox();
+        hideTogglesPanel.add(new JLabel("Hide: "));
         hideTogglesPanel.add(buttonPanel);
         hideTogglesPanel.setBackground(UIManager.getColor("Table.background"));
         hideTogglesPanel.setOpaque(true);
+        hideTogglesPanel.setBorder(new EmptyBorder(0, 4, 0, 4));
         return hideTogglesPanel;
     }
 

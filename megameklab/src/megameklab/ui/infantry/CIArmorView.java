@@ -447,14 +447,15 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 super.componentResized(e);
             }
         });
-        buttonPanel.add(new JLabel("Hide: "));
         hideUnavailableButton.addActionListener(e -> filterEquipment());
         buttonPanel.add(hideUnavailableButton);
 
         var hideTogglesPanel = Box.createHorizontalBox();
+        hideTogglesPanel.add(new JLabel("Hide: "));
         hideTogglesPanel.add(buttonPanel);
         hideTogglesPanel.setBackground(UIManager.getColor("Table.background"));
         hideTogglesPanel.setOpaque(true);
+        hideTogglesPanel.setBorder(new EmptyBorder(0, 4, 0, 4));
         return hideTogglesPanel;
     }
 
