@@ -333,7 +333,7 @@ public class FrankenMekStructureView extends BuildView implements ActionListener
             gbc.gridy = 0;
             addLabeledControl(gbc, lblTonnage, spinner, false);
 
-            combo.setPrototypeDisplayValue(EquipmentType.get(EquipmentType.getStructureTypeName(
+            combo.setPrototypeDisplayValue(EquipmentType.getStructureFromName(EquipmentType.getStructureTypeName(
                   EquipmentType.T_STRUCTURE_ENDO_COMPOSITE, true)));
             addUnlabeledControl(gbc, combo);
 

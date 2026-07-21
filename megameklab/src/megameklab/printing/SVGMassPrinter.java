@@ -34,6 +34,7 @@
 package megameklab.printing;
 
 import java.awt.print.PageFormat;
+import java.math.BigDecimal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -44,6 +45,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.*;
+import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -55,12 +57,15 @@ import javax.xml.transform.stream.StreamResult;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.StreamWriteFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import megamek.MMConstants;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
+import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
 import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
+import megamek.client.ui.clientGUI.calculationReport.TextCalculationReport;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.tileset.MekTileset;
 import megamek.client.ui.util.FluffImageHelper;
@@ -140,6 +145,9 @@ public class SVGMassPrinter {
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
+    private static boolean SKIP_DETAILED_CALCULATIONS = true; // Set to true to skip the detailed BV/Cost calculations
+    private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
+    private static boolean EXPORT_CALCULATIONS_AS_TEXT = true;
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
@@ -197,6 +205,129 @@ public class SVGMassPrinter {
         public Integer cw; // Crew required to man this equipment, if applicable
         public int os; // If is an oneshot weapon or a double oneshot weapon (1 or 2), if applicable
         public Collection<ExportInventoryEntry> bay; // Bay weapons, if applicable
+    }
+
+    public static class CalculationDetail {
+        public String type;
+        public String calculation;
+        public String result;
+        public CalculationReport.LineType lineType;
+
+        private CalculationDetail(String type, String calculation, String result, CalculationReport.LineType lineType) {
+            this.type = type;
+            this.calculation = calculation;
+            this.result = result;
+            this.lineType = lineType;
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class BVDetail {
+        public String type;
+        public String calculation;
+        public BigDecimal total;
+        public BigDecimal delta;
+        public List<BVDetail> details;
+
+        private BVDetail(String type, String calculation) {
+            this.type = type;
+            this.calculation = calculation;
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class CostDetail {
+        public String type;
+        public String calculation;
+        public BigDecimal amount;
+        public BigDecimal factor;
+        public BigDecimal subtotal;
+
+        private CostDetail(String type, String calculation) {
+            this.type = type;
+            this.calculation = calculation;
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class CostDetails {
+        public List<CostDetail> steps = new ArrayList<>();
+        public BigDecimal total;
+    }
+
+    private static class ExportCalculationReport implements CalculationReport {
+        private final List<CalculationDetail> details = new ArrayList<>();
+        private final TextCalculationReport textReport = new TextCalculationReport();
+        private List<CalculationDetail> tentativeDetails;
+
+        private void addDetail(String type, String calculation, String result, CalculationReport.LineType lineType) {
+            List<CalculationDetail> target = (tentativeDetails == null) ? details : tentativeDetails;
+            target.add(new CalculationDetail(type, calculation, result, lineType));
+        }
+
+        List<CalculationDetail> getDetails() {
+            return List.copyOf(details);
+        }
+
+        String getText() {
+            return textReport.toString();
+        }
+
+        @Override
+        public CalculationReport addLine(String type, String calculation, String result) {
+            addDetail(type, calculation, result, CalculationReport.LineType.LINE);
+            textReport.addLine(type, calculation, result);
+            return this;
+        }
+
+        @Override
+        public CalculationReport addSubHeader(String text) {
+            addDetail(text, "", "", CalculationReport.LineType.SUBHEADER);
+            textReport.addSubHeader(text);
+            return this;
+        }
+
+        @Override
+        public CalculationReport addHeader(String text) {
+            addDetail(text, "", "", CalculationReport.LineType.HEADER);
+            textReport.addHeader(text);
+            return this;
+        }
+
+        @Override
+        public CalculationReport addResultLine(String type, String calculation, String result) {
+            addDetail(type, calculation, result, CalculationReport.LineType.RESULT_LINE);
+            textReport.addResultLine(type, calculation, result);
+            return this;
+        }
+
+        @Override
+        public JComponent toJComponent() {
+            return null;
+        }
+
+        @Override
+        public void startTentativeSection() {
+            if (tentativeDetails == null) {
+                tentativeDetails = new ArrayList<>();
+            }
+            textReport.startTentativeSection();
+        }
+
+        @Override
+        public void endTentativeSection() {
+            if (tentativeDetails != null) {
+                details.addAll(tentativeDetails);
+                tentativeDetails = null;
+            }
+            textReport.endTentativeSection();
+        }
+
+        @Override
+        public void discardTentativeSection() {
+            tentativeDetails = null;
+            textReport.discardTentativeSection();
+        }
     }
 
     private static double getMaxDamage(Entity entity, WeaponType wtype) {
@@ -811,6 +942,14 @@ public class SVGMassPrinter {
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public String unitFile; // Path to the unit file (MTF/BLK), relative to the unitfiles output folder
         public HashMap<String, Object> as = null;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public CostDetails costDetail;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public List<BVDetail> bvDetails;
+        @JsonIgnore
+        public String costDetailText;
+        @JsonIgnore
+        public String bvDetailText;
         //        public String summary;
 
 
@@ -1163,9 +1302,19 @@ public class SVGMassPrinter {
             this.year = entity.getYear();
             this.weightClass = entity.getWeightClassName();
             this.tons = entity.getWeight();
-            this.bv = entity.getBvCalculator().calculateBV(false, true);
+            ExportCalculationReport bvReport = new ExportCalculationReport();
+            this.bv = entity.getBvCalculator().calculateBV(true, true, bvReport);
+            if (!SKIP_DETAILED_CALCULATIONS) {
+                this.bvDetails = structureBVDetails(bvReport.getDetails());
+                this.bvDetailText = bvReport.getText();
+            }
             this.offSpeedFactor = entity.getBvCalculator().getOffensiveSpeedFactorMultiplier();
-            this.cost = Math.round(entity.getCost(false));
+            ExportCalculationReport costReport = new ExportCalculationReport();
+            this.cost = Math.round(entity.getCost(costReport, false));
+            if (!SKIP_DETAILED_CALCULATIONS) {
+                this.costDetail = structureCostDetails(costReport.getDetails());
+                this.costDetailText = costReport.getText();
+            }
             this.techBase = formatTechBase(entity);
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
@@ -1242,7 +1391,7 @@ public class SVGMassPrinter {
             this.run = entity.getRunMPWithoutMASC();
             this.run2 = entity.getRunMP(MPCalculationSetting.BV_CALCULATION);
             this.jump = entity.getJumpMP();
-            this.jump2 = entity.getJumpMP(MPCalculationSetting.BV_CALCULATION);
+            this.jump2 = entity.getAnyTypeMaxJumpMP();
             this.umu = entity.getActiveUMUCount();
             this.crewSize = entity.getCrew().getSlotCount();
             this.comp = (new Components(entity)).getComp();
@@ -1276,6 +1425,192 @@ public class SVGMassPrinter {
             } else {
                 this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
             }
+        }
+
+        private static List<BVDetail> structureBVDetails(List<CalculationDetail> calculationDetails) {
+            List<BVDetail> structuredDetails = new ArrayList<>();
+            BVDetail currentSection = null;
+            BVDetail activeGroup = null;
+            BigDecimal previousTotal = null;
+            Map<BVDetail, BigDecimal> groupStartingTotals = new IdentityHashMap<>();
+
+            for (int index = 0; index < calculationDetails.size(); index++) {
+                CalculationDetail detail = calculationDetails.get(index);
+                if (detail.lineType == CalculationReport.LineType.HEADER) {
+                    continue;
+                }
+                if (detail.lineType == CalculationReport.LineType.SUBHEADER) {
+                    currentSection = new BVDetail(normalizeDetailType(detail.type), null);
+                    currentSection.details = new ArrayList<>();
+                    structuredDetails.add(currentSection);
+                    activeGroup = null;
+                    previousTotal = null;
+                    continue;
+                }
+
+                if (detail.type.isBlank()) {
+                    if (detail.calculation.isBlank() && detail.result.isBlank()) {
+                        continue;
+                    }
+                    BigDecimal total = parseBVTotal(detail.result);
+                    if ((currentSection != null) && currentSection.details.isEmpty() && (currentSection.calculation == null)) {
+                        currentSection.calculation = detail.calculation.isBlank() ? null : detail.calculation;
+                        if (total != null) {
+                            currentSection.total = total;
+                            currentSection.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
+                            previousTotal = total;
+                        }
+                    } else {
+                        BVDetail unlabeledDetail = new BVDetail(null,
+                              detail.calculation.isBlank() ? null : detail.calculation);
+                        if (total != null) {
+                            unlabeledDetail.total = total;
+                            unlabeledDetail.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
+                            previousTotal = total;
+                        }
+                        addBVDetail(structuredDetails, currentSection, unlabeledDetail);
+                    }
+                    continue;
+                }
+
+                String type = normalizeDetailType(detail.type);
+                if (isBVGroup(calculationDetails, index)) {
+                    activeGroup = new BVDetail(type, null);
+                    activeGroup.details = new ArrayList<>();
+                    groupStartingTotals.put(activeGroup,
+                          (previousTotal == null) ? BigDecimal.ZERO : previousTotal);
+                    addBVDetail(structuredDetails, currentSection, activeGroup);
+                    continue;
+                }
+
+                BVDetail structuredDetail = new BVDetail(type, detail.calculation.isBlank() ? null : detail.calculation);
+                BigDecimal total = parseBVTotal(detail.result);
+                if (total != null) {
+                    structuredDetail.total = total;
+                    structuredDetail.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
+                    previousTotal = total;
+                }
+
+                if ((activeGroup != null) &&
+                      (detail.type.stripLeading().startsWith("-") ||
+                            (activeGroup.details.isEmpty() && detail.result.isBlank()))) {
+                    activeGroup.details.add(structuredDetail);
+                    continue;
+                }
+
+                activeGroup = null;
+                addBVDetail(structuredDetails, currentSection, structuredDetail);
+            }
+            groupStartingTotals.forEach(UnitData::finalizeBVGroup);
+            return structuredDetails;
+        }
+
+        private static void finalizeBVGroup(BVDetail group, BigDecimal startingTotal) {
+            BigDecimal total = findLastBVTotal(group);
+            if (total != null) {
+                group.total = total;
+                group.delta = total.subtract(startingTotal);
+            }
+        }
+
+        private static @Nullable BigDecimal findLastBVTotal(BVDetail detail) {
+            if ((detail.details != null) && !detail.details.isEmpty()) {
+                for (int index = detail.details.size() - 1; index >= 0; index--) {
+                    BigDecimal childTotal = findLastBVTotal(detail.details.get(index));
+                    if (childTotal != null) {
+                        return childTotal;
+                    }
+                }
+            }
+            return detail.total;
+        }
+
+        private static boolean isBVGroup(List<CalculationDetail> calculationDetails, int groupIndex) {
+            CalculationDetail group = calculationDetails.get(groupIndex);
+            if (!group.calculation.isBlank() || !group.result.isBlank()) {
+                return false;
+            }
+            for (int index = groupIndex + 1; index < calculationDetails.size(); index++) {
+                CalculationDetail candidate = calculationDetails.get(index);
+                if (candidate.lineType == CalculationReport.LineType.SUBHEADER ||
+                      (candidate.type.isBlank() && candidate.calculation.isBlank() && candidate.result.isBlank()) ||
+                      (!candidate.type.isBlank() && candidate.calculation.isBlank() && candidate.result.isBlank())) {
+                    return false;
+                }
+                if (candidate.type.stripLeading().startsWith("-")) {
+                    return true;
+                }
+                if (!candidate.result.isBlank()) {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        private static void addBVDetail(List<BVDetail> structuredDetails, @Nullable BVDetail currentSection,
+                                        BVDetail detail) {
+            if (currentSection != null) {
+                currentSection.details.add(detail);
+            } else {
+                structuredDetails.add(detail);
+            }
+        }
+
+        private static CostDetails structureCostDetails(List<CalculationDetail> calculationDetails) {
+            CostDetails structuredDetails = new CostDetails();
+            BigDecimal subtotal = BigDecimal.ZERO;
+            for (CalculationDetail detail : calculationDetails) {
+                if ((detail.lineType == CalculationReport.LineType.HEADER) || detail.type.isBlank()) {
+                    continue;
+                }
+                if (detail.lineType == CalculationReport.LineType.RESULT_LINE) {
+                    structuredDetails.total = parseNumber(detail.result);
+                    continue;
+                }
+
+                CostDetail structuredDetail = new CostDetail(normalizeDetailType(detail.type),
+                      detail.calculation.isBlank() ? null : detail.calculation);
+                String result = detail.result.trim();
+                if (result.startsWith("x ")) {
+                    structuredDetail.factor = parseNumber(result.substring(2));
+                    if (structuredDetail.factor != null) {
+                        subtotal = subtotal.multiply(structuredDetail.factor);
+                        structuredDetail.subtotal = normalizeNumber(subtotal);
+                    }
+                } else {
+                    structuredDetail.amount = result.equals("N/A") ? BigDecimal.ZERO : parseNumber(result);
+                    if (structuredDetail.amount != null) {
+                        subtotal = subtotal.add(structuredDetail.amount);
+                        structuredDetail.subtotal = normalizeNumber(subtotal);
+                    }
+                }
+                structuredDetails.steps.add(structuredDetail);
+            }
+            return structuredDetails;
+        }
+
+        private static String normalizeDetailType(String type) {
+            return type.replaceFirst("^-+\\s*", "").replaceFirst(":$", "");
+        }
+
+        private static @Nullable BigDecimal parseBVTotal(String result) {
+            String numericResult = result.trim();
+            if (numericResult.startsWith("=")) {
+                numericResult = numericResult.substring(1);
+            }
+            return parseNumber(numericResult);
+        }
+
+        private static @Nullable BigDecimal parseNumber(String value) {
+            String numericValue = value.trim().replace(",", "");
+            if (!numericValue.matches("-?\\d+(?:\\.\\d+)?")) {
+                return null;
+            }
+            return normalizeNumber(new BigDecimal(numericValue));
+        }
+
+        private static BigDecimal normalizeNumber(BigDecimal value) {
+            return value.stripTrailingZeros();
         }
 
         private static Map<String, Object> getFluffAttributes(Entity entity) {
@@ -1859,6 +2194,8 @@ public class SVGMassPrinter {
                     case "--skip-equipment" -> SKIP_EQUIPMENT = parseBool(inlineValue);
                     case "--skip-unit-files" -> SKIP_UNIT_FILES = parseBool(inlineValue);
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
+                    case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
+                    case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
                     case "--units", "--unit" -> {
                         unitOverrideRequested = true;
                         if (inlineValue != null) {
@@ -2001,6 +2338,8 @@ public class SVGMassPrinter {
                 --skip-equipment[=bool]       Skip equipment generation (default: %s)
                 --skip-unit-files[=bool]      Skip BLK/MTF re-save (default: %s)
                 --save-unit-files[=bool]      Enable BLK/MTF re-save (inverse of --skip-unit-files)
+                --save-calculations[=bool]    Export calculation details (default: %s)
+                --calculations-as-text[=bool] Export calculation details as .txt rather than structured .json (default: %s)
                 --units <file|dir> [...]      Export only these .blk/.mtf files (or all such files in a
                                               directory, scanned recursively) instead of the whole unit cache.
                                               May be repeated; accepts multiple paths.
@@ -2008,7 +2347,8 @@ public class SVGMassPrinter {
 
               Boolean flags accept true/false/1/0/yes/no/on/off; a bare flag (e.g. --skip-svg) means true.
               """.formatted(ROOT_FOLDER, SHEETS_DIR, UNIT_FILES_DIR, TYPEFACE,
-              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES);
+              SKIP_SVG, SKIP_UNITS, SKIP_EQUIPMENT, SKIP_UNIT_FILES,
+              !SKIP_DETAILED_CALCULATIONS, EXPORT_CALCULATIONS_AS_TEXT);
         System.out.println(usage);
     }
 
@@ -2091,6 +2431,7 @@ public class SVGMassPrinter {
         int processedCount = 0;
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.INDENT_OUTPUT);
+        mapper.getFactory().configure(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN.mappedFeature(), true);
         long timestamp = System.currentTimeMillis();
         Map<String, Entity> uniqueUnitTypes = new ConcurrentHashMap<>();
 
@@ -2288,6 +2629,10 @@ public class SVGMassPrinter {
             .collect(Collectors.toList());
 
 
+        if (EXPORT_CALCULATION_DETAILS_TO_FILES && !SKIP_DETAILED_CALCULATIONS) {
+            exportCalculationDetails(mapper, unitDataList);
+        }
+
         try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + UNIT_FILE)) {
             jsonWriter.write("{\"version\":" + timestamp + ",\n");
             jsonWriter.write("\"units\":[\n");
@@ -2404,6 +2749,33 @@ public class SVGMassPrinter {
         }
 
         System.exit(0);
+    }
+
+    private static void exportCalculationDetails(ObjectMapper mapper, List<UnitData> unitDataList) {
+        File costDirectory = new File(ROOT_FOLDER, "cost");
+        File bvDirectory = new File(ROOT_FOLDER, "bv");
+        if ((!costDirectory.exists() && !costDirectory.mkdirs()) ||
+              (!bvDirectory.exists() && !bvDirectory.mkdirs())) {
+            logger.error("Failed to create calculation detail export folders.");
+            return;
+        }
+        for (UnitData unitData : unitDataList) {
+            try {
+                if (EXPORT_CALCULATIONS_AS_TEXT) {
+                    Files.writeString(new File(costDirectory, unitData.name + ".txt").toPath(), unitData.costDetailText);
+                    Files.writeString(new File(bvDirectory, unitData.name + ".txt").toPath(), unitData.bvDetailText);
+                } else {
+                    mapper.writeValue(new File(costDirectory, unitData.name + ".json"), unitData.costDetail);
+                    mapper.writeValue(new File(bvDirectory, unitData.name + ".json"), unitData.bvDetails);
+                }
+                unitData.bvDetails = null;
+                unitData.costDetail = null;
+                unitData.bvDetailText = null;
+                unitData.costDetailText = null;
+            } catch (IOException e) {
+                logger.error("Failed to export calculation details for {}: {}", unitData.name, e.getMessage());
+            }
+        }
     }
 
     private static File resolveUnitFileExportPath(File unitFilesDir, MekSummary mekSummary, Entity entity,

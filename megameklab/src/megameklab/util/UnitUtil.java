@@ -1866,8 +1866,13 @@ public class UnitUtil {
                 dirty = true;
                 InfantryUtil.replaceMainWeapon(pbi, null, true);
             }
-            if (techManager.getTechLevel().ordinal() <= SimpleTechLevel.STANDARD.ordinal() && pbi.hasFieldWeapon()) {
+            if (techManager.getTechLevel().ordinal() < SimpleTechLevel.ADVANCED.ordinal() && pbi.hasFieldWeapon()) {
+                dirty = true;
                 InfantryUtil.replaceFieldGun(pbi, null, 0);
+            }
+            if (techManager.getTechLevel().ordinal() < SimpleTechLevel.ADVANCED.ordinal() && pbi.hasDisposableWeapon()) {
+                dirty = true;
+                pbi.equipDisposableWeapon(null);
             }
         }
         return dirty;

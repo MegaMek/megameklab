@@ -34,28 +34,20 @@ package megameklab.ui.infantry;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.border.Border;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import com.formdev.flatlaf.ui.FlatTextBorder;
+import megamek.client.ui.WrapLayout;
 import megamek.common.units.ConvInfantry;
-import megamek.common.units.Infantry;
 import megamek.common.units.InfantryMount;
 import megameklab.ui.EntitySource;
 import megameklab.ui.util.IView;
@@ -69,84 +61,40 @@ public class CIMountView extends IView implements ActionListener {
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
 
-    private final JButton btnSetMount = new JButton("Set Mount");
-    private final JRadioButton radioButtonStats = new JRadioButton("Stats");
-    private final JRadioButton radioButtonCustom = new JRadioButton("Custom");
+    private final JButton addMountButton = new JButton("Add Mount");
+    private final JToggleButton createCustomMountButton = new JToggleButton("Create Custom Mount");
     private final BeastMountTableModel tableModel = new BeastMountTableModel();
-    private final JTable creatureTable = new JTable();
-    private final JPanel creatureView = new JPanel();
-    private final CardLayout equipmentLayout = new CardLayout();
+    private final JTable mountTable = new JTable();
+    private final JPanel mountPanel = new JPanel();
+    private final CardLayout mountLayout = new CardLayout();
 
     private final CICustomMountView customMountView;
 
     public CIMountView(EntitySource eSource) {
         super(eSource);
         customMountView = new CICustomMountView(eSource, this);
-        creatureTable.setModel(tableModel);
-        creatureTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        creatureTable.setShowGrid(false);
-        creatureTable.setDoubleBuffered(true);
+        mountTable.setModel(tableModel);
+        mountTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        mountTable.setShowGrid(false);
+        mountTable.setDoubleBuffered(true);
         TableCellRenderer renderer = tableModel.new Renderer();
         for (int i = 0; i < tableModel.getColumnCount(); i++) {
-            TableColumn column = creatureTable.getColumnModel().getColumn(i);
+            TableColumn column = mountTable.getColumnModel().getColumn(i);
             column.setCellRenderer(renderer);
         }
-        creatureTable.getSelectionModel().addListSelectionListener(ev -> checkValid());
+        JScrollPane mountTableScroll = new JScrollPane();
+        mountTableScroll.setViewportView(mountTable);
+        mountTable.getSelectionModel().addListSelectionListener(ev -> checkValid());
 
-        setUpPanels();
-        radioButtonStats.setSelected(true);
-        refresh();
-        checkValid();
-    }
+        mountPanel.setLayout(mountLayout);
+        mountPanel.add(mountTableScroll, CARD_TABLE);
+        mountPanel.add(getCustomMountPanel(), CARD_CUSTOM);
 
-    private void setUpPanels() {
-        JPanel databasePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        databasePanel.add(btnSetMount, gbc);
-        btnSetMount.addActionListener(this);
-
-        ButtonGroup buttonGroupView = new ButtonGroup();
-        buttonGroupView.add(radioButtonStats);
-        buttonGroupView.add(radioButtonCustom);
-        radioButtonStats.addActionListener(ev -> showCard(CARD_TABLE));
-        radioButtonCustom.addActionListener(ev -> showCard(CARD_CUSTOM));
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(radioButtonStats);
-        btnPanel.add(radioButtonCustom);
-        gbc.gridy++;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        databasePanel.add(btnPanel, gbc);
-
-        creatureView.setLayout(equipmentLayout);
-
-        gbc.insets = new Insets(2, 0, 0, 0);
-        gbc.gridy++;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        databasePanel.add(creatureView, gbc);
+        setEquipmentView();
 
         setLayout(new BorderLayout());
-        add(databasePanel, BorderLayout.CENTER);
-
-        JPanel tableView = new JPanel(new GridLayout(1, 1));
-        tableView.add(new JScrollPane(creatureTable));
-        creatureView.add(tableView, CARD_TABLE);
-
-        Border compundBorder = BorderFactory.createCompoundBorder(new FlatTextBorder(),
-              new EmptyBorder(5, 5, 5, 5));
-        customMountView.setBorder(compundBorder);
-
-        // this outer panel prevents the customView from being stretched to fill the whole frame
-        var outerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        outerPanel.add(customMountView);
-
-        creatureView.add(new TabScrollPane(outerPanel), CARD_CUSTOM);
-        customMountView.movementModeChanged();
-        checkValid();
+        add(getControlPanel(), BorderLayout.PAGE_START);
+        add(mountPanel, BorderLayout.CENTER);
     }
 
     public void refresh() {
@@ -160,45 +108,45 @@ public class CIMountView extends IView implements ActionListener {
 
     void checkValid() {
         boolean valid;
-        if (radioButtonStats.isSelected()) {
-            valid = creatureTable.getSelectedRow() >= 0;
-        } else {
+        if (createCustomMountButton.isSelected()) {
             valid = !customMountView.txtMountName.getText().isEmpty();
             try {
                 valid &= Double.parseDouble(customMountView.txtWeight.getText()) > 0;
             } catch (NumberFormatException ignored) {
                 valid = false;
             }
+        } else {
+            valid = mountTable.getSelectedRow() >= 0;
         }
-        btnSetMount.setEnabled(valid);
+        addMountButton.setEnabled(valid);
     }
 
     private InfantryMount selectedMount(int rowIndex) {
         if ((rowIndex >= 0) && (rowIndex < tableModel.getRowCount())) {
             return InfantryMount.sampleMounts.get(rowIndex);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource().equals(btnSetMount)) {
-            if (radioButtonStats.isSelected()) {
-                int view = creatureTable.getSelectedRow();
+        if (evt.getSource().equals(addMountButton)) {
+            if (createCustomMountButton.isSelected()) {
+                getInfantry().setMount(customMountView.customMount());
+            } else {
+                int view = mountTable.getSelectedRow();
                 if (view < 0) {
                     // Nothing is selected
                     return;
                 }
-                int selected = creatureTable.convertRowIndexToModel(view);
+                int selected = mountTable.convertRowIndexToModel(view);
                 InfantryMount newMount = selectedMount(selected);
                 if ((getInfantry().getMount() != null) && (getInfantry().getMount().movementMode().isSubmarine())
                       && ((newMount == null) || !newMount.movementMode().isSubmarine())) {
                     getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.SCUBA);
                 }
                 getInfantry().setMount(selectedMount(selected));
-            } else {
-                getInfantry().setMount(customMountView.customMount());
             }
         }
         if (refresh != null) {
@@ -209,8 +157,58 @@ public class CIMountView extends IView implements ActionListener {
         refresh();
     }
 
-    private void showCard(String card) {
-        equipmentLayout.show(creatureView, card);
+    private void setEquipmentView() {
+        if (createCustomMountButton.isSelected()) {
+            mountLayout.show(mountPanel, CARD_CUSTOM);
+        } else {
+            mountLayout.show(mountPanel, CARD_TABLE);
+        }
+
         checkValid();
+    }
+
+    private TabScrollPane getCustomMountPanel() {
+        customMountView.setBorder(new FlatTextBorder());
+
+        // This outer panel prevents the customView from being stretched to fill the whole frame
+        var outerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        outerPanel.add(customMountView);
+        customMountView.movementModeChanged();
+
+        return new TabScrollPane(outerPanel);
+    }
+
+    /** Creates the control panel with the filters and buttons. */
+    private JComponent getControlPanel() {
+        Box controlPanel = Box.createVerticalBox();
+        controlPanel.add(getAddCreateCustomButtonsPanel());
+        controlPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
+        return controlPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the Add and Create Custom buttons.
+     */
+    private Component getAddCreateCustomButtonsPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        addMountButton.addActionListener(this);
+        buttonPanel.add(addMountButton);
+        createCustomMountButton.addActionListener(e -> setEquipmentView());
+        buttonPanel.add(createCustomMountButton);
+
+        var addCreateCustomButtonsPanel = Box.createHorizontalBox();
+        addCreateCustomButtonsPanel.add(buttonPanel);
+        addCreateCustomButtonsPanel.setBackground(UIManager.getColor("Table.background"));
+        addCreateCustomButtonsPanel.setOpaque(true);
+        return addCreateCustomButtonsPanel;
     }
 }

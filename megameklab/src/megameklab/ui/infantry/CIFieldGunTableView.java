@@ -39,23 +39,28 @@ import static megamek.common.equipment.AmmoType.AmmoTypeEnum.IGAUSS_HEAVY;
 import static megamek.common.equipment.AmmoType.AmmoTypeEnum.MAGSHOT;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import megamek.client.ui.WrapLayout;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.models.XTableColumnModel;
+import megamek.client.ui.util.UIUtil;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.WeaponType;
 import megamek.common.interfaces.ITechManager;
@@ -71,6 +76,7 @@ import megameklab.ui.EntitySource;
 import megameklab.ui.util.EquipmentTableModel;
 import megameklab.ui.util.IView;
 import megameklab.ui.util.RefreshListener;
+import megameklab.util.CConfig;
 import megameklab.util.InfantryUtil;
 
 /**
@@ -79,38 +85,26 @@ import megameklab.util.InfantryUtil;
  * @author Neoancient
  */
 public class CIFieldGunTableView extends IView implements ActionListener {
-    private final static int T_ALL = 0;
-    private final static int T_GUN = 1;
-    private final static int T_ARTILLERY = 2;
-    private final static int T_ARTILLERY_CANNON = 3;
-    private final static int T_NUM = 4;
-
     private RefreshListener refresh;
 
-    private final JButton btnSetGun = new JButton("Set Field Gun");
-    private final JButton btnRemoveGun = new JButton("Remove Field Gun");
-    final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
+    private final JButton showAllButton = new JButton("Show All");
+    private final JButton addFieldGunButton = new JButton("Add Field Gun");
+    private final JButton removeFieldGunButton = new JButton("Remove Field Gun");
 
-    private final JComboBox<String> choiceType = new JComboBox<>();
-    private final JTextField txtFilter = new JTextField(12);
+    private final JToggleButton showFieldGunButton = new JToggleButton("Field Gun", true);
+    private final JToggleButton showArtilleryButton = new JToggleButton("Artillery");
+    private final JToggleButton showArtilleryCannonButton = new JToggleButton("Artillery Cannon");
+    private final JToggleButton hideUnavailableButton = new JToggleButton("Unavailable", true);
+    private final List<JToggleButton> showToggles = new ArrayList<>(List.of(showFieldGunButton, showArtilleryButton,
+          showArtilleryCannonButton));
 
-    private final JRadioButton radioButtonStats = new JRadioButton("Stats");
-    private final JRadioButton radioButtonFluff = new JRadioButton("Fluff");
-
-    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final JTextField txtFilter = new JTextField("", 15);
+    private final JButton tableModeButton = new JButton("Switch Table Columns");
+    private boolean tableMode = true;
 
     private final EquipmentTableModel masterEquipmentList;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
     private final JTable masterEquipmentTable = new JTable();
-
-    public static String getTypeName(int type) {
-        return switch (type) {
-            case T_ALL -> "All Weapons";
-            case T_GUN -> "Field Gun";
-            case T_ARTILLERY -> "Artillery";
-            case T_ARTILLERY_CANNON -> "Artillery Cannon";
-            default -> "?";
-        };
-    }
 
     public CIFieldGunTableView(EntitySource eSource, ITechManager techManager) {
         super(eSource);
@@ -144,17 +138,15 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             if (selected >= 0) {
                 etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
             }
-            btnSetGun.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+            addFieldGunButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         });
         masterEquipmentTable.setDoubleBuffered(true);
         JScrollPane masterEquipmentScroll = new JScrollPane();
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
         masterEquipmentTable.getSelectionModel().addListSelectionListener(evt -> {
             int view = masterEquipmentTable.getSelectedRow();
-            btnSetGun.setEnabled(view >= 0);
+            addFieldGunButton.setEnabled(view >= 0);
         });
-        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -186,77 +178,11 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         }
 
         masterEquipmentList.setData(allTypes);
-
-        DefaultComboBoxModel<String> typeModel = new DefaultComboBoxModel<>();
-        for (int i = 0; i < T_NUM; i++) {
-            typeModel.addElement(getTypeName(i));
-        }
-        choiceType.setModel(typeModel);
-        choiceType.setSelectedIndex(1);
-        choiceType.addActionListener(evt -> filterEquipment());
-
-        txtFilter.setText("");
-        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent evt) {
-                filterEquipment();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent evt) {
-                filterEquipment();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent evt) {
-                filterEquipment();
-            }
-        });
-
-        ButtonGroup buttonGroupView = new ButtonGroup();
-        buttonGroupView.add(radioButtonStats);
-        buttonGroupView.add(radioButtonFluff);
-
-        radioButtonStats.setSelected(true);
-        radioButtonStats.addActionListener(evt -> setEquipmentView());
-        radioButtonFluff.addActionListener(evt -> setEquipmentView());
-        chkShowAll.addActionListener(evt -> filterEquipment());
-        JPanel viewPanel = new JPanel(new GridLayout(0, 3));
-        viewPanel.add(radioButtonStats);
-        viewPanel.add(radioButtonFluff);
-        viewPanel.add(chkShowAll);
         setEquipmentView();
 
-        JPanel btnPanel = new JPanel(new GridLayout(0, 2));
-        btnPanel.add(btnSetGun);
-        btnPanel.add(btnRemoveGun);
-
-        // layout
-
-        JPanel databasePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.gridy = 0;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.anchor = GridBagConstraints.WEST;
-        databasePanel.add(btnPanel, gbc);
-
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        databasePanel.add(choiceType, gbc);
-        databasePanel.add(txtFilter, gbc);
-        gbc.weightx = 1;
-        databasePanel.add(viewPanel, gbc);
-
-        gbc.insets = new Insets(2, 0, 0, 0);
-        gbc.gridy++;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weighty = 1;
-        databasePanel.add(masterEquipmentScroll, gbc);
-
         setLayout(new BorderLayout());
-        add(databasePanel, BorderLayout.CENTER);
+        add(getControlPanel(), BorderLayout.PAGE_START);
+        add(masterEquipmentScroll, BorderLayout.CENTER);
     }
 
     public void addRefreshedListener(RefreshListener l) {
@@ -266,23 +192,23 @@ public class CIFieldGunTableView extends IView implements ActionListener {
     public void refresh() {
         removeAllListeners();
         filterEquipment();
-        btnRemoveGun.setEnabled(getInfantry().hasFieldWeapon());
+        removeFieldGunButton.setEnabled(getInfantry().hasFieldWeapon());
         addAllListeners();
     }
 
     private void removeAllListeners() {
-        btnSetGun.removeActionListener(this);
-        btnRemoveGun.removeActionListener(this);
+        addFieldGunButton.removeActionListener(this);
+        removeFieldGunButton.removeActionListener(this);
     }
 
     private void addAllListeners() {
-        btnSetGun.addActionListener(this);
-        btnRemoveGun.addActionListener(this);
+        addFieldGunButton.addActionListener(this);
+        removeFieldGunButton.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnSetGun) {
+        if (e.getSource() == addFieldGunButton) {
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
                 //selection got filtered away
@@ -302,29 +228,38 @@ public class CIFieldGunTableView extends IView implements ActionListener {
             InfantryUtil.replaceFieldGun(getInfantry(), (WeaponType) equipmentType, maximumFieldGuns);
             refresh.refreshAll();
 
-        } else if (e.getSource() == btnRemoveGun) {
+        } else if (e.getSource() == removeFieldGunButton) {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
             refresh.refreshAll();
         }
     }
 
+    private void toggleEquipment(ActionEvent e) {
+        if ((e.getModifiers() & ActionEvent.CTRL_MASK) == 0) {
+            showToggles.forEach(button -> button.setSelected(e.getSource() == button));
+        }
+        filterEquipment();
+    }
+
+    private void showAllEquipment() {
+        showToggles.forEach(button -> button.setSelected(true));
+        filterEquipment();
+    }
+
     private void filterEquipment() {
-        final int nType = choiceType.getSelectedIndex();
         RowFilter<EquipmentTableModel, Integer> equipmentTypeFilter = new RowFilter<>() {
             @Override
             public boolean include(Entry<? extends EquipmentTableModel, ? extends Integer> entry) {
                 EquipmentTableModel equipModel = entry.getModel();
                 EquipmentType etype = equipModel.getType(entry.getIdentifier());
-                if ((nType == T_ALL)
-                      || ((nType == T_GUN)
-                      && !(etype instanceof ArtilleryWeapon)
+                if ((showFieldGunButton.isSelected() && !(etype instanceof ArtilleryWeapon)
                       && !(etype instanceof ArtilleryCannonWeapon))
-                      || ((nType == T_ARTILLERY) && etype instanceof ArtilleryWeapon)
-                      || ((nType == T_ARTILLERY_CANNON) && etype instanceof ArtilleryCannonWeapon)
+                      || (showArtilleryButton.isSelected() && etype instanceof ArtilleryWeapon)
+                      || (showArtilleryCannonButton.isSelected() && etype instanceof ArtilleryCannonWeapon)
                 ) {
                     if (null != eSource.getTechManager()
                           && !eSource.getTechManager().isLegal(etype)
-                          && !chkShowAll.isSelected()) {
+                          && hideUnavailableButton.isSelected()) {
                         return false;
                     }
 
@@ -341,33 +276,201 @@ public class CIFieldGunTableView extends IView implements ActionListener {
         equipmentSorter.setRowFilter(equipmentTypeFilter);
     }
 
-    public void setEquipmentView() {
+    private void switchTableMode() {
+        tableMode = !tableMode;
+        setEquipmentView();
+    }
+
+    private void setEquipmentView() {
         XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), tableMode);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MEDIUM_RANGE), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), tableMode);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
-
-        boolean stats = radioButtonStats.isSelected();
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE), !stats);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE), !tableMode);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PRODUCTION),
-              !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT), !stats);
+              !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT), !tableMode);
         columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_REINTRODUCED),
-              !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), !stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), stats);
-        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), stats);
+              !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), !tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), tableMode);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
+        columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), !tableMode);
+    }
+
+    /** Creates the control panel with the filters and buttons. */
+    private JComponent getControlPanel() {
+        Box controlPanel = Box.createVerticalBox();
+        controlPanel.add(getShowTogglesPanel());
+        controlPanel.add(Box.createVerticalStrut(4));
+        controlPanel.add(getHideTogglesPanel());
+        controlPanel.add(Box.createVerticalStrut(4));
+        controlPanel.add(getAddRemoveButtonsPanel());
+        controlPanel.add(Box.createVerticalStrut(4));
+        controlPanel.add(getTextFilterAndTableModeButtonPanel());
+        controlPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
+        return controlPanel;
+    }
+
+    /**
+     * Creates a small info panel. Has a dismiss button that will prevent it from being shown again.
+     */
+    private JComponent getUserInfoPanel() {
+        JPanel userInfoPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        userInfoPanel.setOpaque(false);
+        JButton gotItButton = new JButton("Got it!");
+        gotItButton.setForeground(UIUtil.uiYellow());
+        gotItButton.addActionListener(e -> {
+            userInfoPanel.setVisible(false);
+            CConfig.setParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK, Boolean.toString(false));
+            CConfig.saveConfig();
+        });
+        var userInfoText = new JLabel("Note: Ctrl-Click a filter to add it to the selected filters.");
+        userInfoText.setForeground(UIUtil.uiYellow());
+        userInfoPanel.add(userInfoText);
+        userInfoPanel.add(Box.createHorizontalStrut(15));
+        userInfoPanel.add(gotItButton);
+        return userInfoPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the "Show:" toggles.
+     */
+    private Component getShowTogglesPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+
+        buttonPanel.add(new JLabel("Show: "));
+        showToggles.forEach(button -> {
+            button.addActionListener(this::toggleEquipment);
+            buttonPanel.add(button);
+        });
+        showAllButton.addActionListener(e -> showAllEquipment());
+        buttonPanel.add(showAllButton);
+
+        var showTogglesPanel = Box.createVerticalBox();
+        if (CConfig.getBooleanParam(CConfig.NAG_EQUIPMENT_CTRL_CLICK)) {
+            showTogglesPanel.add(getUserInfoPanel());
+        }
+        showTogglesPanel.add(buttonPanel);
+        showTogglesPanel.setBackground(UIManager.getColor("Table.background"));
+        showTogglesPanel.setOpaque(true);
+        return showTogglesPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the "Hide:" toggles.
+     */
+    private Component getHideTogglesPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+
+        buttonPanel.add(new JLabel("Hide: "));
+        hideUnavailableButton.addActionListener(e -> filterEquipment());
+        buttonPanel.add(hideUnavailableButton);
+
+        var hideTogglesPanel = Box.createHorizontalBox();
+        hideTogglesPanel.add(buttonPanel);
+        hideTogglesPanel.setBackground(UIManager.getColor("Table.background"));
+        hideTogglesPanel.setOpaque(true);
+        return hideTogglesPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the Add and Remove buttons.
+     */
+    private Component getAddRemoveButtonsPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        buttonPanel.add(addFieldGunButton);
+        buttonPanel.add(removeFieldGunButton);
+
+        var addRemoveButtonsPanel = Box.createHorizontalBox();
+        addRemoveButtonsPanel.add(buttonPanel);
+        addRemoveButtonsPanel.setBackground(UIManager.getColor("Table.background"));
+        addRemoveButtonsPanel.setOpaque(true);
+        return addRemoveButtonsPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the Text Filter and the Table Mode button.
+     */
+    private Component getTextFilterAndTableModeButtonPanel() {
+        var textAndButtonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        textAndButtonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                textAndButtonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+        });
+        textAndButtonPanel.add(new JLabel("Text Filter: "));
+        textAndButtonPanel.add(txtFilter);
+        var cancelTextFilter = new JButton("X");
+        cancelTextFilter.setForeground(GUIPreferences.getInstance().getWarningColor());
+        cancelTextFilter.addActionListener(e -> txtFilter.setText(""));
+        textAndButtonPanel.add(cancelTextFilter);
+        textAndButtonPanel.add(Box.createHorizontalStrut(15));
+        textAndButtonPanel.add(tableModeButton);
+        tableModeButton.addActionListener(e -> switchTableMode());
+
+        var textFilterAndTableModeButtonPanel = Box.createHorizontalBox();
+        textFilterAndTableModeButtonPanel.add(textAndButtonPanel);
+        textFilterAndTableModeButtonPanel.setBackground(UIManager.getColor("Table.background"));
+        textFilterAndTableModeButtonPanel.setOpaque(true);
+        return textFilterAndTableModeButtonPanel;
     }
 }

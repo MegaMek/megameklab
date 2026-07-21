@@ -527,8 +527,8 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
 
     private EquipmentType getCurrentStructureEquipment() {
         String structureName = EquipmentType.getStructureTypeName(getMek().getStructureType(),
-              TechConstants.isClan(getMek().getStructureTechLevel()));
-        return EquipmentType.get(structureName);
+            TechConstants.isClan(getMek().getStructureTechLevel()));
+        return EquipmentType.getStructureFromName(structureName);
     }
 
     private void removeInternalStructureMounts() {

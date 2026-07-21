@@ -35,16 +35,20 @@ package megameklab.ui.infantry;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -53,6 +57,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import megamek.client.ui.WrapLayout;
+import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.common.TechConstants;
 import megamek.common.equipment.EquipmentType;
@@ -71,26 +77,29 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
 
-    private final JButton btnSetArmor = new JButton("Set Armor");
-    private final JButton btnRemoveArmor = new JButton("Remove Armor");
-    private final JTextField txtFilter = new JTextField(12);
-    private final JRadioButton radioButtonStats = new JRadioButton("Stats");
-    private final JRadioButton radioButtonFluff = new JRadioButton("Fluff");
-    private final JRadioButton radioButtonCustom = new JRadioButton("Custom");
-    final private JCheckBox chkShowAll = new JCheckBox("Show Unavailable");
-    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
-    private final EquipmentTableModel masterEquipmentList;
-    private final JTable masterEquipmentTable = new JTable();
-    private final JScrollPane masterEquipmentScroll = new JScrollPane();
-    private final JPanel equipmentView = new JPanel();
-    private final CardLayout equipmentLayout = new CardLayout();
+    private final JButton addArmorButton = new JButton("Add Armor");
+    private final JButton removeArmorButton = new JButton("Remove Armor");
 
-    JCheckBox chEncumber = new JCheckBox("Encumbering");
-    JCheckBox chSpaceSuit = new JCheckBox("Space Suit");
-    JCheckBox chDEST = new JCheckBox("DEST");
-    JCheckBox chSneakCamo = new JCheckBox("Sneak (CAMO)");
-    JCheckBox chSneakIR = new JCheckBox("Sneak (IR)");
-    JCheckBox chSneakECM = new JCheckBox("Sneak (ECM)");
+    private final JToggleButton hideUnavailableButton = new JToggleButton("Unavailable", true);
+    private final JToggleButton createCustomArmorButton = new JToggleButton("Create Custom Armor");
+
+    private final JTextField txtFilter = new JTextField("", 15);
+    private final JButton cancelTextFilter = new JButton("X");
+    private final JButton tableModeButton = new JButton("Switch Table Columns");
+    private boolean tableMode = true;
+
+    private final EquipmentTableModel masterEquipmentList;
+    private final TableRowSorter<EquipmentTableModel> equipmentSorter;
+    private final JTable masterEquipmentTable = new JTable();
+    private final JPanel armorPanel = new JPanel();
+    private final CardLayout armorLayout = new CardLayout();
+
+    private final JCheckBox chEncumber = new JCheckBox("Encumbering");
+    private final JCheckBox chSpaceSuit = new JCheckBox("Space Suit");
+    private final JCheckBox chDEST = new JCheckBox("DEST");
+    private final JCheckBox chSneakCamo = new JCheckBox("Sneak (CAMO)");
+    private final JCheckBox chSneakIR = new JCheckBox("Sneak (IR)");
+    private final JCheckBox chSneakECM = new JCheckBox("Sneak (ECM)");
     private final JSpinner armorValue = new JSpinner(new SpinnerNumberModel(1.0, 0.5, 3.0, 0.5));
 
     private final JLabel lblSneakWarning = new JLabel("Warning: Setting both DEST and Sneak properties on custom armor "
@@ -129,10 +138,11 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             if (selected >= 0) {
                 etype = masterEquipmentList.getType(masterEquipmentTable.convertRowIndexToModel(selected));
             }
-            btnSetArmor.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
+            addArmorButton.setEnabled((null != etype) && eSource.getTechManager().isLegal(etype));
         };
         masterEquipmentTable.getSelectionModel().addListSelectionListener(selectionListener);
         masterEquipmentTable.setDoubleBuffered(true);
+        JScrollPane masterEquipmentScroll = new JScrollPane();
         masterEquipmentScroll.setViewportView(masterEquipmentTable);
         masterEquipmentTable.getSelectionModel().addListSelectionListener(evt -> {
             int view = masterEquipmentTable.getSelectedRow();
@@ -142,10 +152,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
             int selected = masterEquipmentTable.convertRowIndexToModel(view);
             EquipmentType equip = masterEquipmentList.getType(selected);
-            btnSetArmor.setEnabled((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT)));
+            addArmorButton.setEnabled((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT)));
         });
-        masterEquipmentScroll.setMinimumSize(new Dimension(200, 200));
-        masterEquipmentScroll.setPreferredSize(new Dimension(200, 200));
 
         Enumeration<EquipmentType> miscTypes = EquipmentType.getAllTypes();
         ArrayList<EquipmentType> allTypes = new ArrayList<>();
@@ -156,134 +164,16 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             }
         }
 
+        armorPanel.setLayout(armorLayout);
+        armorPanel.add(masterEquipmentScroll, CARD_TABLE);
+        armorPanel.add(getCustomArmorPanel(), CARD_CUSTOM);
+
         masterEquipmentList.setData(allTypes);
-
-        txtFilter.setText("");
-        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filterEquipment();
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filterEquipment();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filterEquipment();
-            }
-        });
-
-        ButtonGroup buttonGroupView = new ButtonGroup();
-        buttonGroupView.add(radioButtonStats);
-        buttonGroupView.add(radioButtonFluff);
-        buttonGroupView.add(radioButtonCustom);
-
-        radioButtonStats.setSelected(true);
-        radioButtonStats.addActionListener(ev -> setEquipmentView());
-        radioButtonFluff.addActionListener(ev -> setEquipmentView());
-        radioButtonCustom.addActionListener(ev -> setEquipmentView());
-        chkShowAll.addActionListener(ev -> filterEquipment());
-
-        setUpPanels();
-        radioButtonStats.setSelected(true);
         setEquipmentView();
-        refresh();
-    }
-
-    private void setUpPanels() {
-        JPanel databasePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        databasePanel.add(btnSetArmor, gbc);
-        btnSetArmor.addActionListener(this);
-
-        gbc.gridx = 1;
-        databasePanel.add(btnRemoveArmor, gbc);
-        btnRemoveArmor.addActionListener(this);
-
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(radioButtonStats);
-        btnPanel.add(radioButtonFluff);
-        btnPanel.add(radioButtonCustom);
-        btnPanel.add(chkShowAll);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        databasePanel.add(btnPanel, gbc);
-
-        equipmentView.setLayout(equipmentLayout);
-
-        gbc.insets = new Insets(2, 0, 0, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        databasePanel.add(equipmentView, gbc);
 
         setLayout(new BorderLayout());
-        add(databasePanel, BorderLayout.CENTER);
-
-        JPanel tableView = new JPanel(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        tableView.add(new JLabel("Filter:"), gbc);
-
-        gbc.gridx = 1;
-        tableView.add(txtFilter, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        tableView.add(masterEquipmentScroll, gbc);
-
-        equipmentView.add(tableView, CARD_TABLE);
-
-        JPanel customView = new JPanel(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.NONE;
-
-        gbc.gridy = 0;
-        customView.add(new StandardBuildLabel("Damage Divisor:"), gbc);
-        customView.add(armorValue, gbc);
-        JFormattedTextField textField = ((DefaultEditor) armorValue.getEditor()).getTextField();
-        textField.setEditable(false);
-
-        gbc.gridy++;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        customView.add(chEncumber, gbc);
-        customView.add(chSpaceSuit, gbc);
-        gbc.gridy++;
-        customView.add(chDEST, gbc);
-        customView.add(chSneakCamo, gbc);
-        gbc.gridy++;
-        customView.add(chSneakIR, gbc);
-        gbc.weightx = 1;
-        gbc.weighty = 0.01;
-        customView.add(chSneakECM, gbc);
-
-        lblSneakWarning.setForeground(Color.RED);
-        lblSneakWarning.setVisible(false);
-        gbc.gridy++;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        gbc.gridwidth = 2;
-        customView.add(lblSneakWarning, gbc);
-
-        equipmentView.add(customView, CARD_CUSTOM);
+        add(getControlPanel(), BorderLayout.PAGE_START);
+        add(armorPanel, BorderLayout.CENTER);
     }
 
     public void refresh() {
@@ -317,8 +207,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
               (getInfantry().hasSneakCamo() || getInfantry().hasSneakIR() || getInfantry().hasSneakECM()));
 
         filterEquipment();
-        btnRemoveArmor.setEnabled(hasArmor());
-        radioButtonCustom.setEnabled(getInfantry().getArmorKit() == null);
+        removeArmorButton.setEnabled(hasArmor());
+        createCustomArmorButton.setEnabled(getInfantry().getArmorKit() == null);
         addAllListeners();
     }
 
@@ -329,7 +219,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     @Override
     public void actionPerformed(ActionEvent evt) {
         removeAllListeners();
-        if (evt.getSource().equals(btnSetArmor)) {
+        if (evt.getSource().equals(addArmorButton)) {
             int view = masterEquipmentTable.getSelectedRow();
             if (view < 0) {
                 // selection got filtered away
@@ -339,9 +229,9 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             EquipmentType equip = masterEquipmentList.getType(selected);
             if ((equip instanceof MiscType) && (equip.hasFlag(MiscType.F_ARMOR_KIT))) {
                 getInfantry().setArmorKit(equip);
-                radioButtonCustom.setEnabled(false);
+                createCustomArmorButton.setEnabled(false);
             }
-        } else if (evt.getSource().equals(btnRemoveArmor)) {
+        } else if (evt.getSource().equals(removeArmorButton)) {
             getInfantry().setArmorKit(null);
             getInfantry().setCustomArmorDamageDivisor(1.0);
             getInfantry().setArmorEncumbering(false);
@@ -350,7 +240,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
             getInfantry().setSneakCamo(false);
             getInfantry().setSneakIR(false);
             getInfantry().setSneakECM(false);
-            radioButtonCustom.setEnabled(true);
+            createCustomArmorButton.setEnabled(true);
         }
 
         if (evt.getSource().equals(chEncumber)) {
@@ -375,6 +265,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
 
     private void addAllListeners() {
+        addArmorButton.addActionListener(this);
+        removeArmorButton.addActionListener(this);
         chEncumber.addActionListener(this);
         chSpaceSuit.addActionListener(this);
         chDEST.addActionListener(this);
@@ -385,6 +277,8 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
     }
 
     private void removeAllListeners() {
+        addArmorButton.removeActionListener(this);
+        removeArmorButton.removeActionListener(this);
         chEncumber.removeActionListener(this);
         chSpaceSuit.removeActionListener(this);
         chDEST.removeActionListener(this);
@@ -416,7 +310,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
                 if (!(etype instanceof MiscType) || !(etype.hasFlag(MiscType.F_ARMOR_KIT))) {
                     return false;
                 } else if ((null != eSource.getTechManager())
-                      && !eSource.getTechManager().isLegal(etype) && !chkShowAll.isSelected()) {
+                      && !eSource.getTechManager().isLegal(etype) && hideUnavailableButton.isSelected()) {
                     return false;
                 } else if (!etype.isAvailableIn(getInfantry().getTechLevelYear(),
                       CConfig.getBooleanParam(CConfig.TECH_EXTINCT))) {
@@ -431,70 +325,58 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         equipmentSorter.setRowFilter(equipmentTypeFilter);
     }
 
-    public void setEquipmentView() {
-        if (radioButtonCustom.isSelected()) {
-            equipmentLayout.show(equipmentView, CARD_CUSTOM);
-            btnSetArmor.setEnabled(false);
-            return;
-        }
-        equipmentLayout.show(equipmentView, CARD_TABLE);
-        btnSetArmor.setEnabled(true);
-        XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
-        if (radioButtonStats.isSelected()) {
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MEDIUM_RANGE),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PRODUCTION),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_REINTRODUCED),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
+    private void switchTableMode() {
+        tableMode = !tableMode;
+        setEquipmentView();
+    }
+
+    private void setEquipmentView() {
+        if (createCustomArmorButton.isSelected()) {
+            hideUnavailableButton.setEnabled(false);
+            txtFilter.setText("");
+            txtFilter.setEnabled(false);
+            cancelTextFilter.setEnabled(false);
+            tableModeButton.setEnabled(false);
+            armorLayout.show(armorPanel, CARD_CUSTOM);
+            addArmorButton.setEnabled(false);
         } else {
+            hideUnavailableButton.setEnabled(true);
+            txtFilter.setEnabled(true);
+            cancelTextFilter.setEnabled(true);
+            tableModeButton.setEnabled(true);
+            armorLayout.show(armorPanel, CARD_TABLE);
+            addArmorButton.setEnabled(true);
+            XTableColumnModel columnModel = (XTableColumnModel) masterEquipmentTable.getColumnModel();
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_NAME), true);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DAMAGE), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), false);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DIVISOR), tableMode);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SPECIAL), tableMode);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_HEAT), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_MEDIUM_RANGE),
                   false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_RANGE), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_SHOTS), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL), true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_LEVEL),
+                  !tableMode);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TECH_RATING),
+                  !tableMode);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PROTOTYPE),
-                  false);
+                  !tableMode);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_PRODUCTION),
-                  false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT), true);
+                  !tableMode);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_COMMON),
+                  !tableMode);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_EXTINCT),
+                  !tableMode);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_DATE_REINTRODUCED),
-                  true);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), true);
+                  !tableMode);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_COST), !tableMode);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CREW), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_BV), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_TON), false);
             columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_CRIT), false);
-            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), true);
+            columnModel.setColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF), !tableMode);
         }
     }
 
@@ -503,4 +385,148 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
               || !getInfantry().getArmorDesc().equals("1.0");
     }
 
+    /** Creates the custom armor panel **/
+    private JPanel getCustomArmorPanel() {
+        JPanel customArmorPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+
+        gbc.gridy = 0;
+        customArmorPanel.add(new StandardBuildLabel("Damage Divisor:"), gbc);
+        customArmorPanel.add(armorValue, gbc);
+        JFormattedTextField textField = ((DefaultEditor) armorValue.getEditor()).getTextField();
+        textField.setEditable(false);
+
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        customArmorPanel.add(chEncumber, gbc);
+        customArmorPanel.add(chSpaceSuit, gbc);
+        gbc.gridy++;
+        customArmorPanel.add(chDEST, gbc);
+        customArmorPanel.add(chSneakCamo, gbc);
+        gbc.gridy++;
+        customArmorPanel.add(chSneakIR, gbc);
+        gbc.weightx = 1;
+        gbc.weighty = 0.01;
+        customArmorPanel.add(chSneakECM, gbc);
+
+        lblSneakWarning.setForeground(Color.RED);
+        lblSneakWarning.setVisible(false);
+        gbc.gridy++;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        gbc.gridwidth = 2;
+        customArmorPanel.add(lblSneakWarning, gbc);
+        return customArmorPanel;
+    }
+
+    /** Creates the control panel with the filters and buttons. */
+    private JComponent getControlPanel() {
+        Box controlPanel = Box.createVerticalBox();
+        controlPanel.add(getHideTogglesPanel());
+        controlPanel.add(Box.createVerticalStrut(4));
+        controlPanel.add(getAddRemoveCreateCustomButtonsPanel());
+        controlPanel.add(Box.createVerticalStrut(4));
+        controlPanel.add(getTextFilterAndTableModeButtonPanel());
+        controlPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
+        return controlPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the "Hide:" toggles.
+     */
+    private Component getHideTogglesPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        buttonPanel.add(new JLabel("Hide: "));
+        hideUnavailableButton.addActionListener(e -> filterEquipment());
+        buttonPanel.add(hideUnavailableButton);
+
+        var hideTogglesPanel = Box.createHorizontalBox();
+        hideTogglesPanel.add(buttonPanel);
+        hideTogglesPanel.setBackground(UIManager.getColor("Table.background"));
+        hideTogglesPanel.setOpaque(true);
+        return hideTogglesPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the Add, Remove, and Create Custom buttons.
+     */
+    private Component getAddRemoveCreateCustomButtonsPanel() {
+        var buttonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        buttonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buttonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        buttonPanel.add(addArmorButton);
+        buttonPanel.add(removeArmorButton);
+        createCustomArmorButton.addActionListener(e -> setEquipmentView());
+        buttonPanel.add(createCustomArmorButton);
+
+        var addRemoveCreateCustomButtonsPanel = Box.createHorizontalBox();
+        addRemoveCreateCustomButtonsPanel.add(buttonPanel);
+        addRemoveCreateCustomButtonsPanel.setBackground(UIManager.getColor("Table.background"));
+        addRemoveCreateCustomButtonsPanel.setOpaque(true);
+        return addRemoveCreateCustomButtonsPanel;
+    }
+
+    /**
+     * Constructs and returns the Panel containing the Text Filter and the Table Mode button.
+     */
+    private Component getTextFilterAndTableModeButtonPanel() {
+        var textAndButtonPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
+        textAndButtonPanel.setOpaque(false);
+        // The following listener deals with resizing problems of WrapLayout
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                textAndButtonPanel.invalidate();
+                super.componentResized(e);
+            }
+        });
+        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent evt) {
+                equipmentSorter.sort();
+            }
+        });
+        textAndButtonPanel.add(new JLabel("Text Filter: "));
+        textAndButtonPanel.add(txtFilter);
+        cancelTextFilter.setForeground(GUIPreferences.getInstance().getWarningColor());
+        cancelTextFilter.addActionListener(e -> txtFilter.setText(""));
+        textAndButtonPanel.add(cancelTextFilter);
+        textAndButtonPanel.add(Box.createHorizontalStrut(15));
+        textAndButtonPanel.add(tableModeButton);
+        tableModeButton.addActionListener(e -> switchTableMode());
+
+        var textFilterAndTableModeButtonPanel = Box.createHorizontalBox();
+        textFilterAndTableModeButtonPanel.add(textAndButtonPanel);
+        textFilterAndTableModeButtonPanel.setBackground(UIManager.getColor("Table.background"));
+        textFilterAndTableModeButtonPanel.setOpaque(true);
+        return textFilterAndTableModeButtonPanel;
+    }
 }

@@ -163,13 +163,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(4, 4, 4, 4);
         add(leftPanelScrollPane, gbc);
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        gbc.insets = new Insets(5, 0, 5, 0);
+        gbc.insets = new Insets(4, 0, 4, 4);
         add(equipmentPane, gbc);
     }
 
