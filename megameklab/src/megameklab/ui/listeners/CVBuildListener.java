@@ -33,6 +33,7 @@
 package megameklab.ui.listeners;
 
 import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.units.Entity;
 import megamek.common.units.EntityMovementMode;
 import megamek.common.verifier.BayData;
@@ -92,6 +93,14 @@ public interface CVBuildListener extends BuildListener {
      * @param engine The new engine type
      */
     void engineChanged(Engine engine);
+
+    /**
+     * Notify of the addition or removal of a chassis modification
+     *
+     * @param eq        The modification to add or remove
+     * @param installed Whether the chassis mod is to be installed or removed
+     */
+    void setChassisMod(EquipmentType eq, boolean installed);
 
     /**
      * Notify of a change in turret configuration.
