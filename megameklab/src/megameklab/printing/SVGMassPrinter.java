@@ -281,47 +281,40 @@ public class SVGMassPrinter {
             return textReport.toString();
         }
 
-        @Override
         public CalculationReport addLine(String type, String calculation, String result) {
             addDetail(type, calculation, result, CalculationReport.LineType.LINE, false);
             textReport.addLine(type, calculation, result);
             return this;
         }
 
-        @Override
         public CalculationReport addInformationalLine(String type, String calculation, String result) {
             addDetail(type, calculation, result, CalculationReport.LineType.LINE, true);
             textReport.addLine(type, calculation, result);
             return this;
         }
 
-        @Override
         public CalculationReport addSubHeader(String text) {
             addDetail(text, "", "", CalculationReport.LineType.SUBHEADER, false);
             textReport.addSubHeader(text);
             return this;
         }
 
-        @Override
         public CalculationReport addHeader(String text) {
             addDetail(text, "", "", CalculationReport.LineType.HEADER, false);
             textReport.addHeader(text);
             return this;
         }
 
-        @Override
         public CalculationReport addResultLine(String type, String calculation, String result) {
             addDetail(type, calculation, result, CalculationReport.LineType.RESULT_LINE, false);
             textReport.addResultLine(type, calculation, result);
             return this;
         }
 
-        @Override
         public JComponent toJComponent() {
             return null;
         }
 
-        @Override
         public void startTentativeSection() {
             if (tentativeDetails == null) {
                 tentativeDetails = new ArrayList<>();
@@ -329,7 +322,6 @@ public class SVGMassPrinter {
             textReport.startTentativeSection();
         }
 
-        @Override
         public void endTentativeSection() {
             if (tentativeDetails != null) {
                 details.addAll(tentativeDetails);
@@ -338,7 +330,6 @@ public class SVGMassPrinter {
             textReport.endTentativeSection();
         }
 
-        @Override
         public void discardTentativeSection() {
             tentativeDetails = null;
             textReport.discardTentativeSection();
