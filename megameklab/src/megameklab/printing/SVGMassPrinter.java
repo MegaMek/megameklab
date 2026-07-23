@@ -2837,7 +2837,8 @@ public class SVGMassPrinter {
     static double calculateLoadoutTonnage(Entity entity) {
         TestEntity verifier = UnitUtil.getEntityVerifier(entity);
         if (verifier == null) {
-            throw new IllegalArgumentException("No weight verifier for entity type " + entity.getClass().getName());
+            // throw new IllegalArgumentException("No weight verifier for entity type " + entity.getClass().getName());
+            return 0;
         }
         return verifier.calculateWeight() + UnitUtil.getUnallocatedAmmoTonnage(entity);
     }
