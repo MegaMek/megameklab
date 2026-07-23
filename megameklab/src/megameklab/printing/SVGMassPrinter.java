@@ -287,6 +287,7 @@ public class SVGMassPrinter {
             return this;
         }
 
+        @Override
         public CalculationReport addInformationalLine(String type, String calculation, String result) {
             addDetail(type, calculation, result, CalculationReport.LineType.LINE, true);
             textReport.addLine(type, calculation, result);
