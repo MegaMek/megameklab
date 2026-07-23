@@ -898,6 +898,7 @@ public class SVGMassPrinter {
         public int year; // Year of introduction
         public String weightClass; // Weight class
         public double tons; // Weight in tons, rounded to the nearest integer
+        public double loadoutTons; // Weight of loadout
         public int bv; // Battle Value, rounded to the nearest integer
         public double offSpeedFactor; // Offensive Speed factor (used to compensate Custom Ammo)
         public int pv; // Point Value, rounded to the nearest integer
@@ -1326,6 +1327,7 @@ public class SVGMassPrinter {
             this.year = entity.getYear();
             this.weightClass = entity.getWeightClassName();
             this.tons = entity.getWeight();
+            this.loadoutTons = calculateLoadoutTonnage(entity);
             ExportCalculationReport bvReport = new ExportCalculationReport();
             this.bv = entity.getBvCalculator().calculateBV(true, true, bvReport);
             if (!SKIP_DETAILED_CALCULATIONS) {
@@ -2830,6 +2832,14 @@ public class SVGMassPrinter {
         if ((report != null) && !report.isBlank()) {
             Files.writeString(directory.resolve(unitName + ".txt"), report);
         }
+    }
+
+    static double calculateLoadoutTonnage(Entity entity) {
+        TestEntity verifier = UnitUtil.getEntityVerifier(entity);
+        if (verifier == null) {
+            throw new IllegalArgumentException("No weight verifier for entity type " + entity.getClass().getName());
+        }
+        return verifier.calculateWeight() + UnitUtil.getUnallocatedAmmoTonnage(entity);
     }
 
     static String createWeightBreakdown(Entity entity) {
