@@ -64,7 +64,6 @@ import megamek.MMConstants;
 import megamek.client.ratgenerator.RATGenerator;
 import megamek.client.ui.Messages;
 import megamek.client.ui.clientGUI.calculationReport.CalculationReport;
-import megamek.client.ui.clientGUI.calculationReport.FlexibleCalculationReport;
 import megamek.client.ui.clientGUI.calculationReport.TextCalculationReport;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.tileset.MekTileset;
@@ -90,12 +89,15 @@ import megamek.common.alphaStrike.ASUnitType;
 import megamek.common.alphaStrike.AlphaStrikeElement;
 import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.annotations.Nullable;
+import megamek.common.enums.Faction;
 import megamek.common.enums.WeaponSortOrder;
 import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.Quirks;
 import megamek.common.verifier.TestProtoMek;
+import megamek.common.verifier.TestEntity;
+import megamek.common.verifier.TestInfantry;
 import megamek.common.weapons.autoCannons.RACWeapon;
 import megamek.common.weapons.autoCannons.UACWeapon;
 import megamek.common.weapons.bayWeapons.BayWeapon;
@@ -138,6 +140,8 @@ import static megamek.common.equipment.WeaponType.DAMAGE_VARIABLE;
  * Generates SVG sheets for all units in the Mek Summary Cache and saves them
  */
 public class SVGMassPrinter {
+    record AlphaStrikeConversion(AlphaStrikeElement element, String report) {}
+
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     // The following are defaults that can be overridden via command-line arguments (see parseArgs / printUsage).
     private static boolean SKIP_SVG = false; // Set to true to skip SVG generation
@@ -957,6 +961,12 @@ public class SVGMassPrinter {
         public CostDetails costDetail;
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public List<BVDetail> bvDetails;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public String weightBreakdown;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public String techLevelBreakdown;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public String asConversionReport;
         @JsonIgnore
         public String costDetailText;
         @JsonIgnore
@@ -971,9 +981,12 @@ public class SVGMassPrinter {
 
         private void loadASUnitData(Entity entity) {
             this.as = null;
-            if (ASConverter.canConvert(entity)) {
-                AlphaStrikeElement asElement = ASConverter.convert(entity, new FlexibleCalculationReport());
-                ObjectMapper mapper = new ObjectMapper();
+            AlphaStrikeConversion conversion = convertToAlphaStrike(entity);
+            if (conversion != null) {
+                AlphaStrikeElement asElement = conversion.element();
+                if (!SKIP_DETAILED_CALCULATIONS) {
+                    this.asConversionReport = conversion.report();
+                }
                 this.as = new HashMap<>();
                 this.as.put("PV", asElement.getPointValue());
                 this.as.put("TP", asElement.getASUnitType().toString());
@@ -1428,6 +1441,10 @@ public class SVGMassPrinter {
             }
             this.sheets = new ArrayList<>();
             this.loadASUnitData(entity);
+            if (!SKIP_DETAILED_CALCULATIONS) {
+                this.weightBreakdown = createWeightBreakdown(entity);
+                this.techLevelBreakdown = createTechLevelBreakdown(entity);
+            }
             //            final MekView mekView = new MekView(entity, false, false, ViewFormatting.HTML);
             //            this.summary = mekView.getMekReadout();
 
@@ -2764,30 +2781,78 @@ public class SVGMassPrinter {
     }
 
     private static void exportCalculationDetails(ObjectMapper mapper, List<UnitData> unitDataList) {
-        File costDirectory = new File(ROOT_FOLDER, "cost");
-        File bvDirectory = new File(ROOT_FOLDER, "bv");
-        if ((!costDirectory.exists() && !costDirectory.mkdirs()) ||
-              (!bvDirectory.exists() && !bvDirectory.mkdirs())) {
+        exportCalculationDetails(mapper, unitDataList, Path.of(ROOT_FOLDER), EXPORT_CALCULATIONS_AS_TEXT);
+    }
+
+    static void exportCalculationDetails(ObjectMapper mapper, List<UnitData> unitDataList, Path rootDirectory,
+          boolean calculationsAsText) {
+        Path costDirectory = rootDirectory.resolve("cost");
+        Path bvDirectory = rootDirectory.resolve("bv");
+        Path weightDirectory = rootDirectory.resolve("weight");
+        Path techLevelDirectory = rootDirectory.resolve("tech-level");
+        Path asConversionDirectory = rootDirectory.resolve("alpha-strike");
+        try {
+            Files.createDirectories(costDirectory);
+            Files.createDirectories(bvDirectory);
+            Files.createDirectories(weightDirectory);
+            Files.createDirectories(techLevelDirectory);
+            Files.createDirectories(asConversionDirectory);
+        } catch (IOException e) {
             logger.error("Failed to create calculation detail export folders.");
             return;
         }
         for (UnitData unitData : unitDataList) {
             try {
-                if (EXPORT_CALCULATIONS_AS_TEXT) {
-                    Files.writeString(new File(costDirectory, unitData.name + ".txt").toPath(), unitData.costDetailText);
-                    Files.writeString(new File(bvDirectory, unitData.name + ".txt").toPath(), unitData.bvDetailText);
+                if (calculationsAsText) {
+                    writeTextReport(costDirectory, unitData.name, unitData.costDetailText);
+                    writeTextReport(bvDirectory, unitData.name, unitData.bvDetailText);
                 } else {
-                    mapper.writeValue(new File(costDirectory, unitData.name + ".json"), unitData.costDetail);
-                    mapper.writeValue(new File(bvDirectory, unitData.name + ".json"), unitData.bvDetails);
+                    mapper.writeValue(costDirectory.resolve(unitData.name + ".json").toFile(), unitData.costDetail);
+                    mapper.writeValue(bvDirectory.resolve(unitData.name + ".json").toFile(), unitData.bvDetails);
                 }
+                writeTextReport(weightDirectory, unitData.name, unitData.weightBreakdown);
+                writeTextReport(techLevelDirectory, unitData.name, unitData.techLevelBreakdown);
+                writeTextReport(asConversionDirectory, unitData.name, unitData.asConversionReport);
                 unitData.bvDetails = null;
                 unitData.costDetail = null;
                 unitData.bvDetailText = null;
                 unitData.costDetailText = null;
+                unitData.weightBreakdown = null;
+                unitData.techLevelBreakdown = null;
+                unitData.asConversionReport = null;
             } catch (IOException e) {
                 logger.error("Failed to export calculation details for {}: {}", unitData.name, e.getMessage());
             }
         }
+    }
+
+    private static void writeTextReport(Path directory, String unitName, @Nullable String report) throws IOException {
+        if ((report != null) && !report.isBlank()) {
+            Files.writeString(directory.resolve(unitName + ".txt"), report);
+        }
+    }
+
+    static String createWeightBreakdown(Entity entity) {
+        if (entity instanceof ConvInfantry infantry) {
+            TextCalculationReport report = new TextCalculationReport();
+            TestInfantry.getWeightExact(infantry, report);
+            return report.toString();
+        }
+        TestEntity verifier = UnitUtil.getEntityVerifier(entity);
+        return (verifier == null) ? "" : verifier.printEntity().toString();
+    }
+
+    static String createTechLevelBreakdown(Entity entity) {
+        return CompositeTechLevelReport.toPlainText(entity, Faction.NONE, entity.getYear(), true);
+    }
+
+    static @Nullable AlphaStrikeConversion convertToAlphaStrike(Entity entity) {
+        if (!ASConverter.canConvert(entity)) {
+            return null;
+        }
+        ExportCalculationReport report = new ExportCalculationReport();
+        AlphaStrikeElement element = ASConverter.convert(entity, report);
+        return (element == null) ? null : new AlphaStrikeConversion(element, report.getText());
     }
 
     private static File resolveUnitFileExportPath(File unitFilesDir, MekSummary mekSummary, Entity entity,
