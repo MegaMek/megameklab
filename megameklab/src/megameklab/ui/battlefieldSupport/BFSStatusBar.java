@@ -34,6 +34,7 @@ package megameklab.ui.battlefieldSupport;
 
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -56,6 +57,7 @@ public class BFSStatusBar extends ITab {
 
     private static final ResourceBundle I18N = ResourceBundle.getBundle("megameklab.resources.Views");
     private final JLabel costLabel = new JLabel();
+    private final JButton refreshButton = new JButton(I18N.getString("BFSStatusBar.refresh.text"));
     private RefreshListener refresh;
 
     public BFSStatusBar(MegaMekLabMainUI parent) {
@@ -67,12 +69,12 @@ public class BFSStatusBar extends ITab {
         btnAddToForce.setToolTipText(I18N.getString("BFSStatusBar.addToForce.tooltip"));
         btnAddToForce.addActionListener(evt -> ForceBuildUI.showAndAddEntity(getEntity()));
 
-        JButton btnRefresh = new JButton(I18N.getString("BFSStatusBar.refresh.text"));
-        btnRefresh.setToolTipText(I18N.getString("BFSStatusBar.refresh.tooltip"));
-        btnRefresh.addActionListener(evt -> refresh.refreshAll());
+        refreshButton.setToolTipText(I18N.getString("BFSStatusBar.refresh.tooltip"));
+        refreshButton.setEnabled(false);
+        refreshButton.addActionListener(evt -> refresh.refreshAll());
 
         add(btnAddToForce);
-        add(btnRefresh);
+        add(refreshButton);
         add(costLabel);
     }
 
@@ -86,6 +88,7 @@ public class BFSStatusBar extends ITab {
     }
 
     public void addRefreshedListener(RefreshListener refreshListener) {
-        refresh = refreshListener;
+        refresh = Objects.requireNonNull(refreshListener);
+        refreshButton.setEnabled(true);
     }
 }
