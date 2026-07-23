@@ -211,12 +211,15 @@ public class SVGMassPrinter {
         public String calculation;
         public String result;
         public CalculationReport.LineType lineType;
+        public boolean informational;
 
-        private CalculationDetail(String type, String calculation, String result, CalculationReport.LineType lineType) {
+        private CalculationDetail(String type, String calculation, String result, CalculationReport.LineType lineType,
+              boolean informational) {
             this.type = type;
             this.calculation = calculation;
             this.result = result;
             this.lineType = lineType;
+            this.informational = informational;
         }
     }
 
@@ -241,6 +244,7 @@ public class SVGMassPrinter {
         public BigDecimal amount;
         public BigDecimal factor;
         public BigDecimal subtotal;
+        public boolean informational;
 
         private CostDetail(String type, String calculation) {
             this.type = type;
@@ -259,9 +263,10 @@ public class SVGMassPrinter {
         private final TextCalculationReport textReport = new TextCalculationReport();
         private List<CalculationDetail> tentativeDetails;
 
-        private void addDetail(String type, String calculation, String result, CalculationReport.LineType lineType) {
+        private void addDetail(String type, String calculation, String result, CalculationReport.LineType lineType,
+              boolean informational) {
             List<CalculationDetail> target = (tentativeDetails == null) ? details : tentativeDetails;
-            target.add(new CalculationDetail(type, calculation, result, lineType));
+            target.add(new CalculationDetail(type, calculation, result, lineType, informational));
         }
 
         List<CalculationDetail> getDetails() {
@@ -274,28 +279,35 @@ public class SVGMassPrinter {
 
         @Override
         public CalculationReport addLine(String type, String calculation, String result) {
-            addDetail(type, calculation, result, CalculationReport.LineType.LINE);
+            addDetail(type, calculation, result, CalculationReport.LineType.LINE, false);
+            textReport.addLine(type, calculation, result);
+            return this;
+        }
+
+        @Override
+        public CalculationReport addInformationalLine(String type, String calculation, String result) {
+            addDetail(type, calculation, result, CalculationReport.LineType.LINE, true);
             textReport.addLine(type, calculation, result);
             return this;
         }
 
         @Override
         public CalculationReport addSubHeader(String text) {
-            addDetail(text, "", "", CalculationReport.LineType.SUBHEADER);
+            addDetail(text, "", "", CalculationReport.LineType.SUBHEADER, false);
             textReport.addSubHeader(text);
             return this;
         }
 
         @Override
         public CalculationReport addHeader(String text) {
-            addDetail(text, "", "", CalculationReport.LineType.HEADER);
+            addDetail(text, "", "", CalculationReport.LineType.HEADER, false);
             textReport.addHeader(text);
             return this;
         }
 
         @Override
         public CalculationReport addResultLine(String type, String calculation, String result) {
-            addDetail(type, calculation, result, CalculationReport.LineType.RESULT_LINE);
+            addDetail(type, calculation, result, CalculationReport.LineType.RESULT_LINE, false);
             textReport.addResultLine(type, calculation, result);
             return this;
         }
@@ -1304,14 +1316,14 @@ public class SVGMassPrinter {
             ExportCalculationReport bvReport = new ExportCalculationReport();
             this.bv = entity.getBvCalculator().calculateBV(true, true, bvReport);
             if (!SKIP_DETAILED_CALCULATIONS) {
-                this.bvDetails = structureBVDetails(bvReport.getDetails());
+                this.bvDetails = formatBVDetails(bvReport.getDetails());
                 this.bvDetailText = bvReport.getText();
             }
             this.offSpeedFactor = entity.getBvCalculator().getOffensiveSpeedFactorMultiplier();
             ExportCalculationReport costReport = new ExportCalculationReport();
             this.cost = Math.round(entity.getCost(costReport, false));
             if (!SKIP_DETAILED_CALCULATIONS) {
-                this.costDetail = structureCostDetails(costReport.getDetails());
+                this.costDetail = formatCostDetails(costReport.getDetails());
                 this.costDetailText = costReport.getText();
             }
             this.techBase = formatTechBase(entity);
@@ -1426,8 +1438,8 @@ public class SVGMassPrinter {
             }
         }
 
-        private static List<BVDetail> structureBVDetails(List<CalculationDetail> calculationDetails) {
-            List<BVDetail> structuredDetails = new ArrayList<>();
+        private static List<BVDetail> formatBVDetails(List<CalculationDetail> calculationDetails) {
+            List<BVDetail> bvDetails = new ArrayList<>();
             BVDetail currentSection = null;
             BVDetail activeGroup = null;
             BigDecimal previousTotal = null;
@@ -1441,7 +1453,7 @@ public class SVGMassPrinter {
                 if (detail.lineType == CalculationReport.LineType.SUBHEADER) {
                     currentSection = new BVDetail(normalizeDetailType(detail.type), null);
                     currentSection.details = new ArrayList<>();
-                    structuredDetails.add(currentSection);
+                    bvDetails.add(currentSection);
                     activeGroup = null;
                     previousTotal = null;
                     continue;
@@ -1467,7 +1479,7 @@ public class SVGMassPrinter {
                             unlabeledDetail.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
                             previousTotal = total;
                         }
-                        addBVDetail(structuredDetails, currentSection, unlabeledDetail);
+                        addBVDetail(bvDetails, currentSection, unlabeledDetail);
                     }
                     continue;
                 }
@@ -1478,30 +1490,30 @@ public class SVGMassPrinter {
                     activeGroup.details = new ArrayList<>();
                     groupStartingTotals.put(activeGroup,
                           (previousTotal == null) ? BigDecimal.ZERO : previousTotal);
-                    addBVDetail(structuredDetails, currentSection, activeGroup);
+                    addBVDetail(bvDetails, currentSection, activeGroup);
                     continue;
                 }
 
-                BVDetail structuredDetail = new BVDetail(type, detail.calculation.isBlank() ? null : detail.calculation);
+                BVDetail bvDetail = new BVDetail(type, detail.calculation.isBlank() ? null : detail.calculation);
                 BigDecimal total = parseBVTotal(detail.result);
                 if (total != null) {
-                    structuredDetail.total = total;
-                    structuredDetail.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
+                    bvDetail.total = total;
+                    bvDetail.delta = total.subtract((previousTotal == null) ? BigDecimal.ZERO : previousTotal);
                     previousTotal = total;
                 }
 
                 if ((activeGroup != null) &&
                       (detail.type.stripLeading().startsWith("-") ||
                             (activeGroup.details.isEmpty() && detail.result.isBlank()))) {
-                    activeGroup.details.add(structuredDetail);
+                    activeGroup.details.add(bvDetail);
                     continue;
                 }
 
                 activeGroup = null;
-                addBVDetail(structuredDetails, currentSection, structuredDetail);
+                addBVDetail(bvDetails, currentSection, bvDetail);
             }
             groupStartingTotals.forEach(UnitData::finalizeBVGroup);
-            return structuredDetails;
+            return bvDetails;
         }
 
         private static void finalizeBVGroup(BVDetail group, BigDecimal startingTotal) {
@@ -1546,46 +1558,50 @@ public class SVGMassPrinter {
             return false;
         }
 
-        private static void addBVDetail(List<BVDetail> structuredDetails, @Nullable BVDetail currentSection,
+        private static void addBVDetail(List<BVDetail> bvDetails, @Nullable BVDetail currentSection,
                                         BVDetail detail) {
             if (currentSection != null) {
                 currentSection.details.add(detail);
             } else {
-                structuredDetails.add(detail);
+                bvDetails.add(detail);
             }
         }
 
-        private static CostDetails structureCostDetails(List<CalculationDetail> calculationDetails) {
-            CostDetails structuredDetails = new CostDetails();
+        private static CostDetails formatCostDetails(List<CalculationDetail> calculationDetails) {
+            CostDetails costDetails = new CostDetails();
             BigDecimal subtotal = BigDecimal.ZERO;
             for (CalculationDetail detail : calculationDetails) {
                 if ((detail.lineType == CalculationReport.LineType.HEADER) || detail.type.isBlank()) {
                     continue;
                 }
                 if (detail.lineType == CalculationReport.LineType.RESULT_LINE) {
-                    structuredDetails.total = parseNumber(detail.result);
+                    costDetails.total = parseNumber(detail.result);
                     continue;
                 }
 
-                CostDetail structuredDetail = new CostDetail(normalizeDetailType(detail.type),
+                CostDetail costDetail = new CostDetail(normalizeDetailType(detail.type),
                       detail.calculation.isBlank() ? null : detail.calculation);
                 String result = detail.result.trim();
                 if (result.startsWith("x ")) {
-                    structuredDetail.factor = parseNumber(result.substring(2));
-                    if (structuredDetail.factor != null) {
-                        subtotal = subtotal.multiply(structuredDetail.factor);
-                        structuredDetail.subtotal = normalizeNumber(subtotal);
+                    costDetail.factor = parseNumber(result.substring(2));
+                    if (costDetail.factor != null) {
+                        subtotal = subtotal.multiply(costDetail.factor);
+                        costDetail.subtotal = normalizeNumber(subtotal);
                     }
                 } else {
-                    structuredDetail.amount = result.equals("N/A") ? BigDecimal.ZERO : parseNumber(result);
-                    if (structuredDetail.amount != null) {
-                        subtotal = subtotal.add(structuredDetail.amount);
-                        structuredDetail.subtotal = normalizeNumber(subtotal);
+                    costDetail.amount = result.equals("N/A") ? BigDecimal.ZERO : parseNumber(result);
+                    if (costDetail.amount != null) {
+                        if (detail.informational) {
+                            costDetail.informational = true;
+                        } else {
+                            subtotal = subtotal.add(costDetail.amount);
+                            costDetail.subtotal = normalizeNumber(subtotal);
+                        }
                     }
                 }
-                structuredDetails.steps.add(structuredDetail);
+                costDetails.steps.add(costDetail);
             }
-            return structuredDetails;
+            return costDetails;
         }
 
         private static String normalizeDetailType(String type) {
