@@ -35,6 +35,7 @@ package megameklab.ui.battlefieldSupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.swing.JFrame;
@@ -45,6 +46,7 @@ import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.MegaMekLabFileSaver;
+import megameklab.util.CConfig;
 
 /**
  * File-side helpers for a linked Battlefield Support Asset: writing the {@code .bfs} sidecar next to its base unit's
@@ -169,7 +171,12 @@ public final class BFSLinkedFiles {
 
     /** @return whether the given path points inside a zip archive (a cached asset can't be deleted from one). */
     public static boolean isInsideZip(String path) {
-        return (path != null) && path.toLowerCase().endsWith(".zip");
+        if (path == null) {
+            return false;
+        }
+        int entryDelimiter = path.indexOf(CConfig.RECENT_ENTRY_DELIMITER);
+        String archivePath = (entryDelimiter < 0) ? path : path.substring(0, entryDelimiter);
+        return archivePath.toLowerCase(Locale.ROOT).endsWith(".zip");
     }
 
     /** @return the file name without its extension (the part after the last dot). */

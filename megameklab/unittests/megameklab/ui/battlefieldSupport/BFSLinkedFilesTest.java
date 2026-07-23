@@ -89,7 +89,7 @@ class BFSLinkedFilesTest {
     @Test
     void inPlaceSaveOfZippedAssetFallsBackToCoLocatedSidecar() {
         // A cached asset inside a zip can't be overwritten; the sidecar is written next to the base file instead.
-        String zipped = new File(DIR, "vehicles.zip").getPath();
+        String zipped = new File(DIR, "vehicles.zip").getPath() + "|Maxim Heavy Hover Transport.bfs";
         File target = BFSLinkedFiles.resolveSaveTarget(baseFile(), zipped, false);
         assertEquals(new File(DIR, "Maxim Heavy Hover Transport.bfs").getPath(), target.getPath());
     }
@@ -111,7 +111,9 @@ class BFSLinkedFilesTest {
     @Test
     void isInsideZipDetectsZipPaths() {
         assertTrue(BFSLinkedFiles.isInsideZip("data/mekfiles/vehicles.zip"));
+        assertTrue(BFSLinkedFiles.isInsideZip("data/mekfiles/vehicles.zip|Maxim Heavy Hover Transport.blk"));
         assertFalse(BFSLinkedFiles.isInsideZip("data/mekfiles/Maxim.blk"));
+        assertFalse(BFSLinkedFiles.isInsideZip("data/mekfiles/Maxim.blk|alternate"));
         assertFalse(BFSLinkedFiles.isInsideZip(null));
     }
 
