@@ -122,7 +122,7 @@ public abstract class AbstractEquipmentTab extends ITab {
         databasePanel.add(equipDatabase);
 
         Box loadOutPanel = Box.createVerticalBox();
-        loadOutPanel.setBorder(BorderFactory.createTitledBorder("Current Load out"));
+        loadOutPanel.setBorder(BorderFactory.createTitledBorder("Current Loadout"));
 
         var buttonPanel = new UIUtil.FixedYPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(removeButton);
