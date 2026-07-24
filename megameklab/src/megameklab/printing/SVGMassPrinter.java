@@ -144,13 +144,13 @@ public class SVGMassPrinter {
 
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     // The following are defaults that can be overridden via command-line arguments (see parseArgs / printUsage).
-    private static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
-    private static boolean SKIP_DETAILED_CALCULATIONS = true; // Set to true to skip the detailed BV/Cost calculations
+    private static boolean SKIP_DETAILED_CALCULATIONS = false; // Set to true to skip the detailed BV/Cost calculations
     private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
-    private static boolean EXPORT_CALCULATIONS_AS_TEXT = true;
+    private static boolean EXPORT_CALCULATIONS_AS_TEXT = false;
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
@@ -382,11 +382,11 @@ public class SVGMassPrinter {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class Components {
         @JsonIgnore
-        public HashMap<String, ExportInventoryEntry> comps = new HashMap<>();
+        public Map<String, ExportInventoryEntry> comps = new LinkedHashMap<>();
 
         @JsonProperty("comp")
         public Collection<ExportInventoryEntry> getComp() {
-            return comps.values();
+            return List.copyOf(comps.values());
         }
 
         private String getMWCategory(EquipmentType eq) {
@@ -555,7 +555,7 @@ public class SVGMassPrinter {
 //            return name.replaceAll(replacePattern, "").trim();
         }
 
-        private ExportInventoryEntry addWeaponEntry(HashMap<String, ExportInventoryEntry> list, Entity entity,
+          private ExportInventoryEntry addWeaponEntry(Map<String, ExportInventoryEntry> list, Entity entity,
               @Nullable WeaponMounted mounted, WeaponType type,
               String location, int locId) {
             final String name = type.getShortName();
@@ -602,7 +602,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private ExportInventoryEntry addWeaponBay(HashMap<String, ExportInventoryEntry> list, Entity entity,
+          private ExportInventoryEntry addWeaponBay(Map<String, ExportInventoryEntry> list, Entity entity,
               WeaponType type,
               String location, int locId) {
             String key = UUID.randomUUID().toString();
@@ -619,9 +619,9 @@ public class SVGMassPrinter {
         }
 
 
-        private void parseBays(HashMap<String, ExportInventoryEntry> list, Entity entity) {
+        private void parseBays(Map<String, ExportInventoryEntry> list, Entity entity) {
             for (WeaponMounted bay : entity.getWeaponList()) {
-                HashMap<String, ExportInventoryEntry> bayList = new HashMap<>();
+                Map<String, ExportInventoryEntry> bayList = new LinkedHashMap<>();
                 for (WeaponMounted weaponMounted : bay.getBayWeapons()) {
                     addWeaponEntry(bayList, entity, bay, weaponMounted.getType(), "", 0);
                 }
@@ -632,7 +632,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private void parseComponents(HashMap<String, ExportInventoryEntry> list, Entity entity) {
+        private void parseComponents(Map<String, ExportInventoryEntry> list, Entity entity) {
             if (entity instanceof ConvInfantry inf) {
                 if (null != inf.getPrimaryWeapon()) {
                     InfantryWeapon primaryWeapon = inf.getPrimaryWeapon();
@@ -796,7 +796,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private void addMiscEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
+          private void addMiscEntry(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
               MiscType type,
               String location, int locId, boolean isStructural) {
             final String name = type.getShortName();
@@ -817,7 +817,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private void addAmmoEntry(HashMap<String, ExportInventoryEntry> list, Entity entity, AmmoMounted mounted,
+          private void addAmmoEntry(Map<String, ExportInventoryEntry> list, Entity entity, AmmoMounted mounted,
               AmmoType type,
               String location, int locId) {
             final String name = type.getShortName().replace("Ammo", "").trim()+" Ammo";
@@ -840,7 +840,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private void addPhysicalWeapon(HashMap<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
+          private void addPhysicalWeapon(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
               String location, int locId) {
             MiscType type = mounted.getType();
             String damage;
@@ -893,7 +893,6 @@ public class SVGMassPrinter {
         public double loadoutTons; // Weight of loadout
         public int bv; // Battle Value, rounded to the nearest integer
         public double offSpeedFactor; // Offensive Speed factor (used to compensate Custom Ammo)
-        public int pv; // Point Value, rounded to the nearest integer
         public long cost; // Cost in C-Bills, rounded to the nearest integer
         public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
         public String techBase;
@@ -2639,7 +2638,6 @@ public class SVGMassPrinter {
                   return null;
               }
 
-              unitData.pv = mekSummary.getPointValue();
               unitData.su = isSmallUnit ? 1 : 0;
 
               if (!uniqueUnitTypes.containsKey(unitData.type)) {
