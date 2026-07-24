@@ -524,7 +524,7 @@ public class SVGMassPrinter {
                     } else {
                         dmg = 1;
                     }
-                    return dmg + "/msl";
+                    return dmg + "/Msl";
                 }
                 return "Cluster";
             } else if (wtype.getDamage() == DAMAGE_ARTILLERY) {
