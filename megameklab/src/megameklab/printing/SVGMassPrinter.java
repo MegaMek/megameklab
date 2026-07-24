@@ -106,7 +106,6 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.missiles.ATMWeapon;
 import megamek.common.weapons.missiles.MMLWeapon;
 import megamek.common.weapons.missiles.MissileWeapon;
-import megamek.common.weapons.missiles.thunderbolt.ThunderboltWeapon;
 import megamek.common.weapons.mortars.MekMortarWeapon;
 import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
@@ -495,6 +494,10 @@ public class SVGMassPrinter {
                 return Double.toString(wi.getInfantryDamage());
             }
 
+            if (wtype.hasFlag(WeaponType.F_LARGE_MISSILE)) {
+                return Integer.toString(getLargeMissileDamage(wtype));
+            }
+
             if (wtype.getDamage() == DAMAGE_VARIABLE) {
                 if (wtype.getDamage(1) <= 0) {
                     return "0";
@@ -510,20 +513,7 @@ public class SVGMassPrinter {
                     return "Special";
                 } else if (wtype instanceof MissileWeapon) {
                     int dmg;
-                    if (wtype instanceof ThunderboltWeapon) {
-                        switch (wtype.getAmmoType()) {
-                            case TBOLT_5:
-                                return "5";
-                            case TBOLT_10:
-                                return "10";
-                            case TBOLT_15:
-                                return "15";
-                            case TBOLT_20:
-                                return "20";
-                            default:
-                                return "0";
-                        }
-                    } else if ((wtype instanceof ATMWeapon)
+                    if ((wtype instanceof ATMWeapon)
                           || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM)
                           || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_STREAK)
                           || (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.SRM_ADVANCED)
@@ -546,6 +536,15 @@ public class SVGMassPrinter {
             } else {
                 return Integer.toString(wtype.getDamage());
             }
+        }
+
+        private int getLargeMissileDamage(WeaponType weapon) {
+            return AmmoType.getMunitionsFor(weapon.getAmmoType()).stream()
+                  .filter(ammo -> ammo.getRackSize() == weapon.getRackSize())
+                  .filter(ammo -> ammo.getMunitionType().contains(AmmoType.Munitions.M_STANDARD))
+                  .mapToInt(AmmoType::getDamagePerShot)
+                  .findFirst()
+                  .orElse(0);
         }
 
         private final String replacePattern = "\\s*(?:\\((?:[^()\\[\\]]|\\[[^\\]]*\\])*\\)|\\[(?:[^()\\[\\]]|\\([^)]*\\))*\\])";
@@ -579,7 +578,9 @@ public class SVGMassPrinter {
                 entry.d = getDamage(entity, type);
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
-                entry.md = String.valueOf(SVGMassPrinter.getMaxDamage(entity, type));
+                    entry.md = String.valueOf(type.hasFlag(WeaponType.F_LARGE_MISSILE)
+                        ? getLargeMissileDamage(type)
+                        : SVGMassPrinter.getMaxDamage(entity, type));
                 if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
                 } else if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
