@@ -46,12 +46,14 @@ import java.awt.event.MouseEvent;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -72,6 +74,8 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.SourceBook;
 import megamek.common.SourceBooks;
 import megamek.common.TechAdvancement;
+import megamek.common.alphaStrike.AlphaStrikeElement;
+import megamek.common.alphaStrike.conversion.ASConverter;
 import megamek.common.enums.Faction;
 import megamek.common.enums.FactionAffiliation;
 import megamek.common.enums.TechBase;
@@ -135,6 +139,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     private final JComboBox<String> cbTechLevel = new JComboBox<>();
     private final IntRangeTextField txtManualBV = new IntRangeTextField(3);
     private final MMComboBox<UnitRole> cbRole = new MMComboBox<>("Role Combo");
+    private final JCheckBox chkManualRole = new JCheckBox();
     private final JLabel lblMulId = createLabel("lblMulId", "");
     private final IntRangeTextField txtMulId = new IntRangeTextField(8);
     private final JButton browseMul = new JButton(new MulLinkIcon());
@@ -329,8 +334,20 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
               "BasicInfoView.txtRole.tooltip"), gbc);
         gbc.gridx = 1;
         cbRole.setToolTipText(resourceMap.getString("BasicInfoView.txtRole.tooltip"));
-        add(cbRole, gbc);
+        chkManualRole.setText(resourceMap.getString("BasicInfoView.chkManualRole.text"));
+        chkManualRole.setToolTipText(resourceMap.getString("BasicInfoView.chkManualRole.tooltip"));
+        var rolePanel = Box.createHorizontalBox();
+        rolePanel.add(cbRole);
+        rolePanel.add(chkManualRole);
+        add(rolePanel, gbc);
         cbRole.addActionListener(this);
+        chkManualRole.addActionListener(this);
+        cbRole.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent event) {
+                updateRoleScoreTooltip();
+            }
+        });
         cbRole.setPrototypeDisplayValue(UnitRole.ATTACK_FIGHTER);
         // Show the role UNDETERMINED as an empty selection to differentiate it from NONE
         // UNDETERMINED means that no role at all will be saved to the unit
@@ -377,14 +394,19 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         cbTechLevel.addActionListener(this);
         setManualBV(en.getManualBV());
         cbRole.removeActionListener(this);
+        chkManualRole.removeActionListener(this);
         cbRole.removeAllItems();
         for (UnitRole role : UnitRole.values()) {
             if (role.isAvailableTo(en)) {
                 cbRole.addItem(role);
             }
         }
-        cbRole.setSelectedItem(en.getRole());
+        chkManualRole.setSelected(en.hasRoleOverride());
+        cbRole.setSelectedItem(chkManualRole.isSelected() ? en.getRoleOverride() : en.getRole());
+        cbRole.setEnabled(chkManualRole.isSelected());
+        updateRoleScoreTooltip();
         cbRole.addActionListener(this);
+        chkManualRole.addActionListener(this);
 
         // Set faction from entity before refreshing visibility
         cbFaction.removeActionListener(this);
@@ -813,11 +835,79 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             refreshTechLevel();
         } else if (e.getSource() == cbTechLevel) {
             listeners.forEach(l -> l.techLevelChanged(getTechLevel()));
+        } else if (e.getSource() == chkManualRole) {
+            updateManualRoleOverride();
         } else if (e.getSource() == cbRole) {
-            UnitRole newRole = (cbRole.getSelectedItem() == null) ? UnitRole.UNDETERMINED : cbRole.getSelectedItem();
-            listeners.forEach(l -> l.roleChanged(newRole));
+            if (chkManualRole.isSelected()) {
+                listeners.forEach(l -> l.roleChanged(selectedRole()));
+            }
         }
         listeners.forEach(BuildListener::refreshSummary);
+    }
+
+    private UnitRole selectedRole() {
+        return (cbRole.getSelectedItem() == null) ? UnitRole.UNDETERMINED : cbRole.getSelectedItem();
+    }
+
+    private void updateRoleScoreTooltip() {
+        cbRole.setToolTipText(roleScoreTooltip());
+    }
+
+    private String roleScoreTooltip() {
+        String defaultTooltip = resourceMap.getString("BasicInfoView.txtRole.tooltip");
+        if ((currentEntity == null) || !ASConverter.canConvert(currentEntity)) {
+            return defaultTooltip;
+        }
+
+        AlphaStrikeElement element = ASConverter.convert(currentEntity);
+        if (element == null) {
+            return defaultTooltip;
+        }
+
+        List<RoleScore> roleScores = new ArrayList<>();
+        for (int roleIndex = 0; roleIndex < cbRole.getItemCount(); roleIndex++) {
+            UnitRole role = cbRole.getItemAt(roleIndex);
+            if (role == UnitRole.UNDETERMINED) {
+                continue;
+            }
+            roleScores.add(new RoleScore(role, role.roleScore(element)));
+        }
+        roleScores.sort((left, right) -> Double.compare(right.score(), left.score()));
+
+        double bestScore = roleScores.isEmpty() ? Double.NEGATIVE_INFINITY : roleScores.get(0).score();
+
+        StringBuilder tooltip = new StringBuilder("<html><table>");
+        for (RoleScore roleScore : roleScores) {
+            boolean winner = roleScore.score() == bestScore;
+            tooltip.append(winner ? "<tr><td><b>" : "<tr><td>")
+                  .append(html(roleScore.role().toString()))
+                  .append(winner ? "</b></td><td align='right'><b>&nbsp;&nbsp;" : "</td><td align='right'>&nbsp;&nbsp;")
+                  .append(String.format(Locale.ROOT, "%.2f", roleScore.score()))
+                  .append(winner ? "</b></td></tr>" : "</td></tr>");
+        }
+        tooltip.append("</table></html>");
+        return tooltip.toString();
+    }
+
+    private record RoleScore(UnitRole role, double score) {}
+
+    private static String html(String text) {
+        return text.replace("&", "&amp;")
+              .replace("<", "&lt;")
+              .replace(">", "&gt;");
+    }
+
+    private void updateManualRoleOverride() {
+        boolean manualRole = chkManualRole.isSelected();
+        cbRole.setEnabled(manualRole);
+        if (manualRole) {
+            listeners.forEach(l -> l.roleChanged(selectedRole()));
+        } else {
+            listeners.forEach(l -> l.roleChanged(UnitRole.UNDETERMINED));
+            cbRole.removeActionListener(this);
+            cbRole.setSelectedItem((currentEntity == null) ? UnitRole.UNDETERMINED : currentEntity.getRole());
+            cbRole.addActionListener(this);
+        }
     }
 
     @Override
