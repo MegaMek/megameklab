@@ -32,27 +32,29 @@
  */
 package megameklab.ui.combatVehicle;
 
+import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 import megamek.common.equipment.EquipmentType;
+import megamek.common.equipment.MiscType;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Entity;
-import megamek.common.verifier.TestSupportVehicle;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.CVBuildListener;
+import megameklab.util.UnitUtil;
 
 /**
- * Panel for selecting support vehicle chassis modifications
+ * Panel for selecting combat vehicle chassis modifications
  */
-
 public class CVChassisModView extends BuildView implements ItemListener {
 
     private final List<CVBuildListener> listeners = new CopyOnWriteArrayList<>();
@@ -65,7 +67,8 @@ public class CVChassisModView extends BuildView implements ItemListener {
         listeners.remove(l);
     }
 
-    private final Map<TestSupportVehicle.ChassisModification, JCheckBox> checkboxMap = new TreeMap<>();
+    private final Map<EquipmentType, JCheckBox> checkboxMap =
+          new TreeMap<>(Comparator.comparing(EquipmentType::getShortName));
     private final ITechManager techManager;
 
     public CVChassisModView(ITechManager techManager) {
@@ -74,59 +77,64 @@ public class CVChassisModView extends BuildView implements ItemListener {
     }
 
     private void initUi() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        for (TestSupportVehicle.ChassisModification mod : TestSupportVehicle.ChassisModification.values()) {
-            JCheckBox cb = new JCheckBox(mod.equipment.getShortName());
-            cb.setActionCommand(mod.equipment.getInternalName());
-            cb.addItemListener(this);
-            checkboxMap.put(mod, cb);
-            add(cb);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        for (EquipmentType equipment : EquipmentType.allTypes()) {
+            if (equipment.hasFlag(MiscType.F_TANK_EQUIPMENT) && equipment.hasFlag(MiscType.F_CHASSIS_MODIFICATION)) {
+                JCheckBox cb = new JCheckBox(equipment.getShortName());
+                cb.setActionCommand(equipment.getInternalName());
+                cb.addItemListener(this);
+                checkboxMap.put(equipment, cb);
+            }
         }
+        for (JCheckBox checkBox : checkboxMap.values()) {
+            panel.add(checkBox);
+        }
+        setLayout(new BorderLayout());
+        add(panel, BorderLayout.CENTER);
     }
 
     public void setFromEntity(Entity en) {
-        for (TestSupportVehicle.ChassisModification mod : checkboxMap.keySet()) {
-            final JCheckBox cb = checkboxMap.get(mod);
-            if (techManager.isLegal(mod) && mod.validFor(en)) {
+        for (EquipmentType equipment : checkboxMap.keySet()) {
+            final JCheckBox cb = checkboxMap.get(equipment);
+            if (UnitUtil.isEntityEquipment(equipment, en) && techManager.isLegal(equipment)) {
                 cb.setVisible(true);
-                if (mod.requiredFor(en)) {
-                    cb.setSelected(true);
-                    cb.setEnabled(false);
-                } else {
-                    cb.setSelected(en.getMisc().stream().anyMatch(m -> m.getType().equals(mod.equipment)));
-                    cb.setEnabled(true);
-                }
+                cb.setSelected(en.getMisc().stream().anyMatch(m -> m.getType().equals(equipment)));
+                cb.setEnabled(true);
             } else {
                 cb.setVisible(false);
                 cb.setSelected(false);
-                en.removeMisc(mod.equipment.getName());
+                en.removeMisc(equipment.getName());
             }
         }
         refresh();
     }
 
     /**
-     * Checks for compatibility with selected modifications and disables the checkbox for any that are not compatible.
+     * Disables the Fully Amphibious mod when Limited Amphibious mod is selected and vice versa
      */
     public void refresh() {
-        // Build a list of all selected mods
-        List<TestSupportVehicle.ChassisModification> checked = new ArrayList<>();
-        for (Map.Entry<TestSupportVehicle.ChassisModification, JCheckBox> e : checkboxMap.entrySet()) {
+        boolean hasFullyAmphibious = false;
+        boolean hasLimitedAmphibious = false;
+        for (Map.Entry<EquipmentType, JCheckBox> e : checkboxMap.entrySet()) {
             if (e.getValue().isSelected()) {
-                checked.add(e.getKey());
+                if (e.getKey().hasFlag(MiscType.F_FULLY_AMPHIBIOUS)) {
+                    hasFullyAmphibious = true;
+                } else if (e.getKey().hasFlag(MiscType.F_LIMITED_AMPHIBIOUS)) {
+                    hasLimitedAmphibious = true;
+                }
             }
         }
-        // Enable/disable each checkbox based on compatibility with other selected mods. If the box
-        // is already selected, remove it.
-        for (Map.Entry<TestSupportVehicle.ChassisModification, JCheckBox> e : checkboxMap.entrySet()) {
-            if (checked.stream().allMatch(mod -> mod.compatibleWith(e.getKey()))) {
-                e.getValue().setEnabled(true);
-            } else {
+        for (Map.Entry<EquipmentType, JCheckBox> e : checkboxMap.entrySet()) {
+            if ((hasFullyAmphibious && e.getKey().hasFlag(MiscType.F_LIMITED_AMPHIBIOUS))
+                  || (hasLimitedAmphibious && e.getKey().hasFlag(MiscType.F_FULLY_AMPHIBIOUS))) {
                 if (e.getValue().isSelected()) {
-                    listeners.forEach(l -> l.setChassisMod(e.getKey().equipment, false));
+                    listeners.forEach(l -> l.setChassisMod(e.getKey(), false));
                 }
                 e.getValue().setSelected(false);
                 e.getValue().setEnabled(false);
+            } else {
+                e.getValue().setEnabled(true);
             }
         }
     }

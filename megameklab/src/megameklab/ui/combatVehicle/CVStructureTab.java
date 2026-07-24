@@ -117,6 +117,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panTransport = new CVTransportView();
         iconView = new IconView();
+        panChassisMod.setVisible(!getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0);
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -376,6 +377,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void updateTechLevel() {
         removeAllListeners();
         getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
+        panChassisMod.setVisible(!getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0);
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
             panArmor.setPatchwork(false);
             armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
@@ -720,6 +722,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panChassisMod.refresh();
         panSummary.refresh();
+        refresh.refreshEquipment();
         refresh.refreshTransport();
         refresh.refreshStatus();
         refresh.refreshPreview();

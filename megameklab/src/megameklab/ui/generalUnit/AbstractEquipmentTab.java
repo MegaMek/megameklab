@@ -234,6 +234,7 @@ public abstract class AbstractEquipmentTab extends ITab {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStructure();
             refresh.refreshSummary();
         }
     }
