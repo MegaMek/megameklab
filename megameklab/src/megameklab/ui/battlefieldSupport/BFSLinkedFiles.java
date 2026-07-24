@@ -43,7 +43,6 @@ import javax.swing.JOptionPane;
 
 import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
-import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.util.MegaMekLabFileSaver;
 import megameklab.util.CConfig;
@@ -76,11 +75,11 @@ public final class BFSLinkedFiles {
      *                          asset's previous location
      * @param baseConflictChoice the UUID conflict choice made for the base unit (so the asset's own UUID follows the
      *                          same decision on a conflict), or {@code null} if the base save had no conflict
-     * @param logger            the logger for write failures
+     * @throws IOException if an enabled linked Asset cannot be written
      */
     public static void handleSidecarOnSave(JFrame owner, BFSAssetSource source, File baseFile,
           @Nullable String baseUnitFileUUID, boolean baseMovedOrNew,
-          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice, MMLogger logger) {
+          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) throws IOException {
         BattlefieldSupportAsset asset = source.getEnabledAsset();
         if (asset != null) {
             asset.setLinkedUnitId(baseUnitFileUUID);
@@ -89,14 +88,9 @@ public final class BFSLinkedFiles {
             // base unit's conflict choice, so the asset's UUID stays in lockstep with its base (e.g. both regenerate
             // when the unit is renamed to a new file, avoiding two units sharing a UUID).
             MegaMekLabFileSaver.prepareLinkedAssetUnitFileUUID(target, asset, baseConflictChoice);
-            try {
-                MegaMekLabFileSaver.writeUnitToFile(target, asset);
-                asset.storeSavedUnitData();
-                source.setAssetFilePath(target.getPath());
-            } catch (IOException e) {
-                logger.error(e, "Failed to write linked Battlefield Support Asset sidecar");
-                PopupMessages.showFileWriteError(owner, e.getMessage());
-            }
+            MegaMekLabFileSaver.writeUnitToFile(target, asset);
+            asset.storeSavedUnitData();
+            source.setAssetFilePath(target.getPath());
         } else {
             offerToDeleteStaleSidecar(owner, source, baseFile);
         }

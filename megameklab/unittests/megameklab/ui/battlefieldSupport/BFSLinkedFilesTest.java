@@ -36,23 +36,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.loaders.MekFileParser;
-import megamek.logging.MMLogger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /** Verifies the pure {@code .bfs} sidecar path rules used when saving a linked Battlefield Support Asset. */
 class BFSLinkedFilesTest {
-
-    private static final MMLogger LOGGER = MMLogger.create(BFSLinkedFilesTest.class);
 
     private static final String DIR = "units" + File.separator + "vehicles";
 
@@ -140,7 +140,7 @@ class BFSLinkedFilesTest {
         dir.deleteOnExit();
         File savedBaseFile = new File(dir, "Test Unit.blk");
 
-        BFSLinkedFiles.handleSidecarOnSave(null, source, savedBaseFile, finalBaseUuid, true, null, LOGGER);
+        BFSLinkedFiles.handleSidecarOnSave(null, source, savedBaseFile, finalBaseUuid, true, null);
 
         // The in-memory asset and the written sidecar both link to the base unit's final UUID.
         assertEquals(finalBaseUuid, asset.getLinkedUnitId());
@@ -168,7 +168,8 @@ class BFSLinkedFilesTest {
         File dir = Files.createTempDirectory("bfs-rename").toFile();
         dir.deleteOnExit();
 
-        BFSLinkedFiles.handleSidecarOnSave(null, source, new File(dir, "New Name.blk"), "base-uuid", true, null, LOGGER);
+        BFSLinkedFiles.handleSidecarOnSave(
+              null, source, new File(dir, "New Name.blk"), "base-uuid", true, null);
 
         assertNotEquals(originalUuid, asset.getUnitFileUUID(), "a renamed unit's asset should get a fresh UUID");
     }
@@ -185,12 +186,26 @@ class BFSLinkedFilesTest {
         File baseFile = new File(dir, "Same Unit.blk");
 
         // First save creates the sidecar.
-        BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", true, null, LOGGER);
+        BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", true, null);
         String uuidAfterFirstSave = asset.getUnitFileUUID();
 
         // In-place resave (base unchanged) keeps the same asset UUID.
-        BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", false, null, LOGGER);
+        BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", false, null);
         assertEquals(uuidAfterFirstSave, asset.getUnitFileUUID());
+    }
+
+    @Test
+    void sidecarWriteFailureIsReportedToTheCaller() throws Exception {
+        BattlefieldSupportAsset asset = new BattlefieldSupportAsset();
+        asset.setChassis("Unwritable Asset");
+        StubSource source = new StubSource(asset);
+        File parentFile = Files.createTempFile("bfs-parent-file", ".tmp").toFile();
+        parentFile.deleteOnExit();
+        File baseFile = new File(parentFile, "Unwritable Asset.blk");
+
+        assertThrows(IOException.class,
+              () -> BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", true, null));
+        assertNull(source.assetFilePath);
     }
 
     /** Minimal in-memory {@link BFSAssetSource} for exercising the sidecar save path. */

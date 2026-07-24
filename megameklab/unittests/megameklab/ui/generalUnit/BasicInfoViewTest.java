@@ -36,8 +36,12 @@ package megameklab.ui.generalUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import javax.swing.JCheckBox;
 
 import megamek.common.TechConstants;
 import megamek.common.enums.TechBase;
@@ -47,6 +51,7 @@ import megamek.common.loaders.EntityLoadingException;
 import megamek.common.loaders.EntitySavingException;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.Entity;
+import megameklab.ui.listeners.BuildListener;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,5 +103,22 @@ class BasicInfoViewTest {
         assertEquals(TechBase.IS, techBase);
         assertEquals(TechConstants.T_IS_UNOFFICIAL, techLevel);
         assertFalse(newTE.isClan());
+    }
+
+    @Test
+    void battlefieldSupportToggleRefreshesSummary() {
+        BasicInfoView view = new BasicInfoView(Entity.getMixedTechAdvancement());
+        BuildListener listener = mock(BuildListener.class);
+        view.addListener(listener);
+        JCheckBox toggle = Arrays.stream(view.getComponents())
+              .filter(JCheckBox.class::isInstance)
+              .map(JCheckBox.class::cast)
+              .findFirst()
+              .orElseThrow();
+
+        toggle.doClick();
+
+        verify(listener).battlefieldSupportAssetToggled(true);
+        verify(listener).refreshSummary();
     }
 }

@@ -859,7 +859,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
             listeners.forEach(l -> l.roleChanged(newRole));
         } else if (e.getSource() == chkBattlefieldSupportAsset) {
             listeners.forEach(l -> l.battlefieldSupportAssetToggled(chkBattlefieldSupportAsset.isSelected()));
-            return;
         }
         listeners.forEach(BuildListener::refreshSummary);
     }

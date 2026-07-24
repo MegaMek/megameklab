@@ -35,6 +35,7 @@ package megameklab.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
+import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -452,10 +453,14 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (file == null) {
             return false;
         }
-        forceDirtyUntilNextSave = false;
         setFileName(file);
+        if (!saveLinkedAsset(new java.io.File(file), true, fileSaver.getLastUnitFileUUIDConflictChoice())) {
+            forceDirtyUntilNextSave = true;
+            refreshHeader();
+            return false;
+        }
+        forceDirtyUntilNextSave = false;
         resetDirty();
-        saveLinkedAsset(new java.io.File(file), true, fileSaver.getLastUnitFileUUIDConflictChoice());
         return true;
 
     }
@@ -479,10 +484,15 @@ public abstract class MegaMekLabMainUI extends JPanel
             return false;
         }
         boolean baseMovedOrNew = !file.equals(previousFileName);
-        forceDirtyUntilNextSave = false;
         setFileName(file);
+        if (!saveLinkedAsset(new java.io.File(file), baseMovedOrNew,
+              fileSaver.getLastUnitFileUUIDConflictChoice())) {
+            forceDirtyUntilNextSave = true;
+            refreshHeader();
+            return false;
+        }
+        forceDirtyUntilNextSave = false;
         resetDirty();
-        saveLinkedAsset(new java.io.File(file), baseMovedOrNew, fileSaver.getLastUnitFileUUIDConflictChoice());
         return true;
     }
 
@@ -496,15 +506,23 @@ public abstract class MegaMekLabMainUI extends JPanel
      * @param baseConflictChoice the UUID conflict choice made for the base unit (so the asset follows it), or
      *                           {@code null} if the base save had no conflict
      */
-    private void saveLinkedAsset(java.io.File baseFile, boolean baseMovedOrNew,
+    private boolean saveLinkedAsset(java.io.File baseFile, boolean baseMovedOrNew,
           @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) {
         BFSAssetSource source = getBattlefieldSupportAssetSource();
-        if (source != null) {
-            // Pass the base unit's final UUID so the sidecar is re-linked to it: the base UUID may have just changed
-            // during the save (e.g. Save-As over an existing file adopts that file's UUID), which would otherwise leave
-            // the sidecar pointing at the stale in-memory UUID.
-            BFSLinkedFiles.handleSidecarOnSave(getParentFrame(), source, baseFile, getEntity().getUnitFileUUID(),
-                  baseMovedOrNew, baseConflictChoice, logger);
+        if (source == null) {
+            return true;
+        }
+        // Pass the base unit's final UUID so the sidecar is re-linked to it: the base UUID may have just changed during
+        // the save (e.g. Save-As over an existing file adopts that file's UUID), which would otherwise leave the
+        // sidecar pointing at the stale in-memory UUID.
+        try {
+            BFSLinkedFiles.handleSidecarOnSave(getParentFrame(), source, baseFile,
+                  getEntity().getUnitFileUUID(), baseMovedOrNew, baseConflictChoice);
+            return true;
+        } catch (IOException e) {
+            logger.error(e, "Failed to write linked Battlefield Support Asset sidecar");
+            PopupMessages.showFileWriteError(getParentFrame(), e.getMessage());
+            return false;
         }
     }
 
