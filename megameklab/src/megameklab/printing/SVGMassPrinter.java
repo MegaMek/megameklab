@@ -595,6 +595,8 @@ public class SVGMassPrinter {
         }
 
         public Components(Entity entity) {
+            addImplicitStructureEntry(this.comps, entity);
+            addSyntheticArmorEntries(this.comps, entity);
             if (entity.usesWeaponBays()) {
                 parseBays(this.comps, entity);
             } else {
@@ -669,8 +671,6 @@ public class SVGMassPrinter {
                 }
             }
 
-            addImplicitStructureEntry(list, entity);
-
         if (entity instanceof Mek mek) {
             if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM)) {
                 ExportInventoryEntry entry = new ExportInventoryEntry();
@@ -699,6 +699,14 @@ public class SVGMassPrinter {
             List<Mounted<?>> mountedList = entity.getEquipment();
             for (Mounted<?> m : mountedList) {
                 if (m.isWeaponGroup()) {
+                    continue;
+                }
+                // Structure is exported once from the entity's selected structure type, not per critical slot.
+                if (m.getType() instanceof StructureType) {
+                    continue;
+                }
+                // Armor is exported from the entity's effective armor configuration, not per critical slot.
+                if (m.getType() instanceof ArmorType) {
                     continue;
                 }
                 if (m.getType() instanceof AmmoType ammo) { // Includes Coolant Pods since they are technically ammo
@@ -799,12 +807,11 @@ public class SVGMassPrinter {
         }
 
         /**
-         * Exports the entity's selected internal structure when it has no mounted structure equipment.
-         * Advanced structure types with critical slots are already emitted from {@code getEquipment()}.
+                 * Exports the entity's selected internal structure as one normalized component.
+                 * Mounted structure critical slots are deliberately omitted from the inventory export.
          */
         private void addImplicitStructureEntry(Map<String, ExportInventoryEntry> list, Entity entity) {
-            if ((entity.getStructureType() < 0)
-                  || entity.getEquipment().stream().anyMatch(mounted -> mounted.getType() instanceof StructureType)) {
+                        if (entity.getStructureType() < 0) {
                 return;
             }
 
@@ -822,6 +829,52 @@ public class SVGMassPrinter {
             entry.p = -1;
             entry.c = getCriticals(entity, structure);
             list.put(structure.getInternalName() + "__S", entry);
+        }
+
+        /**
+         * Exports armor as normalized entity-level entries. Patchwork retains its marker and exposes every distinct
+         * effective armor material, while location-specific armor critical slots remain an implementation detail.
+         */
+        private void addSyntheticArmorEntries(Map<String, ExportInventoryEntry> list, Entity entity) {
+            if (entity.locations() == 0) {
+                return;
+            }
+
+            if (entity.hasPatchworkArmor()) {
+                addSyntheticArmorEntry(list, entity, EquipmentType.T_ARMOR_PATCHWORK, false, "__patchwork");
+                Set<String> emittedArmor = new HashSet<>();
+                for (int location = 0; location < entity.locations(); location++) {
+                    int armorType = entity.getArmorType(location);
+                    boolean clanArmor = entity.isClanArmor(location);
+                    String key = armorType + ":" + clanArmor;
+                    if (emittedArmor.add(key)) {
+                        addSyntheticArmorEntry(list, entity, armorType, clanArmor, "__armor_" + key);
+                    }
+                }
+            } else {
+                addSyntheticArmorEntry(list, entity, entity.getArmorType(0), entity.isClanArmor(0), "__armor");
+            }
+        }
+
+        private void addSyntheticArmorEntry(Map<String, ExportInventoryEntry> list, Entity entity, int armorType,
+                                             boolean clanArmor, String suffix) {
+            if (armorType < 0) {
+                return;
+            }
+
+            ArmorType armor = EquipmentType.getArmorFromName(EquipmentType.getArmorTypeName(armorType, clanArmor));
+            if (armor == null) {
+                return;
+            }
+
+            ExportInventoryEntry entry = new ExportInventoryEntry();
+            entry.id = armor.getInternalName();
+            entry.n = cleanupName(armor.getShortName());
+            entry.t = "S";
+            entry.q = 1;
+            entry.p = -1;
+            entry.c = getCriticals(entity, armor);
+            list.put(armor.getInternalName() + suffix, entry);
         }
 
           private void addMiscEntry(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
