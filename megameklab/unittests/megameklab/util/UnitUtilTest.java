@@ -34,18 +34,22 @@
 package megameklab.util;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
+import megamek.common.bays.CargoBay;
 import megamek.common.enums.TechBase;
 import megamek.common.interfaces.ITechnology;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.BipedMek;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
+import megamek.common.units.SmallCraft;
+import megamek.common.verifier.TestAero;
 import megameklab.testing.util.InitializeTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -119,5 +123,66 @@ class UnitUtilTest {
         assertTrue(uuidIndex >= 0);
         assertTrue(uuidIndex < saved.indexOf("<UnitType>"));
         assertTrue(saved.indexOf(entity.getUnitFileUUID()) > uuidIndex);
+    }
+
+    @Test
+    void updateLoadedUnitRemovesQuartersAndPreservesPersonnelForSmallCraftAtThreshold() {
+        SmallCraft craft = cargoOnlySmallCraft(5.0);
+        craft.addTransporter(TestAero.Quarters.STANDARD.newQuarters(3));
+
+        UnitUtil.updateLoadedUnit(craft);
+
+        assertEquals(1, craft.getNCrew());
+        assertEquals(0, craft.getNOfficers());
+        assertEquals(0, craft.getNGunners());
+        assertEquals(1, craft.getTransportBays().size());
+        assertFalse(craft.getTransportBays().get(0).isQuarters());
+    }
+
+    @Test
+    void updateLoadedUnitStillAutoFillsSmallCraftAboveThreshold() {
+        SmallCraft craft = cargoOnlySmallCraft(30);
+
+        UnitUtil.updateLoadedUnit(craft);
+
+        assertTrue(craft.getNCrew() >= 3);
+        assertTrue(craft.getNOfficers() >= 1);
+        assertTrue(craft.getTransportBays().stream().anyMatch(bay -> bay.isQuarters()));
+    }
+
+    @Test
+    void updateLoadedUnitMaterializesAndDematerializesAutoFilledCrewAcrossThreshold() {
+        SmallCraft craft = cargoOnlySmallCraft(5.0);
+
+        UnitUtil.updateLoadedUnit(craft);
+        assertEquals(1, craft.getNCrew());
+        assertEquals(0, craft.getNOfficers());
+        assertEquals(0, craft.getNGunners());
+        assertEquals(1, craft.getTransportBays().size());
+
+        craft.setWeight(30.0);
+        UnitUtil.updateLoadedUnit(craft);
+        assertEquals(3, craft.getNCrew());
+        assertEquals(1, craft.getNOfficers());
+        assertEquals(0, craft.getNGunners());
+        assertTrue(craft.getTransportBays().stream().anyMatch(bay -> bay.isQuarters()));
+
+        craft.setWeight(5.0);
+        UnitUtil.updateLoadedUnit(craft);
+        assertEquals(1, craft.getNCrew());
+        assertEquals(0, craft.getNOfficers());
+        assertEquals(0, craft.getNGunners());
+        assertEquals(1, craft.getTransportBays().size());
+        assertFalse(craft.getTransportBays().get(0).isQuarters());
+    }
+
+    private SmallCraft cargoOnlySmallCraft(double tonnage) {
+        SmallCraft craft = new SmallCraft();
+        craft.setWeight(tonnage);
+        craft.setNCrew(1);
+        craft.setNOfficers(0);
+        craft.setNGunners(0);
+        craft.addTransporter(new CargoBay(1.0, 1, 1));
+        return craft;
     }
 }
