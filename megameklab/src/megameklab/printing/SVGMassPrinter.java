@@ -669,6 +669,8 @@ public class SVGMassPrinter {
                 }
             }
 
+            addImplicitStructureEntry(list, entity);
+
         if (entity instanceof Mek mek) {
             if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM)) {
                 ExportInventoryEntry entry = new ExportInventoryEntry();
@@ -794,6 +796,32 @@ public class SVGMassPrinter {
                     }
                 }
             }
+        }
+
+        /**
+         * Exports the entity's selected internal structure when it has no mounted structure equipment.
+         * Advanced structure types with critical slots are already emitted from {@code getEquipment()}.
+         */
+        private void addImplicitStructureEntry(Map<String, ExportInventoryEntry> list, Entity entity) {
+            if ((entity.getStructureType() < 0)
+                  || entity.getEquipment().stream().anyMatch(mounted -> mounted.getType() instanceof StructureType)) {
+                return;
+            }
+
+            StructureType structure = EquipmentType.getStructureFromName(
+                  EquipmentType.getStructureTypeName(entity.getStructureType(), entity.isClan()));
+            if (structure == null) {
+                return;
+            }
+
+            ExportInventoryEntry entry = new ExportInventoryEntry();
+            entry.id = structure.getInternalName();
+            entry.n = cleanupName(structure.getShortName());
+            entry.t = "S";
+            entry.q = 1;
+            entry.p = -1;
+            entry.c = getCriticals(entity, structure);
+            list.put(structure.getInternalName() + "__S", entry);
         }
 
           private void addMiscEntry(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
