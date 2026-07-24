@@ -823,7 +823,7 @@ public class SVGMassPrinter {
 
             ExportInventoryEntry entry = new ExportInventoryEntry();
             entry.id = structure.getInternalName();
-            entry.n = cleanupName(structure.getShortName());
+            entry.n = withMaterialSuffix(cleanupName(structure.getShortName()), "Structure");
             entry.t = "S";
             entry.q = 1;
             entry.p = -1;
@@ -869,12 +869,16 @@ public class SVGMassPrinter {
 
             ExportInventoryEntry entry = new ExportInventoryEntry();
             entry.id = armor.getInternalName();
-            entry.n = cleanupName(armor.getShortName());
+            entry.n = withMaterialSuffix(cleanupName(armor.getShortName()), "Armor");
             entry.t = "S";
             entry.q = 1;
             entry.p = -1;
             entry.c = getCriticals(entity, armor);
             list.put(armor.getInternalName() + suffix, entry);
+        }
+
+        private String withMaterialSuffix(String name, String suffix) {
+            return name.endsWith(suffix) ? name : name + " " + suffix;
         }
 
           private void addMiscEntry(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
