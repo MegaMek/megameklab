@@ -33,6 +33,7 @@
 package megameklab.ui.listeners;
 
 import megamek.common.equipment.Engine;
+import megamek.common.equipment.EquipmentType;
 import megamek.common.verifier.BayData;
 
 /**
@@ -51,6 +52,14 @@ public interface AeroBuildListener extends BuildListener {
     void fighterTypeChanged(int type);
 
     void engineChanged(Engine engine);
+
+    /**
+     * Notify of the addition or removal of a chassis modification
+     *
+     * @param eq        The modification to add or remove
+     * @param installed Whether the chassis mod is to be installed or removed
+     */
+    void setChassisMod(EquipmentType eq, boolean installed);
 
     void cockpitChanged(int cockpitType);
 

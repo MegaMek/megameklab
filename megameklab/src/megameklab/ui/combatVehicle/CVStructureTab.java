@@ -117,7 +117,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panTransport = new CVTransportView();
         iconView = new IconView();
-        panChassisMod.setVisible(!getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0);
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -139,15 +138,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
               new EquipmentSummaryItem());
 
         GridBagConstraints gbc;
-
-        panBasicInfo.setFromEntity(getTank());
-        panChassis.setFromEntity(getTank());
-        panMovement.setFromEntity(getTank());
-        panArmor.setFromEntity(getTank());
-        panArmorAllocation.setFromEntity(getTank());
-        panPatchwork.setFromEntity(getTank());
-        panTransport.setFromEntity(getTank());
-        iconView.setFromEntity(getEntity());
 
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
@@ -210,6 +200,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panPatchwork.setFromEntity(getTank());
         panTransport.setFromEntity(getTank());
         iconView.setFromEntity(getEntity());
+
+        panChassisMod.setVisible(hasChassisMod());
 
         panSummary.refresh();
 
@@ -377,7 +369,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void updateTechLevel() {
         removeAllListeners();
         getTank().setTechLevel(panBasicInfo.getTechLevel().getCompoundTechLevel(panBasicInfo.useClanTechBase()));
-        panChassisMod.setVisible(!getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0);
         if (panArmor.isPatchwork() && !getTechManager().isLegal(Entity.getPatchworkArmorAdvancement())) {
             panArmor.setPatchwork(false);
             armorTypeChanged(panArmor.getArmorType(), panArmor.getArmorTechConstant());
@@ -413,6 +404,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         }
         panChassis.refresh();
         panChassisMod.setFromEntity(getTank());
+        panChassisMod.setVisible(hasChassisMod());
         panArmor.refresh();
         panMovement.refresh();
         panArmorAllocation.setFromEntity(getTank());
@@ -674,6 +666,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panChassis.setFromEntity(getTank());
         panChassis.addListener(this);
         panChassisMod.setFromEntity(getTank());
+        panChassisMod.setVisible(hasChassisMod());
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
@@ -972,5 +965,9 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    private boolean hasChassisMod() {
+        return !getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0;
     }
 }
