@@ -76,6 +76,9 @@ public final class BFSLinkedOpen {
         // 1) A co-located <stem>.bfs next to the opened base file.
         File coLocated = counterpartFile(baseFilename, BFSLinkedFiles.BFS_EXTENSION);
         LoadedLink link = tryLoad(coLocated, null, true);
+        if ((link != null) && !sameStemLinkMatches(base, link.entity())) {
+            link = null;
+        }
         if (link != null) {
             return link;
         }
@@ -97,7 +100,7 @@ public final class BFSLinkedOpen {
         // 1) A co-located <stem>.blk / <stem>.mtf next to the opened .bfs.
         for (String ext : BASE_EXTENSIONS) {
             LoadedLink link = tryLoad(counterpartFile(assetFilename, ext), null, false);
-            if (link != null) {
+            if ((link != null) && sameStemLinkMatches(link.entity(), asset)) {
                 return link;
             }
         }
@@ -156,5 +159,14 @@ public final class BFSLinkedOpen {
             return null;
         }
         return lookup.apply(cache);
+    }
+
+    static boolean sameStemLinkMatches(Entity base, Entity possibleAsset) {
+        if (!(possibleAsset instanceof BattlefieldSupportAsset asset)) {
+            return false;
+        }
+        String linkedId = asset.getLinkedUnitId();
+        String baseId = base.getUnitFileUUID();
+        return (linkedId != null) && !linkedId.isBlank() && linkedId.equals(baseId);
     }
 }

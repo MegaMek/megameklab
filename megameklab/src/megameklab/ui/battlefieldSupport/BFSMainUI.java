@@ -105,6 +105,14 @@ public class BFSMainUI extends MegaMekLabMainUI {
     }
 
     @Override
+    protected void commitPendingEditorChanges() {
+        super.commitPendingEditorChanges();
+        if (structureTab != null) {
+            structureTab.commitChanges();
+        }
+    }
+
+    @Override
     public void refreshStructure() {
         super.refreshStructure();
         if (statusBar != null) {

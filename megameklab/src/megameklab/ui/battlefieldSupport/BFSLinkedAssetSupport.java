@@ -52,8 +52,8 @@ import megamek.common.units.Tank;
  * enable flag + base-derived seeding/sync are written once rather than copy-pasted across the five editors.
  * <p>
  * The carrier is created lazily, seeded from the base unit, and kept for the session even when the asset is disabled.
- * The base-derived identity fields (chassis, model, year, tech base, source, asset type, movement mode) are re-synced
- * from the base at commit time via {@link #applySharedIdentity(Entity, BattlefieldSupportAsset)} so the saved
+ * The base-derived identity fields (chassis, model, role, year, tech base, source, asset type, movement mode) are
+ * re-synced from the base at commit time via {@link #applySharedIdentity(Entity, BattlefieldSupportAsset)} so the saved
  * {@code .bfs} stays consistent with the base unit.
  */
 public class BFSLinkedAssetSupport implements BFSAssetSource {
@@ -75,6 +75,11 @@ public class BFSLinkedAssetSupport implements BFSAssetSource {
         if (carrier == null) {
             carrier = createCarrierFromBase();
         }
+        return carrier;
+    }
+
+    @Override
+    public @Nullable BattlefieldSupportAsset getExistingBattlefieldSupportAssetCarrier() {
         return carrier;
     }
 
@@ -128,9 +133,9 @@ public class BFSLinkedAssetSupport implements BFSAssetSource {
     }
 
     /**
-     * Copies the base-derived, shared identity fields from the base unit onto the asset carrier: chassis, model, intro
-     * year, tech base, source, asset type, movement mode, the linked-unit ID (the base unit's UUID) and card art (fluff
-     * image + sprite icon). These are locked in the linked Asset tab (they belong to the base unit), so they are
+    * Copies the base-derived, shared identity fields from the base unit onto the asset carrier: chassis, model, role,
+    * intro year, tech base, source, asset type, movement mode, the linked-unit ID (the base unit's UUID) and card art
+    * (fluff image + sprite icon). These are locked in the linked Asset tab (they belong to the base unit), so they are
      * re-applied at commit time to keep the saved {@code .bfs} consistent. The asset's own stats (MP, TMM, range,
      * damage, skill, cost, specials, card overrides) are not touched.
      *
@@ -140,6 +145,7 @@ public class BFSLinkedAssetSupport implements BFSAssetSource {
     public static void applySharedIdentity(Entity base, BattlefieldSupportAsset carrier) {
         carrier.setChassis(base.getChassis());
         carrier.setModel(base.getModel());
+        carrier.setUnitRole(base.getRole());
         carrier.setYear(base.getYear());
         carrier.setSource(base.getSource());
         carrier.setAssetTechBase(techBaseForBase(base));

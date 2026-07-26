@@ -2060,6 +2060,9 @@ public class UnitUtil {
      * @param entity The entity to reset
      */
     static public void resetUnit(Entity entity) {
+        if (entity instanceof BattlefieldSupportAsset asset) {
+            asset.setDestroyCheck(asset.getODestroyCheck());
+        }
         for (Mounted<?> mounted : entity.getEquipment()) {
             if (mounted instanceof MiscMounted misc) {
                 misc.setDamageTaken(0);
@@ -2099,6 +2102,10 @@ public class UnitUtil {
     }
 
     static public boolean isDamaged(Entity entity, boolean includeCrew) {
+        if ((entity instanceof BattlefieldSupportAsset asset)
+              && (asset.getDestroyCheck() != asset.getODestroyCheck())) {
+            return true;
+        }
         for (Mounted<?> mounted : entity.getEquipment()) {
             if (mounted.isHit() || mounted.isDestroyed() || mounted.isMissing()) {
                 return true;

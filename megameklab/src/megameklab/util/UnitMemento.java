@@ -61,20 +61,26 @@ public class UnitMemento {
      * single unit of state.
      */
     private final String assetState;
+    private final boolean assetEnabled;
+    private final String assetFilePath;
 
     public UnitMemento(Entity entity, MegaMekLabMainUI mainUI) {
         this.entityState = UnitUtil.saveUnitToString(entity, false);
         double armorTonnage = -1;
         String unallocatedEquipment = null;
         String assetState = null;
+        boolean assetEnabled = false;
+        String assetFilePath = null;
         if (entity != null) {
             armorTonnage = entity.getLabArmorTonnage();
         }
         if (mainUI != null) {
-            BattlefieldSupportAsset asset = mainUI.getBattlefieldSupportAsset();
+            BattlefieldSupportAsset asset = mainUI.getBattlefieldSupportAssetCarrier();
             if (asset != null) {
                 assetState = UnitUtil.saveUnitToString(asset, false);
             }
+            assetEnabled = mainUI.isBattlefieldSupportAssetEnabled();
+            assetFilePath = mainUI.getBattlefieldSupportAssetFilePath();
             List<Mounted<?>> unallocatedMounted = mainUI.getUnallocatedMounted();
             if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
                 StringWriter stringWriter = new StringWriter();
@@ -98,6 +104,8 @@ public class UnitMemento {
         this.armorTonnage = armorTonnage;
         this.unallocatedEquipment = unallocatedEquipment;
         this.assetState = assetState;
+        this.assetEnabled = assetEnabled;
+        this.assetFilePath = assetFilePath;
     }
 
 
@@ -173,6 +181,14 @@ public class UnitMemento {
         return null;
     }
 
+    public boolean isAssetEnabled() {
+        return assetEnabled;
+    }
+
+    public @Nullable String getAssetFilePath() {
+        return assetFilePath;
+    }
+
     public String getUnallocatedEquipment() {
         return unallocatedEquipment;
     }
@@ -210,6 +226,9 @@ public class UnitMemento {
                 return false;
             }
         } else if (!assetState.equals(other.assetState)) {
+            return false;
+        }
+        if ((assetEnabled != other.assetEnabled) || !java.util.Objects.equals(assetFilePath, other.assetFilePath)) {
             return false;
         }
         // Compare unallocatedEquipment

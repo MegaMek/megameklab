@@ -50,6 +50,12 @@ public interface BFSAssetSource {
      */
     BattlefieldSupportAsset getBattlefieldSupportAssetCarrier();
 
+    /**
+     * @return the existing carrier without creating one, or {@code null} when this editor has never held an asset
+     */
+    @Nullable
+    BattlefieldSupportAsset getExistingBattlefieldSupportAssetCarrier();
+
     /** @return whether the linked asset is currently enabled (checked) */
     boolean isBattlefieldSupportAssetEnabled();
 
@@ -62,8 +68,8 @@ public interface BFSAssetSource {
     void setBattlefieldSupportAssetEnabled(boolean enabled);
 
     /**
-     * @return the carrier when the asset is enabled, otherwise {@code null}. Used by the editor's save/memento hooks so
-     *       a disabled asset is neither written on save nor counted toward saved/dirty state.
+    * @return the carrier when the asset is enabled, otherwise {@code null}. Used by the editor's save hooks so a
+    *       disabled asset is not written.
      */
     @Nullable
     BattlefieldSupportAsset getEnabledAsset();

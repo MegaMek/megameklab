@@ -33,8 +33,8 @@
 package megameklab.ui.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -301,12 +301,8 @@ public class MegaMekLabFileSaver {
      * @throws java.io.IOException if the file cannot be written
      */
     public static void writeUnitToFile(File file, Entity entity) throws java.io.IOException {
-        try (FileOutputStream fos = new FileOutputStream(file);
-              PrintStream ps = new PrintStream(fos)) {
-            if (CConfig.includeLicense()) {
-                ps.println(LICENSE_HEADER);
-            }
-            ps.println(UnitUtil.saveUnitToString(entity, true));
-        }
+        String content = (CConfig.includeLicense() ? LICENSE_HEADER + System.lineSeparator() : "")
+              + UnitUtil.saveUnitToString(entity, true) + System.lineSeparator();
+        Files.writeString(file.toPath(), content, StandardCharsets.UTF_8);
     }
 }

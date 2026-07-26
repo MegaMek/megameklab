@@ -229,11 +229,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                             // Editing: open the combined editor for whatever the row is (base + linked asset, or a
                             // standalone asset).
                             selectForm(true, false);
-                        } else if (selectionCanSelectAsUnit()) {
-                            // Prefer the standard unit form; fall back to the asset form for an asset-only selection.
+                        } else if (hasSelectedRows()) {
+                            // The standard path resolves a standalone asset row to its available asset form.
                             selectForm(true, false);
-                        } else if (selectionCanSelectAsAsset()) {
-                            selectForm(true, true);
                         }
                     }
                 }
@@ -463,16 +461,12 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         return selectedEntity;
     }
 
-    /**
-     * Enables the form-selection buttons for the current selection: "Select as Unit" (and, in callback mode, "Select &
-     * Close", which also selects the unit form) require every selected row to have a standard unit form; "Select as
-     * Asset" requires every selected row to have an asset form.
-     */
+    /** Enables standard selection for every non-empty selection and asset selection when every row has an asset form. */
     private void updateSelectFormButtons() {
+        boolean hasSelection = hasSelectedRows();
         if (!offerAssetForm) {
             // Editing mode: a single "Select" opens the combined editor for any non-empty selection (a base unit with
             // its linked asset, or a standalone asset).
-            boolean hasSelection = !getSelectedMekSummaries().isEmpty();
             if (buttonSelect != null) {
                 buttonSelect.setEnabled(hasSelection);
             }
@@ -481,15 +475,14 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             }
             return;
         }
-        boolean canSelectAsUnit = selectionCanSelectAsUnit();
         if (buttonSelect != null) {
-            buttonSelect.setEnabled(canSelectAsUnit);
+            buttonSelect.setEnabled(hasSelection);
         }
         if (buttonSelectAsset != null) {
             buttonSelectAsset.setEnabled(selectionCanSelectAsAsset());
         }
         if (buttonSelectClose != null) {
-            buttonSelectClose.setEnabled(canSelectAsUnit);
+            buttonSelectClose.setEnabled(hasSelection);
         }
     }
 }

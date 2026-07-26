@@ -45,8 +45,9 @@ class TabUtilTest {
     @Test
     void serializeParseRoundTripPreservesLinkedAndUnlinkedEditors() {
         List<TabStateRecord> records = List.of(
-              new TabStateRecord("/tmp/a.blk.tmp", "units/A.blk", "/tmp/a.bfs.tmp", "units/A.bfs"),
-              new TabStateRecord("/tmp/b.mtf.tmp", "units/B.mtf", "", ""));
+              new TabStateRecord("/tmp/a.blk.tmp", "units/A.blk", "/tmp/a.bfs.tmp", "units/A.bfs", false,
+                  "units/B.blk"),
+              new TabStateRecord("/tmp/b.mtf.tmp", "units/B.mtf", "", "", false, ""));
 
         List<TabStateRecord> parsed = TabUtil.parseTabStateDb(TabUtil.serializeTabStateDb(records));
 
@@ -56,13 +57,16 @@ class TabUtilTest {
     @Test
     void parsePreservesTheLinkedAssetFields() {
         String db = TabUtil.serializeTabStateDb(List.of(
-              new TabStateRecord("/t/base.blk.tmp", "Base.blk", "/t/asset.bfs.tmp", "Base.bfs")));
+              new TabStateRecord("/t/base.blk.tmp", "Base.blk", "/t/asset.bfs.tmp", "Base.bfs", true,
+                  "New Base.blk")));
 
         List<TabStateRecord> parsed = TabUtil.parseTabStateDb(db);
 
         assertEquals(1, parsed.size());
         assertEquals("/t/asset.bfs.tmp", parsed.get(0).assetTmpPath());
         assertEquals("Base.bfs", parsed.get(0).assetFilePath());
+        assertEquals(true, parsed.get(0).assetEnabled());
+        assertEquals("New Base.blk", parsed.get(0).pendingPairedSavePath());
     }
 
     @Test
@@ -73,15 +77,36 @@ class TabUtilTest {
         List<TabStateRecord> parsed = TabUtil.parseTabStateDb(legacy);
 
         assertEquals(2, parsed.size());
-        assertEquals(new TabStateRecord("/t/x.blk.tmp", "Unit X.blk", "", ""), parsed.get(0));
-        assertEquals(new TabStateRecord("/t/y.mtf.tmp", "Unit Y.mtf", "", ""), parsed.get(1));
+        assertEquals(new TabStateRecord("/t/x.blk.tmp", "Unit X.blk", "", "", false, ""), parsed.get(0));
+        assertEquals(new TabStateRecord("/t/y.mtf.tmp", "Unit Y.mtf", "", "", false, ""), parsed.get(1));
     }
 
     @Test
     void parseNormalizesBlankBaseFileName() {
         String db = TabUtil.serializeTabStateDb(List.of(
-              new TabStateRecord("/t/x.blk.tmp", " ", "", "")));
+              new TabStateRecord("/t/x.blk.tmp", " ", "", "", false, "")));
 
         assertEquals("", TabUtil.parseTabStateDb(db).get(0).fileName());
+    }
+
+    @Test
+    void parseV2TreatsPresentCarrierAsEnabled() {
+        String v2 = "v2\0/t/base.blk.tmp\0Base.blk\0/t/asset.bfs.tmp\0Base.bfs\0";
+
+        TabStateRecord parsed = TabUtil.parseTabStateDb(v2).get(0);
+
+        assertEquals(true, parsed.assetEnabled());
+        assertEquals("Base.bfs", parsed.assetFilePath());
+        assertEquals("", parsed.pendingPairedSavePath());
+    }
+
+    @Test
+    void parseV3DefaultsPendingPairedSavePath() {
+        String v3 = "v3\0/t/base.blk.tmp\0Base.blk\0/t/asset.bfs.tmp\0Base.bfs\0true\0";
+
+        TabStateRecord parsed = TabUtil.parseTabStateDb(v3).get(0);
+
+        assertEquals(true, parsed.assetEnabled());
+        assertEquals("", parsed.pendingPairedSavePath());
     }
 }

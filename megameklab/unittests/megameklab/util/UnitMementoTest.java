@@ -50,14 +50,32 @@ class UnitMementoTest {
     /** A minimal MainUI stub that only exposes a base entity and an optional linked asset carrier. */
     private static class StubMainUI extends MegaMekLabMainUI {
         private final BattlefieldSupportAsset asset;
+        private final boolean enabled;
+        private final String path;
 
         StubMainUI(@Nullable BattlefieldSupportAsset asset) {
+            this(asset, asset != null, null);
+        }
+
+        StubMainUI(@Nullable BattlefieldSupportAsset asset, boolean enabled, @Nullable String path) {
             this.asset = asset;
+            this.enabled = enabled;
+            this.path = path;
         }
 
         @Override
-        public @Nullable BattlefieldSupportAsset getBattlefieldSupportAsset() {
+        public @Nullable BattlefieldSupportAsset getBattlefieldSupportAssetCarrier() {
             return asset;
+        }
+
+        @Override
+        public boolean isBattlefieldSupportAssetEnabled() {
+            return enabled;
+        }
+
+        @Override
+        public @Nullable String getBattlefieldSupportAssetFilePath() {
+            return path;
         }
 
         @Override
@@ -146,5 +164,29 @@ class UnitMementoTest {
         UnitMemento with = new UnitMemento(base, new StubMainUI(linkedAsset(17)));
 
         assertFalse(without.equals(with), "gaining a linked asset must register as a change");
+    }
+
+    @Test
+    void disabledCarrierAndPathArePreserved() {
+        UnitMemento memento = new UnitMemento(baseAsset(),
+              new StubMainUI(linkedAsset(17), false, "units/Base.bfs"));
+
+        assertTrue(memento.hasAsset());
+        assertFalse(memento.isAssetEnabled());
+        assertEquals("units/Base.bfs", memento.getAssetFilePath());
+        BattlefieldSupportAsset restored = memento.createAsset();
+        assertNotNull(restored);
+        assertEquals(17, restored.getCost());
+    }
+
+    @Test
+    void enabledFlagOrPathChangesMementoEquality() {
+        Entity base = baseAsset();
+        UnitMemento disabled = new UnitMemento(base, new StubMainUI(linkedAsset(17), false, "old.bfs"));
+        UnitMemento enabled = new UnitMemento(base, new StubMainUI(linkedAsset(17), true, "old.bfs"));
+        UnitMemento moved = new UnitMemento(base, new StubMainUI(linkedAsset(17), false, "new.bfs"));
+
+        assertFalse(disabled.equals(enabled));
+        assertFalse(disabled.equals(moved));
     }
 }

@@ -39,10 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import javax.swing.JOptionPane;
 
 import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
@@ -50,6 +54,7 @@ import megamek.common.equipment.EquipmentType;
 import megamek.common.loaders.MekFileParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /** Verifies the pure {@code .bfs} sidecar path rules used when saving a linked Battlefield Support Asset. */
 class BFSLinkedFilesTest {
@@ -205,13 +210,131 @@ class BFSLinkedFilesTest {
 
         assertThrows(IOException.class,
               () -> BFSLinkedFiles.handleSidecarOnSave(null, source, baseFile, "base-uuid", true, null));
+          assertNull(source.assetFilePath, "a failed write must not commit the sidecar destination");
+    }
+
+    @Test
+    void saveAsSidecarFailureRetriesNewPathWithoutOverwritingOldSidecar() throws Exception {
+        BattlefieldSupportAsset asset = new BattlefieldSupportAsset();
+        asset.setChassis("Retry Asset");
+        StubSource source = new StubSource(asset);
+        File oldSidecar = Files.createTempFile("old-asset", ".bfs").toFile();
+        Files.writeString(oldSidecar.toPath(), "old sidecar");
+        source.assetFilePath = oldSidecar.getPath();
+
+        File blockedParent = Files.createTempFile("blocked-parent", ".tmp").toFile();
+        File newBase = new File(blockedParent, "Retry Asset.blk");
+        assertThrows(IOException.class,
+              () -> BFSLinkedFiles.handleSidecarOnSave(null, source, newBase, "base-uuid", true, null));
+        File intendedSidecar = new File(blockedParent, "Retry Asset.bfs");
+          assertEquals(oldSidecar.getPath(), source.assetFilePath,
+              "a failed pair must retain the old base/sidecar association");
+        assertEquals("old sidecar", Files.readString(oldSidecar.toPath()));
+
+        assertTrue(blockedParent.delete());
+        assertTrue(blockedParent.mkdir());
+          assertTrue(BFSLinkedFiles.handleSidecarOnSave(null, source, newBase, "base-uuid", true, null));
+        assertTrue(intendedSidecar.isFile());
+          assertEquals(intendedSidecar.getPath(), source.assetFilePath);
+        assertEquals("old sidecar", Files.readString(oldSidecar.toPath()));
+    }
+
+    @Test
+    void disabledSaveAsDoesNotDeleteOriginalSidecar() throws Exception {
+        StubSource source = new StubSource(new BattlefieldSupportAsset());
+        source.enabled = false;
+        File original = Files.createTempFile("original", ".bfs").toFile();
+        source.assetFilePath = original.getPath();
+        File newDir = Files.createTempDirectory("disabled-save-as").toFile();
+
+        assertTrue(BFSLinkedFiles.handleSidecarOnSave(null, source, new File(newDir, "New.blk"),
+              "base-uuid", true, null));
+        assertTrue(original.isFile());
+                assertNull(source.assetFilePath, "the new base must no longer be associated with the original sidecar");
+
+                assertTrue(BFSLinkedFiles.handleSidecarOnSave(null, source, new File(newDir, "New.blk"),
+              "base-uuid", false, null));
+                assertTrue(original.isFile(), "a later in-place save must not target the original sidecar");
+    }
+
+    @Test
+    void declinedDeletionIsUnresolvedAndKeepsPath() throws Exception {
+        StubSource source = new StubSource(new BattlefieldSupportAsset());
+        source.enabled = false;
+        File base = Files.createTempFile("declined", ".blk").toFile();
+        File sidecar = BFSLinkedFiles.coLocatedSidecar(base);
+        Files.writeString(sidecar.toPath(), "asset");
+        source.assetFilePath = sidecar.getPath();
+
+        try (MockedStatic<JOptionPane> dialogs = mockStatic(JOptionPane.class)) {
+            dialogs.when(() -> JOptionPane.showConfirmDialog(any(), any(), any(),
+                        any(Integer.class), any(Integer.class)))
+                  .thenReturn(JOptionPane.NO_OPTION);
+            assertFalse(BFSLinkedFiles.handleSidecarOnSave(null, source, base, "base-uuid", false, null));
+        }
+        assertTrue(sidecar.isFile());
+        assertEquals(sidecar.getPath(), source.assetFilePath);
+    }
+
+    @Test
+    void successfulDeletionResolvesSaveAndClearsPath() throws Exception {
+        StubSource source = new StubSource(new BattlefieldSupportAsset());
+        source.enabled = false;
+        File base = Files.createTempFile("deleted", ".blk").toFile();
+        File sidecar = BFSLinkedFiles.coLocatedSidecar(base);
+        Files.writeString(sidecar.toPath(), "asset");
+        source.assetFilePath = sidecar.getPath();
+
+        try (MockedStatic<JOptionPane> dialogs = mockStatic(JOptionPane.class)) {
+            dialogs.when(() -> JOptionPane.showConfirmDialog(any(), any(), any(),
+                        any(Integer.class), any(Integer.class)))
+                  .thenReturn(JOptionPane.YES_OPTION);
+            assertTrue(BFSLinkedFiles.handleSidecarOnSave(null, source, base, "base-uuid", false, null));
+        }
+        assertFalse(sidecar.exists());
         assertNull(source.assetFilePath);
+    }
+
+    @Test
+    void failedDeletionIsUnresolvedAndKeepsPath() throws Exception {
+        StubSource source = new StubSource(new BattlefieldSupportAsset());
+        source.enabled = false;
+        File base = Files.createTempFile("failed-delete", ".blk").toFile();
+        File sidecar = BFSLinkedFiles.coLocatedSidecar(base);
+        Files.writeString(sidecar.toPath(), "asset");
+        source.assetFilePath = sidecar.getPath();
+
+        try (MockedStatic<JOptionPane> dialogs = mockStatic(JOptionPane.class);
+              MockedStatic<Files> files = mockStatic(Files.class)) {
+            dialogs.when(() -> JOptionPane.showConfirmDialog(any(), any(), any(),
+                        any(Integer.class), any(Integer.class)))
+                  .thenReturn(JOptionPane.YES_OPTION);
+            files.when(() -> Files.deleteIfExists(any(Path.class))).thenThrow(new IOException("denied"));
+
+            assertFalse(BFSLinkedFiles.handleSidecarOnSave(null, source, base, "base-uuid", false, null));
+        }
+        assertTrue(sidecar.isFile());
+        assertEquals(sidecar.getPath(), source.assetFilePath);
+    }
+
+    @Test
+    void archiveSidecarDeletionIsUnresolved() throws Exception {
+        StubSource source = new StubSource(new BattlefieldSupportAsset());
+        source.enabled = false;
+        source.assetFilePath = "units.zip|Asset.bfs";
+        File base = Files.createTempFile("archive-base", ".blk").toFile();
+
+        try (MockedStatic<JOptionPane> ignored = mockStatic(JOptionPane.class)) {
+            assertFalse(BFSLinkedFiles.handleSidecarOnSave(null, source, base, "base-uuid", false, null));
+        }
+        assertEquals("units.zip|Asset.bfs", source.assetFilePath);
     }
 
     /** Minimal in-memory {@link BFSAssetSource} for exercising the sidecar save path. */
     private static final class StubSource implements BFSAssetSource {
         private final BattlefieldSupportAsset asset;
         private String assetFilePath;
+        private boolean enabled = true;
 
         private StubSource(BattlefieldSupportAsset asset) {
             this.asset = asset;
@@ -223,8 +346,13 @@ class BFSLinkedFilesTest {
         }
 
         @Override
+        public BattlefieldSupportAsset getExistingBattlefieldSupportAssetCarrier() {
+            return asset;
+        }
+
+        @Override
         public boolean isBattlefieldSupportAssetEnabled() {
-            return true;
+            return enabled;
         }
 
         @Override
@@ -232,7 +360,7 @@ class BFSLinkedFilesTest {
 
         @Override
         public BattlefieldSupportAsset getEnabledAsset() {
-            return asset;
+            return enabled ? asset : null;
         }
 
         @Override

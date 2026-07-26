@@ -34,6 +34,7 @@ package megameklab.ui.battlefieldSupport;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -77,7 +78,7 @@ public final class BFSLinkedFiles {
      *                          same decision on a conflict), or {@code null} if the base save had no conflict
      * @throws IOException if an enabled linked Asset cannot be written
      */
-    public static void handleSidecarOnSave(JFrame owner, BFSAssetSource source, File baseFile,
+    public static boolean handleSidecarOnSave(JFrame owner, BFSAssetSource source, File baseFile,
           @Nullable String baseUnitFileUUID, boolean baseMovedOrNew,
           @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) throws IOException {
         BattlefieldSupportAsset asset = source.getEnabledAsset();
@@ -89,10 +90,14 @@ public final class BFSLinkedFiles {
             // when the unit is renamed to a new file, avoiding two units sharing a UUID).
             MegaMekLabFileSaver.prepareLinkedAssetUnitFileUUID(target, asset, baseConflictChoice);
             MegaMekLabFileSaver.writeUnitToFile(target, asset);
-            asset.storeSavedUnitData();
+            // Commit the new association only after the sidecar is safely written. The editor likewise commits the
+            // base filename only after this method succeeds, so Reload/Undo cannot restore an old sidecar path while
+            // leaving the editor associated with the new base filename.
             source.setAssetFilePath(target.getPath());
+            asset.storeSavedUnitData();
+            return true;
         } else {
-            offerToDeleteStaleSidecar(owner, source, baseFile);
+            return offerToDeleteStaleSidecar(owner, source, baseFile, baseMovedOrNew);
         }
     }
 
@@ -125,13 +130,17 @@ public final class BFSLinkedFiles {
         return new File(dir, stem + BFS_EXTENSION);
     }
 
-    private static void offerToDeleteStaleSidecar(JFrame owner, BFSAssetSource source, File baseFile) {
+    private static boolean offerToDeleteStaleSidecar(JFrame owner, BFSAssetSource source, File baseFile,
+          boolean baseMovedOrNew) {
         Set<File> candidates = new LinkedHashSet<>();
         String knownPath = source.getAssetFilePath();
-        if (knownPath != null) {
+        // Save As must not offer to delete the sidecar belonging to the original base path.
+        if (!baseMovedOrNew && (knownPath != null)) {
             candidates.add(new File(knownPath));
         }
         candidates.add(coLocatedSidecar(baseFile));
+
+        boolean resolved = true;
 
         for (File candidate : candidates) {
             if (isInsideZip(candidate.getPath())) {
@@ -140,7 +149,8 @@ public final class BFSLinkedFiles {
                             candidate.getName() + ") and cannot be removed from MegaMekLab. Re-enable the asset to " +
                             "keep it, or remove the data from the archive manually.",
                       "Asset Data In Archive", JOptionPane.WARNING_MESSAGE);
-                continue;
+                    resolved = false;
+                    continue;
             }
             if (!candidate.isFile()) {
                 continue;
@@ -150,17 +160,28 @@ public final class BFSLinkedFiles {
                   I18N.getString("BFSLinkedFiles.delete.title"),
                   JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (choice == JOptionPane.YES_OPTION) {
-                if (candidate.delete()) {
+                try {
+                    if (!Files.deleteIfExists(candidate.toPath())) {
+                        resolved = false;
+                        continue;
+                    }
                     if (candidate.getPath().equals(knownPath)) {
                         source.setAssetFilePath(null);
                     }
-                } else {
+                } catch (IOException ex) {
+                    resolved = false;
                     JOptionPane.showMessageDialog(owner,
                           I18N.getString("BFSLinkedFiles.deleteFailed.message").formatted(candidate.getPath()),
                           I18N.getString("BFSLinkedFiles.deleteFailed.title"), JOptionPane.ERROR_MESSAGE);
                 }
+            } else {
+                resolved = false;
             }
         }
+        if (resolved && baseMovedOrNew) {
+            source.setAssetFilePath(null);
+        }
+        return resolved;
     }
 
     /** @return whether the given path points inside a zip archive (a cached asset can't be deleted from one). */

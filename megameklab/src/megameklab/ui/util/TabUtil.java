@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -77,11 +78,12 @@ public class TabUtil {
     private final static String TAB_STATE_CLEAN = "clean";
     private final static String FILENAME_ASSOCIATIONS = "filenames.db";
     /**
-     * Marker written as the first token of {@link #FILENAME_ASSOCIATIONS} for the current (paired) format: four
+        * Marker written as the first token of {@link #FILENAME_ASSOCIATIONS} for the current (paired) format: six
      * {@code \0}-separated fields per editor (base tmp path, base file name, linked-asset tmp path, linked-asset file
-     * path). A db without this marker is read in the legacy two-field format (base tmp path, base file name).
+        * path, linked-asset enabled flag, pending paired-save destination). A db without this marker is read in the legacy
+        * two-field format (base tmp path, base file name).
      */
-    private final static String TAB_STATE_VERSION = "v2";
+    private final static String TAB_STATE_VERSION = "v4";
 
     public static void saveTabState(List<MegaMekLabMainUI> editors) throws IOException {
         File dir = getTabStateDirectory(true);
@@ -116,11 +118,9 @@ public class TabUtil {
                 }
             } else if (editor.getEntity() instanceof BattlefieldSupportAsset) {
                 unitFile = File.createTempFile("mml_unit_", ".bfs.tmp", dir);
-                try (
-                      var fos = new FileOutputStream(unitFile);
-                      var ps = new PrintStream(fos)
-                ) {
-                    ps.println(UnitUtil.saveUnitToString(editor.getEntity(), true));
+                try {
+                    Files.writeString(unitFile.toPath(), UnitUtil.saveUnitToString(editor.getEntity(), true)
+                          + System.lineSeparator(), StandardCharsets.UTF_8);
                 } catch (Exception e) {
                     LOGGER.fatal("Failed to write unit while saving tab state.", e);
                     return;
@@ -168,14 +168,13 @@ public class TabUtil {
             // from disk. Standalone-asset editors have no linked asset (their entity is the asset, saved above).
             String assetTmpPath = "";
             String assetFilePath = "";
-            BattlefieldSupportAsset asset = editor.getBattlefieldSupportAsset();
+            BattlefieldSupportAsset asset = editor.getBattlefieldSupportAssetCarrier();
+            boolean assetEnabled = editor.isBattlefieldSupportAssetEnabled();
             if (asset != null) {
                 File assetFile = File.createTempFile("mml_asset_", ".bfs.tmp", dir);
-                try (
-                      var fos = new FileOutputStream(assetFile);
-                      var ps = new PrintStream(fos)
-                ) {
-                    ps.println(UnitUtil.saveUnitToString(asset, true));
+                try {
+                    Files.writeString(assetFile.toPath(), UnitUtil.saveUnitToString(asset, true)
+                          + System.lineSeparator(), StandardCharsets.UTF_8);
                 } catch (Exception e) {
                     LOGGER.fatal("Failed to write linked asset while saving tab state.", e);
                     return;
@@ -185,16 +184,13 @@ public class TabUtil {
                 assetFilePath = (path == null) ? "" : path;
             }
 
-            records.add(new TabStateRecord(unitFile.getPath(), fileName, assetTmpPath, assetFilePath));
+            String pendingPairedSavePath = Objects.requireNonNullElse(editor.getPendingPairedSaveFileName(), "");
+            records.add(new TabStateRecord(unitFile.getPath(), fileName, assetTmpPath, assetFilePath, assetEnabled,
+                pendingPairedSavePath));
         }
 
         File filenameAssociationsFile = new File(dir, FILENAME_ASSOCIATIONS);
-        try (
-              var fos = new FileOutputStream(filenameAssociationsFile);
-              var ps = new PrintStream(fos)
-        ) {
-            ps.print(serializeTabStateDb(records));
-        }
+        Files.writeString(filenameAssociationsFile.toPath(), serializeTabStateDb(records), StandardCharsets.UTF_8);
 
         if (!clean.createNewFile()) {
             throw new IOException("Could not create " + clean);
@@ -257,8 +253,9 @@ public class TabUtil {
                 var editor = UiLoader.getUIWithoutLinkedAsset(loadedUnit, fileName);
                 if (restoredAsset != null) {
                     editor.adoptLinkedBattlefieldSupportAsset(restoredAsset,
-                          record.assetFilePath().isBlank() ? null : record.assetFilePath());
+                          record.assetFilePath().isBlank() ? null : record.assetFilePath(), record.assetEnabled());
                 }
+                editor.restorePendingPairedSaveFileName(record.pendingPairedSavePath());
                 editors.add(editor);
             } catch (EntityLoadingException e) {
                 LOGGER.warn(e, "Could not restore tab for entity file {}:{}", entityFile, fileName);
@@ -281,9 +278,10 @@ public class TabUtil {
      * and (for a linked editor) the tmp file its Battlefield Support Asset was written to and the asset's real file
      * path. The asset fields are blank for an editor with no linked asset.
      */
-    record TabStateRecord(String baseTmpPath, String fileName, String assetTmpPath, String assetFilePath) { }
+    record TabStateRecord(String baseTmpPath, String fileName, String assetTmpPath, String assetFilePath,
+                          boolean assetEnabled, String pendingPairedSavePath) { }
 
-    /** Serializes the tab-state records to the {@link #FILENAME_ASSOCIATIONS} string (four {@code \0}-separated fields
+    /** Serializes the tab-state records to the {@link #FILENAME_ASSOCIATIONS} string (six {@code \0}-separated fields
      * per record, prefixed by the {@link #TAB_STATE_VERSION} marker). */
     static String serializeTabStateDb(List<TabStateRecord> records) {
         StringBuilder sb = new StringBuilder();
@@ -292,16 +290,19 @@ public class TabUtil {
             sb.append(record.baseTmpPath()).append('\0')
                   .append(record.fileName()).append('\0')
                   .append(record.assetTmpPath()).append('\0')
-                  .append(record.assetFilePath()).append('\0');
+                  .append(record.assetFilePath()).append('\0')
+                .append(record.assetEnabled()).append('\0')
+                .append(record.pendingPairedSavePath()).append('\0');
         }
         return sb.toString();
     }
 
     /**
      * Parses the {@link #FILENAME_ASSOCIATIONS} string into tab-state records. A db beginning with the
-     * {@link #TAB_STATE_VERSION} marker is read as four-field (paired) records; any other db is read in the legacy
-     * two-field format (base tmp path, base file name), with blank asset fields. A blank base file name is normalized
-     * to the empty string.
+    * {@link #TAB_STATE_VERSION} marker is read as six-field (paired) records; {@code v3} is read as five-field paired
+    * records, {@code v2} is read as four-field paired records, and any other db is read in the legacy two-field format
+    * (base tmp path, base file name), with blank asset and pending-save fields. A blank base file name is normalized to
+    * the empty string.
      *
      * @param content the db content
      *
@@ -309,14 +310,19 @@ public class TabUtil {
      */
     static List<TabStateRecord> parseTabStateDb(String content) {
         var parts = content.split(Pattern.quote("\0"), -1);
-        boolean versioned = (parts.length > 0) && TAB_STATE_VERSION.equals(parts[0]);
+        boolean v4 = (parts.length > 0) && TAB_STATE_VERSION.equals(parts[0]);
+        boolean v3 = (parts.length > 0) && "v3".equals(parts[0]);
+        boolean v2 = (parts.length > 0) && "v2".equals(parts[0]);
+        boolean versioned = v4 || v3 || v2;
         int start = versioned ? 1 : 0;
-        int step = versioned ? 4 : 2;
+        int step = v4 ? 6 : (v3 ? 5 : (v2 ? 4 : 2));
         List<TabStateRecord> records = new ArrayList<>();
         for (int i = start; i + step <= parts.length; i += step) {
             String fileName = parts[i + 1].isBlank() ? "" : parts[i + 1];
             records.add(new TabStateRecord(parts[i], fileName,
-                  versioned ? parts[i + 2] : "", versioned ? parts[i + 3] : ""));
+                  versioned ? parts[i + 2] : "", versioned ? parts[i + 3] : "",
+                  (v4 || v3) ? Boolean.parseBoolean(parts[i + 4]) : versioned && !parts[i + 2].isBlank(),
+                  v4 ? parts[i + 5] : ""));
         }
         return records;
     }

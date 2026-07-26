@@ -177,7 +177,9 @@ public class UnitPrintManager {
             if (object instanceof Entity entity) {
                 Entity unit;
                 // assign base unit and override only if damage should be hidden and entity is damaged
-                if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
+                if (entity instanceof BattlefieldSupportAsset asset) {
+                    unit = prepareBattlefieldSupportAssetForPrint(asset, options.showDamage());
+                } else if (!options.showDamage() && UnitUtil.isDamaged(entity, options.showPilotData())) {
                     unit = UnitUtil.cloneUnit(entity);
                     if (unit != null) {
                         UnitUtil.resetUnit(unit);
@@ -343,6 +345,18 @@ public class UnitPrintManager {
             sheets.add(prs);
         }
         return sheets;
+    }
+
+    public static BattlefieldSupportAsset prepareBattlefieldSupportAssetForPrint(BattlefieldSupportAsset asset,
+          boolean showDamage) {
+        if (showDamage || (asset.getDestroyCheck() == asset.getODestroyCheck())) {
+            return asset;
+        }
+        // The data snapshot is an independent definition clone and initializes current Destroy Check from original.
+        BattlefieldSupportAsset printAsset = new BattlefieldSupportAsset(asset.toAssetData());
+        // Regular/Veteran is runtime crew state and is intentionally absent from the definition DTO.
+        printAsset.setVeteranCrew(asset.isVeteranCrew());
+        return printAsset;
     }
 
     public static void exportUnits(List<? extends BTObject> units, File exportFile, boolean singlePrint) {

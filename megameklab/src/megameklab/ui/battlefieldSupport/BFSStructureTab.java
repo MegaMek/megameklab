@@ -70,6 +70,8 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.iconChooser.EntityImagePanel;
@@ -540,6 +542,22 @@ public class BFSStructureTab extends ITab {
         cbKnownSpecial.addActionListener(e -> updateSpecialValueEnabled());
         sourceView.setChangeListener(source -> commit());
         for (JTextField field : List.of(txtChassis, txtModel, txtCardTitle, txtCardSubtitle, txtYear)) {
+            field.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    commit();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    commit();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    commit();
+                }
+            });
             field.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusLost(FocusEvent e) {
@@ -607,8 +625,17 @@ public class BFSStructureTab extends ITab {
         previewPanel.setAsset(asset);
     }
 
-    /** Writes every field back onto the asset entity, then updates the preview and notifies other views. */
+    /** Writes every valid field back onto the asset entity, then updates the preview and notifies other views. */
     private void commit() {
+        commit(false);
+    }
+
+    /**
+     * Writes every field back onto the asset entity. A transient invalid year is ignored during document edits. At a
+     * save boundary it is normalized: empty input restores the prior valid entity year, while out-of-range input is
+     * clamped to the configured bound.
+     */
+    private void commit(boolean normalizePendingYear) {
         if (loading) {
             return;
         }
@@ -626,7 +653,7 @@ public class BFSStructureTab extends ITab {
         } else {
             asset.setChassis(txtChassis.getText().trim());
             asset.setModel(txtModel.getText().trim());
-            asset.setYear(txtYear.getIntVal());
+            commitStandaloneYear(asset, normalizePendingYear);
             asset.setSource(sourceView.getSource());
             asset.setAssetTechBase((String) cbTechBase.getSelectedItem());
             asset.setAssetType((BFSAssetType) cbAssetType.getSelectedItem());
@@ -655,7 +682,11 @@ public class BFSStructureTab extends ITab {
 
         asset.setSkill((int) spnSkill.getValue());
         asset.setCost((int) spnCost.getValue());
-        if (chkVeteran.isSelected()) {
+        boolean veteran = chkVeteran.isSelected() && canHaveVeteranProfile(asset.getSkill());
+        if (!veteran) {
+            chkVeteran.setSelected(false);
+        }
+        if (veteran) {
             enforceVeteranConstraints();
             asset.setVeteranSkill((int) spnVeteranSkill.getValue());
             asset.setVeteranCost((int) spnVeteranCost.getValue());
@@ -675,6 +706,43 @@ public class BFSStructureTab extends ITab {
             refresh.refreshStructure();
             refresh.refreshHeader();
         }
+    }
+
+    /** Commits the year only when valid, optionally normalizing pending text at a save boundary. */
+    private void commitStandaloneYear(BattlefieldSupportAsset asset, boolean normalizePendingYear) {
+        int minimum = txtYear.getMinimum();
+        int maximum = txtYear.getMaximum();
+        int year;
+        try {
+            year = Integer.parseInt(txtYear.getText());
+        } catch (NumberFormatException ex) {
+            if (normalizePendingYear) {
+                year = Math.clamp(asset.getYear(), minimum, maximum);
+                setYearSilently(year);
+                asset.setYear(year);
+            }
+            return;
+        }
+
+        if ((year < minimum) || (year > maximum)) {
+            if (!normalizePendingYear) {
+                return;
+            }
+            year = Math.clamp(year, minimum, maximum);
+            setYearSilently(year);
+        }
+        asset.setYear(year);
+    }
+
+    private void setYearSilently(int year) {
+        loading = true;
+        txtYear.setIntVal(year);
+        loading = false;
+    }
+
+    /** Commits text controls even when focus has not left the currently edited field. */
+    public void commitChanges() {
+        commit(true);
     }
 
     /** Handles an Asset-type change: resets the motive options to the new type's default and enforces its rules. */
@@ -786,6 +854,11 @@ public class BFSStructureTab extends ITab {
         spnMedium.setEnabled(numericRange);
         spnLong.setEnabled(numericRange);
 
+        boolean canHaveVeteran = canHaveVeteranProfile((int) spnSkill.getValue());
+        chkVeteran.setEnabled(canHaveVeteran);
+        if (!canHaveVeteran) {
+            chkVeteran.setSelected(false);
+        }
         boolean veteran = chkVeteran.isSelected();
         spnVeteranSkill.setEnabled(veteran);
         spnVeteranCost.setEnabled(veteran);
@@ -821,6 +894,10 @@ public class BFSStructureTab extends ITab {
         if ((int) spnVeteranCost.getValue() < vetCostMin) {
             setSpinnerSilently(spnVeteranCost, vetCostMin);
         }
+    }
+
+    static boolean canHaveVeteranProfile(int regularSkill) {
+        return regularSkill > 0;
     }
 
     /** @return true when the asset deals damage (both per-hit and hits are positive); otherwise it has keyword range. */
@@ -981,32 +1058,26 @@ public class BFSStructureTab extends ITab {
     private void chooseFluffImage() {
         BufferedImage image = chooseImage();
         if (image != null) {
-            getAsset().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
-            previewPanel.setAsset(getAsset());
+            setEmbeddedFluffImage(ImageUtil.base64TextEncodeImage(image));
         }
     }
 
-    private void clearFluffImage() {
+    void clearFluffImage() {
         if (getAsset().getFluff().hasEmbeddedFluffImage()) {
-            getAsset().getFluff().setFluffImage("");
-            previewPanel.setAsset(getAsset());
+            setEmbeddedFluffImage("");
         }
     }
 
     private void chooseIconImage() {
         BufferedImage image = chooseImage();
         if (image != null) {
-            getAsset().setIcon(ImageUtil.base64TextEncodeImage(image));
-            updateSpritePreview();
-            previewPanel.setAsset(getAsset());
+            setEmbeddedIcon(ImageUtil.base64TextEncodeImage(image));
         }
     }
 
-    private void clearIconImage() {
+    void clearIconImage() {
         if (getAsset().hasEmbeddedIcon()) {
-            getAsset().setIcon("");
-            updateSpritePreview();
-            previewPanel.setAsset(getAsset());
+            setEmbeddedIcon("");
         }
     }
 
@@ -1018,8 +1089,7 @@ public class BFSStructureTab extends ITab {
                 PopupMessages.showNoFluffImage(getParent());
                 return;
             }
-            getAsset().getFluff().setFluffImage(ImageUtil.base64TextEncodeImage(image));
-            previewPanel.setAsset(getAsset());
+            setEmbeddedFluffImage(ImageUtil.base64TextEncodeImage(image));
         }
     }
 
@@ -1027,9 +1097,26 @@ public class BFSStructureTab extends ITab {
         Entity chosen = chooseEntityFromCache();
         if ((chosen != null) && (MMStaticDirectoryManager.getMekTileset() != null)) {
             Image image = MMStaticDirectoryManager.getMekTileset().imageFor(chosen);
-            getAsset().setIcon(ImageUtil.base64TextEncodeImage(image));
-            updateSpritePreview();
-            previewPanel.setAsset(getAsset());
+            setEmbeddedIcon(ImageUtil.base64TextEncodeImage(image));
+        }
+    }
+
+    void setEmbeddedFluffImage(String encodedImage) {
+        getAsset().getFluff().setFluffImage(encodedImage);
+        artChanged();
+    }
+
+    void setEmbeddedIcon(String encodedImage) {
+        getAsset().setIcon(encodedImage);
+        updateSpritePreview();
+        artChanged();
+    }
+
+    private void artChanged() {
+        previewPanel.setAsset(getAsset());
+        if (refresh != null) {
+            refresh.refreshStructure();
+            refresh.refreshHeader();
         }
     }
 

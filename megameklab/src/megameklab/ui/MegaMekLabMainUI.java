@@ -56,6 +56,7 @@ import megamek.common.ui.EnhancedTabbedPane.TabStateListener;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
 import megameklab.ui.battlefieldSupport.BFSAssetSource;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.battlefieldSupport.BFSLinkedFiles;
 import megameklab.ui.generalUnit.FluffTab;
 import megameklab.ui.util.MegaMekLabFileSaver;
@@ -80,6 +81,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     private boolean dirty = false;
     private boolean dirtyCheckPending = false;
     private boolean forceDirtyUntilNextSave = false;
+    /** A base destination whose linked sidecar has not yet saved successfully. Survives Reload/Undo/session restore. */
+    private String pendingPairedSaveFileName = null;
     private UnitMemento savedUnitSnapshot = null;
     private UnitMemento currentSnapshot = null;
     private final Deque<UnitMemento> undoStack = new LinkedList<>();
@@ -321,6 +324,14 @@ public abstract class MegaMekLabMainUI extends JPanel
             if (restoredEntity != null) {
                 entity = restoredEntity;
                 applyRestoredAsset(state.createAsset());
+                BFSAssetSource source = getBattlefieldSupportAssetSource();
+                if (source != null) {
+                    source.setBattlefieldSupportAssetEnabled(state.isAssetEnabled());
+                    source.setAssetFilePath(state.getAssetFilePath());
+                    if (this instanceof BFSLinkedEditor linkedEditor) {
+                        linkedEditor.setBattlefieldSupportAssetLinked(state.isAssetEnabled());
+                    }
+                }
                 refreshAll();
             }
         } catch (Exception e) {
@@ -342,6 +353,18 @@ public abstract class MegaMekLabMainUI extends JPanel
         return (source == null) ? null : source.getEnabledAsset();
     }
 
+    /** @return the linked asset carrier without creating or enabling it, or {@code null}. */
+    public @Nullable BattlefieldSupportAsset getBattlefieldSupportAssetCarrier() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source == null) ? null : source.getExistingBattlefieldSupportAssetCarrier();
+    }
+
+    /** @return whether this editor's linked asset is enabled. */
+    public boolean isBattlefieldSupportAssetEnabled() {
+        BFSAssetSource source = getBattlefieldSupportAssetSource();
+        return (source != null) && source.isBattlefieldSupportAssetEnabled();
+    }
+
     /**
      * @return the file the linked asset was loaded from / last saved to (a {@code .bfs} path), or {@code null} for a
      *       newly-added asset or an editor with no linked asset. Used to preserve the asset's save location across
@@ -350,6 +373,24 @@ public abstract class MegaMekLabMainUI extends JPanel
     public @Nullable String getBattlefieldSupportAssetFilePath() {
         BFSAssetSource source = getBattlefieldSupportAssetSource();
         return (source == null) ? null : source.getAssetFilePath();
+    }
+
+    /**
+     * @return the base destination whose linked sidecar still needs to be saved, or {@code null} when the pair is
+     *       complete. Used by tab-state persistence so an ordinary Save after session restore cannot target the old
+     *       sidecar.
+     */
+    public @Nullable String getPendingPairedSaveFileName() {
+        return pendingPairedSaveFileName;
+    }
+
+    /** Restores an incomplete paired-save destination from tab-state persistence. */
+    public void restorePendingPairedSaveFileName(@Nullable String pendingFileName) {
+        pendingPairedSaveFileName = ((pendingFileName == null) || pendingFileName.isBlank())
+              ? null : pendingFileName;
+        if (pendingPairedSaveFileName != null) {
+            forceDirtyUntilNextSave = true;
+        }
     }
 
     /**
@@ -381,9 +422,16 @@ public abstract class MegaMekLabMainUI extends JPanel
      */
     public void adoptLinkedBattlefieldSupportAsset(@Nullable BattlefieldSupportAsset asset,
           @Nullable String assetFilePath) {
+                adoptLinkedBattlefieldSupportAsset(asset, assetFilePath, asset != null);
+        }
+
+        /** Restores the complete linked-asset state, including a disabled carrier. */
+        public void adoptLinkedBattlefieldSupportAsset(@Nullable BattlefieldSupportAsset asset,
+                    @Nullable String assetFilePath, boolean enabled) {
         BFSAssetSource source = getBattlefieldSupportAssetSource();
         if (source != null) {
             source.adoptAsset(asset);
+            source.setBattlefieldSupportAssetEnabled(enabled);
             source.setAssetFilePath(assetFilePath);
         }
     }
@@ -442,8 +490,8 @@ public abstract class MegaMekLabMainUI extends JPanel
     }
 
     public boolean saveUnitAs() {
+        commitPendingEditorChanges();
         warnOnInvalid();
-        commitFluffTabChanges();
         UnitUtil.compactCriticalSlots(getEntity());
         refreshAll();
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
@@ -453,26 +501,16 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (file == null) {
             return false;
         }
-        setFileName(file);
-        if (!saveLinkedAsset(new java.io.File(file), true, fileSaver.getLastUnitFileUUIDConflictChoice())) {
-            forceDirtyUntilNextSave = true;
-            refreshHeader();
-            return false;
-        }
-        forceDirtyUntilNextSave = false;
-        resetDirty();
-        return true;
-
+        return completePairedSave(file, true, fileSaver.getLastUnitFileUUIDConflictChoice());
     }
 
     public boolean saveUnit() {
         if (getEntity() == null) {
             logger.error("Tried to save null entity.");
             return false;
-        } else {
-            warnOnInvalid();
         }
-        commitFluffTabChanges();
+        commitPendingEditorChanges();
+        warnOnInvalid();
         UnitUtil.compactCriticalSlots(entity);
         final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Menu");
         final MegaMekLabFileSaver fileSaver = new MegaMekLabFileSaver(logger,
@@ -484,13 +522,30 @@ public abstract class MegaMekLabMainUI extends JPanel
             return false;
         }
         boolean baseMovedOrNew = !file.equals(previousFileName);
-        setFileName(file);
-        if (!saveLinkedAsset(new java.io.File(file), baseMovedOrNew,
-              fileSaver.getLastUnitFileUUIDConflictChoice())) {
+        return completePairedSave(file, baseMovedOrNew, fileSaver.getLastUnitFileUUIDConflictChoice());
+    }
+
+    /**
+     * Finishes a base-unit save by saving its linked sidecar and tracking whether the pair remains incomplete. A failed
+     * destination remains pending across Reload/Undo/session restore; a later ordinary Save therefore still treats it
+     * as Save As and retries the co-located sidecar instead of overwriting the sidecar associated with the prior base
+     * file.
+     */
+    boolean completePairedSave(String file, boolean baseMovedOrNew,
+          @Nullable PopupMessages.UnitFileUUIDChoice baseConflictChoice) {
+        boolean pendingDestination = file.equals(pendingPairedSaveFileName);
+        boolean requiresFreshSidecar = baseMovedOrNew || pendingDestination;
+        if (!saveLinkedAsset(new java.io.File(file), requiresFreshSidecar, baseConflictChoice)) {
+            setFileName(file);
+            if (requiresFreshSidecar) {
+                pendingPairedSaveFileName = file;
+            }
             forceDirtyUntilNextSave = true;
             refreshHeader();
             return false;
         }
+        setFileName(file);
+        pendingPairedSaveFileName = null;
         forceDirtyUntilNextSave = false;
         resetDirty();
         return true;
@@ -516,9 +571,8 @@ public abstract class MegaMekLabMainUI extends JPanel
         // the save (e.g. Save-As over an existing file adopts that file's UUID), which would otherwise leave the
         // sidecar pointing at the stale in-memory UUID.
         try {
-            BFSLinkedFiles.handleSidecarOnSave(getParentFrame(), source, baseFile,
-                  getEntity().getUnitFileUUID(), baseMovedOrNew, baseConflictChoice);
-            return true;
+            return BFSLinkedFiles.handleSidecarOnSave(getParentFrame(), source, baseFile,
+                getEntity().getUnitFileUUID(), baseMovedOrNew, baseConflictChoice);
         } catch (IOException e) {
             logger.error(e, "Failed to write linked Battlefield Support Asset sidecar");
             PopupMessages.showFileWriteError(getParentFrame(), e.getMessage());
@@ -543,6 +597,11 @@ public abstract class MegaMekLabMainUI extends JPanel
         if (fluffTab != null) {
             fluffTab.commitChanges();
         }
+    }
+
+    /** Commits controls that normally update on focus loss before save refreshes the editor. */
+    protected void commitPendingEditorChanges() {
+        commitFluffTabChanges();
     }
 
     /**
