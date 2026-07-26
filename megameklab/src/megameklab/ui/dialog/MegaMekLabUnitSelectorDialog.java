@@ -229,11 +229,9 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                             // Editing: open the combined editor for whatever the row is (base + linked asset, or a
                             // standalone asset).
                             selectForm(true, false);
-                        } else if (selectionCanSelectAsUnit()) {
-                            // Prefer the standard unit form; fall back to the asset form for an asset-only selection.
+                        } else if (hasSelectedRows()) {
+                            // Select each row's standard entity form; a standalone Asset row selects the Asset itself.
                             selectForm(true, false);
-                        } else if (selectionCanSelectAsAsset()) {
-                            selectForm(true, true);
                         }
                     }
                 }
@@ -465,8 +463,8 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     /**
      * Enables the form-selection buttons for the current selection: "Select as Unit" (and, in callback mode, "Select &
-     * Close", which also selects the unit form) require every selected row to have a standard unit form; "Select as
-     * Asset" requires every selected row to have an asset form.
+     * Close") accepts every selected row's standard entity form, including a standalone Asset; "Select as Asset"
+     * requires every selected row to have an asset form.
      */
     private void updateSelectFormButtons() {
         if (!offerAssetForm) {
@@ -481,7 +479,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             }
             return;
         }
-        boolean canSelectAsUnit = selectionCanSelectAsUnit();
+        boolean canSelectAsUnit = hasSelectedRows();
         if (buttonSelect != null) {
             buttonSelect.setEnabled(canSelectAsUnit);
         }

@@ -222,12 +222,12 @@ public abstract class RecordSheetTask extends SwingWorker<Void, Integer> {
 
                 while (iter.hasNext()) {
                     final PrintRecordSheet rs = iter.next();
-                    bookmarkNames.put(currentPageOffset, rs.getBookmarkNames());
 
                     for (int i = 0; i < rs.getPageCount(); i++) {
                         final InputStream is = rs.exportPDF(i, pageFormat);
                         if (is != null) {
                             try {
+                                bookmarkNames.put(currentPageOffset, rs.getBookmarkNames(i));
                                 // Load PDF document from InputStream and append to merged document
                                 PDDocument pageDocument = Loader.loadPDF(new RandomAccessReadBuffer(is));
 

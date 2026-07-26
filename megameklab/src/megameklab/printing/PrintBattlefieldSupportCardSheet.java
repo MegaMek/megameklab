@@ -33,12 +33,14 @@
 package megameklab.printing;
 
 import java.awt.print.PageFormat;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
 import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.battlefieldSupport.cardDrawer.BattlefieldSupportCard;
+import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
@@ -54,10 +56,10 @@ import org.w3c.dom.NodeList;
  * apart into individual playing-card-sized cards. Unlike other record sheets there is no decorated template; the page
  * is a plain grid of cards generated in code.
  *
- * <p>Each card is drawn once by {@link BattlefieldSupportCard} onto a Batik {@link SVGGraphics2D} (vector output — the
- * card's text is glyph-outline geometry, so no font embedding is needed) and placed into a computed grid slot. The
- * grid dimensions are derived from the selected paper size, and the sheet paginates automatically when there are more
- * cards than fit on one page.</p>
+ * <p>Each card is drawn once by {@link BattlefieldSupportCard} onto a Batik {@link SVGGraphics2D} and placed into a
+ * computed grid slot. Batik emits card labels as SVG {@code <text>} elements and line art as vector geometry. The grid
+ * dimensions are derived from the selected paper size, and the sheet paginates automatically when there are more cards
+ * than fit on one page.</p>
  */
 public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
 
@@ -122,6 +124,17 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
     }
 
     @Override
+    public List<String> getBookmarkNames(int pageIndex) {
+        CardGrid grid = cardGrid();
+        int firstCard = pageIndex * grid.perPage();
+        if ((firstCard < 0) || (firstCard >= assets.size())) {
+            return List.of();
+        }
+        int lastCard = Math.min(firstCard + grid.perPage(), assets.size());
+        return assets.subList(firstCard, lastCard).stream().map(BattlefieldSupportAsset::getShortNameRaw).toList();
+    }
+
+    @Override
     protected @Nullable Document loadTemplate(int pageIndex, PageFormat pageFormat,
           boolean useUnitTestTemplateDirectory) {
         // No file template: build a blank page-sized SVG document to hold the tiled cards.
@@ -153,6 +166,7 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
 
             SVGGraphics2D cardGraphics = new SVGGraphics2D(generatorContext, false);
             BattlefieldSupportCard card = new BattlefieldSupportCard(assets.get(i));
+            card.setFont(resolveCardFont());
             card.setColorMode(cardColorMode());
             card.setDamageColor(options.getDamageColorAwt());
             card.setFont(getNormalFont(14f));
@@ -167,6 +181,10 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
             slotGroup.appendChild(cardGroup);
             getSVGDocument().getDocumentElement().appendChild(slotGroup);
         }
+    }
+
+    static Font resolveCardFont() {
+        return UnitUtil.deriveFont(14);
     }
 
     /**
