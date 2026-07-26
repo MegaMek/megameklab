@@ -758,6 +758,14 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      */
     public abstract List<String> getBookmarkNames();
 
+    /**
+     * Returns outline entries for one page. Single-page sheets retain the legacy behavior; multi-page sheets can
+     * override this to associate each unit with its actual page.
+     */
+    public List<String> getBookmarkNames(int pageIndex) {
+        return getBookmarkNames();
+    }
+
     protected void setTextField(String id, int i) {
         setTextField(id, String.valueOf(i));
     }

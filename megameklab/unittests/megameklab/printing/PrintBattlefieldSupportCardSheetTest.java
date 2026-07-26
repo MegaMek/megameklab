@@ -40,6 +40,9 @@ import megamek.common.battlefieldSupport.BFSSpecial;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.units.EntityMovementMode;
 import megameklab.testing.util.InitializeTypes;
+import megameklab.util.CConfig;
+import megameklab.util.UnitUtil;
+import megameklab.util.UnitPrintManager;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -106,6 +109,45 @@ class PrintBattlefieldSupportCardSheetTest {
         // 9 cards on Letter (8/page) needs two pages.
         var sheet = new PrintBattlefieldSupportCardSheet(assets(9), 0, options);
         assertEquals(2, sheet.getPageCount());
+    }
+
+    @Test
+    void bookmarksAreAssignedToEachCardsActualPage() {
+        RecordSheetOptions options = new RecordSheetOptions();
+        var sheet = new PrintBattlefieldSupportCardSheet(assets(10), 0, options);
+
+        assertEquals(List.of("Card 1", "Card 2", "Card 3", "Card 4", "Card 5", "Card 6", "Card 7", "Card 8"),
+              sheet.getBookmarkNames(0));
+        assertEquals(List.of("Card 9", "Card 10"), sheet.getBookmarkNames(1));
+        assertEquals(List.of(), sheet.getBookmarkNames(2));
+    }
+
+    @Test
+    void configuredRecordSheetFontIsAppliedToPrintedCards() throws Exception {
+        String previous = CConfig.getParam(CConfig.RS_FONT);
+        try {
+            CConfig.setParam(CConfig.RS_FONT, "DialogInput");
+            assertEquals("DialogInput", PrintBattlefieldSupportCardSheet.resolveCardFont().getFamily());
+        } finally {
+            CConfig.setParam(CConfig.RS_FONT, previous == null ? "" : previous);
+        }
+    }
+
+    @Test
+    void resettingPrintCloneRestoresCurrentDestroyCheck() {
+        BattlefieldSupportAsset damaged = sampleAsset("Damaged");
+        damaged.setDestroyCheck(3);
+        damaged.setVeteranCrew(true);
+        assertTrue(UnitUtil.isDamaged(damaged, false));
+        assertTrue(damaged.isVeteranCrew());
+
+        BattlefieldSupportAsset clone = UnitPrintManager.prepareBattlefieldSupportAssetForPrint(damaged, false);
+
+        assertEquals(7, clone.getODestroyCheck());
+        assertEquals(7, clone.getDestroyCheck());
+        assertTrue(clone.isVeteranCrew(), "hiding damage must preserve the runtime Veteran crew grade");
+        assertEquals(3, damaged.getDestroyCheck(), "printing must not mutate the source asset");
+        assertEquals(damaged, UnitPrintManager.prepareBattlefieldSupportAssetForPrint(damaged, true));
     }
 
     @Test
