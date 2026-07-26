@@ -230,7 +230,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                             // standalone asset).
                             selectForm(true, false);
                         } else if (hasSelectedRows()) {
-                            // The standard path resolves a standalone asset row to its available asset form.
+                            // Select each row's standard entity form; a standalone Asset row selects the Asset itself.
                             selectForm(true, false);
                         }
                     }
@@ -461,7 +461,11 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         return selectedEntity;
     }
 
-    /** Enables standard selection for every non-empty selection and asset selection when every row has an asset form. */
+    /**
+     * Enables the form-selection buttons for the current selection: "Select as Unit" (and, in callback mode, "Select &
+     * Close") accepts every selected row's standard entity form, including a standalone Asset; "Select as Asset"
+     * requires every selected row to have an asset form.
+     */
     private void updateSelectFormButtons() {
         boolean hasSelection = hasSelectedRows();
         if (!offerAssetForm) {

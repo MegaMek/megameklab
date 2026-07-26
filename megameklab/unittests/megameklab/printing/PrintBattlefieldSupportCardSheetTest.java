@@ -24,6 +24,7 @@ package megameklab.printing;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.awt.Font;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.io.ByteArrayOutputStream;
@@ -38,6 +39,7 @@ import megamek.common.battlefieldSupport.BFSDamage;
 import megamek.common.battlefieldSupport.BFSRange;
 import megamek.common.battlefieldSupport.BFSSpecial;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megamek.common.battlefieldSupport.cardDrawer.BattlefieldSupportCard;
 import megamek.common.units.EntityMovementMode;
 import megameklab.testing.util.InitializeTypes;
 import megameklab.util.CConfig;
@@ -220,6 +222,28 @@ class PrintBattlefieldSupportCardSheetTest {
         png.transcode(new TranscoderInput(new StringReader(svg)), new TranscoderOutput(pngBytes));
         Files.write(new File(outDir, "letter_8up_color.png").toPath(), pngBytes.toByteArray());
         assertTrue(pngBytes.size() > 0);
+    }
+
+    @Test
+    void usesConfiguredRecordSheetFont() throws Exception {
+        String previousFont = CConfig.getParam(CConfig.RS_FONT, PrintRecordSheet.DEFAULT_TYPEFACE);
+        try {
+            CConfig.setParam(CConfig.RS_FONT, Font.MONOSPACED);
+            var sheet = new PrintBattlefieldSupportCardSheet(assets(1), 0, new RecordSheetOptions());
+
+            assertTrue(sheet.createDocument(0, letterPortrait(), true, true));
+            String svg = documentToString(sheet);
+            File outDir = new File("build/bfs-cards-sheet");
+            assertTrue(outDir.exists() || outDir.mkdirs());
+            Files.writeString(new File(outDir, "configured_font.svg").toPath(), svg);
+
+            assertTrue(svg.contains("font-family=\"monospace\""),
+                  "BFS card SVG should use the configured record-sheet font");
+            assertTrue(svg.contains("letter-spacing=\"" + BattlefieldSupportCard.STAT_LABEL_LETTER_SPACING_PX + "px\""),
+                  "card-specific SVG styles must preserve the configured font");
+        } finally {
+            CConfig.setParam(CConfig.RS_FONT, previousFont);
+        }
     }
 
     private static String documentToString(PrintBattlefieldSupportCardSheet sheet) throws Exception {
