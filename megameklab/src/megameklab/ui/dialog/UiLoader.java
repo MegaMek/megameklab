@@ -36,6 +36,7 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -44,6 +45,7 @@ import javax.swing.SwingUtilities;
 import megamek.client.ui.util.UIUtil;
 import megamek.common.Configuration;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megamek.common.loaders.MekSummaryCache;
 import megamek.common.units.Entity;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.MegaMekLabTabbedUI;
@@ -264,9 +266,54 @@ public class UiLoader {
             BFSLinkedOpen.LoadedLink asset = BFSLinkedOpen.findLinkedAssetForBase(entity, filename);
             if (asset != null) {
                 ui.adoptLinkedBattlefieldSupportAsset((BattlefieldSupportAsset) asset.entity(), asset.filePath());
+            } else {
+                retryLinkedAssetAfterCacheLoad(ui, entity, filename);
             }
         }
         return ui;
+    }
+
+    /**
+     * Retries cache-only BFS sidecar discovery after an asynchronous cache load completes. Opening a recent unit must
+     * not block the event-dispatch thread while the cache is rebuilt, but the initial non-blocking lookup can otherwise
+     * miss a linked asset permanently.
+     */
+    private static void retryLinkedAssetAfterCacheLoad(MegaMekLabMainUI ui, Entity base, String filename) {
+        MekSummaryCache cache = MekSummaryCache.getInstance();
+        retryAfterCacheLoad(cache, () -> adoptLinkedAssetIfAvailable(ui, base, filename));
+    }
+
+    /** Runs {@code retryAction} once on the event-dispatch thread when an in-progress cache load completes. */
+    static void retryAfterCacheLoad(MekSummaryCache cache, Runnable retryAction) {
+        if (!cache.isLoading()) {
+            return;
+        }
+        AtomicBoolean completed = new AtomicBoolean();
+        MekSummaryCache.Listener[] listener = new MekSummaryCache.Listener[1];
+        listener[0] = () -> {
+            if (!completed.compareAndSet(false, true)) {
+                return;
+            }
+            cache.removeListener(listener[0]);
+            SwingUtilities.invokeLater(retryAction);
+        };
+        cache.addListener(listener[0]);
+
+        // Cover the small race where rebuilding completes between isLoading() and addListener().
+        if (cache.isInitialized()) {
+            listener[0].doneLoading();
+        }
+    }
+
+    private static void adoptLinkedAssetIfAvailable(MegaMekLabMainUI ui, Entity base, String filename) {
+        if (ui.getBattlefieldSupportAssetCarrier() != null) {
+            return;
+        }
+        BFSLinkedOpen.LoadedLink asset = BFSLinkedOpen.findLinkedAssetForBase(base, filename);
+        if (asset != null) {
+            ui.adoptLinkedBattlefieldSupportAsset((BattlefieldSupportAsset) asset.entity(), asset.filePath());
+            ui.reloadTabs();
+        }
     }
 
     /**
