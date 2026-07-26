@@ -155,8 +155,10 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
             BattlefieldSupportCard card = new BattlefieldSupportCard(assets.get(i));
             card.setColorMode(cardColorMode());
             card.setDamageColor(options.getDamageColorAwt());
+            card.setFont(getNormalFont(14f));
             card.drawCard(cardGraphics);
             Element cardGroup = cardGraphics.getTopLevelGroup(true);
+            BattlefieldSupportCard.applySvgStyles(cardGroup);
             applyDefaultStrokeColor(cardGroup);
 
             Element slotGroup = getSVGDocument().createElementNS(svgNS, SVGConstants.SVG_G_TAG);
