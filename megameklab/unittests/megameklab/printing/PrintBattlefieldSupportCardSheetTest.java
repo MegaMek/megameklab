@@ -125,17 +125,6 @@ class PrintBattlefieldSupportCardSheetTest {
     }
 
     @Test
-    void configuredRecordSheetFontIsAppliedToPrintedCards() throws Exception {
-        String previous = CConfig.getParam(CConfig.RS_FONT);
-        try {
-            CConfig.setParam(CConfig.RS_FONT, "DialogInput");
-            assertEquals("DialogInput", PrintBattlefieldSupportCardSheet.resolveCardFont().getFamily());
-        } finally {
-            CConfig.setParam(CConfig.RS_FONT, previous == null ? "" : previous);
-        }
-    }
-
-    @Test
     void resettingPrintCloneRestoresCurrentDestroyCheck() {
         BattlefieldSupportAsset damaged = sampleAsset("Damaged");
         damaged.setDestroyCheck(3);

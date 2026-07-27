@@ -33,14 +33,12 @@
 package megameklab.printing;
 
 import java.awt.print.PageFormat;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
 import megamek.common.annotations.Nullable;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.battlefieldSupport.cardDrawer.BattlefieldSupportCard;
-import megameklab.util.UnitUtil;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
@@ -166,7 +164,6 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
 
             SVGGraphics2D cardGraphics = new SVGGraphics2D(generatorContext, false);
             BattlefieldSupportCard card = new BattlefieldSupportCard(assets.get(i));
-            card.setFont(resolveCardFont());
             card.setColorMode(cardColorMode());
             card.setDamageColor(options.getDamageColorAwt());
             card.setFont(getNormalFont(14f));
@@ -181,10 +178,6 @@ public class PrintBattlefieldSupportCardSheet extends PrintRecordSheet {
             slotGroup.appendChild(cardGroup);
             getSVGDocument().getDocumentElement().appendChild(slotGroup);
         }
-    }
-
-    static Font resolveCardFont() {
-        return UnitUtil.deriveFont(14);
     }
 
     /**
