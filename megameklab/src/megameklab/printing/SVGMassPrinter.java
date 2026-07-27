@@ -978,6 +978,7 @@ public class SVGMassPrinter {
         public double tons; // Weight in tons, rounded to the nearest integer
         public double loadoutTons; // Weight of loadout
         public int bv; // Battle Value, rounded to the nearest integer
+        public int pv; // AS PV, legacy, to be removed (not used anymore)
         public double offSpeedFactor; // Offensive Speed factor (used to compensate Custom Ammo)
         public long cost; // Cost in C-Bills, rounded to the nearest integer
         public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
@@ -1065,6 +1066,7 @@ public class SVGMassPrinter {
                 if (!SKIP_DETAILED_CALCULATIONS) {
                     this.asConversionReport = conversion.report();
                 }
+                this.pv = asElement.getPointValue();
                 this.as = new HashMap<>();
                 this.as.put("PV", asElement.getPointValue());
                 this.as.put("TP", asElement.getASUnitType().toString());
