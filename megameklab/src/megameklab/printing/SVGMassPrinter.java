@@ -1022,6 +1022,7 @@ public class SVGMassPrinter {
         public List<String> features;
         public Collection<ExportInventoryEntry> comp;
         public int su; // 1 for small units (Battle Armor, ProtoMek, Infantry), 0 for others
+        public boolean canAntiMech;
         public int crewSize; // Number of crew members, if applicable
         public String icon; // Path to the unit icon
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -1069,7 +1070,8 @@ public class SVGMassPrinter {
                 this.pv = asElement.getPointValue();
                 this.as = new HashMap<>();
                 this.as.put("PV", asElement.getPointValue());
-                this.as.put("TP", asElement.getASUnitType().toString());
+                ASUnitType asUnitType = ASUnitType.getUnitType(entity);
+                this.as.put("TP", (asUnitType != ASUnitType.UNKNOWN) ? asUnitType.name() : "XX");
                 this.as.put("SZ", asElement.getSize());
                 if (!this.isAerospace(asElement.getASUnitType())) {
                     this.as.put("TMM", asElement.getTMM());
@@ -1456,6 +1458,7 @@ public class SVGMassPrinter {
             this.source = splitSourceList(entity.getSource());
             this.published = splitSourceList(entity.getPublished());
             this.canon = !entity.isNonCanonBySource();
+            this.canAntiMech = canAntiMech(entity);
             this.role = formatRole(entity);
             this.armorType = getArmorType(entity);
             this.structureType = getStructureType(entity);
@@ -1534,6 +1537,19 @@ public class SVGMassPrinter {
             } else {
                 this.dpt = Math.round(calculateSustainedDPT(entity) * 10) / 10.0;
             }
+        }
+
+        static boolean canAntiMech(Entity entity) {
+            if (entity instanceof ConvInfantry infantry) {
+                return infantry.hasAntiMekGear();
+            }
+            if (entity instanceof BattleArmor battleArmor) {
+                return battleArmor.getWeaponList().stream()
+                      .map(mounted -> mounted.getType().getInternalName())
+                      .anyMatch(internalName -> Infantry.LEG_ATTACK.equals(internalName)
+                            || Infantry.SWARM_MEK.equals(internalName));
+            }
+            return false;
         }
 
         private static List<BVDetail> formatBVDetails(List<CalculationDetail> calculationDetails) {
