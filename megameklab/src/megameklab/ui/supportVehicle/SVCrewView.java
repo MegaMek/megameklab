@@ -341,7 +341,7 @@ public class SVCrewView extends BuildView implements ChangeListener {
     public void setFromEntity(Entity entity) {
         final int total = Compute.getFullCrewSize(entity);
         final int base = Compute.getSVBaseCrewNeeds(entity);
-        final int gunners = Compute.getSupportVehicleGunnerNeeds(entity);
+        final int gunners = Compute.getTotalGunnerNeeds(entity);
         final int other = Compute.getAdditionalNonGunner(entity);
         txtReqBaseCrew.setText(String.valueOf(base));
         txtReqGunners.setText(String.valueOf(gunners));
