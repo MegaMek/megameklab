@@ -834,7 +834,7 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
     }
 
     public int getMinimumTonnage() {
-        return techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false, false,
+        return techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, isPrimitive(), isIndustrial(),
               EntityWeightClass.WEIGHT_ULTRA_LIGHT)) ? 10 : 20;
     }
 
@@ -843,8 +843,8 @@ public class BMChassisView extends BuildView implements ActionListener, ChangeLi
             return 55;
         }
         if (((getBaseTypeIndex() == BASE_TYPE_STANDARD) || (getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL))
-              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, false,
-              getBaseTypeIndex() == BASE_TYPE_INDUSTRIAL, EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
+              && techManager.isLegal(Mek.getTechAdvancement(Entity.ETYPE_MEK, isPrimitive(),
+              isIndustrial(), EntityWeightClass.WEIGHT_SUPER_HEAVY))) {
             return 200;
         }
         return 100;
