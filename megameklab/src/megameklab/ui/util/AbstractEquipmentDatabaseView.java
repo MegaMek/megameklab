@@ -295,10 +295,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         });
         JLabel userInfoText = new JLabel("<html>Note: Ctrl-Click a filter to add it to the selected filters.</html>") {
             @Override
-            public Dimension getMaximumSize()
-            {
-                return getPreferredSize();
-            }
+            public Dimension getMaximumSize() { return getPreferredSize(); }
         };
         userInfoText.setForeground(UIUtil.uiYellow());
         userInfoPanel.add(userInfoText);
