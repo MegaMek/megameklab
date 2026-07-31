@@ -69,6 +69,7 @@ import megamek.common.verifier.BayData;
 import megamek.common.verifier.Ceil;
 import megamek.common.verifier.TestAero;
 import megamek.common.verifier.TestEntity;
+import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
 import megameklab.ui.generalUnit.BasicInfoView;
@@ -85,9 +86,9 @@ import megameklab.ui.util.ITab;
 import megameklab.ui.util.RefreshListener;
 import megameklab.util.UnitUtil;
 
-import static megamek.common.game.IGame.LOGGER;
-
 public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllocationListener {
+    private static final MMLogger LOGGER = MMLogger.create(ASStructureTab.class);
+
     private JPanel masterPanel;
     private BasicInfoView panInfo;
     private ASChassisView panChassis;
