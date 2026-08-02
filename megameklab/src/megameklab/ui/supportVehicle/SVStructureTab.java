@@ -741,6 +741,7 @@ public class SVStructureTab extends ITab implements SVBuildListener {
             }
         }
         panChassis.setFromEntity(getSV());
+        panCrew.setFromEntity(getSV());
         panSummary.refresh();
         refresh.refreshStatus();
         refresh.refreshPreview();
