@@ -672,30 +672,12 @@ public class SVGMassPrinter {
                 }
             }
 
-        if (entity instanceof Mek mek) {
-            if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM)) {
-                ExportInventoryEntry entry = new ExportInventoryEntry();
-                entry.id = "hand";
-                entry.n = mek.getSystemName(Mek.ACTUATOR_HAND);
-                entry.t = "S";
-                entry.q = 1;
-                entry.p = Mek.LOC_LEFT_ARM;
-                entry.l = "LA";
-                entry.c = "1";
-                list.put("LA:hand", entry);
+            if (entity instanceof Mek mek) {
+                addActuatorEntry(list, mek, Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LEFT_ARM, "lower-arm");
+                addActuatorEntry(list, mek, Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM, "hand");
+                addActuatorEntry(list, mek, Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM, "lower-arm");
+                addActuatorEntry(list, mek, Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM, "hand");
             }
-            if (mek.hasSystem(Mek.ACTUATOR_HAND, Mek.LOC_RIGHT_ARM)) {
-                ExportInventoryEntry entry = new ExportInventoryEntry();
-                entry.id = "hand";
-                entry.n = mek.getSystemName(Mek.ACTUATOR_HAND);
-                entry.t = "S";
-                entry.q = 1;
-                entry.p = Mek.LOC_RIGHT_ARM;
-                entry.l = "RA";
-                entry.c = "1";
-                list.put("RA:hand", entry);
-            }
-        }
 
             List<Mounted<?>> mountedList = entity.getEquipment();
             for (Mounted<?> m : mountedList) {
@@ -805,6 +787,24 @@ public class SVGMassPrinter {
                     }
                 }
             }
+        }
+
+        private void addActuatorEntry(HashMap<String, ExportInventoryEntry> list, Mek mek, int actuator,
+              int location, String id) {
+            if (!mek.hasSystem(actuator, location)) {
+                return;
+            }
+
+            String locationAbbreviation = mek.getLocationAbbr(location);
+            ExportInventoryEntry entry = new ExportInventoryEntry();
+            entry.id = id;
+            entry.n = mek.getSystemName(actuator) + " Actuator";
+            entry.t = "S";
+            entry.q = 1;
+            entry.p = location;
+            entry.l = locationAbbreviation;
+            entry.c = "1";
+            list.put(locationAbbreviation + ":" + id, entry);
         }
 
         /**
@@ -983,6 +983,7 @@ public class SVGMassPrinter {
         public long cost; // Cost in C-Bills, rounded to the nearest integer
         public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
         public String techBase;
+        public boolean mixed;
         public String techRating;
         public String engine;
         public int engineRating;
@@ -1321,7 +1322,7 @@ public class SVGMassPrinter {
             return sj;
         }
 
-        private List<String> getFeatures(Entity entity) {
+        static List<String> getFeatures(Entity entity) {
             List<String> feats = new ArrayList<>();
 
             // Cockpit type for Aero (if not standard/primitive)
@@ -1368,6 +1369,11 @@ public class SVGMassPrinter {
                 if (mek.isFrankenMek()) {
                     feats.add("FrankenMek");
                 }
+                if (hasArmActuator(mek, Mek.ACTUATOR_UPPER_ARM)
+                    && !hasArmActuator(mek, Mek.ACTUATOR_HAND)
+                    && !hasArmActuator(mek, Mek.ACTUATOR_LOWER_ARM)) {
+                    feats.add("Reversible Arms");
+                }
             }
             // Chassis modifications (for support vehicles and tanks)
             if (entity.isSupportVehicle() || entity instanceof Tank) {
@@ -1401,6 +1407,11 @@ public class SVGMassPrinter {
             return feats;
         }
 
+        private static boolean hasArmActuator(Mek mek, int actuator) {
+            return mek.hasSystem(actuator, Mek.LOC_LEFT_ARM)
+                  || mek.hasSystem(actuator, Mek.LOC_RIGHT_ARM);
+        }
+
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
             this.id = entity.getMulId();
             this.chassis = entity.getFullChassis();
@@ -1423,6 +1434,7 @@ public class SVGMassPrinter {
                 this.costDetailText = costReport.getText();
             }
             this.techBase = formatTechBase(entity);
+            this.mixed = entity.isMixedTech();
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
             if (entity.hasEngine() && !(entity instanceof SmallCraft || entity instanceof Jumpship)) {
@@ -2156,14 +2168,8 @@ public class SVGMassPrinter {
             return damageModifier;
         }
 
-        private String formatTechBase(Entity entity) {
-            if (entity.isMixedTech()) {
-                return "Mixed";
-            } else if (entity.isClan()) {
-                return "Clan";
-            } else {
-                return "Inner Sphere";
-            }
+        static String formatTechBase(Entity entity) {
+            return entity.isClan() ? "Clan" : "Inner Sphere";
         }
 
         private String formatRole(Entity entity) {
