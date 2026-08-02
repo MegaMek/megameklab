@@ -153,7 +153,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         add(createHelpMenu());
         loadUnitFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadUnitFileChooser.setFileFilter(new FileNameExtensionFilter("Unit files",
-              "mtf", "blk", "hmp", "hmv", "mep", "tdb"));
+              "mtf", "blk", "hmp", "hmv", "mep", "tdb", "bfs"));
         loadImageFileChooser.setDialogTitle(resources.getString("dialog.chooseUnit.title"));
         loadImageFileChooser.setFileFilter(new FileNameExtensionFilter("Image files (.png, .jpg, .gif)",
               "png", "jpg", "jpeg", "gif"));
@@ -204,6 +204,8 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         miNewTab.add(newUnitItem("ProtoMek", KeyEvent.VK_P, Entity.ETYPE_PROTOMEK, false));
         miNewTab.add(newUnitItem("Handheld Weapon", KeyEvent.VK_H, Entity.ETYPE_HANDHELD_WEAPON, false));
         miNewTab.add(newUnitItem("Gun Emplacement", KeyEvent.VK_G, Entity.ETYPE_GUN_EMPLACEMENT, false));
+        miNewTab.add(newUnitItem("Battlefield Support Asset", KeyEvent.VK_S,
+              Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET, false));
 
         JMenu primitive = new JMenu("Primitive...");
         primitive.add(newUnitItem("Mek", KeyEvent.VK_M, Entity.ETYPE_MEK, true));
@@ -364,6 +366,13 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miSwitchToHandheldWeapon.setMnemonic(KeyEvent.VK_H);
             miSwitchToHandheldWeapon.addActionListener(evt -> switchUnitType(Entity.ETYPE_HANDHELD_WEAPON));
             switchUnitTypeMenu.add(miSwitchToHandheldWeapon);
+        }
+
+        if ((entity == null) || (!entity.hasETypeFlag(Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET))) {
+            final JMenuItem miSwitchToAsset = new JMenuItem("Battlefield Support Asset");
+            miSwitchToAsset.setName("miSwitchToAsset");
+            miSwitchToAsset.addActionListener(evt -> switchUnitType(Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET));
+            switchUnitTypeMenu.add(miSwitchToAsset);
         }
 
         switchUnitTypeMenu.add(createPrimitiveMenu(entity));

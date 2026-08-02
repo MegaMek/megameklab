@@ -38,6 +38,8 @@ import java.util.List;
 import javax.swing.JDialog;
 
 import megamek.common.TechConstants;
+import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.Engine;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
@@ -49,6 +51,10 @@ import megamek.common.units.Tank;
 import megamek.common.units.VTOL;
 import megamek.common.verifier.TestTank;
 import megameklab.ui.MegaMekLabMainUI;
+import megameklab.ui.battlefieldSupport.BFSAssetSource;
+import megameklab.ui.battlefieldSupport.BFSLinkedAssetSupport;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
+import megameklab.ui.battlefieldSupport.BFSStructureTab;
 import megameklab.ui.dialog.FloatingEquipmentDatabaseDialog;
 import megameklab.ui.generalUnit.AbstractEquipmentTab;
 import megameklab.ui.generalUnit.FluffTab;
@@ -59,7 +65,7 @@ import megameklab.util.CConfig;
 import megameklab.ui.generalUnit.QuirksTab;
 import megameklab.ui.util.TabScrollPane;
 
-public class CVMainUI extends MegaMekLabMainUI {
+public class CVMainUI extends MegaMekLabMainUI implements BFSLinkedEditor {
 
     private CVStructureTab structureTab;
     private AbstractEquipmentTab equipmentTab;
@@ -68,6 +74,9 @@ public class CVMainUI extends MegaMekLabMainUI {
     private CVBuildTab buildTab;
     private FluffTab fluffTab;
     private CVStatusBar statusbar;
+    private BFSStructureTab bfsTab;
+    private java.awt.Component bfsTabScroll;
+    private final BFSLinkedAssetSupport assetSupport = new BFSLinkedAssetSupport(this::getEntity);
 
     @Override
     protected FluffTab getFluffTab() {
@@ -101,6 +110,9 @@ public class CVMainUI extends MegaMekLabMainUI {
         quirksTab = new QuirksTab(this);
         availabilityTab = new AvailabilityTab(this);
         structureTab.addRefreshedListener(this);
+        bfsTab = new BFSStructureTab(this, assetSupport);
+        bfsTab.addRefreshedListener(this);
+        bfsTabScroll = new TabScrollPane(bfsTab);
         equipmentTab.addRefreshedListener(this);
         buildTab.addRefreshedListener(this);
         fluffTab.setRefreshedListener(this);
@@ -120,6 +132,9 @@ public class CVMainUI extends MegaMekLabMainUI {
             configPane.addTab("Availability", new TabScrollPane(availabilityTab, availabilityTab.refreshOnShow));
         }
         configPane.addTab("Preview", previewTab);
+        // The Asset tab is only shown while the asset is enabled; the checkbox in the Structure tab toggles it.
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
+              assetSupport.isBattlefieldSupportAssetEnabled());
         configPane.addTab("Analysis", analysisTab);
 
         add(configPane, BorderLayout.CENTER);
@@ -147,10 +162,49 @@ public class CVMainUI extends MegaMekLabMainUI {
         availabilityTab.refresh();
         fluffTab.refresh();
         previewTab.refresh();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
         analysisTab.refresh();
         floatingEquipmentDatabase.refresh();
         refreshHeader();
         repaint();
+    }
+
+    @Override
+    protected BFSAssetSource getBattlefieldSupportAssetSource() {
+        return assetSupport;
+    }
+
+    @Override
+    protected void applyRestoredAsset(@Nullable BattlefieldSupportAsset asset) {
+        assetSupport.adoptAsset(asset);
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab,
+              assetSupport.isBattlefieldSupportAssetEnabled());
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
+    }
+
+    @Override
+    public void setBattlefieldSupportAssetLinked(boolean enabled) {
+        assetSupport.setBattlefieldSupportAssetEnabled(enabled);
+        BFSLinkedEditor.setAssetTabVisible(configPane, bfsTabScroll, "Asset", previewTab, enabled);
+        if (enabled && (bfsTab != null)) {
+            bfsTab.refresh();
+        }
+        requestDirtyCheck();
+        refreshHeader();
+    }
+
+    @Override
+    public boolean isBattlefieldSupportAssetLinked() {
+        return assetSupport.isBattlefieldSupportAssetEnabled();
+    }
+
+    @Override
+    public boolean isBattlefieldSupportAssetMotiveEligible() {
+        return BFSLinkedAssetSupport.isMotiveEligible(getEntity());
     }
 
     @Override
@@ -253,12 +307,18 @@ public class CVMainUI extends MegaMekLabMainUI {
     public void refreshPreview() {
         super.refreshPreview();
         previewTab.refresh();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
         analysisTab.refresh();
     }
 
     @Override
     public void refreshSummary() {
         structureTab.refreshSummary();
+        if (bfsTab != null) {
+            bfsTab.refresh();
+        }
     }
 
     @Override

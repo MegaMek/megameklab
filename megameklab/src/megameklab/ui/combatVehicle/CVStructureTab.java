@@ -70,6 +70,7 @@ import megamek.common.verifier.TestTank;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.ArmorAllocationView;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MVFArmorView;
@@ -117,6 +118,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panTransport = new CVTransportView();
         iconView = new IconView();
+        panBasicInfo.showBattlefieldSupportAssetControl(eSource instanceof BFSLinkedEditor);
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -192,6 +194,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         removeAllListeners();
 
         panBasicInfo.setFromEntity(getTank());
+        syncBattlefieldSupportControl();
         panChassis.setFromEntity(getTank());
         panChassisMod.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
@@ -206,6 +209,26 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panSummary.refresh();
 
         addAllListeners();
+    }
+
+    /** Syncs the Basic-Info BFS toggle to the editor's current enable state and motive eligibility. */
+    private void syncBattlefieldSupportControl() {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            boolean eligible = bfs.isBattlefieldSupportAssetMotiveEligible();
+            if (!eligible && bfs.isBattlefieldSupportAssetLinked()) {
+                // The base's motive is no longer a legal asset motive; auto-disable the asset.
+                bfs.setBattlefieldSupportAssetLinked(false);
+            }
+            panBasicInfo.setBattlefieldSupportAssetControlEnabled(eligible);
+            panBasicInfo.setBattlefieldSupportAssetSelected(bfs.isBattlefieldSupportAssetLinked());
+        }
+    }
+
+    @Override
+    public void battlefieldSupportAssetToggled(boolean enabled) {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            bfs.setBattlefieldSupportAssetLinked(enabled);
+        }
     }
 
     public ITechManager getTechManager() {
@@ -243,6 +266,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+        iconView.setRefreshedListener(l);
     }
 
     private void removeTurret(int loc) {

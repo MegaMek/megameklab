@@ -56,6 +56,8 @@ import megamek.logging.MMLogger;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.dialog.MMLFileChooser;
 import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
+import megameklab.ui.util.RefreshListener;
+import megameklab.ui.util.PreviewCamouflage;
 
 /**
  * This view displays the icon that the unit will use in MM and MHQ and allows selecting a different icon from file or
@@ -66,8 +68,8 @@ import megameklab.ui.dialog.MegaMekLabUnitSelectorDialog;
 public class IconView extends BuildView {
     private static final MMLogger logger = MMLogger.create(IconView.class);
 
-    private static final Camouflage CAMO_MEKSET = Camouflage.of(PlayerColour.GRAY);
-    private static final Camouflage CAMO_EMBEDDED = Camouflage.of(PlayerColour.GOLD);
+    private static final Camouflage CAMO_MEKSET = PreviewCamouflage.of(PlayerColour.GRAY);
+    private static final Camouflage CAMO_EMBEDDED = PreviewCamouflage.of(PlayerColour.GOLD);
 
     private final EntityImagePanel entityImage = new EntityImagePanel(null, null);
     private final JButton fileIconButton = new JButton("Choose file");
@@ -75,9 +77,26 @@ public class IconView extends BuildView {
     private final JButton removeIconButton = new JButton("Remove");
 
     private Entity entity;
+    private RefreshListener refreshListener;
 
     public IconView() {
         initUI();
+    }
+
+    /**
+     * Registers a listener notified whenever the unit's icon changes, so dependent views (e.g. the preview and a linked
+     * Battlefield Support Asset card) can re-render. Optional; when unset, an icon change only updates this view.
+     *
+     * @param refreshListener the listener to notify, or {@code null} to clear it
+     */
+    public void setRefreshedListener(RefreshListener refreshListener) {
+        this.refreshListener = refreshListener;
+    }
+
+    private void notifyIconChanged() {
+        if (refreshListener != null) {
+            refreshListener.refreshPreview();
+        }
     }
 
     private void initUI() {
@@ -160,6 +179,7 @@ public class IconView extends BuildView {
             }
         }
         refresh();
+        notifyIconChanged();
     }
 
     private void chooseIconFromUnitCache() {
@@ -176,11 +196,13 @@ public class IconView extends BuildView {
             unitLoadingDialog.dispose();
             viewer.dispose();
             refresh();
+            notifyIconChanged();
         }
     }
 
     private void removeIcon() {
         entity.setIcon("");
         refresh();
+        notifyIconChanged();
     }
 }

@@ -162,4 +162,13 @@ public interface BuildListener {
      */
     default void fuelTypeChanged(FuelType fuelType) {
     }
+
+    /**
+     * Notify that the "Battlefield Support Asset" toggle in the basic info view changed. Eligible base-unit editors use
+     * this to enable/disable a linked asset and show/hide the Asset tab.
+     *
+     * @param enabled whether the unit should have a linked Battlefield Support Asset
+     */
+    default void battlefieldSupportAssetToggled(boolean enabled) {
+    }
 }
