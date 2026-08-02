@@ -2036,9 +2036,9 @@ public class SVGMassPrinter {
             return damageModifier;
         }
 
-        private String formatTechBase(Entity entity) {
+        static String formatTechBase(Entity entity) {
             if (entity.isMixedTech()) {
-                return "Mixed";
+                return entity.isClan() ? "Mixed (Clan)" : "Mixed (IS)";
             } else if (entity.isClan()) {
                 return "Clan";
             } else {
