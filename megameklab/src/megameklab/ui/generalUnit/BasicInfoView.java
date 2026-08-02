@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2017-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -61,7 +61,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 
 import megamek.MMConstants;
 import megamek.client.ui.baseComponents.BooksIcon;
@@ -143,9 +142,8 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     // Optional Battlefield Support Asset toggle, hidden unless enabled for an eligible unit editor. Governs whether the
     // editor's Asset tab is shown; not an entity property, so it is set by the owning structure tab, not setFromEntity.
-    private final JLabel lblBattlefieldSupportAsset = new JLabel(
-          resourceMap.getString("BasicInfoView.battlefieldSupportAsset.text"), SwingConstants.RIGHT);
-    private final JCheckBox chkBattlefieldSupportAsset = new JCheckBox();
+    private final JCheckBox chkBattlefieldSupportAsset = new JCheckBox(
+          resourceMap.getString("BasicInfoView.battlefieldSupportAsset.text"));
 
     private final List<BuildListener> listeners = new CopyOnWriteArrayList<>();
     private final SourceBooks sourceBooks = new SourceBooks();
@@ -357,22 +355,18 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         lblFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
         cbFaction.setVisible(CConfig.getBooleanParam(CConfig.TECH_SHOW_FACTION));
 
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(lblBattlefieldSupportAsset, gbc);
         gbc.gridx = 1;
+        gbc.gridy++;
         chkBattlefieldSupportAsset.setToolTipText(
               resourceMap.getString("BasicInfoView.battlefieldSupportAsset.tooltip"));
         add(chkBattlefieldSupportAsset, gbc);
         chkBattlefieldSupportAsset.addActionListener(this);
         // Hidden by default; only eligible unit editors show it via showBattlefieldSupportAssetControl(true).
-        lblBattlefieldSupportAsset.setVisible(false);
         chkBattlefieldSupportAsset.setVisible(false);
     }
 
     /** Shows or hides the Battlefield Support Asset toggle row (shown only for eligible unit editors). */
     public void showBattlefieldSupportAssetControl(boolean visible) {
-        lblBattlefieldSupportAsset.setVisible(visible);
         chkBattlefieldSupportAsset.setVisible(visible);
     }
 
@@ -388,7 +382,6 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     /** Enables/disables the Battlefield Support Asset toggle (disabled when the unit's motive is an illegal asset). */
     public void setBattlefieldSupportAssetControlEnabled(boolean enabled) {
         chkBattlefieldSupportAsset.setEnabled(enabled);
-        lblBattlefieldSupportAsset.setEnabled(enabled);
     }
 
     public void setFromEntity(Entity en) {
@@ -471,10 +464,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
     public int getTechIntroYear() {
         final int buildYear = getBuildYear();
         final int introYear = txtYear.getIntVal();
-        if (buildYear > introYear) {
-            return buildYear;
-        }
-        return introYear;
+        return Math.max(buildYear, introYear);
     }
 
     public void setYear(int year) {
@@ -485,7 +475,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
 
     /**
      * Returns the intro year value
-     * @return
+     * @return The intro year
      */
     private int getIntroYear() {
         return txtYear.getIntVal();
@@ -936,7 +926,7 @@ public class BasicInfoView extends BuildView implements ITechManager, ActionList
         }
 
         SourceBook sourceBook = (sourcebooksWithMul.size() == 1)
-              ? sourcebooksWithMul.get(0)
+              ? sourcebooksWithMul.getFirst()
               : chooseSourcebookMUL(sourcebooksWithMul).orElse(null);
         if (sourceBook != null) {
             openSourcebookMUL(sourceBook);
