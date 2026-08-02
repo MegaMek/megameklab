@@ -789,7 +789,7 @@ public class SVGMassPrinter {
             }
         }
 
-        private void addActuatorEntry(HashMap<String, ExportInventoryEntry> list, Mek mek, int actuator,
+        private void addActuatorEntry(Map<String, ExportInventoryEntry> list, Mek mek, int actuator,
               int location, String id) {
             if (!mek.hasSystem(actuator, location)) {
                 return;
