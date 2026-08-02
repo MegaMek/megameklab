@@ -74,6 +74,7 @@ import megamek.common.alphaStrike.ASDamageVector;
 import megamek.common.alphaStrike.ASSpecialAbilityCollection;
 import megamek.common.alphaStrike.AlphaStrikeHelper;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.battleArmor.BattleArmorHandles;
 import megamek.common.bays.BattleArmorBay;
 import megamek.common.bays.Bay;
@@ -2486,7 +2487,10 @@ public class SVGMassPrinter {
               synchronized (loadEntityLock) {
                   entity = mekSummary.loadEntity();
               }
-              if ((entity == null) || (entity instanceof GunEmplacement)) {
+              if ((entity == null) || (entity instanceof GunEmplacement)
+                    || (entity instanceof BattlefieldSupportAsset)) {
+                  // BFS cards use the card-print pipeline and are intentionally omitted from this mass record-sheet
+                  // export used by MekBay.
                   return null;
               }
               synchronized (updateUnitLock) {

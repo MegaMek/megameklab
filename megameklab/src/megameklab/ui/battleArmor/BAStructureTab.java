@@ -61,6 +61,7 @@ import megamek.common.verifier.TestEntity;
 import megamek.logging.MMLogger;
 import megameklab.ui.EntitySource;
 import megameklab.ui.generalUnit.BAProtoArmorView;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.MovementView;
@@ -108,6 +109,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panManipulator.setBorder(BorderFactory.createTitledBorder("Manipulators"));
         panEnhancements.setBorder(BorderFactory.createTitledBorder("Enhancements"));
+        panBasicInfo.showBattlefieldSupportAssetControl(eSource instanceof BFSLinkedEditor);
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -144,6 +146,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
 
     public void refresh() {
         panBasicInfo.setFromEntity(getBattleArmor());
+        syncBattlefieldSupportControl();
         panChassis.setFromEntity(getBattleArmor());
         panMovement.setFromEntity(getBattleArmor());
         panArmor.setFromEntity(getBattleArmor());
@@ -154,6 +157,26 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
         removeAllListeners();
         refreshPreview();
         addAllListeners();
+    }
+
+    /** Syncs the Basic-Info BFS toggle to the editor's current enable state and motive eligibility. */
+    private void syncBattlefieldSupportControl() {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            boolean eligible = bfs.isBattlefieldSupportAssetMotiveEligible();
+            if (!eligible && bfs.isBattlefieldSupportAssetLinked()) {
+                // The base's motive is no longer a legal asset motive; auto-disable the asset.
+                bfs.setBattlefieldSupportAssetLinked(false);
+            }
+            panBasicInfo.setBattlefieldSupportAssetControlEnabled(eligible);
+            panBasicInfo.setBattlefieldSupportAssetSelected(bfs.isBattlefieldSupportAssetLinked());
+        }
+    }
+
+    @Override
+    public void battlefieldSupportAssetToggled(boolean enabled) {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            bfs.setBattlefieldSupportAssetLinked(enabled);
+        }
     }
 
     public ITechManager getTechManager() {
@@ -186,6 +209,7 @@ public class BAStructureTab extends ITab implements BABuildListener, ArmorAlloca
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
         panManipulator.addRefreshedListener(l);
+        iconView.setRefreshedListener(l);
     }
 
     public void setAsCustomization() {

@@ -48,14 +48,17 @@ import megamek.MegaMek;
 import megamek.SuiteConstants;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.LicensingDialog;
+import megamek.client.ui.panels.battlefieldSupport.ConfigurableBFSCardPanel;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.client.ui.util.UIUtil;
+import megamek.common.battlefieldSupport.cardDrawer.BattlefieldSupportCard;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MekSummaryCache;
 import megamek.common.net.marshalling.SanityInputFilter;
 import megamek.common.units.Entity;
 import megamek.logging.MMLogger;
+import megameklab.printing.RecordSheetOptions;
 import megameklab.ui.MegaMekLabTabbedUI;
 import megameklab.ui.PopupMessages;
 import megameklab.ui.StartupGUI;
@@ -221,6 +224,7 @@ public class MegaMekLab {
         MekSummaryCache.getInstance();
         CConfig.load();
         UnitUtil.loadFonts();
+        registerCardDefaults();
 
         MegaMek.getMMPreferences().loadFromFile(SuiteConstants.MM_PREFERENCES_FILE);
         getMMLPreferences().loadFromFile(SuiteConstants.MML_PREFERENCES_FILE);
@@ -274,6 +278,24 @@ public class MegaMekLab {
         }
     }
 
+    /**
+     * Registers the record-sheet-derived font and color defaults used by every {@link ConfigurableBFSCardPanel} created
+     * in this MegaMekLab process (the asset editor and the unit selector's card preview). Plain MegaMek does not call
+     * this, so its own card previews keep their built-in black-and-white/sans-serif defaults.
+     */
+    private static void registerCardDefaults() {
+        ConfigurableBFSCardPanel.setDefaultProviders(
+              // The user's configured record-sheet font, or blank when unset - never a baked-in family, since not
+              // every machine has it. A blank value leaves the card on Java's default sans-serif.
+              () -> CConfig.getParam(CConfig.RS_FONT),
+              () -> switch (new RecordSheetOptions().useColor()) {
+                  case ALL -> BattlefieldSupportCard.ColorMode.ALL;
+                  case LOGO_ONLY -> BattlefieldSupportCard.ColorMode.LOGO_ONLY;
+                  case NONE -> BattlefieldSupportCard.ColorMode.NONE;
+              },
+              () -> new RecordSheetOptions().getDamageColorAwt());
+    }
+
     public static void updateGuiScaling() {
         System.setProperty("flatlaf.uiScale", Double.toString(GUIPreferences.getInstance().getGUIScale()));
         setLookAndFeel();
@@ -321,7 +343,8 @@ public class MegaMekLab {
             if (!file.exists()) {
                 throw new IllegalArgumentException("File not found: " + filePath);
             }
-            if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")) {
+            if (file.getName().toLowerCase().endsWith(".blk") || file.getName().toLowerCase().endsWith(".mtf")
+                  || file.getName().toLowerCase().endsWith(".bfs")) {
                 LOGGER.info("Opening file: {}", filePath);
                 Entity e = new MekFileParser(file).getEntity();
                 if (!UnitUtil.validateUnit(e).isBlank()) {

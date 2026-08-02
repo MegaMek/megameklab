@@ -36,12 +36,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 
 import megamek.common.equipment.Engine;
 import megamek.common.loaders.MekFileParser;
@@ -184,5 +188,27 @@ class MegaMekLabFileSaverTest {
 
         assertNull(savedFile);
         assertEquals(previousUUID, entity.getUnitFileUUID());
+    }
+
+    @Test
+    void writesBfsAsUtf8() throws Exception {
+        BattlefieldSupportAsset asset = new BattlefieldSupportAsset();
+        asset.setChassis("Éclaireur 日本");
+        File destination = temporaryDirectory.resolve("unicode.bfs").toFile();
+
+        MegaMekLabFileSaver.writeUnitToFile(destination, asset);
+
+        String content = Files.readString(destination.toPath(), StandardCharsets.UTF_8);
+        assertTrue(content.contains("Éclaireur 日本"));
+    }
+
+    @Test
+    void directWritePropagatesIoFailure() throws Exception {
+        BattlefieldSupportAsset asset = new BattlefieldSupportAsset();
+        File parentFile = temporaryDirectory.resolve("not-a-directory").toFile();
+        Files.writeString(parentFile.toPath(), "blocker");
+
+        assertThrows(IOException.class,
+              () -> MegaMekLabFileSaver.writeUnitToFile(new File(parentFile, "asset.bfs"), asset));
     }
 }

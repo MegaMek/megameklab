@@ -41,9 +41,11 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.swing.*;
 
 import megamek.client.ui.Messages;
@@ -54,11 +56,13 @@ import megamek.client.ui.tileset.EntityImage;
 import megamek.client.ui.tileset.MMStaticDirectoryManager;
 import megamek.client.ui.util.PlayerColour;
 import megamek.common.TechConstants;
-import megamek.common.icons.Camouflage;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.loaders.MekSummary;
 import megamek.common.units.Entity;
 import megamek.common.units.UnitType;
+import megameklab.ui.generalUnit.BattlefieldSupportCardListPanel;
 import megameklab.ui.generalUnit.RecordSheetPreviewPanel;
+import megameklab.ui.util.PreviewCamouflage;
 import megameklab.util.CConfig;
 import megameklab.util.UnitPrintManager;
 import megameklab.util.UnitUtil;
@@ -73,9 +77,17 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     private final boolean allowPickWithoutClose;
     private Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback;
     private RecordSheetPreviewPanel recordSheetPanel;
+    private BattlefieldSupportCardListPanel bfsCardsPanel;
     private JButton printRecordSheetButton;
     private JButton exportToPDFRecordSheetButton;
+    private JButton buttonSelectAsset;
     private final int restrictedUnitType;
+    /**
+     * When {@code true} (Force Builder / Print Queue), the callback dialog offers separate "Select as Unit" and "Select
+     * as Asset" buttons. When {@code false} (opening a unit for editing), a single "Select" opens the combined editor,
+     * so no asset/unit form choice is needed.
+     */
+    private boolean offerAssetForm = true;
 
     // endregion Variable Declarations
 
@@ -116,6 +128,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         });
         setupDoubleClickListener();
         setupRecordSheetTab();
+        setupBfsCardsTab();
         run();
         setVisible(true);
     }
@@ -123,7 +136,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
     /**
      * Constructs a Unit Selector Dialog that allows choosing a Unit while keeping the dialog open by pressing Enter or
      * the "Select" button. The entityPickCallback method will be called when units are selected in this way.
-     * Multiselect is always enabled.
+     * Multiselect is always enabled. This form offers the separate "Select as Unit" / "Select as Asset" buttons.
      *
      * @param parent             The parent window of this dialog
      * @param unitLoadingDialog  A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
@@ -131,7 +144,24 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
      */
     public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog,
           Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback) {
+        this(parent, unitLoadingDialog, entityPickCallback, true);
+    }
+
+    /**
+     * Constructs a callback Unit Selector Dialog (see the three-argument constructor), choosing whether to offer the
+     * "Select as Unit" / "Select as Asset" form buttons. When opening a unit for editing, pass {@code false}: a single
+     * "Select" opens the combined base + asset editor, so no form choice is needed.
+     *
+     * @param parent             The parent window of this dialog
+     * @param unitLoadingDialog  A {@link UnitLoadingDialog} likely {@code new UnitLoadingDialog(parent)}.
+     * @param entityPickCallback This will be called when the user presses Select.
+     * @param offerAssetForm     whether to offer separate unit/asset form buttons (Force Builder / Print Queue) or a
+     *                           single "Select" (editing)
+     */
+    public MegaMekLabUnitSelectorDialog(JFrame parent, UnitLoadingDialog unitLoadingDialog,
+          Consumer<MegaMekLabUnitSelectorDialog> entityPickCallback, boolean offerAssetForm) {
         super(parent, unitLoadingDialog, true);
+        this.offerAssetForm = offerAssetForm;
         gameTechLevel = TechConstants.T_SIMPLE_UNOFFICIAL;
         allowPickWithoutClose = true;
         restrictedUnitType = NO_UNIT_TYPE_RESTRICTION;
@@ -159,6 +189,7 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         rootPane.getInputMap(JComponent.WHEN_FOCUSED).put(escape, CLOSE_ACTION);
         rootPane.getActionMap().put(CLOSE_ACTION, closeAction);
         setupRecordSheetTab();
+        setupBfsCardsTab();
         run();
         setVisible(true);
 
@@ -193,8 +224,15 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     if (evt.getClickCount() == 2) {
-                        // Double click detected - select and close
-                        select(true);
+                        // Double click detected - select the available form and close.
+                        if (!offerAssetForm) {
+                            // Editing: open the combined editor for whatever the row is (base + linked asset, or a
+                            // standalone asset).
+                            selectForm(true, false);
+                        } else if (hasSelectedRows()) {
+                            // Select each row's standard entity form; a standalone Asset row selects the Asset itself.
+                            selectForm(true, false);
+                        }
                     }
                 }
             });
@@ -257,6 +295,18 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         }
     }
 
+    /**
+     * Adds the multi-select "BFS Cards" preview tab, which shows every selected unit's Battlefield Support Asset card at
+     * once (the BFS parallel of the Record Sheet tab). Only added in multi-select mode; in single-select the base
+     * preview pane already shows the focused unit's BFS Card tab.
+     */
+    private void setupBfsCardsTab() {
+        if (multiSelect && (bfsCardsPanel == null)) {
+            bfsCardsPanel = new BattlefieldSupportCardListPanel();
+            panePreview.addTab("BFS Cards", bfsCardsPanel);
+        }
+    }
+
     // Only necessary to override the default close behavior, see constructor
     Action closeAction = new AbstractAction() {
         @Override
@@ -276,9 +326,25 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         JPanel panelButtons = new JPanel(new GridBagLayout());
 
         if (allowPickWithoutClose) {
-            buttonSelect = new JButton(Messages.getString("MekSelectorDialog.m_bPick"));
-            buttonSelect.addActionListener(this);
-            panelButtons.add(buttonSelect, new GridBagConstraints());
+            if (offerAssetForm) {
+                // Callback (Force Builder / Print Queue) mode: two adjacent form buttons that add the selection without
+                // closing. "Select as Unit" reuses buttonSelect (the base dialog wires it to select(false) = add as
+                // unit); "Select as Asset" adds the assets. They are enabled/disabled per selection in refreshUnitView.
+                buttonSelect = new JButton(Messages.getString("MekSelectorDialog.SelectAsUnit"));
+                buttonSelect.setToolTipText(Messages.getString("MekSelectorDialog.SelectAsUnit.ToolTip"));
+                buttonSelect.addActionListener(this);
+                panelButtons.add(buttonSelect, new GridBagConstraints());
+
+                buttonSelectAsset = new JButton(Messages.getString("MekSelectorDialog.SelectAsAsset"));
+                buttonSelectAsset.setToolTipText(Messages.getString("MekSelectorDialog.SelectAsAsset.ToolTip"));
+                buttonSelectAsset.addActionListener(e -> selectForm(false, true));
+                panelButtons.add(buttonSelectAsset, new GridBagConstraints());
+            } else {
+                // Editing mode: a single "Select" opens the combined base + asset editor, so no form choice is offered.
+                buttonSelect = new JButton(Messages.getString("MekSelectorDialog.m_bPick"));
+                buttonSelect.addActionListener(this);
+                panelButtons.add(buttonSelect, new GridBagConstraints());
+            }
         }
 
         buttonSelectClose = new JButton(Messages.getString("MekSelectorDialog.m_bPickClose"));
@@ -305,8 +371,20 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
 
     @Override
     protected void select(boolean close) {
+        selectForm(close, false);
+    }
+
+    /**
+     * Records the current selection as the chosen entities in the requested form and either closes the dialog or
+     * notifies the pick callback (keeping the dialog open).
+     *
+     * @param close   {@code true} to close the dialog; {@code false} to keep it open and fire the pick callback
+     * @param asAsset {@code true} to select each row's Battlefield Support Asset form; {@code false} for the standard
+     *                (TW) unit form
+     */
+    private void selectForm(boolean close, boolean asAsset) {
         if (multiSelect) {
-            chosenEntities = getSelectedEntities();
+            chosenEntities = asAsset ? getSelectedAssetEntities() : getSelectedEntities();
         } else {
             chosenEntity = getSelectedEntity();
         }
@@ -346,15 +424,22 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
         if (selectedEntity != null) {
             // Update unit image first (existing code)
             Image base = MMStaticDirectoryManager.getMekTileset().imageFor(selectedEntity);
-            EntityImage entityImage = EntityImage.createIcon(base, Camouflage.of(PlayerColour.GOLD), selectedEntity);
+            EntityImage entityImage = EntityImage.createIcon(base, PreviewCamouflage.of(PlayerColour.GOLD),
+                  selectedEntity);
             entityImage.loadFacings();
             labelImage.setIcon(new ImageIcon(entityImage.getFacing(0)));
         }
 
-        ArrayList<Entity> selectedEntities = getSelectedEntities();
-        selectedEntities.forEach(UnitUtil::updateLoadedUnit);
-        if (!selectedEntities.isEmpty()) {
-            recordSheetPanel.setEntities(selectedEntities);
+        updateSelectFormButtons();
+
+        // The Record Sheet preview shows the selected units in their standard (TW) form; asset-only rows have no
+        // record sheet, so exclude them (their card appears on the BFS Card tab instead).
+        ArrayList<Entity> recordSheetEntities = getSelectedEntities().stream()
+              .filter(entity -> !(entity instanceof BattlefieldSupportAsset))
+              .collect(Collectors.toCollection(ArrayList::new));
+        recordSheetEntities.forEach(UnitUtil::updateLoadedUnit);
+        if (!recordSheetEntities.isEmpty()) {
+            recordSheetPanel.setEntities(recordSheetEntities);
             printRecordSheetButton.setEnabled(true);
             exportToPDFRecordSheetButton.setEnabled(true);
         } else {
@@ -363,6 +448,45 @@ public class MegaMekLabUnitSelectorDialog extends AbstractUnitSelectorDialog {
             exportToPDFRecordSheetButton.setEnabled(false);
         }
 
+        // The BFS Cards preview shows every selected unit that has an asset form (an asset row, or a base unit with a
+        // linked asset), each as its own card.
+        if (bfsCardsPanel != null) {
+            List<BattlefieldSupportAsset> assets = getSelectedAssetEntities().stream()
+                  .filter(entity -> entity instanceof BattlefieldSupportAsset)
+                  .map(entity -> (BattlefieldSupportAsset) entity)
+                  .collect(Collectors.toList());
+            bfsCardsPanel.setAssets(assets);
+        }
+
         return selectedEntity;
+    }
+
+    /**
+     * Enables the form-selection buttons for the current selection: "Select as Unit" (and, in callback mode, "Select &
+     * Close") accepts every selected row's standard entity form, including a standalone Asset; "Select as Asset"
+     * requires every selected row to have an asset form.
+     */
+    private void updateSelectFormButtons() {
+        boolean hasSelection = hasSelectedRows();
+        if (!offerAssetForm) {
+            // Editing mode: a single "Select" opens the combined editor for any non-empty selection (a base unit with
+            // its linked asset, or a standalone asset).
+            if (buttonSelect != null) {
+                buttonSelect.setEnabled(hasSelection);
+            }
+            if (buttonSelectClose != null) {
+                buttonSelectClose.setEnabled(hasSelection);
+            }
+            return;
+        }
+        if (buttonSelect != null) {
+            buttonSelect.setEnabled(hasSelection);
+        }
+        if (buttonSelectAsset != null) {
+            buttonSelectAsset.setEnabled(selectionCanSelectAsAsset());
+        }
+        if (buttonSelectClose != null) {
+            buttonSelectClose.setEnabled(hasSelection);
+        }
     }
 }

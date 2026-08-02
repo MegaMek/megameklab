@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.MekFileParser;
@@ -52,15 +54,33 @@ public class UnitMemento {
     private final String entityState;
     private final String unallocatedEquipment;
     private final double armorTonnage;
+    /**
+     * The serialized {@code .bfs} state of the editor's linked Battlefield Support Asset carrier, or {@code null} when
+     * the editor has no linked asset (a standalone asset editor keeps its asset in {@link #entityState}, and
+     * non-eligible editors have none). Lets a linked editor's dirty/undo/redo track the base unit and its asset as a
+     * single unit of state.
+     */
+    private final String assetState;
+    private final boolean assetEnabled;
+    private final String assetFilePath;
 
     public UnitMemento(Entity entity, MegaMekLabMainUI mainUI) {
         this.entityState = UnitUtil.saveUnitToString(entity, false);
         double armorTonnage = -1;
         String unallocatedEquipment = null;
+        String assetState = null;
+        boolean assetEnabled = false;
+        String assetFilePath = null;
         if (entity != null) {
             armorTonnage = entity.getLabArmorTonnage();
         }
         if (mainUI != null) {
+            BattlefieldSupportAsset asset = mainUI.getBattlefieldSupportAssetCarrier();
+            if (asset != null) {
+                assetState = UnitUtil.saveUnitToString(asset, false);
+            }
+            assetEnabled = mainUI.isBattlefieldSupportAssetEnabled();
+            assetFilePath = mainUI.getBattlefieldSupportAssetFilePath();
             List<Mounted<?>> unallocatedMounted = mainUI.getUnallocatedMounted();
             if (unallocatedMounted != null && !unallocatedMounted.isEmpty()) {
                 StringWriter stringWriter = new StringWriter();
@@ -83,6 +103,9 @@ public class UnitMemento {
         }
         this.armorTonnage = armorTonnage;
         this.unallocatedEquipment = unallocatedEquipment;
+        this.assetState = assetState;
+        this.assetEnabled = assetEnabled;
+        this.assetFilePath = assetFilePath;
     }
 
 
@@ -130,6 +153,42 @@ public class UnitMemento {
         return entityState;
     }
 
+    /**
+     * @return {@code true} if this memento carries a linked Battlefield Support Asset (see {@link #createAsset()})
+     */
+    public boolean hasAsset() {
+        return (assetState != null) && !assetState.isEmpty();
+    }
+
+    /**
+     * Rebuilds the linked Battlefield Support Asset carrier captured in this memento, if any.
+     *
+     * @return the restored asset, or {@code null} if this memento has no linked asset (or restoration failed)
+     */
+    public @Nullable BattlefieldSupportAsset createAsset() {
+        if (!hasAsset()) {
+            return null;
+        }
+        try {
+            Entity restored = new MekFileParser(assetState).getEntity();
+            if (restored instanceof BattlefieldSupportAsset asset) {
+                UnitUtil.updateLoadedUnit(asset);
+                return asset;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to restore linked asset state", e);
+        }
+        return null;
+    }
+
+    public boolean isAssetEnabled() {
+        return assetEnabled;
+    }
+
+    public @Nullable String getAssetFilePath() {
+        return assetFilePath;
+    }
+
     public String getUnallocatedEquipment() {
         return unallocatedEquipment;
     }
@@ -161,12 +220,23 @@ public class UnitMemento {
         if (armorTonnage != other.armorTonnage) {
             return false;
         }
+        // Compare linked asset state
+        if (assetState == null) {
+            if (other.assetState != null) {
+                return false;
+            }
+        } else if (!assetState.equals(other.assetState)) {
+            return false;
+        }
+        if ((assetEnabled != other.assetEnabled) || !java.util.Objects.equals(assetFilePath, other.assetFilePath)) {
+            return false;
+        }
         // Compare unallocatedEquipment
         if (unallocatedEquipment == null) {
             return other.unallocatedEquipment == null;
         } else {
             return unallocatedEquipment.equals(other.unallocatedEquipment);
         }
-        // If we get here, both fields are equal
+        // If we get here, all fields are equal
     }
 }
