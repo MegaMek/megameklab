@@ -143,7 +143,7 @@ public class SVGMassPrinter {
 
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     // The following are defaults that can be overridden via command-line arguments (see parseArgs / printUsage).
-    private static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
@@ -1368,6 +1368,9 @@ public class SVGMassPrinter {
                 }
                 if (mek.isFrankenMek()) {
                     feats.add("FrankenMek");
+                }
+                if (hasArmActuator(mek, Mek.ACTUATOR_HAND)) {
+                    feats.add("Hands");
                 }
                 if (hasArmActuator(mek, Mek.ACTUATOR_UPPER_ARM)
                     && !hasArmActuator(mek, Mek.ACTUATOR_HAND)
