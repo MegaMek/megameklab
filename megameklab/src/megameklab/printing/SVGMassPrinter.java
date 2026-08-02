@@ -1406,9 +1406,6 @@ public class SVGMassPrinter {
                 if (mek.isFrankenMek()) {
                     feats.add("FrankenMek");
                 }
-                if (hasArmActuator(mek, Mek.ACTUATOR_HAND)) {
-                    feats.add("Hands");
-                }
                 if (hasArmActuator(mek, Mek.ACTUATOR_UPPER_ARM)
                     && !hasArmActuator(mek, Mek.ACTUATOR_HAND)
                     && !hasArmActuator(mek, Mek.ACTUATOR_LOWER_ARM)) {
