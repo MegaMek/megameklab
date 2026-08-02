@@ -143,7 +143,7 @@ public class SVGMassPrinter {
 
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     // The following are defaults that can be overridden via command-line arguments (see parseArgs / printUsage).
-    private static boolean SKIP_SVG = true; // Set to true to skip SVG generation
+    private static boolean SKIP_SVG = false; // Set to true to skip SVG generation
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
@@ -673,6 +673,12 @@ public class SVGMassPrinter {
             }
 
             if (entity instanceof Mek mek) {
+                addMekSystemEntry(list, mek, Mek.SYSTEM_COCKPIT, "cockpit",
+                      withSystemSuffix(Mek.getCockpitTypeString(mek.getCockpitType()), "Cockpit"));
+                if (mek.getGyroType() != Mek.GYRO_NONE) {
+                    addMekSystemEntry(list, mek, Mek.SYSTEM_GYRO, "gyro",
+                          withSystemSuffix(mek.getGyroTypeString(), "Gyro"));
+                }
                 addActuatorEntry(list, mek, Mek.ACTUATOR_LOWER_ARM, Mek.LOC_LEFT_ARM, "lower-arm");
                 addActuatorEntry(list, mek, Mek.ACTUATOR_HAND, Mek.LOC_LEFT_ARM, "hand");
                 addActuatorEntry(list, mek, Mek.ACTUATOR_LOWER_ARM, Mek.LOC_RIGHT_ARM, "lower-arm");
@@ -787,6 +793,37 @@ public class SVGMassPrinter {
                     }
                 }
             }
+        }
+
+        private void addMekSystemEntry(Map<String, ExportInventoryEntry> list, Mek mek, int system,
+              String id, String name) {
+            int location = findSystemLocation(mek, system);
+            if (location == Entity.LOC_NONE) {
+                return;
+            }
+
+            ExportInventoryEntry entry = new ExportInventoryEntry();
+            entry.id = id;
+            entry.n = name;
+            entry.t = "S";
+            entry.q = 1;
+            entry.p = location;
+            entry.l = mek.getLocationAbbr(location);
+            entry.c = Integer.toString(mek.getNumberOfCriticalSlots(CriticalSlot.TYPE_SYSTEM, system, location));
+            list.put(id, entry);
+        }
+
+        private int findSystemLocation(Mek mek, int system) {
+            for (int location = 0; location < mek.locations(); location++) {
+                if (mek.getNumberOfCriticalSlots(CriticalSlot.TYPE_SYSTEM, system, location) > 0) {
+                    return location;
+                }
+            }
+            return Entity.LOC_NONE;
+        }
+
+        private String withSystemSuffix(String name, String suffix) {
+            return name.endsWith(suffix) ? name : name + " " + suffix;
         }
 
         private void addActuatorEntry(Map<String, ExportInventoryEntry> list, Mek mek, int actuator,
