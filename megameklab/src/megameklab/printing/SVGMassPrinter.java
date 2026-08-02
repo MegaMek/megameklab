@@ -888,6 +888,7 @@ public class SVGMassPrinter {
         public long cost; // Cost in C-Bills, rounded to the nearest integer
         public String level; // Tech level as a string, e.g. "Introductory", "Standard", etc.
         public String techBase;
+        public boolean mixed;
         public String techRating;
         public String engine;
         public int engineRating;
@@ -1325,6 +1326,7 @@ public class SVGMassPrinter {
                 this.costDetailText = costReport.getText();
             }
             this.techBase = formatTechBase(entity);
+            this.mixed = entity.isMixedTech();
             this.techRating = entity.getFullRatingName();
             this.level = formatRulesLevel(entity, options);
             if (entity.hasEngine() && !(entity instanceof SmallCraft || entity instanceof Jumpship)) {
@@ -2037,13 +2039,7 @@ public class SVGMassPrinter {
         }
 
         static String formatTechBase(Entity entity) {
-            if (entity.isMixedTech()) {
-                return entity.isClan() ? "Mixed (Clan)" : "Mixed (IS)";
-            } else if (entity.isClan()) {
-                return "Clan";
-            } else {
-                return "Inner Sphere";
-            }
+            return entity.isClan() ? "Clan" : "Inner Sphere";
         }
 
         private String formatRole(Entity entity) {
