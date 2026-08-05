@@ -186,7 +186,6 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         removeAllListeners();
         armorName.setText(getInfantry().getCustomArmorName() != null ?
               getInfantry().getCustomArmorName() : "");
-        armorName.addCaretListener(ev -> checkCustomArmorValid());
         armorValue.setValue(getInfantry().getCustomArmorDamageDivisor());
         chEncumber.setSelected(getInfantry().isArmorEncumbering());
         chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
@@ -433,6 +432,7 @@ public class CIArmorView extends IView implements ActionListener, ChangeListener
         gbc.gridy = 0;
         customArmorPanel.add(new StandardBuildLabel(resourceMap.getString("CIArmorView.name")), gbc);
         customArmorPanel.add(armorName, gbc);
+        armorName.addCaretListener(ev -> checkCustomArmorValid());
 
         gbc.gridy++;
         customArmorPanel.add(new StandardBuildLabel(resourceMap.getString("CIArmorView.damageDivisor")), gbc);
