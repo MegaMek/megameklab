@@ -173,7 +173,7 @@ public class CIMountView extends IView implements ActionListener {
     }
 
     private TabScrollPane getCustomMountPanel() {
-        customMountView.setBorder(BorderFactory.createTitledBorder(resourceMap.getString("CIMountView.customArmor")));
+        customMountView.setBorder(BorderFactory.createTitledBorder(resourceMap.getString("CIMountView.customMount")));
         // This outer panel prevents the customView from being stretched to fill the whole frame
         var outerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         outerPanel.add(customMountView);

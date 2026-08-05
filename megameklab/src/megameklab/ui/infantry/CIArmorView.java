@@ -49,6 +49,8 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionListener;
@@ -71,7 +73,7 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.TabScrollPane;
 import megameklab.util.CConfig;
 
-public class CIArmorView extends IView implements ActionListener {
+public class CIArmorView extends IView implements ActionListener, ChangeListener {
     private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private RefreshListener refresh = null;
 
@@ -182,6 +184,16 @@ public class CIArmorView extends IView implements ActionListener {
 
     public void refresh() {
         removeAllListeners();
+        armorName.setText(getInfantry().getCustomArmorName() != null ?
+              getInfantry().getCustomArmorName() : "");
+        armorName.addCaretListener(ev -> checkCustomArmorValid());
+        armorValue.setValue(getInfantry().getCustomArmorDamageDivisor());
+        chEncumber.setSelected(getInfantry().isArmorEncumbering());
+        chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
+        chDEST.setSelected(getInfantry().hasDEST());
+        chSneakCamo.setSelected(getInfantry().hasSneakCamo());
+        chSneakIR.setSelected(getInfantry().hasSneakIR());
+        chSneakECM.setSelected(getInfantry().hasSneakECM());
         if (getInfantry().getTechLevel() < TechConstants.T_TW_ALL) {
             armorName.setEnabled(false);
             armorValue.setEnabled(false);
@@ -218,7 +230,7 @@ public class CIArmorView extends IView implements ActionListener {
         if (evt.getSource().equals(addArmorButton)) {
             if (createCustomArmorButton.isSelected()) {
                 getInfantry().setCustomArmorDamageDivisor((Double) armorValue.getModel().getValue());
-                getInfantry().setCustomArmorName(!armorName.getText().isBlank() ? armorName.getText() : null);
+                getInfantry().setCustomArmorName(armorName.getText());
                 getInfantry().setArmorEncumbering(chEncumber.isSelected());
                 getInfantry().setSpaceSuit(chSpaceSuit.isSelected());
                 getInfantry().setDEST(chDEST.isSelected());
@@ -280,17 +292,26 @@ public class CIArmorView extends IView implements ActionListener {
             checkCustomArmorValid();
         }
         addAllListeners();
-        if (refresh != null) {
-            refresh.refreshStructure();
-            refresh.refreshStatus();
-            refresh.refreshPreview();
+        if (evt.getSource().equals(addArmorButton) || evt.getSource().equals(removeArmorButton)) {
+            if (refresh != null) {
+                refresh.refreshStructure();
+                refresh.refreshStatus();
+                refresh.refreshPreview();
+            }
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent evt) {
+        if (evt.getSource().equals(armorValue)) {
+            checkCustomArmorValid();
         }
     }
 
     private void addAllListeners() {
         addArmorButton.addActionListener(this);
         removeArmorButton.addActionListener(this);
-        armorName.addCaretListener(ev -> checkCustomArmorValid());
+        armorValue.addChangeListener(this);
         chEncumber.addActionListener(this);
         chSpaceSuit.addActionListener(this);
         chDEST.addActionListener(this);
@@ -302,7 +323,7 @@ public class CIArmorView extends IView implements ActionListener {
     private void removeAllListeners() {
         addArmorButton.removeActionListener(this);
         removeArmorButton.removeActionListener(this);
-        armorName.removeCaretListener(ev -> checkCustomArmorValid());
+        armorValue.removeChangeListener(this);
         chEncumber.removeActionListener(this);
         chSpaceSuit.removeActionListener(this);
         chDEST.removeActionListener(this);
@@ -433,16 +454,6 @@ public class CIArmorView extends IView implements ActionListener {
         customArmorPanel.add(chSneakECM, gbc);
 
         wrapperPanel.add(customArmorPanel);
-
-        armorName.setText(getInfantry().getCustomArmorName() != null ?
-              getInfantry().getCustomArmorName() : "");
-        armorValue.setValue(getInfantry().getCustomArmorDamageDivisor());
-        chEncumber.setSelected(getInfantry().isArmorEncumbering());
-        chSpaceSuit.setSelected(getInfantry().hasSpaceSuit());
-        chDEST.setSelected(getInfantry().hasDEST());
-        chSneakCamo.setSelected(getInfantry().hasSneakCamo());
-        chSneakIR.setSelected(getInfantry().hasSneakIR());
-        chSneakECM.setSelected(getInfantry().hasSneakECM());
 
         return new TabScrollPane(wrapperPanel);
     }
