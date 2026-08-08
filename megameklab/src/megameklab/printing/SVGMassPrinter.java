@@ -1408,7 +1408,8 @@ public class SVGMassPrinter {
                 }
                 if (hasArmActuator(mek, Mek.ACTUATOR_UPPER_ARM)
                     && !hasArmActuator(mek, Mek.ACTUATOR_HAND)
-                    && !hasArmActuator(mek, Mek.ACTUATOR_LOWER_ARM)) {
+                    && !hasArmActuator(mek, Mek.ACTUATOR_LOWER_ARM)
+                    && !hasArmTorsoSplitEquipment(mek)) {
                     feats.add("Reversible Arms");
                 }
             }
@@ -1447,6 +1448,19 @@ public class SVGMassPrinter {
         private static boolean hasArmActuator(Mek mek, int actuator) {
             return mek.hasSystem(actuator, Mek.LOC_LEFT_ARM)
                   || mek.hasSystem(actuator, Mek.LOC_RIGHT_ARM);
+        }
+
+        private static boolean hasArmTorsoSplitEquipment(Mek mek) {
+            return mek.getEquipment().stream()
+                  .filter(Mounted::isSplit)
+                  .anyMatch(mounted -> isArmTorsoPair(mounted.getLocation(), mounted.getSecondLocation()));
+        }
+
+        private static boolean isArmTorsoPair(int firstLocation, int secondLocation) {
+            return ((firstLocation == Mek.LOC_LEFT_ARM) && (secondLocation == Mek.LOC_LEFT_TORSO))
+                  || ((firstLocation == Mek.LOC_LEFT_TORSO) && (secondLocation == Mek.LOC_LEFT_ARM))
+                  || ((firstLocation == Mek.LOC_RIGHT_ARM) && (secondLocation == Mek.LOC_RIGHT_TORSO))
+                  || ((firstLocation == Mek.LOC_RIGHT_TORSO) && (secondLocation == Mek.LOC_RIGHT_ARM));
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
