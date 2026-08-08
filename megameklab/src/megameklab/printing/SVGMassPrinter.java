@@ -620,7 +620,6 @@ public class SVGMassPrinter {
             return entry;
         }
 
-
         private void parseBays(Map<String, ExportInventoryEntry> list, Entity entity) {
             for (WeaponMounted bay : entity.getWeaponList()) {
                 Map<String, ExportInventoryEntry> bayList = new LinkedHashMap<>();
