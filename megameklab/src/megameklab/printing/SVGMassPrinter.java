@@ -557,9 +557,7 @@ public class SVGMassPrinter {
 //            return name.replaceAll(replacePattern, "").trim();
         }
 
-          private ExportInventoryEntry addWeaponEntry(Map<String, ExportInventoryEntry> list, Entity entity,
-              @Nullable WeaponMounted mounted, WeaponType type,
-              String location, int locId) {
+        private ExportInventoryEntry addWeaponEntry(Map<String, ExportInventoryEntry> list, Entity entity, @Nullable WeaponMounted mounted, WeaponType type, String location, int locId) {
             final String name = type.getShortName();
             final boolean rearMounted = mounted.isRearMounted();
             final String key = type.getInternalName() + "_" + location + (rearMounted ? "_rear" : "");
