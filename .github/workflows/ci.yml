@@ -23,10 +23,39 @@ jobs:
       fail-fast: false
 
     steps:
+      - name: Find the Right Data Branch
+        id: find_data
+        shell: bash {0}
+        env:
+          FORK_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set +e
+          git ls-remote --exit-code --heads \
+            "https://github.com/${FORK_OWNER}/mm-data.git" \
+            "refs/heads/${HEAD_REF}" > /dev/null
+          status=$?
+          set -e
+          case "$status" in
+            0)
+              echo "dataRepo=${FORK_OWNER}/mm-data" >> "$GITHUB_OUTPUT"
+              echo "dataBranch=${HEAD_REF}" >> "$GITHUB_OUTPUT"
+              ;;
+            2)
+              echo "dataRepo=MegaMek/mm-data" >> "$GITHUB_OUTPUT"
+              echo "dataBranch=main" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Failed to query matching mm-data branch (git exit $status)." >&2
+              exit "$status"
+              ;;
+          esac
+
       - name: Checkout Data Repo
         uses: actions/checkout@v7
         with:
-          repository: megamek/mm-data
+          repository: ${{ steps.find_data.outputs.dataRepo }}
+          ref: ${{ steps.find_data.outputs.dataBranch }}
           path: mm-data
 
       - name: Checking out MegaMekLab
@@ -37,17 +66,30 @@ jobs:
       - name: Find the Right MegaMek Branch
         id: find_mm
         shell: bash {0}
+        env:
+          FORK_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          git ls-remote --exit-code --heads ${{ github.event.pull_request.head.repo.owner.html_url }}/megamek.git ${{ github.event.pull_request.head.ref }}
-          if [ "$?" == "0" ]
-          then
-            echo "mmRepo=${{ github.event.pull_request.head.repo.owner.login }}/megamek" >> $GITHUB_OUTPUT
-            echo "mmBranch=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
-          else
-            echo "mmRepo=MegaMek/megamek" >> $GITHUB_OUTPUT
-            echo "mmBranch=main" >> $GITHUB_OUTPUT
-          fi
-          exit 0
+          set +e
+          git ls-remote --exit-code --heads \
+            "https://github.com/${FORK_OWNER}/megamek.git" \
+            "refs/heads/${HEAD_REF}" > /dev/null
+          status=$?
+          set -e
+          case "$status" in
+            0)
+              echo "mmRepo=${FORK_OWNER}/megamek" >> "$GITHUB_OUTPUT"
+              echo "mmBranch=${HEAD_REF}" >> "$GITHUB_OUTPUT"
+              ;;
+            2)
+              echo "mmRepo=MegaMek/megamek" >> "$GITHUB_OUTPUT"
+              echo "mmBranch=main" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Failed to query matching MegaMek branch (git exit $status)." >&2
+              exit "$status"
+              ;;
+          esac
 
       - name: Checkout MegaMek
         uses: actions/checkout@v7

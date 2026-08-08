@@ -47,6 +47,7 @@ import megamek.common.equipment.HandheldWeapon;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.UnitRole;
 import megameklab.ui.EntitySource;
+import megameklab.ui.battlefieldSupport.BFSLinkedEditor;
 import megameklab.ui.generalUnit.BasicInfoView;
 import megameklab.ui.generalUnit.IconView;
 import megameklab.ui.generalUnit.SingleLocationEquipmentView;
@@ -94,6 +95,7 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
 
         panBasicInfo.setFromEntity(getEntity());
         panIcon.setFromEntity(getEntity());
+        panBasicInfo.showBattlefieldSupportAssetControl(eSource instanceof BFSLinkedEditor);
 
         JPanel leftPanel = new JPanel(), centerPanel = new JPanel(), rightPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -134,10 +136,31 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
     public void refresh() {
         removeAllListeners();
         panBasicInfo.setFromEntity(getEntity());
+        syncBattlefieldSupportControl();
         panEquipmentView.refresh();
         panSummary.refresh();
         panIcon.refresh();
         addAllListeners();
+    }
+
+    /** Syncs the Basic-Info BFS toggle to the editor's current enable state and motive eligibility. */
+    private void syncBattlefieldSupportControl() {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            boolean eligible = bfs.isBattlefieldSupportAssetMotiveEligible();
+            if (!eligible && bfs.isBattlefieldSupportAssetLinked()) {
+                // The base's motive is no longer a legal asset motive; auto-disable the asset.
+                bfs.setBattlefieldSupportAssetLinked(false);
+            }
+            panBasicInfo.setBattlefieldSupportAssetControlEnabled(eligible);
+            panBasicInfo.setBattlefieldSupportAssetSelected(bfs.isBattlefieldSupportAssetLinked());
+        }
+    }
+
+    @Override
+    public void battlefieldSupportAssetToggled(boolean enabled) {
+        if (eSource instanceof BFSLinkedEditor bfs) {
+            bfs.setBattlefieldSupportAssetLinked(enabled);
+        }
     }
 
     public void removeAllListeners() {
@@ -150,6 +173,7 @@ class GEStructureTab extends ITab implements HHWBuildListener, BuildListener {
 
     public void addRefreshedListener(RefreshListener l) {
         refresh = l;
+        panIcon.setRefreshedListener(l);
     }
 
     public ITechManager getTechManager() {

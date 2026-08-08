@@ -38,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import megamek.SuiteConstants;
 import megamek.client.Client;
 import megamek.codeUtilities.StringUtility;
 import megamek.common.CriticalSlot;
@@ -55,6 +57,8 @@ import megamek.common.SimpleTechLevel;
 import megamek.common.TechConstants;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megamek.common.battlefieldSupport.BattlefieldSupportAssetYaml;
 import megamek.common.enums.TechBase;
 import megamek.common.equipment.*;
 import megamek.common.equipment.enums.MiscTypeFlag;
@@ -1941,6 +1945,8 @@ public class UnitUtil {
     public static long getEditorTypeForEntity(Entity newUnit) {
         if ((newUnit == null) || (newUnit instanceof Mek)) {
             return Entity.ETYPE_MEK;
+        } else if (newUnit instanceof BattlefieldSupportAsset) {
+            return Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET;
         } else if (newUnit.isSupportVehicle()) {
             return Entity.ETYPE_SUPPORT_TANK;
         } else if (newUnit.hasETypeFlag(Entity.ETYPE_SMALL_CRAFT)) {
@@ -1979,7 +1985,17 @@ public class UnitUtil {
         }
         try {
             String unitAsString;
-            if (entity instanceof Mek) {
+            if (entity instanceof BattlefieldSupportAsset asset) {
+                // Assets serialize to the .bfs YAML format. The datestamp header (analogous to the MTF/BLK first
+                // line) is a YAML comment, so it is prepended here and honors includeGeneratorHeader rather than
+                // being stripped afterwards like the Mek/BLK header below.
+                String yaml = BattlefieldSupportAssetYaml.toYaml(asset.toAssetData());
+                if (includeGeneratorHeader) {
+                    return "# Saved from version " + SuiteConstants.VERSION + " on " + LocalDate.now()
+                          + java.lang.System.lineSeparator() + yaml;
+                }
+                return yaml;
+            } else if (entity instanceof Mek) {
                 unitAsString = ((Mek) entity).getMtf();
             } else {
                 BuildingBlock blk = BLKFile.getBlock(entity);
@@ -2044,6 +2060,9 @@ public class UnitUtil {
      * @param entity The entity to reset
      */
     static public void resetUnit(Entity entity) {
+        if (entity instanceof BattlefieldSupportAsset asset) {
+            asset.setDestroyCheck(asset.getODestroyCheck());
+        }
         for (Mounted<?> mounted : entity.getEquipment()) {
             if (mounted instanceof MiscMounted misc) {
                 misc.setDamageTaken(0);
@@ -2083,6 +2102,10 @@ public class UnitUtil {
     }
 
     static public boolean isDamaged(Entity entity, boolean includeCrew) {
+        if ((entity instanceof BattlefieldSupportAsset asset)
+              && (asset.getDestroyCheck() != asset.getODestroyCheck())) {
+            return true;
+        }
         for (Mounted<?> mounted : entity.getEquipment()) {
             if (mounted.isHit() || mounted.isDestroyed() || mounted.isMissing()) {
                 return true;
