@@ -301,6 +301,7 @@ public class SVGMassPrinter {
             return this;
         }
 
+        @Override
         public CalculationReport addHeader(String text) {
             addDetail(text, "", "", CalculationReport.LineType.HEADER, false);
             textReport.addHeader(text);
