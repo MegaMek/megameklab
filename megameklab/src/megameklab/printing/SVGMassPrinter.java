@@ -578,9 +578,9 @@ public class SVGMassPrinter {
                 entry.d = getDamage(entity, type);
                 entry.r = getWeaponRange(entity, type);
                 entry.m = getMinRange(entity, type);
-                    entry.md = String.valueOf(type.hasFlag(WeaponType.F_LARGE_MISSILE)
-                        ? getLargeMissileDamage(type)
-                        : SVGMassPrinter.getMaxDamage(entity, type));
+                entry.md = String.valueOf(type.hasFlag(WeaponType.F_LARGE_MISSILE)
+                    ? getLargeMissileDamage(type)
+                    : SVGMassPrinter.getMaxDamage(entity, type));
                 if (type.hasFlag(WeaponTypeFlag.F_DOUBLE_ONE_SHOT)) {
                     entry.os = 2; // If the weapon is double oneshot
                 } else if (type.hasFlag(WeaponTypeFlag.F_ONE_SHOT)) {
