@@ -280,6 +280,7 @@ public class SVGMassPrinter {
             return textReport.toString();
         }
 
+        @Override
         public CalculationReport addLine(String type, String calculation, String result) {
             addDetail(type, calculation, result, CalculationReport.LineType.LINE, false);
             textReport.addLine(type, calculation, result);
@@ -293,6 +294,7 @@ public class SVGMassPrinter {
             return this;
         }
 
+        @Override
         public CalculationReport addSubHeader(String text) {
             addDetail(text, "", "", CalculationReport.LineType.SUBHEADER, false);
             textReport.addSubHeader(text);
