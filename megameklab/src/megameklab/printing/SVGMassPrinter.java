@@ -606,9 +606,7 @@ public class SVGMassPrinter {
             }
         }
 
-          private ExportInventoryEntry addWeaponBay(Map<String, ExportInventoryEntry> list, Entity entity,
-              WeaponType type,
-              String location, int locId) {
+        private ExportInventoryEntry addWeaponBay(Map<String, ExportInventoryEntry> list, Entity entity, WeaponType type, String location, int locId) {
             String key = UUID.randomUUID().toString();
             final String name = type.getShortName();
             ExportInventoryEntry entry = new ExportInventoryEntry();
