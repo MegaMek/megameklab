@@ -159,8 +159,25 @@ public class SVGMassPrinter {
     private static String UNIT_FILES_DIR = "unitfiles";
     private static final String UNIT_FILE = "units.json";
     private static final String UNIT_FLUFF_FILE = "units-fluff.json";
+    private static final String SHEETS_FILE = "sheets.json";
+    private static final String UNIT_IMAGES_FILE = "unit-images.json";
+    private static final String IMAGES_FILE = "images.json";
     private static final String EQUIPMENT_FILE = "equipment2.json";
     private static String ROOT_FOLDER = "../../svgexport";
+    private static final List<String> FLUFF_IMAGE_FOLDERS = List.of(
+          FluffImageHelper.DIR_NAME_ASSET,
+          FluffImageHelper.DIR_NAME_BA,
+          FluffImageHelper.DIR_NAME_CONV_FIGHTER,
+          FluffImageHelper.DIR_NAME_DROPSHIP,
+          FluffImageHelper.DIR_NAME_FIGHTER,
+          FluffImageHelper.DIR_NAME_INFANTRY,
+          FluffImageHelper.DIR_NAME_JUMPSHIP,
+          FluffImageHelper.DIR_NAME_MEK,
+          FluffImageHelper.DIR_NAME_PROTOMEK,
+          FluffImageHelper.DIR_NAME_SMALLCRAFT,
+          FluffImageHelper.DIR_NAME_SPACE_STATION,
+          FluffImageHelper.DIR_NAME_VEHICLE,
+          FluffImageHelper.DIR_NAME_WARSHIP);
     // When non-empty, only the units in these files are exported instead of the entire official unit cache.
     private static final List<File> UNIT_FILE_OVERRIDES = new ArrayList<>();
     // True once --units/--unit has been passed, even if it resolved to no files (so we can fail instead of
@@ -1006,6 +1023,7 @@ public class SVGMassPrinter {
 
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
+        public String uuid;
         public int id; // Unique identifier for the unit on MUL
         public String chassis; // Name of the unit (Chassis)
         public String model; // Model of the unit
@@ -1463,6 +1481,7 @@ public class SVGMassPrinter {
         }
 
         public UnitData(MekSummary mekSummary, Entity entity, RecordSheetOptions options) {
+            this.uuid = entity.getUnitFileUUID();
             this.id = entity.getMulId();
             this.chassis = entity.getFullChassis();
             this.model = entity.getModel();
@@ -2849,6 +2868,8 @@ public class SVGMassPrinter {
             logger.error("Failed to write unit fluff file: {}", e.getMessage());
         }
 
+        exportUnitReferenceFiles(mapper, unitDataList);
+
         if (!duplicateUnits.isEmpty()) {
             int duplicateCount = duplicateUnits.values().stream().mapToInt(Set::size).sum();
             logger.warn("Skipped {} duplicate unit exports across {} generated names.",
@@ -2870,6 +2891,8 @@ public class SVGMassPrinter {
             logger.info("Saved {} BLK/MTF unit files.", unitFilesSavedCounter.get());
         }
         } // end if (!SKIP_UNITS)
+
+        exportFluffImageCatalog(mapper);
 
         // Export Quirks
         try (FileWriter quirksWriter = new FileWriter(ROOT_FOLDER + File.separator + "quirks.json")) {
@@ -2933,6 +2956,72 @@ public class SVGMassPrinter {
         }
 
         System.exit(0);
+    }
+
+    private static void exportUnitReferenceFiles(ObjectMapper mapper, List<UnitData> unitDataList) {
+        Map<String, List<String>> sheetsByUuid = new TreeMap<>();
+        Map<String, String> imagesByUuid = new TreeMap<>();
+        for (UnitData unitData : unitDataList) {
+            if ((unitData.uuid == null) || unitData.uuid.isBlank()) {
+                logger.warn("Skipping secondary exports for unit {} because it has no UUID", unitData.name);
+                continue;
+            }
+            sheetsByUuid.put(unitData.uuid, unitData.sheets == null ? List.of() : unitData.sheets);
+            if (unitData.fluff != null) {
+                Object imageValue = unitData.fluff.get("img");
+                if (imageValue instanceof String image && !image.isBlank()) {
+                    imagesByUuid.put(unitData.uuid, image);
+                }
+            }
+        }
+
+        writeJsonFile(mapper, SHEETS_FILE, sheetsByUuid);
+        writeJsonFile(mapper, UNIT_IMAGES_FILE, imagesByUuid);
+    }
+
+    private static void exportFluffImageCatalog(ObjectMapper mapper) {
+        writeJsonFile(mapper, IMAGES_FILE, getFluffImageCatalog());
+    }
+
+    private static void writeJsonFile(ObjectMapper mapper, String fileName, Object value) {
+        try (FileWriter jsonWriter = new FileWriter(ROOT_FOLDER + File.separator + fileName)) {
+            mapper.writer().writeValue(jsonWriter, value);
+        } catch (IOException e) {
+            logger.error("Failed to write {}: {}", fileName, e.getMessage());
+        }
+    }
+
+    private static List<String> getFluffImageCatalog() {
+        File fluffRoot = Configuration.fluffImagesDir();
+        Path fluffRootPath = fluffRoot.toPath().toAbsolutePath().normalize();
+        List<String> catalog = new ArrayList<>();
+        for (String fluffPath : FLUFF_IMAGE_FOLDERS) {
+            File directory = new File(fluffRoot, fluffPath);
+            File[] files = directory.listFiles(SVGMassPrinter::isFluffImageFile);
+            if (files == null) {
+                continue;
+            }
+            Arrays.sort(files, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER)
+                  .thenComparing(File::getName));
+            for (File file : files) {
+                catalog.add(fluffRootPath.relativize(file.toPath().toAbsolutePath().normalize()).toString()
+                      .replace(File.separatorChar, '/'));
+            }
+        }
+        return catalog;
+    }
+
+    private static boolean isFluffImageFile(File file) {
+        if (!file.isFile()) {
+            return false;
+        }
+        String fileName = file.getName().toLowerCase(Locale.ROOT);
+        for (String extension : FluffImageHelper.EXTENSIONS_FLUFF_IMAGE_FORMATS) {
+            if (fileName.endsWith(extension.toLowerCase(Locale.ROOT))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void exportCalculationDetails(ObjectMapper mapper, List<UnitData> unitDataList) {
