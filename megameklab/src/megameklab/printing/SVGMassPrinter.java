@@ -1376,8 +1376,8 @@ public class SVGMassPrinter {
             return sj;
         }
 
-        static List<String> getFeatures(Entity entity) {
-            List<String> feats = new ArrayList<>();
+        static List<String> getFeatures(Entity entity, RecordSheetOptions options) {
+            Set<String> feats = new LinkedHashSet<>();
 
             // Cockpit type for Aero (if not standard/primitive)
             if (entity instanceof Aero aero) {
@@ -1392,6 +1392,14 @@ public class SVGMassPrinter {
                 // LF Battery for Jumpships
                 if (aero instanceof Jumpship && ((Jumpship) aero).hasLF()) {
                     feats.add("LF Battery");
+                }
+            }
+
+            if (entity instanceof Dropship) {
+                for (Mounted<?> mount : entity.getMisc()) {
+                    if (PrintUtil.isPrintableEquipment(mount.getType(), options)) {
+                        feats.add(mount.getShortName());
+                    }
                 }
             }
 
@@ -1449,7 +1457,7 @@ public class SVGMassPrinter {
             }
 
             // Transport types (just the type names, no capacities)
-            Set<String> transportTypes = new HashSet<>();
+            Set<String> transportTypes = new LinkedHashSet<>();
             for (Transporter transporter : entity.getTransports()) {
                 if (transporter instanceof InfantryCompartment) {
                     transportTypes.add("Infantry Compartment");
@@ -1459,7 +1467,7 @@ public class SVGMassPrinter {
             }
             feats.addAll(transportTypes);
 
-            return feats;
+            return new ArrayList<>(feats);
         }
 
         private static boolean hasArmActuator(Mek mek, int actuator) {
@@ -1586,7 +1594,7 @@ public class SVGMassPrinter {
             this.comp = (new Components(entity)).getComp();
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
-            this.features = getFeatures(entity);
+            this.features = getFeatures(entity, options);
             this.icon = getEntityIcon(entity);
             Map<String, Object> fluffMap = getFluffAttributes(entity);
             Object fluffImage = fluffMap.get("img");
