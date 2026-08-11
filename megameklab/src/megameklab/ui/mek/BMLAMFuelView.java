@@ -116,7 +116,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
      * @return The Mek's current LAM Fuel Tank count
      */
     private int fuelTanks(Mek mek) {
-        return (mek instanceof LandAirMek) ? mek.countWorkingMisc(LAM_FUEL_TANK, -1) : 0;
+        return (mek instanceof LandAirMek) ? mek.countWorkingMisc(MiscType.F_LAM_FUEL_TANK) : 0;
     }
 
     private void updateFuelPointsLabel() {
@@ -142,7 +142,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
     private void deleteTanks(int number) {
         // Remove unallocated fuel tanks first
         List<Mounted<?>> fuelTanks = getMek().getMisc().stream()
-              .filter(mounted -> mounted.getType().equals(FUEL_TANK))
+              .filter(mounted -> mounted.getType().hasFlag(MiscType.F_LAM_FUEL_TANK))
               .filter(mounted -> mounted.getLocation() == Entity.LOC_NONE)
               .collect(Collectors.toList());
         for (Mounted<?> fuelTank : fuelTanks) {
@@ -155,7 +155,7 @@ public class BMLAMFuelView extends IView implements ChangeListener {
         }
         // Must remove more, so take allocated fuel tanks
         fuelTanks = getMek().getMisc().stream()
-              .filter(mounted -> mounted.getType().equals(FUEL_TANK))
+              .filter(mounted -> mounted.getType().hasFlag(MiscType.F_LAM_FUEL_TANK))
               .collect(Collectors.toList());
         for (Mounted<?> fuelTank : fuelTanks) {
             if (number > 0) {

@@ -66,7 +66,7 @@ public class BMEquipmentTab extends AbstractEquipmentTab {
         EquipmentType etype = mount.getType();
         return !(etype instanceof MiscType) ||
               !(UnitUtil.isHeatSink(mount)
-                    || etype.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK)
+                    || etype.hasFlag(MiscType.F_LAM_FUEL_TANK)
                     || etype.hasFlag(MiscType.F_JUMP_JET)
                     || etype.hasFlag(MiscType.F_JUMP_BOOSTER)
                     || etype.hasFlag(MiscType.F_TSM)

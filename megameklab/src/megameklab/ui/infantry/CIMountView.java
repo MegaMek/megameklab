@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -40,12 +40,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import com.formdev.flatlaf.ui.FlatTextBorder;
 import megamek.client.ui.WrapLayout;
 import megamek.common.units.ConvInfantry;
 import megamek.common.units.InfantryMount;
@@ -55,14 +55,15 @@ import megameklab.ui.util.RefreshListener;
 import megameklab.ui.util.TabScrollPane;
 
 public class CIMountView extends IView implements ActionListener {
-
+    private final ResourceBundle resourceMap = ResourceBundle.getBundle("megameklab.resources.Views");
     private RefreshListener refresh = null;
 
     private final static String CARD_TABLE = "table";
     private final static String CARD_CUSTOM = "custom";
 
-    private final JButton addMountButton = new JButton("Add Mount");
-    private final JToggleButton createCustomMountButton = new JToggleButton("Create Custom Mount");
+    private final JButton addMountButton = new JButton(resourceMap.getString("CIMountView.addMount"));
+    private final JToggleButton createCustomMountButton = new JToggleButton(
+          resourceMap.getString("CIMountView.createCustomMount"));
     private final BeastMountTableModel tableModel = new BeastMountTableModel();
     private final JTable mountTable = new JTable();
     private final JPanel mountPanel = new JPanel();
@@ -89,6 +90,10 @@ public class CIMountView extends IView implements ActionListener {
         mountPanel.setLayout(mountLayout);
         mountPanel.add(mountTableScroll, CARD_TABLE);
         mountPanel.add(getCustomMountPanel(), CARD_CUSTOM);
+
+        if (getInfantry().getMount() != null && getInfantry().getMount().custom()) {
+            createCustomMountButton.setSelected(true);
+        }
 
         setEquipmentView();
 
@@ -168,8 +173,7 @@ public class CIMountView extends IView implements ActionListener {
     }
 
     private TabScrollPane getCustomMountPanel() {
-        customMountView.setBorder(new FlatTextBorder());
-
+        customMountView.setBorder(BorderFactory.createTitledBorder(resourceMap.getString("CIMountView.customMount")));
         // This outer panel prevents the customView from being stretched to fill the whole frame
         var outerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         outerPanel.add(customMountView);

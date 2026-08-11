@@ -35,6 +35,7 @@ package megameklab.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import megamek.common.bays.Bay;
 import megamek.common.equipment.AmmoType;
@@ -63,6 +64,8 @@ import megamek.common.weapons.srms.SRMWeapon;
 import megamek.common.weapons.srms.SRTWeapon;
 
 public final class AeroUtil {
+
+    private static final Map<SmallCraft, CrewConfiguration> AUTO_FILLED_CREW = new WeakHashMap<>();
 
     public static boolean isAeroWeapon(EquipmentType eq, Aero unit) {
         if (!(eq instanceof WeaponType weaponType) || (eq instanceof InfantryWeapon)) {
@@ -303,25 +306,38 @@ public final class AeroUtil {
                     ((Dropship) unit).setCollarType(Dropship.COLLAR_PROTOTYPE);
                 }
             }
-            // Minimum crew levels
-            ((SmallCraft) unit).setNGunners(Math.max(unit.getNGunners(),
-                  TestSmallCraft.requiredGunners(unit)));
-            unit.setNCrew(Math.max(unit.getNCrew(),
-                  unit.getNGunners() + unit.getBayPersonnel()
-                        + TestSmallCraft.minimumBaseCrew((SmallCraft) unit)));
-            if (unit.getNOfficers() == 0) {
-                ((SmallCraft) unit).setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
-            }
-            // Check whether there are any quarters allocated. If not, assign standard
-            // levels
-            if (unit.getTransportBays().stream().noneMatch(Bay::isQuarters)) {
-                unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
-                unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
-                int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
-                      + unit.getNMarines() + unit.getNBattleArmor();
-                if (std > 0) {
-                    unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
+            SmallCraft smallCraft = (SmallCraft) unit;
+            if (TestSmallCraft.requiresMinimumCrewAndQuarters(smallCraft)) {
+                AUTO_FILLED_CREW.putIfAbsent(smallCraft, new CrewConfiguration(
+                      smallCraft.getNCrew(), smallCraft.getNOfficers(), smallCraft.getNGunners()));
+                // Minimum crew levels
+                smallCraft.setNGunners(Math.max(unit.getNGunners(),
+                      TestSmallCraft.requiredGunners(unit)));
+                unit.setNCrew(Math.max(unit.getNCrew(),
+                      unit.getNGunners() + unit.getBayPersonnel()
+                            + TestSmallCraft.minimumBaseCrew(smallCraft)));
+                if (unit.getNOfficers() == 0) {
+                    smallCraft.setNOfficers((int) Math.ceil((unit.getNCrew() - unit.getBayPersonnel()) / 5.0));
                 }
+                // Check whether there are any quarters allocated. If not, assign standard
+                // levels
+                if (unit.getTransportBays().stream().noneMatch(Bay::isQuarters)) {
+                    unit.addTransporter(TestAero.Quarters.FIRST_CLASS.newQuarters(unit.getNOfficers()));
+                    unit.addTransporter(TestAero.Quarters.SECOND_CLASS.newQuarters(unit.getNPassenger()));
+                    int std = unit.getNCrew() - unit.getBayPersonnel() - unit.getNOfficers()
+                          + unit.getNMarines() + unit.getNBattleArmor();
+                    if (std > 0) {
+                        unit.addTransporter(TestAero.Quarters.STANDARD.newQuarters(std));
+                    }
+                }
+            } else {
+                CrewConfiguration originalCrew = AUTO_FILLED_CREW.remove(smallCraft);
+                if (originalCrew != null) {
+                    smallCraft.setNCrew(originalCrew.crew());
+                    smallCraft.setNOfficers(originalCrew.officers());
+                    smallCraft.setNGunners(originalCrew.gunners());
+                }
+                removeQuarters(smallCraft);
             }
         } else if (unit.hasETypeFlag(Entity.ETYPE_JUMPSHIP)) {
             if (unit.getArmorType(Aero.LOC_NOSE) == EquipmentType.T_ARMOR_STANDARD) {
@@ -337,6 +353,15 @@ public final class AeroUtil {
             UnitUtil.removeMounted(unit, group);
         }
     }
+
+    private static void removeQuarters(Aero unit) {
+        unit.getTransportBays().stream()
+              .filter(Bay::isQuarters)
+              .toList()
+              .forEach(unit::removeTransporter);
+    }
+
+    private record CrewConfiguration(int crew, int officers, int gunners) {}
 
     public static void moveOrAddEquipmentOnFighter(AeroSpaceFighter aero, Mounted<?> mounted, int location)
           throws LocationFullException {
