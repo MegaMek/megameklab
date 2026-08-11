@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2009-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -52,6 +52,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.dialogs.UnitLoadingDialog;
+import megamek.client.ui.util.MULVersionValidator;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.HandheldWeapon;
@@ -113,7 +114,11 @@ public class UnitPrintManager {
             options.initialize();
             options.getOption(RPG_MANEI_DOMINI).setValue(true);
             options.getOption(RPG_PILOT_ADVANTAGES).setValue(true);
-            loadedUnits = new MULParser(file, options).getEntities();
+            MULParser parser = new MULParser(file, options);
+            if (!MULVersionValidator.isCorrectVersion(parent, parser)) {
+                return;
+            }
+            loadedUnits = parser.getEntities();
             loadedUnits.trimToSize();
         } catch (Exception ex) {
             LOGGER.error("", ex);
