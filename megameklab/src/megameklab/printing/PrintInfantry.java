@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2020-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -425,31 +425,22 @@ public class PrintInfantry extends PrintEntity {
 
     @Override
     protected void drawArmor() {
-        EquipmentType armor = infantry.getArmorKit();
-        if (armor != null) {
-            setTextField(ARMOR_KIT, armor.getName());
-        } else {
-
-            if (infantry.hasDEST()) {
-                setTextField(ARMOR_KIT, "Custom DEST");
+        if (infantry.hasArmor()) {
+            EquipmentType armor = infantry.getArmorKit();
+            if (armor != null) {
+                setTextField(ARMOR_KIT, armor.getName());
             } else {
-                StringJoiner sj = new StringJoiner("/");
-                if (infantry.hasSneakCamo()) {
-                    sj.add("Camo");
-                }
-                if (infantry.hasSneakIR()) {
-                    sj.add("IR");
-                }
-                if (infantry.hasSneakECM()) {
-                    sj.add("ECM");
-                }
-                if (sj.length() > 0) {
-                    setTextField(ARMOR_KIT, "Custom Sneak(" + sj + ")");
-                } else if (infantry.getCustomArmorDamageDivisor() != 1.0) {
-                    setTextField(ARMOR_KIT, "Custom");
+                String armorName = infantry.getCustomArmorName() != null ? infantry.getCustomArmorName() : "Custom";
+                if (!infantry.getArmorSpecials().isBlank()) {
+                    setTextField(ARMOR_KIT, armorName + " " + infantry.getArmorSpecials());
+                } else {
+                    setTextField(ARMOR_KIT, armorName);
                 }
             }
+        } else if (!infantry.getArmorSpecials().isBlank()) {
+            setTextField(ARMOR_KIT, "None " + infantry.getArmorSpecials());
         }
+
         setTextField(ARMOR_DIVISOR, infantry.calcDamageDivisor()
               + (infantry.isArmorEncumbering() ? "E" : ""));
         if (infantry.hasDEST()) {
