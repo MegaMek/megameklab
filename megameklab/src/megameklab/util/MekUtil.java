@@ -1277,7 +1277,7 @@ public final class MekUtil {
         }
 
         if ((eq instanceof MiscType)) {
-            if (eq.isAnyOf(EquipmentTypeLookup.LAM_FUEL_TANK, EquipmentTypeLookup.LAM_BOMB_BAY)
+            if (eq.hasAnyFlag(MiscType.F_LAM_FUEL_TANK, MiscType.F_BOMB_BAY)
                   && !(unit instanceof LandAirMek)) {
                 return false;
             }

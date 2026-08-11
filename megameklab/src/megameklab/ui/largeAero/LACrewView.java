@@ -55,7 +55,9 @@ import megamek.common.battleArmor.BattleArmor;
 import megamek.common.interfaces.ITechManager;
 import megamek.common.units.Aero;
 import megamek.common.units.EntityWeightClass;
+import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
+import megamek.common.verifier.TestSmallCraft;
 import megameklab.ui.generalUnit.BuildView;
 import megameklab.ui.listeners.AeroVesselBuildListener;
 
@@ -219,8 +221,10 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
     }
 
     public void setFromEntity(Aero aero) {
-        int minGunners = TestAero.requiredGunners(aero);
-        int minBase = TestAero.minimumBaseCrew(aero);
+        boolean requiresMinimumCrew = !(aero instanceof SmallCraft)
+              || TestSmallCraft.requiresMinimumCrewAndQuarters((SmallCraft) aero);
+        int minGunners = requiresMinimumCrew ? TestAero.requiredGunners(aero) : 0;
+        int minBase = requiresMinimumCrew ? TestAero.minimumBaseCrew(aero) : 1;
         int nonBay = aero.getNCrew() - aero.getBayPersonnel();
         ((SpinnerNumberModel) spnBaseCrew.getModel()).setMinimum(minBase);
         ((SpinnerNumberModel) spnGunners.getModel()).setMinimum(minGunners);
@@ -255,10 +259,10 @@ public class LACrewView extends BuildView implements ActionListener, ChangeListe
         ignoreChangeEvents = false;
 
         // If we do not meet the minimum, set the values and trigger an event that will update the vessel.
-        if (aero.getNGunners() < minGunners) {
+        if (requiresMinimumCrew && (aero.getNGunners() < minGunners)) {
             spnGunners.setValue(minGunners);
         }
-        if (nonBay - aero.getNGunners() < minBase) {
+        if (requiresMinimumCrew && (nonBay - aero.getNGunners() < minBase)) {
             spnBaseCrew.setValue(minBase);
         }
 
