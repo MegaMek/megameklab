@@ -230,8 +230,8 @@ public class StatusBar extends ITab {
         double heat = 0;
 
         if (getEntity() instanceof Mek mek) {
-            if (mek.getOriginalJumpMP() > 0) {
-                heat += mek.getJumpHeat(mek.getOriginalJumpMP());
+            if (mek.getJumpMP() > 0) {
+                heat += mek.getJumpHeat(mek.getJumpMP());
             } else if (mek.getEngineType() == Engine.XXL_ENGINE) {
                 heat += 6;
             } else {
