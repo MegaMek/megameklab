@@ -504,10 +504,15 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            double initialArmor = getTank().getArmorWeight();
             UnitUtil.removeISorArmorMounts(getTank(), false);
             UnitUtil.compactCriticalSlots(getTank());
             getTank().setArmorTechLevel(aTechLevel);
             getTank().setArmorType(at);
+            double maxArmor = UnitUtil.getMaximumArmorTonnage(getTank());
+            if (initialArmor > maxArmor) {
+                getTank().setArmorTonnage(maxArmor);
+            }
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
