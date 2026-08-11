@@ -473,10 +473,15 @@ public class ASStructureTab extends ITab implements AeroBuildListener, ArmorAllo
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            double initialArmorTonnage = getAero().getArmorWeight();
             UnitUtil.removeISorArmorMounts(getAero(), false);
             UnitUtil.compactCriticalSlots(getAero());
             getAero().setArmorTechLevel(aTechLevel);
             getAero().setArmorType(at);
+            double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getAero());
+            if (initialArmorTonnage > maxArmorTonnage) {
+                getAero().setArmorTonnage(maxArmorTonnage);
+            }
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
