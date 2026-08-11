@@ -90,6 +90,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     private JPanel masterPanel;
     private BasicInfoView panBasicInfo;
     private CVChassisView panChassis;
+    private CVChassisModView panChassisMod;
     private MVFArmorView panArmor;
     private MovementView panMovement;
     private SummaryView panSummary;
@@ -110,12 +111,14 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         masterPanel = new JPanel(new GridBagLayout());
         panBasicInfo = new BasicInfoView(getTank().getConstructionTechAdvancement());
         panChassis = new CVChassisView(panBasicInfo);
+        panChassisMod = new CVChassisModView(panBasicInfo);
         panArmor = new MVFArmorView(panBasicInfo);
         panMovement = new MovementView(panBasicInfo);
         panArmorAllocation = new ArmorAllocationView(panBasicInfo, Entity.ETYPE_TANK);
         panPatchwork = new PatchworkArmorView(panBasicInfo);
         panTransport = new CVTransportView();
         iconView = new IconView();
+        panBasicInfo.showBattlefieldSupportAssetControl(eSource instanceof BFSLinkedEditor);
         if (getTank().hasPatchworkArmor()) {
             panArmorAllocation.showPatchwork(true);
         } else {
@@ -138,16 +141,6 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
 
         GridBagConstraints gbc;
 
-        panBasicInfo.setFromEntity(getTank());
-        panBasicInfo.showBattlefieldSupportAssetControl(eSource instanceof BFSLinkedEditor);
-        panChassis.setFromEntity(getTank());
-        panMovement.setFromEntity(getTank());
-        panArmor.setFromEntity(getTank());
-        panArmorAllocation.setFromEntity(getTank());
-        panPatchwork.setFromEntity(getTank());
-        panTransport.setFromEntity(getTank());
-        iconView.setFromEntity(getEntity());
-
         JPanel leftPanel = new JPanel();
         JPanel midPanel = new JPanel();
         JPanel rightPanel = new JPanel();
@@ -168,6 +161,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         midPanel.add(panSummary);
         midPanel.add(Box.createVerticalGlue());
 
+        rightPanel.add(panChassisMod);
         rightPanel.add(panArmor);
         rightPanel.add(panPatchwork);
         rightPanel.add(panArmorAllocation);
@@ -188,6 +182,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
 
         panBasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Information"));
         panChassis.setBorder(BorderFactory.createTitledBorder("Chassis"));
+        panChassisMod.setBorder(BorderFactory.createTitledBorder("Chassis Modifications"));
         panMovement.setBorder(BorderFactory.createTitledBorder("Movement"));
         panArmor.setBorder(BorderFactory.createTitledBorder("Armor"));
         panArmorAllocation.setBorder(BorderFactory.createTitledBorder("Armor Allocation"));
@@ -201,12 +196,15 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panBasicInfo.setFromEntity(getTank());
         syncBattlefieldSupportControl();
         panChassis.setFromEntity(getTank());
+        panChassisMod.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
         panArmor.setFromEntity(getTank());
         panArmorAllocation.setFromEntity(getTank());
         panPatchwork.setFromEntity(getTank());
         panTransport.setFromEntity(getTank());
         iconView.setFromEntity(getEntity());
+
+        panChassisMod.setVisible(hasChassisMod());
 
         panSummary.refresh();
 
@@ -247,6 +245,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void removeAllListeners() {
         panBasicInfo.removeListener(this);
         panChassis.removeListener(this);
+        panChassisMod.removeListener(this);
         panMovement.removeListener(this);
         panArmor.removeListener(this);
         panArmorAllocation.removeListener(this);
@@ -257,6 +256,7 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     public void addAllListeners() {
         panBasicInfo.addListener(this);
         panChassis.addListener(this);
+        panChassisMod.addListener(this);
         panMovement.addListener(this);
         panArmor.addListener(this);
         panArmorAllocation.addListener(this);
@@ -427,6 +427,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
             refresh.refreshEquipmentTable();
         }
         panChassis.refresh();
+        panChassisMod.setFromEntity(getTank());
+        panChassisMod.setVisible(hasChassisMod());
         panArmor.refresh();
         panMovement.refresh();
         panArmorAllocation.setFromEntity(getTank());
@@ -687,6 +689,8 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         panChassis.removeListener(this);
         panChassis.setFromEntity(getTank());
         panChassis.addListener(this);
+        panChassisMod.setFromEntity(getTank());
+        panChassisMod.setVisible(hasChassisMod());
         panMovement.removeListener(this);
         panMovement.setFromEntity(getTank());
         panMovement.addListener(this);
@@ -709,10 +713,37 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         if (panMovement.getWalk() != getTank().getOriginalWalkMP()) {
             walkChanged(panMovement.getWalk());
         }
+        panChassisMod.setFromEntity(getTank());
         refreshSummary();
         refresh.refreshEquipment();
         refresh.refreshPreview();
         refresh.refreshStatus();
+    }
+
+    @Override
+    public void setChassisMod(EquipmentType mod, boolean installed) {
+        final Mounted<?> current = getTank().getMisc().stream().filter(m -> m.getType().equals(mod)).findFirst()
+              .orElse(null);
+        if (installed && (null == current)) {
+            try {
+                getTank().addEquipment(mod, Tank.LOC_BODY);
+            } catch (LocationFullException e) {
+                // This should not be possible since chassis mods don't occupy slots
+                LOGGER.error("LocationFullException when adding chassis mod {}", mod.getName());
+            }
+        } else if (!installed && (null != current)) {
+            getTank().getMisc().remove(current);
+            getTank().getEquipment().remove(current);
+            UnitUtil.removeCriticalSlots(getTank(), current);
+            UnitUtil.changeMountStatus(getTank(), current, Entity.LOC_NONE, Entity.LOC_NONE, false);
+        }
+        panChassisMod.refresh();
+        panSummary.refresh();
+        refresh.refreshEquipment();
+        refresh.refreshTransport();
+        refresh.refreshStatus();
+        refresh.refreshPreview();
+        refresh.refreshBuild();
     }
 
     @Override
@@ -958,5 +989,9 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
         refresh.refreshBuild();
         refresh.refreshStatus();
         refresh.refreshPreview();
+    }
+
+    private boolean hasChassisMod() {
+        return !getTank().hasMisc(MiscType.F_SUBMERSIBLE) && panBasicInfo.getTechLevel().compareTo(SimpleTechLevel.STANDARD) >= 0;
     }
 }
