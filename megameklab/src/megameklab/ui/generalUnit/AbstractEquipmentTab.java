@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2008-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -234,6 +234,7 @@ public abstract class AbstractEquipmentTab extends ITab {
             refresh.refreshStatus();
             refresh.refreshBuild();
             refresh.refreshPreview();
+            refresh.refreshStructure();
             refresh.refreshSummary();
         }
     }
