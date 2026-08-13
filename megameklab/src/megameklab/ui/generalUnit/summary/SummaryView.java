@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2023-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -41,7 +41,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 import megamek.common.units.Entity;
 import megameklab.ui.EntitySource;
@@ -89,7 +88,6 @@ public class SummaryView extends IView {
     // Internals ######################
 
     private void initialize(boolean showCrits, List<SummaryItem> getSummaryItems) {
-
         summaryItemList.clear();
         summaryItemList.addAll(getSummaryItems);
 
@@ -100,16 +98,18 @@ public class SummaryView extends IView {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 5);
-        add(createLabel("", SwingConstants.CENTER), gbc);
+        add(new JLabel(), gbc);
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.EAST;
         for (SummaryItem summaryItem : summaryItemList) {
-            add(createLabel(summaryItem.getName() + ":", SwingConstants.RIGHT), gbc);
+            add(new JLabel(summaryItem.getName() + ":"), gbc);
             gbc.gridy++;
         }
 
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx++;
         gbc.gridy = 0;
-        add(createLabel("Weight", SwingConstants.CENTER), gbc);
+        add(new JLabel("Weight"), gbc);
         gbc.gridy++;
         for (SummaryItem summaryItem : summaryItemList) {
             add(summaryItem.getWeightComponent(), gbc);
@@ -119,7 +119,7 @@ public class SummaryView extends IView {
         if (showCrits) {
             gbc.gridx++;
             gbc.gridy = 0;
-            add(createLabel("Crits", SwingConstants.CENTER), gbc);
+            add(new JLabel("Crits"), gbc);
             gbc.gridy++;
             for (SummaryItem summaryItem : summaryItemList) {
                 add(summaryItem.getCritsComponent(), gbc);
@@ -129,7 +129,7 @@ public class SummaryView extends IView {
 
         gbc.gridx++;
         gbc.gridy = 0;
-        add(createLabel("Availability", SwingConstants.CENTER), gbc);
+        add(new JLabel("Availability"), gbc);
         gbc.gridy++;
         for (SummaryItem summaryItem : summaryItemList) {
             add(summaryItem.getAvailabilityComponent(), gbc);
@@ -150,12 +150,6 @@ public class SummaryView extends IView {
         gbc.gridx = 0;
         gbc.gridy++;
         add(Box.createVerticalStrut(12), gbc);
-    }
-
-    private JLabel createLabel(String text, int align) {
-        JLabel label = new JLabel(text, SwingConstants.TRAILING);
-        label.setHorizontalAlignment(align);
-        return label;
     }
 
     private void refresh(Entity entity) {

@@ -106,7 +106,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
     private final JSpinner spnWalk = new JSpinner(spnWalkModel);
     private final JSpinner spnJump = new JSpinner(spnJumpModel);
     private final TechComboBox<EquipmentType> cbJumpType =
-          new TechComboBox<>(eq -> eq.getName().replaceAll("\\s+\\[.*?]", ""));
+          new TechComboBox<>(eq -> eq.getShortName().replaceAll("\\s+\\[.*?]", ""));
 
     private final JLabel lblWalk = createLabel("lblWalk", "");
     private final JLabel lblRun = createLabel("lblRun", "");
@@ -150,6 +150,7 @@ public class MovementView extends BuildView implements ActionListener, ChangeLis
         add(new JLabel(I18N.getString("MovementView.lblBase.text")), gbc);
         add(new JLabel(I18N.getString("MovementView.lblFinal.text")), gbc);
 
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.gridy++;
         add(lblWalk, gbc);
         gbc.fill = GridBagConstraints.NONE;
