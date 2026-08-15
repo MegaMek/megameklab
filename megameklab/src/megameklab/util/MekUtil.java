@@ -1336,7 +1336,8 @@ public final class MekUtil {
             if (eq.hasFlag(MiscType.F_MEK_EQUIPMENT)
                   && !eq.hasFlag(MiscType.F_CLUB)
                   && !eq.hasFlag(MiscType.F_HAND_WEAPON)
-                  && !eq.hasFlag(MiscType.F_TALON)) {
+                  && !eq.hasFlag(MiscType.F_TALON)
+                  && !eq.hasFlag(MiscType.F_SHIELD)) {
                 return true;
             }
 

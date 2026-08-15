@@ -791,7 +791,7 @@ public class SVGMassPrinter {
                         }
                     }
                     if (mtype.hasFlag(MiscType.F_CLUB) || mtype.hasFlag(MiscType.F_HAND_WEAPON) || mtype.hasFlag(
-                          MiscType.F_TALON)) {
+                          MiscType.F_TALON) || mtype.hasFlag(MiscType.F_SHIELD)) {
                         if (mtype.isVibroblade()) {
                             // manually set vibros to active to get correct damage
                             m.setMode(1);
