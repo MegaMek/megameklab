@@ -275,7 +275,7 @@ public class QuirksTab extends ITab implements DialogOptionListener {
     private void collectWeaponQuirks(JPanel weaponContainer, List<DialogOptionComponentYPanel> allQuirks) {
         List<Mounted<?>> equipmentList = new ArrayList<>(getEntity().getWeaponList());
         for (Mounted<?> miscItem : getEntity().getMisc()) {
-            if (miscItem.getType().hasFlag(MiscType.F_CLUB)) {
+            if (miscItem.getType().hasFlag(MiscType.F_CLUB) || miscItem.getType().hasFlag(MiscType.F_SHIELD)) {
                 equipmentList.add(miscItem);
             }
         }
