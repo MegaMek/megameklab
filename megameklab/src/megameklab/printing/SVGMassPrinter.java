@@ -2416,7 +2416,17 @@ public class SVGMassPrinter {
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
                     case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
                     case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
-                    case "--rules" -> RULES_SYSTEM = parseRulesSystem(inlineValue != null ? inlineValue : args[++i]);
+                    case "--rules" -> {
+                        String rulesValue = inlineValue;
+                        if (rulesValue == null) {
+                            if (i + 1 >= args.length) {
+                                throw new IllegalArgumentException("missing value for argument --rules");
+                            }
+                            i++;
+                            rulesValue = args[i];
+                        }
+                        RULES_SYSTEM = parseRulesSystem(rulesValue);
+                    }
                     case "--units", "--unit" -> {
                         unitOverrideRequested = true;
                         if (inlineValue != null) {
