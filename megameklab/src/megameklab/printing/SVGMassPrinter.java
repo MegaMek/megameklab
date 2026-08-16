@@ -791,7 +791,7 @@ public class SVGMassPrinter {
                         }
                     }
                     if (mtype.hasFlag(MiscType.F_CLUB) || mtype.hasFlag(MiscType.F_HAND_WEAPON) || mtype.hasFlag(
-                          MiscType.F_TALON)) {
+                          MiscType.F_TALON) || mtype.hasFlag(MiscType.F_SHIELD)) {
                         if (mtype.isVibroblade()) {
                             // manually set vibros to active to get correct damage
                             m.setMode(1);
@@ -982,21 +982,23 @@ public class SVGMassPrinter {
           private void addPhysicalWeapon(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
               String location, int locId) {
             MiscType type = mounted.getType();
-            String damage;
-            String maxDamage;
-            if (type.hasFlag(MiscType.F_TALON)) {
-                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
-                maxDamage = damage;
-            } else if (type.hasAnyFlag(MiscTypeFlag.S_CLAW, MiscTypeFlag.S_CLAW_THB)) {
-                damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
-                maxDamage = damage;
-            } else {
-                damage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false, false));
-                if ((entity instanceof BipedMek) && ((BipedMek) entity).canZweihander()) {
-                    maxDamage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false,
-                          true));
-                } else {
+            String damage = null;
+            String maxDamage = null;
+            // Shields remain physical components for export, but are not standalone attacks under Core rules.
+            if (!type.hasFlag(MiscType.F_SHIELD)) {
+                if (type.hasFlag(MiscType.F_TALON)) {
+                    damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
                     maxDamage = damage;
+                } else if (type.hasAnyFlag(MiscTypeFlag.S_CLAW, MiscTypeFlag.S_CLAW_THB)) {
+                    damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
+                    maxDamage = damage;
+                } else {
+                    damage = Integer.toString(ClubAttackAction.getDamageFor(entity, mounted, false, false));
+                    if ((entity instanceof BipedMek) && ((BipedMek) entity).canZweihander()) {
+                        maxDamage = Integer.toString(ClubAttackAction.getDamageFor(entity, mounted, false, true));
+                    } else {
+                        maxDamage = damage;
+                    }
                 }
             }
             final String name = type.getShortName();
