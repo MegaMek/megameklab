@@ -47,7 +47,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGCircleElement;
 import org.w3c.dom.svg.SVGRectElement;
+import org.w3c.dom.svg.SVGTextElement;
 
 @ExtendWith(value = InitializeTypes.class)
 class PrintMekCriticalSlotTest {
@@ -93,7 +95,7 @@ class PrintMekCriticalSlotTest {
         assertTrue(group.hasAttribute("armored"));
         assertTrue(group.hasAttribute("extraHit"));
 
-        Element text = (Element) group.getElementsByTagName(SVGConstants.SVG_TEXT_TAG).item(0);
+        SVGTextElement text = (SVGTextElement) group.getElementsByTagName(SVGConstants.SVG_TEXT_TAG).item(0);
         Element armoredPip = childWithClass(group, "armoredLocPip");
         Element extraHitPip = childWithClass(group, "extraHitPip");
         assertNotNull(text);
@@ -102,7 +104,7 @@ class PrintMekCriticalSlotTest {
         assertEquals(SVGConstants.SVG_CIRCLE_TAG, armoredPip.getTagName());
         assertEquals(SVGConstants.SVG_RECT_TAG, extraHitPip.getTagName());
 
-        double textX = Double.parseDouble(text.getAttribute(SVGConstants.SVG_X_ATTRIBUTE));
+        double textX = text.getX().getBaseVal().getItem(0).getValue();
         double textEndX = textX + (text.getTextContent().length() * TestPrintMek.CHARACTER_WIDTH);
         assertTrue(shapeCenterX(armoredPip) < textX);
         assertTrue(shapeCenterX(extraHitPip) > textEndX);
@@ -131,8 +133,9 @@ class PrintMekCriticalSlotTest {
     private Element renderCriticalSlot(String equipmentId, boolean armored) throws Exception {
         BipedMek mek = new BipedMek();
         mek.initializeInternal(10, Mek.LOC_CENTER_TORSO);
-        mek.addEquipment(EquipmentType.get(equipmentId), Mek.LOC_CENTER_TORSO);
-        CriticalSlot criticalSlot = mek.getCritical(Mek.LOC_CENTER_TORSO, 0);
+        mek.addEquipment(EquipmentType.get("Medium Laser"), Mek.LOC_CENTER_TORSO);
+        Mounted<?> mounted = mek.addEquipment(EquipmentType.get(equipmentId), Mek.LOC_CENTER_TORSO);
+        CriticalSlot criticalSlot = findCriticalSlot(mek, mounted);
         criticalSlot.setArmored(armored);
 
         TestPrintMek printMek = new TestPrintMek(mek);
@@ -165,6 +168,16 @@ class PrintMekCriticalSlotTest {
         throw new AssertionError("Rendered critical slot not found");
     }
 
+    private CriticalSlot findCriticalSlot(Mek mek, Mounted<?> mounted) {
+        for (int slot = 0; slot < mek.getNumberOfCriticalSlots(mounted.getLocation()); slot++) {
+            CriticalSlot criticalSlot = mek.getCritical(mounted.getLocation(), slot);
+            if ((criticalSlot != null) && (criticalSlot.getMount() == mounted)) {
+                return criticalSlot;
+            }
+        }
+        throw new AssertionError("Critical slot for mounted equipment not found");
+    }
+
     private Element childWithClass(Element parent, String className) {
         NodeList children = parent.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -180,11 +193,13 @@ class PrintMekCriticalSlotTest {
     }
 
     private double shapeCenterX(Element shape) {
-        if (SVGConstants.SVG_CIRCLE_TAG.equals(shape.getTagName())) {
-            return Double.parseDouble(shape.getAttribute(SVGConstants.SVG_CX_ATTRIBUTE));
+        if (shape instanceof SVGCircleElement circle) {
+            return circle.getCx().getBaseVal().getValue();
         }
-        return Double.parseDouble(shape.getAttribute(SVGConstants.SVG_X_ATTRIBUTE))
-              + Double.parseDouble(shape.getAttribute(SVGConstants.SVG_WIDTH_ATTRIBUTE)) / 2;
+        if (shape instanceof SVGRectElement rect) {
+            return rect.getX().getBaseVal().getValue() + rect.getWidth().getBaseVal().getValue() / 2;
+        }
+        throw new AssertionError("Unsupported pip shape: " + shape.getTagName());
     }
 
     private static class TestPrintMek extends PrintMek {
