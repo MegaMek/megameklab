@@ -282,8 +282,11 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
+        } else if ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_SHIELD)) {
+            // Shields modify punch attacks under Core rules; they are not standalone physical attacks.
+            info = "";
         } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
-              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON) || mount.getType().hasFlag(MiscType.F_SHIELD))) {
+              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibro to active to get correct damage
                 mount.setMode(1);
