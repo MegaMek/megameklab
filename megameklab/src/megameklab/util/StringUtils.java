@@ -283,7 +283,7 @@ public class StringUtils {
 
             }
         } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
-              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
+              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON) || mount.getType().hasFlag(MiscType.F_SHIELD))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibro to active to get correct damage
                 mount.setMode(1);

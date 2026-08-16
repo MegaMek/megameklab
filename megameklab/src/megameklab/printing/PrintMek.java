@@ -237,7 +237,7 @@ public class PrintMek extends PrintEntity {
 
     private void printShields() {
         for (MiscMounted m : mek.getMisc()) {
-            if (m.getType().isShield()) {
+            if (m.getType().hasFlag(MiscType.F_SHIELD)) {
                 String loc = mek.getLocationAbbr(m.getLocation());
                 Element element = getSVGDocument().getElementById(ARMOR_DIAGRAM + loc);
                 if (null != element) {

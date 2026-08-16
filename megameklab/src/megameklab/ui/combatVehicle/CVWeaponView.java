@@ -307,7 +307,7 @@ public class CVWeaponView extends IView implements ActionListener, MouseListener
                     masterArtilleryWeaponList.add(eq);
                 }
             } else if ((eq instanceof MiscType) && (eq.hasFlag(MiscType.F_CLUB) || eq.hasFlag(MiscType.F_HAND_WEAPON))
-                  && eq.hasFlag(MiscType.F_TALON)) {
+                  && eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_SHIELD)) {
                 if (eq.hasFlag(MiscType.F_CLUB)
                       && (eq.hasAnyFlag(MiscTypeFlag.S_CLUB, MiscTypeFlag.S_TREE_CLUB))) {
                     continue;
