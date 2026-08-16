@@ -39,10 +39,12 @@ import java.util.List;
 
 import megamek.common.equipment.EquipmentTypeLookup;
 import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.game.Game;
 import megamek.common.units.Entity;
 import megamek.common.units.LandAirMek;
 import megamek.common.units.Mek;
 import megamek.common.units.ProtoMek;
+import megameklab.util.CConfig;
 
 public record IntrinsicPhysicalInventoryEntry(String name, String location, String damage, String mod, boolean optional)
       implements InventoryEntry {
@@ -103,8 +105,7 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
             return new ArrayList<>(List.of(e("Frenzy", DASH, String.valueOf(dmg), "*")));
         } else if (entity.canCharge()) {
-            return new ArrayList<>(List.of(e("Charge", DASH, doubleFormat.format(entity.getWeight() / 10) + "/hex",
-                  "*", true)));
+            return new ArrayList<>(List.of(e("Charge", DASH, formatChargeDamage(entity, 1, 0), "*", true)));
         }
 
         return new ArrayList<>();
@@ -130,8 +131,12 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 baseDmg /= 2;
             }
 
-            var lDmg = formatDamage(hasLLowerActuator ? baseDmg : Math.floor(baseDmg / 2), hasTsm);
-            var rDmg = formatDamage(hasRLowerActuator ? baseDmg : Math.floor(baseDmg / 2), hasTsm);
+            var leftBaseDamage = baseDmg
+                  + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_LEFT_ARM);
+            var rightBaseDamage = baseDmg
+                  + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_RIGHT_ARM);
+            var lDmg = formatDamage(hasLLowerActuator ? leftBaseDamage : Math.floor(leftBaseDamage / 2), hasTsm);
+            var rDmg = formatDamage(hasRLowerActuator ? rightBaseDamage : Math.floor(rightBaseDamage / 2), hasTsm);
 
             int mod;
             boolean explicitZero;
@@ -219,17 +224,9 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
 
         // Charge
         {
-            var baseDmg = mek.getWeight() / 10;
-            if (mek.hasMisc(MiscTypeFlag.F_RAM_PLATE)) {
-                baseDmg *= 1.5;
-            }
+            double damageMultiplier = mek.hasMisc(MiscTypeFlag.F_RAM_PLATE) ? 1.5 : 1;
             var spikesDmg = mek.getMiscEquipment(MiscTypeFlag.F_SPIKES).size() * 2;
-            String dmg;
-            if (spikesDmg > 0) {
-                dmg = "%s/hex+%d".formatted(doubleFormat.format(baseDmg), spikesDmg);
-            } else {
-                dmg = "%s/hex".formatted(doubleFormat.format(baseDmg));
-            }
+            String dmg = formatChargeDamage(mek, damageMultiplier, spikesDmg);
             entries.add(e("Charge", DASH, dmg, "Vs", true));
         }
         if (mek instanceof LandAirMek) {
@@ -248,6 +245,16 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
         }
 
         return entries;
+    }
+
+    private static String formatChargeDamage(Entity entity, double damageMultiplier, int spikesDamage) {
+        if (CConfig.usesTotalWarfareRules()) {
+            String damage = doubleFormat.format(entity.getWeight() / 10 * damageMultiplier) + "/hex";
+            return spikesDamage > 0 ? damage + "+" + spikesDamage : damage;
+        }
+
+        String damage = doubleFormat.format(entity.getWeight() / 5 * damageMultiplier) + "×(TMM+1)";
+        return spikesDamage > 0 ? damage + "+" + spikesDamage : damage;
     }
 
     /**

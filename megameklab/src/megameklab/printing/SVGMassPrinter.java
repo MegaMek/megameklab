@@ -151,6 +151,7 @@ public class SVGMassPrinter {
     private static boolean SKIP_DETAILED_CALCULATIONS = true; // Set to true to skip the detailed BV/Cost calculations
     private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
     private static boolean EXPORT_CALCULATIONS_AS_TEXT = false;
+    private static String RULES_SYSTEM = OptionsConstants.RULES_CORE;
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
@@ -984,8 +985,13 @@ public class SVGMassPrinter {
             MiscType type = mounted.getType();
             String damage = null;
             String maxDamage = null;
-            // Shields remain physical components for export, but are not standalone attacks under Core rules.
-            if (!type.hasFlag(MiscType.F_SHIELD)) {
+            if (type.hasFlag(MiscType.F_SHIELD)) {
+                // Core treats shields as punch modifiers. Total Warfare retains the historical standalone value.
+                if (CConfig.usesTotalWarfareRules()) {
+                    damage = Integer.toString(mounted.getDamageAbsorption(entity, locId));
+                    maxDamage = damage;
+                }
+            } else {
                 if (type.hasFlag(MiscType.F_TALON)) {
                     damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
                     maxDamage = damage;
@@ -2410,6 +2416,7 @@ public class SVGMassPrinter {
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
                     case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
                     case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
+                    case "--rules" -> RULES_SYSTEM = parseRulesSystem(inlineValue != null ? inlineValue : args[++i]);
                     case "--units", "--unit" -> {
                         unitOverrideRequested = true;
                         if (inlineValue != null) {
@@ -2447,6 +2454,14 @@ public class SVGMassPrinter {
             case "true", "1", "yes", "on" -> true;
             case "false", "0", "no", "off" -> false;
             default -> throw new IllegalArgumentException("expected a boolean, got '" + value + "'");
+        };
+    }
+
+    private static String parseRulesSystem(String value) {
+        return switch (value.toLowerCase(Locale.ROOT)) {
+            case "core", "core2026", "core-rules" -> OptionsConstants.RULES_CORE;
+            case "tw", "total-warfare" -> OptionsConstants.RULES_TW;
+            default -> throw new IllegalArgumentException("expected 'core' or 'tw', got '" + value + "'");
         };
     }
 
@@ -2554,6 +2569,7 @@ public class SVGMassPrinter {
                 --save-unit-files[=bool]      Enable BLK/MTF re-save (inverse of --skip-unit-files)
                 --save-calculations[=bool]    Export calculation details (default: %s)
                 --calculations-as-text[=bool] Export calculation details as .txt rather than structured .json (default: %s)
+                --rules <core|tw>              Rules used for sheets and metadata (default: core)
                 --units <file|dir> [...]      Export only these .blk/.mtf files (or all such files in a
                                               directory, scanned recursively) instead of the whole unit cache.
                                               May be repeated; accepts multiple paths.
@@ -2640,6 +2656,8 @@ public class SVGMassPrinter {
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
+        CConfig.setParam(CConfig.MISC_RULES_SYSTEM, RULES_SYSTEM);
+        CConfig.applyRulesSystem();
         CConfig.setParam(CConfig.RS_FONT, TYPEFACE);
 
         int processedCount = 0;

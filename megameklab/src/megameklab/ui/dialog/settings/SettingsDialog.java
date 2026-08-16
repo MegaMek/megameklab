@@ -95,6 +95,7 @@ public class SettingsDialog extends AbstractMMLButtonDialog {
         techSettings.getTechSettings().forEach(CConfig::setParam);
         exportSettingsPanel.getRecordSheetSettings().forEach(CConfig::setParam);
         miscSettingsPanel.getMiscSettings().forEach(CConfig::setParam);
+        CConfig.applyRulesSystem();
         CConfig.saveConfig();
         PreferenceManager.getClientPreferences().setUserDir(miscSettingsPanel.getUserDir());
         if (miscSettingsPanel.guiScale() != GUIPreferences.getInstance().getGUIScale()) {

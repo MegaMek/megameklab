@@ -283,8 +283,10 @@ public class StringUtils {
 
             }
         } else if ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_SHIELD)) {
-            // Shields modify punch attacks under Core rules; they are not standalone physical attacks.
-            info = "";
+            // Core treats shields as punch modifiers; Total Warfare displays their historical standalone damage.
+            info = CConfig.usesTotalWarfareRules()
+                  ? Integer.toString(((MiscMounted) mount).getDamageAbsorption(unit, mount.getLocation()))
+                  : "\u2014";
         } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
               || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
