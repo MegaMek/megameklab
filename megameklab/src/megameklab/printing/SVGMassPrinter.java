@@ -2404,11 +2404,11 @@ public class SVGMassPrinter {
                         System.exit(0);
                     }
                     case "-o", "--output", "--root" -> {
-                        ROOT_FOLDER = inlineValue != null ? inlineValue : args[++i];
+                        ROOT_FOLDER = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
                     }
-                    case "--sheets-dir" -> SHEETS_DIR = inlineValue != null ? inlineValue : args[++i];
-                    case "--unit-files-dir" -> UNIT_FILES_DIR = inlineValue != null ? inlineValue : args[++i];
-                    case "--typeface" -> TYPEFACE = inlineValue != null ? inlineValue : args[++i];
+                    case "--sheets-dir" -> SHEETS_DIR = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
+                    case "--unit-files-dir" -> UNIT_FILES_DIR = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
+                    case "--typeface" -> TYPEFACE = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
                     case "--skip-svg" -> SKIP_SVG = parseBool(inlineValue);
                     case "--skip-units" -> SKIP_UNITS = parseBool(inlineValue);
                     case "--skip-equipment" -> SKIP_EQUIPMENT = parseBool(inlineValue);
@@ -2419,11 +2419,8 @@ public class SVGMassPrinter {
                     case "--rules" -> {
                         String rulesValue = inlineValue;
                         if (rulesValue == null) {
-                            if (i + 1 >= args.length) {
-                                throw new IllegalArgumentException("missing value for argument --rules");
-                            }
                             i++;
-                            rulesValue = args[i];
+                            rulesValue = requireArgumentValue(args, i);
                         }
                         RULES_SYSTEM = parseRulesSystem(rulesValue);
                     }
@@ -2434,7 +2431,7 @@ public class SVGMassPrinter {
                         }
                         // Consume all following non-option tokens as file/directory paths.
                         while ((i + 1 < args.length) && !args[i + 1].startsWith("-")) {
-                            collectUnitFiles(args[++i]);
+                            collectUnitFiles(requireArgumentValue(args, ++i));
                         }
                     }
                     default -> {
@@ -2454,6 +2451,13 @@ public class SVGMassPrinter {
             }
         }
         return true;
+    }
+
+    private static String requireArgumentValue(String[] args, int index) {
+        if (index >= args.length) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return args[index];
     }
 
     private static boolean parseBool(String value) {
