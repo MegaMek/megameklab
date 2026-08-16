@@ -783,14 +783,14 @@ public class PrintMek extends PrintEntity {
                       SVGConstants.SVG_START_VALUE, weight, fill);
             } else if (crit.isArmored()) {
                 g.setAttributeNS(null, "armored", "1");
-                Element pip = createPip(critX, (currY - fontSize * 0.8) + 0.5, fontSize * 0.4, 0.7, PipType.CIRCLE,
+                Element pip = createPip(critX, (currY - fontSize * 0.8) + 0.2, fontSize * 0.4, 0.7, PipType.CIRCLE,
                       FILL_WHITE, "armoredLocPip", null, false);
                 g.appendChild(pip);
                 final double textX = critX + fontSize;
                 final double textLength = addTextElement(g, textX, currY, formatCritName(crit), fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
                 if (extraHit) {
-                    addExtraHitPip(g, textX + textLength, currY + 0.5, fontSize);
+                    addExtraHitPip(g, textX + textLength, currY + 0.2, fontSize);
                 }
             } else if ((crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
                   && (crit.getMount().getType() instanceof MiscType)
@@ -841,7 +841,7 @@ public class PrintMek extends PrintEntity {
                 addTextElement(g, critX, currY, critName, fontSize,
                       SVGConstants.SVG_START_VALUE, weight, SVGConstants.SVG_NORMAL_VALUE, fill);
                 if (extraHit) {
-                    addExtraHitPip(g, critX + getTextLength(critName, fontSize, weight), currY + 0.5, fontSize);
+                    addExtraHitPip(g, critX + getTextLength(critName, fontSize, weight), currY + 0.2, fontSize);
                 }
             }
             Mounted<?> m = null;
