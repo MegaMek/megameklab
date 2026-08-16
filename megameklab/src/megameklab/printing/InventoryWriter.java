@@ -372,7 +372,8 @@ public class InventoryWriter {
             ) {
                 continue;
             }
-            StandardInventoryEntry entry = new StandardInventoryEntry(m);
+            // When Punch rows are hidden, let the shield row carry Core's shield-bash modifier instead.
+            StandardInventoryEntry entry = new StandardInventoryEntry(m, includeIntrinsicPhysicals);
             // If the unit is a Mek, we check for the merge equipment option.
             // If is not a mek, we always merge if possible.
             if (this.mergeInventoryAllowed) {

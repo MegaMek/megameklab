@@ -20,6 +20,9 @@ package megameklab.printing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static megameklab.printing.RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT;
+import static megameklab.printing.RecordSheetOptions.IntrinsicPhysicalAttacksStyle.FOOTER;
+import static megameklab.printing.RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE;
 
 import java.util.List;
 
@@ -67,6 +70,9 @@ class ShieldRecordSheetRulesTest {
         MiscMounted shield = shield(mek);
         assertEquals("\u2014", StringUtils.getEquipmentInfo(mek, shield));
         assertEquals("\u2014", new StandardInventoryEntry(shield).getDamageField(0));
+        assertEquals("\u2014", new StandardInventoryEntry(shield, EQUIPMENT).getDamageField(0));
+        assertEquals("\u2014", new StandardInventoryEntry(shield, FOOTER).getDamageField(0));
+        assertEquals("+2", new StandardInventoryEntry(shield, NONE).getDamageField(0));
         SVGMassPrinter.ExportInventoryEntry exportedShield = exportedShield(mek);
         assertEquals("P", exportedShield.t);
         assertNull(exportedShield.d);
@@ -85,10 +91,20 @@ class ShieldRecordSheetRulesTest {
         MiscMounted shield = shield(mek);
         assertEquals("5", StringUtils.getEquipmentInfo(mek, shield));
         assertEquals("5", new StandardInventoryEntry(shield).getDamageField(0));
+        assertEquals("5", new StandardInventoryEntry(shield, NONE).getDamageField(0));
         SVGMassPrinter.ExportInventoryEntry exportedShield = exportedShield(mek);
         assertEquals("P", exportedShield.t);
         assertEquals("5", exportedShield.d);
         assertEquals("5", exportedShield.md);
+    }
+
+    @Test
+    void coreStandaloneShieldRowsShowSignedBashModifierForEverySize() throws Exception {
+        Game.rulesManager = new CoreRulesManager();
+
+        assertEquals("+1", standaloneShieldDamage("ISSmallShield"));
+        assertEquals("+2", standaloneShieldDamage("ISMediumShield"));
+        assertEquals("+3", standaloneShieldDamage("ISLargeShield"));
     }
 
     private BipedMek mekWithMediumShieldAndTsm() throws Exception {
@@ -99,6 +115,13 @@ class ShieldRecordSheetRulesTest {
         mek.addEquipment(EquipmentType.get("ISMediumShield"), Mek.LOC_LEFT_ARM);
         mek.addEquipment(EquipmentType.get(EquipmentTypeLookup.TSM), Entity.LOC_NONE);
         return mek;
+    }
+
+    private String standaloneShieldDamage(String equipmentId) throws Exception {
+        BipedMek mek = new BipedMek();
+        mek.initializeInternal(10, Mek.LOC_LEFT_ARM);
+        mek.addEquipment(EquipmentType.get(equipmentId), Mek.LOC_LEFT_ARM);
+        return new StandardInventoryEntry(shield(mek), NONE).getDamageField(0);
     }
 
     private IntrinsicPhysicalInventoryEntry punchAt(List<InventoryEntry> entries, String location) {
