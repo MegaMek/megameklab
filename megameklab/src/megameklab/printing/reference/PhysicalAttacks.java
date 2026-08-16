@@ -36,6 +36,7 @@ import megamek.common.actions.ClubAttackAction;
 import megamek.common.equipment.MiscType;
 import megamek.common.equipment.Mounted;
 import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.game.Game;
 import megamek.common.units.Entity;
 import megamek.common.units.Mek;
 import megamek.common.units.QuadMek;
@@ -106,12 +107,18 @@ public class PhysicalAttacks extends ReferenceTable {
         int left = countActuators(entity, Mek.LOC_LEFT_ARM);
         int right = countActuators(entity, Mek.LOC_RIGHT_ARM);
         int baseDamage = (int) Math.ceil(entity.getWeight() / 10.0);
+        int leftDamage = baseDamage;
+        int rightDamage = baseDamage;
+        if (entity.hasShield()) {
+            leftDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_LEFT_ARM);
+            rightDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_RIGHT_ARM);
+        }
         boolean hasTSM = entity.hasWorkingMisc(MiscType.F_TSM);
-        if (left == right) {
-            addPunchAttack(bundle.getString("punch"), left, baseDamage, hasTSM);
+        if ((left == right) && (leftDamage == rightDamage)) {
+            addPunchAttack(bundle.getString("punch"), left, leftDamage, hasTSM);
         } else {
-            addPunchAttack(bundle.getString("punch") + " (LA)", left, baseDamage, hasTSM);
-            addPunchAttack(bundle.getString("punch") + " (RA)", right, baseDamage, hasTSM);
+            addPunchAttack(bundle.getString("punch") + " (LA)", left, leftDamage, hasTSM);
+            addPunchAttack(bundle.getString("punch") + " (RA)", right, rightDamage, hasTSM);
         }
     }
 
@@ -155,8 +162,6 @@ public class PhysicalAttacks extends ReferenceTable {
                     logger.error("Unknown hand weapon {}!", mounted.getName());
                     addRow(mounted.getName(), "???", StringUtils.getEquipmentInfo(entity, mounted));
                 }
-            } else if (mounted.getType().hasFlag(MiscType.F_SHIELD)) {
-                addRow(mounted.getName(), "", StringUtils.getEquipmentInfo(entity, mounted));
             }
         }
     }

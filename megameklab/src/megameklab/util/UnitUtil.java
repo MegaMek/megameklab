@@ -488,7 +488,8 @@ public class UnitUtil {
             // construction options
             return !eq.hasAnyFlag(MiscTypeFlag.S_CLUB, MiscTypeFlag.S_TREE_CLUB);
         }
-        return eq.hasFlag(MiscType.F_HAND_WEAPON) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_SHIELD) || eq.hasFlag(MiscType.F_RAM_PLATE);
+        return eq.hasFlag(MiscType.F_HAND_WEAPON) || eq.hasFlag(MiscType.F_TALON) || eq.hasFlag(MiscType.F_SHIELD)
+              || eq.hasFlag(MiscType.F_RAM_PLATE);
     }
 
     public static String getHeatSinkType(String type, boolean clan) {

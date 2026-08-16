@@ -53,6 +53,7 @@ import megamek.common.equipment.Sensor;
 import megamek.common.equipment.WeaponMounted;
 import megamek.common.equipment.WeaponType;
 import megamek.common.equipment.enums.MiscTypeFlag;
+import megamek.common.game.Game;
 import megamek.common.options.IOption;
 import megamek.common.options.WeaponQuirks;
 import megamek.common.units.Entity;
@@ -90,6 +91,7 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     private final boolean hasArtemisV;
     private final boolean hasApollo;
     private final boolean hasCapacitor;
+    private final int shieldDamageModifier;
     // Saved as member fields for hash and equals
     private final String name;
     private final String location;
@@ -138,6 +140,11 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
     }
 
     public StandardInventoryEntry(Mounted<?> m) {
+        this(m, RecordSheetOptions.IntrinsicPhysicalAttacksStyle.EQUIPMENT);
+    }
+
+    StandardInventoryEntry(Mounted<?> m,
+          RecordSheetOptions.IntrinsicPhysicalAttacksStyle intrinsicPhysicalAttacks) {
         this.mount = m;
         name = formatName();
         location = formatLocation();
@@ -153,6 +160,10 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
         hasArtemisV = hasLinkedEquipment(m, MiscType.F_ARTEMIS_V);
         hasApollo = hasLinkedEquipment(m, MiscType.F_APOLLO);
         hasCapacitor = hasLinkedEquipment(m, MiscType.F_PPC_CAPACITOR);
+        shieldDamageModifier = intrinsicPhysicalAttacks.equals(RecordSheetOptions.IntrinsicPhysicalAttacksStyle.NONE)
+              && m.getType().hasFlag(MiscType.F_SHIELD)
+              ? Game.rulesManager.getRulesPhysical().getShieldDamageBoost(m.getEntity(), m.getLocation())
+              : 0;
         ranges = setRanges();
     }
 
@@ -547,6 +558,9 @@ public class StandardInventoryEntry implements InventoryEntry, Comparable<Standa
             // TODO : corrected to allow capacity to be assigned
             return "";
         } else if (row == 0) {
+            if (shieldDamageModifier > 0) {
+                return "%+d".formatted(shieldDamageModifier);
+            }
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount);
         } else if (row == 1 && hasCapacitor) {
             return StringUtils.getEquipmentInfo(mount.getEntity(), mount, true);

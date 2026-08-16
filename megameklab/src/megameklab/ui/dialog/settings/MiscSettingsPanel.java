@@ -51,6 +51,7 @@ import megamek.client.ui.comboBoxes.MMComboBox;
 import megamek.client.ui.dialogs.buttonDialogs.CommonSettingsDialog;
 import megamek.client.ui.dialogs.helpDialogs.HelpDialog;
 import megamek.common.preference.PreferenceManager;
+import megamek.common.options.OptionsConstants;
 import megamek.logging.MMLogger;
 import megameklab.ui.MMLStartUp;
 import megameklab.ui.MulDndBehaviour;
@@ -66,6 +67,8 @@ public class MiscSettingsPanel extends JPanel {
     private static final ResourceBundle resources = ResourceBundle.getBundle("megameklab.resources.Dialogs");
 
     private final MMComboBox<MMLStartUp> startUpMMComboBox = new MMComboBox<>("StartUp", MMLStartUp.values());
+    private final MMComboBox<String> gameRulesComboBox = new MMComboBox<>("Game Rules",
+          new String[] { OptionsConstants.RULES_CORE, OptionsConstants.RULES_TW });
     private final JCheckBox chkSummaryFormatTRO = new JCheckBox();
     private final JCheckBox chkApplicationExitPrompt = new JCheckBox();
     private final JCheckBox chkSkipSavePrompts = new JCheckBox();
@@ -88,6 +91,17 @@ public class MiscSettingsPanel extends JPanel {
         startUpLine.add(startUpLabel);
         startUpLine.add(Box.createHorizontalStrut(5));
         startUpLine.add(startUpMMComboBox);
+
+        gameRulesComboBox.setRenderer(miscComboBoxRenderer);
+        gameRulesComboBox.setSelectedItem(CConfig.getRulesSystem());
+        gameRulesComboBox.setToolTipText(resources.getString("ConfigurationDialog.gameRules.tooltip"));
+        JLabel gameRulesLabel = new JLabel(resources.getString("ConfigurationDialog.gameRules.text"));
+        gameRulesLabel.setToolTipText(resources.getString("ConfigurationDialog.gameRules.tooltip"));
+
+        JPanel gameRulesLine = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        gameRulesLine.add(gameRulesLabel);
+        gameRulesLine.add(Box.createHorizontalStrut(5));
+        gameRulesLine.add(gameRulesComboBox);
 
         cbMulOpenBehaviour.setRenderer(miscComboBoxRenderer);
         cbMulOpenBehaviour.setToolTipText(resources.getString("ConfigurationDialog.cbMulOpenBehaviour.tooltip"));
@@ -170,6 +184,7 @@ public class MiscSettingsPanel extends JPanel {
 
         JPanel gridPanel = new JPanel(new SpringLayout());
         gridPanel.add(startUpLine);
+        gridPanel.add(gameRulesLine);
         gridPanel.add(userDirLine);
         gridPanel.add(mulOpenLine);
         gridPanel.add(chkApplicationExitPrompt);
@@ -179,7 +194,7 @@ public class MiscSettingsPanel extends JPanel {
         gridPanel.add(chkShowAvailabilityTab);
         gridPanel.add(scaleLine);
 
-        SpringUtilities.makeCompactGrid(gridPanel, 9, 1, 0, 0, 15, 10);
+        SpringUtilities.makeCompactGrid(gridPanel, 10, 1, 0, 0, 15, 10);
         gridPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         add(gridPanel);
@@ -192,6 +207,9 @@ public class MiscSettingsPanel extends JPanel {
         miscSettings.put(CConfig.MISC_SKIP_SAFETY_PROMPTS, String.valueOf(chkSkipSavePrompts.isSelected()));
         miscSettings.put(CConfig.MISC_INCLUDE_LICENSE, String.valueOf(chkIncludeLicense.isSelected()));
         miscSettings.put(CConfig.MISC_SHOW_AVAILABILITY_TAB, String.valueOf(chkShowAvailabilityTab.isSelected()));
+        String selectedRules = gameRulesComboBox.getSelectedItem();
+        miscSettings.put(CConfig.MISC_RULES_SYSTEM,
+              selectedRules == null ? OptionsConstants.RULES_CORE : selectedRules);
         MMLStartUp startUp = startUpMMComboBox.getSelectedItem() == null
               ? MMLStartUp.SPLASH_SCREEN
               : startUpMMComboBox.getSelectedItem();
@@ -226,6 +244,10 @@ public class MiscSettingsPanel extends JPanel {
             return su.getDisplayName();
         } else if (value instanceof MulDndBehaviour mdb) {
             return mdb.getDisplayName();
+        } else if (OptionsConstants.RULES_CORE.equals(value)) {
+            return resources.getString("ConfigurationDialog.gameRules.core");
+        } else if (OptionsConstants.RULES_TW.equals(value)) {
+            return resources.getString("ConfigurationDialog.gameRules.totalWarfare");
         }
         return "";
     }

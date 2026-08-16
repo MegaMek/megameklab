@@ -151,6 +151,7 @@ public class SVGMassPrinter {
     private static boolean SKIP_DETAILED_CALCULATIONS = true; // Set to true to skip the detailed BV/Cost calculations
     private static final boolean EXPORT_CALCULATION_DETAILS_TO_FILES = true; // Set to true to not embed the detailed BV/Cost calculations into the units.json but in a subfolder keyed by name
     private static boolean EXPORT_CALCULATIONS_AS_TEXT = false;
+    private static String RULES_SYSTEM = OptionsConstants.RULES_CORE;
 
     private static final MMLogger logger = MMLogger.create(SVGMassPrinter.class);
     private static final int SUSTAINED_TURNS = 10; // Number of turns for sustained DPT calculation
@@ -982,21 +983,28 @@ public class SVGMassPrinter {
           private void addPhysicalWeapon(Map<String, ExportInventoryEntry> list, Entity entity, MiscMounted mounted,
               String location, int locId) {
             MiscType type = mounted.getType();
-            String damage;
-            String maxDamage;
-            if (type.hasFlag(MiscType.F_TALON)) {
-                damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
-                maxDamage = damage;
-            } else if (type.hasAnyFlag(MiscTypeFlag.S_CLAW, MiscTypeFlag.S_CLAW_THB)) {
-                damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
-                maxDamage = damage;
-            } else {
-                damage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false, false));
-                if ((entity instanceof BipedMek) && ((BipedMek) entity).canZweihander()) {
-                    maxDamage = Integer.toString(ClubAttackAction.getDamageFor(entity, (MiscMounted) mounted, false,
-                          true));
-                } else {
+            String damage = null;
+            String maxDamage = null;
+            if (type.hasFlag(MiscType.F_SHIELD)) {
+                // Core treats shields as punch modifiers. Total Warfare retains the historical standalone value.
+                if (CConfig.usesTotalWarfareRules()) {
+                    damage = Integer.toString(mounted.getDamageAbsorption(entity, locId));
                     maxDamage = damage;
+                }
+            } else {
+                if (type.hasFlag(MiscType.F_TALON)) {
+                    damage = Integer.toString(KickAttackAction.getDamageFor(entity, Mek.LOC_LEFT_LEG, false));
+                    maxDamage = damage;
+                } else if (type.hasAnyFlag(MiscTypeFlag.S_CLAW, MiscTypeFlag.S_CLAW_THB)) {
+                    damage = Integer.toString((int) Math.ceil(entity.getWeight() / 7.0));
+                    maxDamage = damage;
+                } else {
+                    damage = Integer.toString(ClubAttackAction.getDamageFor(entity, mounted, false, false));
+                    if ((entity instanceof BipedMek) && ((BipedMek) entity).canZweihander()) {
+                        maxDamage = Integer.toString(ClubAttackAction.getDamageFor(entity, mounted, false, true));
+                    } else {
+                        maxDamage = damage;
+                    }
                 }
             }
             final String name = type.getShortName();
@@ -2396,11 +2404,11 @@ public class SVGMassPrinter {
                         System.exit(0);
                     }
                     case "-o", "--output", "--root" -> {
-                        ROOT_FOLDER = inlineValue != null ? inlineValue : args[++i];
+                        ROOT_FOLDER = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
                     }
-                    case "--sheets-dir" -> SHEETS_DIR = inlineValue != null ? inlineValue : args[++i];
-                    case "--unit-files-dir" -> UNIT_FILES_DIR = inlineValue != null ? inlineValue : args[++i];
-                    case "--typeface" -> TYPEFACE = inlineValue != null ? inlineValue : args[++i];
+                    case "--sheets-dir" -> SHEETS_DIR = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
+                    case "--unit-files-dir" -> UNIT_FILES_DIR = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
+                    case "--typeface" -> TYPEFACE = inlineValue != null ? inlineValue : requireArgumentValue(args, ++i);
                     case "--skip-svg" -> SKIP_SVG = parseBool(inlineValue);
                     case "--skip-units" -> SKIP_UNITS = parseBool(inlineValue);
                     case "--skip-equipment" -> SKIP_EQUIPMENT = parseBool(inlineValue);
@@ -2408,6 +2416,14 @@ public class SVGMassPrinter {
                     case "--save-unit-files" -> SKIP_UNIT_FILES = !parseBool(inlineValue);
                     case "--save-calculations" -> SKIP_DETAILED_CALCULATIONS = !parseBool(inlineValue);
                     case "--calculations-as-text" -> EXPORT_CALCULATIONS_AS_TEXT = parseBool(inlineValue);
+                    case "--rules" -> {
+                        String rulesValue = inlineValue;
+                        if (rulesValue == null) {
+                            i++;
+                            rulesValue = requireArgumentValue(args, i);
+                        }
+                        RULES_SYSTEM = parseRulesSystem(rulesValue);
+                    }
                     case "--units", "--unit" -> {
                         unitOverrideRequested = true;
                         if (inlineValue != null) {
@@ -2415,7 +2431,7 @@ public class SVGMassPrinter {
                         }
                         // Consume all following non-option tokens as file/directory paths.
                         while ((i + 1 < args.length) && !args[i + 1].startsWith("-")) {
-                            collectUnitFiles(args[++i]);
+                            collectUnitFiles(requireArgumentValue(args, ++i));
                         }
                     }
                     default -> {
@@ -2437,6 +2453,13 @@ public class SVGMassPrinter {
         return true;
     }
 
+    private static String requireArgumentValue(String[] args, int index) {
+        if (index >= args.length) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return args[index];
+    }
+
     private static boolean parseBool(String value) {
         if (value == null) {
             return true; // bare flag means "on"
@@ -2445,6 +2468,14 @@ public class SVGMassPrinter {
             case "true", "1", "yes", "on" -> true;
             case "false", "0", "no", "off" -> false;
             default -> throw new IllegalArgumentException("expected a boolean, got '" + value + "'");
+        };
+    }
+
+    private static String parseRulesSystem(String value) {
+        return switch (value.toLowerCase(Locale.ROOT)) {
+            case "core", "core2026", "core-rules" -> OptionsConstants.RULES_CORE;
+            case "tw", "total-warfare" -> OptionsConstants.RULES_TW;
+            default -> throw new IllegalArgumentException("expected 'core' or 'tw', got '" + value + "'");
         };
     }
 
@@ -2552,6 +2583,7 @@ public class SVGMassPrinter {
                 --save-unit-files[=bool]      Enable BLK/MTF re-save (inverse of --skip-unit-files)
                 --save-calculations[=bool]    Export calculation details (default: %s)
                 --calculations-as-text[=bool] Export calculation details as .txt rather than structured .json (default: %s)
+                --rules <core|tw>              Rules used for sheets and metadata (default: core)
                 --units <file|dir> [...]      Export only these .blk/.mtf files (or all such files in a
                                               directory, scanned recursively) instead of the whole unit cache.
                                               May be repeated; accepts multiple paths.
@@ -2638,6 +2670,8 @@ public class SVGMassPrinter {
         Locale.setDefault(new MMLOptions().getLocale());
         EquipmentType.initializeTypes();
         CConfig.load();
+        CConfig.setParam(CConfig.MISC_RULES_SYSTEM, RULES_SYSTEM);
+        CConfig.applyRulesSystem();
         CConfig.setParam(CConfig.RS_FONT, TYPEFACE);
 
         int processedCount = 0;

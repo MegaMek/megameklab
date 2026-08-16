@@ -282,8 +282,13 @@ public class StringUtils {
                 info = info.substring(0, info.length() - 1) + "]";
 
             }
+        } else if ((mount instanceof MiscMounted) && mount.getType().hasFlag(MiscType.F_SHIELD)) {
+            // Core treats shields as punch modifiers; Total Warfare displays their historical standalone damage.
+            info = CConfig.usesTotalWarfareRules()
+                  ? Integer.toString(((MiscMounted) mount).getDamageAbsorption(unit, mount.getLocation()))
+                  : "\u2014";
         } else if ((mount instanceof MiscMounted) && (mount.getType().hasFlag(MiscType.F_CLUB)
-              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON) || mount.getType().hasFlag(MiscType.F_SHIELD))) {
+              || mount.getType().hasFlag(MiscType.F_HAND_WEAPON))) {
             if (((MiscType) mount.getType()).isVibroblade()) {
                 // manually set vibro to active to get correct damage
                 mount.setMode(1);
