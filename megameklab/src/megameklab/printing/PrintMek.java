@@ -880,7 +880,8 @@ public class PrintMek extends PrintEntity {
               && (crit.getType() == CriticalSlot.TYPE_EQUIPMENT)
               && (crit.getMount() != null)
               && !CConfig.usesTotalWarfareRules()
-              && crit.getMount().getType().hasFlag(WeaponType.F_AC)
+              && (crit.getMount().getType() instanceof WeaponType weaponType)
+              && weaponType.hasFlag(WeaponType.F_AC)
               && (crit.getMount().getNumCriticalSlots() == 1);
     }
 
