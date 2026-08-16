@@ -1041,9 +1041,7 @@ public class InventoryWriter {
                     rowGroup.setAttributeNS(null, "iPhysAtk", line.getNameField(0).toLowerCase());
                 }
                 if (line instanceof StandardInventoryEntry sie) {
-                    if (sie.getMounted().isSquadSupportWeapon()) {
-                        rowGroup.setAttributeNS(null, "SSW", "1");
-                    }
+                    writeInventoryMountNameMetadata(rowGroup, sie.getMounted());
                 }
             }
             canvas.appendChild(rowGroup);
@@ -1273,6 +1271,29 @@ public class InventoryWriter {
             }
         }
         return yPosition;
+    }
+
+    private void writeInventoryMountNameMetadata(Element rowGroup, Mounted<?> mount) {
+        setBooleanAttribute(rowGroup, "rearMounted", mount.isRearMounted());
+        setBooleanAttribute(rowGroup, "mekTurretMounted", mount.isMekTurretMounted());
+        setBooleanAttribute(rowGroup, "sponsonTurretMounted", mount.isSponsonTurretMounted());
+        setBooleanAttribute(rowGroup, "pintleTurretMounted", mount.isPintleTurretMounted());
+        setBooleanAttribute(rowGroup, "SSW", mount.isSquadSupportWeapon());
+        setBooleanAttribute(rowGroup, "dwpMounted", mount.isDWPMounted());
+        if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_BODY) {
+            rowGroup.setAttributeNS(null, "baMountLoc", "body");
+        } else if (mount.getBaMountLoc() == BattleArmor.MOUNT_LOC_TURRET) {
+            rowGroup.setAttributeNS(null, "baMountLoc", "turret");
+        }
+        if (mount.getSize() != 1) {
+            rowGroup.setAttributeNS(null, "mountSize", String.valueOf(mount.getSize()));
+        }
+    }
+
+    private void setBooleanAttribute(Element element, String name, boolean value) {
+        if (value) {
+            element.setAttributeNS(null, name, "1");
+        }
     }
 
     private double printCapitalHeader(double currY) {
