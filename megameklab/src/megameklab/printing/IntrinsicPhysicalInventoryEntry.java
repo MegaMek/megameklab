@@ -131,10 +131,12 @@ public record IntrinsicPhysicalInventoryEntry(String name, String location, Stri
                 baseDmg /= 2;
             }
 
-            var leftBaseDamage = baseDmg
-                  + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_LEFT_ARM);
-            var rightBaseDamage = baseDmg
-                  + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_RIGHT_ARM);
+            var leftBaseDamage = baseDmg;
+            var rightBaseDamage = baseDmg;
+            if (mek.hasShield()) {
+                leftBaseDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_LEFT_ARM);
+                rightBaseDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(mek, Mek.LOC_RIGHT_ARM);
+            }
             var lDmg = formatDamage(hasLLowerActuator ? leftBaseDamage : Math.floor(leftBaseDamage / 2), hasTsm);
             var rDmg = formatDamage(hasRLowerActuator ? rightBaseDamage : Math.floor(rightBaseDamage / 2), hasTsm);
 

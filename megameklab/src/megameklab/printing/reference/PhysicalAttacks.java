@@ -107,10 +107,12 @@ public class PhysicalAttacks extends ReferenceTable {
         int left = countActuators(entity, Mek.LOC_LEFT_ARM);
         int right = countActuators(entity, Mek.LOC_RIGHT_ARM);
         int baseDamage = (int) Math.ceil(entity.getWeight() / 10.0);
-        int leftDamage = baseDamage
-              + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_LEFT_ARM);
-        int rightDamage = baseDamage
-              + Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_RIGHT_ARM);
+        int leftDamage = baseDamage;
+        int rightDamage = baseDamage;
+        if (entity.hasShield()) {
+            leftDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_LEFT_ARM);
+            rightDamage += Game.rulesManager.getRulesPhysical().getShieldDamageBoost(entity, Mek.LOC_RIGHT_ARM);
+        }
         boolean hasTSM = entity.hasWorkingMisc(MiscType.F_TSM);
         if ((left == right) && (leftDamage == rightDamage)) {
             addPunchAttack(bundle.getString("punch"), left, leftDamage, hasTSM);
