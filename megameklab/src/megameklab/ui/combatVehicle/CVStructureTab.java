@@ -638,8 +638,14 @@ public class CVStructureTab extends ITab implements CVBuildListener, ArmorAlloca
     @Override
     public void trailerChanged(boolean trailer) {
         getTank().setTrailer(trailer);
+        if (!trailer) {
+            getTank().setHasNoControlSystems(false);
+        }
         panChassis.setFromEntity(getTank());
         panMovement.setFromEntity(getTank());
+        refresh.refreshSummary();
+        refresh.refreshPreview();
+        refresh.refreshStatus();
     }
 
     @Override
