@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024-2025 The MegaMek Team. All Rights Reserved.
+ * Copyright (C) 2024-2026 The MegaMek Team. All Rights Reserved.
  *
  * This file is part of MegaMekLab.
  *
@@ -37,9 +37,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +50,7 @@ import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 
 import megamek.common.annotations.Nullable;
+import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.Mounted;
 import megamek.common.loaders.BLKFile;
@@ -58,7 +60,6 @@ import megamek.common.loaders.MekFileParser;
 import megamek.common.loaders.MtfFile;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.units.Entity;
-import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
 import megamek.common.units.Mek;
 import megamek.logging.MMLogger;
 import megameklab.ui.MegaMekLabMainUI;
@@ -378,11 +379,35 @@ public class TabUtil {
             if (!tabStateDir.mkdir()) {
                 throw new IOException("Could not create tab state directory: " + tabStateDir);
             } else {
-                Files.setAttribute(Paths.get(tabStateDir.getAbsolutePath()), "dos:hidden", true);
+                hideIfSupported(tabStateDir.toPath());
             }
         }
 
         return tabStateDir;
+    }
+
+    /**
+     * Marks the tab state directory hidden on filesystems that record hiding as a file attribute.
+     *
+     * <p>That is a DOS attribute, so it exists on Windows and nowhere else - asking for the {@code dos} view on any
+     * other filesystem throws {@link UnsupportedOperationException}. Elsewhere the leading dot in
+     * {@value #TAB_STATE_DIRECTORY} already hides the directory by convention, so there is nothing to do.</p>
+     *
+     * <p>Hiding is cosmetic either way, so a failure is logged rather than propagated: losing the whole session's tab
+     * state because its directory could not be made invisible would be a poor trade.</p>
+     *
+     * @param directory the newly created tab state directory
+     */
+    private static void hideIfSupported(Path directory) {
+        if (!directory.getFileSystem().supportedFileAttributeViews().contains("dos")) {
+            return;
+        }
+
+        try {
+            Files.setAttribute(directory, "dos:hidden", true);
+        } catch (IOException | UnsupportedOperationException ex) {
+            LOGGER.warn(ex, "Could not hide the tab state directory {}", directory);
+        }
     }
 
     public static void loadMany(List<File> files, MenuBarOwner owner) {
