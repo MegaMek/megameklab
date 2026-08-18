@@ -63,6 +63,7 @@ import megamek.client.ui.WrapLayout;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.models.XTableColumnModel;
 import megamek.client.ui.util.UIUtil;
+import megamek.common.RulesRef;
 import megamek.common.annotations.Nullable;
 import megamek.common.battleArmor.BattleArmor;
 import megamek.common.equipment.AmmoType;
@@ -580,7 +581,7 @@ public abstract class AbstractEquipmentDatabaseView extends IView {
         boolean rulesVisible = columnModel
               .isColumnVisible(columnModel.getColumnByModelIndex(EquipmentTableModel.COL_REF));
         String techSearchString = EquipmentTableModel.getTechBaseAsString(equipment).toLowerCase();
-        String rulesSearchString = equipment.getRulesRefs().toLowerCase();
+        String rulesSearchString = RulesRef.formatForDisplay(equipment.getRulesRefs()).toLowerCase();
         String lowerCaseSearchString = txtFilter.getText().toLowerCase();
         return txtFilter.getText().isBlank()
               || equipment.getName().toLowerCase().contains(lowerCaseSearchString)

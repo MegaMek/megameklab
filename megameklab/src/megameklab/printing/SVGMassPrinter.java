@@ -359,6 +359,10 @@ public class SVGMassPrinter {
     }
 
     private static double getMaxDamage(Entity entity, WeaponType wtype) {
+        // An MGA only changes how its linked machine guns resolve their attack; it does not deal additional damage.
+        if (wtype.hasFlag(WeaponType.F_MGA)) {
+            return 0;
+        }
         if (entity instanceof Aero) {
             int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
             attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
@@ -378,7 +382,11 @@ public class SVGMassPrinter {
         }
         if (wtype.getDamage() == DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
-            if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
+            if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.ATM
+                  || wtype.getAmmoType() == AmmoType.AmmoTypeEnum.IATM) {
+                perMissile = getMaxATMDamagePerMissile(entity, wtype);
+            } else if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon)
+                  || (wtype instanceof MMLWeapon)) {
                 perMissile = 2;
             }
             return wtype.getRackSize() * perMissile;
@@ -398,6 +406,14 @@ public class SVGMassPrinter {
         }
         return damage;
 
+    }
+
+    private static int getMaxATMDamagePerMissile(Entity entity, WeaponType wtype) {
+        return entity.getAmmo().stream()
+              .filter(ammo -> AmmoType.isAmmoValid(ammo, wtype))
+              .mapToInt(ammo -> ammo.getType().getDamagePerShot())
+              .max()
+              .orElse(2);
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

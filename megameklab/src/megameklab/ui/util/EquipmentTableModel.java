@@ -45,6 +45,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import megamek.common.RangeType;
+import megamek.common.RulesRef;
 import megamek.common.equipment.AmmoType;
 import megamek.common.equipment.EquipmentType;
 import megamek.common.equipment.MiscType;
@@ -414,7 +415,7 @@ public class EquipmentTableModel extends AbstractTableModel {
         } else if (col == COL_TECH) {
             return getTechBaseAsString(type);
         } else if (col == COL_REF) {
-            return type.getRulesRefs();
+            return RulesRef.formatForDisplay(type.getRulesRefs());
         }
         return "?";
     }
