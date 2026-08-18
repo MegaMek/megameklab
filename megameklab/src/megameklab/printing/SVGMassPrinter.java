@@ -3000,7 +3000,7 @@ public class SVGMassPrinter {
             Map<String, Map<String, Object>> equipmentJsonMap2 = new HashMap<>();
             for (EquipmentType equipmentType : EquipmentType.allTypes()) {
                 if (equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
-                equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentType.getYamlData());
+                equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentDataForExport(equipmentType));
             }
             Map<String, Object> rootJson2 = new LinkedHashMap<>();
             rootJson2.put("version", timestamp);
@@ -3014,6 +3014,10 @@ public class SVGMassPrinter {
         }
 
         System.exit(0);
+    }
+
+    static Map<String, Object> equipmentDataForExport(EquipmentType equipmentType) {
+        return equipmentType.getYamlData();
     }
 
     private static void exportUnitReferenceFiles(ObjectMapper mapper, List<UnitData> unitDataList) {
