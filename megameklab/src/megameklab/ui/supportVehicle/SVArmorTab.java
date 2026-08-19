@@ -131,12 +131,17 @@ public class SVArmorTab extends ITab implements ArmorAllocationListener {
     @Override
     public void armorTypeChanged(int at, int armorTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            double initialArmorTonnage = getEntity().getArmorWeight();
             UnitUtil.removeISorArmorMounts(getEntity(), false);
             getEntity().setArmorTechLevel(armorTechLevel);
             getEntity().setArmorType(at);
             ArmorType armor = ArmorType.of(at, TechConstants.isClan(armorTechLevel));
             getEntity().setBARRating(armor.getBAR());
             getEntity().setArmorTechRating(panArmor.getTechRating());
+            double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getEntity());
+            if (initialArmorTonnage > maxArmorTonnage) {
+                getEntity().setArmorTonnage(maxArmorTonnage);
+            }
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {

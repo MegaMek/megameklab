@@ -1436,8 +1436,13 @@ public class BMStructureTab extends ITab implements MekBuildListener, ArmorAlloc
     @Override
     public void armorTypeChanged(int at, int aTechLevel) {
         if (at != EquipmentType.T_ARMOR_PATCHWORK) {
+            double initialArmorTonnage = getMek().getArmorWeight();
             UnitUtil.removeISorArmorMounts(getMek(), false);
             createArmorMountsAndSetArmorType(at, aTechLevel);
+            double maxArmorTonnage = UnitUtil.getMaximumArmorTonnage(getMek());
+            if (initialArmorTonnage > maxArmorTonnage) {
+                getMek().setArmorTonnage(maxArmorTonnage);
+            }
             panArmorAllocation.showPatchwork(false);
             panPatchwork.setVisible(false);
         } else {
