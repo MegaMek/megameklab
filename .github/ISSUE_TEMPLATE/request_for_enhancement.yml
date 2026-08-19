@@ -1,8 +1,7 @@
 name: "Request an Enhancement"
 description: >
   Suggest a new feature, an improvement to an existing one, or a construction rule we have not
-  implemented yet.
-  Please check that you are on the right repository and that nobody has asked for this already.
+  implemented yet. Please check that nobody has asked for this already.
 type: "Feature"
 labels:
   - (RFE) Enhancement
