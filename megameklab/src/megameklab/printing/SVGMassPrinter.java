@@ -144,7 +144,7 @@ public class SVGMassPrinter {
 
     static ResourceBundle resourcesTabs = ResourceBundle.getBundle("megameklab.resources.Tabs");
     // The following are defaults that can be overridden via command-line arguments (see parseArgs / printUsage).
-    private static boolean SKIP_SVG = false; // Set to true to skip SVG generation
+    private static boolean SKIP_SVG = true; // Set to true to skip SVG generation
     private static boolean SKIP_UNITS = false; // Set to true to skip units generation
     private static boolean SKIP_EQUIPMENT = false; // Set to true to skip equipment generation
     private static boolean SKIP_UNIT_FILES = true; // Set to true to skip BLK/MTF re-save generation
@@ -1045,6 +1045,142 @@ public class SVGMassPrinter {
 
     }
 
+    static List<String> collectUnitRulesRefs(Entity entity) {
+        Set<SourceBookCode> books = new LinkedHashSet<>();
+        Set<Mounted<?>> visitedMounts = Collections.newSetFromMap(new IdentityHashMap<>());
+
+        addIntrinsicSystemRulesRefs(books, entity);
+
+        // Entity#getEquipment is the authoritative, unfiltered list of weapons, ammo, bombs, and miscellaneous gear.
+        for (Mounted<?> mounted : entity.getEquipment()) {
+            addMountedRulesRefs(books, mounted, visitedMounts);
+        }
+
+        // Conventional infantry's primary and secondary weapons are not guaranteed to be mounted equipment.
+        if (entity instanceof ConvInfantry infantry) {
+            addEquipmentRulesRefs(books, infantry.getPrimaryWeapon());
+            addEquipmentRulesRefs(books, infantry.getSecondaryWeapon());
+        }
+
+        addArmorRulesRefs(books, entity);
+        addStructureRulesRefs(books, entity);
+
+        return books.stream().map(SourceBookCode::getAbbrev).toList();
+    }
+
+    private static void addIntrinsicSystemRulesRefs(Set<SourceBookCode> books, Entity entity) {
+        // Sensors are intrinsic systems rather than EquipmentType instances.
+        for (Sensor sensor : entity.getSensors()) {
+            addSensorRulesRefs(books, sensor);
+        }
+
+        // Engines, including integral heat sinks, are not present in Entity#getEquipment.
+        if (entity.hasEngine()) {
+            addEngineRulesRefs(books, entity.getEngine());
+        }
+
+        // Every Mek system critical is intrinsic: cockpit, gyro, sensors, life support, engine, and actuators.
+        if (entity instanceof Mek mek) {
+            addMekSystemRulesRefs(books, mek);
+        }
+
+        // Aerospace cockpits and other construction systems are likewise not mounted EquipmentType instances.
+        if (entity instanceof Aero) {
+            books.add(SourceBookCode.TM);
+        }
+    }
+
+    private static void addSensorRulesRefs(Set<SourceBookCode> books, Sensor sensor) {
+        books.add(SourceBookCode.TW);
+    }
+
+    private static void addEngineRulesRefs(Set<SourceBookCode> books, Engine engine) {
+        books.add(engine.getEngineType() == Engine.MAGLEV ? SourceBookCode.TO_AUE : SourceBookCode.TM);
+    }
+
+    private static void addMekSystemRulesRefs(Set<SourceBookCode> books, Mek mek) {
+        for (int location = 0; location < mek.locations(); location++) {
+            for (int slot = 0; slot < mek.getNumberOfCriticalSlots(location); slot++) {
+                CriticalSlot critical = mek.getCritical(location, slot);
+                if ((critical != null) && (critical.getType() == CriticalSlot.TYPE_SYSTEM)) {
+                    addMekSystemRulesRefs(books, mek, critical.getIndex());
+                }
+            }
+        }
+    }
+
+    private static void addMekSystemRulesRefs(Set<SourceBookCode> books, Mek mek, int system) {
+        switch (system) {
+            case Mek.SYSTEM_SENSORS -> books.add(SourceBookCode.TW);
+            case Mek.SYSTEM_ENGINE -> {
+                if (mek.hasEngine()) {
+                    addEngineRulesRefs(books, mek.getEngine());
+                } else {
+                    books.add(SourceBookCode.TM);
+                }
+            }
+            default -> books.add(SourceBookCode.TM);
+        }
+    }
+
+    private static void addMountedRulesRefs(Set<SourceBookCode> books, @Nullable Mounted<?> mounted,
+          Set<Mounted<?>> visitedMounts) {
+        if ((mounted == null) || !visitedMounts.add(mounted)) {
+            return;
+        }
+
+        addEquipmentRulesRefs(books, mounted.getType());
+        addMountedRulesRefs(books, mounted.getLinked(), visitedMounts);
+        addMountedRulesRefs(books, mounted.getLinkedBy(), visitedMounts);
+        addMountedRulesRefs(books, mounted.getCrossLinkedBy(), visitedMounts);
+
+        if (mounted instanceof WeaponMounted bay) {
+            bay.getBayWeapons().forEach(member -> addMountedRulesRefs(books, member, visitedMounts));
+            bay.getBayAmmo().forEach(ammo -> addMountedRulesRefs(books, ammo, visitedMounts));
+        }
+    }
+
+    private static void addArmorRulesRefs(Set<SourceBookCode> books, Entity entity) {
+        if (entity.hasPatchworkArmor()) {
+            addEquipmentRulesRefs(books, ArmorType.of(EquipmentType.T_ARMOR_PATCHWORK, false));
+        }
+
+        for (int location = 0; location < entity.locations(); location++) {
+            int armorType = entity.getArmorType(location);
+            if (armorType >= 0) {
+                addEquipmentRulesRefs(books, ArmorType.of(armorType,
+                      TechConstants.isClan(entity.getArmorTechLevel(location))));
+            }
+        }
+    }
+
+    private static void addStructureRulesRefs(Set<SourceBookCode> books, Entity entity) {
+        if (entity instanceof Mek mek) {
+            for (int location = 0; location < mek.locations(); location++) {
+                addStructureRulesRef(books, mek.getStructureType(location),
+                      TechConstants.isClan(mek.getFrankenMekStructureTechLevel(location)));
+            }
+        } else {
+            addStructureRulesRef(books, entity.getStructureType(),
+                  TechConstants.isClan(entity.getStructureTechLevel()));
+        }
+    }
+
+    private static void addStructureRulesRef(Set<SourceBookCode> books, int structureType, boolean clan) {
+        if (structureType < 0) {
+            return;
+        }
+        addEquipmentRulesRefs(books, EquipmentType.getStructureFromName(
+              EquipmentType.getStructureTypeName(structureType, clan)));
+    }
+
+    private static void addEquipmentRulesRefs(Set<SourceBookCode> books, @Nullable EquipmentType equipmentType) {
+        if (equipmentType == null) {
+            return;
+        }
+        equipmentType.getRulesRefs().stream().map(RulesRef::book).forEach(books::add);
+    }
+
     public static class UnitData {
         public String name; // Unique name of the unit, used for deduplication
         public String uuid;
@@ -1070,6 +1206,7 @@ public class SVGMassPrinter {
         public int omni; // 1 if the unit is Omni
         public List<String> source; // Source(s) of the unit, e.g. ["TR:3050"]
         public List<String> published; // Source(s) where the record sheet has been published, e.g. ["RS:AS"]
+        public List<String> rulesRefs; // Unique sourcebook abbreviations for every explicit and implicit component
         public boolean canon; // True if the unit is canon, false if is not (e.g. alt-universe or april fools units)
         public String role; // Role, "Assault", "Scout", etc.
         public String armorType; // Armor Type
@@ -1615,7 +1752,9 @@ public class SVGMassPrinter {
             this.jump2 = entity.getAnyTypeMaxJumpMP();
             this.umu = entity.getActiveUMUCount();
             this.crewSize = entity.getCrew().getSlotCount();
-            this.comp = (new Components(entity)).getComp();
+            Components components = new Components(entity);
+            this.comp = components.getComp();
+            this.rulesRefs = collectUnitRulesRefs(entity);
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
             this.features = getFeatures(entity, options);
