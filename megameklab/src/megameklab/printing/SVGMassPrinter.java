@@ -1065,7 +1065,18 @@ public class SVGMassPrinter {
         addArmorRulesRefs(books, entity);
         addStructureRulesRefs(books, entity);
 
-        return books.stream().map(SourceBookCode::getAbbrev).toList();
+        return books.stream()
+              .filter(book -> isRulesRefApplicableToUnit(book, entity))
+              .map(SourceBookCode::getAbbrev)
+              .toList();
+    }
+
+    private static boolean isRulesRefApplicableToUnit(SourceBookCode book, Entity entity) {
+        return switch (book) {
+            case CORE -> (entity instanceof Mek mek) && !mek.isIndustrial();
+            case BMM -> entity instanceof Mek;
+            default -> true;
+        };
     }
 
     private static void addIntrinsicSystemRulesRefs(Set<SourceBookCode> books, Entity entity) {
