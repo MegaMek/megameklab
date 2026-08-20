@@ -10,9 +10,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please attach the unit you were working on - the `.mtf` or `.blk` file itself - along with
-        `megameklab.log` from the `logs` folder. A unit that reproduces the problem is worth more than
-        any description of it.
+        Please attach the unit you were working on, along with `megameklab.log` from the `logs`
+        folder. GitHub will not accept a bare `.mtf` or `.blk` file, so put the unit in a ZIP first.
+        A unit that reproduces the problem is worth more than any description of it.
 
         **Help > Report a Bug** fills in the version fields below for you.
 
@@ -53,11 +53,11 @@ body:
     attributes:
       label: "Attach your files"
       description: >
-        The unit file, and megameklab.log from the logs folder. Archives up to 25 MB, video up to
-        100 MB.
+        The unit file zipped up, and megameklab.log from the logs folder. Archives up to 25 MB,
+        video up to 100 MB.
     validations:
       required: false
-      accept: ".zip,.gz,.log,.txt,.csv,.mtf,.blk,.png,.jpg,.jpeg,.gif,.mp4,.mov"
+      accept: ".zip,.gz,.log,.txt,.csv,.png,.jpg,.jpeg,.gif,.mp4,.mov"
 
   - type: textarea
     id: log-excerpt
