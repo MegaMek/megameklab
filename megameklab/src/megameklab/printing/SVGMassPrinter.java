@@ -96,6 +96,7 @@ import megamek.common.options.IOption;
 import megamek.common.options.IOptionGroup;
 import megamek.common.options.OptionsConstants;
 import megamek.common.options.Quirks;
+import megamek.common.util.UnitRulesRefUtil;
 import megamek.common.verifier.TestProtoMek;
 import megamek.common.verifier.TestEntity;
 import megamek.common.verifier.TestInfantry;
@@ -359,6 +360,10 @@ public class SVGMassPrinter {
     }
 
     private static double getMaxDamage(Entity entity, WeaponType wtype) {
+        // An MGA only changes how its linked machine guns resolve their attack; it does not deal additional damage.
+        if (wtype.hasFlag(WeaponType.F_MGA)) {
+            return 0;
+        }
         if (entity instanceof Aero) {
             int[] attackValue = new int[RangeType.RANGE_EXTREME + 1];
             attackValue[RangeType.RANGE_SHORT] = wtype.getRoundShortAV();
@@ -378,7 +383,11 @@ public class SVGMassPrinter {
         }
         if (wtype.getDamage() == DAMAGE_BY_CLUSTER_TABLE) {
             int perMissile = 1;
-            if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon) || (wtype instanceof MMLWeapon)) {
+            if (wtype.getAmmoType() == AmmoType.AmmoTypeEnum.ATM
+                  || wtype.getAmmoType() == AmmoType.AmmoTypeEnum.IATM) {
+                perMissile = getMaxATMDamagePerMissile(entity, wtype);
+            } else if ((wtype instanceof SRMWeapon) || (wtype instanceof SRTWeapon)
+                  || (wtype instanceof MMLWeapon)) {
                 perMissile = 2;
             }
             return wtype.getRackSize() * perMissile;
@@ -398,6 +407,14 @@ public class SVGMassPrinter {
         }
         return damage;
 
+    }
+
+    private static int getMaxATMDamagePerMissile(Entity entity, WeaponType wtype) {
+        return entity.getAmmo().stream()
+              .filter(ammo -> AmmoType.isAmmoValid(ammo, wtype))
+              .mapToInt(ammo -> ammo.getType().getDamagePerShot())
+              .max()
+              .orElse(2);
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -1054,6 +1071,7 @@ public class SVGMassPrinter {
         public int omni; // 1 if the unit is Omni
         public List<String> source; // Source(s) of the unit, e.g. ["TR:3050"]
         public List<String> published; // Source(s) where the record sheet has been published, e.g. ["RS:AS"]
+        public List<List<String>> rulesRefs; // Alternative sourcebook combinations that each cover the whole unit
         public boolean canon; // True if the unit is canon, false if is not (e.g. alt-universe or april fools units)
         public String role; // Role, "Assault", "Scout", etc.
         public String armorType; // Armor Type
@@ -1599,7 +1617,11 @@ public class SVGMassPrinter {
             this.jump2 = entity.getAnyTypeMaxJumpMP();
             this.umu = entity.getActiveUMUCount();
             this.crewSize = entity.getCrew().getSlotCount();
-            this.comp = (new Components(entity)).getComp();
+            Components components = new Components(entity);
+            this.comp = components.getComp();
+            this.rulesRefs = UnitRulesRefUtil.collectRulesRefBuckets(entity).stream()
+                  .map(bucket -> bucket.stream().map(SourceBookCode::getAbbrev).toList())
+                  .toList();
             this.c3 = getC3Property(entity);
             this.quirks = getQuirks(entity);
             this.features = getFeatures(entity, options);
@@ -2984,7 +3006,7 @@ public class SVGMassPrinter {
             Map<String, Map<String, Object>> equipmentJsonMap2 = new HashMap<>();
             for (EquipmentType equipmentType : EquipmentType.allTypes()) {
                 if (equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
-                equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentType.getYamlData());
+                equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentDataForExport(equipmentType));
             }
             Map<String, Object> rootJson2 = new LinkedHashMap<>();
             rootJson2.put("version", timestamp);
@@ -2998,6 +3020,10 @@ public class SVGMassPrinter {
         }
 
         System.exit(0);
+    }
+
+    static Map<String, Object> equipmentDataForExport(EquipmentType equipmentType) {
+        return equipmentType.getYamlData();
     }
 
     private static void exportUnitReferenceFiles(ObjectMapper mapper, List<UnitData> unitDataList) {
