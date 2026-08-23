@@ -51,8 +51,8 @@ class SVStatusBar extends StatusBar {
 
     SVStatusBar(SVMainUI parent) {
         super(parent);
-        add(move);
-        add(slots);
+        addStatusComponent(move);
+        addStatusComponent(slots);
     }
 
     @Override

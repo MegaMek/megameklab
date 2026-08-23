@@ -51,7 +51,7 @@ public class PMStatusBar extends StatusBar {
 
     public PMStatusBar(PMMainUI parent) {
         super(parent);
-        add(slots);
+        addStatusComponent(slots);
     }
 
     @Override

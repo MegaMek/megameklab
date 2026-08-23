@@ -203,9 +203,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         setTransferHandler(new MMLFileDropTransferHandler(this));
 
         // Remember the size and position of the window from last time MML was launched
-        pack();
-        restrictToScreenSize();
-        setLocationRelativeTo(null);
+        packAndCenterOnScreen();
         CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
         CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -668,6 +666,22 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         int w = Math.min(getSize().width, scaledMonitorW);
         int h = Math.min(getSize().height, scaledMonitorH);
         setSize(new Dimension(w, h));
+    }
+
+    private void packAndCenterOnScreen() {
+        pack();
+        restrictToScreenSize();
+        setLocationRelativeTo(null);
+    }
+
+    /**
+     * Re-packs this window after content has been added when no saved window bounds exist. This is needed by startup
+     * paths that construct an empty tabbed window before adding the first unit.
+     */
+    public void applyFirstUseWindowSize() {
+        if (CConfig.getMainUiWindowSize(this).isEmpty()) {
+            packAndCenterOnScreen();
+        }
     }
 
     public void newTab() {

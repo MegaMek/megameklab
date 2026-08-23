@@ -32,6 +32,8 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +42,7 @@ import java.text.NumberFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
@@ -80,6 +83,7 @@ public class StatusBar extends ITab {
     private final JLabel cost = new ClickableLabel(
           e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
+    private final JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
     private final DecimalFormat formatter;
     private TestEntity testEntity;
     private RefreshListener refresh;
@@ -87,9 +91,17 @@ public class StatusBar extends ITab {
     public StatusBar(MegaMekLabMainUI parent) {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
-        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
+        setLayout(new BorderLayout());
         this.parent = parent;
         formatter = new DecimalFormat();
+
+        statusComponents.setOpaque(false);
+        add(statusComponents, BorderLayout.CENTER);
+
+        JPanel reportButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 22, 8));
+        reportButtonPanel.setOpaque(false);
+        reportButtonPanel.add(BugReportHelper.createButton(parent));
+        add(reportButtonPanel, BorderLayout.EAST);
 
         JButton btnValidate = new JButton("Validate");
         ActionListener validationListener = e -> {
@@ -115,17 +127,25 @@ public class StatusBar extends ITab {
         if (!getEntity().isConventionalInfantry()) {
             JButton showEquipmentDatabase = new JButton("Equipment");
             showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
-            add(showEquipmentDatabase);
+            addStatusComponent(showEquipmentDatabase);
         }
 
-        add(btnValidate);
-        add(btnAddToForce);
-        add(btnRefresh);
-        add(tons);
-        add(bvLabel);
-        add(invalid);
-        add(cost);
-        add(BugReportHelper.createButton(parent));
+        addStatusComponent(btnValidate);
+        addStatusComponent(btnAddToForce);
+        addStatusComponent(btnRefresh);
+        addStatusComponent(tons);
+        addStatusComponent(bvLabel);
+        addStatusComponent(invalid);
+        addStatusComponent(cost);
+    }
+
+    /**
+     * Adds type-specific information to the left side of the status bar while the report button remains anchored right.
+     *
+     * @param component the status component to add
+     */
+    protected final void addStatusComponent(Component component) {
+        statusComponents.add(component);
     }
 
     public final void refresh() {
