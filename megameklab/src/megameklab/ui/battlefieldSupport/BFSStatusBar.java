@@ -76,8 +76,8 @@ public class BFSStatusBar extends ITab {
 
         add(btnAddToForce);
         add(refreshButton);
-        add(BugReportHelper.createButton(parent));
         add(costLabel);
+        add(BugReportHelper.createButton(parent));
     }
 
     public void refresh() {

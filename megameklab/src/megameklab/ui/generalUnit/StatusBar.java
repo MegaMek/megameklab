@@ -121,11 +121,11 @@ public class StatusBar extends ITab {
         add(btnValidate);
         add(btnAddToForce);
         add(btnRefresh);
-        add(BugReportHelper.createButton(parent));
         add(tons);
         add(bvLabel);
         add(invalid);
         add(cost);
+        add(BugReportHelper.createButton(parent));
     }
 
     public final void refresh() {
