@@ -60,6 +60,7 @@ import megamek.common.units.Aero;
 import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
+import megameklab.ui.BugReportHelper;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -120,6 +121,7 @@ public class StatusBar extends ITab {
         add(btnValidate);
         add(btnAddToForce);
         add(btnRefresh);
+        add(BugReportHelper.createButton(parent));
         add(tons);
         add(bvLabel);
         add(invalid);

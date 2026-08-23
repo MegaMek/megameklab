@@ -43,6 +43,7 @@ import javax.swing.border.MatteBorder;
 
 import megamek.client.ui.WrapLayout;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megameklab.ui.BugReportHelper;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -75,6 +76,7 @@ public class BFSStatusBar extends ITab {
 
         add(btnAddToForce);
         add(refreshButton);
+        add(BugReportHelper.createButton(parent));
         add(costLabel);
     }
 
