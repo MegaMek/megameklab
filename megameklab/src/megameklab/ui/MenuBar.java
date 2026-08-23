@@ -165,18 +165,19 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miNewUnit.setMnemonic(mnemonic);
         }
         miNewUnit.addActionListener(evt -> {
-            MegaMekLabTabbedUI tabbedUI;
-            if (owner instanceof MegaMekLabTabbedUI) {
-                tabbedUI = (MegaMekLabTabbedUI) owner;
-            } else {
-                tabbedUI = new MegaMekLabTabbedUI();
+            boolean newWindow = !(owner instanceof MegaMekLabTabbedUI);
+            MegaMekLabTabbedUI tabbedUI = newWindow
+                  ? new MegaMekLabTabbedUI()
+                  : (MegaMekLabTabbedUI) owner;
+
+            tabbedUI.createNewUnit(type, primitive, false);
+            if (newWindow) {
                 tabbedUI.setVisible(true);
                 if (isStartupGui()) {
                     owner.getFrame().setVisible(false);
                     owner.getFrame().dispose();
                 }
             }
-            tabbedUI.createNewUnit(type, primitive, false);
         });
         return miNewUnit;
     }

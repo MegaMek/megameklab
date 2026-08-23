@@ -199,7 +199,6 @@ public class UiLoader {
             try {
                 var newUI = new MegaMekLabTabbedUI();
                 initializer.accept(newUI);
-                newUI.applyFirstUseWindowSize();
                 newUI.setVisible(true);
             } finally {
                 splash.setVisible(false);

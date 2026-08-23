@@ -34,6 +34,8 @@ package megameklab.ui.battlefieldSupport;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -71,6 +73,13 @@ public class BFSStatusBar extends ITab {
         JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
         statusComponents.setOpaque(false);
         add(statusComponents, BorderLayout.CENTER);
+        // WrapLayout's preferred height changes with its allocated width.
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent event) {
+                statusComponents.invalidate();
+            }
+        });
 
         JPanel reportButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 22, 8));
         reportButtonPanel.setOpaque(false);

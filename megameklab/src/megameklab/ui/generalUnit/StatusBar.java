@@ -37,6 +37,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.JButton;
@@ -97,6 +99,13 @@ public class StatusBar extends ITab {
 
         statusComponents.setOpaque(false);
         add(statusComponents, BorderLayout.CENTER);
+        // WrapLayout's preferred height changes with its allocated width.
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent event) {
+                statusComponents.invalidate();
+            }
+        });
 
         JPanel reportButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 22, 8));
         reportButtonPanel.setOpaque(false);
