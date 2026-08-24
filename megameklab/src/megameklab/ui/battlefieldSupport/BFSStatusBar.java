@@ -77,7 +77,7 @@ public class BFSStatusBar extends ITab {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent event) {
-                statusComponents.invalidate();
+                statusComponents.revalidate();
             }
         });
 
