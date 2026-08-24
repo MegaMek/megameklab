@@ -32,17 +32,22 @@
  */
 package megameklab.ui.battlefieldSupport;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
 import megamek.client.ui.WrapLayout;
 import megamek.common.battlefieldSupport.BattlefieldSupportAsset;
+import megameklab.ui.BugReportHelper;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -63,7 +68,23 @@ public class BFSStatusBar extends ITab {
     public BFSStatusBar(MegaMekLabMainUI parent) {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
-        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
+        setLayout(new BorderLayout());
+
+        JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
+        statusComponents.setOpaque(false);
+        add(statusComponents, BorderLayout.CENTER);
+        // WrapLayout's preferred height changes with its allocated width.
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent event) {
+                statusComponents.revalidate();
+            }
+        });
+
+        JPanel reportButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 22, 8));
+        reportButtonPanel.setOpaque(false);
+        reportButtonPanel.add(BugReportHelper.createButton(parent));
+        add(reportButtonPanel, BorderLayout.EAST);
 
         JButton btnAddToForce = new JButton(I18N.getString("BFSStatusBar.addToForce.text"));
         btnAddToForce.setToolTipText(I18N.getString("BFSStatusBar.addToForce.tooltip"));
@@ -73,9 +94,9 @@ public class BFSStatusBar extends ITab {
         refreshButton.setEnabled(false);
         refreshButton.addActionListener(evt -> refresh.refreshAll());
 
-        add(btnAddToForce);
-        add(refreshButton);
-        add(costLabel);
+        statusComponents.add(btnAddToForce);
+        statusComponents.add(refreshButton);
+        statusComponents.add(costLabel);
     }
 
     public void refresh() {

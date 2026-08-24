@@ -35,8 +35,10 @@ package megameklab.ui;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.DisplayMode;
+import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -54,7 +56,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import megamek.MegaMek;
-import megamek.client.ui.util.UIUtil;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.ui.CloseableTab;
 import megamek.common.ui.DetachedTabInfo;
@@ -76,6 +77,8 @@ import megameklab.util.UnitUtil;
  */
 public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeListener {
 
+    private static final int MINIMUM_SAVED_WINDOW_WIDTH = 400;
+    private static final int MINIMUM_SAVED_WINDOW_HEIGHT = 300;
     private static final Set<MegaMekLabTabbedUI> openWindows = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final List<MegaMekLabMainUI> editors = new CopyOnWriteArrayList<>();
     private static final ReopenTabStack closedEditors = new ReopenTabStack();
@@ -84,6 +87,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
     private final EnhancedTabbedPane tabs;
 
     private final MenuBar menuBar;
+    private boolean initialWindowSizeApplied;
 
     /**
      * Constructs a new MegaMekLabTabbedUI instance, which serves as the main tabbed UI for managing multiple
@@ -181,16 +185,16 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
             if (component instanceof MegaMekLabMainUI mainUI) {
                 // Create a new tabbed UI to host this detached tab
                 MegaMekLabTabbedUI newTabbedUI = new MegaMekLabTabbedUI();
-                newTabbedUI.setLocation(location);
                 newTabbedUI.addTab(mainUI);
+                newTabbedUI.setLocation(location);
                 return newTabbedUI;
             }
             return null; // Return null to use default window creation
         });
 
-        // Add initial tabs
-        for (MegaMekLabMainUI e : entities) {
-            addTab(e);
+        // Add all constructor-supplied editors before sizing the window below.
+        for (MegaMekLabMainUI entity : entities) {
+            addTab(entity);
         }
 
         tabs.addChangeListener(this);
@@ -202,12 +206,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         // Enable opening unit and mul files by drag-and-drop
         setTransferHandler(new MMLFileDropTransferHandler(this));
 
-        // Remember the size and position of the window from last time MML was launched
-        pack();
-        restrictToScreenSize();
-        setLocationRelativeTo(null);
-        CConfig.getMainUiWindowSize(this).ifPresent(this::setSize);
-        CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -215,6 +213,9 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
                 exit(); // Call exit() to handle closing the window
             }
         });
+
+        applyInitialWindowSize();
+
         setExtendedState(CConfig.getIntParam(CConfig.GUI_FULLSCREEN));
 
     }
@@ -423,7 +424,6 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (targetWindow == null) {
             // If no windows are open, create a new one
             targetWindow = new MegaMekLabTabbedUI();
-            targetWindow.setVisible(true);
         }
 
         if (StartupGUI.hasInstance()) {
@@ -495,6 +495,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         if (setSelected) {
             tabs.setSelectedIndex(tabs.getTabCount() - 1);
         }
+        applyInitialWindowSize();
         // editor.refreshAll(); // not needed?
     }
 
@@ -529,6 +530,7 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         tabs.addCloseableTab(tabName, null, editor, tabIndex);
         editor.setTabOwner(this);
         tabs.setSelectedIndex(tabIndex);
+        applyInitialWindowSize();
     }
 
     /**
@@ -658,16 +660,56 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         }
     }
 
+    private Rectangle getUsableScreenBounds() {
+        var configuration = getGraphicsConfiguration();
+        Rectangle screenBounds = configuration.getBounds();
+        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(configuration);
+        return new Rectangle(screenBounds.x + screenInsets.left,
+              screenBounds.y + screenInsets.top,
+              screenBounds.width - screenInsets.left - screenInsets.right,
+              screenBounds.height - screenInsets.top - screenInsets.bottom);
+    }
+
     private void restrictToScreenSize() {
-        DisplayMode currentMonitor = getGraphicsConfiguration().getDevice().getDisplayMode();
-        int scaledMonitorW = UIUtil.getScaledScreenWidth(currentMonitor);
-        int scaledMonitorH = UIUtil.getScaledScreenHeight(currentMonitor);
-        if (scaledMonitorH <= 0 || scaledMonitorW <= 0) {
-            return; // Invalid monitor size, do not resize
+        Rectangle usableBounds = getUsableScreenBounds();
+        setSize(Math.min(getWidth(), usableBounds.width), Math.min(getHeight(), usableBounds.height));
+    }
+
+    private void centerOnScreen() {
+        Rectangle usableBounds = getUsableScreenBounds();
+        setLocation(usableBounds.x + ((usableBounds.width - getWidth()) / 2),
+              usableBounds.y + ((usableBounds.height - getHeight()) / 2));
+    }
+
+    private void keepOnScreen() {
+        Rectangle usableBounds = getUsableScreenBounds();
+        setLocation(Math.clamp(getX(), usableBounds.x, usableBounds.x + usableBounds.width - getWidth()),
+              Math.clamp(getY(), usableBounds.y, usableBounds.y + usableBounds.height - getHeight()));
+    }
+
+    private void packAndCenterOnScreen() {
+        pack();
+        restrictToScreenSize();
+        centerOnScreen();
+    }
+
+    private void applyInitialWindowSize() {
+        if (initialWindowSizeApplied || (tabs.getTabCount() == 0) || (getContentPane() != tabs)) {
+            return;
         }
-        int w = Math.min(getSize().width, scaledMonitorW);
-        int h = Math.min(getSize().height, scaledMonitorH);
-        setSize(new Dimension(w, h));
+        initialWindowSizeApplied = true;
+
+        packAndCenterOnScreen();
+
+        var savedWindowSize = CConfig.getMainUiWindowSize(this)
+              .filter(size -> (size.width >= MINIMUM_SAVED_WINDOW_WIDTH)
+                    && (size.height >= MINIMUM_SAVED_WINDOW_HEIGHT));
+        if (savedWindowSize.isPresent()) {
+            setSize(savedWindowSize.get());
+            restrictToScreenSize();
+            CConfig.getMainUiWindowPosition(this).ifPresent(this::setLocation);
+            keepOnScreen();
+        }
     }
 
     public void newTab() {

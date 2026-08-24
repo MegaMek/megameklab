@@ -47,6 +47,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import megamek.MegaMek;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
@@ -552,6 +553,17 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
     }
 
     /**
+     * Shows the cache progress dialog in a modal event loop. The unit selector waits synchronously for the cache after
+     * this dialog closes, so a modeless dialog would leave the Swing event thread blocked and unable to paint its status
+     * text or progress bar.
+     */
+    static void showUnitLoadingProgress(UnitLoadingDialog unitLoadingDialog) {
+        unitLoadingDialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+        unitLoadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        unitLoadingDialog.setVisible(true);
+    }
+
+    /**
      * Shows the Unit Selector Window and loads the unit if the user selects one. When the chosen unit fits the
      * MageMekLabMainUI given as previousFrame this frame will be kept and updated to the chosen unit, otherwise, a new
      * UI will be created for the unit and previousFrame will be closed and disposed.
@@ -560,7 +572,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
      */
     public static void selectAndLoadUnitFromCache(MenuBarOwner previousFrame) {
         UnitLoadingDialog unitLoadingDialog = new UnitLoadingDialog(previousFrame.getFrame());
-        unitLoadingDialog.setVisible(true);
+        showUnitLoadingProgress(unitLoadingDialog);
         MegaMekLabUnitSelectorDialog viewer;
         if (previousFrame instanceof MegaMekLabTabbedUI tabbedUI) {
             viewer = new MegaMekLabUnitSelectorDialog(previousFrame.getFrame(), unitLoadingDialog,

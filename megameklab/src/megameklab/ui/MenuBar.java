@@ -51,7 +51,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import megamek.client.ui.CopySystemDataAction;
-import megamek.client.ui.ShowBugReportDialogAction;
 import megamek.client.ui.clientGUI.GUIPreferences;
 import megamek.client.ui.dialogs.UnitLoadingDialog;
 import megamek.client.ui.dialogs.abstractDialogs.BVDisplayDialog;
@@ -111,6 +110,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
 
     public MenuBar(MenuBarOwner owner) {
         this.owner = owner;
+        BugReportHelper.installOnErrorDialogs(owner);
         initialize();
     }
 
@@ -165,18 +165,19 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
             miNewUnit.setMnemonic(mnemonic);
         }
         miNewUnit.addActionListener(evt -> {
-            MegaMekLabTabbedUI tabbedUI;
-            if (owner instanceof MegaMekLabTabbedUI) {
-                tabbedUI = (MegaMekLabTabbedUI) owner;
-            } else {
-                tabbedUI = new MegaMekLabTabbedUI();
+            boolean newWindow = !(owner instanceof MegaMekLabTabbedUI);
+            MegaMekLabTabbedUI tabbedUI = newWindow
+                  ? new MegaMekLabTabbedUI()
+                  : (MegaMekLabTabbedUI) owner;
+
+            tabbedUI.createNewUnit(type, primitive, false);
+            if (newWindow) {
                 tabbedUI.setVisible(true);
                 if (isStartupGui()) {
                     owner.getFrame().setVisible(false);
                     owner.getFrame().dispose();
                 }
             }
-            tabbedUI.createNewUnit(type, primitive, false);
         });
         return miNewUnit;
     }
@@ -1267,7 +1268,7 @@ public class MenuBar extends JMenuBar implements ClipboardOwner {
         helpMenu.addSeparator();
 
         CopySystemDataAction copySystemDataAction = new CopySystemDataAction(MMLConstants.PROJECT_NAME);
-        helpMenu.add(new ShowBugReportDialogAction(owner.getFrame(), copySystemDataAction));
+        helpMenu.add(BugReportHelper.createDialogAction(owner));
         helpMenu.add(copySystemDataAction);
 
         helpMenu.addSeparator();

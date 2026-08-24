@@ -32,14 +32,19 @@
  */
 package megameklab.ui.generalUnit;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 
@@ -60,6 +65,7 @@ import megamek.common.units.Aero;
 import megamek.common.units.Mek;
 import megamek.common.verifier.TestEntity;
 import megamek.utilities.DebugEntity;
+import megameklab.ui.BugReportHelper;
 import megameklab.ui.ForceBuildUI;
 import megameklab.ui.MegaMekLabMainUI;
 import megameklab.ui.util.ITab;
@@ -79,6 +85,7 @@ public class StatusBar extends ITab {
     private final JLabel cost = new ClickableLabel(
           e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
+    private final JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
     private final DecimalFormat formatter;
     private TestEntity testEntity;
     private RefreshListener refresh;
@@ -86,9 +93,24 @@ public class StatusBar extends ITab {
     public StatusBar(MegaMekLabMainUI parent) {
         super(parent);
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
-        setLayout(new WrapLayout(FlowLayout.LEFT, 22, 8));
+        setLayout(new BorderLayout());
         this.parent = parent;
         formatter = new DecimalFormat();
+
+        statusComponents.setOpaque(false);
+        add(statusComponents, BorderLayout.CENTER);
+        // WrapLayout's preferred height changes with its allocated width.
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent event) {
+                statusComponents.revalidate();
+            }
+        });
+
+        JPanel reportButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 22, 8));
+        reportButtonPanel.setOpaque(false);
+        reportButtonPanel.add(BugReportHelper.createButton(parent));
+        add(reportButtonPanel, BorderLayout.EAST);
 
         JButton btnValidate = new JButton("Validate");
         ActionListener validationListener = e -> {
@@ -114,16 +136,25 @@ public class StatusBar extends ITab {
         if (!getEntity().isConventionalInfantry()) {
             JButton showEquipmentDatabase = new JButton("Equipment");
             showEquipmentDatabase.addActionListener(evt -> parent.getFloatingEquipmentDatabase().setVisible(true));
-            add(showEquipmentDatabase);
+            addStatusComponent(showEquipmentDatabase);
         }
 
-        add(btnValidate);
-        add(btnAddToForce);
-        add(btnRefresh);
-        add(tons);
-        add(bvLabel);
-        add(invalid);
-        add(cost);
+        addStatusComponent(btnValidate);
+        addStatusComponent(btnAddToForce);
+        addStatusComponent(btnRefresh);
+        addStatusComponent(tons);
+        addStatusComponent(bvLabel);
+        addStatusComponent(invalid);
+        addStatusComponent(cost);
+    }
+
+    /**
+     * Adds type-specific information to the left side of the status bar while the report button remains anchored right.
+     *
+     * @param component the status component to add
+     */
+    protected final void addStatusComponent(Component component) {
+        statusComponents.add(component);
     }
 
     public final void refresh() {
