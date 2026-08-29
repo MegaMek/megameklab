@@ -1417,7 +1417,7 @@ public class SVGMassPrinter {
                 }
             }
 
-            if (entity instanceof Dropship) {
+            if ((entity instanceof Dropship) || (entity instanceof Jumpship)) {
                 for (Mounted<?> mount : entity.getMisc()) {
                     if (PrintUtil.isPrintableEquipment(mount.getType(), options)) {
                         feats.add(mount.getShortName());
