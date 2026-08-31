@@ -56,7 +56,6 @@ import megamek.common.verifier.TestInfantry;
 import megameklab.ui.EntitySource;
 import megameklab.ui.listeners.InfantryBuildListener;
 import megameklab.ui.util.IView;
-import megameklab.util.InfantryUtil;
 
 /**
  * View for selecting infantry specializations, including Xeno-Planetary conditions training (XCT).
