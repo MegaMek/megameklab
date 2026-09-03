@@ -3014,7 +3014,8 @@ public class SVGMassPrinter {
             processedCount = 0;
             Map<String, Map<String, Object>> equipmentJsonMap2 = new HashMap<>();
             for (EquipmentType equipmentType : EquipmentType.allTypes()) {
-                if (equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
+                if (equipmentType.isUnofficial()
+                      || equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
                 equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentDataForExport(equipmentType));
             }
             Map<String, Object> rootJson2 = new LinkedHashMap<>();
