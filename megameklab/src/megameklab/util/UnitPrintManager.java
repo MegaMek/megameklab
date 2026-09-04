@@ -113,7 +113,7 @@ public class UnitPrintManager {
         try {
             var options = new GameOptions();
             options.initialize();
-            // Pilot implants are one three-way option; any setting but Off lets a MUL's implants load
+            // Pilot implants are a three-way option; any setting but Off lets a MUL's implants load
             options.getOption(ADVANCED_NEURAL_INTERFACE_MODE).setValue(NEURAL_INTERFACE_MODE_PILOT_ONLY);
             options.getOption(RPG_PILOT_ADVANTAGES).setValue(true);
             MULParser parser = new MULParser(file, options);
