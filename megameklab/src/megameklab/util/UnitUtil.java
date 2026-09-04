@@ -111,7 +111,9 @@ public class UnitUtil {
         final Game game = dummyClient.getGame();
         game.getOptions().getOption(OptionsConstants.ADVANCED_STRATOPS_QUIRKS).setValue(true);
         game.getOptions().getOption(OptionsConstants.RPG_PILOT_ADVANTAGES).setValue(true);
-        game.getOptions().getOption(OptionsConstants.RPG_MANEI_DOMINI).setValue(true);
+        // Pilot implants are one three-way option; any setting but Off allows every implant
+        game.getOptions().getOption(OptionsConstants.ADVANCED_NEURAL_INTERFACE_MODE)
+              .setValue(OptionsConstants.NEURAL_INTERFACE_MODE_PILOT_ONLY);
         game.addPlayer(1, dummyPlayer);
         dummyClient.setLocalPlayerNumber(1);
     }
