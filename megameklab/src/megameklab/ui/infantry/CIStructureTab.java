@@ -261,6 +261,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             InfantryUtil.replaceMainWeapon(getInfantry(),
                   (InfantryWeapon) EquipmentType.get(EquipmentTypeLookup.INFANTRY_TAG), true);
             getInfantry().setSecondaryWeaponsPerSquad(2);
+        } else if (!getInfantry().hasSpecialization(ConvInfantry.TAG_TROOPS) && getInfantry().getSecondaryWeapon() != null && getInfantry().getSecondaryWeapon().hasFlag(WeaponType.F_TAG)) {
+            InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
+            getInfantry().setSecondaryWeaponsPerSquad(0);
+        } else if (TestInfantry.maxSecondaryWeapons(getInfantry()) < getInfantry().getSecondaryWeaponsPerSquad()) {
+            getInfantry().setSecondaryWeaponsPerSquad(TestInfantry.maxSecondaryWeapons(getInfantry()));
+            if (getInfantry().getSecondaryWeaponsPerSquad() == 0) {
+                InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
+            }
         }
     }
 
@@ -416,6 +424,13 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             getInfantry().setMovementMode(movementMode);
             getInfantry().setMount(null);
         }
+
+        if (movementMode == EntityMovementMode.INF_UMU || movementMode == EntityMovementMode.SUBMARINE) {
+            getInfantry().setSpecializations(getInfantry().getSpecializations() | ConvInfantry.SCUBA);
+        } else {
+            getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.SCUBA);
+        }
+
         getInfantry().setMicrolite(alt && (movementMode == EntityMovementMode.VTOL));
 
         if (getInfantry().getMovementMode() != EntityMovementMode.INF_MOTORIZED
@@ -423,8 +438,14 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
               && getInfantry().getMovementMode() != EntityMovementMode.WHEELED) {
             InfantryUtil.replaceFieldGun(getInfantry(), null, 0);
         }
+
+        if (getInfantry().hasSpecialization(ConvInfantry.TAG_TROOPS) && TestInfantry.maxSecondaryWeapons(getInfantry()) < 2) {
+            getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.TAG_TROOPS);
+        }
+
         enableTabs();
         TestInfantry.adaptAntiMekAttacks(getInfantry());
+        updateSpecializations();
         platoonTypeView.setFromEntity(getInfantry());
         weaponView.setFromEntity(getInfantry());
         specializationChoiceTable.refresh();
@@ -461,6 +482,8 @@ public class CIStructureTab extends ITab implements InfantryBuildListener {
             if (count == 0) {
                 InfantryUtil.replaceMainWeapon(getInfantry(), null, true);
                 getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.TAG_TROOPS);
+                updateSpecializations();
+                specializationChoiceTable.refresh();
             }
             getInfantry().setSecondaryWeaponsPerSquad(count);
         }

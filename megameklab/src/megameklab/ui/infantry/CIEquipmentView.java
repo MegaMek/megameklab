@@ -234,8 +234,11 @@ public class CIEquipmentView extends IView implements ActionListener {
             if (weapon.hasFlag(WeaponType.F_TAG)) {
                 getInfantry().setSpecializations(getInfantry().getSpecializations() | ConvInfantry.TAG_TROOPS);
                 getInfantry().setSecondaryWeaponsPerSquad(2);
-            } else if (isSecondary && (getInfantry().getSecondaryWeaponsPerSquad() == 0)) {
-                getInfantry().setSecondaryWeaponsPerSquad(1);
+            } else if (isSecondary) {
+                getInfantry().setSpecializations(getInfantry().getSpecializations() & ~ConvInfantry.TAG_TROOPS);
+                if (getInfantry().getSecondaryWeaponsPerSquad() == 0) {
+                    getInfantry().setSecondaryWeaponsPerSquad(1);
+                }
             }
         }
     }
