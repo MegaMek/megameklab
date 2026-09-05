@@ -128,9 +128,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
-import static megamek.common.equipment.EquipmentType.T_ARMOR_BA_STANDARD;
 import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD;
-import static megamek.common.equipment.EquipmentType.T_ARMOR_STANDARD_PROTOMEK;
 import static megamek.common.equipment.WeaponType.DAMAGE_ARTILLERY;
 import static megamek.common.equipment.WeaponType.DAMAGE_BY_CLUSTER_TABLE;
 import static megamek.common.equipment.WeaponType.DAMAGE_SPECIAL;
@@ -228,6 +226,8 @@ public class SVGMassPrinter {
         public int os; // If is an oneshot weapon or a double oneshot weapon (1 or 2), if applicable
         public Collection<ExportInventoryEntry> bay; // Bay weapons, if applicable
     }
+
+    public record MaterialLayoutEntry(int type, boolean clan) {}
 
     public static class CalculationDetail {
         public String type;
@@ -878,34 +878,34 @@ public class SVGMassPrinter {
             list.put(locationAbbreviation + ":" + id, entry);
         }
 
-        /**
-                 * Exports the entity's selected internal structure as one normalized component.
-                 * Mounted structure critical slots are deliberately omitted from the inventory export.
-         */
+        /** Exports one uniform structure; hybrid distribution belongs to UnitData.hybridLayout. */
         private void addImplicitStructureEntry(Map<String, ExportInventoryEntry> list, Entity entity) {
-                        if (entity.getStructureType() < 0) {
+            if ((entity instanceof Mek mek) && mek.hasHybridFrankenMekStructure()) {
                 return;
             }
-
-            StructureType structure = EquipmentType.getStructureFromName(
-                  EquipmentType.getStructureTypeName(entity.getStructureType(), entity.isClan()));
+            StructureType structure = structureAt(entity, 0);
             if (structure == null) {
                 return;
             }
+            list.put(structure.getInternalName() + "__structure",
+                  syntheticMaterialEntry(entity, structure, "Structure"));
+        }
 
-            ExportInventoryEntry entry = new ExportInventoryEntry();
-            entry.id = structure.getInternalName();
-            entry.n = withMaterialSuffix(cleanupName(structure.getShortName()), "Structure");
-            entry.t = "S";
-            entry.q = 1;
-            entry.p = -1;
-            entry.c = getCriticals(entity, structure);
-            list.put(structure.getInternalName() + "__S", entry);
+        private StructureType structureAt(Entity entity, int location) {
+            if (entity instanceof Mek mek && mek.isFrankenMek()) {
+                EquipmentType structure = mek.getFrankenMekStructureEquipment(location);
+                return structure instanceof StructureType ? (StructureType) structure : null;
+            }
+            if (entity.getStructureType() < 0) {
+                return null;
+            }
+            return EquipmentType.getStructureFromName(
+                  EquipmentType.getStructureTypeName(entity.getStructureType(), entity.isClan()));
         }
 
         /**
-         * Exports armor as normalized entity-level entries. Patchwork retains its marker and exposes every distinct
-         * effective armor material, while location-specific armor critical slots remain an implementation detail.
+         * Exports one uniform armor entry. Patchwork keeps only its marker; its distribution belongs to
+         * UnitData.patchworkLayout.
          */
         private void addSyntheticArmorEntries(Map<String, ExportInventoryEntry> list, Entity entity) {
             if (entity.locations() == 0) {
@@ -913,40 +913,32 @@ public class SVGMassPrinter {
             }
 
             if (entity.hasPatchworkArmor()) {
-                addSyntheticArmorEntry(list, entity, EquipmentType.T_ARMOR_PATCHWORK, false, "__patchwork");
-                Set<String> emittedArmor = new HashSet<>();
-                for (int location = 0; location < entity.locations(); location++) {
-                    int armorType = entity.getArmorType(location);
-                    boolean clanArmor = entity.isClanArmor(location);
-                    String key = armorType + ":" + clanArmor;
-                    if (emittedArmor.add(key)) {
-                        addSyntheticArmorEntry(list, entity, armorType, clanArmor, "__armor_" + key);
-                    }
-                }
-            } else {
-                addSyntheticArmorEntry(list, entity, entity.getArmorType(0), entity.isClanArmor(0), "__armor");
+                ArmorType patchwork = ArmorType.of(EquipmentType.T_ARMOR_PATCHWORK, false);
+                list.put(patchwork.getInternalName() + "__patchwork",
+                      syntheticMaterialEntry(entity, patchwork, "Armor"));
+                return;
             }
-        }
 
-        private void addSyntheticArmorEntry(Map<String, ExportInventoryEntry> list, Entity entity, int armorType,
-                                             boolean clanArmor, String suffix) {
+            int armorType = entity.getArmorType(0);
             if (armorType < 0) {
                 return;
             }
-
-            ArmorType armor = EquipmentType.getArmorFromName(EquipmentType.getArmorTypeName(armorType, clanArmor));
-            if (armor == null) {
-                return;
+            ArmorType armor = ArmorType.of(armorType, entity.isClanArmor(0));
+            if (armor != null) {
+                list.put(armor.getInternalName() + "__armor",
+                      syntheticMaterialEntry(entity, armor, "Armor"));
             }
+        }
 
+        private ExportInventoryEntry syntheticMaterialEntry(Entity entity, EquipmentType material, String suffix) {
             ExportInventoryEntry entry = new ExportInventoryEntry();
-            entry.id = armor.getInternalName();
-            entry.n = withMaterialSuffix(cleanupName(armor.getShortName()), "Armor");
+            entry.id = material.getInternalName();
+            entry.n = withMaterialSuffix(cleanupName(material.getShortName()), suffix);
             entry.t = "S";
             entry.q = 1;
             entry.p = -1;
-            entry.c = getCriticals(entity, armor);
-            list.put(armor.getInternalName() + suffix, entry);
+            entry.c = getCriticals(entity, material);
+            return entry;
         }
 
         private String withMaterialSuffix(String name, String suffix) {
@@ -1076,6 +1068,10 @@ public class SVGMassPrinter {
         public String role; // Role, "Assault", "Scout", etc.
         public String armorType; // Armor Type
         public String structureType; // Internal Structure Type
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public Map<String, MaterialLayoutEntry> patchworkLayout;
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public Map<String, MaterialLayoutEntry> hybridLayout;
         public int armor; // Total armor
         public double armorPer; // Armor %
         public int internal; // Total internal structure
@@ -1083,8 +1079,8 @@ public class SVGMassPrinter {
         public int squads;
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public int squadSize;
-        public int heat; // Total heat generation
-        public int dissipation; // Heat capacity
+        public Integer heat; // Total heat generation; null when the unit does not track heat
+        public Integer dissipation; // Heat capacity; null when the unit does not track heat
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public int[] diss; // Max Dissipation
         public int engineHS; // Number of engine-integrated (critical-free) heat sinks
@@ -1421,7 +1417,7 @@ public class SVGMassPrinter {
                 }
             }
 
-            if (entity instanceof Dropship) {
+            if ((entity instanceof Dropship) || (entity instanceof Jumpship)) {
                 for (Mounted<?> mount : entity.getMisc()) {
                     if (PrintUtil.isPrintableEquipment(mount.getType(), options)) {
                         feats.add(mount.getShortName());
@@ -1577,6 +1573,8 @@ public class SVGMassPrinter {
             this.role = formatRole(entity);
             this.armorType = getArmorType(entity);
             this.structureType = getStructureType(entity);
+            this.patchworkLayout = getPatchworkLayout(entity);
+            this.hybridLayout = getHybridLayout(entity);
             int maxArmor = UnitUtil.getMaximumArmorPoints(entity);
             this.armor = entity.getTotalOArmor();
             entity.isBattleArmor();
@@ -1605,8 +1603,8 @@ public class SVGMassPrinter {
                     this.engineHS = aero.getHeatSinks(); // - aero.getPodHeatSinks();
                 }
             } else {
-                this.heat = -1;
-                this.dissipation = -1;
+                this.heat = null;
+                this.dissipation = null;
             }
             this.moveType = getMoveType(entity);
             this.walk = entity.getWalkMP();
@@ -2325,33 +2323,44 @@ public class SVGMassPrinter {
                 }
                 return armorType;
             } else {
-                boolean hasSpecial = false;
-                for (int loc = 0; loc < entity.locations(); loc++) {
-                    if ((entity.getArmorType(loc) != T_ARMOR_STANDARD)
-                          && (entity.getArmorType(loc) != T_ARMOR_BA_STANDARD)
-                          && (entity.getArmorType(loc) != T_ARMOR_STANDARD_PROTOMEK)
-                          // Stealth armor loses special properties when used with patchwork, so we don't
-                          // need to show it.
-                          && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH)
-                          && (entity.getArmorType(loc) != EquipmentType.T_ARMOR_STEALTH_VEHICLE)) {
-                        hasSpecial = true;
-                        break;
-                    }
-                }
-                if (hasSpecial) {
-                    return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK);
-                } else {
-                    return "Standard Armor";
-                }
+                return EquipmentType.getArmorTypeName(EquipmentType.T_ARMOR_PATCHWORK);
             }
             return "";
         }
 
         private @Nullable String getStructureType(Entity entity) {
+            if (entity instanceof Mek mek && mek.isFrankenMek()) {
+                return mek.getFrankenMekStructureDisplayName();
+            }
             if (entity.getStructureType() < 0) {
                 return null;
             }
             return EquipmentType.getStructureTypeName(entity.getStructureType());
+        }
+
+        static @Nullable Map<String, MaterialLayoutEntry> getPatchworkLayout(Entity entity) {
+            if (!entity.hasPatchworkArmor()) {
+                return null;
+            }
+            Map<String, MaterialLayoutEntry> layout = new LinkedHashMap<>();
+            for (int location = 0; location < entity.locations(); location++) {
+                layout.put(entity.getLocationAbbr(location), new MaterialLayoutEntry(
+                      entity.getArmorType(location), entity.isClanArmor(location)));
+            }
+            return layout;
+        }
+
+        static @Nullable Map<String, MaterialLayoutEntry> getHybridLayout(Entity entity) {
+            if (!(entity instanceof Mek mek) || !mek.hasHybridFrankenMekStructure()) {
+                return null;
+            }
+            Map<String, MaterialLayoutEntry> layout = new LinkedHashMap<>();
+            for (int location = 0; location < entity.locations(); location++) {
+                layout.put(entity.getLocationAbbr(location), new MaterialLayoutEntry(
+                      mek.getFrankenMekStructureType(location),
+                      TechConstants.isClan(mek.getFrankenMekStructureTechLevel(location))));
+            }
+            return layout;
         }
 
         /**
