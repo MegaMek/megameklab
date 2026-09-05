@@ -1079,8 +1079,8 @@ public class SVGMassPrinter {
         public int squads;
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public int squadSize;
-        public int heat; // Total heat generation
-        public int dissipation; // Heat capacity
+        public Integer heat; // Total heat generation; null when the unit does not track heat
+        public Integer dissipation; // Heat capacity; null when the unit does not track heat
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public int[] diss; // Max Dissipation
         public int engineHS; // Number of engine-integrated (critical-free) heat sinks
@@ -1603,8 +1603,8 @@ public class SVGMassPrinter {
                     this.engineHS = aero.getHeatSinks(); // - aero.getPodHeatSinks();
                 }
             } else {
-                this.heat = -1;
-                this.dissipation = -1;
+                this.heat = null;
+                this.dissipation = null;
             }
             this.moveType = getMoveType(entity);
             this.walk = entity.getWalkMP();
@@ -3014,8 +3014,7 @@ public class SVGMassPrinter {
             processedCount = 0;
             Map<String, Map<String, Object>> equipmentJsonMap2 = new HashMap<>();
             for (EquipmentType equipmentType : EquipmentType.allTypes()) {
-                if (equipmentType.isUnofficial()
-                      || equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
+                if (equipmentType.getStaticTechLevel() == SimpleTechLevel.UNOFFICIAL) continue;
                 equipmentJsonMap2.put(equipmentType.getInternalName(), equipmentDataForExport(equipmentType));
             }
             Map<String, Object> rootJson2 = new LinkedHashMap<>();
