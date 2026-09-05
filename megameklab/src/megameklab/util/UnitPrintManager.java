@@ -32,7 +32,8 @@
  */
 package megameklab.util;
 
-import static megamek.common.options.OptionsConstants.RPG_MANEI_DOMINI;
+import static megamek.common.options.OptionsConstants.ADVANCED_NEURAL_INTERFACE_MODE;
+import static megamek.common.options.OptionsConstants.NEURAL_INTERFACE_MODE_PILOT_ONLY;
 import static megamek.common.options.OptionsConstants.RPG_PILOT_ADVANTAGES;
 
 import java.awt.Frame;
@@ -112,7 +113,8 @@ public class UnitPrintManager {
         try {
             var options = new GameOptions();
             options.initialize();
-            options.getOption(RPG_MANEI_DOMINI).setValue(true);
+            // Pilot implants are a three-way option; any setting but Off lets a MUL's implants load
+            options.getOption(ADVANCED_NEURAL_INTERFACE_MODE).setValue(NEURAL_INTERFACE_MODE_PILOT_ONLY);
             options.getOption(RPG_PILOT_ADVANTAGES).setValue(true);
             MULParser parser = new MULParser(file, options);
             if (!MULVersionValidator.isCorrectVersion(parent, parser)) {
