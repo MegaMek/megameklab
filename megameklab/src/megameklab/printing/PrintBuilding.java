@@ -266,8 +266,10 @@ public class PrintBuilding extends PrintEntity {
         double halfHeight = BuildingTemplateLayout.FLAT_TO_FLAT / 2;
         double[][] corners = { { radius, 0 }, { radius / 2, halfHeight }, { -radius / 2, halfHeight },
             { -radius, 0 }, { -radius / 2, -halfHeight }, { radius / 2, -halfHeight } };
+        var footprintHexes = new java.util.HashSet<>(building.getInternalBuilding().getOriginalCoordsList());
         for (var placement : templateLayout().pages().get(page)) {
             var floor = placement.floor();
+            var visibleHexes = new java.util.HashSet<>(floor.hexes());
             var features = BuildingMap.featureIndex(building, building.getDesign().getMapDoors().stream()
                   .filter(door -> floor.hexes().contains(door.position().hex())).toList());
             Element layer = element(canvas, "g", "class", "building-template-floor", "data-building-floor", Integer.toString(floor.level()),
@@ -301,7 +303,21 @@ public class PrintBuilding extends PrintEntity {
                 if (!glyphs.isEmpty()) {
                     text(annotations, x, y + 19, radius * 1.5, glyphs, 9, "middle", "bold");
                 }
-                for (var door : features.doors(hex, floor.level())) {
+                var doors = features.doors(hex, floor.level());
+                for (int side = 0; side < 6; side++) {
+                    var neighbor = hex.toOffset().translated(side).toCube();
+                    if (!footprintHexes.contains(neighbor) || visibleHexes.contains(neighbor)
+                          || !BuildingConstruction.occupiesMapLevel(building, neighbor, floor.level())
+                          || BuildingConstruction.segmentsInHex(building, neighbor) == 0) { continue; }
+                    final int facing = side;
+                    var marker = element(annotations, "g", "class", "building-template-continuation",
+                          "data-continuation-from", grid.label(hex), "data-continuation-to", grid.label(neighbor),
+                          "data-continuation-side", Integer.toString(side),
+                          "transform", String.format(Locale.ROOT, "translate(%f %f)", x, y));
+                    drawTemplateContinuation(marker, corners[(side + 4) % 6], corners[(side + 5) % 6],
+                          grid.label(neighbor), doors.stream().anyMatch(door -> door.facing() == facing));
+                }
+                for (var door : doors) {
                     if (door.facing() < 0 || door.facing() > 5) {
                         continue;
                     }
@@ -319,6 +335,29 @@ public class PrintBuilding extends PrintEntity {
                 }
             }
         }
+    }
+
+    /** A cut edge and short ghost-hex corners fit within the template's existing 18-point clearance. */
+    private void drawTemplateContinuation(Element marker, double[] a, double[] b, String destination, boolean door) {
+        double mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+        double length = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        double tx = (b[0] - a[0]) / length, ty = (b[1] - a[1]) / length;
+        double nx = mx / (BuildingTemplateLayout.FLAT_TO_FLAT / 2), ny = my / (BuildingTemplateLayout.FLAT_TO_FLAT / 2);
+        line(marker, a[0], a[1], b[0], b[1], "#fff", 2.4);
+        var dashed = element(marker, "g", "stroke", "#999", "stroke-width", ".8", "stroke-dasharray", "3 2", "fill", "none");
+        element(dashed, "path", "d", String.format(Locale.ROOT,
+              "M %f %f L %f %f L %f %f L %f %f",
+              a[0] + 12 * (nx * Math.sqrt(3) / 2 - tx / 2), a[1] + 12 * (ny * Math.sqrt(3) / 2 - ty / 2),
+              a[0], a[1], b[0], b[1],
+              b[0] + 12 * (nx * Math.sqrt(3) / 2 + tx / 2), b[1] + 12 * (ny * Math.sqrt(3) / 2 + ty / 2)));
+        // Move the reference along the edge when a door/elevator arrow occupies its midpoint.
+        double shift = door ? 16 : 0;
+        double angle = Math.toDegrees(Math.atan2(ty, tx));
+        if (angle > 90) { angle -= 180; }
+        if (angle < -90) { angle += 180; }
+        var label = element(marker, "g", "transform", String.format(Locale.ROOT, "translate(%f %f) rotate(%f)",
+              mx + 14 * nx + shift * tx, my + 14 * ny + shift * ty, angle));
+        addTextElementToFit(label, 0, 2, 28, "to " + destination, 7, "middle", "normal", "#666", null, null);
     }
 
     @Override

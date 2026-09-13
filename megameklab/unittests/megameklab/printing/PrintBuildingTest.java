@@ -77,6 +77,76 @@ import org.w3c.dom.svg.SVGRectElement;
 @ExtendWith(InitializeTypes.class)
 class PrintBuildingTest {
     @Test
+    void marksReciprocalCutEdgesWithoutMarkingExteriorWallsOrShorterNeighboringFloors() throws Exception {
+        var labels = List.of("0102", "0103", "0201", "0202", "0203", "0204", "0302", "0303", "0304", "0305",
+              "0401", "0402", "0403", "0404", "0502", "0503", "0504", "0604", "0705", "0805", "0906");
+        var hexes = labels.stream().map(label -> {
+            int q = Integer.parseInt(label.substring(0, 2)) - 1;
+            int r = Integer.parseInt(label.substring(2)) - 1 - q / 2;
+            return new CubeCoords(q, r, -q - r);
+        }).toList();
+        var building = BuildingUtil.newMobileStructure();
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, hexes);
+        var footprint = building.getInternalBuilding().getOriginalCoordsList();
+        footprint.stream().filter(hex -> hex.q() >= 5).forEach(hex -> BuildingUtil.setHexHeight(building, hex, 1));
+        building.getDesign().getElevators().add(new BuildingDesign.Elevator(footprint.get(16), 20, Map.of(0, 4, 1, 0)));
+        var grid = BuildingUtil.sheetGrid(footprint);
+        for (var paper : PaperSize.values()) {
+            var sheet = sheet(building, paper);
+            var sections = new java.util.HashMap<String, Integer>();
+            var actual = new java.util.HashSet<String>();
+            int section = 0;
+            for (int page = sheet.getRecordPageCount(); page < sheet.getPageCount(); page++) {
+                assertTrue(sheet.createDocument(page, pageFormat(paper), true));
+                assertTemplateGeometry(sheet, pageFormat(paper));
+                for (var floor : elements(sheet, "g", "building-template-floor")) {
+                    String level = floor.getAttribute("data-building-floor");
+                    var polygons = floor.getElementsByTagName("polygon");
+                    for (int i = 0; i < polygons.getLength(); i++) {
+                        var polygon = (Element) polygons.item(i);
+                        if (polygon.getAttribute("class").equals("building-template-hex")) {
+                            sections.put(level + "/" + polygon.getAttribute("data-building-hex"), section);
+                        }
+                    }
+                    var groups = floor.getElementsByTagName("g");
+                    for (int i = 0; i < groups.getLength(); i++) {
+                        var marker = (Element) groups.item(i);
+                        if (!marker.getAttribute("class").equals("building-template-continuation")) { continue; }
+                        assertEquals("0", level, "The smaller upper floor is intact; its missing neighbors are exterior");
+                        assertTrue(actual.add(level + "/" + marker.getAttribute("data-continuation-from") + "/"
+                              + marker.getAttribute("data-continuation-to")));
+                        var reference = (org.w3c.dom.svg.SVGLocatable) marker.getElementsByTagName("text").item(0);
+                        for (int j = 0; j < polygons.getLength(); j++) {
+                            var polygon = (Element) polygons.item(j);
+                            if (polygon.getAttribute("data-building-symbol").equals("elevator-door")) {
+                                assertFalse(templateBounds(reference).intersects(templateBounds((org.w3c.dom.svg.SVGLocatable) polygon)),
+                                      "Continuation references must clear elevator arrows");
+                            }
+                        }
+                    }
+                    section++;
+                }
+                render(sheet, "building-continuations-" + paper.name() + "-" + page);
+            }
+            var expected = new java.util.HashSet<String>();
+            for (int level : BuildingConstruction.mapLevels(building)) {
+                for (var hex : footprint) {
+                    var from = level + "/" + grid.label(hex);
+                    if (!sections.containsKey(from)) { continue; }
+                    for (var neighbor : hex.neighbors()) {
+                        var to = level + "/" + grid.label(neighbor);
+                        if (sections.containsKey(to) && !sections.get(from).equals(sections.get(to))) {
+                            expected.add(from + "/" + grid.label(neighbor));
+                        }
+                    }
+                }
+            }
+            assertFalse(expected.isEmpty());
+            assertEquals(expected, actual, "Each cut connection must be marked at both ends, including across pages");
+        }
+    }
+
+    @Test
     void minimizesConnectedPiecesAndNestsThemInReadingOrderWithFlexibleCaptions() throws Exception {
         var labels = List.of("0102", "0103", "0201", "0202", "0203", "0204", "0302", "0303", "0304", "0401", "0402", "0403",
               "0502", "0503", "0504", "0505", "0506", "0602", "0603", "0604", "0703", "0705", "0805", "0906", "1006", "1107",
@@ -428,17 +498,22 @@ class PrintBuildingTest {
             for (int i = 0; i < children.getLength(); i++) {
                 var child = (Element) children.item(i);
                 if (!(child instanceof org.w3c.dom.svg.SVGLocatable shape)
-                      || !List.of("text", "polygon", "line", "polyline").contains(child.getTagName())) { continue; }
-                var extent = shape.getBBox();
-                var transform = shape.getCTM();
-                var ink = new java.awt.geom.Rectangle2D.Double(transform.getE() + extent.getX() * transform.getA(),
-                      transform.getF() + extent.getY() * transform.getD(), extent.getWidth() * transform.getA(), extent.getHeight() * transform.getD());
+                      || !List.of("text", "polygon", "line", "polyline", "path").contains(child.getTagName())) { continue; }
+                var ink = templateBounds(shape);
                 assertTrue(occupied.stream().noneMatch(ink::intersects), "Hexes, doors and captions from different sections must not overlap");
                 drawn.add(ink);
             }
             assertTrue(drawn.stream().skip(1).noneMatch(drawn.getFirst()::intersects), "A section's caption must also clear its own drawing");
             occupied.addAll(drawn);
         }
+    }
+
+    private java.awt.geom.Rectangle2D templateBounds(org.w3c.dom.svg.SVGLocatable shape) {
+        var bounds = shape.getBBox();
+        var matrix = shape.getCTM();
+        return new java.awt.geom.AffineTransform(matrix.getA(), matrix.getB(), matrix.getC(), matrix.getD(), matrix.getE(), matrix.getF())
+              .createTransformedShape(new java.awt.geom.Rectangle2D.Float(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight()))
+              .getBounds2D();
     }
 
     @Test
