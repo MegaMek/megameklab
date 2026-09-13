@@ -46,6 +46,7 @@ import megamek.common.loaders.BLKFile;
 import megamek.common.loaders.BLKStructureFile;
 import megamek.common.units.BuildingConstruction;
 import megamek.common.units.BuildingDesign;
+import megamek.common.units.BuildingDoors;
 import megamek.common.units.BuildingEntity;
 import megamek.common.units.IBuilding;
 import megameklab.testing.util.InitializeTypes;
@@ -56,6 +57,70 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(InitializeTypes.class)
 class BuildingUtilTest {
+    @Test
+    void linkedOpeningsSurviveNativeRoundTripAndTransforms() throws Exception {
+        var building = BuildingUtil.newBuilding();
+        var south = new CubeCoords(0, 1, -1);
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, List.of(CubeCoords.ZERO, south));
+        var doors = building.getDesign().getDoors();
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 1, 2));
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 2, 2));
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(south, 0), 1, 2));
+        BuildingDoors.link(doors, doors.get(0), doors.get(1));
+        BuildingDoors.link(doors, doors.get(1), doors.get(2));
+        assertEquals(List.of(3), BuildingDoors.groups(doors).stream().map(List::size).toList());
+        for (var geometry : BuildingDoors.geometry(doors).values()) {
+            assertTrue(geometry.line().stream().allMatch(point -> Math.abs(point.x() - .75) < .0001));
+            assertEquals(1.01, geometry.arrow().getFirst().x(), .0001);
+        }
+        var geometry = BuildingDoors.geometry(doors);
+        var lineY = doors.stream().flatMapToDouble(door -> geometry.get(door).line().stream()
+              .mapToDouble(point -> point.y() + Math.sqrt(3) * door.position().hex().r())).summaryStatistics();
+        assertEquals(-Math.sqrt(3) / 4, lineY.getMin(), .0001);
+        assertEquals(3 * Math.sqrt(3) / 4, lineY.getMax(), .0001);
+        var loaded = (BuildingEntity) new BLKStructureFile(BLKFile.getBlock(building)).getEntity();
+        assertEquals(doors, loaded.getDesign().getDoors());
+        BuildingUtil.transform(loaded, hex -> new CubeCoords(-hex.r(), -hex.s(), -hex.q()), side -> (side + 1) % 6);
+        assertEquals(List.of(3), BuildingDoors.groups(loaded.getDesign().getDoors()).stream().map(List::size).toList());
+        BuildingDoors.geometry(loaded.getDesign().getDoors()).forEach((door, opening) -> {
+            var vertices = BuildingDoors.vertices(door);
+            var hex = door.position().hex();
+            double centerX = (vertices.getFirst().x() + vertices.getLast().x()) / 4 - 1.5 * hex.q();
+            double centerY = (vertices.getFirst().y() + vertices.getLast().y()) * Math.sqrt(3) / 4
+                  - Math.sqrt(3) * (hex.r() + hex.q() / 2.0);
+            assertEquals(centerX, opening.arrow().stream().mapToDouble(BuildingDoors.Point::x).average().orElseThrow(), .0001);
+            assertEquals(centerY, opening.arrow().stream().mapToDouble(BuildingDoors.Point::y).average().orElseThrow(), .0001);
+        });
+        BuildingDoors.unlink(doors, doors.get(1));
+        assertTrue(doors.stream().allMatch(door -> door.linkGroup() == 0));
+    }
+
+    @Test
+    void footprintCleanupCanRemoveOrKeepAffectedOpeningsWithoutRemovingElevators() {
+        var building = BuildingUtil.newBuilding();
+        var north = new CubeCoords(0, -1, 1);
+        var northeast = new CubeCoords(1, -1, 0);
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, List.of(CubeCoords.ZERO, north));
+        var doors = building.getDesign().getDoors();
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 1, 2));
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(north, 0), 2, 1));
+        var next = List.of(CubeCoords.ZERO, north, northeast);
+        var changes = BuildingUtil.topologyDoorChanges(building, next);
+        assertEquals(2, changes.count());
+        assertEquals(2, doors.size(), "Inspection or declining cleanup must not remove doors");
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, next);
+        assertEquals(2, doors.size(), "Keeping invalid doors retains the footprint edit");
+        changes.remove().run();
+        assertTrue(doors.isEmpty());
+        building.getDesign().getElevators().add(new BuildingDesign.Elevator(CubeCoords.ZERO, 20, Map.of(0, 3, 1, 3, 2, 1)));
+        changes = BuildingUtil.topologyDoorChanges(building, List.of(CubeCoords.ZERO, northeast));
+        assertEquals(3, changes.count());
+        changes.remove().run();
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, List.of(CubeCoords.ZERO, northeast));
+        assertEquals(1, building.getDesign().getElevators().size());
+        assertEquals(Map.of(0, 2, 1, 2, 2, 0), building.getDesign().getElevators().getFirst().exits());
+    }
+
     @Test
     void featureIndexBoundsMalformedLevelRangesToTheBuildingHeight() {
         var building = BuildingUtil.newBuilding();
@@ -194,7 +259,7 @@ class BuildingUtilTest {
         assertTrue(List.of(block.getDataAsString("building_options")).contains("base_level=-2"));
         var loaded = (BuildingEntity) new BLKStructureFile(block).getEntity();
         assertEquals(-2, loaded.getDesign().getBaseLevel());
-        assertEquals(List.of("0504/-2", "0504/-1", "0504/G", "0504/1"), java.util.stream.IntStream.range(0, 4)
+        assertEquals(List.of("0101/-2", "0101/-1", "0101/G", "0101/1"), java.util.stream.IntStream.range(0, 4)
               .mapToObj(loc -> BuildingUtil.locationLabel(loaded, loc)).toList());
         assertEquals(1, loaded.getEquipment().getFirst().getLocation());
         assertEquals(entity.getDesign().getDoors(), loaded.getDesign().getDoors());
@@ -214,13 +279,13 @@ class BuildingUtilTest {
             var loaded = (BuildingEntity) new BLKStructureFile(BLKFile.getBlock(entity)).getEntity();
             assertNull(loaded.getDesign().getBaseLevel());
             assertEquals(-5, BuildingConstruction.baseLevel(loaded));
-            assertEquals("0504/-5", BuildingUtil.locationLabel(loaded, 0));
+            assertEquals("0101/-5", BuildingUtil.locationLabel(loaded, 0));
             assertEquals("Roof (-2)", BuildingUtil.roofLevelLabel(loaded, 3));
         }
         entity.getDesign().setBaseLevel(0);
         var loaded = (BuildingEntity) new BLKStructureFile(BLKFile.getBlock(entity)).getEntity();
         assertEquals(0, loaded.getDesign().getBaseLevel());
-        assertEquals("0504/G", BuildingUtil.locationLabel(loaded, 0));
+        assertEquals("0101/G", BuildingUtil.locationLabel(loaded, 0));
         loaded.getDesign().setBaseLevel(null);
         assertEquals(-5, BuildingConstruction.baseLevel(loaded));
         loaded.getDesign().setSite(BuildingDesign.Site.SURFACE);
@@ -228,8 +293,8 @@ class BuildingUtilTest {
     }
 
     @Test
-    void centersSingleHexAndPreservesAdjacencyAcrossColumnParity() {
-        assertEquals("0504", BuildingUtil.sheetGrid(List.of(CubeCoords.ZERO)).label(CubeCoords.ZERO));
+    void numbersSingleHexFrom0101AndPreservesAdjacencyAcrossColumnParity() {
+        assertEquals("0101", BuildingUtil.sheetGrid(List.of(CubeCoords.ZERO)).label(CubeCoords.ZERO));
         List<CubeCoords> hexes = List.of(CubeCoords.ZERO, EAST, new CubeCoords(-1, 0, 1));
         var grid = BuildingUtil.sheetGrid(hexes);
         for (CubeCoords a : hexes) {
@@ -237,11 +302,11 @@ class BuildingUtilTest {
                 assertEquals(a.toOffset().distance(b.toOffset()), grid.position(a).distance(grid.position(b)));
             }
         }
-        assertEquals("0504/G", BuildingUtil.locationLabel(BuildingUtil.newBuilding(), 0));
+        assertEquals("0101/G", BuildingUtil.locationLabel(BuildingUtil.newBuilding(), 0));
     }
 
     @Test
-    void fitsEitherColumnParityBeforeExpandingRegardlessOfTheAuthoredOrigin() {
+    void numbersFrom0101RegardlessOfTheAuthoredOriginOrInputOrder() {
         var footprint = java.util.stream.IntStream.range(0, 14)
               .mapToObj(i -> new CubeCoords(i / 7, i % 7, -i / 7 - i % 7)).toList();
         for (var origin : List.of(CubeCoords.ZERO, new CubeCoords(-10, -10, 20),
@@ -249,10 +314,10 @@ class BuildingUtilTest {
             var hexes = footprint.stream().map(hex -> hex.add(origin)).toList();
             var grid = BuildingUtil.sheetGrid(hexes);
             assertEquals(9, grid.columns());
-            assertEquals(7, grid.rows(), "Shifting one column fits this footprint without a denser grid");
-            assertEquals("0501", grid.label(hexes.getFirst()));
-            assertEquals("0607", grid.label(hexes.getLast()));
-            assertEquals("0504", BuildingUtil.sheetGrid(List.of(origin)).label(origin));
+            assertEquals(7, grid.rows());
+            assertEquals("0101", grid.label(hexes.getFirst()));
+            assertEquals("0207", grid.label(hexes.getLast()));
+            assertEquals("0101", BuildingUtil.sheetGrid(List.of(origin)).label(origin));
             assertEquals(grid, BuildingUtil.sheetGrid(hexes.reversed()), "Input order must not affect placement");
             for (var a : hexes) {
                 var position = grid.position(a);
@@ -260,6 +325,23 @@ class BuildingUtilTest {
                 assertTrue(position.getY() >= 0 && position.getY() < grid.rows());
                 for (var b : hexes) {
                     assertEquals(a.toOffset().distance(b.toOffset()), position.distance(grid.position(b)));
+                }
+            }
+        }
+    }
+
+    @Test
+    void irregularFootprintsKeepPositiveLabelsAndLeaveMissingCornersEmpty() {
+        var footprint = List.of(CubeCoords.ZERO, new CubeCoords(0, -1, 1), new CubeCoords(1, -1, 0),
+              new CubeCoords(1, 0, -1), new CubeCoords(0, 1, -1), new CubeCoords(-1, 1, 0), new CubeCoords(-1, 0, 1));
+        for (var origin : List.of(CubeCoords.ZERO, new CubeCoords(-10, -10, 20), new CubeCoords(37, -51, 14))) {
+            var hexes = footprint.stream().map(hex -> hex.add(origin)).toList();
+            var grid = BuildingUtil.sheetGrid(hexes);
+            assertEquals(List.of("0202", "0201", "0302", "0303", "0203", "0103", "0102"),
+                  hexes.stream().map(grid::label).toList());
+            for (var a : hexes) {
+                for (var b : hexes) {
+                    assertEquals(a.toOffset().distance(b.toOffset()), grid.position(a).distance(grid.position(b)));
                 }
             }
         }
@@ -350,7 +432,7 @@ class BuildingUtilTest {
         assertFalse(entity.getEquipment().contains(removed));
         assertEquals(List.of(retained), entity.getEquipment());
         assertEquals(1, retained.getLocation());
-        assertEquals("0504/1", BuildingUtil.locationLabel(entity, retained.getLocation()));
+        assertEquals("0101/1", BuildingUtil.locationLabel(entity, retained.getLocation()));
     }
 
     @Test

@@ -47,6 +47,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.units.AbstractBuildingEntity;
 import megamek.common.units.BuildingConstruction;
 import megamek.common.units.BuildingDesign;
+import megamek.common.units.BuildingDoors;
 import megamek.common.units.IBuilding;
 
 /** Feature identity shared by the editing map and printed structure maps. */
@@ -58,6 +59,7 @@ public final class BuildingMap {
     public enum Feature {
         BAY("Bay / quarters", "#f3b0b4", "B"), ELEVATOR("Elevator", "#efcb8d", "E"), DECK("Roof facility", "#b5d1bf", "D"),
         TURRET("Roof turret", "#aca6d2", "T"), DOOR("Door", "#ffffff", ""),
+        LARGE_DOOR("Large Door", "#ffffff", ""),
         ELEVATOR_DOOR("Elevator door", "#efcb8d", "");
 
         public final String label;
@@ -76,7 +78,11 @@ public final class BuildingMap {
     }
 
     /** A rendered door on one hexside; elevator access remains separate from structural doors in the design. */
-    public record DoorMarker(int facing, Feature feature) { }
+    public record DoorMarker(int facing, Feature feature, BuildingDoors.Geometry geometry) {
+        public DoorMarker(int facing, Feature feature) {
+            this(facing, feature, null);
+        }
+    }
 
     /** Immutable map-feature snapshot for one render or refresh; rebuild after editing the building. */
     public static final class FeatureIndex {
@@ -131,6 +137,7 @@ public final class BuildingMap {
                 }
             }
 
+            var linked = BuildingDoors.geometry(building.getDesign().getDoors(), mapDoors::contains);
             for (BuildingDesign.Door door : mapDoors) {
                 long start = door.position().level();
                 long end = start + (long) door.height();
@@ -138,8 +145,8 @@ public final class BuildingMap {
                 long endLevel = Math.min(endMapLevel(building, door.position().hex()), end);
                 for (long level = firstLevel; level < endLevel; level++) {
                     BuildingDesign.Position position = new BuildingDesign.Position(door.position().hex(), (int) level);
-                    add(indexed, position, Feature.DOOR);
-                    doors.computeIfAbsent(position, ignored -> new ArrayList<>()).add(new DoorMarker(door.facing(), Feature.DOOR));
+                    add(indexed, position, linked.containsKey(door) ? Feature.LARGE_DOOR : Feature.DOOR);
+                    doors.computeIfAbsent(position, ignored -> new ArrayList<>()).add(new DoorMarker(door.facing(), Feature.DOOR, linked.get(door)));
                 }
             }
 

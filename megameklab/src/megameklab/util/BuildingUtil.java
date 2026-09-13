@@ -33,9 +33,7 @@
 
 package megameklab.util;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import megamek.common.CriticalSlot;
 import megamek.common.TechConstants;
@@ -48,6 +46,7 @@ import megamek.common.equipment.Mounted;
 import megamek.common.equipment.PowerGeneratorType;
 import megamek.common.units.AbstractBuildingEntity;
 import megamek.common.units.BuildingConstruction;
+import megamek.common.units.BuildingDesign;
 import megamek.common.units.ConstructionUtil;
 import megamek.common.units.Entity;
 import megamek.common.units.IBuilding;
@@ -119,23 +118,18 @@ public final class BuildingUtil {
         }
     }
 
+    /** Number the footprint from its top-left bounds at 0101, independently of its authored origin. */
     public static SheetGrid sheetGrid(List<CubeCoords> hexes) {
         int minQ = hexes.stream().mapToInt(c -> (int) c.q()).min().orElse(0);
         int maxQ = hexes.stream().mapToInt(c -> (int) c.q()).max().orElse(0);
         int columns = Math.max(9, maxQ - minQ + 1);
-        int centeredQ = Math.floorDiv(columns - 1 - minQ - maxQ, 2);
-        // Try the nearest translations of both column parities before making the grid denser.
-        // The centered placement wins ties; all floors and location labels use this same translation.
-        return IntStream.of(centeredQ, centeredQ + 1, centeredQ - 1)
-              .filter(shiftQ -> minQ + shiftQ >= 0 && maxQ + shiftQ < columns)
-              .mapToObj(shiftQ -> {
-                  int minRow = hexes.stream().mapToInt(c -> (int) c.r() + Math.floorDiv((int) c.q() + shiftQ, 2))
-                        .min().orElse(0);
-                  int maxRow = hexes.stream().mapToInt(c -> (int) c.r() + Math.floorDiv((int) c.q() + shiftQ, 2))
-                        .max().orElse(0);
-                  int rows = Math.max(7, maxRow - minRow + 1);
-                  return new SheetGrid(columns, rows, shiftQ, Math.floorDiv(rows - 1 - minRow - maxRow, 2));
-              }).min(Comparator.comparingInt(SheetGrid::rows)).orElseThrow();
+        int shiftQ = -minQ;
+        // Translate the cube column before finding rows to preserve staggered-column adjacency.
+        int minRow = hexes.stream().mapToInt(c -> (int) c.r() + Math.floorDiv((int) c.q() + shiftQ, 2))
+              .min().orElse(0);
+        int maxRow = hexes.stream().mapToInt(c -> (int) c.r() + Math.floorDiv((int) c.q() + shiftQ, 2))
+              .max().orElse(0);
+        return new SheetGrid(columns, Math.max(7, maxRow - minRow + 1), shiftQ, -minRow);
     }
 
     public static String locationLabel(AbstractBuildingEntity entity, int location) {
@@ -166,6 +160,46 @@ public final class BuildingUtil {
         entity.getEquipment().stream().filter(m -> m.getLocation() == Entity.LOC_NONE && !m.isOneShotAmmo()).toList()
               .forEach(m -> ConstructionUtil.removeMounted(entity, m));
         entity.getDesign().removeDeletedComponents(entity);
+    }
+
+    public record TopologyDoorChanges(int count, String description, Runnable remove) { }
+
+    /** Detect only openings made invalid by adding/removing hexes, before construction rebases coordinates. */
+    public static TopologyDoorChanges topologyDoorChanges(AbstractBuildingEntity entity, List<CubeCoords> hexes) {
+        var before = entity.getInternalBuilding().getOriginalCoordsList();
+        java.util.function.BiPredicate<BuildingDesign.Position, Integer> obstructed = (position, facing) -> {
+            var neighbor = position.hex().toOffset().translated(facing).toCube();
+            return hexes.contains(position.hex()) && !before.contains(neighbor) && hexes.contains(neighbor);
+        };
+        var doors = entity.getDesign().getDoors().stream().filter(door -> obstructed.test(door.position(), door.facing())).toList();
+        var bayDoors = entity.getDesign().getBayDoors().stream().filter(door -> obstructed.test(door.position(), door.facing())).toList();
+        var elevators = new java.util.HashMap<BuildingDesign.Elevator, BuildingDesign.Elevator>();
+        int elevatorDoors = 0;
+        for (var lift : entity.getDesign().getElevators()) {
+            if (!hexes.contains(lift.hex())) {
+                continue;
+            }
+            int removed = 0;
+            for (int side = 0; side < 6; side++) {
+                var neighbor = lift.hex().toOffset().translated(side).toCube();
+                if (before.contains(neighbor) && !hexes.contains(neighbor)) {
+                    removed |= 1 << side;
+                }
+            }
+            var exits = new java.util.HashMap<Integer, Integer>();
+            for (var stop : lift.exits().entrySet()) {
+                elevatorDoors += Integer.bitCount(stop.getValue() & removed);
+                exits.put(stop.getKey(), stop.getValue() & ~removed);
+            }
+            elevators.put(lift, new BuildingDesign.Elevator(lift.hex(), lift.capacity(), exits));
+        }
+        return new TopologyDoorChanges(doors.size() + bayDoors.size() + elevatorDoors,
+              "%d exterior door(s) would face an occupied hex; %d elevator access door(s) would face a removed hex."
+                    .formatted(doors.size() + bayDoors.size(), elevatorDoors), () -> {
+                        entity.getDesign().getDoors().removeAll(doors);
+                        entity.getDesign().getBayDoors().removeAll(bayDoors);
+                        entity.getDesign().getElevators().replaceAll(lift -> elevators.getOrDefault(lift, lift));
+                    });
     }
 
     public static void setHexHeight(AbstractBuildingEntity entity, CubeCoords hex, int height) {

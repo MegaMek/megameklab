@@ -129,7 +129,7 @@ public class BuildingMainUI extends MegaMekLabMainUI {
         JPanel navigator = createLocationNavigator();
         navigator.setPreferredSize(new Dimension(Math.max(240, navigatorWidth), 450));
         navigator.setMinimumSize(new Dimension(240, 160));
-        configPane.setMinimumSize(new Dimension(400, 160));
+        configPane.setMinimumSize(new Dimension(systems.getMinimumSize().width, 160));
         editorSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, configPane, navigator);
         editorSplit.setName("Building editor split");
         editorSplit.setBorder(BorderFactory.createEmptyBorder());
@@ -239,6 +239,7 @@ public class BuildingMainUI extends MegaMekLabMainUI {
         // Navigation is not a construction change: do not schedule an undo snapshot or dirty the unit.
         structure.refresh();
         equipment.refreshPlacement();
+        systems.refreshPlacement();
     }
 
     void showEquipment() {

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ import megamek.common.equipment.WeaponType;
 import megamek.common.units.AbstractBuildingEntity;
 import megamek.common.units.BuildingConstruction;
 import megamek.common.units.BuildingDesign;
+import megamek.common.units.BuildingDoors;
 import megamek.common.units.IBuilding;
 import megamek.common.units.MobileStructure;
 import megameklab.util.BuildingMap;
@@ -71,10 +73,23 @@ public class PrintBuilding extends PrintEntity {
     private List<InventoryPage> plannedInventory;
     private final AbstractBuildingEntity building;
     private int currentPage;
+    private final PageFormat templatePageFormat;
+    private BuildingTemplateLayout templateLayout;
 
     public PrintBuilding(AbstractBuildingEntity building, int firstPage, RecordSheetOptions options) {
+        this(building, firstPage, options, defaultPageFormat(options));
+    }
+
+    public PrintBuilding(AbstractBuildingEntity building, int firstPage, RecordSheetOptions options, PageFormat pageFormat) {
         super(firstPage, options);
         this.building = building;
+        templatePageFormat = (PageFormat) pageFormat.clone();
+    }
+
+    private static PageFormat defaultPageFormat(RecordSheetOptions options) {
+        PageFormat format = new PageFormat();
+        format.setPaper(options.getPaperSize().createPaper());
+        return format;
     }
 
     @Override
@@ -84,6 +99,10 @@ public class PrintBuilding extends PrintEntity {
 
     @Override
     public int getPageCount() {
+        return getRecordPageCount() + templateLayout().pages().size();
+    }
+
+    int getRecordPageCount() {
         return Math.max(Math.max((BuildingConstruction.mapLevels(building).size() + LEVELS_PER_PAGE - 1) / LEVELS_PER_PAGE,
               (protectionRows().size() + 35) / 36), inventoryPages().size());
     }
@@ -91,8 +110,20 @@ public class PrintBuilding extends PrintEntity {
     @Override
     protected void processImage(int pageNum, PageFormat pageFormat) {
         currentPage = pageNum;
-        super.processImage(pageNum, pageFormat);
-        setTextField("pageNumber", "Page " + (pageNum + 1) + " / " + getPageCount());
+        if (pageNum < getRecordPageCount()) {
+            super.processImage(pageNum, pageFormat);
+            setTextField("pageNumber", "Page " + (pageNum + 1) + " / " + getRecordPageCount());
+        } else {
+            Element copyright = getSVGDocument().getElementById(COPYRIGHT);
+            if (copyright != null) {
+                copyright.setTextContent(String.format(copyright.getTextContent(), java.time.LocalDate.now().getYear()));
+            }
+            Element title = getSVGDocument().getElementById(TITLE);
+            Rectangle2D area = getRectBBox((SVGRectElement) getSVGDocument().getElementById("buildingTemplate"));
+            title.setAttribute("style", title.getAttribute("style") + ";" + MML_FIELD_WIDTH + ":" + area.getWidth());
+            setTextField(TITLE, (building.getShortNameRaw() + " TEMPLATE").toUpperCase(Locale.ROOT));
+            drawTemplate(pageNum - getRecordPageCount(), pageFormat);
+        }
         // Keep the selected sheet font, with a PDF-safe sans-serif fallback when it is not installed.
         NodeList textElements = getSVGDocument().getElementsByTagName("text");
         for (int i = 0; i < textElements.getLength(); i++) {
@@ -102,7 +133,7 @@ public class PrintBuilding extends PrintEntity {
 
     @Override
     protected String getSVGFileName(int pageNumber) {
-        return "building_default.svg";
+        return pageNumber < getRecordPageCount() ? "building_default.svg" : "building_template_default.svg";
     }
 
     @Override
@@ -174,7 +205,7 @@ public class PrintBuilding extends PrintEntity {
                     break;
                 }
                 int index = column * rows + row;
-                if (row >= rows || index >= protection.size()) {
+                if (index >= protection.size()) {
                     continue;
                 }
                 Protection entry = protection.get(index);
@@ -211,14 +242,108 @@ public class PrintBuilding extends PrintEntity {
         return result;
     }
 
+    private BuildingTemplateLayout templateLayout() {
+        if (templateLayout == null) {
+            Document template = loadSVG(getSVGDirectoryName(false), "building_template_default.svg");
+            Rectangle2D box = getRectBBox((SVGRectElement) template.getElementById("buildingTemplate"));
+            double scale = sheetScale(templatePageFormat);
+            // Some templates extend beyond the selected paper. Use only the rectangle's printable intersection.
+            double width = Math.min(box.getWidth() * scale, templatePageFormat.getImageableWidth() - box.getX() * scale);
+            double height = Math.min(box.getHeight() * scale, templatePageFormat.getImageableHeight() - box.getY() * scale);
+            templateLayout = new BuildingTemplateLayout(building, width, height);
+        }
+        return templateLayout;
+    }
+
+    private void drawTemplate(int page, PageFormat format) {
+        Element region = getSVGDocument().getElementById("buildingTemplate");
+        Rectangle2D box = getRectBBox((SVGRectElement) region);
+        // Cancel the sheet pipeline's fit-to-printer scaling: floorplan coordinates are physical 1/72-inch points.
+        Element canvas = element((Element) region.getParentNode(), "g", "class", "building-template",
+              "transform", String.format(Locale.ROOT, "translate(%f %f) scale(%.12f)", box.getX(), box.getY(), 1 / sheetScale(format)));
+        var grid = BuildingUtil.sheetGrid(building.getInternalBuilding().getOriginalCoordsList());
+        double radius = BuildingTemplateLayout.RADIUS;
+        double halfHeight = BuildingTemplateLayout.FLAT_TO_FLAT / 2;
+        double[][] corners = { { radius, 0 }, { radius / 2, halfHeight }, { -radius / 2, halfHeight },
+            { -radius, 0 }, { -radius / 2, -halfHeight }, { radius / 2, -halfHeight } };
+        for (var placement : templateLayout().pages().get(page)) {
+            var floor = placement.floor();
+            var features = BuildingMap.featureIndex(building, building.getDesign().getMapDoors().stream()
+                  .filter(door -> floor.hexes().contains(door.position().hex())).toList());
+            Element layer = element(canvas, "g", "class", "building-template-floor", "data-building-floor", Integer.toString(floor.level()),
+                  "transform", String.format(Locale.ROOT, "translate(%f %f)", placement.x(), placement.y()));
+            text(layer, placement.caption().getCenterX(), placement.caption().getY() + 11, placement.caption().getWidth(), floor.caption(), 10, "middle", "bold");
+            Element footprint = element(layer, "g");
+            Element annotations = element(layer, "g");
+            for (CubeCoords hex : floor.hexes()) {
+                double x = BuildingTemplateLayout.PADDING - floor.bounds().getX() + BuildingTemplateLayout.centerX(hex);
+                double y = BuildingTemplateLayout.PADDING - floor.bounds().getY()
+                      + BuildingTemplateLayout.centerY(hex);
+                var cellFeatures = features.features(hex, floor.level());
+                var fill = BuildingMap.fill(cellFeatures);
+                Element polygon = mapPolygon(footprint, corners, x, y, 1, fill == null ? "none" : fill.color);
+                polygon.setAttribute("class", "building-template-hex");
+                polygon.setAttribute("data-building-hex", grid.label(hex));
+                if (BuildingConstruction.usesHexsides(building)) {
+                    polygon.setAttribute("stroke", "#bbb");
+                    polygon.setAttribute("stroke-width", ".35");
+                    for (int side = 0; side < 6; side++) {
+                        if ((building.getDesign().wallSides(hex) & (1 << side)) != 0) {
+                            double[] a = corners[(side + 4) % 6], b = corners[(side + 5) % 6];
+                            element(annotations, "line", "x1", Double.toString(x + a[0]), "y1", Double.toString(y + a[1]),
+                                  "x2", Double.toString(x + b[0]), "y2", Double.toString(y + b[1]),
+                                  "stroke", "#000", "stroke-width", "2", "data-building-side", Integer.toString(side));
+                        }
+                    }
+                }
+                text(annotations, x, y + 4, radius * 1.5, grid.label(hex), 12, "middle", "normal");
+                String glyphs = cellFeatures.stream().map(feature -> feature.glyph).filter(glyph -> !glyph.isBlank()).collect(Collectors.joining(" "));
+                if (!glyphs.isEmpty()) {
+                    text(annotations, x, y + 19, radius * 1.5, glyphs, 9, "middle", "bold");
+                }
+                for (var door : features.doors(hex, floor.level())) {
+                    if (door.facing() < 0 || door.facing() > 5) {
+                        continue;
+                    }
+                    double[][] arrow = BuildingMap.doorPoints(corners[(door.facing() + 4) % 6], corners[(door.facing() + 5) % 6]);
+                    if (door.geometry() != null) {
+                        arrow = door.geometry().arrow().stream().map(point -> new double[] { point.x() * radius, point.y() * radius }).toArray(double[][]::new);
+                        String points = door.geometry().line().stream().map(point -> (x + point.x() * radius) + "," + (y + point.y() * radius))
+                              .collect(Collectors.joining(" "));
+                        element(annotations, "polyline", "class", "linked-door-opening", "points", points,
+                              "fill", "none", "stroke", "#000", "stroke-width", "3", "stroke-linecap", "round", "stroke-linejoin", "round");
+                    }
+                    Element marker = mapPolygon(annotations, arrow, x, y, 1, door.feature().color);
+                    marker.setAttribute("data-building-symbol", door.feature().symbol());
+                    marker.setAttribute("data-building-facing", Integer.toString(door.facing()));
+                }
+            }
+        }
+    }
+
     @Override
     protected void drawStructure() {
         Element region = getSVGDocument().getElementById("structureMap");
         Rectangle2D box = getRectBBox((SVGRectElement) region);
         List<CubeCoords> hexes = building.getInternalBuilding().getOriginalCoordsList();
         BuildingUtil.SheetGrid grid = BuildingUtil.sheetGrid(hexes);
+        // Center placement separately from the 0101 labels, preserving staggered-column adjacency.
+        var positions = hexes.stream().map(grid::position).toList();
+        int columnPadding = (grid.columns() - positions.stream().mapToInt(Coords::getX).max().orElse(0) - 1) / 2;
+        int parity = columnPadding & 1;
+        var shiftedRows = positions.stream().mapToInt(cell -> cell.getY() + parity * (cell.getX() & 1)).summaryStatistics();
+        if (shiftedRows.getMax() - shiftedRows.getMin() + 1 > grid.rows()) {
+            // A full-height footprint may only fit with its original column parity.
+            columnPadding--;
+            shiftedRows = positions.stream().mapToInt(Coords::getY).summaryStatistics();
+        }
+        int rowPadding = (grid.rows() - (shiftedRows.getMax() - shiftedRows.getMin() + 1)) / 2 - shiftedRows.getMin();
         Map<Coords, CubeCoords> occupied = new LinkedHashMap<>();
-        hexes.forEach(hex -> occupied.put(grid.position(hex), hex));
+        for (CubeCoords hex : hexes) {
+            Coords cell = grid.position(hex);
+            occupied.put(new Coords(cell.getX() + columnPadding,
+                  cell.getY() + (columnPadding & 1) * (cell.getX() & 1) + rowPadding), hex);
+        }
         double width = 30 * (grid.columns() - 1) + 40 + 6 * (grid.rows() - 1);
         double height = 12 * (grid.rows() + .5);
         List<Integer> mapLevels = BuildingConstruction.mapLevels(building).stream().skip((long) currentPage * LEVELS_PER_PAGE)
@@ -292,6 +417,15 @@ public class PrintBuilding extends PrintEntity {
                             double[] a = corners[(door.facing() + 1) % 6];
                             double[] b = corners[(door.facing() + 2) % 6];
                             double[][] arrow = BuildingMap.doorPoints(a, b);
+                            if (door.geometry() != null) {
+                                arrow = door.geometry().arrow().stream().map(p -> new double[] {
+                                    20 * p.x() - Math.sqrt(12) * p.y(), Math.sqrt(48) * p.y() }).toArray(double[][]::new);
+                                String pointsText = door.geometry().line().stream().map(p ->
+                                      (x + (20 * p.x() - Math.sqrt(12) * p.y()) * scale) + "," + (y + Math.sqrt(48) * p.y() * scale))
+                                      .collect(Collectors.joining(" "));
+                                element(annotations, "polyline", "class", "linked-door-opening", "points", pointsText,
+                                      "fill", "none", "stroke", "#000", "stroke-width", "2.5", "stroke-linecap", "round", "stroke-linejoin", "round");
+                            }
                             Element marker = mapPolygon(annotations, arrow, x, y, scale, door.feature().color);
                             marker.setAttribute("data-building-symbol", door.feature().symbol());
                             marker.setAttribute("data-building-facing", Integer.toString(door.facing()));
@@ -322,13 +456,22 @@ public class PrintBuilding extends PrintEntity {
             for (Feature symbol : symbols) {
                 double x = index % keyColumns * ((box.getWidth() - 16) / keyColumns), y = index / keyColumns * 16;
                 mapKeySymbol(key, symbol, x + 6, y + 4);
-                text(key, x + 17, y + 6, box.getWidth() / keyColumns - 22, symbol.label, 6.5f, "start", "normal");
+                double labelOffset = symbol == Feature.LARGE_DOOR ? 29 : 17;
+                text(key, x + labelOffset, y + 6, box.getWidth() / keyColumns - labelOffset - 5, symbol.label, 6.5f, "start", "normal");
                 index++;
             }
         }
     }
 
     private void mapKeySymbol(Element parent, Feature symbol, double x, double y) {
+        if (symbol == Feature.LARGE_DOOR) {
+            Element opening = element(parent, "g", "data-building-symbol", symbol.symbol());
+            element(opening, "line", "x1", Double.toString(x), "y1", Double.toString(y),
+                  "x2", Double.toString(x + 12), "y2", Double.toString(y), "stroke", "#000", "stroke-width", "2");
+            mapKeySymbol(opening, Feature.DOOR, x, y);
+            mapKeySymbol(opening, Feature.DOOR, x + 12, y);
+            return;
+        }
         if (!symbol.glyph.isBlank()) {
             mapPolygon(parent, new double[][] { { -6, 0 }, { -3, -4 }, { 3, -4 }, { 6, 0 }, { 3, 4 }, { -3, 4 } }, x, y, 1, symbol.color);
         }
@@ -479,11 +622,7 @@ public class PrintBuilding extends PrintEntity {
         if (design.getSite() != BuildingDesign.Site.SURFACE) {
             entries.add(note("site", design.getSite() + "; cover " + design.getDepth() + " levels", "All"));
         }
-        for (BuildingDesign.Door door : design.getMapDoors()) {
-            String side = BuildingUtil.facingLabel(door.facing());
-            entries.add(note("door", "Door " + side + "; " + door.height() + " levels high",
-                  BuildingUtil.locationLabel(building, BuildingConstruction.location(building, door.position()))));
-        }
+        addDoorNotes(entries);
         for (BuildingDesign.Elevator lift : design.getElevators()) {
             String hex = BuildingUtil.sheetGrid(building.getInternalBuilding().getOriginalCoordsList()).label(lift.hex());
             entries.add(note("elevator", "Elevator: " + lift.capacity() + " t", hex));
@@ -503,11 +642,43 @@ public class PrintBuilding extends PrintEntity {
 
     private record InventoryPage(List<InventoryGroup> groups, float font, float step) { }
 
+    private void addDoorNotes(List<InventoryGroup> entries) {
+        var doors = building.getDesign().getMapDoors();
+        var geometry = BuildingDoors.geometry(doors);
+        Map<BuildingDesign.Door, List<BuildingDesign.Door>> openings = new LinkedHashMap<>();
+        BuildingDoors.groups(doors).forEach(group -> group.forEach(door -> openings.put(door, group)));
+        var printed = new LinkedHashSet<BuildingDesign.Door>();
+        var grid = BuildingUtil.sheetGrid(building.getInternalBuilding().getOriginalCoordsList());
+        List<String> compass = List.of("N", "NE", "E", "SE", "S", "SW", "W", "NW");
+        for (var door : doors) {
+            if (printed.contains(door)) {
+                continue;
+            }
+            var opening = openings.getOrDefault(door, List.of(door));
+            printed.addAll(opening);
+            String hexes = opening.stream().map(segment -> grid.label(segment.position().hex())).distinct().sorted().collect(Collectors.joining("-"));
+            String directions = opening.stream().map(segment -> {
+                var shape = geometry.get(segment);
+                if (shape == null) {
+                    // Match the renderer's ordinary arrow for unlinked or degenerate invalid segments.
+                    return BuildingUtil.facingLabel(segment.facing());
+                }
+                var arrow = shape.arrow();
+                var tip = arrow.getFirst();
+                var base = arrow.get(1).midpoint(arrow.get(2));
+                // Compass direction follows the same unprojected normal used to draw the linked arrow.
+                return compass.get(Math.floorMod((int) Math.round(Math.atan2(tip.x() - base.x(), base.y() - tip.y()) / (Math.PI / 4)), 8));
+            }).distinct().sorted(java.util.Comparator.comparingInt(compass::indexOf)).collect(Collectors.joining("/"));
+            entries.add(note("door", "Door " + directions + ": " + door.height() + (door.height() == 1 ? " level high" : " levels high"),
+                  hexes + "/" + building.getLevelLabel(door.position().level(), true)));
+        }
+    }
+
     private List<InventoryPage> inventoryPages() {
         if (plannedInventory != null) {
             return plannedInventory;
         }
-        Document template = getSVGDocument() == null ? loadTemplate(getFirstPage(), new PageFormat(), false) : getSVGDocument();
+        Document template = getSVGDocument() == null ? loadSVG(getSVGDirectoryName(false), "building_default.svg") : getSVGDocument();
         Rectangle2D box = getRectBBox((SVGRectElement) template.getElementById(INVENTORY));
         double available = box.getHeight() - 14;
         int capacity = (int) Math.floor(available / (InventoryWriter.MIN_FONT_SIZE * InventoryWriter.MIN_LINE_HEIGHT_TO_FONT_SIZE));

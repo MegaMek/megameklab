@@ -36,6 +36,8 @@ package megameklab.ui.building;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -54,6 +56,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -76,9 +79,131 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class BuildingMainUITest {
     private static final CubeCoords EAST = new CubeCoords(1, 0, -1);
 
+    @Test
+    void invalidServiceValuesRemainEditableForRepair() throws Exception {
+        var building = BuildingUtil.newBuilding();
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, List.of(CubeCoords.ZERO, EAST));
+        building.getDesign().getDoors().add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 0, 0));
+        building.getDesign().getElevators().add(new BuildingDesign.Elevator(CubeCoords.ZERO, 0, Map.of(-1, 4, 0, 4)));
+        SwingUtilities.invokeAndWait(() -> {
+            var editor = editor(building);
+            var doorHeight = find(editor, "N door height", javax.swing.JSpinner.class);
+            var capacity = find(editor, "Elevator capacity", javax.swing.JSpinner.class);
+            var from = find(editor, "Elevator lowest level", javax.swing.JSpinner.class);
+            var to = find(editor, "Elevator highest level", javax.swing.JSpinner.class);
+            assertEquals(0, doorHeight.getValue());
+            assertEquals(0.0, capacity.getValue());
+            assertEquals(-1, from.getValue());
+            doorHeight.setValue(1);
+            capacity.setValue(20.0);
+            from.setValue(0);
+            to.setValue(1);
+            assertEquals(1, building.getDesign().getDoors().getFirst().height());
+            var lift = building.getDesign().getElevators().getFirst();
+            assertEquals(20.0, lift.capacity());
+            assertEquals(Map.of(0, 4, 1, 4), lift.exits());
+        });
+    }
+
+    @Test
+    void servicePanelsFollowSelectionAndEditLinkedDoorsAndElevatorSides() throws Exception {
+        var building = BuildingUtil.newBuilding();
+        var south = new CubeCoords(0, 1, -1);
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 2, 80, 0, List.of(CubeCoords.ZERO, south));
+        var doors = building.getDesign().getDoors();
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 1, 1));
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(CubeCoords.ZERO, 0), 2, 1));
+        doors.add(new BuildingDesign.Door(new BuildingDesign.Position(south, 0), 1, 1));
+        building.getDesign().getElevators().add(new BuildingDesign.Elevator(south, 20, Map.of(0, 1, 1, 1)));
+        SwingUtilities.invokeAndWait(() -> {
+            var editor = editor(building);
+            editor.getConfigPane().setSelectedIndex(editor.getConfigPane().indexOfTab("Construction & Services"));
+            layout(editor);
+            assertNotNull(find(editor, "NE door height", javax.swing.JSpinner.class));
+            assertNotNull(find(editor, "SE door height", javax.swing.JSpinner.class));
+            assertNull(find(editor, "Elevator capacity", javax.swing.JSpinner.class));
+            find(editor, "Link NE door with SE", javax.swing.JButton.class).doClick();
+            editor.refreshAll();
+            find(editor, "Link SE door with " + editor.hexLabel(south) + "/NE", javax.swing.JButton.class).doClick();
+            editor.refreshAll();
+            find(editor, "NE door height", javax.swing.JSpinner.class).setValue(2);
+            assertEquals(List.of(2, 2, 2), doors.stream().map(BuildingDesign.Door::height).toList());
+            editor.refreshAll();
+            for (String name : List.of("Building footprint legend", "Building pancake legend")) {
+                Container legend = find(editor, name, Container.class);
+                assertTrue(java.util.Arrays.stream(legend.getComponents())
+                      .anyMatch(entry -> entry instanceof JLabel label && label.getText().equals("Large Door")
+                            && label.isVisible() && label.getIcon().getIconWidth() > label.getIcon().getIconHeight() * 2));
+            }
+            layout(editor);
+            try {
+                var output = java.nio.file.Path.of("build", "building-review", "building-linked-services.png");
+                java.nio.file.Files.createDirectories(output.getParent());
+                javax.imageio.ImageIO.write(paint(editor), "png", output.toFile());
+            } catch (java.io.IOException ex) {
+                throw new java.io.UncheckedIOException(ex);
+            }
+            editor.selectLocation(south, 0);
+            assertNull(find(editor, "SE door height", javax.swing.JSpinner.class));
+            assertNotNull(find(editor, "Elevator capacity", javax.swing.JSpinner.class));
+            var elevatorSide = find(editor, "Elevator 1 level " + BuildingUtil.roofLevelLabel(building, 0) + " access N", javax.swing.JButton.class);
+            assertNotNull(elevatorSide);
+            elevatorSide.doClick();
+            assertEquals(0, building.getDesign().getElevators().getFirst().exits().get(0));
+            assertEquals(1, building.getDesign().getElevators().getFirst().exits().get(1));
+        });
+    }
+
     @BeforeEach
     void requireGraphicsEnvironment() {
         assumeFalse(GraphicsEnvironment.isHeadless(), "The editor's drag-and-drop tables require a display");
+    }
+
+    @Test
+    void elevatorControlsWrapIntoFloorRowsWithoutHorizontalScrolling() throws Exception {
+        var building = BuildingUtil.newBuilding();
+        BuildingUtil.configure(building, BuildingType.HEAVY, IBuilding.FORTRESS, 3, 80, 0, List.of(CubeCoords.ZERO, EAST));
+        building.getDesign().getElevators().add(new BuildingDesign.Elevator(CubeCoords.ZERO, 20, Map.of(0, 2, 1, 2, 2, 2, 3, 2)));
+        SwingUtilities.invokeAndWait(() -> {
+            var editor = editor(building);
+            var services = new BuildingServicePanels(editor);
+            services.refresh();
+            var panel = services.elevators;
+            var scroll = find(panel, "Building elevator scroll", javax.swing.JScrollPane.class);
+            var capacity = find(panel, "Elevator capacity", javax.swing.JSpinner.class);
+            for (int width : new int[] { 500, panel.getMinimumSize().width, 750, 500 }) {
+                panel.setSize(width, 700);
+                // Settle width-dependent preferred heights just as Swing validation does after a resize.
+                for (int pass = 0; pass < 4; pass++) {
+                    panel.invalidate();
+                    layout(panel);
+                }
+                var floors = find(panel, "Elevator 1 floors", JPanel.class);
+                var cells = floors.getComponents();
+                assertEquals(4, cells.length);
+                int columns = width == 500 ? 2 : width == 750 ? 3 : 1;
+                assertEquals(columns, java.util.Arrays.stream(cells).filter(cell -> cell.getY() == cells[0].getY()).count());
+                assertEquals(scroll.getViewport().getWidth(), scroll.getViewport().getView().getWidth());
+                assertFalse(scroll.getHorizontalScrollBar().isVisible());
+                assertTrue(capacity.getWidth() < 120, "Capacity must remain a compact numeric field");
+                for (Component cell : cells) {
+                    assertEquals(cell.getPreferredSize(), cell.getSize());
+                    assertTrue(cell.getX() >= 0 && cell.getX() + cell.getWidth() <= floors.getWidth());
+                    assertTrue(cell.getY() + cell.getHeight() <= floors.getHeight(), "Panel width " + width
+                          + ": floor " + cell.getBounds() + " outside " + floors.getSize() + ", preferred " + floors.getPreferredSize());
+                }
+                if (width == 500) {
+                    assertFalse(scroll.getVerticalScrollBar().isVisible(), "Four floors fit as a 2 by 2 grid");
+                    try {
+                        var output = java.nio.file.Path.of("build", "building-review", "building-elevator-grid.png");
+                        java.nio.file.Files.createDirectories(output.getParent());
+                        javax.imageio.ImageIO.write(paint(panel), "png", output.toFile());
+                    } catch (java.io.IOException ex) {
+                        throw new java.io.UncheckedIOException(ex);
+                    }
+                }
+            }
+        });
     }
 
     @Test

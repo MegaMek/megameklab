@@ -601,6 +601,13 @@ class BuildingStructureTab extends JPanel implements BuildListener {
     }
 
     private void configure(List<CubeCoords> hexes) {
+        var affected = BuildingUtil.topologyDoorChanges(entity(), hexes);
+        if (affected.count() > 0 && javax.swing.JOptionPane.showOptionDialog(editor,
+              affected.description() + "\nRemove them with this edit? Keeping them will leave validation errors.",
+              "Doors affected by footprint edit", javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE,
+              null, new String[] { "Remove affected doors", "Keep invalid doors" }, "Remove affected doors") == 0) {
+            affected.remove().run();
+        }
         // Materialize implicit north sides before transformations so their orientation follows the building.
         if (BuildingConstruction.usesHexsides(entity())) {
             entity().getInternalBuilding().getOriginalCoordsList().forEach(hex ->
@@ -627,6 +634,9 @@ class BuildingStructureTab extends JPanel implements BuildListener {
     private record FeatureIcon(BuildingMap.Feature feature, int getIconHeight) implements Icon {
         @Override
         public int getIconWidth() {
+            if (feature == BuildingMap.Feature.LARGE_DOOR) {
+                return getIconHeight * 8 / 3;
+            }
             return feature.glyph.isBlank() ? getIconHeight * 4 / 3
                   : (int) Math.ceil(2 * (getIconHeight - 2) / Math.sqrt(3)) + 2;
         }
@@ -638,7 +648,17 @@ class BuildingStructureTab extends JPanel implements BuildListener {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int w = getIconWidth() - 2, h = getIconHeight - 2;
             Path2D marker = new Path2D.Double();
-            if (feature.glyph.isBlank()) {
+            if (feature == BuildingMap.Feature.LARGE_DOOR) {
+                int half = w / 2;
+                g.setColor(Color.BLACK);
+                g.setStroke(new BasicStroke(2));
+                g.drawLine(half / 2, h * 2 / 3, half + half / 2, h * 2 / 3);
+                g.setStroke(new BasicStroke(1));
+                for (int offset : new int[] { 0, half }) {
+                    marker.append(new Polygon(new int[] { offset + half / 2, offset + half - 1, offset + 1 },
+                          new int[] { 1, h, h }, 3), false);
+                }
+            } else if (feature.glyph.isBlank()) {
                 marker.append(new Polygon(new int[] { w / 2, w - 1, 1 }, new int[] { 1, h, h }, 3), false);
             } else {
                 // Legend hexes use a regular top view, independent of the pancake projection.
@@ -983,9 +1003,30 @@ class BuildingStructureTab extends JPanel implements BuildListener {
                     }
                     int a = (door.facing() + 4) % 6, b = (a + 1) % 6;
                     Polygon triangle = new Polygon();
-                    for (double[] point : BuildingMap.doorPoints(new double[] { polygon.xpoints[a] - x, polygon.ypoints[a] - y },
-                          new double[] { polygon.xpoints[b] - x, polygon.ypoints[b] - y })) {
-                        triangle.addPoint((int) Math.round(x + point[0]), (int) Math.round(y + point[1]));
+                    if (door.geometry() != null) {
+                        Path2D opening = new Path2D.Double();
+                        boolean first = true;
+                        for (var point : door.geometry().line()) {
+                            var projected = transform.deltaTransform(new Point2D.Double(point.x(), point.y()), null);
+                            if (first) {
+                                opening.moveTo(x + projected.getX(), y + projected.getY());
+                                first = false;
+                            } else {
+                                opening.lineTo(x + projected.getX(), y + projected.getY());
+                            }
+                        }
+                        g.setColor(Color.BLACK);
+                        g.setStroke(new BasicStroke(pancake ? 3f : 5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        g.draw(opening);
+                        for (var point : door.geometry().arrow()) {
+                            var projected = transform.deltaTransform(new Point2D.Double(point.x(), point.y()), null);
+                            triangle.addPoint((int) Math.round(x + projected.getX()), (int) Math.round(y + projected.getY()));
+                        }
+                    } else {
+                        for (double[] point : BuildingMap.doorPoints(new double[] { polygon.xpoints[a] - x, polygon.ypoints[a] - y },
+                              new double[] { polygon.xpoints[b] - x, polygon.ypoints[b] - y })) {
+                            triangle.addPoint((int) Math.round(x + point[0]), (int) Math.round(y + point[1]));
+                        }
                     }
                     g.setStroke(new BasicStroke(1.5f));
                     g.setColor(Color.decode(door.feature().color));

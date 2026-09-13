@@ -38,7 +38,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -46,10 +45,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.table.AbstractTableModel;
 
 import megamek.client.ui.WrapLayout;
 import megamek.common.equipment.enums.StructureEngine;
@@ -78,14 +75,12 @@ class BuildingSystemsTab extends JPanel {
     private final JSpinner crewCount = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     private final JPanel totals = new JPanel(new BorderLayout(8, 8));
     private final JTextArea report = new JTextArea();
-    private final Doors doors = new Doors();
-    private final JTable doorTable = new JTable(doors);
-    private final Elevators elevators = new Elevators();
-    private final JTable elevatorTable = new JTable(elevators);
+    private final BuildingServicePanels servicePanels;
     private boolean refreshing;
 
     BuildingSystemsTab(BuildingMainUI editor) {
         this.editor = editor;
+        servicePanels = new BuildingServicePanels(editor);
         setLayout(new BorderLayout(8, 8));
         setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         JPanel options = new JPanel(new GridLayout(0, 2, 8, 6));
@@ -125,7 +120,7 @@ class BuildingSystemsTab extends JPanel {
         portalTemplates.addActionListener(event -> BuildingPlacementDialogs.portalTemplates(editor));
         add(options, BorderLayout.NORTH);
 
-          JPanel services = new JPanel(new GridLayout(1, 2, 8, 8));
+        JPanel services = new JPanel(new BorderLayout(8, 8));
         services.setName("Building service sections");
         totals.setBorder(BorderFactory.createCompoundBorder(
               BorderFactory.createTitledBorder("Capacity, crew, power & validation"),
@@ -144,8 +139,10 @@ class BuildingSystemsTab extends JPanel {
         report.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 12));
         report.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         totals.add(new JScrollPane(report), BorderLayout.CENTER);
-        services.add(doorPanel());
-        services.add(elevatorPanel());
+        services.add(servicePanels.doors, BorderLayout.WEST);
+        services.add(servicePanels.elevators, BorderLayout.CENTER);
+        setMinimumSize(new java.awt.Dimension(servicePanels.doors.getMinimumSize().width
+              + servicePanels.elevators.getMinimumSize().width + 24, 160));
         add(services, BorderLayout.CENTER);
         sealing.addActionListener(e -> apply());
         heavyMetal.addActionListener(e -> apply());
@@ -171,81 +168,6 @@ class BuildingSystemsTab extends JPanel {
                   ? AbstractBuildingEntity.CREW_FROM_MINIMUM_CREW_TABLE : (int) crewCount.getValue());
             editor.scheduleRefresh();
         }
-    }
-
-    private JPanel doorPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Large doors"),
-              BorderFactory.createEmptyBorder(8, 8, 8, 8)));
-        panel.add(serviceHint("One door per exterior hexside. Set its starting floor, facing, and height."), BorderLayout.NORTH);
-        doorTable.setName("Building doors");
-        doorTable.setRowHeight(24);
-        doorTable.putClientProperty("terminateEditOnFocusLost", true);
-        doorTable.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(new JComboBox<>(BuildingEquipmentTab.FACINGS)));
-        panel.add(new JScrollPane(doorTable), BorderLayout.CENTER);
-        JPanel actions = new JPanel(new WrapLayout(FlowLayout.LEFT));
-        JButton add = new JButton("Add at editing location");
-        add.addActionListener(e -> {
-            editor.getEntity().getDesign().getDoors().add(new BuildingDesign.Door(
-                  BuildingConstruction.position(editor.getEntity(), editor.selectedLocation()),
-                  BuildingUtil.exteriorFacing(editor.getEntity(), editor.selectedHex()), 1));
-            editor.scheduleRefresh();
-        });
-        JButton remove = new JButton("Remove selected doors");
-        remove.addActionListener(e -> {
-            int[] rows = doorTable.getSelectedRows();
-            for (int i = rows.length - 1; i >= 0; i--) {
-                editor.getEntity().getDesign().getDoors().remove(rows[i]);
-            }
-            editor.scheduleRefresh();
-        });
-        actions.add(add);
-        actions.add(remove);
-        panel.add(actions, BorderLayout.SOUTH);
-        return panel;
-    }
-
-    private JPanel elevatorPanel() {
-        JPanel panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Industrial elevators"),
-              BorderFactory.createEmptyBorder(8, 8, 8, 8)));
-        panel.add(serviceHint("Lift capacity is limited to CF. Each served level occupies the entire hex."), BorderLayout.NORTH);
-        elevatorTable.setName("Building elevators");
-        elevatorTable.setRowHeight(24);
-        panel.add(new JScrollPane(elevatorTable), BorderLayout.CENTER);
-        JPanel actions = new JPanel(new WrapLayout(FlowLayout.LEFT));
-        JButton add = new JButton("Add in editing hex");
-        add.addActionListener(e -> BuildingPlacementDialogs.elevator(editor, -1));
-        JButton edit = new JButton("Edit selected elevator");
-        edit.addActionListener(e -> {
-            if (elevatorTable.getSelectedRow() >= 0) {
-                BuildingPlacementDialogs.elevator(editor, elevatorTable.getSelectedRow());
-            }
-        });
-        JButton remove = new JButton("Remove selected elevators");
-        remove.addActionListener(e -> {
-            int[] rows = elevatorTable.getSelectedRows();
-            for (int i = rows.length - 1; i >= 0; i--) {
-                editor.getEntity().getDesign().getElevators().remove(rows[i]);
-            }
-            editor.scheduleRefresh();
-        });
-        actions.add(add);
-        actions.add(edit);
-        actions.add(remove);
-        panel.add(actions, BorderLayout.SOUTH);
-        return panel;
-    }
-
-    private JTextArea serviceHint(String text) {
-        var hint = new JTextArea(text, 3, 0);
-        hint.setEditable(false);
-        hint.setFocusable(false);
-        hint.setOpaque(false);
-        hint.setFont(getFont());
-        hint.setLineWrap(true);
-        hint.setWrapStyleWord(true);
-        return hint;
     }
 
     private void apply() {
@@ -297,14 +219,7 @@ class BuildingSystemsTab extends JPanel {
         minimumCrew.setSelected(!entity.hasExplicitCrewCount());
         crewCount.setValue(entity.getNCrew());
         crewCount.setEnabled(entity.hasExplicitCrewCount());
-        BuildingPlacementDialogs.stopEditing(doorTable);
-        JComboBox<String> locations = new JComboBox<>();
-        for (int loc = 0; loc < entity.locations(); loc++) {
-            locations.addItem(BuildingUtil.locationLabel(entity, loc));
-        }
-        doorTable.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(locations));
-        doors.fireTableDataChanged();
-        elevators.fireTableDataChanged();
+        refreshPlacement();
         refreshReport();
         refreshing = false;
     }
@@ -351,94 +266,7 @@ class BuildingSystemsTab extends JPanel {
         report.setCaretPosition(0);
     }
 
-    private class Doors extends AbstractTableModel {
-        private static final String[] COLUMNS = { "Hex/Floor", "Facing", "Height (levels)" };
-
-        @Override
-        public int getRowCount() {
-            return editor == null ? 0 : editor.getEntity().getDesign().getDoors().size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return COLUMNS.length;
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return COLUMNS[column];
-        }
-
-        @Override
-        public Object getValueAt(int row, int column) {
-            var door = editor.getEntity().getDesign().getDoors().get(row);
-            return switch (column) {
-                case 0 -> BuildingUtil.locationLabel(editor.getEntity(), BuildingConstruction.location(editor.getEntity(), door.position()));
-                case 1 -> door.facing() >= 0 && door.facing() < 6 ? BuildingEquipmentTab.FACINGS[door.facing()] : "";
-                default -> door.height();
-            };
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return true;
-        }
-
-        @Override
-        public void setValueAt(Object value, int row, int column) {
-            var list = editor.getEntity().getDesign().getDoors();
-            var old = list.get(row);
-            var position = old.position();
-            int facing = old.facing();
-            int height = old.height();
-            if (column == 0) {
-                for (int loc = 0; loc < editor.getEntity().locations(); loc++) {
-                    if (BuildingUtil.locationLabel(editor.getEntity(), loc).equals(value)) {
-                        position = BuildingConstruction.position(editor.getEntity(), loc);
-                    }
-                }
-            } else if (column == 1) {
-                facing = List.of(BuildingEquipmentTab.FACINGS).indexOf(value);
-            } else {
-                try {
-                    height = Integer.parseInt(value.toString());
-                } catch (NumberFormatException ex) {
-                    return;
-                }
-            }
-            list.set(row, new BuildingDesign.Door(position, facing, height));
-            editor.scheduleRefresh();
-        }
-    }
-
-    private class Elevators extends AbstractTableModel {
-        private static final String[] COLUMNS = { "Hex", "Capacity (t)", "Served floors", "Weight (t)" };
-
-        @Override
-        public int getRowCount() {
-            return editor == null ? 0 : editor.getEntity().getDesign().getElevators().size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return COLUMNS.length;
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return COLUMNS[column];
-        }
-
-        @Override
-        public Object getValueAt(int row, int column) {
-            var lift = editor.getEntity().getDesign().getElevators().get(row);
-            return switch (column) {
-                case 0 -> BuildingUtil.sheetGrid(editor.getEntity().getInternalBuilding().getOriginalCoordsList()).label(lift.hex());
-                case 1 -> lift.capacity();
-                case 2 -> lift.exits().keySet().stream().sorted().map(level -> BuildingUtil.roofLevelLabel(editor.getEntity(), level))
-                      .collect(java.util.stream.Collectors.joining(", "));
-                default -> lift.weight();
-            };
-        }
+    void refreshPlacement() {
+        servicePanels.refresh();
     }
 }

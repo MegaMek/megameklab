@@ -171,6 +171,13 @@ public class UnitPrintManager {
 
     public static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
           RecordSheetOptions options, boolean noWarningsOnUnprintable) {
+        PageFormat pageFormat = new PageFormat();
+        pageFormat.setPaper(options.getPaperSize().createPaper());
+        return createSheets(entities, singlePrint, options, noWarningsOnUnprintable, pageFormat);
+    }
+
+    private static List<PrintRecordSheet> createSheets(List<? extends BTObject> entities, boolean singlePrint,
+          RecordSheetOptions options, boolean noWarningsOnUnprintable, PageFormat pageFormat) {
         List<PrintRecordSheet> sheets = new ArrayList<>();
         List<Infantry> infList = new ArrayList<>();
         List<BattleArmor> baList = new ArrayList<>();
@@ -247,7 +254,7 @@ public class UnitPrintManager {
                         protoList = new ArrayList<>();
                     }
                 } else if (unit instanceof AbstractBuildingEntity building) {
-                    var sheet = new PrintBuilding(building, pageCount, options);
+                    var sheet = new PrintBuilding(building, pageCount, options, pageFormat);
                     sheets.add(sheet);
                     pageCount += sheet.getPageCount();
                 } else if (unit instanceof HandheldWeapon) {
@@ -417,7 +424,7 @@ public class UnitPrintManager {
         // closest to the aspect
         // ratio of the paper size.
         options.setPaperSize(PaperSize.closestToAspect(pageFormat.getWidth(), pageFormat.getHeight()));
-        List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options);
+        List<PrintRecordSheet> sheets = createSheets(loadedUnits, singlePrint, options, false, pageFormat);
 
         if (loadedUnits.size() > 1) {
             String name;
