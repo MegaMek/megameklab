@@ -302,6 +302,10 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
               UIComponents.MainMenuButton.getComp(), true);
         btnNewPbi.addActionListener(evt -> createNewUnit(Entity.ETYPE_INFANTRY));
 
+        MegaMekButton btnNewBuilding = new MegaMekButton("New Building",
+              UIComponents.MainMenuButton.getComp(), true);
+        btnNewBuilding.addActionListener(evt -> createNewUnit(Entity.ETYPE_BUILDING_ENTITY));
+
         MegaMekButton btnQuit = new MegaMekButton(resourceMap.getString("btnQuit.text"),
               UIComponents.MainMenuButton.getComp(), true);
         btnQuit.addActionListener(evt -> System.exit(0));
@@ -330,6 +334,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         btnNewPbi.setPreferredSize(minButtonDim);
         btnNewProto.setMinimumSize(minButtonDim);
         btnNewProto.setPreferredSize(minButtonDim);
+        btnNewBuilding.setMinimumSize(minButtonDim);
+        btnNewBuilding.setPreferredSize(minButtonDim);
         btnQuit.setMinimumSize(minButtonDim);
         btnQuit.setPreferredSize(minButtonDim);
 
@@ -344,7 +350,7 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         c.weightx = 3.0;
         c.weighty = 1.0;
         c.gridwidth = 1;
-        c.gridheight = 12;
+        c.gridheight = 13;
         add(splashPanel, c);
 
         // Right Column (Buttons)
@@ -379,6 +385,8 @@ public class StartupGUI extends SkinnedJPanel implements MenuBarOwner {
         add(btnNewDropper, c);
         c.gridy++;
         add(btnNewLargeCraft, c);
+        c.gridy++;
+        add(btnNewBuilding, c);
         c.gridy++;
         add(btnQuit, c);
 

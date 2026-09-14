@@ -444,7 +444,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
      *
      * @return The document object
      */
-    private @Nullable Document loadSVG(String directoryPath, String filename) {
+    protected @Nullable Document loadSVG(String directoryPath, String filename) {
         final Path filePath = Paths.get(directoryPath, filename);
         if (!Files.exists(filePath)) {
             logger
@@ -524,6 +524,12 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         return createDocument(pageIndex, pageFormat, addMargin, false);
     }
 
+    /** Base fit-to-page scale, before any reference-chart reduction. */
+    protected double sheetScale(PageFormat pageFormat) {
+        return Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
+              pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+    }
+
     /**
      * @return true if the document was created successfully, otherwise false
      */
@@ -537,8 +543,7 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         subColorElements();
         SVGGeneratorContext context = SVGGeneratorContext.createDefault(getSVGDocument());
         svgGenerator = new SVGGraphics2D(context, false);
-        double ratio = Math.min(pageFormat.getImageableWidth() / (options.getPaperSize().pxWidth - 36),
-              pageFormat.getPaper().getImageableHeight() / (options.getPaperSize().pxHeight - 36));
+        double ratio = sheetScale(pageFormat);
         if ((pageIndex == firstPage) && includeReferenceCharts()) {
             ratio *= TABLE_RATIO;
         }
@@ -549,11 +554,11 @@ public abstract class PrintRecordSheet implements Printable, IdConstants {
         if (g != null) {
             if (addMargin) {
                 g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                      String.format("%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
+                      String.format(java.util.Locale.ROOT, "%s(%f 0 0 %f %f %f)", SVGConstants.SVG_MATRIX_VALUE,
                             ratio, ratio, pageFormat.getImageableX(), pageFormat.getImageableY()));
             } else {
                 g.setAttributeNS(null, SVGConstants.SVG_TRANSFORM_ATTRIBUTE,
-                      String.format("%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
+                      String.format(java.util.Locale.ROOT, "%s(%f %f)", SVGConstants.SVG_SCALE_ATTRIBUTE,
                             ratio, ratio));
             }
         }

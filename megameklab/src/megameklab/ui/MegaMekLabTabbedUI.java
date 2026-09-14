@@ -317,6 +317,8 @@ public class MegaMekLabTabbedUI extends JFrame implements MenuBarOwner, ChangeLi
         menu.add(newUnitItem("New Advanced Aerospace", Entity.ETYPE_JUMPSHIP, false));
         menu.add(newUnitItem("New Handheld Weapon", Entity.ETYPE_HANDHELD_WEAPON, false));
         menu.add(newUnitItem("New Gun Emplacement", Entity.ETYPE_GUN_EMPLACEMENT, false));
+        menu.add(newUnitItem("New Building", Entity.ETYPE_BUILDING_ENTITY, false));
+        menu.add(newUnitItem("New Mobile Structure", Entity.ETYPE_MOBILE_STRUCTURE, false));
         menu.add(newUnitItem("New Battlefield Support Asset", Entity.ETYPE_BATTLEFIELD_SUPPORT_ASSET, false));
 
         JMenu primitive = new JMenu("New Primitive...");

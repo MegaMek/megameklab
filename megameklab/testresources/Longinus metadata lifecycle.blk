@@ -1,0 +1,165 @@
+# MegaMek Data (C) 2025-2026 by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+# To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+#
+# NOTICE: The MegaMek organization is a non-profit group of volunteers
+# creating free software for the BattleTech community.
+#
+# MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+# of The Topps Company, Inc. All Rights Reserved.
+#
+# Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+# InMediaRes Productions, LLC.
+#
+# MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
+# Microsoft's "Game Content Usage Rules"
+# <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+# affiliated with Microsoft.
+
+#Saved from version 0.51.01 on 2026-07-12
+<UUID>
+019f583e-a2e3-75eb-b07c-811865ae78e1
+</UUID>
+
+<UnitType>
+BattleArmor
+</UnitType>
+
+<Name>
+Longinus Battle Armor
+</Name>
+
+<Model>
+[David](Sqd4)
+</Model>
+
+<mul id:>
+1942
+</mul id:>
+
+<year>
+3063
+</year>
+
+<type>
+IS Level 2
+</type>
+
+<role>
+Ambusher
+</role>
+
+<motion_type>
+Jump
+</motion_type>
+
+<cruiseMP>
+1
+</cruiseMP>
+
+<armor_type>
+30
+</armor_type>
+
+<armor_tech>
+3
+</armor_tech>
+
+<Squad Equipment>
+BADavidLightGaussRifle:RA
+ISBASRM2OS:Body
+BAAPMount:LA
+InfantryAssaultRifle:APM:LA
+IS BA Advanced:RA
+IS BA Advanced:RA
+IS BA Advanced:LA
+IS BA Advanced:LA
+IS BA Advanced:Body
+BABattleClaw:RA
+</Squad Equipment>
+
+<Trooper 1 Equipment>
+</Trooper 1 Equipment>
+
+<Trooper 2 Equipment>
+</Trooper 2 Equipment>
+
+<Trooper 3 Equipment>
+</Trooper 3 Equipment>
+
+<Trooper 4 Equipment>
+</Trooper 4 Equipment>
+
+<slotless_equipment>
+BAJumpJet
+</slotless_equipment>
+
+<capabilities>
+<p>The Longinus carries a detachable one-shot SRM-2 on a dorsal rack that must be jettisoned before the suit's jump jets can engage, allowing leaps of up to ninety meters. The David configuration, fielded beginning in 3063, equips a "David" light Gauss rifle in the right-arm modular mount. This weapon gives the suit meaningful engagement range beyond what the flamer, laser, or machine gun options provide, allowing troopers to engage targets accurately at distances where return fire from infantry weapons is less effective. The left arm retains the standard battle claw for swarming attacks and an anti-personnel mount for close-range threats. Advanced armor composites give the Longinus protection comparable to Clan battle armor, absorbing a direct large laser hit. The combination of ranged firepower and heavy protection makes this configuration effective in open terrain where other loadouts would need to close the distance.</p>
+</capabilities>
+
+<overview>
+<p>The Longinus was the Free Worlds League's answer to the Clan Elemental battle armor, developed jointly with the Word of Blake beginning in 3054. Classified as a medium battle armor, the suit came closer to matching its Clan-tech inspiration than any other Inner Sphere design of the era. The FWL's alliance with the Blakists provided access to technologies that rival programs in other Great Houses lacked. First fielded in 3057, the Longinus earned a reputation as both capable and expensive, with production costs well above comparable Inner Sphere designs.</p>
+</overview>
+
+<deployment>
+<p>When the "David" light Gauss rifle became available in 3063, FWLM commanders quickly adopted the configuration for squads tasked with open-terrain operations. Four-trooper squads equipped with the ranged weapon could engage targets at distances where other Longinus loadouts would need to close, giving FWLM battle armor a standoff capability it previously lacked. David-armed squads saw particular use in the rolling plains and open farmland common to many League border worlds.</p>
+</deployment>
+
+<history>
+<p>Development of the Longinus began in October 3054 as a joint venture between the Free Worlds League and the Word of Blake. The FWLM sought to replicate the Clan Elemental battle armor, and access to Blakist technologies gave the League an advantage over rival programs in the Federated Commonwealth and Draconis Combine. The advanced nature of the design and bureaucratic friction between the League and its allies slowed progress well beyond comparable efforts elsewhere.</p><p>The first prototypes reached testing in April 3056, and the results were catastrophic. Armor composites shattered during live-fire exercises, and power systems failed at random. Investigation traced many of these failures to a hidden ComStar sympathizer embedded in the Blakist development staff. Following the operative's removal, the team produced a corrected series of prototypes in early 3057. These early suits lacked the backpack missile launcher that made the Elemental so lethal, and the FWLM demanded one be incorporated. Other Inner Sphere teams had tried and failed to combine jump capability with a shoulder-mounted launcher, producing suits that were either too heavy on the ground or too ungainly in mid-jump. The Longinus team spent eight months on the problem before devising a detachable mounting that required jettisoning the launcher before the jump jets could engage.</p><p>By this point the project had far exceeded its budget, and the League Central Coordination Commission refused further funding. Production resumed only when Captain-General Thomas Marik personally authorized additional resources and IBMU agreed to absorb some costs in exchange for access to Blakist technology. The first production suits rolled off the Irian assembly line in December 3057. They arrived too late for Operation Guerrero but saw action in the Sirian Campaign and proved their worth during Operation Bulldog, where Longinus troopers held their own against Clan Elementals.</p><p>Corean Enterprises on Stewart and Kali-Yama Weapons Industries on Kalidasa soon picked up production, making the suit a common sight throughout the FWLM. Rear-echelon formations received small allotments for security, while elite frontline units fielded company or even battalion-strength deployments. The Longinus played a considerable role in the FWLM's success in the Isle of Skye. Thomas Marik initially refused to supply the suit to the Word of Blake for their planned assault on Terra, but his stance later softened, and Longinus suits began appearing in the Word of Blake Militia in significant numbers. During the Jihad, modified variants with magnetic clamps and experimental C³i electronics expanded the suit's operational profile, though the latter project was shelved after trials revealed excessive capability trade-offs.</p>
+</history>
+
+<manufacturer>
+Irian BattleMechs Unlimited|Corean Enterprises|Kali Yama Weapons Industries|Etna Foundries|Gibson Federated BattleMechs
+</manufacturer>
+
+<primaryFactory>
+Irian|Stewart|Kalidasa|Oriente|Gibson
+</primaryFactory>
+
+<systemManufacturers>
+CHASSIS:Unknown
+ENGINE:Unknown
+ARMOR:Unknown
+JUMP_JET:Unknown
+COMMUNICATIONS:Unknown
+TARGETING:Unknown
+</systemManufacturers>
+
+<systemModels>
+CHASSIS:Unknown
+ENGINE:Unknown
+ARMOR:Unknown
+JUMP_JET:Unknown
+COMMUNICATIONS:Unknown
+TARGETING:Unknown
+</systemModels>
+
+<source>
+TR:3058U
+</source>
+
+<published>
+RS:3058Uu-C
+</published>
+
+<chassis>
+biped
+</chassis>
+
+<jumpingMP>
+3
+</jumpingMP>
+
+<armor>
+9
+</armor>
+
+<Trooper Count>
+4
+</Trooper Count>
+
+<weightclass>
+2
+</weightclass>
+
