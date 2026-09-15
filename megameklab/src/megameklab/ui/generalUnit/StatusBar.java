@@ -39,6 +39,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.JButton;
@@ -86,7 +87,7 @@ public class StatusBar extends ITab {
           e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
     private final JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
-    private final DecimalFormat formatter;
+    private final DecimalFormat totalCostFormatter;
     private TestEntity testEntity;
     private RefreshListener refresh;
 
@@ -95,7 +96,10 @@ public class StatusBar extends ITab {
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
         setLayout(new BorderLayout());
         this.parent = parent;
-        formatter = new DecimalFormat();
+        totalCostFormatter = new DecimalFormat();
+        totalCostFormatter.setMinimumFractionDigits(2);
+        totalCostFormatter.setMaximumFractionDigits(2);
+        totalCostFormatter.setRoundingMode(RoundingMode.CEILING);
 
         statusComponents.setOpaque(false);
         add(statusComponents, BorderLayout.CENTER);
@@ -227,9 +231,9 @@ public class StatusBar extends ITab {
     }
 
     private void refreshCost() {
-        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setText("Dry Cost: " + totalCostFormatter.format(getEntity().getCost(true)) + " C-bills");
         cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-              + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills. "
+              + totalCostFormatter.format(getEntity().getCost(false)) + " C-bills. "
               + "Click to show the cost calculation.");
     }
 
