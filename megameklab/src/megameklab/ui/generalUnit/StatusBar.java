@@ -86,7 +86,7 @@ public class StatusBar extends ITab {
           e -> new CostDisplayDialog(getParentFrame(), getEntity()).setVisible(true));
     private final JLabel invalid = new JLabel("Invalid");
     private final JPanel statusComponents = new JPanel(new WrapLayout(FlowLayout.LEFT, 22, 8));
-    private final DecimalFormat formatter;
+    private final DecimalFormat costFormatter;
     private TestEntity testEntity;
     private RefreshListener refresh;
 
@@ -95,7 +95,9 @@ public class StatusBar extends ITab {
         setBorder(new MatteBorder(1, 0, 0, 0, UIManager.getColor("Separator.foreground")));
         setLayout(new BorderLayout());
         this.parent = parent;
-        formatter = new DecimalFormat();
+        costFormatter = new DecimalFormat();
+        costFormatter.setMinimumFractionDigits(2);
+        costFormatter.setMaximumFractionDigits(2);
 
         statusComponents.setOpaque(false);
         add(statusComponents, BorderLayout.CENTER);
@@ -227,9 +229,9 @@ public class StatusBar extends ITab {
     }
 
     private void refreshCost() {
-        cost.setText("Dry Cost: " + formatter.format(Math.round(getEntity().getCost(true))) + " C-bills");
+        cost.setText("Dry Cost: " + costFormatter.format(getEntity().getCost(true)) + " C-bills");
         cost.setToolTipText("The dry cost of the unit (without ammo). The unit's full cost is "
-              + formatter.format(Math.round(getEntity().getCost(false))) + " C-bills. "
+              + costFormatter.format(getEntity().getCost(false)) + " C-bills. "
               + "Click to show the cost calculation.");
     }
 
