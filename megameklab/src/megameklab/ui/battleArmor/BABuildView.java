@@ -299,7 +299,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                 }
 
                 if (!UnitUtil.isArmor(eq.getType()) && !eq.isSquadSupportWeapon()) {
-                    item = new JMenuItem("Make individual weapon");
+                    item = new JMenuItem("Make Individual Weapon");
                     item.addActionListener(evt -> {
                         eq.setLocation(BattleArmor.LOC_TROOPER_1);
                         ((BABuildTab) getParent().getParent()).refreshAll();
@@ -312,7 +312,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                       && !((eq.getType() instanceof WeaponType)
                       && (eq.getType().hasFlag(WeaponType.F_TASER)
                       || ((WeaponType) eq.getType()).getAmmoType() == AmmoType.AmmoTypeEnum.NARC))) {
-                    item = new JMenuItem("Make squad weapon");
+                    item = new JMenuItem("Make Squad Weapon");
                     item.addActionListener(evt -> {
                         eq.setLocation(BattleArmor.LOC_SQUAD);
                         ((BABuildTab) getParent().getParent()).refreshAll();
@@ -349,7 +349,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                   && !eq.getType().hasFlag(WeaponType.F_INFANTRY)
                   && eq.getLocation() == BattleArmor.LOC_SQUAD
                   && getBattleArmor().getChassisType() != BattleArmor.CHASSIS_TYPE_QUAD) {
-                item = new JMenuItem("Mount as squad support weapon");
+                item = new JMenuItem("Mount as Squad Support Weapon");
                 item.addActionListener(evt -> {
                     eq.setSquadSupportWeapon(true);
                     ((BABuildTab) getParent().getParent()).refreshAll();
