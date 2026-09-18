@@ -370,7 +370,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
                         enabled = true;
                     }
                 }
-                item = new JMenuItem("Mount as squad support weapon");
+                item = new JMenuItem("Mount as Squad Support Weapon");
                 item.setEnabled(enabled);
                 item.setToolTipText("Ammo can only be squad mounted along with a weapon that uses it");
                 item.addActionListener(evt -> {
@@ -382,7 +382,7 @@ public class BABuildView extends IView implements ActionListener, MouseListener 
 
             // Allow removing squad support weapon
             if (eq.isSquadSupportWeapon()) {
-                item = new JMenuItem("Remove squad support weapon mount");
+                item = new JMenuItem("Remove Squad Support Weapon Mount");
                 item.addActionListener(evt -> {
                     eq.setSquadSupportWeapon(false);
                     // Can't have squad support weapon ammo with no squad support weapon
