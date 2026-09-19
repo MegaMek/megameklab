@@ -38,15 +38,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import megamek.common.TechAdvancement;
 import megamek.common.TechConstants;
 import megamek.common.bays.CargoBay;
+import megamek.common.board.CubeCoords;
+import megamek.common.enums.BuildingType;
 import megamek.common.enums.TechBase;
 import megamek.common.interfaces.ITechnology;
 import megamek.common.loaders.MekFileParser;
 import megamek.common.units.BipedMek;
+import megamek.common.units.BuildingEntity;
 import megamek.common.units.Entity;
+import megamek.common.units.IBuilding;
 import megamek.common.units.Mek;
 import megamek.common.units.SmallCraft;
 import megamek.common.verifier.TestAero;
@@ -56,6 +61,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(value = InitializeTypes.class)
 class UnitUtilTest {
+
+    @Test
+    void buildingArmorCapacityUsesConstructionClassAndAllLocations() {
+        BuildingEntity building = new BuildingEntity(BuildingType.HEAVY, IBuilding.FORTRESS);
+        building.configureConstruction(BuildingType.HEAVY, IBuilding.FORTRESS, 2, 100, 40,
+              List.of(CubeCoords.ZERO));
+
+        assertEquals(200, UnitUtil.getMaximumArmorPoints(building));
+
+        building.configureConstruction(BuildingType.HARDENED, IBuilding.CASTLE_BRIAN, 2, 100, 40,
+              List.of(CubeCoords.ZERO));
+        assertEquals(400, UnitUtil.getMaximumArmorPoints(building));
+
+        building.configureConstruction(BuildingType.HEAVY, IBuilding.STANDARD, 2, 100, 0,
+              List.of(CubeCoords.ZERO));
+        assertEquals(0, UnitUtil.getMaximumArmorPoints(building));
+    }
 
     @Test
     void isLegalUsesOriginalBuildYear() {
@@ -174,6 +196,27 @@ class UnitUtilTest {
         assertEquals(0, craft.getNGunners());
         assertEquals(1, craft.getTransportBays().size());
         assertFalse(craft.getTransportBays().get(0).isQuarters());
+    }
+
+    @Test
+    void rememberedCrewUsesObjectIdentityAcrossDuplicateAndChangingGameIds() {
+        SmallCraft first = cargoOnlySmallCraft(30);
+        first.setNCrew(2);
+        SmallCraft second = cargoOnlySmallCraft(30);
+        second.setNCrew(7);
+        assertEquals(-1, first.getId());
+        assertEquals(first.getId(), second.getId());
+
+        UnitUtil.updateLoadedUnit(first);
+        UnitUtil.updateLoadedUnit(second);
+        first.setId(42);
+        first.setWeight(5);
+        second.setWeight(5);
+        UnitUtil.updateLoadedUnit(first);
+        UnitUtil.updateLoadedUnit(second);
+
+        assertEquals(2, first.getNCrew());
+        assertEquals(7, second.getNCrew());
     }
 
     private SmallCraft cargoOnlySmallCraft(double tonnage) {

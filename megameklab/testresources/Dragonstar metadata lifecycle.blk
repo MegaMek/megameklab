@@ -1,0 +1,219 @@
+# MegaMek Data (C) 2025-2026 by The MegaMek Team is licensed under CC BY-NC-SA 4.0.
+# To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/
+#
+# NOTICE: The MegaMek organization is a non-profit group of volunteers
+# creating free software for the BattleTech community.
+#
+# MechWarrior, BattleMech, `Mech and AeroTech are registered trademarks
+# of The Topps Company, Inc. All Rights Reserved.
+#
+# Catalyst Game Labs and the Catalyst Game Labs logo are trademarks of
+# InMediaRes Productions, LLC.
+#
+# MechWarrior Copyright Microsoft Corporation. MegaMek Data was created under
+# Microsoft's "Game Content Usage Rules"
+# <https://www.xbox.com/en-US/developers/rules> and it is not endorsed by or
+# affiliated with Microsoft.
+
+#Saved from version 0.51.01 on 2026-07-12
+<UUID>
+019f583e-e138-7229-b9dc-5dd0bc1e0e8e
+</UUID>
+
+<UnitType>
+SmallCraft
+</UnitType>
+
+<Name>
+Dragonstar Passenger Transport
+</Name>
+
+<Model>
+
+</Model>
+
+<mul id:>
+7767
+</mul id:>
+
+<year>
+2610
+</year>
+
+<type>
+IS Level 2
+</type>
+
+<role>
+None
+</role>
+
+<motion_type>
+Spheroid
+</motion_type>
+
+<transporters>
+cargobay:16.5:0:1::-1:0
+infantrybay:2.0:1:2:Jump:-1:0
+1stclassquarters:0.0:0:-1::-1:0
+crewquarters:0.0:0:-1::-1:0
+2ndclassquarters:0.0:0:-1::-1:0
+steeragequarters:20.0:0:-1::-1:0
+</transporters>
+
+<SafeThrust>
+5
+</SafeThrust>
+
+<heatsinks>
+20
+</heatsinks>
+
+<sink_type>
+0
+</sink_type>
+
+<fuel>
+480
+</fuel>
+
+<engine_type>
+1
+</engine_type>
+
+<armor_type>
+41
+</armor_type>
+
+<armor_tech_rating>
+0
+</armor_tech_rating>
+
+<armor_tech_level>
+1
+</armor_tech_level>
+
+<armor>
+86
+73
+73
+56
+</armor>
+
+<Nose Equipment>
+Large Laser
+Medium Laser
+</Nose Equipment>
+
+<Left Side Equipment>
+Medium Laser
+</Left Side Equipment>
+
+<Right Side Equipment>
+Medium Laser
+</Right Side Equipment>
+
+<Aft Equipment>
+Large Laser
+Medium Laser
+</Aft Equipment>
+
+<Hull Equipment>
+</Hull Equipment>
+
+<structural_integrity>
+6
+</structural_integrity>
+
+<capabilities>
+<p>The Dragonstar PT is a 150-ton civilian spheroid built to basic construction standards, with a fusion engine providing safe thrust of 2.5g and a maximum of 4g. This performance is adequate for intersystem runs but leaves little margin against faster military vessels. The hull carries standard armor, offering modest protection sufficient to deter casual piracy or discourage a boarding attempt, though the vessel is clearly not designed for sustained combat. Crew quarters consist of Steerage Compartments throughout, reflecting the design's budget construction philosophy.</p><p>The PT's armament is light but practical for its role. Two Large Lasers cover the nose and aft arcs, while four Medium Lasers are distributed to cover all remaining firing directions. This arrangement can discourage opportunistic attack without transforming the vessel into a true combat platform. The Jump Infantry Bay accommodates forty troopers or an equivalent load of civilian passengers. A small secondary cargo bay handles additional supplies. The overall balance favors capacity and cost over combat effectiveness, and the Dragonstar offers little resistance to a determined military opponent.</p>
+</capabilities>
+
+<overview>
+<p>The Dragonstar Passenger Transport is the backbone of the Draconis Combine's intersystem transit network, introduced in 2610 by Yakima Enterprises, a division of the Stellar Trek conglomerate. Designed as a low-cost, easy-to-produce spheroid shuttle, the Dragonstar has ferried government officials, DCMS troops, and civilian passengers between planetary surfaces and vessels waiting in orbit or at jump points for centuries. Despite a reputation for mechanical fragility and poor cost-effectiveness for repairs, the design has embedded itself so thoroughly in Combine logistics that most operators display near-fanatical loyalty to the product line. Its enduring commercial success rests not on technical excellence but on availability, affordability, and the cultural weight of its ancestry.</p>
+</overview>
+
+<deployment>
+<p>The Dragonstar Passenger Transport operates throughout the Draconis Combine's internal transit network, most commonly assigned to major spaceports, DCMS orbital stations, and jump point transfer facilities. It fulfills a routine but essential role, moving personnel between planetary surfaces and the larger vessels that cannot make planetfall themselves. DCMS units rely on it for troop transfers during internal redeployments, and the Jump Infantry Bay makes it a natural fit for light infantry movements within secured systems. Civilian charter use is widespread on core Combine worlds, with the PT regularly pressed into service for government officials, contract workers, and administrative personnel. Its availability across every corner of Combine territory means it is often the first vessel a traveler encounters when entering Combine space.</p>
+</deployment>
+
+<history>
+<p>The Dragonstar's origins lie in the Dragon's Stars vessels of the early Draconis Combine expansion era. Those older craft served as transports for Combine diplomats and dignitaries, shuttling officials to worlds being drawn into the growing realm. Over time they became symbols of the Dragon's diplomatic reach. When Yakima Enterprises developed the modern Dragonstar design in 2610, the company deliberately preserved the aesthetic lineage of its predecessor. Updated avionics and modernized systems gave the new vessel genuine utility, while the visual connection to the original helped position it as the natural continuation of Combine interstellar culture.</p><p>The vessel's commercial model is unusual. Dragonstars are cheap to build and notoriously prone to breakdown, with most transportation firms retiring examples after roughly 1,000 AU of service rather than paying escalating repair costs. Yakima is fully aware of this pattern and has built its business around it, combining heavy government subsidies with an active secondary market in salvaged parts stripped from retired hulls. Those recovered components frequently reappear in newly manufactured vessels, raising questions about quality but doing little to diminish the near-fanatical operator loyalty the design commands.</p><p>The vessel's military evolution came in 3059, when the Draconis Combine Admiralty approached Yakima to develop an assault transport variant. The proliferation of battle armor following the Clan Invasion and a renewed emphasis on naval operations revealed a gap in the Combine's assault transport inventory. With minimal changes to the existing platform, including updated weapon systems but retained armor protection and hull layout, Yakima delivered the Dragonstar Assault Transport to DCA installations barely a year later. The AT's rapid development cycle reflected both Yakima's familiarity with the base design and the Combine's characteristic tendency to militarize commercial platforms rather than develop purpose-built military craft from scratch.</p>
+</history>
+
+<manufacturer>
+Yakima Enterprises
+</manufacturer>
+
+<primaryFactory>
+Chatham
+</primaryFactory>
+
+<systemManufacturers>
+CHASSIS:Unknown
+ENGINE:Unknown
+ARMOR:Unknown
+COMMUNICATIONS:Unknown
+TARGETING:Unknown
+</systemManufacturers>
+
+<systemModels>
+CHASSIS:Unknown
+ENGINE:Unknown
+ARMOR:Unknown
+COMMUNICATIONS:Unknown
+TARGETING:Unknown
+</systemModels>
+
+<source>
+HB:HK
+</source>
+
+<published>
+HB:HK
+</published>
+
+<tonnage>
+150.0
+</tonnage>
+
+<designtype>
+1
+</designtype>
+
+<crew>
+46
+</crew>
+
+<officers>
+1
+</officers>
+
+<gunners>
+1
+</gunners>
+
+<passengers>
+0
+</passengers>
+
+<marines>
+0
+</marines>
+
+<battlearmor>
+0
+</battlearmor>
+
+<otherpassenger>
+0
+</otherpassenger>
+
+<life_boat>
+0
+</life_boat>
+
+<escape_pod>
+0
+</escape_pod>
+
