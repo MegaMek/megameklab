@@ -97,6 +97,31 @@ Both are editable with a quality text editor, but we recommend not hand editing 
 
 2) Follow the [instructions on the wiki](https://github.com/MegaMek/megamek/wiki/Working-With-Gradle) for using Gradle.
 
+### Local suite package
+
+From a checkout alongside `megamek`, `mekhq`, and `mm-data`, pass all five shared inputs to
+`./gradlew :megameklab:verifySuiteArchive` (or `:megameklab:distTar`):
+
+```
+-PsuiteReleaseVersion=0.51.01
+-PsuiteMegaMekCommit=<40 lowercase hex HEAD>
+-PsuiteMegaMekLabCommit=<40 lowercase hex HEAD>
+-PsuiteMekHQCommit=<40 lowercase hex HEAD>
+-PsuiteMmDataCommit=<40 lowercase hex HEAD>
+```
+
+The version must be canonical padded `major.minor.patch`, with each component within Java's integer range.
+The suite version overrides the historic revision without changing tracked version files;
+`extraVersion` is rejected in suite mode to avoid a differently versioned included MegaMek build.
+The included MegaMek build must receive the same Gradle `-P` inputs: the archive check reads its
+packaged `Version.properties` and fails if the included build did not receive the override.
+Pins must match the actual sibling and local HEADs. Suite archives refuse tracked source changes in
+any of the four checkouts; use clean checkouts for final packaging. The normal
+`megameklab/build/distributions/MegaMekLab-<version>.tar.gz` contains the existing launchers, jars,
+bundled mm-data and user-config exclusions, plus a `suite-build.properties` identity file at its root.
+`verifySuiteArchive` checks that file, both runtime JAR versions, the data payload and launcher layout.
+These are local build tasks; they do not publish anything.
+
 ### Style Guide
 
 When contributing to this project, please enable the EditorConfig option within your IDE to ensure some basic compliance
