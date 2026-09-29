@@ -80,7 +80,8 @@ def gitOutput = { File repo, String... arguments ->
                     return
                 }
                 def relative = path.replaceFirst(/^(?:megamek|megameklab|MekHQ)\//, '')
-                if (relative ==~ /mmconf\/(?:clientsettings\.xml|gameoptions\.xml|(?:mm|mml|mhq)\.preferences|megameklab\.properties(?:\.bak)?|recent-advanced-searches\.json|recent_boards\.yml|searches\/[^\/]+\.json)/
+                if (relative.startsWith('userdata/')
+                        || relative ==~ /mmconf\/(?:clientsettings\.xml|gameoptions\.xml|(?:mm|mml|mhq)\.preferences|megameklab\.properties(?:\.bak)?|recent-advanced-searches\.json|recent_boards\.yml|searches\/[^\/]+\.json)/
                         || relative in ['docs/OfficialUnitList.txt', 'docs/mm-revision.txt',
                                         'docs/mml-revision.txt', 'docs/mhq-revision.txt',
                                         'MegaMek.l4j.ini', 'MegaMekLab.l4j.ini', 'MekHQ.l4j.ini',
