@@ -542,19 +542,20 @@ if (suiteVersion != null) {
         dependsOn tasks.named('distTar')
         doLast {
             def archive = tasks.named('distTar').get().archiveFile.get().asFile
-            def prefix = "MegaMekLab-${project.version}/"
+            // Archive paths must be Strings: GString keys in a Set have different hash codes.
+            String prefix = "MegaMekLab-${project.version}/"
             def required = [
                     'suite-build.properties', 'MegaMekLab.jar', 'lib/MegaMekLab.jar',
                     'lib/MegaMek.jar', 'MegaMekLab.sh', 'bin/MegaMekLab',
                     'bin/MegaMekLab.bat', 'data/mekfiles/unit_files.zip',
                     'data/rat/rat_default.zip', 'data/images/misc/megameklab.ico'
-            ].collect { prefix + it } as Set
+            ].collect { (prefix + it).toString() } as Set
             def privateConfig = [
                     'mmconf/clientsettings.xml', 'mmconf/gameoptions.xml',
                     'mmconf/megameklab.properties', 'mmconf/megameklab.properties.bak',
                     'mmconf/mhq.preferences', 'mmconf/mm.preferences', 'mmconf/mml.preferences',
                     'mmconf/recent-advanced-searches.json'
-            ].collect { prefix + it } as Set
+            ].collect { (prefix + it).toString() } as Set
             def found = [] as Set
             def payloadSources = [
                     'MegaMekLab.jar'                  : tasks.named('jar').get().archiveFile.get().asFile,
@@ -569,7 +570,7 @@ if (suiteVersion != null) {
             def gameVersion = null
             tarTree(resources.gzip(archive)).visit { entry ->
                 if (!entry.directory) {
-                    def entryName = entry.relativePath.pathString
+                    String entryName = entry.relativePath.pathString
                     if (!entryName.startsWith(prefix) || !found.add(entryName)) {
                         throw new GradleException("Unexpected root or duplicate archive entry: ${entryName}")
                     }
