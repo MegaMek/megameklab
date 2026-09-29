@@ -29,22 +29,18 @@ if (suiteVersion != null) {
 }
 
 def gitOutput = { File repo, String... arguments ->
-    def output = new ByteArrayOutputStream()
-    def errors = new ByteArrayOutputStream()
     try {
-        def result = project.exec {
+        def execution = providers.exec {
             commandLine(['git', '-C', repo.canonicalPath] + arguments.toList())
-            standardOutput = output
-            errorOutput = errors
             ignoreExitValue = true
         }
-        if (result.exitValue != 0) {
-            throw new GradleException("Git inspection failed in ${repo}: ${errors.toString('UTF-8')}")
+        if (execution.result.get().exitValue != 0) {
+            throw new GradleException("Git inspection failed in ${repo}: ${execution.standardError.asText.get()}")
         }
+        return execution.standardOutput.asText.get().trim()
     } catch (IOException e) {
         throw new GradleException("Cannot inspect Git checkout ${repo}", e)
     }
-    output.toString('UTF-8').trim()
 }
 // Check before any producer or staging task can change tracked sources.
 gradle.taskGraph.whenReady { graph ->
