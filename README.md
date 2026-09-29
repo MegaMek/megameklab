@@ -129,6 +129,20 @@ bundled mm-data and user-config exclusions, plus a `suite-build.properties` iden
 `verifySuiteArchive` checks that file, both runtime JAR versions, the data payload and launcher layout.
 These are local build tasks; they do not publish anything.
 
+To check a previously downloaded Lab tarball without rebuilding, pass
+`-PsuiteArchiveFile=<path>/MegaMekLab-<Lab version>.tar.gz` and
+`-PsuiteMegaMekArchiveFile=<path>/MegaMek-<MegaMek version>.tar.gz` to
+`:megameklab:verifySuiteArchive` along with the same five suite inputs and product versions.
+This mode does not run `distTar` or its producers. It requires the matching MegaMek
+companion archive to verify the bundled runtime JAR and derived mm-data ZIPs; tracked
+data in the Lab archive is checked against the declared mm-data Git commit's blob hashes.
+An older reused MegaMek companion may carry older Lab and MekHQ commits: its own
+MegaMek and mm-data pins, version, Java requirement and root/lib JAR bytes must match.
+Verification streams archive entries and stages only inspected JARs in temporary files;
+oversized entries and metadata are rejected.
+The built-archive mode continues to compare key payload files with local build outputs.
+Use trusted local checkouts containing the pinned Git objects; neither mode publishes assets.
+
 ### Style Guide
 
 When contributing to this project, please enable the EditorConfig option within your IDE to ensure some basic compliance
