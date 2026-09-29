@@ -120,8 +120,10 @@ The product version overrides the historic revision without changing tracked ver
 `extraVersion` is rejected in suite mode to avoid a differently versioned included MegaMek build.
 The included MegaMek build must receive the same Gradle `-P` inputs: the archive check reads its
 packaged `Version.properties` and fails if the included build did not receive the override.
-Pins must match the actual sibling and local HEADs. Suite archives refuse tracked source changes in
-any of the four checkouts; use clean checkouts for final packaging. The normal
+Pins must match the actual sibling and local HEADs. Suite archives refuse tracked changes
+and unknown untracked or ignored package-source inputs in all four checkouts.
+Ignored local data mirrors must match tracked mm-data bytes; build/cache output is excluded.
+Use clean checkouts for final packaging. The normal
 `megameklab/build/distributions/MegaMekLab-<version>.tar.gz` contains the existing launchers, jars,
 bundled mm-data and user-config exclusions, plus a `suite-build.properties` identity file at its root.
 `verifySuiteArchive` checks that file, both runtime JAR versions, the data payload and launcher layout.

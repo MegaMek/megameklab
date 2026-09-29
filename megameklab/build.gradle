@@ -290,11 +290,20 @@ tasks.register("stageLicenseFiles", Sync) {
 
 }
 
+if (rootProject.hasProperty('suiteReleaseVersion')) {
+    tasks.register('clearSuiteStage', Delete) {
+        delete fileStagingDir
+    }
+}
+
 tasks.register("copyLicenseFiles", Copy) {
     description = "Copies from the build folder to the staging folder"
     group = 'build'
 
     dependsOn stageLicenseFiles
+    if (rootProject.hasProperty('suiteReleaseVersion')) {
+        dependsOn tasks.named('clearSuiteStage')
+    }
 
     from "${layout.buildDirectory.get()}/licenses"
     into fileStagingDir
@@ -307,6 +316,9 @@ tasks.register('stageFiles', Copy) {
     dependsOn gradle.includedBuild('megamek').task(':megamek:compileJava')
     dependsOn generateDynamicFiles
     dependsOn copyLicenseFiles
+    if (rootProject.hasProperty('suiteReleaseVersion')) {
+        dependsOn tasks.named('clearSuiteStage')
+    }
 
     from projectDir
     include "mmconf/**"
@@ -326,6 +338,7 @@ tasks.register('stageFiles', Copy) {
     exclude "mmconf/mm.preferences"
     exclude "mmconf/mml.preferences"
     exclude "mmconf/recent-advanced-searches.json"
+    exclude "mmconf/recent_boards.yml"
     exclude "mmconf/searches/*.json"
 
     exclude("data/**/*.cache")
@@ -537,6 +550,7 @@ if (suiteVersion != null) {
                 '**/mmconf/megameklab.properties', '**/mmconf/megameklab.properties.bak',
                 '**/mmconf/mhq.preferences', '**/mmconf/mm.preferences',
                 '**/mmconf/mml.preferences', '**/mmconf/recent-advanced-searches.json',
+                '**/mmconf/recent_boards.yml',
                 '**/mmconf/searches/*.json', '**/data/**/*.cache'
     }
     tasks.register('verifySuiteArchive') {
@@ -557,7 +571,7 @@ if (suiteVersion != null) {
                     'mmconf/clientsettings.xml', 'mmconf/gameoptions.xml',
                     'mmconf/megameklab.properties', 'mmconf/megameklab.properties.bak',
                     'mmconf/mhq.preferences', 'mmconf/mm.preferences', 'mmconf/mml.preferences',
-                    'mmconf/recent-advanced-searches.json'
+                    'mmconf/recent-advanced-searches.json', 'mmconf/recent_boards.yml'
             ].collect { (prefix + it).toString() } as Set
             def found = [] as Set
             def payloadSources = [
