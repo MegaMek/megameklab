@@ -68,12 +68,13 @@ def gitOutput = { File repo, String... arguments ->
                                        ':(top,glob)MekHQ/*.ini', 'MekHQ/SubmitBug.html',
                                        'MekHQ/sentry.properties']
             def dataRepo = file('../mm-data')
-            def trackedData = gitOutput(dataRepo, 'ls-files', '-z', '--cached', '--', 'data').split('\u0000').toSet()
+            def trackedData = gitOutput(dataRepo, 'ls-files', '-z', '--cached', '--', 'data')
+                    .split('\u0000').toList().toSet()
             def untracked = gitOutput(repo, (['ls-files', '-z', '--others', '--exclude-standard', '--'] + scopes)
                     as String[]).split('\u0000')
             def ignored = gitOutput(repo, (['ls-files', '-z', '--others', '--ignored',
                     '--exclude-standard', '--'] + scopes) as String[]).split('\u0000')
-            def unknown = (untracked + ignored).unique()
+            def unknown = (untracked.toList() + ignored.toList()).unique()
             unknown.each { path ->
                 if (!path) {
                     return
