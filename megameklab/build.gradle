@@ -500,6 +500,8 @@ tasks.register("packagePrepWork") {
 }
 
 def suiteVersion = rootProject.findProperty('suiteReleaseVersion')?.toString()
+def labVersion = rootProject.findProperty('suiteMegaMekLabVersion')?.toString() ?: suiteVersion
+def gameVersionExpected = rootProject.findProperty('suiteMegaMekVersion')?.toString() ?: suiteVersion
 if (suiteVersion != null) {
     // stageFiles reads a physical sibling JAR, not a Gradle project output. Force
     // its producer to run so an old build/libs/MegaMek.jar cannot be archived.
@@ -509,7 +511,8 @@ if (suiteVersion != null) {
     def suiteIdentity = [
             schemaVersion      : '1',
             product            : 'MegaMekLab',
-            version            : suiteVersion,
+            version            : labVersion,
+            megamekVersion    : gameVersionExpected,
             megamekCommit     : rootProject.property('suiteMegaMekCommit').toString(),
             megameklabCommit  : rootProject.property('suiteMegaMekLabCommit').toString(),
             mekhqCommit       : rootProject.property('suiteMekHQCommit').toString(),
@@ -626,8 +629,8 @@ if (suiteVersion != null) {
             }
             if (metadata == null || metadata.stringPropertyNames() != suiteIdentity.keySet() ||
                     suiteIdentity.any { key, value -> metadata.getProperty(key) != value } ||
-                    labManifestVersion != suiteVersion || gameVersion != suiteVersion) {
-                throw new GradleException("Suite archive identity or packaged runtime versions do not match ${suiteVersion}")
+                    labManifestVersion != labVersion || gameVersion != gameVersionExpected) {
+                throw new GradleException("Suite archive identity or packaged runtime versions do not match declared product versions")
             }
         }
     }

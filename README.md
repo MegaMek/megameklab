@@ -111,7 +111,12 @@ From a checkout alongside `megamek`, `mekhq`, and `mm-data`, pass all five share
 ```
 
 The version must be canonical padded `major.minor.patch`, with each component within Java's integer range.
-The suite version overrides the historic revision without changing tracked version files;
+Optionally supply `-PsuiteMegaMekVersion` and `-PsuiteMegaMekLabVersion`
+alongside the suite version; each defaults to it and must have the same canonical
+format. Lab's archive and manifest use the Lab version, while the embedded
+MegaMek runtime uses the MegaMek version. A Lab-only update can keep the
+previous MegaMek release unchanged; MekHQ must then advance to bundle the new Lab.
+The product version overrides the historic revision without changing tracked version files;
 `extraVersion` is rejected in suite mode to avoid a differently versioned included MegaMek build.
 The included MegaMek build must receive the same Gradle `-P` inputs: the archive check reads its
 packaged `Version.properties` and fails if the included build did not receive the override.
